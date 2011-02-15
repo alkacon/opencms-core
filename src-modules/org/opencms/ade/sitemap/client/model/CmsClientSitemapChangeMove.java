@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,10 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
@@ -47,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -183,7 +184,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath(), ChangeType.modify);
         change.setDefaultFileId(m_entry.getDefaultFileId());
         if (!m_destinationPath.equals(m_sourcePath)) {
             change.setParentId(m_destinationId);
@@ -272,7 +273,6 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        clipboardData.getModifications().remove(getEntry());
-        clipboardData.getModifications().add(0, getEntry());
+        clipboardData.addModified(getEntry());
     }
 }

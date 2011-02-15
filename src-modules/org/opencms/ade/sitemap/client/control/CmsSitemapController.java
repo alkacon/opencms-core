@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/14 13:46:59 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,23 +36,24 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeRemove;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeUndelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -89,7 +90,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0.0
  */
@@ -293,42 +294,34 @@ public class CmsSitemapController {
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (parent != null);
         newEntry.setEditStatus(EditStatus.created);
-        if (newEntry.getId() == null) {
-            // get a new valid UUID from server
-            CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
 
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-                 */
-                @Override
-                public void execute() {
+        // get a new valid UUID from server
+        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
 
-                    start(0, true);
-                    CmsCoreProvider.getService().createUUID(this);
-                }
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
 
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-                 */
-                @Override
-                protected void onResponse(CmsUUID result) {
+                start(0, true);
+                CmsCoreProvider.getService().createUUID(this);
+            }
 
-                    stop(false);
-                    newEntry.setId(result);
-                    applyChange(new CmsClientSitemapChangeNew(
-                        newEntry,
-                        parent.getId(),
-                        false,
-                        resourceTypeId,
-                        copyResourceId), false);
-                }
-            };
-            action.execute();
-        } else {
-            applyChange(
-                new CmsClientSitemapChangeNew(newEntry, parent.getId(), true, resourceTypeId, copyResourceId),
-                false);
-        }
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsUUID result) {
+
+                stop(false);
+                newEntry.setId(result);
+                applyChange(
+                    new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId),
+                    false);
+            }
+        };
+        action.execute();
     }
 
     /**
@@ -402,36 +395,6 @@ public class CmsSitemapController {
             }
         };
         subSitemapAction.execute();
-        //        CmsRpcAction<CmsSubSitemapInfo> subSitemapAction = new CmsRpcAction<CmsSubSitemapInfo>() {
-        //
-        //            /**
-        //             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-        //             */
-        //            @Override
-        //            public void execute() {
-        //
-        //                start(0, true);
-        //                List<CmsSitemapChange> changes = getChangesToSave();
-        //                getService().saveAndCreateSubSitemap(getSitemapUri(), changes, path, this);
-        //
-        //            }
-        //
-        //            /**
-        //             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-        //             */
-        //            @Override
-        //            protected void onResponse(CmsSubSitemapInfo result) {
-        //
-        //                stop(false);
-        //                resetChanges();
-        //                markAllEntriesAsOld();
-        //                onCreateSubSitemap(path, result);
-        //
-        //            }
-        //        };
-        //        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
-        //            subSitemapAction.execute();
-        //        }
     }
 
     /**
@@ -443,7 +406,7 @@ public class CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
-        applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()), false);
+        applyChange(new CmsClientSitemapChangeDelete(entry, parent.getId()), false);
     }
 
     /**
@@ -505,18 +468,14 @@ public class CmsSitemapController {
      * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
      * 
      * @param deleteEntry the entry to delete 
-     * @param open the list of sitemap entry ids which should be considered without their descendants  
-     * @param closed the list of sitemap entry ids which should be considered with their descendantw 
-     * 
+    * 
      * @param callback the callback which will be called with the results 
      */
     public void getBrokenLinks(
         final CmsClientSitemapEntry deleteEntry,
-        final List<CmsUUID> open,
-        final List<CmsUUID> closed,
         final AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback) {
 
-        CmsRpcAction<CmsBrokenLinkData> action = new CmsRpcAction<CmsBrokenLinkData>() {
+        CmsRpcAction<List<CmsSitemapBrokenLinkBean>> action = new CmsRpcAction<List<CmsSitemapBrokenLinkBean>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -525,18 +484,17 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                getService().getBrokenLinksToSitemapEntries(deleteEntry, open, closed, this);
+                getService().getBrokenLinksToSitemapEntries(deleteEntry, this);
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(CmsBrokenLinkData result) {
+            protected void onResponse(List<CmsSitemapBrokenLinkBean> result) {
 
                 stop(false);
-                addChildren(deleteEntry, result.getClosedEntries());
-                callback.onSuccess(result.getBrokenLinks());
+                callback.onSuccess(result);
             }
         };
         action.execute();
@@ -985,11 +943,27 @@ public class CmsSitemapController {
         recomputeProperties(root);
     }
 
+    /**
+     * Removes the entry with the given site-path from navigation.<p>
+     * 
+     * @param sitePath the site-path
+     */
     public void removeFromNavigation(String sitePath) {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
         applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()), false);
+    }
+
+    /**
+     * Undeletes the resource with the given structure id.<p>
+     * 
+     * @param structureId the structure id
+     * @param sitePath the site-path
+     */
+    public void undelete(final CmsUUID structureId, final String sitePath) {
+
+        applyChange(new CmsClientSitemapChangeUndelete(structureId, sitePath), false);
     }
 
     /**

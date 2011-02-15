@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapClipboardData.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,9 @@
 
 package org.opencms.ade.sitemap.shared;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.opencms.util.CmsUUID;
+
+import java.util.LinkedHashMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -41,25 +42,25 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0
  */
 public class CmsSitemapClipboardData implements IsSerializable {
 
     /** The session stored list of deleted sitemap entries. */
-    private List<CmsClientSitemapEntry> m_deletions;
+    private LinkedHashMap<CmsUUID, CmsClientSitemapEntry> m_deletions;
 
     /** The session stored list of modified sitemap entry paths. */
-    private List<CmsClientSitemapEntry> m_modifications;
+    private LinkedHashMap<CmsUUID, CmsClientSitemapEntry> m_modifications;
 
     /**
      * Constructor.<p>
      */
     public CmsSitemapClipboardData() {
 
-        m_deletions = new ArrayList<CmsClientSitemapEntry>();
-        m_modifications = new ArrayList<CmsClientSitemapEntry>();
+        m_deletions = new LinkedHashMap<CmsUUID, CmsClientSitemapEntry>();
+        m_modifications = new LinkedHashMap<CmsUUID, CmsClientSitemapEntry>();
     }
 
     /**
@@ -68,10 +69,38 @@ public class CmsSitemapClipboardData implements IsSerializable {
      * @param deletions the session stored list of deleted sitemap entries
      * @param modifications the session stored list of modified sitemap entry paths
      */
-    public CmsSitemapClipboardData(List<CmsClientSitemapEntry> deletions, List<CmsClientSitemapEntry> modifications) {
+    public CmsSitemapClipboardData(
+        LinkedHashMap<CmsUUID, CmsClientSitemapEntry> deletions,
+        LinkedHashMap<CmsUUID, CmsClientSitemapEntry> modifications) {
 
         m_deletions = deletions;
         m_modifications = modifications;
+    }
+
+    /**
+     * Adds an entry to the deleted list.<p>
+     * 
+     * @param entry the entry to add
+     */
+    public void addDeleted(CmsClientSitemapEntry entry) {
+
+        if (m_deletions.containsKey(entry.getId())) {
+            m_deletions.remove(entry.getId());
+        }
+        m_deletions.put(entry.getId(), entry);
+    }
+
+    /**
+     * Adds an entry to the modified list.<p>
+     * 
+     * @param entry the entry to add
+     */
+    public void addModified(CmsClientSitemapEntry entry) {
+
+        if (m_modifications.containsKey(entry.getId())) {
+            m_modifications.remove(entry.getId());
+        }
+        m_modifications.put(entry.getId(), entry);
     }
 
     /**
@@ -81,10 +110,10 @@ public class CmsSitemapClipboardData implements IsSerializable {
      */
     public CmsSitemapClipboardData copy() {
 
-        List<CmsClientSitemapEntry> deletions = new ArrayList<CmsClientSitemapEntry>();
-        deletions.addAll(m_deletions);
-        List<CmsClientSitemapEntry> modifications = new ArrayList<CmsClientSitemapEntry>();
-        modifications.addAll(m_modifications);
+        LinkedHashMap<CmsUUID, CmsClientSitemapEntry> deletions = new LinkedHashMap<CmsUUID, CmsClientSitemapEntry>();
+        deletions.putAll(m_deletions);
+        LinkedHashMap<CmsUUID, CmsClientSitemapEntry> modifications = new LinkedHashMap<CmsUUID, CmsClientSitemapEntry>();
+        modifications.putAll(m_modifications);
         return new CmsSitemapClipboardData(deletions, modifications);
     }
 
@@ -93,7 +122,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
      *
      * @return the session stored list of deleted sitemap entries
      */
-    public List<CmsClientSitemapEntry> getDeletions() {
+    public LinkedHashMap<CmsUUID, CmsClientSitemapEntry> getDeletions() {
 
         return m_deletions;
     }
@@ -103,8 +132,28 @@ public class CmsSitemapClipboardData implements IsSerializable {
      *
      * @return the session stored list of modified sitemap entry paths
      */
-    public List<CmsClientSitemapEntry> getModifications() {
+    public LinkedHashMap<CmsUUID, CmsClientSitemapEntry> getModifications() {
 
         return m_modifications;
+    }
+
+    /**
+     * Removes an entry from the deleted list.<p>
+     * 
+     * @param entry the entry to remove
+     */
+    public void removeDeleted(CmsClientSitemapEntry entry) {
+
+        m_deletions.remove(entry.getId());
+    }
+
+    /**
+     * Removes an entry from the modified list.<p>
+     * 
+     * @param entry the entry to remove
+     */
+    public void removeModified(CmsClientSitemapEntry entry) {
+
+        m_modifications.remove(entry.getId());
     }
 }

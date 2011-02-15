@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,19 +37,17 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 /**
  * Stores one deletion change to the sitemap.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -128,9 +126,8 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath(), ChangeType.delete);
         change.setDefaultFileId(m_entry.getDefaultFileId());
-        change.setDelete(true);
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);
         change.setClipBoardData(data);
@@ -173,12 +170,8 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        if (!(getEntry().isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(getEntry().getVfsPath()))) {
-            // only add deleted entries to the deleted list, that do have a linked vfs path
-            List<CmsClientSitemapEntry> deleted = clipboardData.getDeletions();
-            deleted.add(0, getEntry());
-        }
-        removeDeletedFromModified(getEntry(), clipboardData.getModifications());
+        clipboardData.addDeleted(getEntry());
+        removeDeletedFromModified(getEntry(), clipboardData);
     }
 
     /**
@@ -187,11 +180,11 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      * @param entry the deleted entry
      * @param modified the modified list
      */
-    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
+    private void removeDeletedFromModified(CmsClientSitemapEntry entry, CmsSitemapClipboardData clipboardData) {
 
-        modified.remove(entry);
+        clipboardData.removeModified(entry);
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            removeDeletedFromModified(child, modified);
+            removeDeletedFromModified(child, clipboardData);
         }
     }
 }

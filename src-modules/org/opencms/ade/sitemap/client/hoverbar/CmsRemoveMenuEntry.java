@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsRemoveMenuEntry.java,v $
- * Date   : $Date: 2011/02/03 15:13:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,6 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.util.CmsUUID;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.user.client.Command;
 
@@ -47,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -74,88 +70,6 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
                 final String sitePath = getHoverbar().getSitePath();
                 final CmsSitemapController controller = getHoverbar().getController();
                 controller.removeFromNavigation(sitePath);
-
-                //                CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>> openAndClosed = CmsSitemapView.getInstance().getOpenAndClosedDescendants(
-                //                    sitePath);
-                //                List<CmsClientSitemapEntry> openEntries = openAndClosed.getFirst();
-                //                List<CmsClientSitemapEntry> closedEntries = openAndClosed.getSecond();
-                //                List<CmsUUID> open = getIds(openEntries);
-                //                List<CmsUUID> closed = getIds(closedEntries);
-                //                controller.getBrokenLinks(
-                //                    controller.getEntry(sitePath),
-                //                    open,
-                //                    closed,
-                //                    new AsyncCallback<List<CmsSitemapBrokenLinkBean>>() {
-                //
-                //                        /**
-                //                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                //                         */
-                //                        public void onFailure(Throwable caught) {
-                //
-                //                            // do nothing; will never be called
-                //                        }
-                //
-                //                        /**
-                //                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                //                         */
-                //                        public void onSuccess(List<CmsSitemapBrokenLinkBean> result) {
-                //
-                //                            if (result.size() > 0) {
-                //                                I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
-                //
-                //                                    /**
-                //                                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                //                                     */
-                //                                    public void onClose() {
-                //
-                //                                        // do nothing 
-                //                                    }
-                //
-                //                                    /**
-                //                                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                //                                     */
-                //                                    public void onOk() {
-                //
-                //                                        controller.delete(sitePath);
-                //                                    }
-                //                                };
-                //                                CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result);
-                //                                dialog.center();
-                //
-                //                            } else {
-                //
-                //                                if (controller.getEntry(sitePath).getSubEntries().isEmpty()) {
-                //                                    controller.delete(sitePath);
-                //                                    return;
-                //                                }
-                //                                // show the dialog only if the entry has children 
-                //                                CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(
-                //                                    Messages.GUI_DIALOG_DELETE_TITLE_0), Messages.get().key(
-                //                                    Messages.GUI_DIALOG_DELETE_TEXT_0));
-                //                                dialog.setHandler(new I_CmsConfirmDialogHandler() {
-                //
-                //                                    /**
-                //                                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                //                                     */
-                //                                    public void onClose() {
-                //
-                //                                        // do nothing
-                //                                    }
-                //
-                //                                    /**
-                //                                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                //                                     */
-                //                                    public void onOk() {
-                //
-                //                                        controller.delete(sitePath);
-                //                                    }
-                //                                });
-                //                                dialog.center();
-                //                            }
-                //                        }
-                //
-                //                    });
-
             }
         });
 
@@ -172,23 +86,5 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
         boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation() && entry.isEditable();
         setVisible(show);
-    }
-
-    /**
-     * Extracts the ids from a list of client sitemap entries.<p>
-     * 
-     * @param entries the sitemap entries
-     * 
-     * @return the ids of the sitemap entries 
-     */
-    protected List<CmsUUID> getIds(List<CmsClientSitemapEntry> entries) {
-
-        List<CmsUUID> result = new ArrayList<CmsUUID>();
-        for (CmsClientSitemapEntry entry : entries) {
-            if (entry.getId() != null) {
-                result.add(entry.getId());
-            }
-        }
-        return result;
     }
 }

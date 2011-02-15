@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2011/02/03 08:59:03 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,12 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,16 +79,12 @@ public interface I_CmsSitemapServiceAsync {
      * not have the full list of sitemap entries which are going to be deleted.<p>
      * 
      * @param deleteEntry the entry to delete 
-     * @param open the list of sitemap entry ids which should be considered by themselves 
-     * @param closed the list of sitemap entry ids which should be considedered together with their descendants
      * @param callback the asynchronous callback  
      * 
      */
     void getBrokenLinksToSitemapEntries(
         CmsClientSitemapEntry deleteEntry,
-        List<CmsUUID> open,
-        List<CmsUUID> closed,
-        AsyncCallback<CmsBrokenLinkData> callback);
+        AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -137,5 +132,4 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<Boolean> callback);
-
 }

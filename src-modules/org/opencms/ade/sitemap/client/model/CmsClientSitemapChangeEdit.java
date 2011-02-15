@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -147,7 +148,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath());
+        CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath(), ChangeType.modify);
         change.setDefaultFileId(m_newEntry.getDefaultFileId());
         change.setLeafType(m_newEntry.isLeafType());
         List<CmsPropertyModificationData> propertyChangeData = new ArrayList<CmsPropertyModificationData>();
@@ -200,7 +201,6 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        clipboardData.getModifications().remove(getOldEntry());
-        clipboardData.getModifications().add(0, getNewEntry());
+        clipboardData.addModified(m_newEntry);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
@@ -48,7 +49,7 @@ import org.opencms.xml.sitemap.CmsDetailPageInfo;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -69,28 +70,22 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The parent entry id. */
     private CmsUUID m_parentId;
 
-    /** Flag to indicate whether the new entry is restored from deleted entries. */
-    private boolean m_restoreFromDeleted;
-
     /**
      * Constructor.<p>
      * 
      * @param entry the new entry
      * @param parentId the parent entry id
-     * @param restoreFromDeleted flag to indicate whether the new entry is restored from deleted entries
      * @param resourceTypeId the resource type id
      * @param copyResourceId the copy resource id 
      */
     public CmsClientSitemapChangeNew(
         CmsClientSitemapEntry entry,
         CmsUUID parentId,
-        boolean restoreFromDeleted,
         int resourceTypeId,
         CmsUUID copyResourceId) {
 
         m_entry = entry;
         m_parentId = parentId;
-        m_restoreFromDeleted = restoreFromDeleted;
         m_newResourceTypeId = resourceTypeId;
         m_newCopyResourceId = copyResourceId;
     }
@@ -152,9 +147,8 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath(), ChangeType.create);
         change.setDefaultFileId(m_entry.getDefaultFileId());
-        change.setNew(!m_restoreFromDeleted);
         change.setParentId(m_parentId);
         change.setName(m_entry.getName());
         change.setPosition(m_entry.getPosition());
@@ -215,8 +209,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        clipboardData.getDeletions().remove(getEntry());
-        clipboardData.getModifications().add(0, getEntry());
+        clipboardData.addModified(getEntry());
     }
 
 }

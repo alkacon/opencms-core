@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                 (new CmsSitemapEntryEditor(new CmsEditEntryHandler(
                     controller,
                     entry,
-                    CmsSitemapView.getInstance().isSimpleMode()))).start();
+                    CmsSitemapView.getInstance().isNavigationMode()))).start();
             }
         });
     }
@@ -87,14 +87,14 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         if (CmsSitemapView.getInstance().isNavigationMode()) {
-        String sitePath = getHoverbar().getSitePath();
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !(controller.isRoot(sitePath) && (controller.getData().getParentSitemap() != null))
-            && (entry != null)
-            && entry.isEditable();
+            String sitePath = getHoverbar().getSitePath();
+            CmsSitemapController controller = getHoverbar().getController();
+            CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+            boolean show = !(controller.isRoot(sitePath) && (controller.getData().getParentSitemap() != null))
+                && (entry != null)
+                && entry.isEditable();
 
-        setVisible(show);
+            setVisible(show);
         } else {
             setVisible(false);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2011/02/11 14:35:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -73,10 +73,10 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
             Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0),
             Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0),
             view.getModified());
-        // TODO: handle deletions
-        //        createTab(
-        //            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0),
-        //            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0),
-        //            view.getDeleted());
+        createTab(
+            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0),
+            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0),
+            view.getDeleted());
+
     }
 }

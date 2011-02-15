@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,27 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapChange> {
+
+    /** The change types. */
+    public enum ChangeType {
+        /** The create/new change. */
+        create,
+        /** The delete resource change. */
+        delete,
+        /** The modify change. */
+        modify,
+        /** The remove from navigation change. */
+        remove,
+        /** The undelete resource change. */
+        undelete
+    }
+
+    private ChangeType m_changeType;
 
     /** The changed clip-board data. */
     private CmsSitemapClipboardData m_clipBoardData;
@@ -68,14 +84,8 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     /** The entry id. */
     private CmsUUID m_entryId;
 
-    /** Flag to indicate this is a deleting change. */
-    private boolean m_isDelete;
-
     /** Indicates if the entry to change is a leaf type entry. */
     private boolean m_isLeafType;
-
-    /** Flag to indicate this is a creating new change. */
-    private boolean m_isNew;
 
     /** The entry name. */
     private String m_name;
@@ -113,12 +123,14 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      * Constructor.<p>
      * 
      * @param entryId entry id
-     * @param sitePath
+     * @param sitePath the entry site-path
+     * @param changeType the change type
      */
-    public CmsSitemapChange(CmsUUID entryId, String sitePath) {
+    public CmsSitemapChange(CmsUUID entryId, String sitePath, ChangeType changeType) {
 
         m_entryId = entryId;
         m_sitePath = sitePath;
+        m_changeType = changeType;
     }
 
     /**
@@ -147,11 +159,13 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         if (data.hasNewParent()) {
             m_parentId = data.m_parentId;
         }
-        if (data.isDelete()) {
-            m_isDelete = true;
-        }
+
         if (data.getClipBoardData() != null) {
             m_clipBoardData = data.getClipBoardData();
+        }
+        if ((data.m_changeType == ChangeType.delete)
+            || ((data.m_changeType == ChangeType.remove) && (m_changeType != ChangeType.delete))) {
+            m_changeType = data.m_changeType;
         }
     }
 
@@ -202,6 +216,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
             return m_entryId.equals(((CmsSitemapChange)obj).m_entryId);
         }
         return false;
+    }
+
+    /**
+     * Returns the change type.<p>
+     *
+     * @return the change type
+     */
+    public ChangeType getChangeType() {
+
+        return m_changeType;
     }
 
     /**
@@ -338,6 +362,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
+     * Returns the site-path.<p>
+     *
+     * @return the site-path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
      * Returns if there are changed inherit properties.<p>
      * 
      * @return <code>true</code> if there are changed inherit properties
@@ -369,16 +403,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns if the position has changed.<p>
-     * 
-     * @return <code>true</code> if the position has changed
-     */
-    public boolean hasChangedPosition() {
-
-        return m_position >= 0;
-    }
-
-    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -387,6 +411,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     //
     //        return m_title;
     //    }
+
+    /**
+     * Returns if the position has changed.<p>
+     * 
+     * @return <code>true</code> if the position has changed
+     */
+    public boolean hasChangedPosition() {
+
+        return m_position >= 0;
+    }
 
     /**
      * Returns if there are changed properties.<p>
@@ -418,16 +452,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns if this change sets a new parent.<p>
-     * 
-     * @return <code>true</code> if the entry gets a new parent
-     */
-    public boolean hasNewParent() {
-
-        return m_parentId != null;
-    }
-
-    /**
      * Returns if the entry title has changed.<p>
      * 
      * @return <code>true</code> if the entry title has changed
@@ -438,13 +462,23 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     //    }
 
     /**
+     * Returns if this change sets a new parent.<p>
+     * 
+     * @return <code>true</code> if the entry gets a new parent
+     */
+    public boolean hasNewParent() {
+
+        return m_parentId != null;
+    }
+
+    /**
      * Returns if this is a deleting change.<p>
      * 
      * @return the is delete flag
      */
     public boolean isDelete() {
 
-        return m_isDelete;
+        return ChangeType.delete == m_changeType;
     }
 
     /**
@@ -464,7 +498,17 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      */
     public boolean isNew() {
 
-        return m_isNew;
+        return ChangeType.create == m_changeType;
+    }
+
+    /**
+     * Returns if this is a remove from navigation change.<p>
+     * 
+     * @return the is new flag
+     */
+    public boolean isRemove() {
+
+        return ChangeType.remove == m_changeType;
     }
 
     /**
@@ -498,16 +542,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Sets the is delete flag.<p>
-     *
-     * @param isDelete the is delete flag to set
-     */
-    public void setDelete(boolean isDelete) {
-
-        m_isDelete = isDelete;
-    }
-
-    /**
      * Sets the detail page info's.<p>
      *
      * @param detailPageInfos the detail page info's to set
@@ -535,16 +569,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setName(String name) {
 
         m_name = name;
-    }
-
-    /**
-     * Sets the isNew.<p>
-     *
-     * @param isNew the isNew to set
-     */
-    public void setNew(boolean isNew) {
-
-        m_isNew = isNew;
     }
 
     /**

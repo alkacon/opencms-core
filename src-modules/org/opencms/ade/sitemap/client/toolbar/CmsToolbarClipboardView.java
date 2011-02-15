@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/11/29 15:51:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -110,8 +110,8 @@ public class CmsToolbarClipboardView {
     public CmsToolbarClipboardView(CmsToolbarClipboardButton clipboardButton, final CmsSitemapController controller) {
 
         m_modified = new CmsList<CmsListItem>();
-        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getModifications()) {
-            m_modified.addItem(createModifiedItem(entry));
+        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getModifications().values()) {
+            m_modified.insertItem(createModifiedItem(entry), 0);
         }
 
         m_deleted = new CmsList<CmsListItem>();
@@ -120,8 +120,8 @@ public class CmsToolbarClipboardView {
         // prevent dragging to the deleted list
         m_deleted.setDropEnabled(false);
 
-        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getDeletions()) {
-            m_deleted.addItem(createDeletedItem(entry));
+        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getDeletions().values()) {
+            m_deleted.insertItem(createDeletedItem(entry), 0);
         }
 
         m_clipboardButton = clipboardButton;
@@ -181,7 +181,22 @@ public class CmsToolbarClipboardView {
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
-        listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
+        CmsPushButton button = new CmsPushButton();
+        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo());
+        button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_UNDELETE_0));
+        button.setShowBorder(false);
+        button.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+
+                CmsDomUtil.ensureMouseOut(itemWidget.getElement());
+                m_clipboardButton.closeMenu();
+                CmsSitemapView.getInstance().getController().undelete(entry.getId(), entry.getSitePath());
+            }
+
+        });
+        itemWidget.addButton(button);
         listItem.setId(entry.getId().toString());
         return listItem;
     }
@@ -259,11 +274,11 @@ public class CmsToolbarClipboardView {
     /**
      * Removes an entry from the deleted list.<p>
      * 
-     * @param sitePath the former sitemap path of the entry
+     * @param entryId the entry id
      */
-    private void removeDeleted(String sitePath) {
+    public void removeDeleted(String entryId) {
 
-        CmsListItem item = getDeleted().getItem(sitePath);
+        CmsListItem item = getDeleted().getItem(entryId);
         if (item != null) {
             // remove
             getDeleted().removeItem(item);
@@ -273,11 +288,11 @@ public class CmsToolbarClipboardView {
     /**
      * Removes an entry from the modified list.<p>
      * 
-     * @param sitePath the former sitemap path of the entry
+     * @param entryId the entry id
      */
-    private void removeModified(String sitePath) {
+    public void removeModified(String entryId) {
 
-        CmsListItem item = getModified().getItem(sitePath);
+        CmsListItem item = getModified().getItem(entryId);
         if (item != null) {
             // remove
             getModified().removeItem(item);

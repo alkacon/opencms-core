@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/button.css,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/15 11:51:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,7 @@
 	gwt-image: "bigIcons.undoBigIconDeactivated";
 }
 @sprite .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
-    gwt-image: "bigIcons.redoBigIconActive";
+    gwt-image: "bigIcons.undoBigIconActive";
 }
 
 @sprite .cmsState-up-disabled .toolbarRedo, .cmsState-down-disabled .toolbarRedo{
