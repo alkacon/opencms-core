@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/17 08:54:05 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -56,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.
  */
@@ -140,6 +141,11 @@ public class CmsGalleriesTab extends A_CmsListTab {
             checkBox.addClickHandler(new CheckboxHandler(galleryItem.getPath(), checkBox));
             if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getPath())) {
                 checkBox.setChecked(true);
+            }
+            if (galleryItem.isEditable()) {
+                CmsUploadButton uploadButton = new CmsUploadButton();
+                // uploadButton.setShowBorder(false);
+                listItemWidget.addButton(uploadButton);
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
             listItem.setId(galleryItem.getPath());

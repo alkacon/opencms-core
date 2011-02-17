@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsVfsEntryBean.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/17 08:54:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsVfsEntryBean implements IsSerializable {
+
+    /** Flag to indicate if the user has write permissions to the folder. */
+    private boolean m_editable;
 
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
@@ -51,13 +54,15 @@ public class CmsVfsEntryBean implements IsSerializable {
     /**
      * Creates a new VFS entry bean.<p>
      * 
-     * @param sitePath
-     * @param isRoot
+     * @param sitePath the site path
+     * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
+     * @param editable <code>true</code> if the user has write permissions to the folder
      */
-    public CmsVfsEntryBean(String sitePath, boolean isRoot) {
+    public CmsVfsEntryBean(String sitePath, boolean isRoot, boolean editable) {
 
         m_sitePath = sitePath;
         m_isRoot = isRoot;
+        m_editable = editable;
     }
 
     /**
@@ -98,6 +103,16 @@ public class CmsVfsEntryBean implements IsSerializable {
     }
 
     /**
+     * Returns the editable flag. Indicate if the user has write permissions to the folder.<p>
+     *
+     * @return the editable flag
+     */
+    public boolean isEditable() {
+
+        return m_editable;
+    }
+
+    /**
      * Returns true if this entry is a top-level entry.<p>
      * 
      * @return true if this is a top-level entry 
@@ -105,6 +120,16 @@ public class CmsVfsEntryBean implements IsSerializable {
     public boolean isRoot() {
 
         return m_isRoot;
+    }
+
+    /**
+     * Sets if the user has write permissions to the folder.<p>
+     *
+     * @param editable <code>true</code> if the user has write permissions to the folder
+     */
+    public void setEditable(boolean editable) {
+
+        m_editable = editable;
     }
 
 }

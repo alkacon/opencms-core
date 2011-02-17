@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/01/19 14:18:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/02/17 08:54:05 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -65,6 +66,7 @@ import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +86,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  * 
@@ -285,9 +287,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(m_galleryMode);
         data.setLocales(buildLocalesMap());
-        List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
-        rootFolders.add(new CmsVfsEntryBean("/", true));
-        data.setVfsRootFolders(rootFolders);
+
+        data.setVfsRootFolders(getRootEntries());
         List<I_CmsResourceType> types = getResourceTypes();
         List<CmsResourceTypeBean> typeList = buildTypesList(types);
         switch (m_galleryMode) {
@@ -444,9 +445,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             CmsObject cms = getCmsObject();
             List<CmsResource> resources = cms.getSubFolders(path);
             List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
-
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                CmsResourceTypeFolder.getStaticTypeName());
             for (CmsResource res : resources) {
-                result.add(new CmsVfsEntryBean(cms.getSitePath(res), false));
+                result.add(new CmsVfsEntryBean(cms.getSitePath(res), false, settings.isEditable(cms, res)));
             }
             return result;
         } catch (Throwable e) {
@@ -502,6 +504,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setTitle(title);
                 // gallery type name
                 bean.setType(tInfo.getResourceType().getTypeName());
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    tInfo.getResourceType().getTypeName());
+                bean.setEditable(settings.isEditable(getCmsObject(), res));
                 list.add(bean);
             }
         }
@@ -759,6 +764,29 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_resourceManager = OpenCms.getResourceManager();
         }
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the VFS root entries.<p>
+     * 
+     * @return the VFS root entries
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    private List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException {
+
+        List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
+        try {
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                CmsResourceTypeFolder.getStaticTypeName());
+
+            rootFolders.add(new CmsVfsEntryBean("/", true, settings.isEditable(
+                getCmsObject(),
+                getCmsObject().readResource("/"))));
+        } catch (CmsException e) {
+            error(e);
+        }
+        return rootFolders;
     }
 
     /**

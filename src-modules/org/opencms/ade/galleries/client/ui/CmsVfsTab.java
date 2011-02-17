@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/02/01 15:25:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/17 08:54:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -176,6 +177,12 @@ public class CmsVfsTab extends A_CmsListTab {
         // info.setSubTitle("...");
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
         liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
+        if (vfsEntry.isEditable()) {
+            CmsUploadButton uploadButton = new CmsUploadButton();
+            // uploadButton.setShowBorder(false);
+            liWidget.addButton(uploadButton);
+        }
+
         final CmsCheckBox checkbox = new CmsCheckBox();
         CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, liWidget, true);
         checkbox.addClickHandler(new ClickHandler() {
