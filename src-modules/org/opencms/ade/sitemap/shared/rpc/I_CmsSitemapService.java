@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/02/17 10:51:58 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -135,11 +135,9 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
-     * @return the new timestamp
-     * 
      * @throws CmsRpcException if something goes wrong 
      */
-    boolean save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    void save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>
@@ -147,10 +145,8 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
-     * @return the new timestamp
-     * 
      * @throws CmsRpcException if something goes wrong
      */
     @SynchronizedRpcRequest
-    boolean saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    void saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 }

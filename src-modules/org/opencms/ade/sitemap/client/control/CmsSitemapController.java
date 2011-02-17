@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/02/17 10:51:58 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,8 +60,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
-import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
@@ -90,7 +88,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0.0
  */
@@ -1013,7 +1011,7 @@ public class CmsSitemapController {
 
         if (change.getChangeForCommit() != null) {
             // save the sitemap
-            CmsRpcAction<Boolean> saveAction = new CmsRpcAction<Boolean>() {
+            CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
 
                 /**
                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -1031,16 +1029,11 @@ public class CmsSitemapController {
                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                 */
                 @Override
-                public void onResponse(Boolean result) {
+                public void onResponse(Void result) {
 
-                    if (result.booleanValue()) {
-                        stop(true);
-                        change.applyToModel(CmsSitemapController.this);
-                        fireChange(change);
-                    } else {
-                        stop(false);
-                        CmsNotification.get().send(Type.WARNING, "Could not apply changes");
-                    }
+                    stop(true);
+                    change.applyToModel(CmsSitemapController.this);
+                    fireChange(change);
                 }
             };
             saveAction.execute();

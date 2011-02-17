@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/02/17 10:51:58 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -121,7 +121,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param change the change to save
      * @param callback the async callback
      */
-    void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<Boolean> callback);
+    void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<Void> callback);
 
     /**
      * Save the change to the given sitemap.<p>
@@ -131,5 +131,5 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<Boolean> callback);
+    void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<Void> callback);
 }

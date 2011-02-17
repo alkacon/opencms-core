@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/17 10:51:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -445,34 +445,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
-    @SuppressWarnings("unused")
-    public boolean save(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
+    public void save(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
-        long result = 0;
         try {
-            result = saveInternal(entryPoint, change);
+            saveInternal(entryPoint, change);
         } catch (Exception e) {
-
-            LOG.error("Error saving changes", e);
-            return false;
+            error(e);
         }
-        return true;
     }
 
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
-    @SuppressWarnings("unused")
-    public boolean saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
+    public void saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
-        long result = 0;
-        try {
-            result = saveInternal(entryPoint, change);
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-        return true;
+        save(entryPoint, change);
     }
 
     /**
@@ -526,10 +513,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param entryPoint the URI of the sitemap to save
      * @param change the change to save
      * 
-     * @return the timestamp of the time when the sitemap was saved 
      * @throws CmsException 
      */
-    protected long saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
+    protected void saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
         switch (change.getChangeType()) {
             case delete:
@@ -545,7 +531,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 applyChange(entryPoint, change);
         }
         setClipboardData(change.getClipBoardData());
-        return System.currentTimeMillis();
     }
 
     /**
