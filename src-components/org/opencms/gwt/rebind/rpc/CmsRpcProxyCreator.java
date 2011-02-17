@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.rpc.ProxyCreator;
@@ -42,15 +43,16 @@ public class CmsRpcProxyCreator extends ProxyCreator {
     }
 
     /**
-     * @see com.google.gwt.user.rebind.rpc.ProxyCreator#generateProxyMethods(com.google.gwt.user.rebind.SourceWriter, com.google.gwt.user.rebind.rpc.SerializableTypeOracle, java.util.Map)
+     * @see com.google.gwt.user.rebind.rpc.ProxyCreator#generateProxyMethods(com.google.gwt.user.rebind.SourceWriter, com.google.gwt.user.rebind.rpc.SerializableTypeOracle, com.google.gwt.core.ext.typeinfo.TypeOracle, java.util.Map)
      */
     @Override
     protected void generateProxyMethods(
         SourceWriter w,
         SerializableTypeOracle serializableTypeOracle,
+        TypeOracle typeOracle,
         Map<JMethod, JMethod> syncMethToAsyncMethMap) {
 
-        super.generateProxyMethods(w, serializableTypeOracle, syncMethToAsyncMethMap);
+        super.generateProxyMethods(w, serializableTypeOracle, typeOracle, syncMethToAsyncMethMap);
         generateSyncOverride(w, syncMethToAsyncMethMap);
     }
 

@@ -21,8 +21,11 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.HasRpcToken;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.RpcRequestBuilder;
+import com.google.gwt.user.client.rpc.RpcToken;
+import com.google.gwt.user.client.rpc.RpcTokenExceptionHandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
@@ -35,9 +38,17 @@ import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader
  * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService} proxies.
  * 
  * For internal use only.
+ * 
+ * 
+ * IMPORTANT:<p>
+ * 
+ * Code changes to allow synchronised RPC calls:<p>
+ * 
+ * Changed function {@link com.google.gwt.user.client.rpc.impl.RemoteServiceProxy#doPrepareRequestBuilderImpl(ResponseReader, String, RpcStatsContext, String, AsyncCallback<T>)}<p>
+ * Added function {@link com.google.gwt.user.client.rpc.impl.RemoteServiceProxy#isSync(String)}<p>
  */
 public abstract class RemoteServiceProxy implements SerializationStreamFactory,
-    ServiceDefTarget {
+    ServiceDefTarget, HasRpcToken {
 
   /**
    * The content type to be used in HTTP requests.
@@ -151,6 +162,10 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
 
   private RpcRequestBuilder rpcRequestBuilder;
 
+  private RpcToken rpcToken;
+
+  private RpcTokenExceptionHandler rpcTokenExceptionHandler;
+  
   /**
    * The name of the serialization policy file specified during construction.
    */
@@ -216,6 +231,20 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
     return clientSerializationStreamWriter;
   }
   
+  /**
+   * @see ServiceDefTarget#getRpcToken()
+   */
+  public RpcToken getRpcToken() {
+    return rpcToken;
+  }
+  
+  /**
+   * @see ServiceDefTarget#getRpcTokenExceptionHandler()
+   */
+  public RpcTokenExceptionHandler getRpcTokenExceptionHandler() {
+    return rpcTokenExceptionHandler;
+  }  
+  
   public String getSerializationPolicyName() {
     return serializationPolicyName;
   }
@@ -232,17 +261,43 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
   }
 
   /**
+   * @see HasRpcToken#setRpcToken(RpcToken)
+   */  
+  public void setRpcToken(RpcToken token) {
+    checkRpcTokenType(token); 
+    this.rpcToken = token;
+  }
+  
+  /**
+   * @see HasRpcToken#setRpcTokenExceptionHandler(RpcTokenExceptionHandler)
+   */
+  public void setRpcTokenExceptionHandler(RpcTokenExceptionHandler handler) {
+    this.rpcTokenExceptionHandler = handler;
+  }
+  
+  /**
    * @see ServiceDefTarget#setServiceEntryPoint(String)
    */
   public void setServiceEntryPoint(String url) {
     this.remoteServiceURL = url;
+  }
+  
+  /**
+   * This method is overridden by generated proxy classes to ensure that
+   * current service's {@link RpcToken} is of the type specified in {@link
+   * RpcToken.RpcTokenImplementation} annotation.
+   *
+   * @param token currently set {@link RpcToken}.
+   * @throws RpcTokenException if types mismatch.
+   */
+  protected void checkRpcTokenType(RpcToken token) {
   }
 
   protected <T> RequestCallback doCreateRequestCallback(
       ResponseReader responseReader, String methodName, RpcStatsContext statsContext,
       AsyncCallback<T> callback) {
     return new RequestCallbackAdapter<T>(this, methodName, statsContext,
-        callback, responseReader);
+        callback, getRpcTokenExceptionHandler(), responseReader);
   }
 
   /**
@@ -332,8 +387,12 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
     ensureRpcRequestBuilder();
 
     rpcRequestBuilder.create(getServiceEntryPoint());
-    rpcRequestBuilder.setSync(isSync(methodName));
     rpcRequestBuilder.setCallback(responseHandler);
+    
+    // changed code
+    rpcRequestBuilder.setSync(isSync(methodName));
+    // changed code
+    
     rpcRequestBuilder.setContentType(RPC_CONTENT_TYPE);
     rpcRequestBuilder.setRequestData(requestData);
     rpcRequestBuilder.setRequestId(statsContext.getRequestId());
@@ -346,8 +405,14 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
     }
   }
   
+  /**
+   * Added function to allow syncronised RPC calls by implementations overriding this function.<p>
+   * 
+   * @param methodName the method name
+   * 
+   * @return <code>true</code> to set the method call synchronised
+   */
   protected boolean isSync(String methodName) {
       return false;
   }
-
 }
