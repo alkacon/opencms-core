@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/02/01 15:06:13 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/02/17 08:53:01 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
-import org.opencms.gwt.client.ui.input.CmsInlineLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -78,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0
  */
@@ -120,7 +118,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             // create value
             m_valueLabel = new CmsLabel(value);
             if ((value == null) || (value.trim().length() == 0)) {
-                m_valueLabel.setHTML(CmsDomUtil.Entity.nbsp.html());
+                m_valueLabel.setText(" ");
             }
             m_valueLabel.addStyleName(style.itemAdditionalValue());
             if (additionalStyle != null) {
@@ -268,7 +266,8 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         initWidget(uiBinder.createAndBindUi(this));
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         m_backgroundStyle = new CmsStyleVariable(this);
-        m_subtitleSuffix = new CmsInlineLabel();
+        m_subtitleSuffix = new CmsLabel();
+        m_subtitleSuffix.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
         init(infoBean);
     }
 

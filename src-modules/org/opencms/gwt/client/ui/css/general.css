@@ -1,5 +1,35 @@
 @external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
+.truncatingLabel{
+	overflow: hidden;
+	white-space: nowrap;
+}
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	.truncatingLabel{
+	
+	}
+} @elif user.agent opera {
+	.truncatingLabel{
+		-o-text-overflow: ellipsis;
+		text-overflow: ellipsis;
+	}
+} @else {
+	.truncatingLabel{
+		text-overflow: ellipsis;
+	}
+}
+
+@if user.agent ie6 {
+	.inlineBlock {
+		display: inline;
+	}
+} @else {
+	.inlineBlock {
+		display: inline-block;
+	}
+}
+
 .cmsState{
 	border-color: value("constants.css.borderColor");
 	color: value("constants.css.textColor");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/14 13:46:59 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/02/17 08:53:32 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,9 +46,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 8.0.0
  * 
@@ -97,9 +97,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         private String m_detailPageTitle;
 
         /**
-         * @see org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator#getTitle(java.lang.String, boolean)
+         * @see org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator#getTitle(java.lang.String)
          */
-        public String getTitle(String originalText, boolean overflow) {
+        public String getTitle(String originalText) {
 
             return m_detailPageTitle;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/02/17 08:53:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,34 +34,26 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsTextMetrics;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Label;
 
 /**
- * Label with smart text truncating and tool tip.<p>
+ * Single line label with text truncation and tool tip.<p>
  * 
  * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
-public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML, I_CmsTruncable, HasClickHandlers {
+public class CmsLabel extends Label implements I_CmsTruncable {
 
     /**
      * Interface for generating HTML titles (tooltips) for a label.<p>
@@ -72,11 +64,10 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
          * Should return the title, or null if no title should be displayed.<p>
          * 
          * @param originalText the original untruncated text stored in the label 
-         * @param overflow true if the text is being truncated
          *  
          * @return the title to display, or null if no title should be displayed 
          */
-        String getTitle(String originalText, boolean overflow);
+        String getTitle(String originalText);
     }
 
     /** The CSS bundle instance used for this widget.<p> */
@@ -85,11 +76,8 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
     /** List of elements to measure. */
     protected static List<Element> m_elements;
 
-    /** Current horizontal alignment. */
-    private HorizontalAlignmentConstant m_horzAlign;
-
     /** The original untruncated text stored in the label. */
-    private String m_originalText;
+    protected String m_originalText;
 
     /** The title generator. */
     private I_TitleGenerator m_titleGenerator;
@@ -99,8 +87,8 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public CmsLabel() {
 
-        this(Document.get().createDivElement());
-        fixInline();
+        setWordWrap(false);
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -110,9 +98,9 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public CmsLabel(Element element) {
 
-        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
-        setElement(element);
-        fixInline();
+        super(element);
+        setWordWrap(false);
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -122,44 +110,8 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public CmsLabel(String text) {
 
-        this();
-        setText(text);
-    }
-
-    /**
-     * Adds a click handler to this label.<p>
-     * 
-     * @param handler the click handler
-     * 
-     * @return the handler registration object for the handler
-     */
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-
-        return addDomHandler(handler, ClickEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
-     */
-    public HorizontalAlignmentConstant getHorizontalAlignment() {
-
-        return m_horzAlign;
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasHTML#getHTML()
-     */
-    public String getHTML() {
-
-        return getElement().getInnerHTML();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasText#getText()
-     */
-    public String getText() {
-
-        return getElement().getInnerText();
+        super(text, false);
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -173,33 +125,26 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
-     */
-    public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
-
-        m_horzAlign = align;
-        getElement().getStyle().setProperty(CmsDomUtil.Style.textAlign.name(), align.getTextAlignString());
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasHTML#setHTML(java.lang.String)
+     * Sets the inner HTML of the label.<p>
+     * 
+     * Avoid using this, better use {@link #setText(String)}<p>
+     * 
+     * @param html the HTML to set
      */
     public void setHTML(String html) {
 
         getElement().setInnerHTML(html);
-        // reset tooltip
-        getElement().removeAttribute(CmsDomUtil.Attribute.title.name());
     }
 
     /**
      * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
      */
+    @Override
     public void setText(String text) {
 
+        super.setText(text);
         m_originalText = text;
-        getElement().setInnerText(text);
-        // reset tooltip
-        getElement().removeAttribute(CmsDomUtil.Attribute.title.name());
+        setTitle(getTitle());
     }
 
     /**
@@ -217,48 +162,9 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public void truncate(String textMetricsKey, int labelWidth) {
 
-        Element element = getElement();
-        String title = element.getAttribute(CmsDomUtil.Attribute.title.name());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            element.setInnerText(m_originalText);
+        if (labelWidth > 0) {
+            getElement().getStyle().setWidth(labelWidth, Unit.PX);
         }
-        updateTitle(false);
-
-        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
-
-        // measure the actual text width
-        CmsTextMetrics tm = CmsTextMetrics.get(element, textMetricsKey);
-        String text = element.getInnerText();
-        int textWidth = tm.getWidth(text);
-        tm.release();
-
-        if (labelWidth >= textWidth) {
-            updateTitle(false);
-            return;
-        }
-        updateTitle(true);
-
-        // if the text does not have enough space, fix it
-        int maxChars = (int)((float)labelWidth / (float)textWidth * text.length());
-        if (maxChars < 1) {
-            maxChars = 1;
-        }
-        String newText = text.substring(0, maxChars - 1);
-        if (text.startsWith("/")) {
-            // file name?
-            newText = CmsStringUtil.formatResourceName(text, maxChars);
-        } else if (maxChars > 2) {
-            // enough space for ellipsis?
-            newText += CmsDomUtil.Entity.hellip.html();
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(newText)) {
-            // if empty, it could break the layout
-            newText = CmsDomUtil.Entity.nbsp.html();
-        }
-        // use html instead of text because of the entities
-        element.setInnerHTML(newText);
-        // set the corresponding style
-        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelTruncated());
     }
 
     /**
@@ -289,32 +195,32 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
     protected String getTitle(boolean truncating) {
 
         if (m_titleGenerator != null) {
-            return m_titleGenerator.getTitle(m_originalText, truncating);
+            return m_titleGenerator.getTitle(m_originalText);
         }
-        return truncating ? m_originalText : null;
+        return m_originalText;
     }
 
-    /**
-     * Helper method for changing the label's CSS display property from inline to inline-block (if possible).<p>
-     * 
-     * This avoids some display problems, e.g. in Chrome.<p>
-     */
-    private void fixInline() {
-
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            /**
-             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-             */
-            public void execute() {
-
-                Element element = getElement();
-                String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
-                if (display.equalsIgnoreCase("inline")) {
-                    element.addClassName(CSS.inlineBlock());
-                }
-                element.addClassName(CSS.alignBottom());
-            }
-        });
-    }
+    //    /**
+    //     * Helper method for changing the label's CSS display property from inline to inline-block (if possible).<p>
+    //     * 
+    //     * This avoids some display problems, e.g. in Chrome.<p>
+    //     */
+    //    private void fixInline() {
+    //
+    //        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+    //
+    //            /**
+    //             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+    //             */
+    //            public void execute() {
+    //
+    //                Element element = getElement();
+    //                String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
+    //                if (display.equalsIgnoreCase("inline")) {
+    //                    element.addClassName(CSS.inlineBlock());
+    //                }
+    //                element.addClassName(CSS.alignBottom());
+    //            }
+    //        });
+    //    }
 }

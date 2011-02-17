@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/02/17 08:53:01 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 8.0.0
  */
@@ -497,6 +497,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String hideOverlay();
 
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inlineBlock();
+
         /**
          * Access method.<p>
          * 
@@ -524,6 +531,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String textSmall();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String truncatingLabel();
     }
 
     /** Header CSS. */

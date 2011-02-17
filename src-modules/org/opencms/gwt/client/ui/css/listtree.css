@@ -1,7 +1,8 @@
-
-/* for debugging purposes 
-@-external listTreeItem, listTreeItemHandler, listTreeItemHandler,listTreeItemContent, listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners, listScrollable;
-*/
+@if user.agent ie6 {
+	.listTreeItem {
+		vertical-align: bottom;
+	}
+}
 
 .listTreeItem {
 	margin: 2px 0;
@@ -73,8 +74,8 @@
 	display: none;
 }
 
-.listTreeItemLeaf {
-	
+li.listTreeItemLeaf ul.listTreeItemChildren{
+	display: none;
 }
 
 .listTreeItemLeaf .listTreeItemHandler {
