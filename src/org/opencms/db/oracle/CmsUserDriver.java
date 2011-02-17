@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/17 08:49:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * @return an Output stream from a blob
      * @throws SQLException if something goes wring
      */
+    @SuppressWarnings("deprecation")
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
 
         // TODO: perform blob check only once and store Oracle version in a static private member 
