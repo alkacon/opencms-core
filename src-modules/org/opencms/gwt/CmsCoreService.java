@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/02/18 08:48:55 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,13 +46,13 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.upload.CmsUploadBean;
 import org.opencms.gwt.upload.CmsUploadException;
@@ -99,7 +99,6 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.apache.commons.fileupload.InvalidFileNameException;
 import org.apache.commons.fileupload.util.Streams;
 
@@ -109,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -853,14 +852,16 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 result.setTitle("No title attribute set for this resource");
             }
             result.setSubTitle(resourceSitePath);
-
-            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-            if ("true".equals(export)) {
-                result.setPageIcon(CmsListInfoBean.PageIcon.export);
-            }
             String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-            if ("true".equals(secure)) {
+            if (Boolean.parseBoolean(secure)) {
                 result.setPageIcon(CmsListInfoBean.PageIcon.secure);
+            } else {
+                String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+                if (Boolean.parseBoolean(export)) {
+                    result.setPageIcon(CmsListInfoBean.PageIcon.export);
+                } else {
+                    result.setPageIcon(CmsListInfoBean.PageIcon.standard);
+                }
             }
             Map<String, String> additionalInfo = new LinkedHashMap<String, String>();
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();

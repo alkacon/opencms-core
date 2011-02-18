@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidgetUtil.java,v $
- * Date   : $Date: 2011/02/01 15:04:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/18 08:48:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +79,7 @@ public final class CmsListItemWidgetUtil {
                 listItem.setIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
                 listItem.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_REDIRECT_0));
                 break;
-            case none:
+            case standard:
             default:
                 listItem.setIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
                 listItem.setIconTitle(null);

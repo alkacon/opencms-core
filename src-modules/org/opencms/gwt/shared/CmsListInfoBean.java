@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2011/02/01 14:59:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/18 08:48:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -60,19 +60,19 @@ public class CmsListInfoBean implements IsSerializable {
         export,
         /** hidden page icon. */
         hidden,
-        /** no page icon. */
-        none,
         /** redirect status icon. */
         redirect,
         /** secure page icon. */
-        secure
+        secure,
+        /** standard page icon. */
+        standard
     }
 
     /** The additional info. */
     private Map<String, String> m_additionalInfo;
 
     /** The page icon information: for the type of page icon which should be displayed. */
-    private PageIcon m_pageIcon = PageIcon.none;
+    private PageIcon m_pageIcon;
 
     /** Returns the resource state. */
     private CmsResourceState m_resourceState;
