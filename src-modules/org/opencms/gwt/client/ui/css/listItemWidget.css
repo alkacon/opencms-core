@@ -91,6 +91,7 @@
 	width: 32px;
 	float: left;
 	overflow: hidden;
+	margin: 3px 0px;
 }
 
 .itemIcon .cms_type_icon{
