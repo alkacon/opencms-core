@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/02/18 07:40:47 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 7.6 
  */
@@ -346,14 +346,28 @@ public class CmsJspTagContainer extends TagSupport {
             renderElems = maxElements;
         }
 
+        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER, container);
+        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER_WIDTH, width);
         // iterate the elements
         for (CmsContainerElementBean element : allElems) {
             if (renderElems < 1) {
                 break;
             }
             renderElems--;
-            renderContainerElement(cms, element);
+            try {
+                renderContainerElement(cms, element);
+            } catch (CmsException e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(
+                        Messages.get().container(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1,
+                            element.getSitePath()),
+                        e);
+                }
+            }
         }
+        req.removeAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER);
+        req.removeAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER_WIDTH);
         // close tag for container
         if (createTag) {
             pageContext.getOut().print(getTagClose(tagName));

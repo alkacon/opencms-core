@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContainerPageLoader.java,v $
- * Date   : $Date: 2010/01/07 15:27:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/18 07:40:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.main.OpenCms;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}</code>.<p>
@@ -47,7 +54,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  */
@@ -93,6 +100,25 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
     }
 
     /**
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException, CmsException {
+
+        // ensure the requested XML document gets cached in the request attributes
+        CmsXmlContainerPage document = unmarshalXmlDocument(cms, resource, req);
+
+        CmsContainerPageBean cntPageBean = document.getCntPage(cms, cms.getRequestContext().getLocale());
+        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CONTAINERPAGE_BEAN, cntPageBean);
+        CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
+            cms,
+            resource,
+            getTemplatePropertyDefinition());
+        loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
+    }
+
+    /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplatePropertyDefinition()
      */
     @Override
@@ -105,7 +131,7 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
      */
     @Override
-    protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
+    protected CmsXmlContainerPage unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsException {
 
         return CmsXmlContainerPageFactory.unmarshal(cms, resource, req);

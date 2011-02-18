@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/18 07:40:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1 = "ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONTAINER_PAGE_NO_TYPE_3 = "ERR_CONTAINER_PAGE_NO_TYPE_3";
@@ -211,6 +214,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_LOGOUT_SUCCESFUL_3 = "LOG_LOGOUT_SUCCESFUL_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_MAXELEMENTS_NOT_SET_3 = "LOG_MAXELEMENTS_NOT_SET_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_CONTAINER_MAXELEMENTS_4 = "LOG_WRONG_CONTAINER_MAXELEMENTS_4";
 
     /** Message constant for key in the resource bundle. */
@@ -218,9 +224,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_DEVICE_TYPE_2 = "LOG_WRONG_DEVICE_TYPE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_MAXELEMENTS_NOT_SET_3 = "LOG_MAXELEMENTS_NOT_SET_3";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";
