@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,9 +30,11 @@
  */
 
 package org.opencms.gwt.client.ui.input.form;
-import org.opencms.gwt.client.ui.input.CmsRegexValidator;
+
+import org.opencms.gwt.client.ui.input.CmsRegexValidator;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.util.CmsStringUtil;
@@ -43,13 +45,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * Basic implementation of the I_CmsFormField class.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0 
  */
@@ -126,7 +130,8 @@ public class CmsBasicFormField implements I_CmsFormField {
             propertyConfig,
             propertyConfig.getPropertyName(),
             CmsWidgetFactoryRegistry.instance(),
-            additionalParams);
+            additionalParams,
+            false);
     }
 
     /**
@@ -134,8 +139,9 @@ public class CmsBasicFormField implements I_CmsFormField {
      * 
      * @param propertyConfig the configuration of the property
      * @param fieldId the field id
-     * @param factory a factory for creating form  widgets  
-     * @param additionalParams 
+     * @param factory a factory for creating form  widgets
+     * @param additionalParams
+     * @param alwaysAllowEmpty
      *   
      * @return the newly created form field 
      */
@@ -143,7 +149,8 @@ public class CmsBasicFormField implements I_CmsFormField {
         CmsXmlContentProperty propertyConfig,
         String fieldId,
         I_CmsFormWidgetMultiFactory factory,
-        Map<String, String> additionalParams) {
+        Map<String, String> additionalParams,
+        boolean alwaysAllowEmpty) {
 
         String widgetConfigStr = propertyConfig.getWidgetConfiguration();
         if (widgetConfigStr == null) {
@@ -157,7 +164,7 @@ public class CmsBasicFormField implements I_CmsFormField {
 
         String description = propertyConfig.getDescription();
         if (CmsStringUtil.isEmpty(description)) {
-            description = fieldId;
+            description = "";
         }
 
         Map<String, String> widgetConfig = CmsStringUtil.splitAsMap(widgetConfigStr, "|", ":");
@@ -172,7 +179,7 @@ public class CmsBasicFormField implements I_CmsFormField {
             widget);
         String ruleRegex = propertyConfig.getRuleRegex();
         if (!CmsStringUtil.isEmpty(ruleRegex)) {
-            field.setValidator(new CmsRegexValidator(ruleRegex, propertyConfig.getError()));
+            field.setValidator(new CmsRegexValidator(ruleRegex, propertyConfig.getError(), alwaysAllowEmpty));
         }
         return field;
     }
@@ -202,6 +209,18 @@ public class CmsBasicFormField implements I_CmsFormField {
     public void bind(I_CmsStringModel model) {
 
         m_model = model;
+        m_model.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                I_CmsFormWidget widget = getWidget();
+                if (widget instanceof I_CmsHasGhostValue) {
+                    ((I_CmsHasGhostValue)widget).setGhostMode(false);
+                }
+                widget.setFormValueAsString(event.getValue());
+
+            }
+        });
     }
 
     /**
@@ -234,6 +253,14 @@ public class CmsBasicFormField implements I_CmsFormField {
     public String getLabel() {
 
         return m_label;
+    }
+
+    /** 
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getModel()
+     */
+    public I_CmsStringModel getModel() {
+
+        return m_model;
     }
 
     /**
@@ -306,26 +333,6 @@ public class CmsBasicFormField implements I_CmsFormField {
     public void setValidator(I_CmsValidator validator) {
 
         m_validator = validator;
-    }
-
-    /**
-     * Updates the model from the widget's value.<p>
-     */
-    public void updateModelFromWidget() {
-
-        if (m_model != null) {
-            m_model.setValue(m_widget.getFormValueAsString());
-        }
-    }
-
-    /**
-     * Updates the widget using the model's value.<p>
-     */
-    public void updateWidgetFromModel() {
-
-        if (m_model != null) {
-            m_widget.setFormValueAsString(m_model.getValue());
-        }
     }
 
 }

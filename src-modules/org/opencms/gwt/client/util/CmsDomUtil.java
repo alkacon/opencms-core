@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 8.0.0
  */
@@ -902,7 +902,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-        return "" + style.zIndex;
+      return "" + style.zIndex;
     }-*/;
 
     /**

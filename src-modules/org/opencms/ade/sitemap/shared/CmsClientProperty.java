@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientProperty.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -44,17 +45,38 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsClientProperty implements IsSerializable {
+
+    /**
+     * An enum used for addressing a specific value in a property.<p>
+     */
+    public enum Mode {
+        /** The effective value. */
+        effective,
+        /** The resource value. */
+        resource,
+        /** The structure value. */
+        structure;
+    }
 
     /** The path component identifying a resource value. */
     public static final String PATH_RESOURCE_VALUE = "R";
 
     /** The path component identifying a structure value. */
     public static final String PATH_STRUCTURE_VALUE = "S";
+
+    /** The default-file property name. */
+    public static final String PROPERTY_DEFAULTFILE = "default-file";
+
+    /** The NavPos property name. */
+    public static final String PROPERTY_NAVPOS = "NavPos";
+
+    /** The NavText property name. */
+    public static final String PROPERTY_NAVTEXT = "NavText";
 
     /** The name of the property. */
     private String m_name;
@@ -115,6 +137,31 @@ public class CmsClientProperty implements IsSerializable {
             result.put(key, copiedValue);
         }
         return result;
+    }
+
+    /**
+     * Gets the path value for a property object (which may be null) and a property access mode.<p>
+     *  
+     * @param property the property which values to access
+     * @param mode the property access mode 
+     * 
+     * @return the path value for the property and access mode 
+     */
+    public static CmsPathValue getPathValue(CmsClientProperty property, Mode mode) {
+
+        if (property != null) {
+            return property.getPathValue(mode);
+        }
+        switch (mode) {
+            case resource:
+                return new CmsPathValue("", PATH_RESOURCE_VALUE);
+            case structure:
+                return new CmsPathValue("", PATH_STRUCTURE_VALUE);
+            case effective:
+                return new CmsPathValue("", PATH_STRUCTURE_VALUE);
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -183,6 +230,25 @@ public class CmsClientProperty implements IsSerializable {
     }
 
     /**
+     * Gets the path value for a specific access mode.<p>
+     * @param mode the access mode
+     *  
+     * @return the path value for the access mode 
+     */
+    public CmsPathValue getPathValue(Mode mode) {
+
+        switch (mode) {
+            case resource:
+                return new CmsPathValue(m_resourceValue, PATH_RESOURCE_VALUE);
+            case structure:
+                return new CmsPathValue(m_structureValue, PATH_STRUCTURE_VALUE);
+            case effective:
+            default:
+                return getPathValue();
+        }
+    }
+
+    /**
      * Returns the resource value of the property.<p>
      * 
      * @return the resource value 
@@ -231,6 +297,18 @@ public class CmsClientProperty implements IsSerializable {
     public void setStructureValue(String structureValue) {
 
         m_structureValue = structureValue;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return Objects.toStringHelper(this).add("name", m_name).add("structureValue", m_structureValue).add(
+            "resourceValue",
+            m_resourceValue).toString();
+
     }
 
 }

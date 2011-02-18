@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/17 10:51:58 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,13 +47,14 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -77,6 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -88,11 +90,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapController {
+public class CmsSitemapController implements I_CmsSitemapController {
+
+    /**
+     * An enum specifying whose values specify whether an entry or its parent need to be reloaded.<p>
+     */
+    public enum ReloadMode {
+        /** This value means that neither the entry nor its parent should be reloaded. */
+        none,
+        /** This value means the entry should be reloaded. */
+        reloadEntry,
+        /** This value means the entry's parent should be reloaded. */
+        reloadParent;
+    }
 
     /** A map of *all* detail page info beans, indexed by page id. */
     protected Map<CmsUUID, CmsDetailPageInfo> m_allDetailPageInfos = new HashMap<CmsUUID, CmsDetailPageInfo>();
@@ -111,6 +125,9 @@ public class CmsSitemapController {
 
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
+
+    /** The map of property maps by structure id. */
+    private Map<CmsUUID, Map<String, CmsClientProperty>> m_propertyMaps = Maps.newHashMap();
 
     /** The list of property update handlers. */
     private List<I_CmsPropertyUpdateHandler> m_propertyUpdateHandlers = new ArrayList<I_CmsPropertyUpdateHandler>();
@@ -136,6 +153,7 @@ public class CmsSitemapController {
         m_hiddenProperties.add(CmsSitemapManager.Property.externalRedirect.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
         m_detailPageTable = m_data.getDetailPageTable();
+        m_data.getRoot().initializeAll(this);
         m_eventBus = new SimpleEventBus();
         initDetailPageInfos();
 
@@ -327,6 +345,7 @@ public class CmsSitemapController {
      * 
      * @param entry the entry to which a new sub-entry should be added 
      */
+    @SuppressWarnings("unchecked")
     public void createSubEntry(final CmsClientSitemapEntry entry) {
 
         final CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
@@ -341,7 +360,7 @@ public class CmsSitemapController {
             public void onSuccess(CmsClientSitemapEntry result) {
 
                 String urlName = generateUrlName(entry);
-                newEntry.setTitle(urlName);
+                //newEntry.setTitle(urlName);
                 newEntry.setName(urlName);
                 String sitePath = entry.getSitePath() + urlName + "/";
                 newEntry.setSitePath(sitePath);
@@ -411,19 +430,17 @@ public class CmsSitemapController {
      * Edits the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
-     * @param title the new title, can be <code>null</code> to keep the old one
      * @param vfsReference the new VFS reference, can be <code>null</code> to keep the old one
      * @param propertyChanges the property changes 
      * @param isNew if false, the entry's name has been edited 
      */
     public void edit(
         CmsClientSitemapEntry entry,
-        String title,
         String vfsReference,
         List<CmsPropertyModification> propertyChanges,
         boolean isNew) {
 
-        CmsClientSitemapChangeEdit change = getChangeForEdit(entry, title, vfsReference, propertyChanges, isNew);
+        CmsClientSitemapChangeEdit change = getChangeForEdit(entry, vfsReference, propertyChanges, isNew);
         if (change != null) {
             applyChange(change, false);
         }
@@ -433,21 +450,22 @@ public class CmsSitemapController {
      * Edits an entry and changes its URL name.<p>
      * 
      * @param entry the entry which is being edited 
-     * @param newTitle the new title of the entry 
      * @param newUrlName the new URL name of the entry 
      * @param vfsPath the vfs path of the entry 
      * @param propertyChanges the property changes  
-     * @param editedName true if the name has been edited 
+     * @param editedName true if the name has been edited
+     * @param reloadStatus a value indicating which entries need to be reloaded after the change   
      */
+    @SuppressWarnings("unchecked")
     public void editAndChangeName(
-        CmsClientSitemapEntry entry,
-        String newTitle,
+        final CmsClientSitemapEntry entry,
         String newUrlName,
         String vfsPath,
         List<CmsPropertyModification> propertyChanges,
-        boolean editedName) {
+        boolean editedName,
+        final ReloadMode reloadStatus) {
 
-        CmsClientSitemapChangeEdit edit = getChangeForEdit(entry, newTitle, vfsPath, propertyChanges, !editedName);
+        CmsClientSitemapChangeEdit edit = getChangeForEdit(entry, vfsPath, propertyChanges, !editedName);
         CmsClientSitemapChangeMove move = getChangeForMove(
             entry,
             getPath(entry, newUrlName),
@@ -456,7 +474,33 @@ public class CmsSitemapController {
         CmsClientSitemapCompositeChange change = new CmsClientSitemapCompositeChange();
         change.addChange(edit);
         change.addChange(move);
-        applyChange(change, false);
+        AsyncCallback<Object> callback = new AsyncCallback<Object>() {
+
+            public void onFailure(Throwable caught) {
+
+                // do nothing 
+            }
+
+            public void onSuccess(Object result) {
+
+                switch (reloadStatus) {
+                    case reloadEntry:
+                        updateEntry(entry.getSitePath());
+                        break;
+                    case reloadParent:
+                        CmsClientSitemapEntry parent = getParentEntry(entry);
+                        if (parent != null) {
+                            updateEntry(parent.getSitePath());
+                        }
+                        break;
+                    case none:
+                    default:
+                        break;
+                }
+            }
+
+        };
+        applyChange(change, false, callback);
 
     }
 
@@ -466,7 +510,7 @@ public class CmsSitemapController {
      * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
      * 
      * @param deleteEntry the entry to delete 
-    * 
+     * 
      * @param callback the callback which will be called with the results 
      */
     public void getBrokenLinks(
@@ -540,6 +584,8 @@ public class CmsSitemapController {
                 target.setSubEntries(result.getSubEntries());
                 CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
                 target.update(result);
+                target.initializeAll(CmsSitemapController.this);
+
                 item.updateEntry(target);
                 m_eventBus.fireEventFromSource(
                     new CmsSitemapLoadEvent(target, sitePath, setOpen),
@@ -622,12 +668,12 @@ public class CmsSitemapController {
      */
     public String getEffectiveProperty(CmsClientSitemapEntry entry, String name) {
 
-        Map<String, CmsClientProperty> dfProps = entry.getDefaultFileInternalProperties();
+        Map<String, CmsClientProperty> dfProps = entry.getDefaultFileProperties();
         CmsClientProperty result = safeLookup(dfProps, name);
         if (!CmsClientProperty.isPropertyEmpty(result)) {
             return result.getEffectiveValue();
         }
-        result = safeLookup(entry.getOwnInternalProperties(), name);
+        result = safeLookup(entry.getOwnProperties(), name);
         if (!CmsClientProperty.isPropertyEmpty(result)) {
             return result.getEffectiveValue();
         }
@@ -753,7 +799,7 @@ public class CmsSitemapController {
         while (currentEntry != null) {
             currentEntry = getParentEntry(currentEntry);
             if (currentEntry != null) {
-                CmsClientProperty folderProp = currentEntry.getOwnInternalProperties().get(name);
+                CmsClientProperty folderProp = currentEntry.getOwnProperties().get(name);
                 if (!CmsClientProperty.isPropertyEmpty(folderProp)) {
                     return folderProp.getEffectiveValue();
                 }
@@ -809,6 +855,18 @@ public class CmsSitemapController {
     }
 
     /**
+     * Gets the properties for a given structure id.<p>
+     * 
+     * @param id the structure id of a sitemap entry 
+     * 
+     * @return the properties for that structure id 
+     */
+    public Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id) {
+
+        return m_propertyMaps.get(id);
+    }
+
+    /**
      * Returns the redirect updater.<p>
      * 
      * @return the redirect updater
@@ -816,6 +874,14 @@ public class CmsSitemapController {
     public CmsRedirectUpdater getRedirectUpdater() {
 
         return m_redirectUpdater;
+    }
+
+    /** 
+     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#initialize(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
+     */
+    public void initialize(CmsClientSitemapEntry entry) {
+
+        // do nothing for now.
     }
 
     /**
@@ -954,6 +1020,26 @@ public class CmsSitemapController {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#replaceProperties(org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties) {
+
+        if ((id == null) || (properties == null)) {
+            return null;
+        }
+        Map<String, CmsClientProperty> props = m_propertyMaps.get(id);
+        if (props == null) {
+            props = properties;
+            m_propertyMaps.put(id, props);
+        } else {
+            props.clear();
+            props.putAll(properties);
+        }
+        return props;
+
+    }
+
+    /**
      * Undeletes the resource with the given structure id.<p>
      * 
      * @param structureId the structure id
@@ -1006,8 +1092,12 @@ public class CmsSitemapController {
     * 
     * @param change the change to be added  
     * @param redo if redoing a change
+    * @param callbacks the callbacks to execute after the change has been applied 
     */
-    protected void applyChange(final I_CmsClientSitemapChange change, boolean redo) {
+    protected void applyChange(
+        final I_CmsClientSitemapChange change,
+        boolean redo,
+        final AsyncCallback<Object>... callbacks) {
 
         if (change.getChangeForCommit() != null) {
             // save the sitemap
@@ -1034,6 +1124,9 @@ public class CmsSitemapController {
                     stop(true);
                     change.applyToModel(CmsSitemapController.this);
                     fireChange(change);
+                    for (AsyncCallback<Object> callback : callbacks) {
+                        callback.onSuccess(null);
+                    }
                 }
             };
             saveAction.execute();
@@ -1089,7 +1182,6 @@ public class CmsSitemapController {
      * Creates a change object for an edit operation.<p>
      *  
      * @param entry the edited sitemap entry
-     * @param title the title 
      * @param vfsReference the vfs path 
      * @param propertyChanges the list of property changes 
      * @param isNew true if the entry's url name has not been edited before
@@ -1098,26 +1190,20 @@ public class CmsSitemapController {
      */
     protected CmsClientSitemapChangeEdit getChangeForEdit(
         CmsClientSitemapEntry entry,
-        String title,
         String vfsReference,
         List<CmsPropertyModification> propertyChanges,
         boolean isNew) {
 
         // check changes
-        boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
         boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-
         boolean changedProperties = true;
-        if (!changedTitle && !changedVfsRef && !changedProperties && isNew) {
+        if (!changedVfsRef && !changedProperties && isNew) {
             // nothing to do
             return null;
         }
 
         // create changes
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
-        if (changedTitle) {
-            newEntry.setTitle(title);
-        }
         newEntry.setEdited();
 
         // We don't calculate isNew by comparing the old and new url names.

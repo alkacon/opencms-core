@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.9.2
  */
@@ -303,6 +303,28 @@ public class CmsXmlContentProperty implements Serializable {
     public String getWidgetConfiguration() {
 
         return m_widgetConfiguration;
+    }
+
+    /**
+     * Copies a property definition, but replaces the nice name attribute.<p>
+     * 
+     * @param niceName the new nice name attribute 
+     * 
+     * @return the copied property definition
+     */
+    public CmsXmlContentProperty withNiceName(String niceName) {
+
+        return new CmsXmlContentProperty(
+            m_propertyName,
+            m_propertyType,
+            m_widget,
+            m_widgetConfiguration,
+            m_ruleRegex,
+            m_ruleType,
+            m_default,
+            niceName,
+            m_description,
+            m_error);
     }
 
 }

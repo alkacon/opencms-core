@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsHasGhostValue.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,18 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsHasGhostValue {
+
+    /**
+     * Enables or disables ghost mode, if possible.<p>
+     * 
+     * @param enable if ghost mode should be enabled, else disabled 
+     */
+    void setGhostMode(boolean enable);
 
     /**
      * Sets the "ghost value" of the widget and optionally sets it to "ghost mode".<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsTabbedFormFieldPanel.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +72,9 @@ public class CmsTabbedFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsTabbedFormFieldPanel() {
 
         m_panel = new CmsTabbedPanel<FlowPanel>();
-
+        //        m_panel.getElement().getStyle().setProperty("height", "300px");
+        //        m_panel.getElement().getStyle().setProperty("width", "400px");
+        m_panel.addStyleName(CSS.form());
         initWidget(m_panel);
 
         m_panel.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -110,9 +111,8 @@ public class CmsTabbedFormFieldPanel extends A_CmsFormFieldPanel {
     public void addTab(String tabId, String tabLabel) {
 
         FlowPanel tab = new FlowPanel();
-        tab.getElement().getStyle().setHeight(500, Unit.PX);
         tab.addStyleName(CSS.formTab());
-        m_panel.addNamed(new FlowPanel(), tabLabel, tabId);
+        m_panel.addNamed(tab, tabLabel, tabId);
     }
 
 }

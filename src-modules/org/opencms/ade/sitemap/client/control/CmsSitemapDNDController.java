@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.sitemap.client.control;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.EntryType;
@@ -63,7 +63,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -279,8 +279,6 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
         entry.setName(uniqueName);
         entry.setSitePath(m_insertPath + uniqueName + "/");
-        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
-        entry.setTitle(title);
         entry.setNew(true);
         entry.setVfsPath(null);
         entry.setPosition(m_insertIndex);
@@ -314,11 +312,11 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             if (!uniqueName.equals(entry.getName()) && isChangedPosition(sitemapEntry, target, false)) {
                 m_controller.editAndChangeName(
                     entry,
-                    entry.getTitle(),
                     uniqueName,
                     entry.getVfsPath(),
                     Collections.<CmsPropertyModification> emptyList(),
-                    !entry.isNew());
+                    !entry.isNew(),
+                    ReloadMode.none);
                 m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
             } else {
                 CmsDebugLog.getInstance().printLine(

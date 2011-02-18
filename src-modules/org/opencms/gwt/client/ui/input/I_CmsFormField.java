@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,9 +41,9 @@ import org.opencms.gwt.client.validation.I_CmsValidator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
- * @since 8.0.0
+ * @since 8.0.0 
  * 
  */
 public interface I_CmsFormField {
@@ -96,6 +96,13 @@ public interface I_CmsFormField {
      * @return a label or null
      */
     String getLabel();
+
+    /** 
+     * Returns the model object for this field. 
+     * 
+     * @return the model used for this field
+     */
+    I_CmsStringModel getModel();
 
     /**
      * Returns the model id.<p>

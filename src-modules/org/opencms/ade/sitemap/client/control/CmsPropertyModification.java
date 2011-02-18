@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsPropertyModification.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.sitemap.client.control;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
 
 import java.util.Map;
@@ -43,7 +42,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -69,15 +68,9 @@ public class CmsPropertyModification {
     public void execute() {
 
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        CmsClientSitemapEntry entry = controller.getEntryById(m_data.getId());
-        if (entry != null) {
-            Map<String, CmsClientProperty> props = entry.getOwnInternalProperties();
-            internalUpdateProperty(props);
-        }
-        CmsClientSitemapEntry defaultEntry = controller.getEntryByDefaultFileId(m_data.getId());
-        if (defaultEntry != null) {
-            Map<String, CmsClientProperty> props = defaultEntry.getDefaultFileInternalProperties();
-            internalUpdateProperty(props);
+        Map<String, CmsClientProperty> props = controller.getPropertiesForId(m_data.getId());
+        if (props != null) {
+            updatePropertyInMap(props);
         }
     }
 
@@ -96,7 +89,7 @@ public class CmsPropertyModification {
      * 
      * @param props a map of properties 
      */
-    private void internalUpdateProperty(Map<String, CmsClientProperty> props) {
+    private void updatePropertyInMap(Map<String, CmsClientProperty> props) {
 
         CmsClientProperty prop = props.get(m_data.getName());
         if (prop == null) {

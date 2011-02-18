@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -119,9 +119,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
 
         // apply to sitemap model 
         CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
-        editEntry.setTitle(getNewEntry().getTitle());
         editEntry.setVfsPath(getNewEntry().getVfsPath());
-        //editEntry.setProperties(getNewEntry().getProperties());
         for (CmsPropertyModification propMod : m_propertyChanges) {
             propMod.execute();
         }

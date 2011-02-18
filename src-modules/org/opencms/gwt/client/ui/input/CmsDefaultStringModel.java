@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsDefaultStringModel.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,32 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import com.google.common.base.Objects;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
+
 /**
  * The default string model implementation.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsDefaultStringModel implements I_CmsStringModel {
+
+    /** The event bus for this class. */
+    EventBus m_eventBus = new SimpleEventBus();
+
+    /**
+     * A flag which indicates that the model is currently being updated, which is used to prevent infinite recursion.<p>
+     */
+    private boolean m_active;
 
     /** The id. */
     private String m_id;
@@ -57,6 +73,22 @@ public class CmsDefaultStringModel implements I_CmsStringModel {
 
         m_id = id;
         m_value = "";
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return m_eventBus.addHandler(ValueChangeEvent.getType(), handler);
+    }
+
+    /**
+     * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    public void fireEvent(GwtEvent<?> event) {
+
+        m_eventBus.fireEvent(event);
     }
 
     /**
@@ -80,7 +112,20 @@ public class CmsDefaultStringModel implements I_CmsStringModel {
      */
     public void setValue(String value) {
 
-        m_value = value;
+        if (!m_active) {
+            m_active = true;
+            try {
+
+                boolean changed = !Objects.equal(value, m_value);
+                m_value = value;
+                if (changed) {
+                    ValueChangeEvent.fire(this, value);
+                }
+            } finally {
+                m_active = false;
+            }
+        }
+
     }
 
 }

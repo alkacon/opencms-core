@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
+import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.validation.CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidationHandler;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -73,7 +74,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  * 
@@ -239,8 +240,7 @@ public class CmsForm {
             String key = entry.getKey();
             String value = null;
             I_CmsFormField field = entry.getValue();
-            I_CmsFormWidget widget = field.getWidget();
-            value = widget.getFormValueAsString();
+            value = field.getModelValue();
             result.put(key, value);
         }
         return result;
@@ -377,7 +377,6 @@ public class CmsForm {
                     if (ok) {
                         m_formDialog.closeDialog();
                         m_formHandler.onSubmitForm(collectValues(), m_editedFields);
-
                     } else {
                         m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
                     }
@@ -535,6 +534,10 @@ public class CmsForm {
                 public void onValueChange(ValueChangeEvent<String> event) {
 
                     m_editedFields.add(formField.getId());
+                    I_CmsStringModel model = formField.getModel();
+                    if (model != null) {
+                        model.setValue(event.getValue());
+                    }
                     formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
 
                     // if the user presses enter, the keypressed event is fired before the change event,

@@ -265,12 +265,16 @@
 
 .form {
 	width: 570px;
+	height: 480px;
 	border: none;
 }
 
 .formTab {
 	margin-left: 15px;
 	margin-top: 10px;
+	margin-right: 7px;
+	overflow-y: auto !important;
+	
 }
 
 .alignBottom {

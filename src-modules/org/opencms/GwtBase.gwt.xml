@@ -4,8 +4,6 @@
 	<inherits name="com.google.gwt.user.User" />
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
-	
-	
 		
 	<define-property name="fileapi.support" values="yes,no" />
 	<property-provider name="fileapi.support"><![CDATA[
@@ -63,12 +61,6 @@
 	<source path="gwt/client" />
 	<source path="gwt/shared" />
 	<super-source path="gwt/client/super_src/" />
-	<source path="xml/sitemap/properties">
-		<include name="CmsSimplePropertyValue.java" />
-		<include name="CmsComputedPropertyValue.java" />
-		<include name="CmsPropertyInheritanceState.java" />
-		<include name="CmsSourcedValue.java" />
-	</source>
 	<source path="xml/sitemap" >
 		<include name="CmsDetailPageInfo.java" />
 	</source>
@@ -78,13 +70,10 @@
 	<source path="jsp">
 		<include name="CmsContainerJsonKeys.java" />
 	</source>
-	<source path="util" >
-		<include name="CmsObjectUtil.java" />
-	</source>
 	<source path="xml/content">
 		<include name="CmsXmlContentProperty.java" />
 	</source>
- 	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
+	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with> 
     <generate-with class="org.opencms.gwt.rebind.CmsClassInitGenerator" >

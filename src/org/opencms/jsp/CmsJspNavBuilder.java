@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2011/02/01 14:50:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -465,6 +465,9 @@ public class CmsJspNavBuilder {
         CmsResource resource;
         try {
             resource = m_cms.readResource(sitePath);
+            if (resource.isFolder() && !sitePath.endsWith("/")) {
+                sitePath = sitePath + "/";
+            }
             properties = m_cms.readPropertyObjects(resource, false);
         } catch (Exception e) {
             // should never happen

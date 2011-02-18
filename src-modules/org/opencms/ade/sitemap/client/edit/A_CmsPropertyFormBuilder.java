@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsPropertyFormBuilder.java,v $
- * Date   : $Date: 2011/02/14 16:24:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,11 @@ import java.util.Map;
 /**
  * Abstract superclass for classes which are used to construct property forms for the sitemap entry editor.<p>
  * 
+ * Instances of subclasses are intended to be single-use objects, i.e. should be used only for a single form.
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

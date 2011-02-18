@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPair.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Objects;
+
 /**
  * Generic pair class.<p>
  * 
@@ -44,7 +46,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -173,7 +175,7 @@ public class CmsPair<A, B> {
     @Override
     public int hashCode() {
 
-        return CmsObjectUtil.computeHashCode(getFirst(), getSecond());
+        return Objects.hashCode(getFirst(), getSecond());
     }
 
 }

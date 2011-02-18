@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsStringModel.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,18 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+
 /**
  * The interface for a string model.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsStringModel {
+public interface I_CmsStringModel extends HasValueChangeHandlers<String> {
 
     /** 
      * Returns the model id.<p>
@@ -61,5 +63,4 @@ public interface I_CmsStringModel {
      * @param value the new model value 
      */
     void setValue(String value);
-
 }

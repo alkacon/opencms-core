@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,8 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
@@ -49,7 +49,7 @@ import org.opencms.xml.sitemap.CmsDetailPageInfo;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -119,6 +119,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
             }
             controller.addDetailPageInfo(info);
         }
+        getEntry().initializeAll(controller);
         applyToClipboardData(controller.getData().getClipboardData());
     }
 
@@ -152,8 +153,8 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         change.setParentId(m_parentId);
         change.setName(m_entry.getName());
         change.setPosition(m_entry.getPosition());
-        change.setOwnInternalProperties(m_entry.getOwnInternalProperties());
-        change.setDefaultFileInternalProperties(m_entry.getDefaultFileInternalProperties());
+        change.setOwnInternalProperties(m_entry.getOwnProperties());
+        change.setDefaultFileInternalProperties(m_entry.getDefaultFileProperties());
         change.setTitle(m_entry.getTitle());
         change.setNewResourceTypeId(m_newResourceTypeId);
         change.setNewCopyResourceId(m_newCopyResourceId);

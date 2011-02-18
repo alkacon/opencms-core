@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLinkSelector.java,v $
- * Date   : $Date: 2010/12/22 11:35:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -268,6 +268,14 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         setInternal(internal);
         m_textbox.setText(link);
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostMode(boolean)
+     */
+    public void setGhostMode(boolean ghostMode) {
+
+        m_textbox.setGhostMode(ghostMode);
     }
 
     /**

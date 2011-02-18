@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  * 
@@ -157,6 +157,15 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // nothing to do
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostMode(boolean)
+     */
+    public void setGhostMode(boolean ghostMode) {
+
+        // do nothing for now 
 
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyFormBuilder.java,v $
- * Date   : $Date: 2011/02/14 16:24:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,11 +51,14 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsNavModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
+
+    /** The NavText property name. */
+    public static final String PROP_NAVTEXT = "NavText";
 
     /**
      * @see org.opencms.ade.sitemap.client.edit.A_CmsPropertyFormBuilder#buildFields(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
@@ -63,13 +66,13 @@ public class CmsNavModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
     @Override
     public void buildFields(CmsClientSitemapEntry entry) {
 
-        Map<String, CmsClientProperty> ownProps = entry.getOwnInternalProperties();
-        Map<String, CmsClientProperty> defaultFileProps = entry.getDefaultFileInternalProperties();
+        Map<String, CmsClientProperty> ownProps = entry.getOwnProperties();
+        Map<String, CmsClientProperty> defaultFileProps = entry.getDefaultFileProperties();
         String entryId = entry.getId().toString();
         String defaultFileId = toStringOrNull(entry.getDefaultFileId());
         List<String> keys = new ArrayList<String>(m_propertyDefs.keySet());
-        keys.remove("NavText");
-        keys.add(0, "NavText");
+        keys.remove(PROP_NAVTEXT);
+        keys.add(0, PROP_NAVTEXT);
         for (String propName : keys) {
             buildSimpleField(entry, entryId, defaultFileId, ownProps, defaultFileProps, propName);
         }
@@ -104,11 +107,15 @@ public class CmsNavModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
         } else {
             pathValue = new CmsPathValue("", entryId + "/" + propName + "/" + CmsClientProperty.PATH_STRUCTURE_VALUE);
         }
+        boolean alwaysAllowEmpty = !propName.equals(CmsClientProperty.PROPERTY_NAVTEXT);
+        //CHECK: should we really generally allow empty fields other than NavText to be empty? 
+
         CmsBasicFormField field = CmsBasicFormField.createField(
             propDef,
             pathValue.getPath(),
             m_widgetFactory,
-            new HashMap<String, String>());
+            new HashMap<String, String>(),
+            alwaysAllowEmpty);
         String inherited = CmsSitemapView.getInstance().getController().getInheritedProperty(entry, propName);
         I_CmsFormWidget w = field.getWidget();
         // model binding not necessary here

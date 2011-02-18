@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,17 +34,21 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.validation.I_CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Basic regular expression validator for widgets of field type string.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public class CmsRegexValidator implements I_CmsValidator {
+
+    /** If true, the validator always allows empty input. */
+    private boolean m_alwaysAllowEmpty;
 
     /** The message to be displayed when the validation fails. */
     private String m_message;
@@ -62,12 +66,14 @@ public class CmsRegexValidator implements I_CmsValidator {
      *
      * @param regex a regular expression 
      * @param message an error message
+     * @param alwaysAllowEmpty if true, the validation will always allow the empty string 
      */
-    public CmsRegexValidator(String regex, String message) {
+    public CmsRegexValidator(String regex, String message, boolean alwaysAllowEmpty) {
 
         assert message != null;
         m_regex = regex;
         m_message = message;
+        m_alwaysAllowEmpty = alwaysAllowEmpty;
     }
 
     /**
@@ -103,7 +109,9 @@ public class CmsRegexValidator implements I_CmsValidator {
         if (widget.getFieldType() == I_CmsFormWidget.FieldType.STRING) {
             String value = widget.getFormValueAsString();
             CmsValidationResult result;
-            if (!matchRuleRegex(m_regex, value)) {
+            if (CmsStringUtil.isEmpty(value) && m_alwaysAllowEmpty) {
+                result = CmsValidationResult.VALIDATION_OK;
+            } else if (!matchRuleRegex(m_regex, value)) {
                 result = new CmsValidationResult(m_message);
             } else {
                 result = CmsValidationResult.VALIDATION_OK;

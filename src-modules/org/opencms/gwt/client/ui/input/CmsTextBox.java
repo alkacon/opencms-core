@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/12/22 11:35:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  * 
@@ -103,6 +103,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** A list of the click handlers for this text box. */
     private List<ClickHandler> m_clickHandlers = new ArrayList<ClickHandler>();
 
+    /** Stores the enable/disable state of the textbox. */
+    private boolean m_enabled;
+
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
@@ -120,9 +123,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
-
-    /** Stores the enable/disable state of the textbox. */
-    private boolean m_enabled;
 
     /**
      * Constructs a new instance of this widget.
@@ -222,6 +222,14 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_clickHandlerRegistrations.add(registration);
         m_clickHandlers.add(handler);
         return registration;
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return m_textbox.addFocusHandler(handler);
     }
 
     /**
@@ -458,6 +466,22 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Enables or disables ghost mode.<p>
+     * 
+     * @param ghostMode if true, enables ghost mode, else disables it 
+     */
+    public void setGhostMode(boolean ghostMode) {
+
+        if (ghostMode) {
+            m_textbox.addStyleName(CSS.textboxGhostMode());
+        } else {
+            m_textbox.removeStyleName(CSS.textboxGhostMode());
+        }
+        m_ghostMode = ghostMode;
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
      */
     public void setGhostValue(String value, boolean ghostMode) {
@@ -533,35 +557,11 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
-     * Enables or disables ghost mode.<p>
-     * 
-     * @param ghostMode if true, enables ghost mode, else disables it 
-     */
-    protected void setGhostMode(boolean ghostMode) {
-
-        if (ghostMode) {
-            m_textbox.addStyleName(CSS.textboxGhostMode());
-        } else {
-            m_textbox.removeStyleName(CSS.textboxGhostMode());
-        }
-        m_ghostMode = ghostMode;
-
-    }
-
-    /**
      * Shows the error for this textbox.<p>
      */
     protected void showError() {
 
         m_error.showError();
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return m_textbox.addFocusHandler(handler);
     }
 
 }

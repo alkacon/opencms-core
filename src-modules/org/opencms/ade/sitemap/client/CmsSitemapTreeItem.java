@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/17 08:53:32 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,12 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
+import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.file.CmsResource;
@@ -46,9 +48,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -64,8 +66,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
@@ -79,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0.0
  * 
@@ -217,9 +221,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
              */
             public void handleEdit(CmsLabel titleLabel, TextBox box) {
 
-                final String text = box.getText();
+                final String newTitle = box.getText();
                 box.removeFromParent();
-                if (CmsStringUtil.isEmpty(text)) {
+                if (CmsStringUtil.isEmpty(newTitle)) {
                     titleLabel.setVisible(true);
                     String dialogTitle = Messages.get().key(Messages.GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0);
                     String dialogText = Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0);
@@ -229,7 +233,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 }
                 String oldTitle = m_entry.getTitle();
 
-                if (!oldTitle.equals(text)) {
+                if (!oldTitle.equals(newTitle)) {
+                    String changePath = Joiner.on("/").join(
+                        m_entry.getId().toString(),
+                        CmsClientProperty.PROPERTY_NAVTEXT,
+                        CmsClientProperty.PATH_STRUCTURE_VALUE);
+                    CmsPropertyModification propMod = new CmsPropertyModification(changePath, newTitle);
+                    final List<CmsPropertyModification> propChanges = Collections.<CmsPropertyModification> singletonList(propMod);
 
                     if (m_entry.isNew()) {
                         CmsRpcAction<String> action = new CmsRpcAction<String>() {
@@ -241,7 +251,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                             public void execute() {
 
                                 start(0, false);
-                                CmsCoreProvider.getService().translateUrlName(text, this);
+                                CmsCoreProvider.getService().translateUrlName(newTitle, this);
                             }
 
                             /**
@@ -259,28 +269,27 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                     newUrlName = CmsSitemapController.ensureUniqueName(parent, result);
                                 }
                                 CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
-                                newEntry.setTitle(text);
                                 newEntry.setName(newUrlName);
                                 CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                                String changePath = Joiner.on("/").join(
+                                    m_entry.getId().toString(),
+                                    CmsClientProperty.PROPERTY_NAVTEXT,
+                                    CmsClientProperty.PATH_STRUCTURE_VALUE);
+                                CmsPropertyModification propMod = new CmsPropertyModification(changePath, newTitle);
                                 controller.editAndChangeName(
                                     m_entry,
-                                    text,
                                     newUrlName,
                                     m_entry.getVfsPath(),
-                                    Collections.<CmsPropertyModification> emptyList(),
-                                    false);
+                                    propChanges,
+                                    false,
+                                    ReloadMode.none);
                             }
 
                         };
                         action.execute();
                     } else {
                         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                        controller.edit(
-                            m_entry,
-                            text,
-                            m_entry.getVfsPath(),
-                            Collections.<CmsPropertyModification> emptyList(),
-                            false);
+                        controller.edit(m_entry, m_entry.getVfsPath(), propChanges, false);
                     }
 
                 }
@@ -372,9 +381,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         String exportProp = controller.getEffectiveProperty(m_entry, "export");
         if ("true".equals(exportProp)) {
             String exportName = m_entry.getExportName();
-            if (exportName == null) {
-                exportName = getExportName();
-            }
             String rfsPrefix = CmsSitemapView.getInstance().getController().getData().getExportRfsPrefix();
             if (rfsPrefix != null) {
                 return CmsStringUtil.joinPaths(rfsPrefix, exportName, sitePath);
@@ -812,12 +818,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         } else {
             m_listItemWidget.setBackground(Background.DEFAULT);
         }
-    }
-
-    private String getExportName() {
-
-        //TODO: implement this using properties 
-        return CmsCoreProvider.get().getSiteRoot();
     }
 
     /**

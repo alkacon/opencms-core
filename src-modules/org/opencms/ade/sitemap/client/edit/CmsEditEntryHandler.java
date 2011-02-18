@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/02/18 14:32:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.edit;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 
@@ -46,7 +47,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -110,17 +111,17 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.List, boolean)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode)
      */
     public void handleSubmit(
-        String newTitle,
         String newUrlName,
         String vfsPath,
         List<CmsPropertyModification> propertyChanges,
-        boolean editedName) {
+        boolean editedName,
+        final ReloadMode reloadStatus) {
 
         // edit
-        m_controller.editAndChangeName(m_entry, newTitle, newUrlName, vfsPath, propertyChanges, editedName);
+        m_controller.editAndChangeName(m_entry, newUrlName, vfsPath, propertyChanges, editedName, reloadStatus);
 
     }
 
