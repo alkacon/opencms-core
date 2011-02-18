@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/02/18 08:29:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/18 08:49:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,9 +41,11 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -196,6 +198,7 @@ public class CmsToolbarClipboardView {
 
         });
         itemWidget.addButton(button);
+        CmsListItemWidgetUtil.setPageIcon(itemWidget, PageIcon.standard);
         listItem.setId(entry.getId().toString());
         return listItem;
     }
@@ -246,6 +249,7 @@ public class CmsToolbarClipboardView {
             }
         });
         itemWidget.addButton(button);
+        CmsListItemWidgetUtil.setPageIcon(itemWidget, PageIcon.standard);
         listItem.setId(entry.getId().toString());
         return listItem;
     }
