@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/18 08:29:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -187,7 +187,6 @@ public class CmsToolbarClipboardView {
         button.setShowBorder(false);
         button.addClickHandler(new ClickHandler() {
 
-            @Override
             public void onClick(ClickEvent event) {
 
                 CmsDomUtil.ensureMouseOut(itemWidget.getElement());
