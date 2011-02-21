@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -118,6 +118,9 @@ public class CmsConfigurationParser {
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_PATTERN = "Pattern";
+
+    /** The tag name of the "prefer folder" option for properties. */
+    public static final String N_PREFER_FOLDER = "PreferFolder";
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_SOURCE = "Source";
@@ -550,6 +553,7 @@ public class CmsConfigurationParser {
         String error = getSubValueString(cms, field, "Error");
         String niceName = getSubValueString(cms, field, "NiceName");
         String description = getSubValueString(cms, field, "Description");
+        String preferFolder = getSubValueString(cms, field, "PreferFolder");
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             type,
@@ -560,7 +564,8 @@ public class CmsConfigurationParser {
             default1,
             niceName,
             description,
-            error);
+            error,
+            preferFolder);
         m_props.add(prop);
     }
 

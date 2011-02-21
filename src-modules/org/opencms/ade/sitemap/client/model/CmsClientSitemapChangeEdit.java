@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,10 @@ package org.opencms.ade.sitemap.client.model;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
+import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
@@ -50,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -121,7 +120,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
         editEntry.setVfsPath(getNewEntry().getVfsPath());
         for (CmsPropertyModification propMod : m_propertyChanges) {
-            propMod.execute();
+            propMod.execute(controller);
         }
         editEntry.normalizeProperties();
         editEntry.setNew(getNewEntry().isNew());
@@ -149,9 +148,9 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath(), ChangeType.modify);
         change.setDefaultFileId(m_newEntry.getDefaultFileId());
         change.setLeafType(m_newEntry.isLeafType());
-        List<CmsPropertyModificationData> propertyChangeData = new ArrayList<CmsPropertyModificationData>();
+        List<CmsPropertyModification> propertyChangeData = new ArrayList<CmsPropertyModification>();
         for (CmsPropertyModification propChange : m_propertyChanges) {
-            propertyChangeData.add(propChange.getData());
+            propertyChangeData.add(propChange);
         }
         change.setPropertyChanges(propertyChangeData);
         if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {

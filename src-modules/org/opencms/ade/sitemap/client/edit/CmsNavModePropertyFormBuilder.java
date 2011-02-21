@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyFormBuilder.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,13 @@ public class CmsNavModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
         } else if (ownProp != null) {
             pathValue = ownProp.getPathValue().prepend(entryId + "/" + propName);
         } else {
-            pathValue = new CmsPathValue("", entryId + "/" + propName + "/" + CmsClientProperty.PATH_STRUCTURE_VALUE);
+            String targetId = null;
+            if (propDef.isPreferFolder() || (entry.getDefaultFileId() == null)) {
+                targetId = entryId;
+            } else {
+                targetId = entry.getDefaultFileId().toString();
+            }
+            pathValue = new CmsPathValue("", targetId + "/" + propName + "/" + CmsClientProperty.PATH_STRUCTURE_VALUE);
         }
         boolean alwaysAllowEmpty = !propName.equals(CmsClientProperty.PROPERTY_NAVTEXT);
         //CHECK: should we really generally allow empty fields other than NavText to be empty? 

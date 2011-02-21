@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.9.2
  */
@@ -107,6 +107,9 @@ public class CmsXmlContentProperty implements Serializable {
     /** The nice name. */
     private String m_niceName;
 
+    /** The "prefer folder" option. */
+    private String m_preferFolder;
+
     /** The name of the property. */
     private String m_propertyName;
 
@@ -141,6 +144,7 @@ public class CmsXmlContentProperty implements Serializable {
      * @param niceName the nice-name
      * @param description  the description
      * @param error the error message
+     * @param preferFolder the "prefer folder" option
      */
     public CmsXmlContentProperty(
         String propertyName,
@@ -152,7 +156,10 @@ public class CmsXmlContentProperty implements Serializable {
         String default1,
         String niceName,
         String description,
-        String error) {
+        String error,
+        String preferFolder
+
+    ) {
 
         super();
         m_propertyName = propertyName;
@@ -165,6 +172,7 @@ public class CmsXmlContentProperty implements Serializable {
         m_niceName = niceName;
         m_description = description;
         m_error = error;
+        m_preferFolder = preferFolder;
     }
 
     /**
@@ -192,7 +200,8 @@ public class CmsXmlContentProperty implements Serializable {
             m_default,
             m_niceName,
             m_description,
-            m_error);
+            m_error,
+            m_preferFolder);
     }
 
     /**
@@ -306,6 +315,21 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Returns the value of the "prefer folder" option.<p>
+     * 
+     * This flag determines whether a property entered in the sitemap entry editor should be stored by default at the folder
+     * or at the default file of a sitemap entry. It only has an effect if the sitemap entry being edited doesn't already
+     * have a value for that property at either location.<p> 
+     * 
+     * @return the "prefer folder" flag
+     */
+    public boolean isPreferFolder() {
+
+        return (m_preferFolder == null) || ("true".equalsIgnoreCase(m_preferFolder));
+
+    }
+
+    /**
      * Copies a property definition, but replaces the nice name attribute.<p>
      * 
      * @param niceName the new nice name attribute 
@@ -324,7 +348,8 @@ public class CmsXmlContentProperty implements Serializable {
             m_default,
             niceName,
             m_description,
-            m_error);
+            m_error,
+            m_preferFolder);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
-import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
+import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -1573,7 +1573,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms,
         CmsResource ownRes,
         CmsResource defaultFileRes,
-        List<CmsPropertyModificationData> propertyModifications) throws CmsException {
+        List<CmsPropertyModification> propertyModifications) throws CmsException {
 
         //TODO: clean this method up
 
@@ -1587,7 +1587,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if ((defaultFileProps != null) && (defaultFileRes != null)) {
             propsMap.put(defaultFileRes.getStructureId(), defaultFileProps);
         }
-        for (CmsPropertyModificationData propMod : propertyModifications) {
+        for (CmsPropertyModification propMod : propertyModifications) {
             Map<String, CmsProperty> propsToModify = propsMap.get(propMod.getId());
             CmsProperty propToModify = propsToModify.get(propMod.getName());
             if (propToModify == null) {

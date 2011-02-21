@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
@@ -41,6 +40,7 @@ import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 8.0.0
  * 
@@ -271,11 +271,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                 CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
                                 newEntry.setName(newUrlName);
                                 CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                                String changePath = Joiner.on("/").join(
-                                    m_entry.getId().toString(),
-                                    CmsClientProperty.PROPERTY_NAVTEXT,
-                                    CmsClientProperty.PATH_STRUCTURE_VALUE);
-                                CmsPropertyModification propMod = new CmsPropertyModification(changePath, newTitle);
                                 controller.editAndChangeName(
                                     m_entry,
                                     newUrlName,

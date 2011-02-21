@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
@@ -90,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  */
@@ -1213,10 +1214,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         if (changedVfsRef) {
             newEntry.setVfsPath(vfsReference);
         }
-        //        if (changedProperties) {
-        //            newEntry.setOwnInternalProperties(ownProperties);
-        //            newEntry.setDefaultFileInternalProperties(defaultFileProperties);
-        //        }
 
         // apply changes
         return new CmsClientSitemapChangeEdit(entry, propertyChanges, newEntry);

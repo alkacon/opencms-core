@@ -151,8 +151,6 @@
 		<xsd:attribute name="nice-name" type="xsd:string" use="optional" />
 		<xsd:attribute name="description" type="xsd:string" use="optional" />
 		<xsd:attribute name="error" type="xsd:string" use="optional" />
-		<xsd:attribute name="advanced" type="xsd:string" use="optional" />
-		<xsd:attribute name="select-inherit" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:simpleType name="OpenCmsDefaultAppinfoPropertyType">

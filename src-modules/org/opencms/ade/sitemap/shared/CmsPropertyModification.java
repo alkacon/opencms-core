@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsPropertyModificationData.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsPropertyModification.java,v $
+ * Date   : $Date: 2011/02/21 11:21:48 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -33,18 +33,20 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * A data bean representing a property change, used for RPC calls.<p>
+ * A class which represents a property modification.<p>
  * 
- * @author Georg Westenberger
+ * @author Georg Westenberger 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsPropertyModificationData implements IsSerializable {
+public class CmsPropertyModification implements IsSerializable {
 
     /** The resource id for which the property changed. */
     private CmsUUID m_id;
@@ -63,7 +65,7 @@ public class CmsPropertyModificationData implements IsSerializable {
     * 
     * @param propMod the modification bean from which to copy the data 
     */
-    public CmsPropertyModificationData(CmsPropertyModificationData propMod) {
+    public CmsPropertyModification(CmsPropertyModification propMod) {
 
         m_id = propMod.m_id;
         m_name = propMod.m_name;
@@ -77,7 +79,7 @@ public class CmsPropertyModificationData implements IsSerializable {
      *  
      * @param value the new property value 
      */
-    public CmsPropertyModificationData(String path, String value) {
+    public CmsPropertyModification(String path, String value) {
 
         String[] pathComponents = path.split("/");
         String idStr = pathComponents[0];
@@ -93,9 +95,22 @@ public class CmsPropertyModificationData implements IsSerializable {
     /**
       * Empty constructor for serialization.<p>
       */
-    protected CmsPropertyModificationData() {
+    protected CmsPropertyModification() {
 
         // empty constructor for serialization 
+    }
+
+    /**
+     * Applies the change to the model.<p>
+     * 
+     * @param controller the sitemap controller to use 
+     */
+    public void execute(I_CmsSitemapController controller) {
+
+        Map<String, CmsClientProperty> props = controller.getPropertiesForId(getId());
+        if (props != null) {
+            updatePropertyInMap(props);
+        }
     }
 
     /** 
@@ -136,6 +151,26 @@ public class CmsPropertyModificationData implements IsSerializable {
     public boolean isStructureValue() {
 
         return m_isStructureValue;
+    }
+
+    /**
+     * Helper method for applying the change to a property map.<p>
+     * 
+     * @param props a map of properties 
+     */
+    private void updatePropertyInMap(Map<String, CmsClientProperty> props) {
+
+        CmsClientProperty prop = props.get(getName());
+        if (prop == null) {
+            prop = new CmsClientProperty(getName(), "", "");
+            props.put(getName(), prop);
+        }
+        if (isStructureValue()) {
+            prop.setStructureValue(getValue());
+        } else {
+            prop.setResourceValue(getValue());
+            prop.setStructureValue(getValue());
+        }
     }
 
 }

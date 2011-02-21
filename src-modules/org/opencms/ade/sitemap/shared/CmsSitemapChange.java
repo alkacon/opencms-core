@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -67,6 +67,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         undelete
     }
 
+    /** The change type. */
     private ChangeType m_changeType;
 
     /** The changed clip-board data. */
@@ -106,7 +107,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     private int m_position = -1;
 
     /** The list of property modifications. */
-    private List<CmsPropertyModificationData> m_propertyModifications = new ArrayList<CmsPropertyModificationData>();
+    private List<CmsPropertyModification> m_propertyModifications = new ArrayList<CmsPropertyModification>();
 
     /** The entry site path. */
     private String m_sitePath;
@@ -176,9 +177,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      */
     public void addChangeTitle(String title) {
 
-        CmsPropertyModificationData propChange = new CmsPropertyModificationData(
-            m_entryId.toString() + "/NavText/S",
-            title);
+        CmsPropertyModification propChange = new CmsPropertyModification(m_entryId.toString() + "/NavText/S", title);
         m_propertyModifications.add(propChange);
         m_ownInternalProperties.put("NavText", new CmsClientProperty("NavText", title, null));
     }
@@ -356,7 +355,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      * 
      * @return the list of property changes 
      */
-    public List<CmsPropertyModificationData> getPropertyChanges() {
+    public List<CmsPropertyModification> getPropertyChanges() {
 
         return m_propertyModifications;
     }
@@ -636,7 +635,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      * 
      * @param propertyChanges the property changes 
      */
-    public void setPropertyChanges(List<CmsPropertyModificationData> propertyChanges) {
+    public void setPropertyChanges(List<CmsPropertyModification> propertyChanges) {
 
         m_propertyModifications = propertyChanges;
     }

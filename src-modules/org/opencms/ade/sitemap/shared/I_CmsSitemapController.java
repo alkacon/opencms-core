@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/I_CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,20 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsSitemapController {
+
+    /**
+     * Gets the property map for the given id.<p>
+     * 
+     * @param id a structure id 
+     * 
+     * @return the property map for that structure id 
+     */
+    Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id);
 
     /**
      * Initializes the sitemap entry.<p>

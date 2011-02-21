@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsVfsModePropertyFormBuilder.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,40 +90,6 @@ public class CmsVfsModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
     }
 
     /**
-     * Builds the fields for the configured properties in the first tab.<p>
-     * 
-     * @param entry the entry for which to build the fields 
-     */
-    public void internalBuildConfiguredFields(CmsClientSitemapEntry entry) {
-
-        Map<String, CmsClientProperty> ownProps = entry.getOwnProperties();
-        String entryId = entry.getId().toString();
-        List<String> keys = new ArrayList<String>(m_propertyDefs.keySet());
-        keys.remove(CmsClientProperty.PROPERTY_NAVTEXT);
-        keys.add(0, CmsClientProperty.PROPERTY_NAVTEXT);
-        for (String propName : keys) {
-            buildField(entry, entryId, ownProps, propName, Mode.effective);
-        }
-    }
-
-    /**
-     * Builds the fields for the "structure" and "resource" tabs.<p>
-     * 
-     * @param entry the entry for which to build the fields 
-     */
-    public void internalBuildOtherFields(CmsClientSitemapEntry entry) {
-
-        Map<String, CmsClientProperty> ownProps = entry.getOwnProperties();
-        String entryId = entry.getId().toString();
-        for (String propName : m_propertyNames) {
-            buildField(entry, entryId, ownProps, propName, Mode.structure);
-            if (m_showResourceProperties) {
-                buildField(entry, entryId, ownProps, propName, Mode.resource);
-            }
-        }
-    }
-
-    /**
      * Sets the "show resource properties" flag which controls whether the resource value fields should be built.<p>
      * 
      * @param showResourceProperties if true, the resource value fields will be build 
@@ -152,7 +118,18 @@ public class CmsVfsModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
         CmsXmlContentProperty propDef = m_propertyDefs.get(propName);
 
         if (propDef == null) {
-            propDef = new CmsXmlContentProperty(propName, "string", "string", "", null, null, null, null, null, null);
+            propDef = new CmsXmlContentProperty(
+                propName,
+                "string",
+                "string",
+                "",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         }
 
         if (mode != Mode.effective) {
@@ -198,6 +175,40 @@ public class CmsVfsModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
         CmsDefaultStringModel model = new CmsDefaultStringModel(path);
         m_models.put(path, model);
         return model;
+    }
+
+    /**
+     * Builds the fields for the configured properties in the first tab.<p>
+     * 
+     * @param entry the entry for which to build the fields 
+     */
+    private void internalBuildConfiguredFields(CmsClientSitemapEntry entry) {
+
+        Map<String, CmsClientProperty> ownProps = entry.getOwnProperties();
+        String entryId = entry.getId().toString();
+        List<String> keys = new ArrayList<String>(m_propertyDefs.keySet());
+        keys.remove(CmsClientProperty.PROPERTY_NAVTEXT);
+        keys.add(0, CmsClientProperty.PROPERTY_NAVTEXT);
+        for (String propName : keys) {
+            buildField(entry, entryId, ownProps, propName, Mode.effective);
+        }
+    }
+
+    /**
+     * Builds the fields for the "structure" and "resource" tabs.<p>
+     * 
+     * @param entry the entry for which to build the fields 
+     */
+    private void internalBuildOtherFields(CmsClientSitemapEntry entry) {
+
+        Map<String, CmsClientProperty> ownProps = entry.getOwnProperties();
+        String entryId = entry.getId().toString();
+        for (String propName : m_propertyNames) {
+            buildField(entry, entryId, ownProps, propName, Mode.structure);
+            if (m_showResourceProperties) {
+                buildField(entry, entryId, ownProps, propName, Mode.resource);
+            }
+        }
     }
 
 }

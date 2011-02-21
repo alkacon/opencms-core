@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsTabbedFormFieldPanel.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -72,8 +72,6 @@ public class CmsTabbedFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsTabbedFormFieldPanel() {
 
         m_panel = new CmsTabbedPanel<FlowPanel>();
-        //        m_panel.getElement().getStyle().setProperty("height", "300px");
-        //        m_panel.getElement().getStyle().setProperty("width", "400px");
         m_panel.addStyleName(CSS.form());
         initWidget(m_panel);
 

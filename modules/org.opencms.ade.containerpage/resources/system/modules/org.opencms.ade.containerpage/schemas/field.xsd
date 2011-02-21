@@ -22,8 +22,7 @@
             <xsd:element name="NiceName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Error" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="Advanced" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-            <xsd:element name= "SelectInherit" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PreferFolder" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -32,8 +31,7 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 	        <layouts>
-	           	<layout element="Advanced" widget="BooleanWidget" />
-	           	<layout element="SelectInherit" widget="BooleanWidget" />
+	           	<layout element="PreferFolder" widget="BooleanWidget" />
 	        </layouts>
 	        
         </xsd:appinfo>

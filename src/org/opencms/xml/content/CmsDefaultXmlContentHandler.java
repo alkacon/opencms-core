@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/21 11:21:48 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -288,6 +288,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         + "${key."
         + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2
         + "|${validation.value}|[${validation.regex}]}";
+
+    /** The attribute name for the "prefer folder" option for properties. */
+    private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
@@ -1710,7 +1713,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 element.attributeValue(APPINFO_ATTR_DEFAULT),
                 element.attributeValue(APPINFO_ATTR_NICE_NAME),
                 element.attributeValue(APPINFO_ATTR_DESCRIPTION),
-                element.attributeValue(APPINFO_ATTR_ERROR));
+                element.attributeValue(APPINFO_ATTR_ERROR),
+                element.attributeValue(APPINFO_ATTR_PREFERFOLDER));
             String name = property.getPropertyName();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name) && !CmsXmlContentPropertyHelper.isSpecialProperty(name)) {
                 m_properties.put(name, property);
