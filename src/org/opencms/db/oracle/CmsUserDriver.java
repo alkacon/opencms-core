@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2011/02/11 11:00:13 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/02/21 09:57:47 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 6.0.0 
  */
@@ -99,10 +99,16 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUserInfo(CmsDbContext, CmsUUID, String, Object)
+     * Updates additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
      */
     @Override
-    public void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException {
+    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -113,10 +119,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
 
             // write data to database
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERDATA_WRITE_3");
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, key);
-            stmt.setString(3, value.getClass().getName());
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERDATA_UPDATE_3");
+            stmt.setString(1, value.getClass().getName());
+            stmt.setString(2, userId.toString());
+            stmt.setString(3, key);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
@@ -125,7 +131,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-        internalUpdateUserInfo(dbc, userId, key, value);
+        internalUpdateUserInfoData(dbc, userId, key, value);
     }
 
     /**
@@ -138,8 +144,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    @Override
-    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    protected void internalUpdateUserInfoData(CmsDbContext dbc, CmsUUID userId, String key, Object value)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
@@ -202,5 +207,41 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 commit,
                 wasInTransaction);
         }
+    }
+
+    /**
+     * Writes a new additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    @Override
+    protected void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+
+            // get connection
+            conn = m_sqlManager.getConnection(dbc);
+
+            // write data to database
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERDATA_WRITE_3");
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            stmt.setString(3, value.getClass().getName());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+        internalUpdateUserInfoData(dbc, userId, key, value);
     }
 }

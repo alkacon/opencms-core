@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/02/11 11:00:13 $
- * Version: $Revision: 1.1218 $
+ * Date   : $Date: 2011/02/21 09:57:47 $
+ * Version: $Revision: 1.1219 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1942: Publish scheduled jobs are missing after server restart
 * Fixed issue: Error when searching with the group field in the Module Management and at least one module without configured group
 * Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
+* Fixed issue when creating a new user or editing an existing user using an Oracle database
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
