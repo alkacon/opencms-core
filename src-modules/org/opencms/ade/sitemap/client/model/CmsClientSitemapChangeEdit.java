@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/21 13:18:31 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -124,7 +124,6 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         }
         editEntry.normalizeProperties();
         editEntry.setNew(getNewEntry().isNew());
-        controller.getRedirectUpdater().handleSave(editEntry);
         applyToClipboardData(controller.getData().getClipboardData());
     }
 

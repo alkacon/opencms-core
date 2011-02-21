@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/02/21 13:18:31 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 8.0.0
  */
@@ -133,9 +133,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     /** The list of property update handlers. */
     private List<I_CmsPropertyUpdateHandler> m_propertyUpdateHandlers = new ArrayList<I_CmsPropertyUpdateHandler>();
 
-    /** Object for keeping track of and updating redirects. */
-    private CmsRedirectUpdater m_redirectUpdater;
-
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
 
@@ -143,8 +140,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Constructor.<p>
      */
     public CmsSitemapController() {
-
-        m_redirectUpdater = new CmsRedirectUpdater();
 
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
@@ -865,16 +860,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id) {
 
         return m_propertyMaps.get(id);
-    }
-
-    /**
-     * Returns the redirect updater.<p>
-     * 
-     * @return the redirect updater
-     */
-    public CmsRedirectUpdater getRedirectUpdater() {
-
-        return m_redirectUpdater;
     }
 
     /** 

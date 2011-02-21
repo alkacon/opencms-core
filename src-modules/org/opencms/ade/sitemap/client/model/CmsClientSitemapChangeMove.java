@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/21 13:18:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,10 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -153,7 +153,6 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             m_entry.setEditStatus(m_newStatus);
         }
         moved.updateSitePath(getDestinationPath());
-        controller.getRedirectUpdater().handleMove(m_sourcePath, m_destinationPath);
         applyToClipboardData(controller.getData().getClipboardData());
     }
 
