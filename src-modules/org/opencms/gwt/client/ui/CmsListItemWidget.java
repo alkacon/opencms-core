@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/02/17 08:53:01 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -76,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -243,6 +244,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
     /** The child width in px for truncation. */
     private int m_childWidth;
+
+    /** The fixed icon classes which will always be added if the icon classes are set. */
+    private String m_fixedIconClasses = "";
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
@@ -506,6 +510,20 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
+     * Sets the icon classes which will be always implicitly set if the method {@link #setIcon(String)} is called.<p>
+     * 
+     * @param fixedIconClasses the fixed icon classes, separated by spaces
+     */
+    public void setFixedIconClasses(String fixedIconClasses) {
+
+        if (CmsStringUtil.isEmpty(fixedIconClasses)) {
+            m_fixedIconClasses = "";
+        } else {
+            m_fixedIconClasses = fixedIconClasses;
+        }
+    }
+
+    /**
      * Sets the icon of this item.<p>
      * 
      * @param image the image to use as icon
@@ -528,8 +546,8 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         m_iconPanel.setVisible(true);
         Panel iconWidget = new SimplePanel();
-        iconWidget.addStyleName(iconClasses);
         m_iconPanel.setWidget(iconWidget);
+        iconWidget.addStyleName(iconClasses + " " + m_fixedIconClasses);
     }
 
     /**

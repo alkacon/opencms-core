@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -284,6 +284,10 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         entry.setVfsPath(null);
         entry.setPosition(m_insertIndex);
         entry.setInNavigation(true);
+        createItem.getResourceTypeInfo().getTypeName();
+        //TODO: handle redirects specially 
+        entry.setResourceTypeName("folder");
+
         if (EntryType.detailpage == createItem.getEntryType()) {
             entry.setDetailpageTypeName(typeInfo.getTypeName());
         }

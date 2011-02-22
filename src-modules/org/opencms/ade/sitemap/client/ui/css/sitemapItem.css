@@ -35,7 +35,11 @@
 	color: value("constants.css.textColorDisabled");
 }
 
-.showAllResources .notInNavigationEntry{
+@external vfsMode, navMode;
+
+.navMode {}  
+
+.vfsMode .notInNavigationEntry{
 	display: block;
 }
 

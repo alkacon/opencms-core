@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0 
  */
@@ -134,6 +134,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The relative position between siblings. */
     private int m_position;
 
+    /** The resource type name. */
+    private String m_resourceTypeName;
+
     /** The sitemap path. */
     private String m_sitePath;
 
@@ -172,6 +175,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setLock(clone.getLock());
         setEntryType(clone.getEntryType());
         setInNavigation(clone.isInNavigation());
+        setResourceTypeName(clone.getResourceTypeName());
     }
 
     /**
@@ -375,15 +379,15 @@ public class CmsClientSitemapEntry implements IsSerializable {
         //        }
     }
 
-    //    /**
-    //     * Returns a map of this entry's own properties.<p>
-    //     * 
-    //     * @return a map of this entry's own properties
-    //     */
-    //    public Map<String, CmsSimplePropertyValue> getProperties() {
-    //
-    //        return m_properties;
-    //    }
+    /**
+     * Returns the resource type name.<p>
+     * 
+     * @return the resource type name 
+     */
+    public String getResourceTypeName() {
+
+        return m_resourceTypeName;
+    }
 
     /**
      * Returns the sitemap path.<p>
@@ -394,6 +398,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         return m_sitePath;
     }
+
+    //    /**
+    //     * Returns a map of this entry's own properties.<p>
+    //     * 
+    //     * @return a map of this entry's own properties
+    //     */
+    //    public Map<String, CmsSimplePropertyValue> getProperties() {
+    //
+    //        return m_properties;
+    //    }
 
     /**
      * Returns the children.<p>
@@ -749,16 +763,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the properties inherited by the entry's parent.<p>
-     * 
-     * @param parentProperties the properties inherited by the entry's parent 
-     */
-    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
-    //
-    //        m_parentInheritedProperties = parentProperties;
-    //    }
-
-    /**
      * Sets the "new" flag of the client sitemap entry.<p>
      *
      * @param new1 the new new
@@ -769,13 +773,13 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the properties.<p>
-     *
-     * @param properties the properties to set
+     * Sets the properties inherited by the entry's parent.<p>
+     * 
+     * @param parentProperties the properties inherited by the entry's parent 
      */
-    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
     //
-    //        m_properties = properties;
+    //        m_parentInheritedProperties = parentProperties;
     //    }
 
     /**
@@ -787,6 +791,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_ownProperties = properties;
     }
+
+    /**
+     * Sets the properties.<p>
+     *
+     * @param properties the properties to set
+     */
+    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //
+    //        m_properties = properties;
+    //    }
 
     /**
      * Sets the position.<p>
@@ -827,6 +841,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
         //        m_properties.remove(INTERNAL_REDIRECT);
         //        String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
         //        m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
+    }
+
+    /**
+     * Sets the resource type name.<p>
+     * 
+     * @param typeName the resource type name 
+     */
+    public void setResourceTypeName(String typeName) {
+
+        m_resourceTypeName = typeName;
+
     }
 
     /**

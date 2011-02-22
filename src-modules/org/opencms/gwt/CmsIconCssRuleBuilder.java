@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsIconCssRuleBuilder.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,8 +51,29 @@ public class CmsIconCssRuleBuilder {
     /** The uri of the icon image. */
     private String m_imageUri = "INVALID_ICON";
 
+    /** The selector prefix. */
+    private String m_prefix;
+
     /** The list of selector strings. */
     private List<String> m_selectors = new ArrayList<String>();
+
+    /**
+     * Default  constructor.<p>
+     */
+    public CmsIconCssRuleBuilder() {
+
+        m_prefix = "";
+    }
+
+    /**
+     * Creates a new icon css rule builder, using a prefix for all selectors.<p>
+     * 
+     * @param prefix the selector prefix 
+     */
+    public CmsIconCssRuleBuilder(String prefix) {
+
+        m_prefix = prefix != null ? prefix : "";
+    }
 
     /** 
      * Adds a selector for a resource type and a file suffix.<p>
@@ -63,10 +84,13 @@ public class CmsIconCssRuleBuilder {
      */
     public void addSelectorForSubType(String type, String suffix, boolean small) {
 
-        String template = ".%1$s.%2$s.%3$s";
-        String selector = String.format(template, CmsIconUtil.TYPE_ICON_CLASS, CmsIconUtil.getResourceTypeIconClass(
-            type,
-            small), CmsIconUtil.getResourceSubTypeIconClass(type, suffix, small));
+        String template = "%1$s .%2$s.%3$s.%4$s";
+        String selector = String.format(
+            template,
+            m_prefix,
+            CmsIconUtil.TYPE_ICON_CLASS,
+            CmsIconUtil.getResourceTypeIconClass(type, small),
+            CmsIconUtil.getResourceSubTypeIconClass(type, suffix, small));
         m_selectors.add(selector);
     }
 
@@ -78,10 +102,12 @@ public class CmsIconCssRuleBuilder {
      */
     public void addSelectorForType(String type, boolean small) {
 
-        String template = ".%1$s.%2$s";
-        String selector = String.format(template, CmsIconUtil.TYPE_ICON_CLASS, CmsIconUtil.getResourceTypeIconClass(
-            type,
-            small));
+        String template = "%1$s .%2$s.%3$s";
+        String selector = String.format(
+            template,
+            m_prefix,
+            CmsIconUtil.TYPE_ICON_CLASS,
+            CmsIconUtil.getResourceTypeIconClass(type, small));
         m_selectors.add(selector);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2011/02/01 15:08:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,11 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,17 +56,17 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsGwtActionElement extends CmsJspActionElement {
 
-    /** The opening script tag. */
-    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
-
     /** The closing script tag. */
     protected static final String SCRIPT_TAG_CLOSE = "</script>";
+
+    /** The opening script tag. */
+    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
 
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
@@ -84,13 +87,27 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Returns the serialized data for the core provider wrapped in a script tag.<p>
+     *  
+     * @return the data
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public String export() throws Exception {
+
+        return export(null);
+    }
+
+    /**
      * Returns the serialized data for the core provider wrapped into a script tag.<p>
+     * 
+     * @param iconCssClassPrefix the prefix for icon css class rules 
      * 
      * @return the data
      * 
      * @throws Exception if something goes wrong
      */
-    public String export() throws Exception {
+    public String export(String iconCssClassPrefix) throws Exception {
 
         StringBuffer sb = new StringBuffer();
 
@@ -98,7 +115,8 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
         wrapScript(sb);
-        sb.append("<style type=\"text/css\">\n @import url(\"").append(link(ICON_CSS_URI)).append("\");\n</style>\n");
+        sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
+            "\");\n</style>\n");
         return sb.toString();
     }
 
@@ -112,6 +130,20 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public String exportAll() throws Exception {
 
         return export();
+    }
+
+    /**
+     * Exports everything, using the given CSS selector prefix.<p>
+     *   
+     * @param cssIconClassPrefix the CSS selector prefix
+     *  
+     * @return the exported data
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public String exportAll(String cssIconClassPrefix) throws Exception {
+
+        return export(cssIconClassPrefix);
     }
 
     /**
@@ -153,6 +185,20 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Wraps the given buffer with surrounding script tags.<p> 
+     * 
+     * @param sb the string buffer to wrap
+     * 
+     * @return the string buffer
+     */
+    protected StringBuffer wrapScript(StringBuffer sb) {
+
+        sb.insert(0, SCRIPT_TAG_OPEN);
+        sb.append(SCRIPT_TAG_CLOSE).append("\n");
+        return sb;
+    }
+
+    /**
      * Escapes the given string for serialization.<p>
      * 
      * @param s the string to escape
@@ -168,16 +214,22 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Wraps the given buffer with surrounding script tags.<p> 
+     * Generates the link to the icon CSS JSP, and appends a "prefix" request parameter with the given value.<p>
      * 
-     * @param sb the string buffer to wrap
+     * @param prefix the value to put into the "prefix" request parameter 
      * 
-     * @return the string buffer
+     * @return the link to the icon CSS 
      */
-    protected StringBuffer wrapScript(StringBuffer sb) {
+    private String iconCssLink(String prefix) {
 
-        sb.insert(0, SCRIPT_TAG_OPEN);
-        sb.append(SCRIPT_TAG_CLOSE).append("\n");
-        return sb;
+        String param = "";
+        if (!CmsStringUtil.isEmpty(prefix)) {
+            try {
+                param = "?prefix=" + URLEncoder.encode(prefix, OpenCms.getSystemInfo().getDefaultEncoding());
+            } catch (UnsupportedEncodingException e) {
+                //ignore, default encoding should be available 
+            }
+        }
+        return link(ICON_CSS_URI) + param;
     }
 }

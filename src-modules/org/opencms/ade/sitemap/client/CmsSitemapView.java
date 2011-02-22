@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,9 +53,9 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 8.0.0
  */
@@ -512,10 +512,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_editorMode = editorMode;
         if (m_editorMode == EditorMode.vfs) {
             m_toolbar.setNewEnabled(false, "The NEW function is only available in navigation view.");
-            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().showAllResources());
+            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
         } else {
+
             m_toolbar.setNewEnabled(true, null);
-            m_inNavigationStyle.setValue(null);
+            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         }
     }
 

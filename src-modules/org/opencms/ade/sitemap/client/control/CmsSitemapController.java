@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/21 13:18:31 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 8.0.0
  */
@@ -364,6 +364,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 newEntry.setPosition(0);
                 newEntry.setNew(true);
                 newEntry.setInNavigation(true);
+                newEntry.setResourceTypeName("folder");
                 create(newEntry);
                 // leave properties empty
 

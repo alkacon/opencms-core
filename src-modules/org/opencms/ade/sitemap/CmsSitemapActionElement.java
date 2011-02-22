@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -92,7 +92,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(super.export());
+        sb.append(super.export(".vfsMode"));
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForSitemap());

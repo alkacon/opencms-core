@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsPropertyModification.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -169,7 +169,6 @@ public class CmsPropertyModification implements IsSerializable {
             prop.setStructureValue(getValue());
         } else {
             prop.setResourceValue(getValue());
-            prop.setStructureValue(getValue());
         }
     }
 

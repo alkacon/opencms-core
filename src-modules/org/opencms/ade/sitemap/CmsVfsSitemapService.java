@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -1503,6 +1503,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         //CHECK: assuming that, if entryPage refers to the default file, the lock state of the folder 
         clientEntry.setLock(generateClientLock(entryPage));
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
+        String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
+        clientEntry.setResourceTypeName(type);
         return clientEntry;
 
     }

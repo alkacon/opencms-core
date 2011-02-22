@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/02/22 09:22:40 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
@@ -83,7 +84,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 8.0.0
  * 
@@ -203,6 +204,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_inNavigationStyle = new CmsStyleVariable(this);
         m_openerForNonNavigationStyle = new CmsStyleVariable(m_opener);
         m_listItemWidget.addTitleStyleName(CSS.itemTitle());
+        m_listItemWidget.setFixedIconClasses(CmsIconUtil.getResourceIconClasses(
+            entry.getResourceTypeName(),
+            entry.getSitePath(),
+            false));
         updateInNavigation(entry);
         m_itemsById.put(entry.getId(), this);
         setId(getName(entry.getSitePath()));
@@ -641,6 +646,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateDetailPageStatus();
         setLockIcon(entry.getLock());
         updateInNavigation(entry);
+        getListItemWidget().setFixedIconClasses(
+            CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false));
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
     }
 
