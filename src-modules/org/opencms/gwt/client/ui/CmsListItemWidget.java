@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/02/22 09:44:04 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -44,8 +45,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -77,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 8.0.0
  */
@@ -607,7 +606,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             m_titleClickHandlerRegistration = null;
 
         } else {
-            m_title.addClickHandler(new ClickHandler() {
+            m_titleClickHandlerRegistration = m_title.addClickHandler(new ClickHandler() {
 
                 /**
                  * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -698,9 +697,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         final TextBox box = new TextBox();
         box.setText(m_title.getText());
         box.getElement().setAttribute("size", "45");
-        Style style = box.getElement().getStyle();
-        style.setBackgroundColor("transparent");
-        style.setBorderStyle(BorderStyle.NONE);
+        box.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelInput());
         final String originalTitle = m_title.getText();
         // wrap the boolean flag in an array so we can change it from the event handlers 
         final boolean[] checked = new boolean[] {false};
@@ -796,8 +793,8 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         String text = box.getText();
         box.removeFromParent();
-        m_title.setVisible(true);
         m_title.setText(text);
+        m_title.setVisible(true);
 
     }
 }

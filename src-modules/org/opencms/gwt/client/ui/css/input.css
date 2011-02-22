@@ -263,6 +263,12 @@
 	white-space: nowrap;
 }
 
+.labelInput {
+	background: transparent;
+	border: none;
+	vertical-align: middle;
+}
+
 .form {
 	width: 570px;
 	height: 480px;
