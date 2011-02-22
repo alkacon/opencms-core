@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0
  */
@@ -87,6 +87,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The new element information. */
     private List<CmsNewResourceInfo> m_newElementInfos;
+
+    /** The new redirect element info. */
+    private CmsNewResourceInfo m_newRedirectElementInfo;
 
     /** The reason why the current sitemap is not editable. */
     private String m_noEditReason;
@@ -135,6 +138,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param displayToolbar the flag to control the display of the toolbar
      * @param defaultNewElementInfo the type of the container page resource
      * @param newElementInfos the new element information
+     * @param newRedirectElementInfo the new redirect element info
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
@@ -156,6 +160,7 @@ public class CmsSitemapData implements IsSerializable {
         boolean displayToolbar,
         CmsNewResourceInfo defaultNewElementInfo,
         List<CmsNewResourceInfo> newElementInfos,
+        CmsNewResourceInfo newRedirectElementInfo,
         String parentSitemap,
         CmsClientSitemapEntry root,
         String openPath,
@@ -184,6 +189,7 @@ public class CmsSitemapData implements IsSerializable {
         m_allPropertyNames = allPropNames;
 
         m_newElementInfos = newElementInfos;
+        m_newRedirectElementInfo = newRedirectElementInfo;
     }
 
     /**
@@ -284,6 +290,16 @@ public class CmsSitemapData implements IsSerializable {
     public List<CmsNewResourceInfo> getNewElementInfos() {
 
         return m_newElementInfos;
+    }
+
+    /**
+     * Returns the new redirect element info.<p>
+     *
+     * @return the new redirect element info
+     */
+    public CmsNewResourceInfo getNewRedirectElementInfo() {
+
+        return m_newRedirectElementInfo;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -177,7 +177,11 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      */
     public void addChangeTitle(String title) {
 
-        CmsPropertyModification propChange = new CmsPropertyModification(m_entryId.toString() + "/NavText/S", title);
+        CmsPropertyModification propChange = new CmsPropertyModification(
+            m_entryId,
+            CmsClientProperty.PROPERTY_NAVTEXT,
+            title,
+            true);
         m_propertyModifications.add(propChange);
         m_ownInternalProperties.put("NavText", new CmsClientProperty("NavText", title, null));
     }

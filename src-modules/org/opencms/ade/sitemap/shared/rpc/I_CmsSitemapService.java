@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2011/02/17 10:51:58 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -135,9 +135,11 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
+     * @return a list of changed sitemap entries
+     * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    List<CmsClientSitemapEntry> save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>
@@ -145,8 +147,10 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
+     * @return a list of changed sitemap entries
+     * 
      * @throws CmsRpcException if something goes wrong
      */
     @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    List<CmsClientSitemapEntry> saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 }

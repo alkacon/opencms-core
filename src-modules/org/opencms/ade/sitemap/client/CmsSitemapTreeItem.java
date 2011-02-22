@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,9 +48,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -70,7 +70,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Joiner;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
@@ -84,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 8.0.0
  * 
@@ -219,7 +218,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             hideOpeners();
         }
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
-        widget.setTitleEditHandler(new I_CmsTitleEditHandler() {
+        m_listItemWidget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
             /**
              * @see org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler#handleEdit(org.opencms.gwt.client.ui.input.CmsLabel, com.google.gwt.user.client.ui.TextBox)
@@ -239,11 +238,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 String oldTitle = m_entry.getTitle();
 
                 if (!oldTitle.equals(newTitle)) {
-                    String changePath = Joiner.on("/").join(
-                        m_entry.getId().toString(),
+                    CmsPropertyModification propMod = new CmsPropertyModification(
+                        m_entry.getId(),
                         CmsClientProperty.PROPERTY_NAVTEXT,
-                        CmsClientProperty.PATH_STRUCTURE_VALUE);
-                    CmsPropertyModification propMod = new CmsPropertyModification(changePath, newTitle);
+                        newTitle,
+                        true);
                     final List<CmsPropertyModification> propChanges = Collections.<CmsPropertyModification> singletonList(propMod);
 
                     if (m_entry.isNew()) {

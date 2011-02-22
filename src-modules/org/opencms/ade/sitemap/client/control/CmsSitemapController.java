@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.sitemap.client.control;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
-import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
@@ -47,6 +46,7 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
@@ -55,7 +55,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -73,7 +72,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +89,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 8.0.0
  */
@@ -306,34 +304,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (parent != null);
         newEntry.setEditStatus(EditStatus.created);
-
-        // get a new valid UUID from server
-        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(0, true);
-                CmsCoreProvider.getService().createUUID(this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsUUID result) {
-
-                stop(false);
-                newEntry.setId(result);
-                applyChange(
-                    new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId),
-                    false);
-            }
-        };
-        action.execute();
+        applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId), false);
     }
 
     /**
@@ -1047,32 +1018,32 @@ public class CmsSitemapController implements I_CmsSitemapController {
         getChildren(sitePath, CmsSitemapTreeItem.getItemById(getEntry(sitePath).getId()).isOpen());
     }
 
-    /**
-     * Adds loaded child entries to the given sub-tree.<p>
-     * 
-     * @param parent the start element of the sub-tree
-     * @param loadedEntries the loaded entries
-     */
-    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
-
-        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
-            if (child.getSubEntries().size() == 0) {
-                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
-                while (it.hasNext()) {
-                    CmsClientSitemapEntry closed = it.next();
-                    if (closed.getId().equals(child.getId())) {
-                        child.setSubEntries(closed.getSubEntries());
-                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
-                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
-                        }
-                        it.remove();
-                    }
-                }
-            } else {
-                addChildren(child, loadedEntries);
-            }
-        }
-    }
+    //    /**
+    //     * Adds loaded child entries to the given sub-tree.<p>
+    //     * 
+    //     * @param parent the start element of the sub-tree
+    //     * @param loadedEntries the loaded entries
+    //     */
+    //    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
+    //
+    //        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
+    //            if (child.getSubEntries().size() == 0) {
+    //                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
+    //                while (it.hasNext()) {
+    //                    CmsClientSitemapEntry closed = it.next();
+    //                    if (closed.getId().equals(child.getId())) {
+    //                        child.setSubEntries(closed.getSubEntries());
+    //                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
+    //                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
+    //                        }
+    //                        it.remove();
+    //                    }
+    //                }
+    //            } else {
+    //                addChildren(child, loadedEntries);
+    //            }
+    //        }
+    //    }
 
     /**
     * Adds a change to the queue.<p>
@@ -1088,7 +1059,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         if (change.getChangeForCommit() != null) {
             // save the sitemap
-            CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
+            CmsRpcAction<List<CmsClientSitemapEntry>> saveAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
                 /**
                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -1106,9 +1077,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                 */
                 @Override
-                public void onResponse(Void result) {
+                public void onResponse(List<CmsClientSitemapEntry> result) {
 
                     stop(true);
+                    if ((result != null) && !result.isEmpty()) {
+                        for (CmsClientSitemapEntry entry : result) {
+                            change.updateEntry(entry);
+                        }
+                    }
                     change.applyToModel(CmsSitemapController.this);
                     fireChange(change);
                     for (AsyncCallback<Object> callback : callbacks) {

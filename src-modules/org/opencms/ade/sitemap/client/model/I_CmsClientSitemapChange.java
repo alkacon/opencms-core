@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 
 /**
@@ -41,7 +42,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -81,4 +82,11 @@ public interface I_CmsClientSitemapChange {
      * @return true if this change changes the detail page configuration 
      */
     boolean isChangingDetailPages();
+
+    /**
+     * Updates the sitemap entry with in the change data.<p>
+     * 
+     * @param entry the updated entry
+     */
+    void updateEntry(CmsClientSitemapEntry entry);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0 
  */
@@ -75,6 +75,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         /** An entry of type leaf doesn't have any children. */
         leaf,
+
+        /** A redirect entry. */
+        redirect,
 
         /** An entry of type sub-sitemap is a reference to a sub-sitemap. */
         subSitemap
@@ -565,7 +568,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public boolean isLeafType() {
 
-        return EntryType.leaf == m_entryType;
+        return (EntryType.leaf == m_entryType) || (EntryType.redirect == m_entryType);
     }
 
     /**
@@ -920,10 +923,15 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setId(source.getId());
         setName(source.getName());
         setOwnProperties(new HashMap<String, CmsClientProperty>(source.getOwnProperties()));
+        setDefaultFileId(source.getDefaultFileId());
         setDefaultFileProperties(new HashMap<String, CmsClientProperty>(source.getDefaultFileProperties()));
+        setOwnProperties(source.getOwnProperties());
         setSitePath(source.getSitePath());
         setVfsPath(source.getVfsPath());
-        setPosition(source.getPosition());
+        // position values < 0 are considered as not set
+        if (source.getPosition() >= 0) {
+            setPosition(source.getPosition());
+        }
         setEditStatus(source.getEditStatus());
         setLock(source.getLock());
         setEntryType(source.getEntryType());

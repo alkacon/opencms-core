@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2011/02/17 10:51:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -188,6 +188,14 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     public boolean isChangingDetailPages() {
 
         return m_entry.isDetailPage();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#updateEntry(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
+     */
+    public void updateEntry(CmsClientSitemapEntry entry) {
+
+        // nothing to do
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 8.0.0
  */
@@ -158,16 +158,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     List<AdditionalInfoItem> infoItems = new ArrayList<AdditionalInfoItem>();
                     AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
                     infoItems.add(item);
-                    //                    if (entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName()) != null) {
-                    //                        CmsLinkBean link = entry.getRedirectInfo();
-                    //                        String target = "-";
-                    //                        if (link != null) {
-                    //                            target = link.getLink();
-                    //                        }
-                    //                        String title = Messages.get().key(Messages.GUI_ADDINFO_REDIRECT_0);
-                    //                        AdditionalInfoItem redirectInfo = new AdditionalInfoItem(title, target, null);
-                    //                        infoItems.add(redirectInfo);
-                    //                    }
                     callback.onSuccess(infoItems);
                 } else {
                     CmsCoreProvider.get().getResourceState(entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {

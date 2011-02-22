@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
@@ -44,7 +45,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.adeconfig.CmsConfigurationSourceInfo;
 import org.opencms.adeconfig.CmsContainerPageConfigurationData;
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -119,6 +119,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsSitemapService.class);
+
+    /** The redirect recource type name. */
+    private static final String RECOURCE_TYPE_NAME_REDIRECT = "xmlredirect";
 
     /** Serialization uid. */
     private static final long serialVersionUID = -7236544324371767330L;
@@ -158,26 +161,30 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, "sitemap_"
                 + subSitemapFolder.getName()
                 + ".config");
-            String containerpageConfigName = CmsStringUtil.joinPaths(folderName, "containerpage_"
-                + subSitemapFolder.getName()
-                + ".config");
+            String containerpageConfigName = CmsStringUtil.joinPaths(
+                folderName,
+                "containerpage_" + subSitemapFolder.getName() + ".config");
             if (!cms.existsResource(folderName)) {
                 tryUnlock(cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId()));
             }
             if (cms.existsResource(sitemapConfigName)) {
-                sitemapConfigName = CmsADEDefaultConfiguration.getNewFileName(cms, CmsStringUtil.joinPaths(
-                    folderName,
-                    "sitemap_" + subSitemapFolder.getName() + "_%(number).config"));
+                sitemapConfigName = CmsADEDefaultConfiguration.getNewFileName(
+                    cms,
+                    CmsStringUtil.joinPaths(folderName, "sitemap_" + subSitemapFolder.getName() + "_%(number).config"));
             }
-            tryUnlock(cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
-                "sitemap_config").getTypeId()));
+            tryUnlock(cms.createResource(
+                sitemapConfigName,
+                OpenCms.getResourceManager().getResourceType("sitemap_config").getTypeId()));
             if (cms.existsResource(containerpageConfigName)) {
-                containerpageConfigName = CmsADEDefaultConfiguration.getNewFileName(cms, CmsStringUtil.joinPaths(
-                    folderName,
-                    "containerpage_" + subSitemapFolder.getName() + "_%(number).config"));
+                containerpageConfigName = CmsADEDefaultConfiguration.getNewFileName(
+                    cms,
+                    CmsStringUtil.joinPaths(folderName, "containerpage_"
+                        + subSitemapFolder.getName()
+                        + "_%(number).config"));
             }
-            tryUnlock(cms.createResource(containerpageConfigName, OpenCms.getResourceManager().getResourceType(
-                "containerpage_config").getTypeId()));
+            tryUnlock(cms.createResource(
+                containerpageConfigName,
+                OpenCms.getResourceManager().getResourceType("containerpage_config").getTypeId()));
 
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(
@@ -194,10 +201,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             tryUnlock(subSitemapFolder);
 
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), OpenCms.getSitemapManager().getElementPropertyConfiguration(
-                cms,
-                entryPoint), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSubSitemapInfo(subSitemapPath, System.currentTimeMillis());
@@ -336,10 +343,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), OpenCms.getSitemapManager().getElementPropertyConfiguration(
-                cms,
-                entryPoint), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSitemapMergeInfo(getChildren(entryPoint, subSitemapPath, 1), System.currentTimeMillis());
@@ -432,6 +439,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 isDisplayToolbar(getRequest()),
                 defaultNewInfo,
                 newResourceInfos,
+                createResourceTypeInfo(OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT), null),
                 parentSitemap,
                 getRootEntry(entryPoint, propertyConfig),
                 openPath,
@@ -448,21 +456,23 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
-    public void save(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
+    public List<CmsClientSitemapEntry> save(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
+        List<CmsClientSitemapEntry> result = null;
         try {
-            saveInternal(entryPoint, change);
+            result = saveInternal(entryPoint, change);
         } catch (Exception e) {
             error(e);
         }
+        return result;
     }
 
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
-    public void saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
+    public List<CmsClientSitemapEntry> saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
-        save(entryPoint, change);
+        return save(entryPoint, change);
     }
 
     /**
@@ -516,24 +526,32 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param entryPoint the URI of the sitemap to save
      * @param change the change to save
      * 
+     * @return list of changed sitemap entries
+     * 
      * @throws CmsException 
      */
-    protected void saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
+    protected List<CmsClientSitemapEntry> saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
+        List<CmsClientSitemapEntry> result = new ArrayList<CmsClientSitemapEntry>();
+        CmsClientSitemapEntry changedEntry = null;
         switch (change.getChangeType()) {
             case delete:
-                delete(change);
+                changedEntry = delete(change);
                 break;
             case remove:
-                removeEntryFromNavigation(change);
+                changedEntry = removeEntryFromNavigation(change);
                 break;
             case undelete:
-                undelete(change);
+                changedEntry = undelete(change);
                 break;
             default:
-                applyChange(entryPoint, change);
+                changedEntry = applyChange(entryPoint, change);
+        }
+        if (changedEntry != null) {
+            result.add(changedEntry);
         }
         setClipboardData(change.getClipBoardData());
+        return result;
     }
 
     /**
@@ -574,15 +592,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * Applys the given change to the VFS.<p>
      * 
-     * @param entryPoint the sitemap uri
+     * @param entryPoint the sitemap entry-point
      * @param change the change
+     * 
      * @throws CmsException if something goes wrong
      */
-    private void applyChange(String entryPoint, CmsSitemapChange change /*, Map<CmsUUID, CmsResource> entryFolders */)
-    throws CmsException {
+    private CmsClientSitemapEntry applyChange(String entryPoint, CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResource configFile = null;
+        CmsClientSitemapEntry changedEntry = null;
         // lock the config file first, to avoid half done changes
         if (change.hasDetailPageInfos()) {
             CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
@@ -595,7 +614,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             ensureLock(configFile);
         }
         if (change.isNew()) {
-            createNewEntry(entryPoint, change);
+            changedEntry = createNewEntry(entryPoint, change);
         } else if (change.getEntryId() != null) {
             modifyEntry(change);
         }
@@ -603,6 +622,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             saveDetailPages(change.getDetailPageInfos(), configFile);
             tryUnlock(configFile);
         }
+        return changedEntry;
     }
 
     /**
@@ -613,8 +633,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @return the navPos value
      */
-    private float calculateNavPosition(CmsResource entryFolder, int targetPosition/*,
-                                                                                  Map<CmsUUID, CmsResource> entryFolders */) {
+    private float calculateNavPosition(CmsResource entryFolder, int targetPosition) {
 
         CmsObject cms = getCmsObject();
         String parentPath = CmsResource.getParentFolder(cms.getSitePath(entryFolder));
@@ -673,23 +692,35 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * Creates a new page in navigation.<p>
      * 
-     * @param entryPoint the site-map uri
+     * @param entryPoint the site-map entry-point
      * @param change the new change
+     * 
      * @throws CmsException if something goes wrong
      */
-    private void createNewEntry(String entryPoint, CmsSitemapChange change) throws CmsException {
+    private CmsClientSitemapEntry createNewEntry(String entryPoint, CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
+        CmsClientSitemapEntry newEntry = null;
         if (change.getParentId() != null) {
             CmsResource parentFolder = cms.readResource(change.getParentId());
             String entryPath = "";
             CmsResource entryFolder = null;
-            if ("xmlredirect".equals(OpenCms.getResourceManager().getResourceType(change.getNewResourceTypeId()).getTypeName())) {
+            CmsResource newRes = null;
+            byte[] content = null;
+            if (change.getNewCopyResourceId() != null) {
+                CmsResource copyPage = cms.readResource(change.getNewCopyResourceId());
+                content = cms.readFile(copyPage).getContents();
+            }
+            if (RECOURCE_TYPE_NAME_REDIRECT.equals(OpenCms.getResourceManager().getResourceType(
+                change.getNewResourceTypeId()).getTypeName())) {
                 entryPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName());
+                newRes = cms.createResource(entryPath, change.getNewResourceTypeId(), content, null);
+                cms.writePropertyObjects(newRes, generateInheritProperties(change, newRes));
             } else {
                 String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
+                CmsUUID entryId = change.getEntryId() != null ? change.getEntryId() : new CmsUUID();
                 entryFolder = new CmsResource(
-                    change.getEntryId(),
+                    entryId,
                     new CmsUUID(),
                     entryFolderPath,
                     CmsResourceTypeFolder.getStaticTypeId(),
@@ -707,27 +738,38 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(entryFolderPath, entryFolder, null, generateInheritProperties(
-                    change,
-                    entryFolder));
+                entryFolder = cms.createResource(
+                    entryFolderPath,
+                    entryFolder,
+                    null,
+                    generateInheritProperties(change, entryFolder));
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
+                newRes = cms.createResource(
+                    entryPath,
+                    change.getNewResourceTypeId(),
+                    content,
+                    generateOwnProperties(change));
             }
-            byte[] content = null;
-            if (change.getNewCopyResourceId() != null) {
-                CmsResource copyPage = cms.readResource(change.getNewCopyResourceId());
-                content = cms.readFile(copyPage).getContents();
-            }
-            CmsResource newRes = cms.createResource(
-                entryPath,
-                change.getNewResourceTypeId(),
-                content,
-                generateOwnProperties(change));
+
             if (entryFolder != null) {
                 tryUnlock(entryFolder);
+                newEntry = toClientEntry(
+                    getNavBuilder().getNavigationForResource(cms.getSitePath(entryFolder)),
+                    OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                    false);
             }
             tryUnlock(newRes);
-
+            if (newEntry == null) {
+                newEntry = toClientEntry(
+                    getNavBuilder().getNavigationForResource(cms.getSitePath(newRes)),
+                    OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                    false);
+            }
+            // mark position as not set
+            newEntry.setPosition(-1);
         }
+
+        return newEntry;
     }
 
     /**
@@ -775,8 +817,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (locale == null) {
             locale = new Locale("en");
         }
-        String title = CmsWorkplaceMessages.getResourceTypeName(locale, name);
-        return new CmsNewResourceInfo(resType.getTypeId(), name, title, null, copyResourceId);
+        return new CmsNewResourceInfo(
+            resType.getTypeId(),
+            name,
+            CmsWorkplaceMessages.getResourceTypeName(locale, name),
+            CmsWorkplaceMessages.getResourceTypeDescription(locale, name),
+            copyResourceId);
     }
 
     /**
@@ -786,13 +832,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @throws CmsException if something goes wrong
      */
-    private void delete(CmsSitemapChange change) throws CmsException {
+    private CmsClientSitemapEntry delete(CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResource resource = cms.readResource(change.getEntryId());
         ensureLock(resource);
         cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
         tryUnlock(resource);
+        return null;
     }
 
     /**
@@ -817,6 +864,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Generates a client side lock info object representing the current lock state of the given resource.<p>
      * 
      * @param resource the resource
+     * 
      * @return the client lock
      * 
      * @throws CmsException if something goes wrong
@@ -856,8 +904,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 result.add(prop);
             }
         }
-
-        //result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, change.getTitle(), change.getTitle()));
         if (change.hasChangedPosition()) {
             float navPos = calculateNavPosition(entryFolder, change.getPosition()/*, entryFolders */);
             result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos), null));
@@ -950,6 +996,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Returns the sitemap children for the given path with all descendants up to the given level, ie. 
      * <dl><dt>levels=1</dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
      * and so on.<p>
+     * 
      * @param root the site relative root
      * @param levels the levels to recurse
      * @param propertyConfig the property configuration for sitemaps 
@@ -1137,6 +1184,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Gets the names of all available properties.<p>
      * 
      * @param cms the CMS context 
+     * 
      * @return the list of all property names 
      *  
      * @throws CmsException
@@ -1306,8 +1354,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @throws CmsException if something goes wrong
      */
-    private void modifyEntry(CmsSitemapChange change /*, Map<CmsUUID, CmsResource> entryFolders */)
-    throws CmsException {
+    private void modifyEntry(CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResource entryPage = null;
@@ -1387,9 +1434,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @param change the change to apply
      * 
+     * @return the changed client sitemap entry or <code>null</code>
+     * 
      * @throws CmsException if something goes wrong
      */
-    private void removeEntryFromNavigation(CmsSitemapChange change) throws CmsException {
+    private CmsClientSitemapEntry removeEntryFromNavigation(CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResource entryFolder = cms.readResource(change.getEntryId());
@@ -1405,13 +1454,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsProperty.DELETE_VALUE));
         cms.writePropertyObjects(cms.getSitePath(entryFolder), properties);
         tryUnlock(entryFolder);
+        return null;
     }
 
     /**
      * Saves the detail page information of a sitemap to the sitemap's configuration file.<p>
      * 
-     * @param detailPages
-     * @param resource
+     * @param detailPages saves the detailpage configuration
+     * @param resource the configuration file resource
+     * 
      * @throws CmsException
      */
     private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource) throws CmsException {
@@ -1483,7 +1534,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         } else {
             entryPage = navElement.getResource();
             clientEntry.setName(entryPage.getName());
-            clientEntry.setEntryType(EntryType.leaf);
+            if (entryPage.getTypeId() == OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT).getTypeId()) {
+                clientEntry.setEntryType(EntryType.redirect);
+            } else {
+                clientEntry.setEntryType(EntryType.leaf);
+            }
         }
 
         String path = cms.getSitePath(entryPage);
@@ -1528,24 +1583,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @param change the change data
      * 
+     * @return the changed entry or <code>null</code>
+     *  
      * @throws CmsException if something goes wrong
      */
-    private void undelete(CmsSitemapChange change) throws CmsException {
+    private CmsClientSitemapEntry undelete(CmsSitemapChange change) throws CmsException {
 
-        CmsResource deleted = getCmsObject().readResource(change.getEntryId(), CmsResourceFilter.ALL);
+        CmsObject cms = getCmsObject();
+        CmsResource deleted = cms.readResource(change.getEntryId(), CmsResourceFilter.ALL);
         if (deleted.getState().isDeleted()) {
             ensureLock(deleted);
-            getCmsObject().undeleteResource(getCmsObject().getSitePath(deleted), true);
+            cms.undeleteResource(getCmsObject().getSitePath(deleted), true);
             tryUnlock(deleted);
         }
-
+        return null;
     }
 
     /**
      * Updates the navigation position for a resource.<p>
      * 
      * @param res the resource for which to update the navigation position
-     *  
      * @param change the sitemap change
      *  
      * @throws CmsException if something goes wrong 
@@ -1566,7 +1623,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param cms the CMS context 
      * @param ownRes the resource 
      * @param defaultFileRes the default file resource (possibly null) 
-     * 
      * @param propertyModifications the property modifications 
      * 
      * @throws CmsException if something goes wrong 

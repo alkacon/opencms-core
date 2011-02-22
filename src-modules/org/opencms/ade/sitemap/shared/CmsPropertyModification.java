@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsPropertyModification.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,21 @@ public class CmsPropertyModification implements IsSerializable {
         m_name = propMod.m_name;
         m_value = propMod.m_value;
         m_isStructureValue = propMod.m_isStructureValue;
+    }
+
+    /**
+     * Creates a new property modification bean.<p>
+     * @param resourceId the resource id for which the property changed
+     * @param propertyName the name of the property
+     * @param value the new property value 
+     * @param isStructureValue flag which indicates whether the structure value changed
+     */
+    public CmsPropertyModification(CmsUUID resourceId, String propertyName, String value, boolean isStructureValue) {
+
+        m_id = resourceId;
+        m_name = propertyName;
+        m_value = value;
+        m_isStructureValue = isStructureValue;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  */
@@ -118,6 +118,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_EDIT_0 = "GUI_HOVERBAR_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_EDIT_REDIRECT_0 = "GUI_HOVERBAR_EDIT_REDIRECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_GOTO_0 = "GUI_HOVERBAR_GOTO_0";

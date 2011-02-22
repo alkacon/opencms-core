@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/22 09:46:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,8 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
@@ -49,7 +49,7 @@ import org.opencms.xml.sitemap.CmsDetailPageInfo;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -137,10 +137,12 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
             newParent.insertChild(newChild, 0);
         }
         newChild.updateEntry(getEntry());
+        newChild.getListItemWidget().updateTruncation();
         if (m_ensureVisible) {
             view.ensureVisible(newChild);
         }
         view.updateDetailPageView(m_entry);
+        view.getController().recomputeProperties();
     }
 
     /**
@@ -191,6 +193,16 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     public boolean isChangingDetailPages() {
 
         return m_entry.isDetailPage();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#updateEntry(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
+     */
+    public void updateEntry(CmsClientSitemapEntry entry) {
+
+        if (m_entry.getSitePath().equals(entry.getSitePath())) {
+            m_entry.update(entry);
+        }
     }
 
     /**
