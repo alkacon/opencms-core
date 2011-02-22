@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/Messages.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/22 16:34:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UPLOAD_CREATING_0 = "ERR_UPLOAD_CREATING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_CREATING_1 = "ERR_UPLOAD_CREATING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_NO_FILEITEMS_0 = "ERR_UPLOAD_NO_FILEITEMS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FROZEN_1 = "ERR_UPLOAD_FROZEN_1";
 
     /** Message constant for key in the resource bundle. */
@@ -73,7 +79,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UPLOAD_NO_MULTIPART_0 = "ERR_UPLOAD_NO_MULTIPART_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_SIZE_LIMIT_2 = "ERR_UPLOAD_SIZE_LIMIT_2";
+    public static final String ERR_UPLOAD_FILE_SIZE_LIMIT_3 = "ERR_UPLOAD_FILE_SIZE_LIMIT_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_REQUEST_SIZE_LIMIT_2 = "ERR_UPLOAD_REQUEST_SIZE_LIMIT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_UNEXPECTED_0 = "ERR_UPLOAD_UNEXPECTED_0";
@@ -97,7 +106,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INFO_UPLOAD_SUCCESS_0 = "INFO_UPLOAD_SUCCESS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_UPLOAD_USER_CANCELED_3 = "INFO_UPLOAD_USER_CANCELED_3";
+    public static final String INFO_UPLOAD_USER_CANCELED_2 = "INFO_UPLOAD_USER_CANCELED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLIENT_WITH_TICKET_4 = "LOG_CLIENT_WITH_TICKET_4";

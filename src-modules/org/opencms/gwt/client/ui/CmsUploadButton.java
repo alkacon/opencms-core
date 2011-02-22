@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/22 16:34:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -52,7 +53,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -94,11 +95,14 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
     /** The handler for this panel. */
     private CmsUploadButtonHandler m_handler;
 
+    /** The target folder for the file upload. */
+    private String m_targetFolder;
+
     /** The upload button. */
     private CmsPushButton m_uploadButton;
 
     /** The upload dialog. */
-    private CmsUploadDialog m_uploadDialog;
+    private A_CmsUploadDialog m_uploadDialog;
 
     /**
      * The default constructor.<p>
@@ -113,6 +117,7 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
         m_handler = new CmsUploadButtonHandler();
         // create the push button
         m_uploadButton = new CmsPushButton();
+        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().innerButton());
 
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadButton());
@@ -135,7 +140,7 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
      * 
      * @param dialog the upload dialog
      */
-    public CmsUploadButton(CmsUploadDialog dialog) {
+    public CmsUploadButton(A_CmsUploadDialog dialog) {
 
         this();
         m_uploadDialog = dialog;
@@ -158,6 +163,26 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
     }
 
     /**
+     * Returns the targetFolder.<p>
+     *
+     * @return the targetFolder
+     */
+    public String getTargetFolder() {
+
+        return m_targetFolder;
+    }
+
+    /**
+     * Sets the targetFolder.<p>
+     *
+     * @param targetFolder the targetFolder to set
+     */
+    public void setTargetFolder(String targetFolder) {
+
+        m_targetFolder = targetFolder;
+    }
+
+    /**
      * Sets the text of the upload button.<p>
      * 
      * @param text the text to set
@@ -177,7 +202,9 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
         if (m_uploadDialog != null) {
             m_uploadDialog.addFileInput(m_fileInput);
         } else {
-            new CmsUploadDialog().loadAndShow(m_fileInput);
+            A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
+            dialog.setTargetFolder(m_targetFolder);
+            dialog.loadAndShow(m_fileInput);
         }
         createFileInput();
     }

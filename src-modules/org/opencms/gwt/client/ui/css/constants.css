@@ -24,6 +24,8 @@
 @def textColorNew #003082;
 /** The changed text color. Use it only for displaying texts of changed resources. */
 @def textColorChanged #B31B34;
+/** The important text color. Use it only for displaying important text. */
+@def textColorImportant #B31B34;
 
 
 /**

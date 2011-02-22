@@ -5,22 +5,35 @@
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
 		
-	<define-property name="fileapi.support" values="yes,no" />
+	<define-property name="fileapi.support" values="formdata,fileapi,no" />
 	<property-provider name="fileapi.support"><![CDATA[
-			var input=document.createElement('input');
-			input.setAttribute('type','file');
-			return input.files==null?'no':'yes';
+		var input = document.createElement('input');
+		input.setAttribute('type', 'file');
+		if (input.files != null) {
+			if(typeof FormData == 'function') {
+				return 'formdata';
+			}
+			return 'fileapi';
+		}
+		return 'no';
 	]]></property-provider>
 
 	<replace-with class="org.opencms.gwt.client.ui.input.upload.CmsFileInputFileApiImpl">
 		<when-type-is class="org.opencms.gwt.client.ui.input.upload.CmsFileInputImpl" />
-		<when-property-is name="fileapi.support" value="yes" />
 		<any>
-			<when-property-is name="user.agent" value="ie8" />
-			<when-property-is name="user.agent" value="safari" />
-			<when-property-is name="user.agent" value="gecko1_8" />
-			<when-property-is name="user.agent" value="opera" />
+			<when-property-is name="fileapi.support" value="fileapi" />
+			<when-property-is name="fileapi.support" value="formdata" />
 		</any>
+	</replace-with>
+
+	<replace-with class="org.opencms.gwt.client.ui.CmsUploadDialogFileApiImpl">
+		<when-type-is class="org.opencms.gwt.client.ui.CmsUploadDialogImpl" />
+		<when-property-is name="fileapi.support" value="fileapi" />
+	</replace-with>
+	
+	<replace-with class="org.opencms.gwt.client.ui.CmsUploadDialogFormDataImpl">
+		<when-type-is class="org.opencms.gwt.client.ui.CmsUploadDialogImpl" />
+		<when-property-is name="fileapi.support" value="formdata" />
 	</replace-with>
 	
 	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImpl">

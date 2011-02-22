@@ -3,7 +3,6 @@
 }
 
 .meterWrap, .meterValue, .meterText {
-    /* The width and height of your image */
     width: 100%;
     height: 20px;
 }

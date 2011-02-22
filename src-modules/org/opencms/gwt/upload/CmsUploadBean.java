@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,19 +33,20 @@ package org.opencms.gwt.upload;
 
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsUploadFileBean.I_CmsUploadConstants;
-import org.opencms.gwt.shared.CmsUploadProgessInfo;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.loader.CmsLoaderException;
-import org.opencms.lock.CmsLock;
-import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -54,11 +55,10 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.Messages;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,10 +69,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
+import org.apache.log4j.spi.ThrowableInformation;
 
 /**
  * Bean to be used in JSP scriptlet code that provides 
@@ -80,14 +82,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsUploadBean extends CmsJspBean {
 
     /** The default delay for slow uploads. */
-    public static final int DEFAULT_SLOW_DELAY_MILLIS = 50;
+    public static final int DEFAULT_SLOW_DELAY_MILLIS = 0;
 
     /** The default upload timeout. */
     public static final int DEFAULT_UPLOAD_TIMEOUT = 20000;
@@ -104,11 +106,20 @@ public class CmsUploadBean extends CmsJspBean {
     /** A static map of all listeners. */
     private static Map<CmsUUID, CmsUploadListener> m_listeners = new HashMap<CmsUUID, CmsUploadListener>();
 
+    /** Signals that the start method is called. */
+    private boolean m_called;
+
+    /** The gwt message bundle. */
+    private CmsMessages m_gwtBundle = org.opencms.gwt.Messages.get().getBundle();
+
     /** A list of the file items to upload. */
     private List<FileItem> m_multiPartFileItems;
 
     /** The map of parameters read from the current request. */
     private Map<String, String[]> m_parameterMap;
+
+    /** The names of the resources that have been created successfully. */
+    private List<String> m_resourcesCreated = new ArrayList<String>();
 
     /**
      * Constructor, with parameters.<p>
@@ -136,115 +147,105 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
-     * Starts the upload.<p>
+     * Returns the VFS path for the given filename and folder.<p>
+     * 
+     * @param cms the cms object
+     * @param fileName the filename to combine with the folder
+     * @param folder the folder to combine with the filename
+     * 
+     * @return the VFS path for the given filename and folder
      */
-    public void start() {
+    public static String getNewResourceName(CmsObject cms, String fileName, String folder) {
 
-        // check if the request is a multipart request
-        if (ServletFileUpload.isMultipartContent(getRequest())) {
-
-            CmsUploadListener listener = new CmsUploadListener(getRequest().getContentLength());
-            addListener(listener);
-
-            boolean errorOccurred = true;
-
-            try {
-                // parse the request: stores the file items and the parameters of the request locally
-                parseRequest(listener);
-                writeResponse(generateResponse(null, listener.getInfo()));
-                errorOccurred = false;
-            } catch (CmsUploadException e) {
-                writeResponse(generateResponse(e, listener.getInfo()));
-                LOG.debug(e.getMessage(), e);
-            } finally {
-                removeListener(listener.getId());
-            }
-
-            try {
-                if (m_multiPartFileItems != null) {
-
-                    String targetFolder = getTargetFolder();
-
-                    // iterate over the list of files to upload and create each single resource
-                    for (FileItem fi : m_multiPartFileItems) {
-                        if ((fi != null) && (!fi.isFormField())) {
-                            // found the file object
-                            String newResname = CmsResource.getName(fi.getName().replace('\\', '/'));
-                            newResname = getNewResourceName(newResname, targetFolder);
-                            byte[] content = fi.get();
-                            fi.delete();
-                            createSingleResource(newResname, content);
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                if (!errorOccurred) {
-                    CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
-                        org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_0));
-                    writeResponse(generateResponse(ex, null));
-                }
-                LOG.error(
-                    org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_0),
-                    e);
-            }
-        } else {
-            LOG.error(new CmsException(org.opencms.gwt.Messages.get().container(
-                org.opencms.gwt.Messages.ERR_UPLOAD_NO_MULTIPART_0)));
-        }
+        String newResname = CmsResource.getName(fileName.replace('\\', '/'));
+        newResname = cms.getRequestContext().getFileTranslator().translateResource(newResname);
+        newResname = folder + newResname;
+        return newResname;
     }
 
     /**
-     * Puts a upload listener into the static map.<p>
+     * Starts the upload.<p>
      * 
-     * @param listener the listener to put in the map
+     * @return the response String (JSON)
      */
-    private void addListener(CmsUploadListener listener) {
+    public String start() {
 
+        // ensure that this method can only be called once
+        if (m_called) {
+            throw new UnsupportedOperationException();
+        }
+        m_called = true;
+
+        // create a upload listener
+        CmsUploadListener listener = createListener();
+        try {
+            // try to parse the request
+            parseRequest(listener);
+            // try to create the resources on the VFS
+            createResources();
+        } catch (CmsException e) {
+            // an error occurred while creating the resources on the VFS, create a special error message
+            LOG.error(e.getMessage(), e);
+            return generateResponse(Boolean.FALSE, getCreationErrorMessage(), formatStackTrace(e));
+        } catch (CmsUploadException e) {
+            // an expected error occurred while parsing the request, the error message is already set in the exception
+            LOG.debug(e.getMessage(), e);
+            return generateResponse(Boolean.FALSE, e.getMessage(), formatStackTrace(e));
+        } catch (Exception e) {
+            // an unexpected error occurred while parsing the request, create a non-specific error message 
+            LOG.error(e.getMessage(), e);
+            String message = m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_UNEXPECTED_0);
+            return generateResponse(Boolean.FALSE, message, formatStackTrace(e));
+        } finally {
+            removeListener(listener.getId());
+        }
+        // the upload was successful inform the user about success
+        return generateResponse(Boolean.TRUE, m_gwtBundle.key(org.opencms.gwt.Messages.INFO_UPLOAD_SUCCESS_0), "");
+    }
+
+    /**
+     * Creates a upload listener and puts it into the static map.<p>
+     * 
+     * @return the listener
+     */
+    private CmsUploadListener createListener() {
+
+        CmsUploadListener listener = new CmsUploadListener(getRequest().getContentLength());
         m_listeners.put(listener.getId(), listener);
         getRequest().getSession().setAttribute(SESSION_ATTRIBUTE_LISTENER_ID, listener.getId());
+        return listener;
     }
 
     /**
-     * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
+     * Creates the resources.<p>
      * 
-     * @param resource the resource name which is checked
-     * 
-     * @throws CmsException if reading or locking the resource fails
+     * @throws UnsupportedEncodingException 
      */
-    private void checkLock(String resource) throws CmsException {
+    private void createResources() throws CmsException, UnsupportedEncodingException {
 
-        checkLock(resource, CmsLockType.EXCLUSIVE);
-    }
+        // get the target folder
+        String targetFolder = getTargetFolder();
 
-    /**
-     * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
-     * 
-     * @param resource the resource name which is checked
-     * @param type indicates the mode {@link CmsLockType#EXCLUSIVE} or {@link CmsLockType#TEMPORARY}
-     * 
-     * @throws CmsException if reading or locking the resource fails
-     */
-    private void checkLock(String resource, CmsLockType type) throws CmsException {
+        // iterate over the list of files to upload and create each single resource
+        for (FileItem fi : m_multiPartFileItems) {
+            if ((fi != null) && (!fi.isFormField())) {
 
-        CmsResource res = getCmsObject().readResource(resource, CmsResourceFilter.ALL);
-        CmsLock lock = getCmsObject().getLock(res);
-        boolean lockable = lock.isLockableBy(getCmsObject().getRequestContext().getCurrentUser());
+                // read the content of the file
+                byte[] content = fi.get();
+                fi.delete();
 
-        if (OpenCms.getWorkplaceManager().autoLockResources()) {
-            // autolock is enabled, check the lock state of the resource
-            if (lockable) {
-                // resource is lockable, so lock it automatically
-                if (type == CmsLockType.TEMPORARY) {
-                    getCmsObject().lockResourceTemporary(resource);
-                } else {
-                    getCmsObject().lockResource(resource);
+                // determine the new resource name
+                String fileName = fi.getName();
+                if (isFileNameEncoded()) {
+                    fileName = URLDecoder.decode(fi.getName(), "UTF-8");
                 }
-            } else {
-                throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
-            }
-        } else {
-            if (!lockable) {
-                throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
+                String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
+
+                // create the resource
+                createSingleResource(newResname, content);
+
+                // add the name of the created resource to the list of successful created resources
+                m_resourcesCreated.add(newResname);
             }
         }
     }
@@ -296,8 +297,11 @@ public class CmsUploadBean extends CmsJspBean {
             }
         } else {
             // if the resource already exists, replace it
-            checkLock(newResname);
-            CmsFile file = getCmsObject().readFile(newResname, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = getCmsObject().readResource(newResname, CmsResourceFilter.ALL);
+            if (!getCmsObject().getLock(res).isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())) {
+                getCmsObject().lockResource(res);
+            }
+            CmsFile file = getCmsObject().readFile(res);
             byte[] contents = file.getContents();
             try {
                 getCmsObject().replaceResource(newResname, resTypeId, content, null);
@@ -314,58 +318,82 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
-     * Generates the JSON object for the response.<p>
+     * Returns the stacktrace of the given exception as String.<p>
      * 
-     * Assumes that the upload was successful if the exception parameter is <code>null</code>.<p>
+     * @param e the exception
      * 
-     * @param ex the exception that was thrown during upload
-     * @param info the current progress info object
-     * 
-     * @return the JSON object that will be parsed by the client
+     * @return the stacktrace as String
      */
-    private JSONObject generateResponse(Exception ex, CmsUploadProgessInfo info) {
+    private String formatStackTrace(Exception e) {
 
-        JSONObject result = new JSONObject();
-
-        try {
-            if (ex == null) {
-                result.put(I_CmsUploadConstants.KEY_SUCCESS, Boolean.TRUE);
-                result.put(
-                    I_CmsUploadConstants.KEY_MESSAGE,
-                    org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.INFO_UPLOAD_SUCCESS_0));
-                result.put(I_CmsUploadConstants.KEY_STACKTRACE, "");
-            } else {
-                result.put(I_CmsUploadConstants.KEY_SUCCESS, Boolean.FALSE);
-                result.put(I_CmsUploadConstants.KEY_MESSAGE, ex.getMessage());
-                result.put(I_CmsUploadConstants.KEY_STACKTRACE, CmsException.getStackTraceAsString(ex));
-            }
-
-            if (info == null) {
-                info = new CmsUploadProgessInfo(0, 0, false, 0, 0);
-            }
-            result.put(I_CmsUploadConstants.KEY_CURRENT_FILE, info.getCurrentFile());
-            result.put(I_CmsUploadConstants.KEY_BYTES_READ, info.getBytesRead());
-            result.put(I_CmsUploadConstants.KEY_CONTENT_LENGTH, info.getContentLength());
-            result.put(I_CmsUploadConstants.KEY_PERCENT, info.getPercent());
-            result.put(I_CmsUploadConstants.KEY_RUNNING, info.isRunning());
-
-        } catch (JSONException e) {
-            LOG.error(org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.ERR_UPLOAD_JSON_0), e);
+        StringBuffer result = new StringBuffer(64);
+        for (String s : new ThrowableInformation(e).getThrowableStrRep()) {
+            result.append(s);
+            result.append("<br />\n");
         }
-        return result;
+        return result.toString();
     }
 
     /**
-     * Returns the VFS path of a resource for the given filename and the given folder.<p>
+     * Generates a JSON object and returns its String representation for the response.<p>
      * 
-     * @param fileName the name of the file
-     * @param folder the folder for the new resoruce
-     * 
-     * @return the VFS path of a resource for the given filename and the given folder
+     * @return the the response String
      */
-    private String getNewResourceName(String fileName, String folder) {
+    private String generateResponse(Boolean success, String message, String stacktrace) {
 
-        return folder + getCmsObject().getRequestContext().getFileTranslator().translateResource(fileName);
+        JSONObject result = new JSONObject();
+        try {
+            result.put(I_CmsUploadConstants.KEY_SUCCESS, success);
+            result.put(I_CmsUploadConstants.KEY_MESSAGE, message);
+            result.put(I_CmsUploadConstants.KEY_STACKTRACE, stacktrace);
+            result.put(I_CmsUploadConstants.KEY_REQUEST_SIZE, getRequest().getContentLength());
+        } catch (JSONException e) {
+            LOG.error(m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_JSON_0), e);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the error message if an error occurred during the creation of resources in the VFS.<p>
+     * 
+     * @return the error message
+     */
+    private String getCreationErrorMessage() {
+
+        String message = new String();
+        if (m_resourcesCreated.isEmpty()) {
+            // no resources have been created on the VFS
+            message = m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_0);
+        } else {
+            // some resources have been created, tell the user which resources were created successfully
+            StringBuffer buf = new StringBuffer(64);
+            for (String name : m_resourcesCreated) {
+                buf.append("<br />");
+                buf.append(name);
+                buf.append("<br />");
+            }
+            message = m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_1, buf.toString());
+        }
+        return message;
+    }
+
+    /**
+     * Gets the encoding flag from the request parameters and returns <code>true</code>
+     * if the value of the according field is set to <code>true</code>.<p> 
+     * 
+     * @return <code>true</code> if the flag is set to true
+     */
+    private boolean isFileNameEncoded() {
+
+        if (m_parameterMap.get(CmsCoreData.UPLOAD_FILE_NAME_URL_ENCODED_FLAG) != null) {
+            String flag = m_parameterMap.get(CmsCoreData.UPLOAD_FILE_NAME_URL_ENCODED_FLAG)[0];
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(flag)) {
+                if (flag.equalsIgnoreCase(Boolean.TRUE.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -381,8 +409,8 @@ public class CmsUploadBean extends CmsJspBean {
 
         // get the target folder on the vfs
         CmsResource target = getCmsObject().readResource("/", CmsResourceFilter.IGNORE_EXPIRATION);
-        if (m_parameterMap.get("upload_target_folder") != null) {
-            String targetFolder = m_parameterMap.get("upload_target_folder")[0];
+        if (m_parameterMap.get(CmsCoreData.UPLOAD_TARGET_FOLDER_FIELD_NAME) != null) {
+            String targetFolder = m_parameterMap.get(CmsCoreData.UPLOAD_TARGET_FOLDER_FIELD_NAME)[0];
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetFolder)) {
                 if (getCmsObject().existsResource(targetFolder)) {
                     CmsResource tmpTarget = getCmsObject().readResource(
@@ -407,75 +435,81 @@ public class CmsUploadBean extends CmsJspBean {
      * 
      * Stores the file items and the request parameters in a local variable if present.<p>
      */
-    @SuppressWarnings("unchecked")
-    private void parseRequest(CmsUploadListener listener) {
+    private void parseRequest(CmsUploadListener listener) throws Exception {
 
-        m_parameterMap = null;
-        // read the files
-        m_multiPartFileItems = readMultipartFileItems(getRequest(), listener);
-        if (m_multiPartFileItems != null) {
-            // this was indeed a multipart form request
-            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
-                getCmsObject().getRequestContext().getEncoding(),
-                m_multiPartFileItems);
+        // check if the request is a multipart request
+        if (!ServletFileUpload.isMultipartContent(getRequest())) {
+            // no multipart request: Abort the upload
+            throw new CmsUploadException(m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_NO_MULTIPART_0));
         }
-        if (m_parameterMap == null) {
-            // the request was a "normal" request
-            m_parameterMap = getRequest().getParameterMap();
+
+        // this was indeed a multipart form request, read the files
+        m_multiPartFileItems = readMultipartFileItems(listener);
+
+        // check if there were any multipart file items in the request
+        if (CmsCollectionUtil.isEmptyOrNull(m_multiPartFileItems)) {
+            // no file items found stop process
+            throw new CmsUploadException(m_gwtBundle.key(org.opencms.gwt.Messages.ERR_UPLOAD_NO_FILEITEMS_0));
         }
+
+        // there are file items in the request, get the request parameters
+        m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+            getCmsObject().getRequestContext().getEncoding(),
+            m_multiPartFileItems);
     }
 
     /**
-     * Parses a request of the form <code>multipart/form-data</code>.
+     * Parses a request of the form <code>multipart/form-data</code>.<p>
      * 
      * The result list will contain items of type <code>{@link FileItem}</code>.
-     * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
+     * If the request has no file items, then <code>null</code> is returned.<p>
      * 
-     * @param request the HTTP servlet request to parse
      * @param listener the upload listener
      * 
      * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
-     *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
+     *      or <code>null</code> if the request has no file items
      */
-    private List<FileItem> readMultipartFileItems(HttpServletRequest request, CmsUploadListener listener) {
+    private List<FileItem> readMultipartFileItems(CmsUploadListener listener) throws Exception {
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
         // maximum size that will be stored in memory
         factory.setSizeThreshold(4096);
-        // the location for saving data that is larger than getSizeThreshold()
+        // the location for saving data that is larger than the threshold
         factory.setRepository(new File(OpenCms.getSystemInfo().getPackagesRfsPath()));
-        ServletFileUpload fu = new ServletFileUpload(factory);
-        // set encoding to correctly handle special chars (e.g. in filenames)
-        fu.setHeaderEncoding(request.getCharacterEncoding());
-        // fu.setFileSizeMax(100);
-        fu.setProgressListener(listener);
 
-        List<FileItem> result = new ArrayList<FileItem>();
-        try {
-            List<FileItem> items = CmsCollectionsGenericWrapper.list(fu.parseRequest(request));
-            if (items != null) {
-                result = items;
-            }
-        } catch (SizeLimitExceededException e) {
-            int actualSize = (int)(e.getActualSize() / 1024);
-            int maxSize = (int)(e.getPermittedSize() / 1024);
-            CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
-                org.opencms.gwt.Messages.ERR_UPLOAD_SIZE_LIMIT_2,
-                new Integer(actualSize),
-                new Integer(maxSize)));
-            listener.setException(ex);
-            throw ex;
-        } catch (CmsUploadException e) {
-            listener.setException(e);
-            throw e;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
-                org.opencms.gwt.Messages.ERR_UPLOAD_UNEXPECTED_0));
-            listener.setException(ex);
-            throw ex;
+        // create a file upload servlet
+        ServletFileUpload fu = new ServletFileUpload(factory);
+        // set the listener
+        fu.setProgressListener(listener);
+        // set encoding to correctly handle special chars (e.g. in filenames)
+        fu.setHeaderEncoding(getRequest().getCharacterEncoding());
+        // set the maximum size for a single file (value is in bytes)
+        long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
+        if (maxFileSizeBytes > 0) {
+            fu.setFileSizeMax(maxFileSizeBytes);
         }
-        return result;
+
+        // try to parse the request
+        try {
+            return CmsCollectionsGenericWrapper.list(fu.parseRequest(getRequest()));
+        } catch (SizeLimitExceededException e) {
+            // request size is larger than maximum allowed request size, throw an error
+            Integer actualSize = new Integer((int)(e.getActualSize() / 1024));
+            Integer maxSize = new Integer((int)(e.getPermittedSize() / 1024));
+            throw new CmsUploadException(m_gwtBundle.key(
+                org.opencms.gwt.Messages.ERR_UPLOAD_REQUEST_SIZE_LIMIT_2,
+                actualSize,
+                maxSize), e);
+        } catch (FileSizeLimitExceededException e) {
+            // file size is larger than maximum allowed file size, throw an error
+            Integer actualSize = new Integer((int)(e.getActualSize() / 1024));
+            Integer maxSize = new Integer((int)(e.getPermittedSize() / 1024));
+            throw new CmsUploadException(m_gwtBundle.key(
+                org.opencms.gwt.Messages.ERR_UPLOAD_FILE_SIZE_LIMIT_3,
+                actualSize,
+                e.getFileName(),
+                maxSize), e);
+        }
     }
 
     /**
@@ -487,21 +521,6 @@ public class CmsUploadBean extends CmsJspBean {
 
         getRequest().getSession().removeAttribute(SESSION_ATTRIBUTE_LISTENER_ID);
         m_listeners.remove(listenerId);
-    }
-
-    /**
-     * Writes the response.<p>
-     * 
-     * @param responseObject the response content
-     */
-    private void writeResponse(JSONObject responseObject) {
-
-        try {
-            PrintWriter writer = getResponse().getWriter();
-            writer.print(responseObject.toString());
-        } catch (IOException e) {
-            LOG.debug(e);
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/22 09:42:49 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
@@ -270,6 +270,12 @@ public final class Messages {
     public static final String GUI_UPLOAD_DIALOG_TITLE_0 = "GUI_UPLOAD_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILE_INVALID_NAME_2 = "GUI_UPLOAD_FILE_INVALID_NAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILE_TOO_LARGE_2 = "GUI_UPLOAD_FILE_TOO_LARGE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FILES_PLURAL_0 = "GUI_UPLOAD_FILES_PLURAL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -316,6 +322,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_SUMMARY_FILES_VALUE_3 = "GUI_UPLOAD_SUMMARY_FILES_VALUE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_MAX_SIZE_REACHED_2 = "GUI_UPLOAD_MAX_SIZE_REACHED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";

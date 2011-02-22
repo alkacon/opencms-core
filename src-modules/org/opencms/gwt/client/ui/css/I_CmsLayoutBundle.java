@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/22 09:42:49 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2011/02/22 16:34:06 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 8.0.0
  */
@@ -1401,6 +1401,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String dialogMessageImportant();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String fileInfoTable();
 
         /** 
@@ -1409,6 +1416,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String fileInputPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String innerButton();
 
         /** 
          * Access method.<p>
@@ -1464,6 +1478,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String uploadDialogButton();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String uploadDialogContent();
 
         /** 
@@ -1472,13 +1493,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String uploadFileInput();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String uploadForm();
 
         /** 
          * Access method.<p>

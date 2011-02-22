@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadTimeoutWatcher.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,8 +101,7 @@ public class CmsUploadTimeoutWatcher extends Thread implements Serializable {
                 m_listener = null;
             } else {
                 if (isFrozen()) {
-                    LOG.info(Messages.get().container(Messages.INFO_UPLOAD_FROZEN_WATCHER_1, m_listener.toString()));
-                    m_listener.setException(new CmsUploadException(Messages.get().getBundle().key(
+                    m_listener.cancelUpload(new CmsUploadException(Messages.get().getBundle().key(
                         Messages.ERR_UPLOAD_FROZEN_1,
                         new Integer(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
                 } else {

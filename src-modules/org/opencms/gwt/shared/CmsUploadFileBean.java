@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsUploadFileBean.java,v $
- * Date   : $Date: 2011/02/11 17:06:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/22 16:34:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -52,35 +52,23 @@ public class CmsUploadFileBean implements IsSerializable {
     public interface I_CmsUploadConstants {
 
         /** Key for the JSON object. */
-        String KEY_BYTES_READ = "bytesRead";
-
-        /** Key for the JSON object. */
-        String KEY_CONTENT_LENGTH = "contentLength";
-
-        /** Key for the JSON object. */
-        String KEY_CURRENT_FILE = "currentFile";
-
-        /** Key for the JSON object. */
-        String KEY_SUCCESS = "success";
-
-        /** Key for the JSON object. */
         String KEY_MESSAGE = "message";
 
         /** Key for the JSON object. */
-        String KEY_PERCENT = "percent";
-
-        /** Key for the JSON object. */
-        String KEY_RUNNING = "running";
+        String KEY_REQUEST_SIZE = "requestsize";
 
         /** Key for the JSON object. */
         String KEY_STACKTRACE = "stacktrace";
+
+        /** Key for the JSON object. */
+        String KEY_SUCCESS = "success";
     }
 
     /** The active upload flag. */
     private boolean m_active;
 
     /** The list of resource names that already exist on the VFS. */
-    private List<String> m_existingResourceNames;
+    private List<String> m_existingFileNames;
 
     /** The list of filenames that are invalid. */
     private List<String> m_invalidFileNames;
@@ -96,13 +84,13 @@ public class CmsUploadFileBean implements IsSerializable {
     /**
      * The constructor with parameters.<p>
      * 
-     * @param existingResourceNames list of resource names that already exist on the VFS
+     * @param existingFileNames list of filenames that already exist on the VFS
      * @param invalidFileNames list of filenames that are invalid
      * @param active the upload active flag
      */
-    public CmsUploadFileBean(List<String> existingResourceNames, List<String> invalidFileNames, boolean active) {
+    public CmsUploadFileBean(List<String> existingFileNames, List<String> invalidFileNames, boolean active) {
 
-        m_existingResourceNames = existingResourceNames;
+        m_existingFileNames = existingFileNames;
         m_invalidFileNames = invalidFileNames;
         m_active = active;
     }
@@ -114,7 +102,7 @@ public class CmsUploadFileBean implements IsSerializable {
      */
     public List<String> getExistingResourceNames() {
 
-        return m_existingResourceNames;
+        return m_existingFileNames;
     }
 
     /**
@@ -154,7 +142,7 @@ public class CmsUploadFileBean implements IsSerializable {
      */
     public void setExistingResourceNames(List<String> existingResourceNames) {
 
-        m_existingResourceNames = existingResourceNames;
+        m_existingFileNames = existingResourceNames;
     }
 
     /**

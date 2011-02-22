@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/22 16:34:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,15 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.util.CmsStringUtil;
+
 /**
  * Utility class for the resource icon CSS.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -127,6 +130,34 @@ public class CmsIconUtil {
             sb.append(SMALL_SUFFIX);
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns the CSS classes of the resource icon for the given filename.<p>
+     * 
+     * Use this function, if the filename is known, but not the resource type.<p>
+     * 
+     * @param filename the file name
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available 
+     * 
+     * @return the CSS classes
+     */
+    public static String getResourceTypeIconClasses(String filename, boolean small) {
+
+        if (CmsStringUtil.isNotEmpty(filename)) {
+            int pos = filename.lastIndexOf('.');
+            if (pos >= 0) {
+                String suffix = filename.substring(pos);
+                if (CmsStringUtil.isNotEmpty(suffix)) {
+                    String typeName = CmsCoreProvider.get().getExtensionMapping().get(suffix.toLowerCase());
+                    if (typeName == null) {
+                        typeName = "plain";
+                    }
+                    return getResourceIconClasses(typeName, filename, small);
+                }
+            }
+        }
+        return "";
     }
 
     /**

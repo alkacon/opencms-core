@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadListener.java,v $
- * Date   : $Date: 2011/02/15 07:33:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -88,6 +88,16 @@ public class CmsUploadListener implements ProgressListener, Serializable {
         m_id = new CmsUUID();
         m_contentLength = new Long(requestSize).longValue();
         startWatcher();
+    }
+
+    /**
+     * Sets the exception that should cancel the upload on the next update.<p>
+     * 
+     * @param e the exception 
+     */
+    public void cancelUpload(CmsUploadException e) {
+
+        m_exception = e;
     }
 
     /**
@@ -165,16 +175,6 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     }
 
     /**
-     * Sets the exception which cancels the upload.<p>
-     * 
-     * @param e the exception that canceled the upload 
-     */
-    public void setException(RuntimeException e) {
-
-        m_exception = e;
-    }
-
-    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -191,8 +191,18 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     }
 
     /**
+     * Updates the listeners status information and does the following steps:
+     * <ul>
+     * <li> returns if there was already thrown an exception before
+     * <li> sets the local variables to the current upload state
+     * <li> throws an RuntimeException if it was set in the meanwhile (by another request e.g. user has canceled)
+     * <li> slows down the upload process if it's configured
+     * <li> stops the watcher if the upload has reached more than 100 percent
+     * </ul>
+     * 
      * @see org.apache.commons.fileupload.ProgressListener#update(long, long, int)
      */
+    @SuppressWarnings("unused")
     public void update(long done, long total, int item) {
 
         if (m_exceptionTrhown) {
@@ -203,15 +213,9 @@ public class CmsUploadListener implements ProgressListener, Serializable {
         m_contentLength = total;
         m_item = item;
 
-        // If other request has set an exception, it is thrown so the commons-fileupload's 
+        // If an other request has set an exception, it is thrown so the commons-fileupload's 
         // parser stops and the connection is closed.
         if (isCanceled()) {
-            String eName = m_exception.getClass().getName();
-            LOG.info(Messages.get().getBundle().key(
-                Messages.INFO_UPLOAD_USER_CANCELED_3,
-                getId(),
-                new Long(m_bytesRead),
-                eName));
             m_exceptionTrhown = true;
             throw m_exception;
         }

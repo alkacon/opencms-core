@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/22 09:51:59 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  * 
@@ -219,7 +219,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
             CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
             if ((listener != null) && !listener.isCanceled()) {
-                listener.setException(new CmsUploadException(Messages.get().getBundle().key(
+                listener.cancelUpload(new CmsUploadException(Messages.get().getBundle().key(
                     Messages.ERR_UPLOAD_USER_CANCELED_0)));
             }
         }
@@ -242,9 +242,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
                 try {
                     Streams.checkFileName(fileName);
-                    String newResName = CmsResource.getName(fileName.replace('\\', '/'));
-                    String newResPath = getNewResourceName(newResName, targetFolder);
-                    if (getCmsObject().existsResource(newResPath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder);
+                    if (getCmsObject().existsResource(newResName, CmsResourceFilter.ALL)) {
                         existingResourceNames.add(fileName);
                     }
                 } catch (InvalidFileNameException e) {
@@ -520,6 +519,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
         String uploadUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, CmsUploadBean.UPLOAD_JSP_URI);
+        long uploadFileSizeLimit = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
+
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             BACKLINK_URI,
@@ -529,7 +530,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
             cms.getRequestContext().getUri(),
             navigationUri,
+            new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
             uploadUri,
+            uploadFileSizeLimit,
             System.currentTimeMillis());
         return data;
     }
@@ -819,19 +822,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         // get current lock
         lock = getCmsObject().getLock(resource);
         return lock;
-    }
-
-    /**
-     * Returns the VFS path for the given filename and folder.<p>
-     * 
-     * @param fileName the filename to combine with the folder
-     * @param folder the folder to combine with the filename
-     * 
-     * @return the VFS path for the given filename and folder
-     */
-    private String getNewResourceName(String fileName, String folder) {
-
-        return folder + getCmsObject().getRequestContext().getFileTranslator().translateResource(fileName);
     }
 
     /**

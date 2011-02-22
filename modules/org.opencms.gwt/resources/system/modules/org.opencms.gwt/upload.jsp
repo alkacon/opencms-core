@@ -1,1 +1,1 @@
-<% new org.opencms.gwt.upload.CmsUploadBean(pageContext, request, response).start(); %>
+<% out.write(new org.opencms.gwt.upload.CmsUploadBean(pageContext, request, response).start()); %>

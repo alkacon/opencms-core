@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadException.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/22 16:34:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,26 +32,46 @@
 package org.opencms.gwt.upload;
 
 /**
- * An exception that should be thrown if there is any problem during the upload process.<p>
+ * This exception makes it possible to handle expected upload errors in another way than
+ * unexpected errors.<p>
+ * 
+ * It is supposed to be used when an expected upload exception occurred.<p>
+ * 
+ * For example we can send a message like "file size limit exceeded" so the user knows 
+ * that he selected a file is responsible for the error. In other cases it does not make
+ * sense to confuse the user with error information he won't understand like an encoding 
+ * error, ...<p>
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsUploadException extends RuntimeException {
 
     /** The serial version UID. */
-    private static final long serialVersionUID = -4125185020719761746L;
+    private static final long serialVersionUID = 5436746014936990102L;
 
     /**
-     * Public constructor with a message String as argument.<p>
+     * Public constructor that sets the error message.<p>
      * 
-     * @param msg the message for this exception
+     * @param message the message
      */
-    public CmsUploadException(String msg) {
+    public CmsUploadException(String message) {
 
-        super(msg);
+        super(message);
     }
+
+    /**
+     * Public constructor that sets the error message and the cause.<p>
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public CmsUploadException(String message, Throwable cause) {
+
+        super(message, cause);
+    }
+
 }
