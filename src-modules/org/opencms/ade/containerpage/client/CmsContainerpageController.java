@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/29 15:47:28 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/02/22 09:42:03 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0
  */
@@ -324,6 +324,9 @@ public final class CmsContainerpageController {
 
     /** The container types within this page. */
     private Set<String> m_containerTypes;
+
+    /** The XML content editor handler. */
+    private CmsContentEditorHandler m_contentEditorHandler;
 
     /** The core RPC service instance. */
     private I_CmsCoreServiceAsync m_coreSvc;
@@ -641,6 +644,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the XML content editor handler.<p>
+     *
+     * @return the XML content editor handler
+     */
+    public CmsContentEditorHandler getContentEditorHandler() {
+
+        return m_contentEditorHandler;
+    }
+
+    /**
      * Returns the prefetched data.<p>
      *
      * @return the prefetched data
@@ -769,12 +782,18 @@ public final class CmsContainerpageController {
      * 
      * @param handler the container-page handler
      * @param dndHandler the drag and drop handler
+     * @param contentEditorHandler the XML content editor handler
      * @param containerpageUtil the container-page utility
      */
-    public void init(CmsContainerpageHandler handler, CmsDNDHandler dndHandler, CmsContainerpageUtil containerpageUtil) {
+    public void init(
+        CmsContainerpageHandler handler,
+        CmsDNDHandler dndHandler,
+        CmsContentEditorHandler contentEditorHandler,
+        CmsContainerpageUtil containerpageUtil) {
 
         m_containerpageUtil = containerpageUtil;
         m_handler = handler;
+        m_contentEditorHandler = contentEditorHandler;
         m_dndHandler = dndHandler;
         m_cntDndController = m_dndHandler.getController();
 

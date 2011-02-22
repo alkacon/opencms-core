@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/22 09:42:03 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -139,16 +139,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarContext();
-    }
-
-    /** The content editor dialog CSS. */
-    interface I_CmsContentEditorCss extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String contentEditor();
     }
 
     /** The drag and drop CSS classes used also within the container-page CSS. */
@@ -311,15 +301,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("containerpage.css")
     I_CmsContainerpageCss containerpageCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the content editor dialog CSS
-     */
-    @Source("contentEditor.css")
-    @CssResource.NotStrict
-    I_CmsContentEditorCss contentEditorCss();
 
     /**
      * Access method.<p>

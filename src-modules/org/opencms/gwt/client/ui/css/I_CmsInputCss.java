@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -168,6 +168,13 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String label();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String labelInput();
 
     /**
      * Css class reader.<p>

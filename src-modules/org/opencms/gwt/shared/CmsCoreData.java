@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/02/11 17:06:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +59,12 @@ public class CmsCoreData implements IsSerializable {
 
     /** The time sent from the server when loading the data. */
     protected long m_serverTime;
+
+    /** The XML content editor back-link URL. */
+    private String m_contentEditorBacklinkUrl;
+
+    /** The XML content editor URL. */
+    private String m_contentEditorUrl;
 
     /** The OpenCms context. */
     private String m_context;
@@ -97,6 +103,8 @@ public class CmsCoreData implements IsSerializable {
     public CmsCoreData(CmsCoreData clone) {
 
         this(
+            clone.getContentEditorUrl(),
+            clone.getContentEditorBacklinkUrl(),
             clone.getContext(),
             clone.getSiteRoot(),
             clone.getLocale(),
@@ -110,6 +118,8 @@ public class CmsCoreData implements IsSerializable {
     /**
      * Constructor.<p>
      * 
+     * @param contentEditorUrl the XML content editor URL
+     * @param contentEditorBacklinkUrl the XML content editor back-link URL
      * @param context the OpenCms context
      * @param siteRoot the current site root
      * @param locale the current request locale
@@ -120,6 +130,8 @@ public class CmsCoreData implements IsSerializable {
      * @param serverTime the current time  
      */
     public CmsCoreData(
+        String contentEditorUrl,
+        String contentEditorBacklinkUrl,
         String context,
         String siteRoot,
         String locale,
@@ -129,6 +141,8 @@ public class CmsCoreData implements IsSerializable {
         String uploadUri,
         long serverTime) {
 
+        m_contentEditorUrl = contentEditorUrl;
+        m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
         m_context = context;
         m_siteRoot = siteRoot;
         m_locale = locale;
@@ -137,6 +151,26 @@ public class CmsCoreData implements IsSerializable {
         m_navigationUri = navigationUri;
         m_uploadUri = uploadUri;
         m_serverTime = serverTime;
+    }
+
+    /**
+     * Returns the XML content editor back-link URL.<p>
+     *
+     * @return the XML content editor back-link URL
+     */
+    public String getContentEditorBacklinkUrl() {
+
+        return m_contentEditorBacklinkUrl;
+    }
+
+    /**
+     * Returns the XML content editor URL.<p>
+     *
+     * @return the XML content editor URL
+     */
+    public String getContentEditorUrl() {
+
+        return m_contentEditorUrl;
     }
 
     /**

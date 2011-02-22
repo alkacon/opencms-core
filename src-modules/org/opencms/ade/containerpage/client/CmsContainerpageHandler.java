@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/02/22 09:42:03 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarMenu;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
-import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
@@ -93,7 +92,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -491,7 +490,7 @@ public class CmsContainerpageHandler {
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
             openSubcontainerEditor((CmsSubContainerElement)element);
         } else {
-            CmsContentEditorDialog.get().openEditDialog(element.getId(), element.getSitePath(), false);
+            m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath(), false);
         }
     }
 
@@ -727,18 +726,18 @@ public class CmsContainerpageHandler {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
 
                 if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
+                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
 
-                cmd = new Command() {
+                    cmd = new Command() {
 
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
+                        /**
+                         * @see com.google.gwt.user.client.Command#execute()
+                         */
+                        public void execute() {
 
-                        new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
-                    }
-                };
+                            new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
+                        }
+                    };
                 } else if (name.equals(CmsUploadDialog.class.getName())) {
                     cmd = new Command() {
 

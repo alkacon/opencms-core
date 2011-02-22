@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/15 10:18:25 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -103,6 +103,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_CHANGES_PUBLISH_TITLE_0 = "GUI_DIALOG_CHANGES_PUBLISH_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CONTENTEDITOR_TITLE_0 = "GUI_DIALOG_CONTENTEDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TEXT_0 = "GUI_DIALOG_RESET_TEXT_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/18 08:48:55 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  * 
@@ -120,6 +120,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
+
+    /** The editor back-link URI. */
+    private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
+
+    /** The xml-content editor URI. */
+    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
     /**
      * Internal helper method for getting a validation service.<p>
@@ -515,6 +521,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         String navigationUri = cms.getRequestContext().getUri();
         String uploadUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, CmsUploadBean.UPLOAD_JSP_URI);
         CmsCoreData data = new CmsCoreData(
+            EDITOR_URI,
+            BACKLINK_URI,
             OpenCms.getSystemInfo().getOpenCmsContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),

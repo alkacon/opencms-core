@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,33 +29,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.ui;
+package org.opencms.gwt.client.ui.contenteditor;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.Messages;
-import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 
 /**
- * Class to handle the content editor dialog.<p>
+ * XML content editor dialog.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
 public final class CmsContentEditorDialog {
 
     /** Name of exported dialog close function. */
-    private static final String CLOSING_METHOD_NAME = "cms_ade_containerpage_closeEditorDialog";
+    private static final String CLOSING_METHOD_NAME = "cms_ade_closeEditorDialog";
 
     /** Name attribute value for editor iFrame. */
     private static final String EDITOR_IFRAME_NAME = "cmsAdvancedDirectEditor";
@@ -63,34 +61,22 @@ public final class CmsContentEditorDialog {
     /** The dialog instance. */
     private static CmsContentEditorDialog INSTANCE;
 
-    /** The currently edited element's id. */
-    private String m_currentElementId;
-
-    /** The currently edited element's site-path. */
-    private String m_currentSitePath;
-
-    /** the prefetched data. */
-    private CmsCntPageData m_data;
-
-    /** The depending element's id. */
-    private String m_dependingElementId;
-
     /** The popup instance. */
     private CmsPopup m_dialog;
 
-    /** The container-page handler. */
-    private CmsContainerpageHandler m_handler;
+    private I_CmsContentEditorHandler m_editorHandler;
+
+    private boolean m_isNew;
+
+    /** The currently edited element's site-path. */
+    private String m_sitePath;
 
     /**
      * Hiding constructor.<p>
-     * 
-     * @param handler the container-page handler
-     * @param data the prefetched data
      */
-    private CmsContentEditorDialog(CmsContainerpageHandler handler, CmsCntPageData data) {
+    private CmsContentEditorDialog() {
 
-        m_handler = handler;
-        m_data = data;
+        exportClosingMethod();
     }
 
     /**
@@ -100,20 +86,10 @@ public final class CmsContentEditorDialog {
      */
     public static CmsContentEditorDialog get() {
 
-        return INSTANCE;
-    }
-
-    /**
-     * Initializes the dialog.<p>
-     * 
-     * @param handler the container-page handler
-     * @param data the prefetched data
-     */
-    public static void init(CmsContainerpageHandler handler, CmsCntPageData data) {
-
         if (INSTANCE == null) {
-            INSTANCE = new CmsContentEditorDialog(handler, data);
+            INSTANCE = new CmsContentEditorDialog();
         }
+        return INSTANCE;
     }
 
     /**
@@ -128,22 +104,22 @@ public final class CmsContentEditorDialog {
     /**
      * Opens the content editor dialog for the given element.<p>
      * 
-     * @param elementId the element id
      * @param sitePath the element site-path
      * @param isNew <code>true</code> when creating a new resource
+     * @param editorHandler the editor handler
      */
-    public void openEditDialog(String elementId, String sitePath, boolean isNew) {
+    public void openEditDialog(String sitePath, boolean isNew, I_CmsContentEditorHandler editorHandler) {
 
         if ((m_dialog != null) && m_dialog.isShowing()) {
             CmsDebugLog.getInstance().printLine("Dialog is already open, cannot open another one.");
             return;
         }
-
-        m_currentElementId = elementId;
-        m_currentSitePath = sitePath;
+        m_isNew = isNew;
+        m_sitePath = sitePath;
+        m_editorHandler = editorHandler;
         m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
             + " - "
-            + (isNew ? "Editing new resource" : m_currentSitePath));
+            + (m_isNew ? "Editing new resource" : m_sitePath));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
 
         int height = Window.getClientHeight() - 20;
@@ -151,22 +127,12 @@ public final class CmsContentEditorDialog {
         width = (width < 1350) ? width - 50 : 1300;
         m_dialog.setSize(width, height, Unit.PX);
         m_dialog.setGlassEnabled(true);
-        CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_currentSitePath));
+        CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_sitePath));
 
         m_dialog.add(editorFrame);
         m_dialog.center();
         m_dialog.show();
-        exportClosingMethod();
-    }
 
-    /**
-     * Sets the depending element id.<p>
-     *
-     * @param dependingElementId the depending element id to set
-     */
-    public void setDependingElementId(String dependingElementId) {
-
-        m_dependingElementId = dependingElementId;
     }
 
     /**
@@ -177,14 +143,8 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            if (m_dependingElementId != null) {
-                m_handler.reloadElements(m_currentElementId, m_dependingElementId);
-                m_dependingElementId = null;
-            } else {
-                m_handler.reloadElements(m_currentElementId);
-            }
-            m_currentElementId = null;
-            m_currentSitePath = null;
+            m_editorHandler.onClose(m_sitePath, m_isNew);
+            m_editorHandler = null;
         }
     }
 
@@ -192,9 +152,9 @@ public final class CmsContentEditorDialog {
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
      */
     private native void exportClosingMethod() /*-{
-        $wnd[@org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog::CLOSING_METHOD_NAME]=function(){
-        @org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog::closeEditDialog()();
-        };
+	$wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
+	    @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
+	};
     }-*/;
 
     /**
@@ -206,13 +166,13 @@ public final class CmsContentEditorDialog {
      */
     private String getEditorUrl(String sitePath) {
 
-        return CmsCoreProvider.get().link(m_data.getEditorUri())
+        return CmsCoreProvider.get().link(CmsCoreProvider.get().getContentEditorUrl())
             + "?resource="
             + sitePath
             + "&amp;directedit=true&amp;elementlanguage="
             + CmsCoreProvider.get().getLocale()
             + "&amp;backlink="
-            + m_data.getBacklinkUri()
+            + CmsCoreProvider.get().getContentEditorBacklinkUrl()
             + "&amp;redirect=true";
     }
 }

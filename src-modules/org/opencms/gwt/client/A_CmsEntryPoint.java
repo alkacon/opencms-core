@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.shared.UmbrellaException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  * 
@@ -77,6 +77,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         enableRemoteExceptionHandler();
 
         I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.contextmenuCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.errorDialogCss().ensureInjected();

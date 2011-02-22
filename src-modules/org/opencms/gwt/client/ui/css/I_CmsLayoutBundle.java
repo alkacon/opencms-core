@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/17 08:53:01 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2011/02/22 09:42:49 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 8.0.0
  */
@@ -165,6 +165,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String spacerRight();
+    }
+
+    /** The content editor dialog CSS. */
+    interface I_CmsContentEditorCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentEditor();
     }
 
     /** The context menu CSS classes. */
@@ -1517,6 +1527,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("button.css")
     I_CmsButtonCss buttonCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the content editor dialog CSS
+     */
+    @Source("contentEditor.css")
+    @CssResource.NotStrict
+    I_CmsContentEditorCss contentEditorCss();
 
     /**
      * The CSS constants bundle.<p>

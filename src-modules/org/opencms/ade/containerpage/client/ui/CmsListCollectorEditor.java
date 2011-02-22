@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2010/11/29 07:52:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/22 09:42:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -325,14 +325,16 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
     protected void openEditDialog(boolean isNew) {
 
         if (isNew) {
-            CmsContentEditorDialog.get().openEditDialog(
+            CmsContainerpageController.get().getContentEditorHandler().openDialog(
                 m_parentResourceId,
                 m_editableData.getSitePath() + "&amp;newlink=" + URL.encodeQueryString(m_editableData.getNewLink()),
                 true);
         } else {
-            CmsContentEditorDialog dialog = CmsContentEditorDialog.get();
-            dialog.openEditDialog(m_editableData.getStructureId(), m_editableData.getSitePath(), false);
-            dialog.setDependingElementId(m_parentResourceId);
+            CmsContainerpageController.get().getContentEditorHandler().openDialog(
+                m_editableData.getStructureId(),
+                m_editableData.getSitePath(),
+                false,
+                m_parentResourceId);
         }
     }
 }

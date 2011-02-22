@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/02/03 09:50:13 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/02/22 09:42:03 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
-import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarContextButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
@@ -68,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -224,13 +223,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         super.onModuleLoad();
 
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.subcontainerCss().ensureInjected();
 
         CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
-        CmsContentEditorDialog.init(containerpageHandler, controller.getData());
+        CmsContentEditorHandler contentEditorHandler = new CmsContentEditorHandler(containerpageHandler);
         CmsContainerpageDNDController dndController = new CmsContainerpageDNDController(controller);
         CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
 
@@ -342,7 +340,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_remove,
             m_addToFavorites,
             m_properties);
-        controller.init(containerpageHandler, dndHandler, containerpageUtil);
+        controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
     }
 
