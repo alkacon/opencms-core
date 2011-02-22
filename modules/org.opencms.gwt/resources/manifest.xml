@@ -89,6 +89,21 @@
 			<accesscontrol />
 		</file>
 		<file>
+		      <source>system/modules/org.opencms.gwt/editor-backlink.html</source>
+		      <destination>system/modules/org.opencms.gwt/editor-backlink.html</destination>
+		      <type>plain</type>
+		      <uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
+		      <uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
+		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
+		      <userlastmodified>Admin</userlastmodified>
+		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+		      <usercreated>Admin</usercreated>
+		      <flags>0</flags>
+		      <properties/>
+		      <relations/>
+		      <accesscontrol/>
+    	</file>
+		<file>
 			<source>system/modules/org.opencms.gwt/resourceIcon.css</source>
 			<destination>system/modules/org.opencms.gwt/resourceIcon.css</destination>
 			<type>jsp</type>
