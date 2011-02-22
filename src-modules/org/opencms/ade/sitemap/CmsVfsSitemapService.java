@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/22 15:25:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -745,10 +745,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     generateInheritProperties(change, entryFolder));
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
                 newRes = cms.createResource(
-                    entryPath,
-                    change.getNewResourceTypeId(),
-                    content,
-                    generateOwnProperties(change));
+                entryPath,
+                change.getNewResourceTypeId(),
+                content,
+                generateOwnProperties(change));
             }
 
             if (entryFolder != null) {
@@ -770,7 +770,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
 
         return newEntry;
-    }
+        }
 
     /**
      * Creates a new resource info to a given configuration item.<p>
@@ -1317,6 +1317,27 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Checks whether a resource is a default file of a folder.<p>
+     * 
+     * @param resource the resource to check 
+     * 
+     * @return true if the resource is the default file of a folder 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private boolean isDefaultFile(CmsResource resource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (resource.isFolder()) {
+            return false;
+        }
+
+        String parentPath = CmsResource.getParentFolder(cms.getSitePath(resource));
+        CmsResource defaultFile = cms.readDefaultFile(parentPath);
+        return resource.equals(defaultFile);
+    }
+
+    /**
      * Checks if the toolbar should be displayed.<p>
      * 
      * @param request the current request to get the default locale from 
@@ -1415,9 +1436,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         cms.moveResource(cms.getSitePath(entryFolder), destinationPath);
                     }
                     entryFolder = cms.readResource(entryFolder.getStructureId());
-
                 }
-                //cms.writePropertyObjects(cms.getSitePath(entryFolder), generateInheritProperties(change, entryFolder));
             }
         } finally {
             if (entryPage != null) {
@@ -1520,7 +1539,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             defaultFileProps = new HashMap<String, CmsClientProperty>();
         }
 
+        boolean isDefault = isDefaultFile(ownResource);
         clientEntry.setId(ownResource.getStructureId());
+        clientEntry.setFolderDefaultPage(isDefault);
         if (navElement.getResource().isFolder()) {
             entryFolder = navElement.getResource();
             entryPage = defaultFileResource;
@@ -1537,8 +1558,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (entryPage.getTypeId() == OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT).getTypeId()) {
                 clientEntry.setEntryType(EntryType.redirect);
             } else {
-                clientEntry.setEntryType(EntryType.leaf);
-            }
+            clientEntry.setEntryType(EntryType.leaf);
+        }
         }
 
         String path = cms.getSitePath(entryPage);
@@ -1549,7 +1570,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
 
         clientEntry.setVfsPath(path);
-        navElement.getProperties();
 
         clientEntry.setOwnProperties(ownProps);
         clientEntry.setDefaultFileProperties(defaultFileProps);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2010/04/19 08:09:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/22 15:25:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -720,6 +720,10 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
      */
     @Override
     public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
 
         if (obj == this) {
             return true;

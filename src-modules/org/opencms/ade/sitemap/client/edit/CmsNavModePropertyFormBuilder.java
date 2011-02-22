@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyFormBuilder.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/22 15:25:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -97,7 +97,7 @@ public class CmsNavModePropertyFormBuilder extends A_CmsPropertyFormBuilder {
         String propName) {
 
         CmsXmlContentProperty propDef = m_propertyDefs.get(propName);
-        CmsClientProperty fileProp = defaultFileProps.get(propName);
+        CmsClientProperty fileProp = defaultFileProps == null ? null : defaultFileProps.get(propName);
         CmsClientProperty ownProp = ownProps.get(propName);
         CmsPathValue pathValue;
         if (fileProp != null) {
