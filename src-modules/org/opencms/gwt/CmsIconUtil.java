@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/22 17:00:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -96,7 +96,7 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
             String unknown = getIconUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
             String template = "%1$s .%2$s {\n  background: transparent scroll 50%% 50%% no-repeat url(\"%3$s\");\n  width: 16px;\n  height:16px;\n}\n\n";
-            return String.format(template, m_prefix, TYPE_ICON_CLASS, unknown);
+            return String.format(template, m_prefix == null ? "" : m_prefix, TYPE_ICON_CLASS, unknown);
         }
 
         /**
