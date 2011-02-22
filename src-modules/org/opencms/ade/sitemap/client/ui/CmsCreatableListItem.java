@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsCreatableListItem.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/22 09:45:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,14 +41,14 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsCreatableListItem extends CmsListItem {
 
     /** The types of creatable sitemap entries. */
-    public enum EntryType {
+    public enum NewEntryType {
         /** A detail page. */
         detailpage,
         /** A redirect entry. */
@@ -58,7 +58,7 @@ public class CmsCreatableListItem extends CmsListItem {
     }
 
     /** The sitemap entry type to create. */
-    private EntryType m_entryType;
+    private NewEntryType m_newEntryType;
 
     /** The resource type info bean. */
     private CmsNewResourceInfo m_typeInfo;
@@ -68,13 +68,13 @@ public class CmsCreatableListItem extends CmsListItem {
      * 
      * @param content the content for the list item widget 
      * @param typeInfo the resource type info bean 
-     * @param entryType the type of the creatable sitemap entry type
+     * @param newEntryType the type of the creatable sitemap entry type
      */
-    public CmsCreatableListItem(CmsListItemWidget content, CmsNewResourceInfo typeInfo, EntryType entryType) {
+    public CmsCreatableListItem(CmsListItemWidget content, CmsNewResourceInfo typeInfo, NewEntryType newEntryType) {
 
         super(content);
         m_typeInfo = typeInfo;
-        m_entryType = entryType;
+        m_newEntryType = newEntryType;
     }
 
     /**
@@ -92,9 +92,9 @@ public class CmsCreatableListItem extends CmsListItem {
      * 
      * @return the new sitemap entry type
      */
-    public EntryType getEntryType() {
+    public NewEntryType getNewEntryType() {
 
-        return m_entryType;
+        return m_newEntryType;
     }
 
     /**

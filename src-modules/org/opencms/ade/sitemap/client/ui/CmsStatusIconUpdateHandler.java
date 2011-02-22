@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2011/02/18 08:48:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/22 09:45:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 
 /**
@@ -44,7 +45,7 @@ import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -69,15 +70,15 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         if (!entry.isInNavigation()) {
             icon = PageIcon.hidden;
         }
-        if ("true".equals(exportProp)) {
+        if (Boolean.parseBoolean(exportProp)) {
             icon = PageIcon.export;
         }
-        if ("true".equals(secureProp)) {
+        if (Boolean.parseBoolean(secureProp)) {
             icon = PageIcon.secure;
         }
-        //        if ((entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName())) != null) {
-        //            icon = PageIcon.redirect;
-        //        }
+        if ((entry.getEntryType()) == EntryType.redirect) {
+            icon = PageIcon.redirect;
+        }
         item.setPageIcon(icon);
         item.updateSitePath();
     }

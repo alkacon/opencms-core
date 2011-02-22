@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/22 09:45:22 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,18 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
-import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.EntryType;
+import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -64,7 +66,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -288,13 +290,16 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         //TODO: handle redirects specially 
         entry.setResourceTypeName("folder");
 
-        if (EntryType.detailpage == createItem.getEntryType()) {
+        entry.setDefaultFileProperties(Collections.<String, CmsClientProperty> emptyMap());
+        if (NewEntryType.detailpage == createItem.getNewEntryType()) {
             entry.setDetailpageTypeName(typeInfo.getTypeName());
         }
-        //        if (EntryType.redirect == createItem.getEntryType()) {
-        //            CmsSimplePropertyValue prop = new CmsSimplePropertyValue("true", null);
-        //            entry.getProperties().put(CmsSitemapManager.Property.isRedirect.getName(), prop);
-        //        }
+        if (NewEntryType.redirect == createItem.getNewEntryType()) {
+            entry.setEntryType(EntryType.redirect);
+            entry.setSitePath(m_insertPath + uniqueName);
+        } else {
+            entry.setSitePath(m_insertPath + uniqueName + "/");
+        }
         m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
     }
 

@@ -101,6 +101,12 @@
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlredirect" id="15">
+                	<properties>
+                  		<property>
+                    		<name>template-elements</name>
+                    		<value type="shared">/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp</value>
+                  		</property>
+                	</properties>
 					<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
             	</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/02/11 14:35:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/22 09:45:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,10 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
-import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.EntryType;
+import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
@@ -53,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -98,8 +97,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             createTab("New pages", "Create a new page", m_newElementsList);
         }
         m_specialList = new CmsList<I_CmsListItem>();
-        // TODO: add redirect item
-        //       m_specialList.add(makeRedirectItem());
+        m_specialList.add(makeRedirectItem());
         if (CmsSitemapView.getInstance().getController().getData().canEditDetailPages()) {
             for (CmsNewResourceInfo typeInfo : CmsSitemapView.getInstance().getController().getData().getResourceTypeInfos()) {
                 CmsCreatableListItem item = makeDetailPageItem(typeInfo);
@@ -139,7 +137,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
-        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, EntryType.detailpage);
+        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.detailpage);
         listItem.addTag(TAG_SPECIAL);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
@@ -162,7 +160,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
-        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, EntryType.regular);
+        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
     }
@@ -172,16 +170,18 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      * 
      * @return the new list item 
      */
-    private CmsListItem makeRedirectItem() {
+    private CmsCreatableListItem makeRedirectItem() {
 
+        CmsNewResourceInfo typeInfo = getController().getData().getNewRedirectElementInfo();
         CmsListInfoBean info = new CmsListInfoBean();
-        String title = Messages.get().key(Messages.GUI_REDIRECT_TITLE_0);
-        String subtitle = Messages.get().key(Messages.GUI_REDIRECT_SUBTITLE_0);
-        info.setTitle(title);
-        info.setSubTitle(subtitle);
+        info.setTitle(typeInfo.getTitle());
+        info.setSubTitle(typeInfo.getTypeName());
+        if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
+            info.addAdditionalInfo("Description", typeInfo.getDescription());
+        }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
-        CmsListItem listItem = new CmsListItem(widget);
+        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);
         listItem.addTag(TAG_REDIRECT);
         listItem.addTag(TAG_SPECIAL);
 
