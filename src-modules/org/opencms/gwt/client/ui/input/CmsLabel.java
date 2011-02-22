@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2011/02/17 08:53:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/22 09:43:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,6 @@ public class CmsLabel extends Label implements I_CmsTruncable {
      */
     public CmsLabel() {
 
-        setWordWrap(false);
         setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
@@ -99,7 +98,6 @@ public class CmsLabel extends Label implements I_CmsTruncable {
     public CmsLabel(Element element) {
 
         super(element);
-        setWordWrap(false);
         setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
@@ -110,7 +108,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
      */
     public CmsLabel(String text) {
 
-        super(text, false);
+        super(text);
         setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
@@ -199,28 +197,4 @@ public class CmsLabel extends Label implements I_CmsTruncable {
         }
         return m_originalText;
     }
-
-    //    /**
-    //     * Helper method for changing the label's CSS display property from inline to inline-block (if possible).<p>
-    //     * 
-    //     * This avoids some display problems, e.g. in Chrome.<p>
-    //     */
-    //    private void fixInline() {
-    //
-    //        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-    //
-    //            /**
-    //             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-    //             */
-    //            public void execute() {
-    //
-    //                Element element = getElement();
-    //                String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
-    //                if (display.equalsIgnoreCase("inline")) {
-    //                    element.addClassName(CSS.inlineBlock());
-    //                }
-    //                element.addClassName(CSS.alignBottom());
-    //            }
-    //        });
-    //    }
 }
