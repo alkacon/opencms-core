@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/02/23 11:38:24 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -82,6 +83,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         m_ensureVisible = ensureVisible;
         m_oldEntry = new CmsClientSitemapEntry(oldEntry);
         m_newEntry = newEntry;
+        m_propertyChanges = Collections.<CmsPropertyModification> emptyList();
     }
 
     /**
