@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2011/02/17 08:54:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/23 11:34:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -144,7 +144,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
             }
             if (galleryItem.isEditable()) {
                 CmsUploadButton uploadButton = new CmsUploadButton();
-                // uploadButton.setShowBorder(false);
+                uploadButton.setTargetFolder(galleryItem.getPath());
                 listItemWidget.addButton(uploadButton);
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);

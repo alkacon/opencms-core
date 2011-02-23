@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/02/17 08:54:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/23 11:34:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -179,7 +179,7 @@ public class CmsVfsTab extends A_CmsListTab {
         liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
         if (vfsEntry.isEditable()) {
             CmsUploadButton uploadButton = new CmsUploadButton();
-            // uploadButton.setShowBorder(false);
+            uploadButton.setTargetFolder(vfsEntry.getSitePath());
             liWidget.addButton(uploadButton);
         }
 
