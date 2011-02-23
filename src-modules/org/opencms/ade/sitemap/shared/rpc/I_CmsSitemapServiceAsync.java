@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/02/23 11:38:57 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
+import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,6 +68,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback  
      */
     void createSubSitemap(String sitemapUri, String path, AsyncCallback<CmsSubSitemapInfo> callback);
+
+    /**
+     * Returns additional sitemap entry information.<p>
+     *  
+     * @param structureId the entry structure id
+     * @param callback the async callback
+     */
+    void getAdditionalEntryInfo(CmsUUID structureId, AsyncCallback<CmsAdditionalEntryInfo> callback);
 
     /**
      * Returns broken link data bean, containing a list of all not yet loaded sub elements and a list of beans

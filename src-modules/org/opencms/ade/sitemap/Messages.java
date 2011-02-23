@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/23 11:37:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_1 = "GUI_EDITOR_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REDIRECT_TARGET_LABEL_0 = "GUI_REDIRECT_TARGET_LABEL_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.messages";

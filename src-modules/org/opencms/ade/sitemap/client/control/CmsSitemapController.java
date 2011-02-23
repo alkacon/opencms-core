@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/02/23 11:37:55 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0.0
  */
@@ -834,12 +834,25 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return m_propertyMaps.get(id);
     }
 
+    /**
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    public I_CmsSitemapServiceAsync getService() {
+
+        if (m_service == null) {
+            m_service = GWT.create(I_CmsSitemapService.class);
+        }
+        return m_service;
+    }
+
     /** 
      * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#initialize(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
      */
     public void initialize(CmsClientSitemapEntry entry) {
 
-        // do nothing for now.
+        //TODO: check if necessary, do nothing for now.
     }
 
     /**
@@ -1017,33 +1030,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         getChildren(sitePath, CmsSitemapTreeItem.getItemById(getEntry(sitePath).getId()).isOpen());
     }
-
-    //    /**
-    //     * Adds loaded child entries to the given sub-tree.<p>
-    //     * 
-    //     * @param parent the start element of the sub-tree
-    //     * @param loadedEntries the loaded entries
-    //     */
-    //    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
-    //
-    //        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
-    //            if (child.getSubEntries().size() == 0) {
-    //                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
-    //                while (it.hasNext()) {
-    //                    CmsClientSitemapEntry closed = it.next();
-    //                    if (closed.getId().equals(child.getId())) {
-    //                        child.setSubEntries(closed.getSubEntries());
-    //                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
-    //                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
-    //                        }
-    //                        it.remove();
-    //                    }
-    //                }
-    //            } else {
-    //                addChildren(child, loadedEntries);
-    //            }
-    //        }
-    //    }
 
     /**
     * Adds a change to the queue.<p>
@@ -1242,19 +1228,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
             return entry.getSitePath();
         }
         return CmsResource.getParentFolder(entry.getSitePath()) + newUrlName + "/";
-    }
-
-    /**
-     * Returns the sitemap service instance.<p>
-     * 
-     * @return the sitemap service instance
-     */
-    protected I_CmsSitemapServiceAsync getService() {
-
-        if (m_service == null) {
-            m_service = GWT.create(I_CmsSitemapService.class);
-        }
-        return m_service;
     }
 
     /**

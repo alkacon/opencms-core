@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/02/23 11:37:55 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
@@ -53,9 +54,9 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -71,9 +72,9 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -85,7 +86,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 8.0.0
  */
@@ -160,26 +161,34 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     infoItems.add(item);
                     callback.onSuccess(infoItems);
                 } else {
-                    CmsCoreProvider.get().getResourceState(entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {
+                    m_controller.getService().getAdditionalEntryInfo(
+                        entry.getId(),
+                        new AsyncCallback<CmsAdditionalEntryInfo>() {
 
-                        /**
-                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                         */
-                        public void onFailure(Throwable caught) {
+                            /**
+                             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                             */
+                            public void onFailure(Throwable caught) {
 
-                            // do nothing
+                                // do nothing
 
-                        }
+                            }
 
-                        /**
-                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object o)
-                         */
-                        public void onSuccess(CmsResourceState result) {
+                            /**
+                             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object o)
+                             */
+                            public void onSuccess(CmsAdditionalEntryInfo result) {
 
-                            AdditionalInfoItem item = createResourceStateInfo(result);
-                            callback.onSuccess(Collections.singletonList(item));
-                        }
-                    });
+                                List<AdditionalInfoItem> items = new ArrayList<AdditionalInfoItem>();
+                                items.add(createResourceStateInfo(result.getResourceState()));
+                                if ((result.getAdditional() != null) && !result.getAdditional().isEmpty()) {
+                                    for (Entry<String, String> infoEntry : result.getAdditional().entrySet()) {
+                                        items.add(new AdditionalInfoItem(infoEntry.getKey(), infoEntry.getValue(), null));
+                                    }
+                                }
+                                callback.onSuccess(items);
+                            }
+                        });
 
                 }
 
