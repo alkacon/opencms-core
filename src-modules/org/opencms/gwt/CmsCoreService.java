@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/22 16:34:07 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/02/23 11:39:17 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  * 
@@ -427,19 +427,18 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsResourceState getResourceState(String path) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
+        CmsResourceState result = null;
         try {
-            CmsResourceState result;
             try {
                 CmsResource res = cms.readResource(path);
                 result = res.getState();
             } catch (CmsVfsResourceNotFoundException e) {
                 result = CmsResourceState.STATE_DELETED;
             }
-            return result;
         } catch (CmsException e) {
             error(e);
-            return null; // will never be reached 
         }
+        return result;
     }
 
     /**
