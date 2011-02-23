@@ -104,8 +104,8 @@
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
             <resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js"/>
             <resource uri="/system/workplace/resources/components/widgets/advancedvfsimage.js"/>
-            <resource uri="/system/workplace/resources/filetypes/archiv.png"/>
-			<resource uri="/system/workplace/resources/filetypes/archiv_big.png"/>
+            <resource uri="/system/workplace/resources/filetypes/archive.png"/>
+			<resource uri="/system/workplace/resources/filetypes/archive_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/excel.png"/>
 			<resource uri="/system/workplace/resources/filetypes/excel_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/image_big.png"/>
@@ -6289,8 +6289,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/archiv.png</source>
-			<destination>system/workplace/resources/filetypes/archiv.png</destination>
+			<source>system/workplace/resources/filetypes/archive.png</source>
+			<destination>system/workplace/resources/filetypes/archive.png</destination>
 			<type>image</type>
 			<uuidstructure>027d0139-881d-11df-8611-83befda52004</uuidstructure>
 			<uuidresource>027d013a-881d-11df-8611-83befda52004</uuidresource>
@@ -6302,7 +6302,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[archiv]]></value>
+					<value><![CDATA[archive]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
@@ -6313,8 +6313,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/archiv_big.png</source>
-			<destination>system/workplace/resources/filetypes/archiv_big.png</destination>
+			<source>system/workplace/resources/filetypes/archive_big.png</source>
+			<destination>system/workplace/resources/filetypes/archive_big.png</destination>
 			<type>image</type>
 			<uuidstructure>02711a55-881d-11df-8611-83befda52004</uuidstructure>
 			<uuidresource>02711a56-881d-11df-8611-83befda52004</uuidresource>
@@ -6326,7 +6326,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[archiv_big]]></value>
+					<value><![CDATA[archive_big]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
