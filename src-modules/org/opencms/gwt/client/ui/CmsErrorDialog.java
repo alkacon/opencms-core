@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/02/09 14:56:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/23 11:41:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -155,7 +155,7 @@ public class CmsErrorDialog extends CmsPopupDialog {
         fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
         fieldset.setLegend(Messages.get().key(Messages.GUI_DETAILS_0));
         fieldset.addContent(new HTML(details));
-        fieldset.setOpen(true);
+        fieldset.setOpen(false);
         return fieldset;
     }
 
@@ -171,7 +171,7 @@ public class CmsErrorDialog extends CmsPopupDialog {
         StringBuffer buffer = new StringBuffer(64);
         buffer.append("<div class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon()).append(
             "\"></div><p class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().message()).append("\">").append(
-            message).append("</p><hr class=\"").append(I_CmsLayoutBundle.INSTANCE.generalCss().clearAll()).append(
+            message).append("</p><br class=\"").append(I_CmsLayoutBundle.INSTANCE.generalCss().clearAll()).append(
             "\" />");
         return new HTML(buffer.toString());
     }
