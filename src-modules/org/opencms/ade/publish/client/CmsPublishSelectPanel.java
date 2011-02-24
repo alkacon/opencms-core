@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/02/24 15:23:01 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/24 15:30:03 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsListSplitter;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -49,7 +48,6 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -474,9 +472,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
-            CmsDebugLog.getInstance().printLine("Starting group panel at: " + new Date().getTime());
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans, this);
-            CmsDebugLog.getInstance().printLine("Finished group panel at: " + new Date().getTime());
             m_groupPanels.add(groupPanel);
             numProblems += groupPanel.countProblems();
             for (CmsPublishResource pubResource : group.getResources()) {
