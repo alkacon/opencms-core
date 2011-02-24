@@ -36,10 +36,6 @@
 		<when-property-is name="fileapi.support" value="formdata" />
 	</replace-with>
 	
-	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImpl">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
-    </replace-with>
-
     <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
         <any>
@@ -56,10 +52,6 @@
     	</any>
     </replace-with>
     
-    <replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
-    </replace-with>
-
     <replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
         <any>
