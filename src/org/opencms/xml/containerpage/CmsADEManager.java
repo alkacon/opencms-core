@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/24 08:04:54 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 7.6
  */
@@ -528,6 +528,22 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns if the given type has a valid configuration to be created.<p>
+     * 
+     * @param cms the CMS context
+     * @param currentUri the current URI
+     * @param typeName the resource type name
+     * 
+     * @return <code>true</code> if the type can be created as new
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public boolean isCreatableType(CmsObject cms, String currentUri, String typeName) throws CmsException {
+
+        return m_configuration.isCreatableType(cms, currentUri, typeName);
+    }
+
+    /**
      * Saves the favorite list, user based.<p>
      * 
      * @param cms the cms context
@@ -600,7 +616,7 @@ public class CmsADEManager {
             properties.put(key, props.getString(key));
         }
 
-        return new CmsContainerElementBean(element, formatter, properties);
+        return new CmsContainerElementBean(element, formatter, properties, false);
     }
 
     /**

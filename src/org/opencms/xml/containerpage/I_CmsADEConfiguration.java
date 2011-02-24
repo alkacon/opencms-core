@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/24 08:04:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -162,5 +162,18 @@ public interface I_CmsADEConfiguration {
      * @param cms the CMS object  
      */
     void init(CmsObject cms);
+
+    /**
+     * Returns if the given type has a valid configuration to be created.<p>
+     * 
+     * @param cms the CMS context
+     * @param currentUri the current URI
+     * @param typeName the resource type name
+     * 
+     * @return <code>true</code> if the type can be created as new
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    boolean isCreatableType(CmsObject cms, String currentUri, String typeName) throws CmsException;
 
 }

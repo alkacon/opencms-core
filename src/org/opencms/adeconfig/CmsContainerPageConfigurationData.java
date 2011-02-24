@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsContainerPageConfigurationData.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 08:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -96,6 +96,28 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
     }
 
     /**
+     * Returns if the given type has a valid configuration to be created by the current user.<p>
+     * 
+     * @param cms the CMS context
+     * @param typeName the resource type name
+     * @param item the configuration item
+     * 
+     * @return <code>true</code> if the type can be created as new
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static boolean isCreatableType(CmsObject cms, String typeName, CmsConfigurationItem item)
+    throws CmsException {
+
+        CmsLazyFolder autoFolder = item.getLazyFolder();
+        CmsResource permissionCheckFolder = autoFolder.getPermissionCheckFolder(cms);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        boolean editable = settings.isEditable(cms, permissionCheckFolder);
+        boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
+        return editable && controlPermission;
+    }
+
+    /**
      * Gets the formatter configuration.<p>
      * 
      * @return the formatter configuration 
@@ -130,14 +152,8 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
         for (Map.Entry<String, CmsConfigurationItem> entry : m_typeConfiguration.entrySet()) {
             CmsConfigurationItem item = entry.getValue();
             String type = entry.getKey();
-            CmsResource source = item.getSourceFile();
-            CmsLazyFolder autoFolder = item.getLazyFolder();
-            CmsResource permissionCheckFolder = autoFolder.getPermissionCheckFolder(cms);
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
-            boolean editable = settings.isEditable(cms, permissionCheckFolder);
-            boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
-            if (editable && controlPermission) {
-                result.add(source);
+            if (isCreatableType(cms, type, item)) {
+                result.add(item.getSourceFile());
             }
         }
         return result;

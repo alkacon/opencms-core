@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/24 08:04:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 7.6 
  */
@@ -108,17 +108,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      * The default constructor.<p>
      */
     public CmsADEDefaultConfiguration() {
-
-        // do nothing 
-    }
-
-    /**
-     * Creates a new configuration object which uses a custom property name for looking up the configuration file name.<p>
-     * 
-     * @param configFileProperty the name of the property containing the configuration file name 
-     */
-    @Deprecated
-    public CmsADEDefaultConfiguration(String configFileProperty) {
 
         // do nothing 
     }
@@ -313,6 +302,18 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
         } while (result.contains(checkFileName) || result.contains(checkTempFileName));
         return checkFileName;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#isCreatableType(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public boolean isCreatableType(CmsObject cms, String currentUri, String typeName) throws CmsException {
+
+        CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(currentUri));
+        CmsConfigurationItem item = config.getTypeConfiguration().get(typeName);
+        return (item != null) && CmsContainerPageConfigurationData.isCreatableType(cms, typeName, item);
     }
 
 }
