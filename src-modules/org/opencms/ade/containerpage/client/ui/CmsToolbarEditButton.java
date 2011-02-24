@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarEditButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -60,12 +60,16 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
      */
     @Override
-    public boolean hasPermissions(CmsContainerPageElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
 
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason());
+        CmsElementOptionButton button = super.createOptionForElement(element);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+            button.disable(element.getNoEditReason());
+        }
+        return button;
     }
 
     /**

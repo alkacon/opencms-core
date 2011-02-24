@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -104,12 +104,23 @@ public class CmsContainerpageUtil {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
+                String newType = child.getAttribute("newType");
                 boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
 
                 if (isContainerElement) {
                     Element elementRoot = (Element)child.getFirstChildElement();
                     DOM.removeChild(child, elementRoot);
-                    elements.add(createElement(elementRoot, container, clientId, sitePath, noEditReason, hasProps));
+                    CmsContainerPageElement containerElement = createElement(
+                        elementRoot,
+                        container,
+                        clientId,
+                        sitePath,
+                        noEditReason,
+                        hasProps);
+                    if ((newType != null) && (newType.length() > 0)) {
+                        containerElement.setNewType(newType);
+                    }
+                    elements.add(containerElement);
                     DOM.removeChild((Element)container.getElement(), child);
                 } else if (isSubcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     CmsSubContainerElement subContainer = createSubcontainer(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/02/03 13:47:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -133,7 +133,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         CmsContainerElementBean elem = new CmsContainerElementBean(
             cms.readResource("/containerpage/content.html").getStructureId(),
             cms.readResource("/containerpage/formatter.jsp").getStructureId(),
-            props);
+            props,
+            false);
         elems.add(elem);
         elemMap.put(Locale.ENGLISH.toString() + "test", elems);
 
@@ -147,13 +148,15 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             for (int i = 0; i < expectedTypes.size(); i++) {
                 String expectedType = expectedTypes.get(i);
                 I_CmsXmlContentValue cnt = xmlCntPage.getValue(CmsXmlContainerPage.XmlNode.Containers.name(), locale, i);
-                String name = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
-                    cnt.getPath(),
-                    CmsXmlContainerPage.XmlNode.Name.name()), locale);
+                String name = xmlCntPage.getStringValue(
+                    cms,
+                    CmsXmlUtils.concatXpath(cnt.getPath(), CmsXmlContainerPage.XmlNode.Name.name()),
+                    locale);
                 assertEquals(namesMap.get(locale.toString() + expectedType), name);
-                String type = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
-                    cnt.getPath(),
-                    CmsXmlContainerPage.XmlNode.Type.name()), locale);
+                String type = xmlCntPage.getStringValue(
+                    cms,
+                    CmsXmlUtils.concatXpath(cnt.getPath(), CmsXmlContainerPage.XmlNode.Type.name()),
+                    locale);
                 assertEquals(expectedType, type);
             }
         }

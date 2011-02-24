@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/01/19 13:46:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -169,7 +169,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
                 null,
-                bean.getProperties());
+                bean.getProperties(),
+                false);
             String newClientId = newBean.getClientId();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
@@ -440,7 +441,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
             }
         }
-        return new CmsContainerElementBean(resourceId, null, changedProps);
+        return new CmsContainerElementBean(resourceId, null, changedProps, false);
     }
 
     /**
@@ -466,7 +467,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         // this is necessary if the element has not been cached yet
-        element = new CmsContainerElementBean(OpenCms.getADEManager().convertToServerId(id), null, null);
+        element = new CmsContainerElementBean(OpenCms.getADEManager().convertToServerId(id), null, null, false);
         getSessionCache().setCacheContainerElement(id, element);
         return element;
     }
@@ -530,7 +531,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elements.add(new CmsContainerElementBean(
                         element.getElementId(),
                         formatter.getStructureId(),
-                        element.getProperties()));
+                        element.getProperties(),
+                        false));
                 }
             } catch (Exception e) {
                 log(e.getLocalizedMessage(), e);

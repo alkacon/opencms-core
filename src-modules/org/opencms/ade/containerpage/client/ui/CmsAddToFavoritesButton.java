@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsAddToFavoritesButton.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,15 +56,6 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
 
         super(I_CmsButton.ButtonData.ADD_TO_FAVORITES, handler);
 
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
-     */
-    @Override
-    public boolean hasPermissions(CmsContainerPageElement element) {
-
-        return true;
     }
 
     /**

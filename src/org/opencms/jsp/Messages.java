@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2011/02/18 07:40:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -134,6 +134,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XSD_NO_TEMPLATE_FORMATTER_3 = "ERR_XSD_NO_TEMPLATE_FORMATTER_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1 = "GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";

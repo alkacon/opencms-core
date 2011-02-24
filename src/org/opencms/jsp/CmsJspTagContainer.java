@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/02/18 07:40:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 7.6 
  */
@@ -592,12 +593,20 @@ public class CmsJspTagContainer extends TagSupport {
             result.append(CLASS_CONTAINER_ELEMENTS);
         }
         result.append("'");
-
-        String noEditReason = new CmsResourceUtil(cms, resource).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-            cms));
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        String noEditReason = new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale);
 
         result.append(" title='").append(elementBean.getClientId()).append("'");
         result.append(" alt='").append(elementBean.getSitePath()).append("'");
+        if (elementBean.isCreateNew()) {
+            String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+            result.append(" newType='").append(typeName).append("'");
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
+                && !OpenCms.getADEManager().isCreatableType(cms, cms.getRequestContext().getUri(), typeName)) {
+                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
+            }
+        }
         result.append(" hasprops='").append(hasProperties(cms, resource)).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason)).append("'>");
 
@@ -682,7 +691,8 @@ public class CmsJspTagContainer extends TagSupport {
                 CmsContainerElementBean element = new CmsContainerElementBean(
                     resUri.getStructureId(),
                     cms.readResource(elementFormatter).getStructureId(),
-                    null); // when used as template element there are no properties
+                    null,
+                    false); // when used as template element there are no properties
                 allElems.add(0, element);
             }
         }

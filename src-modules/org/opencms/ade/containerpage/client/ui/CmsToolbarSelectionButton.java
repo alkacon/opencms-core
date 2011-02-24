@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSelectionButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/24 08:06:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -55,15 +55,6 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
     public CmsToolbarSelectionButton(CmsContainerpageHandler handler) {
 
         super(I_CmsButton.ButtonData.SELECTION, handler);
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
-     */
-    @Override
-    public boolean hasPermissions(CmsContainerPageElement element) {
-
-        return true;
     }
 
     /**
