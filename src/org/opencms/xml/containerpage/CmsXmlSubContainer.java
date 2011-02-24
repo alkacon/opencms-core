@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/10/12 06:54:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/24 08:04:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.9.1
  */
@@ -383,6 +383,10 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elementId = new CmsLink(uriLink).getStructureId();
                     }
 
+                    //                    Element createNewElement = element.element(CmsXmlContainerPage.XmlNode.CreateNew.name());
+                    //                    boolean createNew = (createNewElement != null)
+                    //                        && Boolean.parseBoolean(createNewElement.getStringValue());
+
                     // propeties
                     Map<String, String> propertiesMap = CmsXmlContentPropertyHelper.readProperties(
                         this,
@@ -392,7 +396,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elemDef);
 
                     if (elementId != null) {
-                        elements.add(new CmsContainerElementBean(elementId, null, propertiesMap));
+                        elements.add(new CmsContainerElementBean(elementId, null, propertiesMap, false));
                     }
                 }
                 m_subContainers.put(locale, new CmsSubContainerBean(

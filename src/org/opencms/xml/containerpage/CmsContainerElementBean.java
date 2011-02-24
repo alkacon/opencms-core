@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2010/11/29 15:47:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/24 08:04:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -54,6 +54,9 @@ public class CmsContainerElementBean {
 
     /** The client id including properties-hash. */
     private final transient String m_clientId;
+
+    /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
+    private boolean m_createNew;
 
     /** The element's structure id. */
     private final CmsUUID m_elementId;
@@ -73,8 +76,13 @@ public class CmsContainerElementBean {
      * @param elementId the element's structure id
      * @param formatterId the formatter's structure id, could be <code>null</code>
      * @param properties the properties as a map of name/value pairs
+     * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
      **/
-    public CmsContainerElementBean(CmsUUID elementId, CmsUUID formatterId, Map<String, String> properties) {
+    public CmsContainerElementBean(
+        CmsUUID elementId,
+        CmsUUID formatterId,
+        Map<String, String> properties,
+        boolean createNew) {
 
         m_elementId = elementId;
         m_formatterId = formatterId;
@@ -86,6 +94,7 @@ public class CmsContainerElementBean {
             clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         m_clientId = clientId;
+        m_createNew = createNew;
     }
 
     /**
@@ -157,6 +166,16 @@ public class CmsContainerElementBean {
     public int hashCode() {
 
         return m_clientId.hashCode();
+    }
+
+    /**
+     * Returns if a new element should be created replacing the given one on first edit of a container-page.<p>
+     * 
+     * @return <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
+     */
+    public boolean isCreateNew() {
+
+        return m_createNew;
     }
 
     /**

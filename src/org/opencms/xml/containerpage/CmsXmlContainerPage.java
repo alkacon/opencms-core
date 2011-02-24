@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/24 08:04:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.5.2
  * 
@@ -91,6 +91,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     /** XML node name constants. */
     public enum XmlNode {
 
+        /** The create new element node name. */
+        CreateNew,
         /** Main node name. */
         Containers,
         /** Container elements node name. */
@@ -387,9 +389,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
-                            element.getName(),
-                            elemIndex));
+                        String elemPath = CmsXmlUtils.concatXpath(
+                            cntPath,
+                            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -406,6 +408,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         } else {
                             elementId = new CmsLink(uriLink).getStructureId();
                         }
+                        Element createNewElement = element.element(XmlNode.CreateNew.name());
+                        boolean createNew = (createNewElement != null)
+                            && Boolean.parseBoolean(createNewElement.getStringValue());
 
                         // formatter
                         Element formatter = element.element(XmlNode.Formatter.name());
@@ -428,7 +433,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             elemDef);
 
                         if (elementId != null) {
-                            elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap));
+                            elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap, createNew));
                         }
                     }
 
@@ -437,8 +442,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }
