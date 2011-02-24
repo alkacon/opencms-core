@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsProgressBar.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -53,38 +53,22 @@ public class CmsProgressBar extends FlowPanel {
     /** The div element for the percentage text. */
     private HTML m_text = new HTML();
 
-    /** The background color for complete part of the bar. */
-    private static final String COLOR_COMPLETE = "#4DA4F3";
-
-    /** The background color for incomplete part of the bar. */
-    private static final String COLOR_INCOMPLETE = "#BDBDBD";
-
-    /**
-     * Creates a progress bar with default colors.<p>
-     */
-    public CmsProgressBar() {
-
-        this(COLOR_COMPLETE, COLOR_INCOMPLETE);
-    }
-
     /**
      * Creates a progress bar.<p>
      * 
      * Initializes the progress bar with 0 percent.<p>
-     * 
-     * @param colorComplete the background color for complete part of the bar 
-     * @param colorIncomplete the background color for incomplete part of the bar
      */
-    public CmsProgressBar(String colorComplete, String colorIncomplete) {
+    public CmsProgressBar() {
 
         m_text.setStyleName(I_CmsLayoutBundle.INSTANCE.progressBarCss().meterText());
+
         m_complete.setStyleName(I_CmsLayoutBundle.INSTANCE.progressBarCss().meterValue());
-        m_complete.getElement().getStyle().setBackgroundColor(colorComplete);
+        m_complete.addStyleName(I_CmsLayoutBundle.INSTANCE.progressBarCss().colorComplete());
         m_complete.add(m_text);
 
         add(m_complete);
         setStyleName(I_CmsLayoutBundle.INSTANCE.progressBarCss().meterWrap());
-        getElement().getStyle().setBackgroundColor(colorIncomplete);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.progressBarCss().colorIncomplete());
 
         setValue(0);
     }

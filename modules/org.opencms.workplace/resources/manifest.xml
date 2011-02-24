@@ -135,6 +135,16 @@
 			<resource uri="/system/workplace/resources/filetypes/upload.png"/>
 			<resource uri="/system/workplace/resources/filetypes/velocity.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/xmlcontent.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/html.png"/>
+			<resource uri="/system/workplace/resources/filetypes/html_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/java.png"/>
+			<resource uri="/system/workplace/resources/filetypes/java_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/js.png"/>
+			<resource uri="/system/workplace/resources/filetypes/js_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/text.png"/>
+			<resource uri="/system/workplace/resources/filetypes/text_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
 			<resource uri="/system/workplace/views/top_foot.jsp"/>
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
@@ -6395,6 +6405,246 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/html.png</source>
+			<destination>system/workplace/resources/filetypes/html.png</destination>
+			<type>image</type>
+			<uuidstructure>4e7d1f4d-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>4e7d1f4e-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:22:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:22:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[html]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/html_big.png</source>
+			<destination>system/workplace/resources/filetypes/html_big.png</destination>
+			<type>image</type>
+			<uuidstructure>5aabb6b1-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>5aabb6b2-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[html_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/java.png</source>
+			<destination>system/workplace/resources/filetypes/java.png</destination>
+			<type>image</type>
+			<uuidstructure>63dcec95-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>63dcec96-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[java]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/java_big.png</source>
+			<destination>system/workplace/resources/filetypes/java_big.png</destination>
+			<type>image</type>
+			<uuidstructure>69ce12a9-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>69ce12aa-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[java_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/js.png</source>
+			<destination>system/workplace/resources/filetypes/js.png</destination>
+			<type>image</type>
+			<uuidstructure>96b436bd-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>96b436be-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:24:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:24:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[js]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/js_big.png</source>
+			<destination>system/workplace/resources/filetypes/js_big.png</destination>
+			<type>image</type>
+			<uuidstructure>9bf4d181-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>9bf4d182-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:24:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:24:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[js_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/text.png</source>
+			<destination>system/workplace/resources/filetypes/text.png</destination>
+			<type>image</type>
+			<uuidstructure>75dffa4d-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>75dffa4e-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[text]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/text_big.png</source>
+			<destination>system/workplace/resources/filetypes/text_big.png</destination>
+			<type>image</type>
+			<uuidstructure>7b9ca2e1-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>7b9ca2e2-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[text_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/xml.png</source>
+			<destination>system/workplace/resources/filetypes/xml.png</destination>
+			<type>image</type>
+			<uuidstructure>813f0cb5-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>813f0cb6-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:24:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:24:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[xml]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/xml_big.png</source>
+			<destination>system/workplace/resources/filetypes/xml_big.png</destination>
+			<type>image</type>
+			<uuidstructure>869ea129-4032-11e0-bd91-cba538d80d30</uuidstructure>
+			<uuidresource>869ea12a-4032-11e0-bd91-cba538d80d30</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:24:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:24:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[xml_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<relations/>

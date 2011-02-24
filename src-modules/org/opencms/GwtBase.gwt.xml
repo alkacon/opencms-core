@@ -10,10 +10,12 @@
 		var input = document.createElement('input');
 		input.setAttribute('type', 'file');
 		if (input.files != null) {
-			if(typeof FormData == 'function') {
-				return 'formdata';
+			if (typeof FileReader == 'function' || typeof FileReader == 'object') {
+				if(typeof FormData == 'function' || typeof FormData == 'object') {
+					return 'formdata';
+				}
+				return 'fileapi';
 			}
-			return 'fileapi';
 		}
 		return 'no';
 	]]></property-provider>

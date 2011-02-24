@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadDialogFormDataImpl.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -62,7 +62,10 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     @Override
     public CmsListInfoBean createInfoBean(CmsFileInfo file) {
 
-        return new CmsListInfoBean(file.getFileName(), formatBytes(file.getFileSize()), null);
+        return new CmsListInfoBean(file.getFileName(), formatBytes(file.getFileSize())
+            + " ("
+            + getResourceType(file.getFileName())
+            + ")", null);
     }
 
     /**

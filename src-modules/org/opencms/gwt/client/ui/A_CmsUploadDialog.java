@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
+import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -63,6 +64,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -75,7 +77,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -226,7 +228,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     private static final float KILOBYTE = 1024L;
 
     /** Maximum width for the file item widget list. */
-    private static final int MAX_LIST_WIDTH = 600;
+    private static final int DIALOG_WIDTH = 600;
+
+    private static final int MIN_CONTENT_HEIGHT = 110;
 
     /** Text metrics key. */
     private static final String TM_FILE_UPLOAD_LIST = "FileUploadList";
@@ -278,6 +282,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     /** A panel for showing client loading. */
     private FlowPanel m_loadingPanel;
 
+    /** The main panel. */
+    private FlowPanel m_mainPanel;
+
     /** The OK button. */
     private CmsPushButton m_okButton;
 
@@ -318,7 +325,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
-        setWidth("439px");
+        setWidth(DIALOG_WIDTH + "px");
         addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogContent());
 
         // create a map that stores all files (upload, existing, invalid)
@@ -327,36 +334,36 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_listItems = new HashMap<String, CmsListItem>();
         m_inputsToUpload = new HashMap<String, CmsFileInput>();
         m_fileList = new CmsList<I_CmsListItem>();
-        m_fileList.truncate(TM_FILE_UPLOAD_LIST, MAX_LIST_WIDTH);
+        m_fileList.truncate(TM_FILE_UPLOAD_LIST, DIALOG_WIDTH - 20);
 
         // initialize a map that stores all the files that should be uploaded
         m_filesToUpload = new HashMap<String, CmsFileInfo>();
 
         // create the main panel
-        FlowPanel mainPanel = new FlowPanel();
+        m_mainPanel = new FlowPanel();
 
         // add the user info to the main panel
         m_dialogInfo = new HTML();
         m_dialogInfo.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogInfo());
-        mainPanel.add(m_dialogInfo);
+        m_mainPanel.add(m_dialogInfo);
 
         // add the content wrapper to the main panel
         m_contentWrapper = new FlowPanel();
         m_contentWrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().mainContentWidget());
         m_contentWrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_contentWrapper.getElement().getStyle().setPropertyPx("maxHeight", Window.getClientHeight() - 300);
-        mainPanel.add(m_contentWrapper);
+        m_contentWrapper.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
+        m_mainPanel.add(m_contentWrapper);
 
         m_selectionSummary = new HTML();
         m_selectionSummary.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().summary());
-        mainPanel.add(m_selectionSummary);
+        m_mainPanel.add(m_selectionSummary);
 
         // set the main panel as content of the popup
-        setContent(mainPanel);
+        setContent(m_mainPanel);
 
-        // create the "OK" and "Cancel" buttons and add the upload button
+        // create and add the "OK", "Cancel" and upload button
         createButtons();
-        addUploadButton();
     }
 
     /**
@@ -391,7 +398,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         // set the selection summary
         updateSummary();
         // add a upload button
-        addUploadButton();
+        m_uploadButton.createFileInput();
 
         // show the popup
         center();
@@ -589,6 +596,31 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     protected Collection<CmsFileInput> getInputsToUpload() {
 
         return Collections.unmodifiableCollection(m_inputsToUpload.values());
+    }
+
+    /**
+     * Returns the resource type name for a given filename.<p>
+     * 
+     * @param filename the file name
+     * 
+     * @return the resource type name
+     */
+    protected String getResourceType(String filename) {
+
+        String typeName = null;
+        if (CmsStringUtil.isNotEmpty(filename)) {
+            int pos = filename.lastIndexOf('.');
+            if (pos >= 0) {
+                String suffix = filename.substring(pos);
+                if (CmsStringUtil.isNotEmpty(suffix)) {
+                    typeName = CmsCoreProvider.get().getExtensionMapping().get(suffix.toLowerCase());
+                }
+            }
+        }
+        if (typeName == null) {
+            typeName = "plain";
+        }
+        return typeName;
     }
 
     /**
@@ -843,19 +875,22 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_listItems.put(file.getFileName(), listItem);
     }
 
-    /**
-     * Removes the current upload button and adds a new one.<p>
-     */
-    private void addUploadButton() {
+    private void changeHeight() {
 
-        if (m_uploadButton != null) {
-            removeButton(m_uploadButton);
+        int firstHeight = MIN_CONTENT_HEIGHT + m_firstInfoHeight + m_firstSummaryHeight + 2;
+        int currentHeight = CmsDomUtil.getCurrentStyleInt(m_mainPanel.getElement(), CmsDomUtil.Style.height);
+        int targetHeight = firstHeight - m_dialogInfo.getOffsetHeight() - m_selectionSummary.getOffsetHeight();
+        if (currentHeight > firstHeight) {
+            CmsChangeHeightAnimation.change(m_contentWrapper.getElement(), targetHeight, new Command() {
+
+                @Override
+                public void execute() {
+
+                    getDialog().getElement().getStyle().setDisplay(Display.NONE);
+                    getDialog().getElement().getStyle().setDisplay(Display.BLOCK);
+                }
+            }, 750);
         }
-        // add a new upload button
-        m_uploadButton = new CmsUploadButton(this);
-        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
-        m_uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
-        addButton(m_uploadButton);
     }
 
     /**
@@ -869,12 +904,14 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
         m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
 
-        int firstContentWidth = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.width);
-        m_contentWrapper.getElement().getStyle().setWidth(firstContentWidth, Unit.PX);
+        //        int firstContentWidth = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.width);
+        //        m_contentWrapper.getElement().getStyle().setWidth(firstContentWidth, Unit.PX);
 
-        m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.height);
-        m_firstInfoHeight = m_dialogInfo.getOffsetHeight();
-        m_firstSummaryHeight = m_selectionSummary.getOffsetHeight();
+        if (!m_selectionDone) {
+            m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.height);
+            m_firstInfoHeight = m_dialogInfo.getOffsetHeight();
+            m_firstSummaryHeight = m_selectionSummary.getOffsetHeight();
+        }
 
         CmsRpcAction<CmsUploadFileBean> callback = new CmsRpcAction<CmsUploadFileBean>() {
 
@@ -973,6 +1010,12 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             }
         });
         addButton(m_okButton);
+
+        // add a new upload button
+        m_uploadButton = new CmsUploadButton(this);
+        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
+        m_uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
+        addButton(m_uploadButton);
     }
 
     /**
@@ -1049,7 +1092,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
         Map<String, String> result = new HashMap<String, String>();
         for (String filename : filenames) {
-            String icon = CmsIconUtil.getResourceTypeIconClasses(filename, false);
+            String icon = CmsIconUtil.getResourceIconClasses(getResourceType(filename), filename, false);
             result.put(filename, icon);
         }
         return result;
@@ -1142,8 +1185,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_progressInfo = new CmsUploadProgressInfo();
         m_contentWrapper.add(m_progressInfo);
         m_updateProgressTimer.scheduleRepeating(UPDATE_PROGRESS_INTERVALL);
-        setHeight();
         startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_CLIENT_LOADING_0));
+        setHeight();
+        changeHeight();
     }
 
     /**

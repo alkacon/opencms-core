@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/02/22 16:34:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,14 +82,14 @@ import org.apache.log4j.spi.ThrowableInformation;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsUploadBean extends CmsJspBean {
 
     /** The default delay for slow uploads. */
-    public static final int DEFAULT_SLOW_DELAY_MILLIS = 0;
+    public static final int DEFAULT_SLOW_DELAY_MILLIS = 50;
 
     /** The default upload timeout. */
     public static final int DEFAULT_UPLOAD_TIMEOUT = 20000;
@@ -328,8 +328,7 @@ public class CmsUploadBean extends CmsJspBean {
 
         StringBuffer result = new StringBuffer(64);
         for (String s : new ThrowableInformation(e).getThrowableStrRep()) {
-            result.append(s);
-            result.append("<br />\n");
+            result.append(s + "<br />\n");
         }
         return result.toString();
     }
@@ -522,5 +521,4 @@ public class CmsUploadBean extends CmsJspBean {
         getRequest().getSession().removeAttribute(SESSION_ATTRIBUTE_LISTENER_ID);
         m_listeners.remove(listenerId);
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 8.0.0
  */
@@ -1074,6 +1074,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String colorComplete();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorIncomplete();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String meterText();
 
         /** 
@@ -1422,13 +1436,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String innerButton();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String loadingAnimation();
 
         /** 
@@ -1543,6 +1550,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsButtonCss buttonCss();
 
     /**
+     * The CSS constants bundle.<p>
+     * 
+     * @return a bundle of CSS constants 
+     */
+    I_CmsConstantsBundle constants();
+
+    /**
      * Access method.<p>
      * 
      * @return the content editor dialog CSS
@@ -1550,13 +1564,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("contentEditor.css")
     @CssResource.NotStrict
     I_CmsContentEditorCss contentEditorCss();
-
-    /**
-     * The CSS constants bundle.<p>
-     * 
-     * @return a bundle of CSS constants 
-     */
-    I_CmsConstantsBundle constants();
 
     /**
      * Access method.<p>

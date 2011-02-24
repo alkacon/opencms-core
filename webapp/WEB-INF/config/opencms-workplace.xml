@@ -203,6 +203,15 @@
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
+        <iconrules>
+          <iconrule extension="java" icon="java.png" bigicon="java_big.png" />
+          <iconrule extension="js" icon="js.png" bigicon="js_big.png" />
+          <iconrule extension="html" icon="html.png" bigicon="html_big.png" />
+          <iconrule extension="xhtml" icon="html.png" bigicon="html_big.png" />
+          <iconrule extension="htm" icon="html.png" bigicon="html_big.png" />
+          <iconrule extension="txt" icon="text.png" bigicon="text_big.png" />
+          <iconrule extension="xml" icon="xml.png" bigicon="xml_big.png" />
+        </iconrules>
       </explorertype>
       <explorertype name="image" key="fileicon.image" icon="image.gif" bigicon="image_big.png">
         <newresource uri="" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />

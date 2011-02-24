@@ -101,8 +101,8 @@
 
 .itemTitle{
 	font-weight: bold;
-    display: inline;
     vertical-align: middle;
+    white-space: nowrap;
 }
 .titleRow{
 /**	float: left;**/

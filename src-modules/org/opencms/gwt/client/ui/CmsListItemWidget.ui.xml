@@ -20,7 +20,7 @@
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemWidgetCss.buttonPanel}"></g:FlowPanel>
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel" />
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
-		    	  <cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"/>
+		    	  <cmsInput:CmsLabel ui:field="m_title" addStyleNames="{resources.listItemWidgetCss.itemTitle}"/>
 		    	  <g:Label styleName="{style.brk}" /><!-- Abuse label to force a newline. -->
 		    	  <cmsInput:CmsLabel ui:field="m_subtitle" addStyleNames="{resources.generalCss.inlineBlock}" />
 		    	</g:FlowPanel>

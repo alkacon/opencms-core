@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadDialogImpl.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -84,7 +84,7 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
     @Override
     public CmsListInfoBean createInfoBean(CmsFileInfo file) {
 
-        return new CmsListInfoBean(file.getFileName(), null, null);
+        return new CmsListInfoBean(file.getFileName(), getResourceType(file.getFileName()), null);
     }
 
     /**
@@ -117,7 +117,10 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         StringBuffer buffer = new StringBuffer(64);
         buffer.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage()).append("\">");
         buffer.append("<b>" + Messages.get().key(Messages.GUI_UPLOAD_SUMMARY_FILES_0) + "</b> ");
-        buffer.append(new Integer(getFilesToUpload().size()) + " " + getFileText() + " selected");
+        buffer.append(Messages.get().key(
+            Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_2,
+            new Integer(getFilesToUpload().size()),
+            getFileText()));
         buffer.append("</p>");
         setSummaryHTML(buffer.toString());
     }

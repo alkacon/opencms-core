@@ -1,12 +1,15 @@
 @external popupContent;
 
-.uploadButton {
-	overflow: hidden;
-	position: relative;
+.uploadDialogContent .popupContent {
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorMenu");
 }
 
-.innerButton {
-	vertical-align: top;
+.mainContentWidget {
+    background-color: value("constants.css.backgroundColorDialog");
+    border: 1px solid value("constants.css.borderColor");
+    overflow: auto;
+    padding: 0 2px;
+    position: relative;
 }
 
 .uploadFileInput {
@@ -16,14 +19,18 @@
 	top: -10px;
 }
 
+.uploadButton {
+	overflow: hidden;
+	position: relative;
+}
+
 @if user.agent ie6 {
     .uploadFileInput{
         filter: literal("alpha(opacity = 0)");
     }
     .uploadButton {
     	display: inline;
-    	height: literal("    expression( (function(elem){elem.style.height = elem.firstChild.offsetHeight + 'px';})(this) )    ");
-    	/** height: literal("expression(this.firstChild.offsetHeight)"); */
+    	height: literal("expression( (function(elem){elem.style.height = elem.firstChild.offsetHeight + 'px';})(this) )");
     } 
 } @elif user.agent ie8 {
 	.uploadFileInput{
@@ -41,18 +48,14 @@
     } 
 }
 
-.uploadDialogContent .popupContent {
-	background: none repeat scroll 0 0 #F9F9F9;
+
+.popupContent div.uploadDialogButton {
+	float: left;
+	margin: 0px;
 }
 
-.mainContentWidget {
-    background-color: #FFFFFF;
-    border: 1px solid #999999;
-    overflow: auto;
-    padding: 0 2px;
-    position: relative;
-    min-height: 110px;
-}
+
+
 
 .dialogInfo {
 	padding-bottom: 2px;
@@ -66,10 +69,7 @@
 	width: 100%;
 }
 
-.popupContent div.uploadDialogButton {
-	float: left;
-	margin: 0px;
-}
+
 
 .progressInfo {
 	padding-top: 20px;
@@ -112,7 +112,7 @@
     position: absolute;
     width: 100%;
     z-index: 30000;
-    background-color: #ffffff;
+    background-color: value("constants.css.backgroundColorDialog");
     text-align: center;
 }
 .loadingText {

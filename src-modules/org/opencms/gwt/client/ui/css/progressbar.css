@@ -39,7 +39,15 @@
     background-repeat: repeat-x;
     height: 20px;
 }
-            
+
+.colorComplete {
+	background-color: #4DA4F3;
+}
+
+.colorIncomplete {
+	background-color: #BDBDBD;
+}
+
 .meterText {
     position: absolute;
     top:0; left:0;

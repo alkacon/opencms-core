@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2011/02/22 09:43:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
      */
     public CmsLabel() {
 
-        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -98,7 +98,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
     public CmsLabel(Element element) {
 
         super(element);
-        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -109,7 +109,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
     public CmsLabel(String text) {
 
         super(text);
-        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**

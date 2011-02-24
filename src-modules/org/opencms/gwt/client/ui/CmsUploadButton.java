@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/02/24 13:31:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/24 17:39:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -71,7 +71,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         public void onChange(ChangeEvent event) {
 
             CmsDomUtil.ensureMouseOut(m_main.getElement());
-            addFileInput();
+            onChangeAction();
         }
     }
 
@@ -434,7 +434,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
      * 
      * On change the upload dialog is opened and a new file input field will be created.<p>
      */
-    protected void addFileInput() {
+    protected void onChangeAction() {
 
         if (m_uploadDialog != null) {
             m_uploadDialog.addFileInput(m_fileInput);
@@ -492,13 +492,12 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /**
      * Creates and adds a file input.<p>
      */
-    private void createFileInput() {
+    protected void createFileInput() {
 
-        // hide the current file input field and add a new one
+        // remove the current file input field and add a new one
         if (m_fileInput != null) {
             m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
         }
-
         m_fileInput = new CmsFileInput();
         m_fileInput.addChangeHandler(m_handler);
         m_fileInput.setAllowMultipleFiles(true);
