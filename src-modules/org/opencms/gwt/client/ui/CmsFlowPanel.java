@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFlowPanel.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/24 13:31:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,23 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -40,14 +56,23 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A basic panel which is like GWT's FlowPanel, except it allows you to choose the HTML tag
  * to use.<p>
+ * Implements {@link com.google.gwt.event.dom.client.HasAllMouseHandlers}.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsFlowPanel extends ComplexPanel {
+public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsFlowPanel() {
+
+        this(CmsDomUtil.Tag.div.name());
+    }
 
     /** 
      * Wrapping constructor.<p>
@@ -80,6 +105,54 @@ public class CmsFlowPanel extends ComplexPanel {
     public void add(Widget w) {
 
         super.add(w, getElement());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseDownHandlers#addMouseDownHandler(com.google.gwt.event.dom.client.MouseDownHandler)
+     */
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+
+        return addDomHandler(handler, MouseDownEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseMoveHandlers#addMouseMoveHandler(com.google.gwt.event.dom.client.MouseMoveHandler)
+     */
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+
+        return addDomHandler(handler, MouseMoveEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+     */
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+        return addDomHandler(handler, MouseOutEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+     */
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+        return addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseUpHandlers#addMouseUpHandler(com.google.gwt.event.dom.client.MouseUpHandler)
+     */
+    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+
+        return addDomHandler(handler, MouseUpEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseWheelHandlers#addMouseWheelHandler(com.google.gwt.event.dom.client.MouseWheelHandler)
+     */
+    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+
+        return addDomHandler(handler, MouseWheelEvent.getType());
     }
 
     /**
