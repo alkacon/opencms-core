@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/18 15:28:37 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/24 15:23:01 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_UPLOAD_TITLE_0 = "GUI_GALLERY_UPLOAD_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_BIG_FORMAT_LABEL_0 = "GUI_IMAGE_BIG_FORMAT_LABEL_0";
@@ -58,6 +61,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_USER_FORMAT_LABEL_0 = "GUI_IMAGE_USER_FORMAT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_NUM_RESULTS_2 = "GUI_LABEL_NUM_RESULTS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
@@ -190,9 +196,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TITLE_RESULTS_0 = "GUI_TAB_TITLE_RESULTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_NUM_RESULTS_2 = "GUI_LABEL_NUM_RESULTS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TITLE_SEARCH_0 = "GUI_TAB_TITLE_SEARCH_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/02/23 11:34:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/24 15:23:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -180,6 +181,10 @@ public class CmsVfsTab extends A_CmsListTab {
         if (vfsEntry.isEditable()) {
             CmsUploadButton uploadButton = new CmsUploadButton();
             uploadButton.setTargetFolder(vfsEntry.getSitePath());
+            uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_0));
+            uploadButton.setText(null);
+            uploadButton.setShowBorder(false);
+            uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
             liWidget.addButton(uploadButton);
         }
 

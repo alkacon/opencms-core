@@ -97,6 +97,23 @@
     vertical-align: middle;
 }
 
+@sprite .uploadIconActive, .cmsState-up-hovering .uploadIcon, .cmsState-down-hovering .uploadIcon, .cmsState-down .uploadIcon{
+    gwt-image: "icons.uploadIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .uploadIconInactive, .cmsState-up .uploadIcon{
+    gwt-image: "icons.uploadIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .uploadIconDeactivated, .cmsState-up-disabled .uploadIcon, .cmsState-down-disabled .uploadIcon{
+    gwt-image: "icons.uploadIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
 
 
 @sprite .cmsState-up-disabled .toolbarEdit, .cmsState-down-disabled .toolbarEdit{
