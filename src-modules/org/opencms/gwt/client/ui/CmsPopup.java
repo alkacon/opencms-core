@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/11/15 15:44:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/25 15:53:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
@@ -57,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -202,6 +203,21 @@ public class CmsPopup implements I_CmsAutoHider {
         public boolean remove(Widget w) {
 
             return m_main.remove(w);
+        }
+
+        /**
+         * @see com.google.gwt.user.client.ui.PopupPanel#setWidth(java.lang.String)
+         */
+        @Override
+        public void setWidth(String width) {
+
+            super.setWidth(width);
+            Element centerCell = CmsDomUtil.getAncestor(getWidget().getElement(), "dialogMiddleCenter");
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(width)) {
+                centerCell.getStyle().clearWidth();
+            } else {
+                centerCell.getStyle().setWidth(100, Unit.PCT);
+            }
         }
 
         /**

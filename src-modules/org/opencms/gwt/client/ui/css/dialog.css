@@ -1,4 +1,10 @@
-@external popupContent, Caption, dialogBottom, dialogTop;
+@external popupContent, Caption, dialogBottom, dialogTop, dialogTopLeftInner, dialogTopRightInner, dialogMiddleLeftInner, dialogMiddleRightInner, dialogBottomLeftInner, dialogBottomRightInner;
+
+/* hide unused table cell content - necessary for all web-kit browser */
+.dialogTopLeftInner ,.dialogTopRightInner, .dialogMiddleLeftInner, .dialogMiddleRightInner, .dialogBottomLeftInner, .dialogBottomRightInner{
+	display: none;
+}
+
 .popup{
     z-index: 500;
     padding: 3px;
