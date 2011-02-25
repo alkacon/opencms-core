@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/25 11:39:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import java.util.List;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -56,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -91,9 +90,8 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
         // set the widget
         setMenuWidget(m_menuPanel);
 
-        // remove the style attribute of the popup because its width is set to 100%
-        DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
-
+        // clear the width of the popup content
+        getPopupContent().getWidget().getElement().getStyle().clearWidth();
     }
 
     /**

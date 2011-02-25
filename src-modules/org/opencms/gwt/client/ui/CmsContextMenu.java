@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/25 11:39:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,8 +41,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -52,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since version 8.0.0
  */
@@ -88,8 +86,6 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());
         m_autoHideParent = autoHideParent;
-        Element e = m_popup.getDialog().getWidget().getParent().getElement();
-        DOM.removeElementAttribute(e, "style");
     }
 
     /**
