@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapClipboardData.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/25 15:53:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0
  */
@@ -155,5 +155,25 @@ public class CmsSitemapClipboardData implements IsSerializable {
     public void removeModified(CmsClientSitemapEntry entry) {
 
         m_modifications.remove(entry.getId());
+    }
+
+    /**
+     * Sets list of deleted sitemap entries.<p>
+     *
+     * @param deletions the deleted sitemap entries
+     */
+    public void setDeletions(LinkedHashMap<CmsUUID, CmsClientSitemapEntry> deletions) {
+
+        m_deletions = deletions;
+    }
+
+    /**
+     * Sets the list of modified sitemap entry paths.<p>
+     *
+     * @param modifications the list of modified sitemap entry paths
+     */
+    public void setModifications(LinkedHashMap<CmsUUID, CmsClientSitemapEntry> modifications) {
+
+        m_modifications = modifications;
     }
 }
