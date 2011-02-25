@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/02/18 08:49:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/02/25 15:51:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -115,19 +115,11 @@ public class CmsToolbarClipboardView {
         for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getModifications().values()) {
             m_modified.insertItem(createModifiedItem(entry), 0);
         }
-
         m_deleted = new CmsList<CmsListItem>();
-        // allow dragging to the sitemap tree
-        m_deleted.setDNDHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
-        // prevent dragging to the deleted list
-        m_deleted.setDropEnabled(false);
-
         for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getDeletions().values()) {
             m_deleted.insertItem(createDeletedItem(entry), 0);
         }
-
         m_clipboardButton = clipboardButton;
-
         controller.addChangeHandler(new I_CmsSitemapChangeHandler() {
 
             /**
@@ -232,7 +224,6 @@ public class CmsToolbarClipboardView {
              */
             public void onClick(ClickEvent event) {
 
-                // TODO: hide menu
                 // TODO: check if entry is intern or extern
                 boolean intern = true;
                 if (intern) {
