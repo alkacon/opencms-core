@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/24 17:39:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/25 11:39:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -224,12 +224,13 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         }
     }
 
-    /** The size for kilobytes in bytes. */
-    private static final float KILOBYTE = 1024L;
-
     /** Maximum width for the file item widget list. */
     private static final int DIALOG_WIDTH = 600;
 
+    /** The size for kilobytes in bytes. */
+    private static final float KILOBYTE = 1024L;
+
+    /** The minimal height of the content wrapper. */
     private static final int MIN_CONTENT_HEIGHT = 110;
 
     /** Text metrics key. */
@@ -241,6 +242,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     /** Stores all files that were added. */
     private Map<String, CmsFileInfo> m_allFiles;
 
+    /** Signals that the upload dialog was canceled. */
     private boolean m_canceled;
 
     /** Signals that the client currently loading. */
@@ -875,6 +877,10 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_listItems.put(file.getFileName(), listItem);
     }
 
+    /**
+     * Changes the height of the content wrapper so that the dialog finally has the
+     * same height that the dialog has when the min height is set on the selection screen.<p>
+     */
     private void changeHeight() {
 
         int firstHeight = MIN_CONTENT_HEIGHT + m_firstInfoHeight + m_firstSummaryHeight + 2;
@@ -883,6 +889,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         if (currentHeight > firstHeight) {
             CmsChangeHeightAnimation.change(m_contentWrapper.getElement(), targetHeight, new Command() {
 
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
                 @Override
                 public void execute() {
 
@@ -903,9 +912,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     private void checkSelection() {
 
         m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
-
-        //        int firstContentWidth = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.width);
-        //        m_contentWrapper.getElement().getStyle().setWidth(firstContentWidth, Unit.PX);
 
         if (!m_selectionDone) {
             m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.height);
@@ -973,7 +979,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
-     * Creates the OK and the Cancel button.<p>
+     * Creates the "OK", the "Cancel" and the "Upload" button.<p>
      */
     private void createButtons() {
 
@@ -1133,7 +1139,8 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
-     * Sets the height for the content and centers the dialog afterwards.<p>
+     * Sets the height for the content so that the dialog finally has the same height
+     * as the dialog has on the selection screen.<p>
      */
     private void setHeight() {
 
