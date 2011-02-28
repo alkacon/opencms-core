@@ -4,16 +4,24 @@
 	margin:10px 8px 8px;
 }
 
-.clipboardList{
+.itemList.clipboardList{
+	max-height: 385px;
+}
+
+.itemList{
 	overflow: auto;
 	min-height: 38px;
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
+	max-height: 412px;
+	margin: 0px;
 }
 
-.itemList{
-	max-height: 412px;
+.listClearButton{
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
 }
 
 .description{

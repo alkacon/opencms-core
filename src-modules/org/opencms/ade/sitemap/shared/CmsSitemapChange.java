@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,8 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
     /** The change types. */
     public enum ChangeType {
+        /** The clip-board only change. */
+        clipboardOnly,
         /** The create/new change. */
         create,
         /** The delete resource change. */
@@ -165,7 +167,8 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
             m_clipBoardData = data.getClipBoardData();
         }
         if ((data.m_changeType == ChangeType.delete)
-            || ((data.m_changeType == ChangeType.remove) && (m_changeType != ChangeType.delete))) {
+            || ((data.m_changeType == ChangeType.remove) && (m_changeType != ChangeType.delete))
+            || (m_changeType == ChangeType.clipboardOnly)) {
             m_changeType = data.m_changeType;
         }
     }

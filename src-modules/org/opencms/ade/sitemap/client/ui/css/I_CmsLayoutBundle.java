@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String itemList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listClearButton();
 
         /** Access method.<p>
          * 

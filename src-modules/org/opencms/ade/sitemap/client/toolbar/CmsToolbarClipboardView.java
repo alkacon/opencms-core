@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/02/25 15:51:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/02/28 11:10:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -157,6 +157,22 @@ public class CmsToolbarClipboardView {
         removeDeleted(entry.getId().toString());
         removeModified(entry.getId().toString());
         getModified().insertItem(createModifiedItem(entry), 0);
+    }
+
+    /**
+     * Clears the deleted list.<p>
+     */
+    public void clearDeleted() {
+
+        m_deleted.clearList();
+    }
+
+    /**
+     * Clears the modified list.<p>
+     */
+    public void clearModified() {
+
+        m_modified.clearList();
     }
 
     /**

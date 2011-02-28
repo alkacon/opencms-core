@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/25 15:53:04 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
@@ -573,6 +573,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsClientSitemapEntry> result = new ArrayList<CmsClientSitemapEntry>();
         CmsClientSitemapEntry changedEntry = null;
         switch (change.getChangeType()) {
+            case clipboardOnly:
+                // do nothing
+                break;
             case delete:
                 changedEntry = delete(change);
                 break;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/23 11:37:55 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.sitemap.client.control;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeClearDeleted;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeClearModified;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
@@ -89,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 8.0.0
  */
@@ -264,7 +266,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapChangeMove move = getChangeForMove(entry, sitePath, entry.getPosition(), true);
-        applyChange(move, false);
+        applyChange(move);
     }
 
     /**
@@ -275,7 +277,23 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void bump(CmsClientSitemapEntry entry) {
 
         CmsClientSitemapChangeBumpDetailPage change = new CmsClientSitemapChangeBumpDetailPage(entry);
-        applyChange(change, false);
+        applyChange(change);
+    }
+
+    /**
+     * Clears the deleted clip-board list and commits the change.<p>
+     */
+    public void clearDeletedList() {
+
+        applyChange(new CmsClientSitemapChangeClearDeleted());
+    }
+
+    /**
+     * Clears the modified clip-board list and commits the change.<p>
+     */
+    public void clearModifiedList() {
+
+        applyChange(new CmsClientSitemapChangeClearModified());
     }
 
     /**
@@ -304,7 +322,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (parent != null);
         newEntry.setEditStatus(EditStatus.created);
-        applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId), false);
+        applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId));
     }
 
     /**
@@ -391,7 +409,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
-        applyChange(new CmsClientSitemapChangeDelete(entry, parent.getId()), false);
+        applyChange(new CmsClientSitemapChangeDelete(entry, parent.getId()));
     }
 
     /**
@@ -410,7 +428,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapChangeEdit change = getChangeForEdit(entry, vfsReference, propertyChanges, isNew);
         if (change != null) {
-            applyChange(change, false);
+            applyChange(change);
         }
     }
 
@@ -468,7 +486,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             }
 
         };
-        applyChange(change, false, callback);
+        applyChange(change, callback);
 
     }
 
@@ -965,7 +983,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position, false);
         if (change != null) {
-            applyChange(change, false);
+            applyChange(change);
         }
     }
 
@@ -987,7 +1005,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
-        applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()), false);
+        applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()));
     }
 
     /**
@@ -1018,7 +1036,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void undelete(final CmsUUID structureId, final String sitePath) {
 
-        applyChange(new CmsClientSitemapChangeUndelete(structureId, sitePath), false);
+        applyChange(new CmsClientSitemapChangeUndelete(structureId, sitePath));
     }
 
     /**
@@ -1035,13 +1053,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
     * Adds a change to the queue.<p>
     * 
     * @param change the change to be added  
-    * @param redo if redoing a change
     * @param callbacks the callbacks to execute after the change has been applied 
     */
-    protected void applyChange(
-        final I_CmsClientSitemapChange change,
-        boolean redo,
-        final AsyncCallback<Object>... callbacks) {
+    protected void applyChange(final I_CmsClientSitemapChange change, final AsyncCallback<Object>... callbacks) {
 
         if (change.getChangeForCommit() != null) {
             // save the sitemap

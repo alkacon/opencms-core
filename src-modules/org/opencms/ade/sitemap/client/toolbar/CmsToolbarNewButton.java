@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/02/22 09:45:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/28 11:10:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      */
     public CmsToolbarNewButton(CmsSitemapToolbar toolbar, CmsSitemapController controller) {
 
-        super("New", I_CmsButton.ButtonData.ADD.getIconClass(), toolbar, controller);
+        super(I_CmsButton.ButtonData.NEW.getTitle(), I_CmsButton.ButtonData.NEW.getIconClass(), toolbar, controller);
     }
 
     /**
@@ -94,7 +94,9 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         if (m_newElementsList.getWidgetCount() > 0) {
             hasTabs = true;
-            createTab("New pages", "Create a new page", m_newElementsList);
+            addTab(
+                createTab(Messages.get().key(Messages.GUI_NEW_PAGES_TAB_DESCRIPTION_0), m_newElementsList),
+                Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
         }
         m_specialList = new CmsList<I_CmsListItem>();
         m_specialList.add(makeRedirectItem());
@@ -106,13 +108,15 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         if (m_specialList.getWidgetCount() > 0) {
             hasTabs = true;
-            createTab(Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0), "The special tab", m_specialList);
+            addTab(
+                createTab(Messages.get().key(Messages.GUI_SPECIAL_TAB_DESCRIPTION_0), m_specialList),
+                Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
         }
         if (!hasTabs) {
             // no new elements available, show appropriate message
 
             //TODO: improve styling, add localization
-            Label messageLabel = new Label("No creatable elements configured.");
+            Label messageLabel = new Label(Messages.get().key(Messages.GUI_NO_CREATABLE_ELEMENTS_0));
             messageLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
             SimplePanel content = new SimplePanel();
             content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
@@ -132,7 +136,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
         CmsListInfoBean info = new CmsListInfoBean();
         String subtitle = typeInfo.getTypeName();
-        String title = "Detail page for [" + typeInfo.getTitle() + "]";
+        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
@@ -156,7 +160,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(typeInfo.getTypeName());
         if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
-            info.addAdditionalInfo("Description", typeInfo.getDescription());
+            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0), typeInfo.getDescription());
         }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
@@ -177,7 +181,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(typeInfo.getTypeName());
         if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
-            info.addAdditionalInfo("Description", typeInfo.getDescription());
+            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0), typeInfo.getDescription());
         }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());

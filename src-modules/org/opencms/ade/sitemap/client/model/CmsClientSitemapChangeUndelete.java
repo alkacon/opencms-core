@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeUndelete.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
 /**
- * Stores one deletion change to the sitemap.<p>
+ * Stores one undelete change to the sitemap.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

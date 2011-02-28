@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/02/28 11:10:47 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  */
@@ -49,6 +49,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_DELETED_DESC_0 = "GUI_CLIPBOARD_DELETED_DESC_0";
@@ -67,6 +70,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_CREATABLE_ELEMENTS_0 = "GUI_NO_CREATABLE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
@@ -159,6 +165,9 @@ public final class Messages {
     public static final String GUI_INHERIT_PROPERTY_2 = "GUI_INHERIT_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_WARNING_TITLE_0 = "GUI_LINK_WARNING_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -175,6 +184,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_PAGES_TAB_DESCRIPTION_0 = "GUI_NEW_PAGES_TAB_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_PAGES_TAB_TITLE_0 = "GUI_NEW_PAGES_TAB_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
@@ -220,6 +235,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TOO_DEEP_TITLE_0 = "GUI_SITEMAP_TOO_DEEP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SPECIAL_TAB_DESCRIPTION_0 = "GUI_SPECIAL_TAB_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SPECIAL_TAB_TITLE_0 = "GUI_SPECIAL_TAB_TITLE_0";

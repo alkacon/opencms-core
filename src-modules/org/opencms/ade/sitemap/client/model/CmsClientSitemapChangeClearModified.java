@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeClearModified.java,v $
  * Date   : $Date: 2011/02/28 11:10:47 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap.client.model;
 
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
@@ -39,52 +38,24 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
-import org.opencms.util.CmsUUID;
 
 /**
- * Stores one remove change to the sitemap.<p>
+ * Stores a clear modified list change to the sitemap.<p>
  * 
- * @author Michael Moossen 
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
-
-    /** The deleted entry with children. */
-    private CmsClientSitemapEntry m_entry;
-
-    /** The tree item to which the change should be applied. */
-    private CmsSitemapTreeItem m_treeItem;
-
-    /**
-     * Constructor.<p>
-     * 
-     * @param entry the deleted entry
-     */
-    public CmsClientSitemapChangeRemove(CmsClientSitemapEntry entry) {
-
-        m_entry = entry;
-    }
-
-    /**
-     * Constructor.<p>
-     *  
-     * @param entry the deleted entry
-     * @param parentId the parent entry id
-     */
-    public CmsClientSitemapChangeRemove(CmsClientSitemapEntry entry, CmsUUID parentId) {
-
-        m_entry = entry;
-    }
+public class CmsClientSitemapChangeClearModified implements I_CmsClientSitemapChange {
 
     /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        view.addModified(getEntry(), getEntry().getSitePath());
+        view.clearModified();
     }
 
     /**
@@ -92,10 +63,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public void applyToModel(CmsSitemapController controller) {
 
-        // apply to sitemap model 
-        m_entry.setInNavigation(false);
-        // apply to clipboard model
-        applyToClipboardData(controller.getData().getClipboardData());
+        controller.getData().getClipboardData().getModifications().clear();
     }
 
     /**
@@ -103,8 +71,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        m_treeItem = view.getTreeItem(getEntry().getSitePath());
-        m_treeItem.updateEntry(m_entry);
+        // nothing to do
     }
 
     /**
@@ -112,23 +79,11 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath(), ChangeType.remove);
-        change.setDefaultFileId(m_entry.getDefaultFileId());
-        CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
-        applyToClipboardData(data);
-        change.setClipBoardData(data);
-        //TODO: handle detail page delete
+        CmsSitemapClipboardData clipboardData = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
+        clipboardData.getModifications().clear();
+        CmsSitemapChange change = new CmsSitemapChange(null, null, ChangeType.clipboardOnly);
+        change.setClipBoardData(clipboardData);
         return change;
-    }
-
-    /**
-     * Returns the deleted entry.<p>
-     *
-     * @return the deleted entry
-     */
-    public CmsClientSitemapEntry getEntry() {
-
-        return m_entry;
     }
 
     /**
@@ -136,17 +91,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public boolean isChangingDetailPages() {
 
-        return m_entry.isDetailPage();
-    }
-
-    /**
-     * Sets the corresponding tree item from a new operation.<p>
-     * 
-     * @param treeItem the item to set
-     */
-    public void setTreeItem(CmsSitemapTreeItem treeItem) {
-
-        m_treeItem = treeItem;
+        return false;
     }
 
     /**
@@ -154,18 +99,8 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public void updateEntry(CmsClientSitemapEntry entry) {
 
-        if (m_entry.getSitePath().equals(entry.getSitePath())) {
-            m_entry.update(entry);
-        }
+        // nothing to do
+
     }
 
-    /**
-     * Applys the change to the given clip-board data.<p>
-     * 
-     * @param clipboardData the clip-board data
-     */
-    private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
-
-        clipboardData.addModified(getEntry());
-    }
 }

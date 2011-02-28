@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/A_CmsToolbarListMenuButton.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/28 11:10:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -123,13 +123,25 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     }
 
     /**
+     * Adds a new tab to the tab-panel.<p>
+     * 
+     * @param tab the tab
+     * @param title the tab title
+     */
+    public void addTab(FlowPanel tab, String title) {
+
+        m_tabs.add(tab, title);
+    }
+
+    /**
      * Creates a new tab.<p>
      * 
-     * @param title the tab title 
      * @param description the description 
      * @param list list of items
+     * 
+     * @return the created tab widget
      */
-    public void createTab(String title, String description, CmsList<? extends I_CmsListItem> list) {
+    public FlowPanel createTab(String description, CmsList<? extends I_CmsListItem> list) {
 
         FlowPanel tab = new FlowPanel();
         tab.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardTabPanel());
@@ -138,10 +150,9 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         descriptionLabel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().textBig());
         tab.add(descriptionLabel);
         list.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().itemList());
-        list.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         tab.add(list);
-        m_tabs.add(tab, title);
+        return tab;
     }
 
     /**
