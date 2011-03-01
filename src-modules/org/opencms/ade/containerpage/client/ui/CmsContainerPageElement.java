@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/01 14:20:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,8 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -400,7 +400,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         CmsDomUtil.removeDisablingOverlay(getElement());
         m_elementOptionBar.getElement().removeClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        getElement().getStyle().clearOpacity();
+        // using own implementation as GWT won't do it properly on IE7-8
+        CmsDomUtil.clearOpacity(getElement());
         getElement().getStyle().clearDisplay();
         showEditableListButtons();
     }

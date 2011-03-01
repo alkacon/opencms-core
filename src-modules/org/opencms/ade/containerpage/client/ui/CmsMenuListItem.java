@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2010/10/25 13:29:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/01 14:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -157,7 +158,9 @@ public class CmsMenuListItem extends CmsListItem {
      */
     private void clearDrag() {
 
-        getElement().getStyle().clearOpacity();
+        // using own implementation as GWT won't do it properly on IE7-8
+        CmsDomUtil.clearOpacity(getElement());
+
         getElement().getStyle().clearDisplay();
     }
 }

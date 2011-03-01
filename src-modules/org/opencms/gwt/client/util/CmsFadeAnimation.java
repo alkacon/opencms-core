@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsFadeAnimation.java,v $
- * Date   : $Date: 2010/11/17 07:20:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/01 14:20:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.client.util;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -40,14 +39,14 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsFadeAnimation extends A_CmsAnimation {
 
-    /** The element style. */
-    private Style m_elementStyle;
+    /** The element to animate. */
+    private Element m_element;
 
     /** Show or hide flag. */
     private boolean m_show;
@@ -63,7 +62,7 @@ public class CmsFadeAnimation extends A_CmsAnimation {
 
         super(callback);
         m_show = show;
-        m_elementStyle = element.getStyle();
+        m_element = element;
     }
 
     /**
@@ -105,7 +104,9 @@ public class CmsFadeAnimation extends A_CmsAnimation {
     protected void onComplete() {
 
         super.onComplete();
-        m_elementStyle.clearOpacity();
+
+        // using own implementation as GWT won't do it properly on IE7-8
+        CmsDomUtil.clearOpacity(m_element);
     }
 
     /**
@@ -115,9 +116,9 @@ public class CmsFadeAnimation extends A_CmsAnimation {
     protected void onUpdate(double progress) {
 
         if (m_show) {
-            m_elementStyle.setOpacity(progress);
+            m_element.getStyle().setOpacity(progress);
         } else {
-            m_elementStyle.setOpacity(1 - progress);
+            m_element.getStyle().setOpacity(1 - progress);
         }
     }
 }

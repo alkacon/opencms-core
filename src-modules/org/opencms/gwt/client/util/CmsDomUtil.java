@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/03/01 14:20:12 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,15 +51,15 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.0
  */
@@ -403,6 +403,9 @@ public final class CmsDomUtil {
         span,
 
         /** HTML Tag. */
+        table,
+
+        /** HTML Tag. */
         ul;
     }
 
@@ -464,6 +467,16 @@ public final class CmsDomUtil {
             }
         }
         return true;
+    }
+
+    /**
+     * Removes the opacity attribute from the element's inline-style.<p>
+     * 
+     * @param element the DOM element to manipulate
+     */
+    public static void clearOpacity(Element element) {
+
+        getStyleImpl().clearOpacity(element);
     }
 
     /**
@@ -719,10 +732,7 @@ public final class CmsDomUtil {
      */
     public static String getCurrentStyle(Element element, Style style) {
 
-        if (styleImpl == null) {
-            styleImpl = GWT.create(DocumentStyleImpl.class);
-        }
-        return styleImpl.getCurrentStyle(element, style.toString());
+        return getStyleImpl().getCurrentStyle(element, style.toString());
     }
 
     /**
@@ -902,7 +912,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-      return "" + style.zIndex;
+	return "" + style.zIndex;
     }-*/;
 
     /**
@@ -1203,5 +1213,13 @@ public final class CmsDomUtil {
         hasClass |= elementClass.endsWith(" " + className);
 
         return hasClass;
+    }
+
+    private static DocumentStyleImpl getStyleImpl() {
+
+        if (styleImpl == null) {
+            styleImpl = GWT.create(DocumentStyleImpl.class);
+        }
+        return styleImpl;
     }
 }
