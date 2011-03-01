@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2011/02/07 14:53:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/03/01 14:16:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,10 @@
 package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -55,7 +59,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -250,4 +254,66 @@ public class CmsGwtService extends RemoteServiceServlet {
         super.doUnexpectedFailure(e);
     }
 
+    /**
+     * Locks the given resource with a temporary, if not already locked by the current user.
+     * Will throw an exception if the resource could not be locked for the current user.<p>
+     * 
+     * @param resource the resource to lock
+     * 
+     * @throws CmsException if the resource could not be locked
+     */
+    protected void ensureLock(CmsResource resource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(resource);
+        if (!lock.isOwnedBy(user)) {
+            cms.lockResourceTemporary(resource);
+        }
+    }
+
+    /**
+     * Locks the given resource with a temporary, if not already locked by the current user.
+     * Will throw an exception if the resource could not be locked for the current user.<p>
+     * 
+     * @param sitepath the site-path of the resource to lock
+     * 
+     * @throws CmsException if the resource could not be locked
+     */
+    protected void ensureLock(String sitepath) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(sitepath);
+        if (!lock.isOwnedBy(user)) {
+            cms.lockResourceTemporary(sitepath);
+        }
+    }
+
+    /**
+     * Ensures that the user session is still valid.<p>
+     * 
+     * @throws CmsException if the current user is the guest user
+     */
+    protected void ensureSession() throws CmsException {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        if (user.isGuestUser()) {
+            throw new CmsException(Messages.get().container(Messages.ERR_SESSION_EXPIRED_0));
+        }
+    }
+
+    /**
+     * Tries to unlock a resource.<p>
+     * 
+     * @param resource the resource to unlock
+     */
+    protected void tryUnlock(CmsResource resource) {
+
+        try {
+            getCmsObject().unlockResource(resource);
+        } catch (CmsException e) {
+            LOG.debug("Unable to unlock " + resource.getRootPath(), e);
+        }
+    }
 }

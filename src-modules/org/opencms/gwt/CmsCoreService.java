@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/23 11:39:17 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/03/01 14:20:49 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -483,7 +483,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            cms.lockResourceTemporary(uri);
+            ensureLock(uri);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {
@@ -589,11 +589,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         try {
             CmsResource resource = cms.readResource(uri);
-            CmsLock lock = cms.getLock(resource);
-            if (lock.isUnlocked()) {
-                return null;
-            }
-            cms.unlockResource(uri);
+            tryUnlock(resource);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {
