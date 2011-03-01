@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/28 11:10:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/03/01 14:20:25 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -167,6 +167,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         try {
+            ensureSession();
             CmsResource subSitemapFolder = cms.readResource(path);
             ensureLock(subSitemapFolder);
             String folderName = CmsStringUtil.joinPaths("/", "_config");
@@ -267,6 +268,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsSitemapBrokenLinkBean> result = null;
 
         try {
+            ensureSession();
             CmsObject cms = getCmsObject();
             List<CmsResource> descendands = new ArrayList<CmsResource>();
             HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
@@ -371,6 +373,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         try {
+            ensureSession();
             String subSitemapPath = CmsResource.getFolderPath(path);
             CmsResource subSitemapFolder = cms.readResource(subSitemapPath);
             ensureLock(subSitemapFolder);
@@ -570,6 +573,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     protected List<CmsClientSitemapEntry> saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
+        ensureSession();
         List<CmsClientSitemapEntry> result = new ArrayList<CmsClientSitemapEntry>();
         CmsClientSitemapEntry changedEntry = null;
         switch (change.getChangeType()) {
@@ -874,24 +878,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
         tryUnlock(resource);
         return null;
-    }
-
-    /**
-     * Locks the given resource with a temporary, if not already locked by the current user.
-     * Will throw an exception if the resource could not be locked for the current user.<p>
-     * 
-     * @param resource the resource to lock
-     * 
-     * @throws CmsException if the resource could not be locked
-     */
-    private void ensureLock(CmsResource resource) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        CmsLock lock = cms.getLock(resource);
-        if (!lock.isOwnedBy(user)) {
-            cms.lockResourceTemporary(resource);
-        }
     }
 
     /**
@@ -1542,13 +1528,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsUser user = cms.getRequestContext().getCurrentUser();
         if (clipboardData != null) {
             JSONArray modified = new JSONArray();
-            for (CmsUUID id : clipboardData.getModifications().keySet()) {
-                modified.put(id.toString());
+            if (clipboardData.getModifications() != null) {
+                for (CmsUUID id : clipboardData.getModifications().keySet()) {
+                    modified.put(id.toString());
+                }
             }
             user.setAdditionalInfo(ADDINFO_ADE_MODIFIED_LIST, modified.toString());
             JSONArray deleted = new JSONArray();
-            for (CmsUUID id : clipboardData.getDeletions().keySet()) {
-                deleted.put(id.toString());
+            if (clipboardData.getDeletions() != null) {
+                for (CmsUUID id : clipboardData.getDeletions().keySet()) {
+                    deleted.put(id.toString());
+                }
             }
             user.setAdditionalInfo(ADDINFO_ADE_DELETED_LIST, deleted.toString());
             cms.writeUser(user);
@@ -1631,20 +1621,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setResourceTypeName(type);
         return clientEntry;
 
-    }
-
-    /**
-     * Tries to unlock a resource.<p>
-     * 
-     * @param resource the resource to unlock
-     */
-    private void tryUnlock(CmsResource resource) {
-
-        try {
-            getCmsObject().unlockResource(resource);
-        } catch (CmsException e) {
-            LOG.debug("Unable to unlock " + resource.getRootPath(), e);
-        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/02/24 08:06:27 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/03/01 14:17:34 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -122,6 +122,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void addToFavoriteList(String clientId) throws CmsRpcException {
 
         try {
+            ensureSession();
             CmsContainerElementBean element = getCachedElement(clientId);
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getFavoriteList(getCmsObject());
             if (list.contains(element)) {
@@ -140,6 +141,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void addToRecentList(String clientId) throws CmsRpcException {
 
         try {
+            ensureSession();
             CmsContainerElementBean element = getCachedElement(clientId);
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
             if (list.contains(element)) {
@@ -160,6 +162,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsContainerElement element = null;
         try {
+            ensureSession();
             CmsResource newResource = OpenCms.getADEManager().createNewElement(
                 getCmsObject(),
                 containerpageUri,
@@ -189,6 +192,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         String path = null;
         try {
+            ensureSession();
             CmsResource res = getCmsObject().readResource(OpenCms.getADEManager().convertToServerId(clientId));
             path = getCmsObject().getSitePath(res);
             getCmsObject().lockResource(path);
@@ -219,6 +223,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         Map<String, CmsContainerElementData> result = null;
         try {
+            ensureSession();
             result = getElements(clientIds, containerpageUri, containers);
         } catch (Throwable e) {
             error(e);
@@ -238,6 +243,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsContainerElementData element = null;
         try {
+            ensureSession();
             CmsObject cms = getCmsObject();
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParams, getRequest(), getResponse());
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
@@ -258,6 +264,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         List<CmsContainerElementData> result = null;
         try {
+            ensureSession();
             result = getListElementsData(
                 OpenCms.getADEManager().getFavoriteList(getCmsObject()),
                 containerpageUri,
@@ -276,6 +283,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         List<CmsContainerElementData> result = null;
         try {
+            ensureSession();
             result = getListElementsData(
                 OpenCms.getADEManager().getRecentList(getCmsObject()),
                 containerpageUri,
@@ -319,6 +327,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
+            ensureSession();
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
             for (CmsContainer container : containers) {
                 CmsContainerBean containerBean = getContainerBean(container, containerpageUri);
@@ -340,6 +349,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void saveFavoriteList(List<String> clientIds) throws CmsRpcException {
 
         try {
+            ensureSession();
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
@@ -352,6 +362,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void saveRecentList(List<String> clientIds) throws CmsRpcException {
 
         try {
+            ensureSession();
             OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
@@ -369,6 +380,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
+            ensureSession();
             String resourceName = subContainer.getSitePath();
             if (subContainer.isNew()) {
                 CmsResource subContainerResource = OpenCms.getADEManager().createNewElement(
@@ -399,6 +411,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void setToolbarVisible(boolean visible) throws CmsRpcException {
 
         try {
+            ensureSession();
             getSessionCache().setToolbarVisible(visible);
         } catch (Throwable e) {
             error(e);
