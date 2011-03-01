@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/01 14:16:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -495,7 +495,7 @@ public class CmsConfigurationParser {
 
         String type = getSubValueString(cms, detailPageNode, N_TYPE);
         I_CmsXmlContentValueLocation target = detailPageNode.getSubValue(N_PAGE);
-        if ((target == null) || (type == null)) {
+        if ((target == null) || (type == null) || (target.asId(null) == null)) {
             return null;
         }
         CmsUUID targetId = target.asId(null);
