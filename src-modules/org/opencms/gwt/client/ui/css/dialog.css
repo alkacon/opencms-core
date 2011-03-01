@@ -1,10 +1,3 @@
-@external popupContent, Caption, dialogBottom, dialogTop, dialogTopLeftInner, dialogTopRightInner, dialogMiddleLeftInner, dialogMiddleRightInner, dialogBottomLeftInner, dialogBottomRightInner;
-
-/* hide unused table cell content - necessary for all web-kit browser */
-.dialogTopLeftInner ,.dialogTopRightInner, .dialogMiddleLeftInner, .dialogMiddleRightInner, .dialogBottomLeftInner, .dialogBottomRightInner{
-	display: none;
-}
-
 .popup{
     z-index: 500;
     padding: 3px;
@@ -16,9 +9,6 @@
 	font-size: value("constants.css.fontSize");
 }
 
-.popup .dialogBottom {
-	display: none;
-}
 .popup.menuPopup{
 	padding-top:0px;
 }
@@ -79,11 +69,11 @@
 }
 }
 
-.hideCaption .dialogTop{
+.hideCaption .caption{
 	display: none;
 }
 
-@sprite .popupHead, .Caption{
+@sprite .popupHead, .caption{
     font-size: value("constants.css.fontSizeBig");
     font-weight: bold;
     cursor: move;

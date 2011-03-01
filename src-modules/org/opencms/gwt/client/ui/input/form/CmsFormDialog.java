@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/01 14:35:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,7 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
+        setWidth(null);
         addButton(createCancelButton());
         m_okButton = createOkButton();
         addButton(m_okButton);

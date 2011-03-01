@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/24 17:39:01 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/03/01 14:32:45 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 8.0.0
  */
@@ -285,6 +285,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Dialog CSS. */
     @Shared
     interface I_CmsDialogCss extends I_CmsPopupCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String caption();
 
         /** 
          * Access method.<p>

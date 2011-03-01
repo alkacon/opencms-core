@@ -4,7 +4,6 @@
 }
 
 .details > div{
-	width: 500px;
 	overflow: auto;
 	white-space: nowrap;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsLinkWarningDialog.java,v $
- * Date   : $Date: 2010/07/23 11:38:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/01 14:32:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -74,6 +74,7 @@ public class CmsLinkWarningDialog extends CmsPopupDialog {
         m_content = (CmsLinkWarningPanel)getContent();
         m_content.fill(brokenLinkBeans);
         setModal(true);
+        setWidth("600px");
         CmsPushButton cancelButton = addButton(Messages.get().key(Messages.GUI_CANCEL_0));
         cancelButton.addClickHandler(new ClickHandler() {
 

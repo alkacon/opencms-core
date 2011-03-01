@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/02/25 15:53:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/01 14:32:45 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,21 +32,16 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
@@ -58,220 +53,20 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
 public class CmsPopup implements I_CmsAutoHider {
 
-    /**
-     * The pop up dialog wrapped by the public class.<p>
-     */
-    protected class PopupDialog extends DialogBox {
-
-        /** The popup container element. */
-        private com.google.gwt.user.client.Element m_containerElement;
-
-        /** The main widget of this dialog containing all others. */
-        private FlowPanel m_main;
-
-        /**
-         * Constructor.<p>
-         */
-        protected PopupDialog() {
-
-            super(false);
-            m_containerElement = super.getContainerElement();
-            setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-            m_main = new FlowPanel();
-            setWidget(m_main);
-            m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
-            ((UIObject)getCaption()).getElement().addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-            Element dragOverlay = DOM.createDiv();
-            dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
-            getElement().insertFirst(dragOverlay);
-            Element shadowDiv = DOM.createDiv();
-            shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            getElement().insertFirst(shadowDiv);
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.SimplePanel#add(com.google.gwt.user.client.ui.Widget)
-         */
-        @Override
-        public void add(Widget w) {
-
-            this.m_main.add(w);
-        }
-
-        /**
-         * Removes all content widgets.<p>
-         */
-        @Override
-        public void clear() {
-
-            m_main.clear();
-        }
-
-        /**
-         * Returns the content widget with the given index.<p>
-         * 
-         * @param index the index of the widget
-         * 
-         * @return the widget
-         * 
-         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidget(int)
-         */
-        public Widget getWidget(int index) {
-
-            return m_main.getWidget(index);
-        }
-
-        /**
-         * Returns the number of content widgets.<p>
-         * 
-         * @return the number of widgets
-         * 
-         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidgetCount()
-         */
-        public int getWidgetCount() {
-
-            return m_main.getWidgetCount();
-        }
-
-        /**
-         * Returns the index of the given widget.<p>
-         * 
-         * @param child the widget to get the index for
-         * 
-         * @return the widget index
-         * 
-         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
-         */
-        public int getWidgetIndex(Widget child) {
-
-            return m_main.getWidgetIndex(child);
-        }
-
-        /**
-         * Inserts the widget before the specified index.<p>
-         * 
-         * @param w the widget to insert
-         * @param beforeIndex the index before which it will be inserted
-         * 
-         * @throws IndexOutOfBoundsException if beforeIndex is out of range
-         */
-        public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
-
-            m_main.insert(w, beforeIndex);
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.DecoratedPopupPanel#iterator()
-         */
-        @Override
-        public Iterator<Widget> iterator() {
-
-            return m_main.iterator();
-        }
-
-        /**
-         * Removes the widget at the specified index.<p>
-         * 
-         * @param index the index to remove
-         * 
-         * @return false if the widget is not present
-         */
-        public boolean remove(int index) {
-
-            return m_main.remove(index);
-        }
-
-        /**
-         * Removes the specified widget.<p>
-         * 
-         * @param w the widget to remove
-         * 
-         * @return false if the widget is not present
-         */
-        @Override
-        public boolean remove(Widget w) {
-
-            return m_main.remove(w);
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.PopupPanel#setWidth(java.lang.String)
-         */
-        @Override
-        public void setWidth(String width) {
-
-            super.setWidth(width);
-            Element centerCell = CmsDomUtil.getAncestor(getWidget().getElement(), "dialogMiddleCenter");
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(width)) {
-                centerCell.getStyle().clearWidth();
-            } else {
-                centerCell.getStyle().setWidth(100, Unit.PCT);
-            }
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.DialogBox#beginDragging(com.google.gwt.event.dom.client.MouseDownEvent)
-         */
-        @Override
-        protected void beginDragging(MouseDownEvent event) {
-
-            super.beginDragging(event);
-            addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.DialogBox#endDragging(com.google.gwt.event.dom.client.MouseUpEvent)
-         */
-        @Override
-        protected void endDragging(MouseUpEvent event) {
-
-            super.endDragging(event);
-            removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
-         */
-        @Override
-        protected com.google.gwt.user.client.Element getContainerElement() {
-
-            if (m_containerElement == null) {
-                m_containerElement = super.getContainerElement();
-            }
-            return m_containerElement;
-        }
-
-        /**
-         * Override to work around the glass overlay still showing after dialog hide.<p>
-         * 
-         * @see com.google.gwt.user.client.ui.Widget#onDetach()
-         */
-        @Override
-        protected void onDetach() {
-
-            super.onDetach();
-            if (this.getGlassElement() != null) {
-                this.getGlassElement().removeFromParent();
-            }
-        }
-    }
-
     /** The default width of this dialog. */
     private static final int DEFAULT_WIDTH = 300;
 
     /** The wrapped pop up dialog. */
-    private PopupDialog m_dialog;
+    private CmsDialogBox m_dialog;
+
+    /** The main widget of this dialog containing all others. */
+    private FlowPanel m_main;
 
     /**
      * Constructor.<p>
@@ -288,9 +83,11 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public CmsPopup(int width) {
 
-        m_dialog = new PopupDialog();
+        m_dialog = new CmsDialogBox(false);
         m_dialog.setWidth(width + Unit.PX.toString());
         m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+        m_main = new FlowPanel();
+        m_dialog.setWidget(m_main);
     }
 
     /**
@@ -320,12 +117,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * Adds the given child widget.<p>
      * 
      * @param w the widget
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#add(com.google.gwt.user.client.ui.Widget)
      */
     public void add(Widget w) {
 
-        m_dialog.add(w);
+        m_main.add(w);
     }
 
     /**
@@ -384,12 +179,10 @@ public class CmsPopup implements I_CmsAutoHider {
 
     /**
      * Clears all child widgets.<p>
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#clear()
      */
     public void clear() {
 
-        m_dialog.clear();
+        m_main.clear();
     }
 
     /**
@@ -506,24 +299,20 @@ public class CmsPopup implements I_CmsAutoHider {
      * @param index the index
      * 
      * @return the child widget
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidget(int)
      */
     public Widget getWidget(int index) {
 
-        return m_dialog.getWidget(index);
+        return m_main.getWidget(index);
     }
 
     /**
      * Returns the number of child widgets.<p>
      * 
      * @return the number of child widgets
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidgetCount()
      */
     public int getWidgetCount() {
 
-        return m_dialog.getWidgetCount();
+        return m_main.getWidgetCount();
     }
 
     /**
@@ -532,12 +321,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * @param child the child widget
      * 
      * @return the index
-     *  
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
      */
     public int getWidgetIndex(Widget child) {
 
-        return m_dialog.getWidgetIndex(child);
+        return m_main.getWidgetIndex(child);
     }
 
     /**
@@ -555,12 +342,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * @param beforeIndex the index
      * 
      * @throws IndexOutOfBoundsException if the index is out of bounds
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#insert(com.google.gwt.user.client.ui.Widget, int)
      */
     public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
 
-        m_dialog.insert(w, beforeIndex);
+        m_main.insert(w, beforeIndex);
     }
 
     /**
@@ -570,7 +355,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void insertFront(Widget widget) {
 
-        getDialog().insert(widget, 0);
+        m_main.insert(widget, 0);
     }
 
     /**
@@ -677,12 +462,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * Gets an iterator for the contained widgets.<p>
      * 
      * @return the widget iterator
-     * 
-     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#iterator()
      */
     public Iterator<Widget> iterator() {
 
-        return m_dialog.iterator();
+        return m_main.iterator();
     }
 
     /**
@@ -695,6 +478,18 @@ public class CmsPopup implements I_CmsAutoHider {
     public void onBrowserEvent(Event event) {
 
         m_dialog.onBrowserEvent(event);
+    }
+
+    /**
+     * Removes the given child widget.<p>
+     * 
+     * @param w the widget to remove
+     * 
+     * @return <code>true</code> if the child was present
+     */
+    public boolean remove(Widget w) {
+
+        return m_main.remove(w);
     }
 
     /**
@@ -908,7 +703,7 @@ public class CmsPopup implements I_CmsAutoHider {
      * 
      * @return the dialog widget
      */
-    protected PopupDialog getDialog() {
+    protected CmsDialogBox getDialog() {
 
         return m_dialog;
     }

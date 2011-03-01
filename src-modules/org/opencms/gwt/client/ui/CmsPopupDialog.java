@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/01 14:32:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -99,7 +99,7 @@ public class CmsPopupDialog extends CmsPopup {
 
         if (m_buttonPanel == null) {
             m_buttonPanel = new FlowPanel();
-            getDialog().add(m_buttonPanel);
+            add(m_buttonPanel);
             m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
             getDialog().getWidget().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
         }
@@ -115,7 +115,7 @@ public class CmsPopupDialog extends CmsPopup {
         final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
         // create our own notification overlay
         final CmsDialogNotificationWidget notificationWidget = new CmsDialogNotificationWidget();
-        getDialog().add(notificationWidget);
+        add(notificationWidget);
         CmsNotification.get().setWidget(notificationWidget);
 
         // when closing the dialog
@@ -129,7 +129,7 @@ public class CmsPopupDialog extends CmsPopup {
                 // restore the previous notification widget
                 CmsNotification.get().setWidget(widget);
                 // remove the overlay notification widget
-                getDialog().remove(notificationWidget);
+                remove(notificationWidget);
             }
         });
     }
@@ -167,7 +167,7 @@ public class CmsPopupDialog extends CmsPopup {
         }
         m_buttonPanel.remove(button);
         if (m_buttonPanel.getWidgetCount() == 0) {
-            getDialog().remove(m_buttonPanel);
+            remove(m_buttonPanel);
             m_buttonPanel = null;
         }
     }
@@ -190,9 +190,9 @@ public class CmsPopupDialog extends CmsPopup {
     public void setContent(Widget widget) {
 
         if (m_content != null) {
-            getDialog().remove(m_content);
+            remove(m_content);
         }
-        getDialog().insert(widget, 0);
+        insert(widget, 0);
         m_content = widget;
     }
 
