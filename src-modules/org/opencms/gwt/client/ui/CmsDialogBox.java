@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/03/02 08:04:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/02 08:29:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -215,10 +215,6 @@ public class CmsDialogBox extends PopupPanel {
         // logically adopt the caption so we can catch mouse events.
         DOM.appendChild(m_containerElement, m_caption.getElement());
         adopt(m_caption);
-
-        m_windowWidth = Window.getClientWidth();
-        m_clientLeft = Document.get().getBodyOffsetLeft();
-        m_clientTop = Document.get().getBodyOffsetTop();
 
         MouseHandler mouseHandler = new MouseHandler();
         addDomHandler(mouseHandler, MouseDownEvent.getType());
@@ -384,6 +380,9 @@ public class CmsDialogBox extends PopupPanel {
     protected void beginDragging(MouseDownEvent event) {
 
         m_dragging = true;
+        m_windowWidth = Window.getClientWidth();
+        m_clientLeft = Document.get().getBodyOffsetLeft();
+        m_clientTop = Document.get().getBodyOffsetTop();
         DOM.setCapture(getElement());
         m_dragStartX = event.getX();
         m_dragStartY = event.getY();
