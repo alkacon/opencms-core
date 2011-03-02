@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/02/22 16:34:07 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2011/03/02 14:29:51 $
+ * Version: $Revision: 1.71 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -68,6 +68,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue: Error when searching with the group field in the Module Management and at least one module without configured group
 * Fixed issue when creating a new user or editing an existing user using an Oracle database
 ! Added upload dialog with multi file selection support
+* Fixed issue #1949: Database size does not decrease after (completely) deleting resources 
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

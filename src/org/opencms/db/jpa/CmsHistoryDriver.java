@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 14:29:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,10 +55,10 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsPropertyDefinition.CmsPropertyType;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsPropertyDefinition.CmsPropertyType;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryFolder;
 import org.opencms.file.history.CmsHistoryPrincipal;
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0 
  */
@@ -336,7 +336,12 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             q.setParameter(1, resource.getResourceId().toString());
 
             try {
-                minResPublishTagToKeep = CmsDataTypeUtil.numberToInt((Number)q.getSingleResult());
+                Object numObj = q.getSingleResult();
+                if (numObj == null) {
+                    minResPublishTagToKeep = Integer.MAX_VALUE;
+                } else {
+                    minResPublishTagToKeep = CmsDataTypeUtil.numberToInt((Number)numObj);
+                }
             } catch (NoResultException e) {
                 internalCleanup(dbc, resource);
                 return structureVersions;
