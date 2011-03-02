@@ -9,7 +9,7 @@ String jQueryResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "j
 String jsIntegratorQuery = "";
 
 //check in settings if the upload-applet is used
-boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
+String uploadVariant = wp.getSettings().getUserSettings().getUploadVariant().toString();
 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -69,7 +69,7 @@ if (wp.isModeView()) {
 	}
 }
 %>
-var isAppletUsed = <%=isAppletUsed %>;
+var uploadVariant = '<%=uploadVariant %>';
 
 </script>
 

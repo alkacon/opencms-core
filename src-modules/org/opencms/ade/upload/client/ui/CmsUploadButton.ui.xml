@@ -1,0 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="css" type="org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle" />
+	<cms:CmsFlowPanel tag="div" ui:field="m_main" styleName="{style.buttonCss.cmsState}" addStyleNames="{css.uploadCss.uploadButton}">
+		<g:HTML ui:field="m_buttonFace"  styleName="html-face"></g:HTML>
+	</cms:CmsFlowPanel>
+</ui:UiBinder> 

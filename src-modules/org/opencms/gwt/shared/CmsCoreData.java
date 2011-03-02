@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -58,12 +58,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
-
-    /** The name of the form field that stores the flag that signals if the filename is URL encoded. */
-    public static final String UPLOAD_FILE_NAME_URL_ENCODED_FLAG = "upload_encoding_flag";
-
-    /** The name of the form field that stores the target folder for the upload. */
-    public static final String UPLOAD_TARGET_FOLDER_FIELD_NAME = "upload_target_folder";
 
     /** The time sent from the server when loading the data. */
     protected long m_serverTime;
@@ -88,12 +82,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current site root. */
     private String m_siteRoot;
-
-    /** The maximum file size for the upload. */
-    private long m_uploadFileSizeLimit;
-
-    /** The uri pointing on the upload JSP. */
-    private String m_uploadUri;
 
     /** The current uri. */
     private String m_uri;
@@ -126,8 +114,6 @@ public class CmsCoreData implements IsSerializable {
             clone.getUri(),
             clone.getNavigationUri(),
             clone.getExtensionMapping(),
-            clone.getUploadUri(),
-            clone.getUploadFileSizeLimit(),
             clone.getServerTime());
     }
 
@@ -143,8 +129,6 @@ public class CmsCoreData implements IsSerializable {
      * @param uri the current uri
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
-     * @param uploadUri the uri pointing on the upload JSP
-     * @param uploadFileSizeLimit the upload file size limit
      * @param serverTime the current time  
      */
     public CmsCoreData(
@@ -157,8 +141,6 @@ public class CmsCoreData implements IsSerializable {
         String uri,
         String navigationUri,
         Map<String, String> extensionMapping,
-        String uploadUri,
-        long uploadFileSizeLimit,
         long serverTime) {
 
         m_contentEditorUrl = contentEditorUrl;
@@ -170,8 +152,6 @@ public class CmsCoreData implements IsSerializable {
         m_uri = uri;
         m_navigationUri = navigationUri;
         m_extensionMapping = extensionMapping;
-        m_uploadUri = uploadUri;
-        m_uploadFileSizeLimit = uploadFileSizeLimit;
         m_serverTime = serverTime;
     }
 
@@ -253,26 +233,6 @@ public class CmsCoreData implements IsSerializable {
     public String getSiteRoot() {
 
         return m_siteRoot;
-    }
-
-    /**
-     * Returns the uploadFileSizeLimit.<p>
-     *
-     * @return the uploadFileSizeLimit
-     */
-    public long getUploadFileSizeLimit() {
-
-        return m_uploadFileSizeLimit;
-    }
-
-    /**
-     * Returns the path to the upload JSP.<p>
-     *
-     * @return the uploadUri
-     */
-    public String getUploadUri() {
-
-        return m_uploadUri;
     }
 
     /**

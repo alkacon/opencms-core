@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ public interface I_CmsButton {
          * 
          * @return the CSS class name
          */
-        String getCssClassName() {
+        public String getCssClassName() {
 
             return m_cssClassName;
         }

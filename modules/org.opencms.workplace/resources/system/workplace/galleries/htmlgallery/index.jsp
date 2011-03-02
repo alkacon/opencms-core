@@ -1,4 +1,5 @@
-<%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*" %><%
+<%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*" %>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
 	
 //initialize the gallery instance
 A_CmsAjaxGallery wp = new CmsAjaxHtmlGallery(pageContext, request, response);
@@ -9,7 +10,7 @@ String jQueryResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "j
 String jsIntegratorQuery = "";
 
 //check in settings if the upload-applet is used
-boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
+String uploadVariant = wp.getSettings().getUserSettings().getUploadVariant().toString();
 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -61,10 +62,19 @@ if (request.getParameter("integrator") != null) {
 } else {
 	wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + variant + ".js", null);
 } %>
-var isAppletUsed = <%=isAppletUsed %>;
+var uploadVariant = '<%=uploadVariant %>';
 
 </script>
 
+<%
+	if (uploadVariant.equals("gwt")) {
+	    CmsUploadActionElement upload = new CmsUploadActionElement(pageContext, request, response);
+	    %>
+	    	<script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.upload/resources/resources.nocache.js</cms:link>"></script>
+	    	<%= upload.exportButton() %>
+	    <%
+	}
+%>
 </head>
 <body id="gallerydialog">
 

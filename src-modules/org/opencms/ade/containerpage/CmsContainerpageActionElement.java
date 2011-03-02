@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2010/10/22 07:58:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
+import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -94,6 +95,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
         sb.append(new CmsPublishActionElement(null, getRequest(), null).export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForContainerpage());
         sb.append(export());
+        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         return sb.toString();
     }
 

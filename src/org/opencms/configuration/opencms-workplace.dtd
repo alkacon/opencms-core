@@ -491,8 +491,16 @@
 <!ELEMENT reporttype (#PCDATA)>
 
 <!--
-# If this element is set to "true", the upload applet is used for file uploads in the 
-# workplace explorer.
+# By setting this element, the file upload variant can be choosen
+# Possible values are [applet|basic|gwt|true|false]
+#
+# applet: use the java based upload applet
+# basic:  use the default html upload
+# gwt:    use the gwt based upload
+# true:   use the java based upload applet
+# false:  use the default html upload
+#
+# true and false are possible vaules for backward compatibility.
 -->	
 <!ELEMENT uploadapplet (#PCDATA)>
 

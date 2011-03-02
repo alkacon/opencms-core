@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2010/12/20 14:56:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/02 14:24:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,21 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
+
+    /** A enum for the different upload variants. */
+    public static enum V_UPLOAD_VARIANT {
+        /** The java applet upload. */
+        applet,
+        /** The default html upload. */
+        basic,
+        /** The gwt upload. */
+        gwt,
+    }
 
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
@@ -687,6 +697,29 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the corresponding enum, or null.<p>
+     *  
+     * @param s the value to get the enum for
+     * 
+     * @return the corresponding enum, or null
+     */
+    public static V_UPLOAD_VARIANT getUploadVariantForString(String s) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(s)) {
+            V_UPLOAD_VARIANT variant = getEnumFromString(V_UPLOAD_VARIANT.class, s);
+            if (variant == null) {
+                if (s.equalsIgnoreCase(Boolean.TRUE.toString())) {
+                    variant = V_UPLOAD_VARIANT.applet;
+                } else if (s.equalsIgnoreCase(Boolean.FALSE.toString())) {
+                    variant = V_UPLOAD_VARIANT.basic;
+                }
+            }
+            return variant;
+        }
+        return null;
+    }
+
+    /**
      * Adds the context menu item rules to the given digester.<p>
      *  
      * @param digester the digester to add the rules to
@@ -762,6 +795,27 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             // create a <separator> node
             parentElement.addElement(N_SEPARATOR);
         }
+    }
+
+    /** 
+     * A common method for all enums since they can't have another base class.<p>
+     * 
+     * @param <T> Enum type 
+     * @param c enum type. All enums must be all caps. 
+     * @param string case insensitive
+     *  
+     * @return corresponding enum, or null 
+     */
+    private static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
+
+        if ((c != null) && (string != null)) {
+            try {
+                return Enum.valueOf(c, string.trim().toLowerCase());
+            } catch (IllegalArgumentException ex) {
+                // noop
+            }
+        }
+        return null;
     }
 
     /**
@@ -1165,7 +1219,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             m_workplaceManager.getDefaultUserSettings().getWorkplaceReportType());
         // add the <uploadapplet> node
         workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
-            m_workplaceManager.getDefaultUserSettings().getUploadAppletString());
+            m_workplaceManager.getDefaultUserSettings().getUploadVariant().toString());
         // add the <publishbuttonappearance> node if not empty
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
@@ -1554,7 +1608,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             + N_WORKPLACEGENERALOPTIONS;
         digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
-        digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadVariant", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_LISTALLPROJECTS, "setListAllProjects", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHNOTIFICATION, "setShowPublishNotification", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);

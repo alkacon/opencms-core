@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
+
+    /** The value for the resource gwt upload action. */
+    public static final int ACTION_GWT = 160;
 
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET_CHECK_OVERWRITE = 141;
@@ -576,6 +579,31 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
+     * Returns the close link.<p>
+     * 
+     * @return the close link
+     */
+    public String getCloseLink() {
+
+        // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
+        if (getParamCloseLink() != null) {
+            return getParamCloseLink();
+        } else if (getParamFramename() != null) {
+            // no workplace frame mode (currently used for galleries)
+            // frame name parameter found, get URI
+            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
+            if (frameUri != null) {
+                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    // remove context path from URI before inclusion
+                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+                return frameUri;
+            }
+        }
+        return FILE_EXPLORER_FILELIST;
+    }
+
+    /**
      * Updates the file type and renames the file if desired.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
@@ -628,9 +656,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
             } catch (CmsException e) {
                 // it's not fatal if the client folder for the applet file chooser is not possible 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle(getLocale()).key(
-                        Messages.ERR_UPLOAD_STORE_CLIENT_FOLDER_1,
-                        new Object[] {getCms().getRequestContext().getCurrentUser().getName()}), e);
+                    LOG.error(
+                        Messages.get().getBundle(getLocale()).key(
+                            Messages.ERR_UPLOAD_STORE_CLIENT_FOLDER_1,
+                            new Object[] {getCms().getRequestContext().getCurrentUser().getName()}),
+                        e);
                 }
             }
         }
@@ -1028,10 +1058,19 @@ public class CmsNewResourceUpload extends CmsNewResource {
         } else if (DIALOG_CHECK_OVERWRITE.equals(getParamAction())) {
             setAction(ACTION_APPLET_CHECK_OVERWRITE);
         } else {
-            if (getSettings().getUserSettings().useUploadApplet()) {
-                setAction(ACTION_APPLET);
-            } else {
-                setAction(ACTION_DEFAULT);
+            switch (getSettings().getUserSettings().getUploadVariant()) {
+                case applet:
+                    setAction(ACTION_APPLET);
+                    break;
+                case basic:
+                    setAction(ACTION_DEFAULT);
+                    break;
+                case gwt:
+                    setAction(ACTION_GWT);
+                    break;
+                default:
+                    setAction(ACTION_DEFAULT);
+                    break;
             }
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));

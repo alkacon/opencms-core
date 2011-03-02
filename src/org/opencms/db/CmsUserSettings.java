@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
@@ -62,9 +62,10 @@ import org.apache.commons.logging.Log;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner 
- * @author  Michael Emmerich 
+ * @author  Michael Emmerich
+ * @author  Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -320,10 +321,11 @@ public class CmsUserSettings {
     /** The custom user surf time. */
     private long m_timeWarp;
 
-    private boolean m_uploadApplet;
-
     /** The path of the preselected folder for the upload applet on the client machine. */
     private String m_uploadAppletClientFolder;
+
+    /** Stores the upload variant enum. */
+    private CmsWorkplaceConfiguration.V_UPLOAD_VARIANT m_uploadVariant;
 
     private CmsUser m_user;
 
@@ -354,7 +356,7 @@ public class CmsUserSettings {
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
         m_listAllProjects = false;
-        m_uploadApplet = true;
+        m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.applet;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
@@ -781,6 +783,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Returns the uploadVariant.<p>
+     *
+     * @return the uploadVariant
+     */
+    public CmsWorkplaceConfiguration.V_UPLOAD_VARIANT getUploadVariant() {
+
+        return m_uploadVariant;
+    }
+
+    /**
      * Returns the current user for the settings.<p>
      * 
      * @return the CmsUser
@@ -887,13 +899,14 @@ public class CmsUserSettings {
             m_showPublishNotification = OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification();
         }
         // workplace upload applet mode
-        try {
-            m_uploadApplet = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_UPLOADAPPLET)).booleanValue();
-        } catch (Throwable t) {
-            m_uploadApplet = OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet();
+        String uploadVariant = (String)m_user.getAdditionalInfo(PREFERENCES
+            + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+            + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadVariant)) {
+            uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant().toString();
         }
+        setUploadVariant(uploadVariant);
+
         // locale
         Object obj = m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
@@ -1107,9 +1120,9 @@ public class CmsUserSettings {
         try {
             boolean enabled = ((Boolean)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED)).booleanValue();
             String destination = (String)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION);
-            List<String> vfsList = CmsStringUtil.splitAsList((String)m_user.getAdditionalInfo(PREFERENCES
-                + SYNC_SETTINGS
-                + SYNC_VFS_LIST), '|');
+            List<String> vfsList = CmsStringUtil.splitAsList(
+                (String)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST),
+                '|');
             m_synchronizeSettings = new CmsSynchronizeSettings();
             m_synchronizeSettings.setEnabled(enabled);
             m_synchronizeSettings.setDestinationPathInRfs(destination);
@@ -1170,10 +1183,10 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_REPORTTYPE);
         }
         // workplace upload applet
-        if (useUploadApplet() != OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet()) {
+        if (getUploadVariant() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, Boolean.valueOf(useUploadApplet()));
+                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, getUploadVariant().toString());
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -1412,9 +1425,9 @@ public class CmsUserSettings {
             while (itEntries.hasNext()) {
                 Map.Entry<String, String> entry = itEntries.next();
                 if (entry.getValue() != null) {
-                    m_user.setAdditionalInfo(PREFERENCES
-                        + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
-                        + entry.getKey(), entry.getValue());
+                    m_user.setAdditionalInfo(
+                        PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS + entry.getKey(),
+                        entry.getValue());
                 } else {
                     m_user.deleteAdditionalInfo(PREFERENCES
                         + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
@@ -1471,9 +1484,9 @@ public class CmsUserSettings {
             m_user.setAdditionalInfo(
                 PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION,
                 getSynchronizeSettings().getDestinationPathInRfs());
-            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST, CmsStringUtil.collectionAsString(
-                getSynchronizeSettings().getSourceListInVfs(),
-                "|"));
+            m_user.setAdditionalInfo(
+                PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST,
+                CmsStringUtil.collectionAsString(getSynchronizeSettings().getSourceListInVfs(), "|"));
         } else {
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED);
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION);
@@ -2020,6 +2033,22 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets the upload variant.<p>
+     *
+     * @param uploadVariant the upload variant as String
+     */
+    public void setUploadVariant(String uploadVariant) {
+
+        m_uploadVariant = CmsWorkplaceConfiguration.getUploadVariantForString(uploadVariant);
+        if (m_uploadVariant == null) {
+            m_uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant();
+        }
+        if (m_uploadVariant == null) {
+            m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.applet;
+        }
+    }
+
+    /**
      * Sets the current user for the settings.<p>
      * 
      * @param user the CmsUser
@@ -2027,16 +2056,6 @@ public class CmsUserSettings {
     public void setUser(CmsUser user) {
 
         m_user = user;
-    }
-
-    /**
-     *  Sets if the upload applet should be used.<p>
-     * 
-     * @param use true if the upload applet should be used, otherwise false
-     */
-    public void setUseUploadApplet(boolean use) {
-
-        m_uploadApplet = use;
     }
 
     /**
@@ -2207,16 +2226,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserLastModified() {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
-    }
-
-    /**
-     * Determines if the upload applet should be used.<p>
-     * 
-     * @return true if the if the upload applet should be used, otherwise false
-     */
-    public boolean useUploadApplet() {
-
-        return m_uploadApplet;
     }
 
     /**

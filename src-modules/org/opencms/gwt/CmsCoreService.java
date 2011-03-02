@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/03/01 14:20:49 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,9 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
-import org.opencms.gwt.shared.CmsUploadFileBean;
-import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
-import org.opencms.gwt.upload.CmsUploadBean;
-import org.opencms.gwt.upload.CmsUploadException;
-import org.opencms.gwt.upload.CmsUploadListener;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
@@ -99,16 +94,13 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.InvalidFileNameException;
-import org.apache.commons.fileupload.util.Streams;
-
 /**
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  * 
@@ -207,53 +199,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
-    }
-
-    /**
-     * Cancels the upload.<p>
-     */
-    public void cancelUpload() {
-
-        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
-            CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
-                CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
-            CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
-            if ((listener != null) && !listener.isCanceled()) {
-                listener.cancelUpload(new CmsUploadException(Messages.get().getBundle().key(
-                    Messages.ERR_UPLOAD_USER_CANCELED_0)));
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#checkUploadFiles(java.util.List, java.lang.String)
-     */
-    public CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder) {
-
-        List<String> existingResourceNames = new ArrayList<String>();
-        List<String> invalidFileNames = new ArrayList<String>();
-        boolean isActive = false;
-
-        // check if there is an active upload
-        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) == null) {
-
-            // check for existing files
-            for (String fileName : fileNames) {
-
-                try {
-                    Streams.checkFileName(fileName);
-                    String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder);
-                    if (getCmsObject().existsResource(newResName, CmsResourceFilter.ALL)) {
-                        existingResourceNames.add(fileName);
-                    }
-                } catch (InvalidFileNameException e) {
-                    invalidFileNames.add(fileName);
-                }
-            }
-        } else {
-            isActive = true;
-        }
-        return new CmsUploadFileBean(existingResourceNames, invalidFileNames, isActive);
     }
 
     /**
@@ -442,25 +387,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Returns the upload progress information.<p>
-     * 
-     * @return the upload progress information
-     */
-    public CmsUploadProgessInfo getUploadProgressInfo() {
-
-        CmsUploadProgessInfo info = new CmsUploadProgessInfo(0, 0, false, 0, 0);
-        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
-            CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
-                CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
-            CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
-            if (listener != null) {
-                info = listener.getInfo();
-            }
-        }
-        return info;
-    }
-
-    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
      */
     public String lock(String uri) throws CmsRpcException {
@@ -517,9 +443,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
-        String uploadUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, CmsUploadBean.UPLOAD_JSP_URI);
-        long uploadFileSizeLimit = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
-
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             BACKLINK_URI,
@@ -530,8 +453,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             cms.getRequestContext().getUri(),
             navigationUri,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
-            uploadUri,
-            uploadFileSizeLimit,
             System.currentTimeMillis());
         return data;
     }

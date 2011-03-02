@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,17 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsWorkplaceConfiguration.V_UPLOAD_VARIANT;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -97,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -250,8 +251,8 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the user language. */
     public static final String PARAM_WORKPLACE_TIMEWARP = "tabwptimewarp";
 
-    /** Request parameter name for the workplace use upload applet. */
-    public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
+    /** Request parameter name for the workplace to choose the upload variant. */
+    public static final String PARAM_WORKPLACE_UPLOADVARIANT = "tabwpuploadvariant";
 
     /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
@@ -917,6 +918,33 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Builds the html for the workplace start site select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the workplace start site select box
+     */
+    public String buildSelectUpload(String htmlAttributes) {
+
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+        int selectedIndex = 0;
+        int pos = 0;
+
+        V_UPLOAD_VARIANT currentVariant = getParamTabWpUploadVariant();
+        for (V_UPLOAD_VARIANT variant : V_UPLOAD_VARIANT.values()) {
+
+            values.add(variant.toString());
+            options.add(getUploadVariantMessage(variant));
+
+            if (variant.equals(currentVariant)) {
+                selectedIndex = pos;
+            }
+            pos++;
+        }
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
      * Returns a html select box filled with the views accessible by the current user.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html
@@ -1513,13 +1541,13 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Returns the "use upload applet" setting.<p>
+     * Returns the upload variant setting.<p>
      * 
-     * @return <code>"true"</code> if the "use upload applet" input is checked, otherwise ""
+     * @return <code>"applet"</code>, <code>"gwt"</code> or <code>"basic"</code>
      */
-    public String getParamTabWpUseUploadApplet() {
+    public V_UPLOAD_VARIANT getParamTabWpUploadVariant() {
 
-        return isParamEnabled(m_userSettings.useUploadApplet());
+        return m_userSettings.getUploadVariant();
     }
 
     /**
@@ -2013,14 +2041,14 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Sets the "use upload applet" setting.<p>
+     * Sets the upload variant setting.<p>
      * 
-     * @param value <code>"true"</code> to enable the "use upload applet" setting, all others to
-     *        disable
+     * @param <code>"applet"</code>, <code>"basic"</code>, 
+     * <code>"gwt"</code>, <code>"true"</code> or <code>"false"</code>
      */
-    public void setParamTabWpUseUploadApplet(String value) {
+    public void setParamTabWpUploadVariant(String value) {
 
-        m_userSettings.setUseUploadApplet(Boolean.valueOf(value).booleanValue());
+        m_userSettings.setUploadVariant(value);
     }
 
     /**
@@ -2186,6 +2214,33 @@ public class CmsPreferences extends CmsTabDialog {
     private void fillUserSettings() {
 
         m_userSettings = new CmsUserSettings(getSettings().getUser());
+    }
+
+    /**
+     * Returns the message for a given upload variant.<p>
+     * 
+     * @param variant the variant to get the message for
+     * 
+     * @return the message
+     */
+    private String getUploadVariantMessage(V_UPLOAD_VARIANT variant) {
+
+        String message = null;
+        switch (variant) {
+            case applet:
+                message = key(Messages.GUI_PREF_USE_UPLOAD_APPLET_0);
+                break;
+            case basic:
+                message = key(Messages.GUI_PREF_USE_UPLOAD_BASIC_0);
+                break;
+            case gwt:
+                message = key(Messages.GUI_PREF_USE_UPLOAD_GWT_0);
+                break;
+            default:
+                message = key(Messages.ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0);
+                break;
+        }
+        return message;
     }
 
     /**

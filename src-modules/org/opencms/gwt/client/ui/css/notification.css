@@ -1,4 +1,4 @@
-.popup, .menuPopup{}
+.popup, .menuPopup, .popupContent{}
 
 div.blocking{
 	position: fixed;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2011/02/10 16:36:37 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/03/02 14:24:08 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  *  
  * @since 8.0.0 
  */
@@ -129,6 +129,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The logical id, it is not the HTML id. */
     protected String m_id;
 
+    /** The list item widget, if this widget has one. */
+    protected CmsListItemWidget m_listItemWidget;
+
     /** The main widget of the list item. */
     protected Widget m_mainWidget;
 
@@ -144,9 +147,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The drag helper. */
     private Element m_helper;
 
-    /** The list item widget, if this widget has one. */
-    protected CmsListItemWidget m_listItemWidget;
-
     /** The move handle. */
     private MoveHandle m_moveHandle;
 
@@ -160,6 +160,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
+    }
+
+    /** 
+     * Default constructor.<p>
+     * 
+     * @param checkBox the checkbox
+     * @param widget the widget to use 
+     */
+    public CmsListItem(CmsCheckBox checkBox, CmsListItemWidget widget) {
+
+        this();
+        initContent(checkBox, widget);
     }
 
     /** 

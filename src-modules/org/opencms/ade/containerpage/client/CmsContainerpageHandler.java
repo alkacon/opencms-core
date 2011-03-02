@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/03/02 14:24:10 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,8 +48,6 @@ import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsPopupDialog;
-import org.opencms.gwt.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
@@ -91,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.0
  */
@@ -736,22 +734,6 @@ public class CmsContainerpageHandler {
                         public void execute() {
 
                             new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
-                        }
-                    };
-                } else if (name.equals("org.opencms.gwt.client.ui.CmsUploadDialog")) {
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            CmsUploadButton upload = new CmsUploadButton();
-                            upload.setTargetFolder("/demo_t3/");
-
-                            CmsPopupDialog dialog = new CmsPopupDialog();
-                            dialog.setContent(upload);
-                            dialog.center();
                         }
                     };
                 }

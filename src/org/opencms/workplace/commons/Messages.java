@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2009/10/12 08:12:01 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2011/03/02 14:24:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.29.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,6 +134,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERMISSION_SELECT_TYPE_0 = "ERR_PERMISSION_SELECT_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0 = "ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
@@ -1006,6 +1009,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_BUTTONSTYLE_TXT_0 = "GUI_PREF_BUTTONSTYLE_TXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_CHOOSE_UPLOAD_VARIANT_0 = "GUI_PREF_CHOOSE_UPLOAD_VARIANT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_CHPWD_0 = "GUI_PREF_CHPWD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1148,6 +1154,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_USE_UPLOAD_APPLET_0 = "GUI_PREF_USE_UPLOAD_APPLET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_USE_UPLOAD_BASIC_0 = "GUI_PREF_USE_UPLOAD_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_USE_UPLOAD_GWT_0 = "GUI_PREF_USE_UPLOAD_GWT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0 = "GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0";

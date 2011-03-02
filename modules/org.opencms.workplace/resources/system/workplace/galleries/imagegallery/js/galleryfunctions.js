@@ -317,23 +317,30 @@ function selectGallery(vfsPath, galleryIndex) {
 		newLink += vfsPath;
 		newLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
 		$("#gallerynewlink").attr("href", newLink);
-		
 	} else if (isTableGallery == true) {
 		// fill required data in upload link
 		var uploadLink = "upload.jsp?gallery=";
 		uploadLink += vfsPath;
-		uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
-		$("#galleryitemuploadlink").attr("href", uploadLink);
+		if ( uploadVariant == 'gwt' ) {
+			$("#galleryuploadbutton").attr("onClick", "cms_ade_openUploadDialog('" + vfsPath + "'); return false;");
+		} else {
+			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+			$("#galleryitemuploadlink").attr("href", uploadLink);
+		}
 	} else {
 		// fill required data in upload link
 		var uploadLink = "../galleryelements/upload.jsp?gallery=";
 		uploadLink += vfsPath;
-		if ( isAppletUsed == true ) {
-			uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=120&amp;modal=true";
+		if ( uploadVariant == 'gwt' ) {
+			$("#galleryuploadbutton").attr("onClick", "cms_ade_openUploadDialog('" + vfsPath + "'); return false;");
 		} else {
-			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+			if ( uploadVariant == 'applet' ) {
+				uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=120&amp;modal=true";
+			} else {
+				uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+			}
+			$("#galleryitemuploadlink").attr("href", uploadLink);
 		}
-		$("#galleryitemuploadlink").attr("href", uploadLink);
 	}
 	// fill required data in publish link
 	$("#gallerypublishlink").attr("href", createPublishLink(vfsPath));

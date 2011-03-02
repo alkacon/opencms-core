@@ -1,4 +1,4 @@
-.popup, .menuPopup{}
+.popup, .menuPopup, .popupContent{}
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
 	background: value("constants.css.backgroundColorMenu");

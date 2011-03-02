@@ -1,4 +1,4 @@
-<%@ page import="java.util.*,org.opencms.workplace.explorer.*" %><%	
+<%@ page import="java.util.*,org.opencms.workplace.explorer.*,org.opencms.ade.upload.shared.I_CmsUploadConstants" %><%	
 
 	// initialize the workplace class
 	CmsNewResourceUpload wp = new CmsNewResourceUpload(pageContext, request, response);
@@ -7,6 +7,13 @@
 	
 switch (wp.getAction()) {
 
+case CmsNewResourceUpload.ACTION_GWT:
+////////////////////ACTION: use the gwt upload
+    request.setAttribute(I_CmsUploadConstants.ATTR_CLOSE_LINK, wp.getCloseLink());
+	request.setAttribute(I_CmsUploadConstants.ATTR_CURRENT_FOLDER, wp.getParamCurrentFolder());
+    wp.sendForward(I_CmsUploadConstants.UPLOAD_JSP_URI, new HashMap<String, String>());
+break;   
+    
 case CmsNewResourceUpload.ACTION_APPLET:
 //////////////////// ACTION: use the upload applet
 	

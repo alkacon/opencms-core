@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2009/09/09 15:54:51 $
- * Version: $Revision: 1.25.2.2 $
+ * Date   : $Date: 2011/03/02 14:24:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -500,18 +500,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowPublishNotificationString() {
 
         return String.valueOf(getShowPublishNotification());
-    }
-
-    /**
-     * Returns a string representation of the upload Applet flag.<p>
-     * 
-     * @return string representation of the uploadApplet flag
-     * 
-     * @see #useUploadApplet()
-     */
-    public String getUploadAppletString() {
-
-        return String.valueOf(useUploadApplet());
     }
 
     /**
@@ -968,17 +956,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowUploadTypeDialog(String booleanValue) {
 
         setShowUploadTypeDialog(Boolean.valueOf(booleanValue));
-    }
-
-    /**
-     * Sets the usage of the upload applet for the user user.<p>
-     * 
-     * @param applet <code>"true"</code> or <code>"false"</code> to flag the use of the applet
-     */
-    public void setUploadApplet(String applet) {
-
-        // set the usage of the upload applet
-        setUseUploadApplet(Boolean.valueOf(applet).booleanValue());
     }
 
     /**

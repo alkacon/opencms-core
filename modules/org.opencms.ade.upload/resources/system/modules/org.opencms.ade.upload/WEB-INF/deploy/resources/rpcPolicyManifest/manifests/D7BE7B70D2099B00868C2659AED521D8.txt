@@ -1,0 +1,2 @@
+serviceClass: org.opencms.ade.upload.shared.rpc.I_CmsUploadService
+path: 74A22FC773CC0E6592D91CAA7BC1255A.gwt.rpc
