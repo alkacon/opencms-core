@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/03/01 14:32:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 08:04:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.util.CmsStringUtil;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -302,10 +303,16 @@ public class CmsDialogBox extends PopupPanel {
     @Override
     public void setHeight(String height) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(height)) {
-            m_containerElement.getStyle().clearHeight();
+        Style style;
+        if (getWidget() == null) {
+            style = m_containerElement.getStyle();
         } else {
-            m_containerElement.getStyle().setProperty("height", height);
+            style = getWidget().getElement().getStyle();
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(height)) {
+            style.clearHeight();
+        } else {
+            style.setProperty("height", height);
         }
     }
 
