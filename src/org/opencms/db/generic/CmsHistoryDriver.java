@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2011/02/11 11:00:12 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/03/02 14:41:02 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.9.1
  */
@@ -238,6 +238,12 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 minResPublishTagToKeep = res.getInt(1);
+                if (res.wasNull()) {
+                    // the database will return a row with a single NULL column if there are no rows at all for the given
+                    // resource id. This means that we want to clean up all resource history and content history entries 
+                    // for this resource id, and we achieve this by comparing their publish tag with the maximum integer.
+                    minResPublishTagToKeep = Integer.MAX_VALUE;
+                }
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
