@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/02 18:29:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1066,10 +1066,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setAction(ACTION_DEFAULT);
                     break;
                 case gwt:
-                    setAction(ACTION_GWT);
-                    break;
+                    // fall through
                 default:
-                    setAction(ACTION_DEFAULT);
+                    setAction(ACTION_GWT);
                     break;
             }
             // build title for new resource dialog     

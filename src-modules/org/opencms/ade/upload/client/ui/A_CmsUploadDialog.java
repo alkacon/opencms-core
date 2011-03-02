@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 18:29:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,6 +72,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -91,7 +93,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -381,6 +383,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_contentWrapper.addStyleName(m_gwtCss.generalCss().cornerAll());
         m_contentWrapper.getElement().getStyle().setPropertyPx("maxHeight", Window.getClientHeight() - 300);
         m_contentWrapper.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
+        m_contentWrapper.add(m_fileList);
         m_mainPanel.add(m_contentWrapper);
 
         m_selectionSummary = new HTML();
@@ -429,6 +432,18 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_uploadButton.createFileInput();
 
         // show the popup
+        if (!isShowing()) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                /**
+                 * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+                 */
+                public void execute() {
+
+                    center();
+                }
+            });
+        }
         center();
     }
 
@@ -1152,7 +1167,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     private void rebuildList(Map<String, CmsFileInfo> files) {
 
-        removeContent();
         m_fileList.clearList();
 
         // sort the files for name
@@ -1165,7 +1179,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         for (String filename : sortedFileNames) {
             addFileToList(files.get(filename), icons.get(filename), false, isTooLarge(files.get(filename)));
         }
-        m_contentWrapper.add(m_fileList);
     }
 
     /**

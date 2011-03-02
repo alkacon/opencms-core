@@ -763,7 +763,7 @@
         <workplace-generaloptions>
           <buttonstyle>textimage</buttonstyle>
           <reporttype>extended</reporttype>
-          <uploadapplet>true</uploadapplet>
+          <uploadapplet>gwt</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
           <publishnotification>false</publishnotification>
           <show-fileuploadbutton>true</show-fileuploadbutton>

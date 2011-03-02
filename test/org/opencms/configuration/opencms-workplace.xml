@@ -742,7 +742,7 @@
         <workplace-generaloptions>
           <buttonstyle>textimage</buttonstyle>
           <reporttype>extended</reporttype>
-          <uploadapplet>true</uploadapplet>
+          <uploadapplet>gwt</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
           <listallprojects>false</listallprojects>
           <publishnotification>false</publishnotification>

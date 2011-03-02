@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/Attic/CmsUpload.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 18:29:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,19 +37,17 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Upload dialog entry class.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -102,8 +100,9 @@ public class CmsUpload extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        if (!getDialogMode().equals("button")) {
-            RootPanel.getBodyElement().getStyle().setHeight(Window.getClientHeight(), Unit.PX);
+        if ((getDialogMode() != null) && getDialogMode().equals("button")) {
+            exportOpenUploadDialog();
+        } else {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
             dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
@@ -121,8 +120,6 @@ public class CmsUpload extends A_CmsEntryPoint {
             });
             dialog.setTargetFolder(getTargetFolder());
             dialog.loadAndShow();
-        } else {
-            exportOpenUploadDialog();
         }
     }
 

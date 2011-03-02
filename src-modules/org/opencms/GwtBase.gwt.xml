@@ -28,13 +28,13 @@
 		</any>
 	</replace-with>
 
-	<replace-with class="org.opencms.gwt.client.ui.CmsUploadDialogFileApiImpl">
-		<when-type-is class="org.opencms.gwt.client.ui.CmsUploadDialogImpl" />
+	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl">
+		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
 		<when-property-is name="fileapi.support" value="fileapi" />
 	</replace-with>
 	
-	<replace-with class="org.opencms.gwt.client.ui.CmsUploadDialogFormDataImpl">
-		<when-type-is class="org.opencms.gwt.client.ui.CmsUploadDialogImpl" />
+	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl">
+		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
 		<when-property-is name="fileapi.support" value="formdata" />
 	</replace-with>
 	

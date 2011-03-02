@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*" %>
+<%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*, org.opencms.ade.upload.shared.I_CmsUploadConstants, org.opencms.ade.upload.CmsUploadActionElement" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
 	
 //initialize the gallery instance

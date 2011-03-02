@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/02 18:29:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author  Michael Emmerich
  * @author  Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -356,7 +356,7 @@ public class CmsUserSettings {
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
         m_listAllProjects = false;
-        m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.applet;
+        m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.gwt;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
@@ -2044,7 +2044,7 @@ public class CmsUserSettings {
             m_uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant();
         }
         if (m_uploadVariant == null) {
-            m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.applet;
+            m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.gwt;
         }
     }
 
