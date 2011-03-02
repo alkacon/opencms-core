@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientProperty.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
+import com.google.common.collect.MapMaker;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +64,24 @@ public class CmsClientProperty implements IsSerializable {
         /** The structure value. */
         structure;
     }
+
+    /**
+     * Construction function which creates a new property with a given name.<p>
+     */
+    public static final Function<String, CmsClientProperty> CREATE_PROPERTY = new Function<String, CmsClientProperty>() {
+
+        /**
+         * Creates a new property.<p>
+         *          
+         * @param name the property name
+         *  
+         * @return the new property 
+         */
+        public CmsClientProperty apply(String name) {
+
+            return new CmsClientProperty(name, "", "");
+        }
+    };
 
     /** The path component identifying a resource value. */
     public static final String PATH_RESOURCE_VALUE = "R";
@@ -80,6 +100,9 @@ public class CmsClientProperty implements IsSerializable {
 
     /** The name of the property. */
     private String m_name;
+
+    /** The origin of the property (will usually be null). */
+    private String m_origin;
 
     /** The resource value of the property. */
     private String m_resourceValue;
@@ -177,6 +200,21 @@ public class CmsClientProperty implements IsSerializable {
     }
 
     /**
+     * Makes a "lazy copy" of a map of properties, which will create properties on lookup if they don't already exist.<p>
+     * 
+     * @param properties the properties to copy 
+     * 
+     * @return the lazy copy of the properties 
+     */
+    public static Map<String, CmsClientProperty> makeLazyCopy(Map<String, CmsClientProperty> properties) {
+
+        if (properties == null) {
+            return null;
+        }
+        return toLazyMap(copyProperties(properties));
+    }
+
+    /**
      * Helper method for removing empty properties from a map.<p>
      * 
      * @param props the map from which to remove empty properties 
@@ -191,6 +229,20 @@ public class CmsClientProperty implements IsSerializable {
                 iter.remove();
             }
         }
+    }
+
+    /**
+     * Creates a lazy property map which creates properties on lookup if they don'T exist.<p>
+     * 
+     * @param properties the properties which should be initially put into the map 
+     * 
+     * @return the lazy property map
+     */
+    public static Map<String, CmsClientProperty> toLazyMap(Map<String, CmsClientProperty> properties) {
+
+        Map<String, CmsClientProperty> result = (new MapMaker()).makeComputingMap(CREATE_PROPERTY);
+        result.putAll(properties);
+        return result;
     }
 
     /**
@@ -214,15 +266,25 @@ public class CmsClientProperty implements IsSerializable {
     }
 
     /**
+     * Gets the origin of the property (might return null).<p>
+     * 
+     * @return the origin root path of the property, or null 
+     */
+    public String getOrigin() {
+
+        return m_origin;
+    }
+
+    /**
      * Returns the effective path value of the property.<p>
      * 
      * @return the effective path value of the property 
      */
     public CmsPathValue getPathValue() {
 
-        if (m_structureValue != null) {
+        if (!CmsStringUtil.isEmpty(m_structureValue)) {
             return new CmsPathValue(m_structureValue, PATH_STRUCTURE_VALUE);
-        } else if (m_resourceValue != null) {
+        } else if (!CmsStringUtil.isEmpty(m_resourceValue)) {
             return new CmsPathValue(m_resourceValue, PATH_RESOURCE_VALUE);
         } else {
             return new CmsPathValue(null, PATH_STRUCTURE_VALUE);
@@ -280,6 +342,16 @@ public class CmsClientProperty implements IsSerializable {
     }
 
     /**
+     * Sets the origin of the property.<p>
+     * 
+     * @param origin the origin root path of the property 
+     */
+    public void setOrigin(String origin) {
+
+        m_origin = origin;
+    }
+
+    /**
      * Sets the resource value .<P>
      * 
      * @param resourceValue the new resource value 
@@ -309,6 +381,20 @@ public class CmsClientProperty implements IsSerializable {
             "resourceValue",
             m_resourceValue).toString();
 
+    }
+
+    /**
+     * Creates a copy of the property, but changes the origin in the copy.<p>
+     * 
+     * @param origin the new origin 
+     * 
+     * @return the copy of the property 
+     */
+    public CmsClientProperty withOrigin(String origin) {
+
+        CmsClientProperty property = new CmsClientProperty(this);
+        property.setOrigin(origin);
+        return property;
     }
 
 }

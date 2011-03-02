@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,13 +47,14 @@ import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Basic implementation of the I_CmsFormField class.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0 
  */
@@ -61,15 +62,20 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /** The default value of the form field. */
     private Object m_defaultValue;
-
     /** Description for the form field. */
     private String m_description;
+
+    /** Handler registration of the ValueChangeHandler for the string model object, if available. */
+    private HandlerRegistration m_handlerRegistration;
 
     /** Id of the form field.*/
     private String m_id;
 
     /** Label of the form field. */
     private String m_label;
+
+    /** A map of strings containing layout information for rendering the field's widget. */
+    private LayoutData m_layoutData = new LayoutData();
 
     /** The string model. */
     private I_CmsStringModel m_model;
@@ -208,8 +214,9 @@ public class CmsBasicFormField implements I_CmsFormField {
      */
     public void bind(I_CmsStringModel model) {
 
+        assert m_model == null;
         m_model = model;
-        m_model.addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_handlerRegistration = m_model.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
@@ -218,9 +225,17 @@ public class CmsBasicFormField implements I_CmsFormField {
                     ((I_CmsHasGhostValue)widget).setGhostMode(false);
                 }
                 widget.setFormValueAsString(event.getValue());
-
             }
         });
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        return (o instanceof CmsBasicFormField) && ((CmsBasicFormField)o).getId().equals(m_id);
     }
 
     /**
@@ -253,6 +268,14 @@ public class CmsBasicFormField implements I_CmsFormField {
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getLayoutData()
+     */
+    public LayoutData getLayoutData() {
+
+        return m_layoutData;
     }
 
     /** 
@@ -310,6 +333,15 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_id.hashCode();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setId(java.lang.String)
      */
     public void setId(String id) {
@@ -333,6 +365,17 @@ public class CmsBasicFormField implements I_CmsFormField {
     public void setValidator(I_CmsValidator validator) {
 
         m_validator = validator;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#unbind()
+     */
+    public void unbind() {
+
+        if (m_handlerRegistration != null) {
+            m_handlerRegistration.removeHandler();
+            m_handlerRegistration = null;
+        }
     }
 
 }

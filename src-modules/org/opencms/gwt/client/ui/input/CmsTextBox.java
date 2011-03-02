@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  * 
@@ -255,6 +255,18 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void blur() {
 
         m_textbox.getElement().blur();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        String result = m_textbox.getValue();
+        if (CmsStringUtil.isEmpty(result)) {
+            result = null;
+        }
+        return result;
     }
 
     /**
@@ -462,7 +474,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             newValue = "";
         }
         setFormValue(newValue);
-
     }
 
     /**

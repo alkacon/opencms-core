@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
@@ -52,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -63,7 +62,6 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -74,15 +72,12 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsForm {
-
-    /** The CSS bundle used for this form. **/
-    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** The set of fields which have been edited. */
     protected Set<String> m_editedFields = new HashSet<String>();
@@ -105,11 +100,14 @@ public class CmsForm {
     /** The tab for basic form fields. */
     private FlowPanel m_basicTab = new FlowPanel();
 
+    /** A multimap from field groups to fields. */
+    private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
+
     /** The fields indexed by model id. */
     private Multimap<String, I_CmsFormField> m_fieldsByModelId = ArrayListMultimap.create();
 
-    /** The initial values of the form fields. */
-    private Map<String, String> m_initialValues = new HashMap<String, String>();
+    /** The info label text. */
+    private String m_labelText;
 
     /** 
     private boolean m_isSubmittable;
@@ -164,13 +162,13 @@ public class CmsForm {
      */
     public void addField(String fieldGroup, final I_CmsFormField formField) {
 
-        String initialValue = formField.getWidget().getFormValueAsString();
-        m_initialValues.put(formField.getId(), initialValue);
         initializeFormFieldWidget(formField);
         m_fields.put(formField.getId(), formField);
         String modelId = formField.getModelId();
         m_fieldsByModelId.put(modelId, formField);
-        m_widget.addField(formField, fieldGroup);
+        formField.getLayoutData().put("group", fieldGroup);
+        m_fieldsByGroup.put(fieldGroup, formField);
+        //m_widget.addField(formField);
 
     }
 
@@ -189,22 +187,6 @@ public class CmsForm {
         addField(fieldGroup, formField);
     }
 
-    /**
-     * Adds a text label.<p>
-     * 
-     * @param labelText the text for the label
-     * @param advanced if true, add the label to the advanced tab, else to the basic tab 
-     * 
-     * @return a label with the given text
-     */
-    public Label addLabel(String labelText, boolean advanced) {
-
-        Label label = new Label(labelText);
-        label.setStyleName(CSS.formDescriptionLabel());
-        getPanel(advanced).add(label);
-        return label;
-    }
-
     /** 
      * Adds a new form reset handler to the form.<p>
      * 
@@ -213,17 +195,6 @@ public class CmsForm {
     public void addResetHandler(I_CmsFormResetHandler handler) {
 
         m_resetHandlers.add(handler);
-    }
-
-    /**
-     * Adds a separator below the last added form field.<p>
-     * 
-     * @param advanced if true, adds the separator to the advanced tab, else to the basic tab 
-     * 
-     */
-    public void addSeparator(boolean advanced) {
-
-        getPanel(advanced).add(new CmsSeparator());
     }
 
     /**
@@ -244,19 +215,6 @@ public class CmsForm {
             result.put(key, value);
         }
         return result;
-    }
-
-    /**
-     * Performs an initial validation of all form fields.<p>
-     */
-    public void doInitialValidation() {
-
-        CmsValidationController validationController = new CmsValidationController(
-            m_fields.values(),
-            createValidationHandler());
-        validationController.setFormValidator(m_validatorClass);
-        validationController.setFormValidatorConfig(createValidatorConfig());
-        startValidation(validationController);
     }
 
     /**
@@ -320,6 +278,40 @@ public class CmsForm {
     }
 
     /**
+     * Removes all fields for the given group.<p>
+     * 
+     * @param group the group for which the fields should be removed
+     */
+    public void removeGroup(String group) {
+
+        List<I_CmsFormField> fieldsToRemove = Lists.newArrayList(m_fieldsByGroup.get(group));
+        for (I_CmsFormField field : fieldsToRemove) {
+            removeField(field);
+        }
+        m_fieldsByGroup.removeAll(group);
+    }
+
+    /**
+     * Renders all fields.<p>
+     */
+    public void render() {
+
+        m_widget.setLabel(m_labelText);
+        m_widget.renderFields(m_fields.values());
+    }
+
+    /**
+     * Renders the fields of the given group.<p>
+     * 
+     * @param group the field group 
+     */
+    public void renderGroup(String group) {
+
+        m_widget.rerenderFields(group, m_fieldsByGroup.get(group));
+
+    }
+
+    /**
      * Sets the form dialog in which this form is being used.<p>
      * 
      * @param dialog the form dialog 
@@ -337,6 +329,16 @@ public class CmsForm {
     public void setFormHandler(I_CmsFormHandler handler) {
 
         m_formHandler = handler;
+    }
+
+    /**
+     * Adds a text label.<p>
+     * 
+     * @param labelText the text for the label
+     */
+    public void setLabel(String labelText) {
+
+        m_labelText = labelText;
     }
 
     /**
@@ -361,6 +363,19 @@ public class CmsForm {
     }
 
     /**
+     * Performs an initial validation of all form fields.<p>
+     */
+    public void validateAllFields() {
+
+        CmsValidationController validationController = new CmsValidationController(
+            m_fields.values(),
+            createValidationHandler());
+        validationController.setFormValidator(m_validatorClass);
+        validationController.setFormValidatorConfig(createValidatorConfig());
+        startValidation(validationController);
+    }
+
+    /**
      * Validates the form fields and submits their values if the validation was successful.<p>
      */
     public void validateAndSubmit() {
@@ -376,7 +391,10 @@ public class CmsForm {
 
                     if (ok) {
                         m_formDialog.closeDialog();
-                        m_formHandler.onSubmitForm(collectValues(), m_editedFields);
+                        Map<String, String> values = collectValues();
+                        Set<String> editedFields = new HashSet<String>(m_editedFields);
+                        editedFields.retainAll(values.keySet());
+                        m_formHandler.onSubmitForm(values, editedFields);
                     } else {
                         m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
                     }
@@ -418,6 +436,62 @@ public class CmsForm {
     protected String createValidatorConfig() {
 
         return "";
+    }
+
+    /**
+     * The default keypress event handling function for form fields.<p>
+     * 
+     * @param field the form field for which the event has been fired
+     *  
+     * @param keyCode the key code 
+     */
+    protected void defaultHandleKeyPress(I_CmsFormField field, int keyCode) {
+
+        I_CmsFormWidget widget = field.getWidget();
+        if (keyCode == KeyCodes.KEY_ENTER) {
+            m_pressedEnter = true;
+            if (widget instanceof I_CmsHasBlur) {
+                // force a blur because not all browsers send a change event if the user just presses enter in a field
+                ((I_CmsHasBlur)widget).blur();
+            }
+            // make sure that the flag is set to false again after the other events have been processed 
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                /**
+                 * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+                 */
+                public void execute() {
+
+                    m_pressedEnter = false;
+                }
+            });
+        }
+
+    }
+
+    /**
+     * Default handler for value change events of form fields.<p>
+     *  
+     * @param field the form field for which the event has been fired 
+     * 
+     * @param newValue the new value 
+     */
+    protected void defaultHandleValueChange(I_CmsFormField field, String newValue) {
+
+        m_editedFields.add(field.getId());
+        I_CmsStringModel model = field.getModel();
+        if (model != null) {
+            model.setValue(newValue, true);
+        }
+        field.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
+
+        // if the user presses enter, the keypressed event is fired before the change event,
+        // so we use a flag to keep track of whether enter was pressed.
+        if (!m_pressedEnter) {
+            validateField(field);
+        } else {
+            validateAndSubmit();
+        }
     }
 
     /**
@@ -509,8 +583,10 @@ public class CmsForm {
             /**
              * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationResult(java.lang.String, org.opencms.gwt.shared.CmsValidationResult)
              */
-            public void onValidationResult(String modelId, CmsValidationResult result) {
+            public void onValidationResult(String fieldId, CmsValidationResult result) {
 
+                I_CmsFormField field = m_fields.get(fieldId);
+                String modelId = field.getModelId();
                 updateModelValidationStatus(modelId, result);
             }
         };
@@ -533,20 +609,7 @@ public class CmsForm {
                  */
                 public void onValueChange(ValueChangeEvent<String> event) {
 
-                    m_editedFields.add(formField.getId());
-                    I_CmsStringModel model = formField.getModel();
-                    if (model != null) {
-                        model.setValue(event.getValue());
-                    }
-                    formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
-
-                    // if the user presses enter, the keypressed event is fired before the change event,
-                    // so we use a flag to keep track of whether enter was pressed.
-                    if (!m_pressedEnter) {
-                        validateField(formField);
-                    } else {
-                        validateAndSubmit();
-                    }
+                    defaultHandleValueChange(formField, event.getValue());
                 }
             });
         }
@@ -560,27 +623,25 @@ public class CmsForm {
                 public void onKeyPress(KeyPressEvent event) {
 
                     int keyCode = event.getNativeEvent().getKeyCode();
-                    if (keyCode == KeyCodes.KEY_ENTER) {
-                        m_pressedEnter = true;
-                        if (widget instanceof I_CmsHasBlur) {
-                            // force a blur because not all browsers send a change event if the user just presses enter in a field
-                            ((I_CmsHasBlur)widget).blur();
-                        }
-                        // make sure that the flag is set to false again after the other events have been processed 
-                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                            /**
-                             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-                             */
-                            public void execute() {
-
-                                m_pressedEnter = false;
-                            }
-                        });
-                    }
+                    defaultHandleKeyPress(formField, keyCode);
                 }
             });
         }
+    }
+
+    /**
+     * Removes a field from the form's data structure (but not from the form's widget!).<p>
+     * 
+     * @param field the field to remove 
+     */
+    private void removeField(I_CmsFormField field) {
+
+        String id = field.getId();
+        m_fields.remove(id);
+        // *not* removing the field id from m_editedFields, because a field of the same id may 
+        // be added later 
+        m_fieldsByModelId.remove(field.getModelId(), field);
+        field.unbind();
     }
 
     /**
@@ -592,5 +653,4 @@ public class CmsForm {
 
         validationController.startValidation();
     }
-
 }

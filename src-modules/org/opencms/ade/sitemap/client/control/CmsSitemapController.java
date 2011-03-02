@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/28 11:10:47 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
@@ -57,6 +56,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 8.0.0
  */
@@ -646,24 +646,41 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Gets the effective value of a property value for a sitemap entry.<p>
+     *  
+     * @param entry the sitemap entry 
+     * @param name the name of the property 
+     * 
+     * @return the effective value 
+     */
+    public String getEffectiveProperty(CmsClientSitemapEntry entry, String name) {
+
+        CmsClientProperty prop = getEffectivePropertyObject(entry, name);
+        if (prop == null) {
+            return null;
+        }
+        return prop.getEffectiveValue();
+    }
+
+    /**
      * Gets the value of a property which is effective at a given sitemap entry.<p>
      * 
      * @param entry the sitemap entry 
      * @param name the name of the property  
      * @return the effective property value 
      */
-    public String getEffectiveProperty(CmsClientSitemapEntry entry, String name) {
+    public CmsClientProperty getEffectivePropertyObject(CmsClientSitemapEntry entry, String name) {
 
         Map<String, CmsClientProperty> dfProps = entry.getDefaultFileProperties();
         CmsClientProperty result = safeLookup(dfProps, name);
         if (!CmsClientProperty.isPropertyEmpty(result)) {
-            return result.getEffectiveValue();
+            return result.withOrigin(entry.getSitePath());
         }
         result = safeLookup(entry.getOwnProperties(), name);
         if (!CmsClientProperty.isPropertyEmpty(result)) {
-            return result.getEffectiveValue();
+            return result.withOrigin(entry.getSitePath());
         }
-        return getInheritedProperty(entry, name);
+        return getInheritedPropertyObject(entry, name);
     }
 
     /**
@@ -781,21 +798,43 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public String getInheritedProperty(CmsClientSitemapEntry entry, String name) {
 
+        CmsClientProperty prop = getInheritedPropertyObject(entry, name);
+        if (prop == null) {
+            return null;
+        }
+        return prop.getEffectiveValue();
+    }
+
+    /**
+     * Gets the property object which would be inherited by a sitemap entry.<p>
+     * 
+     * @param entry the sitemap entry 
+     * @param name the name of the property 
+     * @return the property object which would be inherited 
+     */
+    public CmsClientProperty getInheritedPropertyObject(CmsClientSitemapEntry entry, String name) {
+
         CmsClientSitemapEntry currentEntry = entry;
         while (currentEntry != null) {
             currentEntry = getParentEntry(currentEntry);
             if (currentEntry != null) {
                 CmsClientProperty folderProp = currentEntry.getOwnProperties().get(name);
                 if (!CmsClientProperty.isPropertyEmpty(folderProp)) {
-                    return folderProp.getEffectiveValue();
+                    return folderProp.withOrigin(currentEntry.getSitePath());
                 }
             }
         }
         CmsClientProperty parentProp = getParentProperties().get(name);
         if (!CmsClientProperty.isPropertyEmpty(parentProp)) {
-            return parentProp.getEffectiveValue();
+            String origin = parentProp.getOrigin();
+            String siteRoot = CmsCoreProvider.get().getSiteRoot();
+            if (origin.startsWith(siteRoot)) {
+                origin = origin.substring(siteRoot.length());
+            }
+            return parentProp.withOrigin(origin);
         }
         return null;
+
     }
 
     /**
@@ -852,7 +891,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return m_propertyMaps.get(id);
     }
 
-    /**
+    /** 
      * Returns the sitemap service instance.<p>
      * 
      * @return the sitemap service instance

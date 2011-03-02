@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroupWidget.java,v $
- * Date   : $Date: 2011/02/01 14:52:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -147,6 +147,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     public void fireEvent(GwtEvent<?> event) {
 
         m_eventBus.fireEventFromSource(event, this);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        return getFormValueAsString();
     }
 
     /**

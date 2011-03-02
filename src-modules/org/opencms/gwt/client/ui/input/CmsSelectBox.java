@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  * 
@@ -64,6 +64,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     /** The widget displayed in the opener. */
     protected CmsLabel m_openerWidget;
 
+    /** The ghost value. */
+    private String m_ghostValue;
+
     /** A map from select options to their label texts. */
     private Map<String, String> m_items;
 
@@ -73,6 +76,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public CmsSelectBox() {
 
         super();
+
     }
 
     /**
@@ -152,6 +156,19 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        String val = getFormValueAsString();
+        if (val == null) {
+            val = m_ghostValue;
+        }
+        return val;
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
@@ -182,6 +199,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
         setTextForNullSelection(message);
         if (ghostMode) {
             selectValue("");
+            m_ghostValue = value;
         }
     }
 
@@ -263,6 +281,5 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
         CmsLabel label = m_openerWidget;
         CmsLabelSelectCell cell = m_selectCells.get(newValue);
         label.setText(cell.getText());
-
     }
 }

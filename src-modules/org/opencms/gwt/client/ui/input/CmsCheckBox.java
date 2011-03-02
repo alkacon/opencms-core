@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  */
@@ -165,6 +165,14 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public void enable() {
 
         m_button.enable();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        return getFormValueAsString();
     }
 
     /**

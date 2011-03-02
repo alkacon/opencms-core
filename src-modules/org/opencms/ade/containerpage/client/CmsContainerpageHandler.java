@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/02/22 16:34:07 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.0
  */
@@ -215,6 +215,7 @@ public class CmsContainerpageHandler {
                     (new CmsAlertDialog(title, message)).center();
                     return;
                 }
+                final CmsForm form = new CmsForm(true);
                 I_CmsFormHandler formHandler = new I_CmsFormHandler() {
 
                     /**
@@ -230,14 +231,14 @@ public class CmsContainerpageHandler {
                 };
                 String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
 
-                CmsForm form = new CmsForm(true);
                 CmsFormDialog dialog = new CmsFormDialog(title, form);
-                form.addLabel(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TEXT_0), false);
+                form.setLabel(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TEXT_0));
 
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
                 for (I_CmsFormField field : formFields.values()) {
                     form.addField(field, properties.get(field.getId()));
                 }
+                form.render();
                 dialog.setFormHandler(formHandler);
                 dialog.center();
             }

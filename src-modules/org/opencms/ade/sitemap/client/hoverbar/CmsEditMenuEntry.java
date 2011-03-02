@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,11 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.edit.CmsEditEntryHandler;
-import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
+import org.opencms.ade.sitemap.client.edit.CmsNavModeSitemapEntryEditor;
+import org.opencms.ade.sitemap.client.edit.CmsVfsModeSitemapEntryEditor;
+import org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
@@ -46,7 +49,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -72,10 +75,12 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
 
                 CmsSitemapController controller = getHoverbar().getController();
                 CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                (new CmsSitemapEntryEditor(new CmsEditEntryHandler(
+                I_CmsSitemapEntryEditorHandler handler = new CmsEditEntryHandler(
                     controller,
                     entry,
-                    CmsSitemapView.getInstance().isNavigationMode()))).start();
+                    CmsSitemapView.getInstance().isNavigationMode());
+                A_CmsSitemapEntryEditor editor = createEntryEditor(handler);
+                editor.start();
             }
         });
     }
@@ -92,7 +97,25 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
         boolean show = !(controller.isRoot(sitePath) && (controller.getData().getParentSitemap() != null))
             && (entry != null)
             && entry.isEditable();
-
         setVisible(show);
+    }
+
+    /**
+     * Creates the right sitemap entry editor for the current mode.<p>
+     * 
+     * @param handler the entry editor handler 
+     * 
+     * @return a sitemap entry editor instance 
+     */
+    protected A_CmsSitemapEntryEditor createEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
+
+        if (CmsSitemapView.getInstance().isNavigationMode()) {
+            return new CmsNavModeSitemapEntryEditor(handler);
+        } else {
+            boolean isFolder = handler.getEntry().isFolderType();
+            CmsVfsModeSitemapEntryEditor result = new CmsVfsModeSitemapEntryEditor(handler);
+            result.setShowResourceProperties(!isFolder);
+            return result;
+        }
     }
 }

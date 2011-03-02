@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsDefaultStringModel.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -108,9 +108,9 @@ public class CmsDefaultStringModel implements I_CmsStringModel {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsStringModel#setValue(java.lang.String)
+     * @see org.opencms.gwt.client.ui.input.I_CmsStringModel#setValue(java.lang.String, boolean)
      */
-    public void setValue(String value) {
+    public void setValue(String value, boolean notify) {
 
         if (!m_active) {
             m_active = true;
@@ -118,7 +118,7 @@ public class CmsDefaultStringModel implements I_CmsStringModel {
 
                 boolean changed = !Objects.equal(value, m_value);
                 m_value = value;
-                if (changed) {
+                if (notify && changed) {
                     ValueChangeEvent.fire(this, value);
                 }
             } finally {

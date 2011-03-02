@@ -46,7 +46,9 @@
 	gwt-image: "baseImages.icons.editorIconActive"; 
 }
 
-
+@sprite .inherited {
+	gwt-image: "baseImages.icons.inherited";
+}
 
 @sprite .cmsState-down-disabled .checkBoxImage {
 	gwt-image: "inputImages.checkboxCheckedDisabled";
@@ -270,7 +272,7 @@
 }
 
 .form {
-	width: 570px;
+	width: 595px;
 	height: 480px;
 	border: none;
 }
@@ -290,6 +292,11 @@
 .formRow {
 	margin-bottom: 2px;
 	margin-top: 2px;
+	margin-right: 10px;
+	margin-left: 5px;
+	width: 550px; 
+	
+	
 }
 
 @sprite .formRowOpenerClosed {
@@ -314,6 +321,13 @@
 	vertical-align: top; 
 }
 
+.formInfo {
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-bottom: 12px;
+	font-weight: bold; 
+}
+
 .formLabel { 
 	width: formLabelWidth;
 	overflow: hidden;
@@ -321,6 +335,7 @@
 	margin-top: 2px;
 /*	margin-left: openerWidth; */ 
 	float: left;
+	width: widgetContainerMargin;
 }
 
 .formWidgetContainer {

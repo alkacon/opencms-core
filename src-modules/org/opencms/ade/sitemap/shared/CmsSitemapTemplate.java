@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapTemplate.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0
  */
@@ -81,6 +81,19 @@ public class CmsSitemapTemplate implements IsSerializable {
         m_description = description;
         m_sitePath = sitePath;
         m_imgPath = imgPath;
+    }
+
+    /**
+     * Returns a dummy template object which represents an empty selection.<p>
+     * 
+     * @return a dummy template object 
+     */
+    public static CmsSitemapTemplate getNullTemplate() {
+
+        String imagePath = "/system/modules/org.opencms.ade.sitemap/pages/notemplate.png";
+        CmsSitemapTemplate result = new CmsSitemapTemplate("No template", "", "", imagePath);
+        result.setShowWeakText(true);
+        return result;
     }
 
     /**
@@ -142,4 +155,5 @@ public class CmsSitemapTemplate implements IsSerializable {
 
         m_showWeakText = showWeakText;
     }
+
 }

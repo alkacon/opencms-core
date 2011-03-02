@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2011/02/09 14:53:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @author Ruediger Kurz
  * @author Tobias Herrmann
@@ -72,11 +72,11 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
         // GWT interface, nothing to do here
     }
 
+    /** Default animation duration.*/
+    public static final int DEFAULT_ANIMATION_DURATION = 300;
+
     /** The ui-binder instance. */
     private static I_CmsFieldSetUiBinder uiBinder = GWT.create(I_CmsFieldSetUiBinder.class);
-
-    /** Signals whether the fieldset is opened. */
-    protected boolean m_opened;
 
     /** The content of the fieldset. */
     @UiField
@@ -97,12 +97,18 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     @UiField
     protected CmsLabel m_legend;
 
+    /** Signals whether the fieldset is opened. */
+    protected boolean m_opened;
+
     /** The legend of the fieldset. */
     @UiField
     protected FlowPanel m_wrapper;
 
     /** The running slide in/out animation. */
     private Animation m_animation;
+
+    /** The animation duration. */
+    private int m_animationDuration = DEFAULT_ANIMATION_DURATION;
 
     /** The fieldset visibility style. */
     private CmsStyleVariable m_visibilityStyle;
@@ -180,6 +186,25 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
         return m_opened;
     }
 
+    /** 
+     * Sets the animation duration.
+     * @param animDuration the animation duration 
+     */
+    public void setAnimationDuration(int animDuration) {
+
+        m_animationDuration = animDuration;
+    }
+
+    /**
+     * Sets the text for the legend of this field set.<p>
+     * 
+     * @param legendText the legend text
+     */
+    public void setLegend(String legendText) {
+
+        m_legend.setText(legendText);
+    }
+
     /**
      * Sets the fieldset open, showing the content.<p>
      * 
@@ -199,16 +224,6 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
             m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRight());
         }
-    }
-
-    /**
-     * Sets the text for the legend of this field set.<p>
-     * 
-     * @param legendText the legend text
-     */
-    public void setLegend(String legendText) {
-
-        m_legend.setText(legendText);
     }
 
     /**
@@ -238,7 +253,7 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
 
                     OpenEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
                 }
-            }, 300);
+            }, m_animationDuration);
         } else {
 
             // hide content
@@ -251,7 +266,7 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
 
                     setOpen(false);
                 }
-            }, 300);
+            }, m_animationDuration);
         }
     }
 }

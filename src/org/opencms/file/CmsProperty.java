@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert   
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -162,6 +162,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /** The name of this property. */
     private String m_name;
+
+    /** The origin root path of the property. */
+    private String m_origin;
 
     /** The value of this property attached to the resource record. */
     private String m_resourceValue;
@@ -520,6 +523,16 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the root path of the resource from which the property was read.<p>
+     * 
+     * @return the root path of the resource from which the property was read
+     */
+    public String getOrigin() {
+
+        return m_origin;
     }
 
     /**
@@ -883,6 +896,17 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
+     * Sets the path of the resource from which the property was read.<p>
+     * 
+     * @param originRootPath the root path of the root path from which the property was read
+     */
+    public void setOrigin(String originRootPath) {
+
+        checkFrozen();
+        m_origin = originRootPath;
+    }
+
+    /**
      * Sets the value of this property attached to the resource record.<p>
      * 
      * @param resourceValue the value of this property attached to the resource record
@@ -1030,6 +1054,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
         strBuf.append(", structure value: '").append(m_structureValue).append("'");
         strBuf.append(", resource value: '").append(m_resourceValue).append("'");
         strBuf.append(", frozen: ").append(m_frozen);
+        strBuf.append(", origin: ").append(m_origin);
         strBuf.append("]");
 
         return strBuf.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/02/24 15:23:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -200,6 +200,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/gotoSubSitemapIconActive.png")
     ImageResource gotoSubSitemapIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/inherited.png")
+    ImageResource inherited();
 
     /**
      * Access method.<p>

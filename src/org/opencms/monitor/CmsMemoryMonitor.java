@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2010/11/15 14:44:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,10 +150,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         ROLE_LIST,
         /** User cache. */
         USER,
-        /** User Groups cache. */
-        USERGROUPS,
         /** User list cache. */
         USER_LIST,
+        /** User Groups cache. */
+        USERGROUPS,
         /** VFS Object cache. */
         VFS_OBJECT,
         /** XML Entity Permanent cache. */
@@ -385,6 +385,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
             if (property.getStructureValue() != null) {
                 size += getMemorySize(property.getStructureValue());
+            }
+
+            if (property.getOrigin() != null) {
+                size += getMemorySize(property.getOrigin());
             }
 
             return size;
@@ -1706,17 +1710,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Returns the current memory status.<p>
-     * 
-     * @return the memory status
-     */
-    public CmsMemoryStatus getMemoryStatus() {
-
-        m_memoryCurrent.update();
-        return m_memoryCurrent;
-    }
-
-    /**
      * Returns the configuration.<p>
      *
      * @return the configuration
@@ -1748,6 +1741,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public int getLogCount() {
 
         return m_logCount;
+    }
+
+    /**
+     * Returns the current memory status.<p>
+     * 
+     * @return the memory status
+     */
+    public CmsMemoryStatus getMemoryStatus() {
+
+        m_memoryCurrent.update();
+        return m_memoryCurrent;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.validation.I_CmsValidator;
 
+import java.util.HashMap;
+
 /**
  * The interface for a form field.<p>
  * 
@@ -41,12 +43,22 @@ import org.opencms.gwt.client.validation.I_CmsValidator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0 
  * 
  */
 public interface I_CmsFormField {
+
+    /**
+     * A simple map class containing strings to direct the layout of a form field.<p>
+     */
+    public class LayoutData extends HashMap<String, String> {
+
+        /** Serial id for serialization. */
+        private static final long serialVersionUID = -1938342399843773050L;
+        // nothing new
+    }
 
     /** 
      * An enum which represents the validation status of a field.<p>
@@ -96,6 +108,13 @@ public interface I_CmsFormField {
      * @return a label or null
      */
     String getLabel();
+
+    /**
+     * Returns the layout data for this field.<p>
+     * 
+     * @return the layout data for this field 
+     */
+    LayoutData getLayoutData();
 
     /** 
      * Returns the model object for this field. 
@@ -163,5 +182,10 @@ public interface I_CmsFormField {
      * @param validator the new validator
      */
     void setValidator(I_CmsValidator validator);
+
+    /**
+     * Removes the binding to this form field's model.<p>
+     */
+    void unbind();
 
 }

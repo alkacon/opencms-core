@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/28 11:10:47 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  */
@@ -70,9 +70,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NO_CREATABLE_ELEMENTS_0 = "GUI_NO_CREATABLE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
@@ -192,7 +189,22 @@ public final class Messages {
     public static final String GUI_NEW_PAGES_TAB_TITLE_0 = "GUI_NEW_PAGES_TAB_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_CREATABLE_ELEMENTS_0 = "GUI_NO_CREATABLE_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORIGIN_INHERITED_1 = "GUI_ORIGIN_INHERITED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_BLOCK_UNUSED_0 = "GUI_PROPERTY_BLOCK_UNUSED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_BLOCK_USED_0 = "GUI_PROPERTY_BLOCK_USED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_EDITOR_TEXT_0 = "GUI_PROPERTY_EDITOR_TEXT_0";
@@ -202,6 +214,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_EDITOR_TITLE_0 = "GUI_PROPERTY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_ORIGIN_2 = "GUI_PROPERTY_ORIGIN_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_TAB_RESOURCE_0 = "GUI_PROPERTY_TAB_RESOURCE_0";

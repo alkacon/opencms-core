@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsStringModel.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsWidgetNotSupportedException.java,v $
  * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,39 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
-
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+package org.opencms.ade.sitemap.client.edit;
 
 /**
- * The interface for a string model.<p>
+ * The exception which is thrown when a widget is not supported in the sitemap entry editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsStringModel extends HasValueChangeHandlers<String> {
+public class CmsWidgetNotSupportedException extends RuntimeException {
 
-    /** 
-     * Returns the model id.<p>
-     * @return the model id 
-     */
-    String getId();
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Returns the model value.<p>
+     * Creates a new exception instance.<p>
      * 
-     * @return the model value 
+     * @param widgetType the unsupported widget type 
      */
-    String getValue();
+    public CmsWidgetNotSupportedException(String widgetType) {
 
-    /**
-     * Sets the model value.<p>
-     * 
-     * @param value the new model value 
-     * @param notify if true, value change listeners will be notified of the new value 
-     */
-    void setValue(String value, boolean notify);
+        super("The widget type " + widgetType + "is not supported by the sitemap editor!");
+    }
+
 }

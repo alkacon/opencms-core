@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/12/22 11:35:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  *  
@@ -124,6 +124,14 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        return getFormValueAsString();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -165,6 +173,20 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
                 result.add(key);
             }
             i += 1;
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        boolean result = true;
+        for (CmsCheckBox checkbox : m_checkboxes) {
+            if (!checkbox.isEnabled()) {
+                result = false;
+            }
         }
         return result;
     }
@@ -259,20 +281,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
             m_panel.add(checkboxWrapper);
         }
         m_panel.add(m_error);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        boolean result = true;
-        for (CmsCheckBox checkbox : m_checkboxes) {
-            if (!checkbox.isEnabled()) {
-                result = false;
-            }
-        }
-        return result;
     }
 
 }

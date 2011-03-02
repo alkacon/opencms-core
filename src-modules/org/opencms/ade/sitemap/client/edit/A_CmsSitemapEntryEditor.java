@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.22 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsSitemapEntryEditor.java,v $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -20,8 +20,8 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- *
- * For further information about OpenCms, please see the
+ * 
+ * For further information about OpenCms, please see the 
  * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
@@ -30,10 +30,6 @@
  */
 
 package org.opencms.ade.sitemap.client.edit;
-
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_RESOURCE_0;
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_SIMPLE_0;
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_STRUCTURE_0;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
@@ -46,50 +42,41 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
-import org.opencms.gwt.client.ui.input.CmsLinkSelector;
+import org.opencms.gwt.client.ui.input.CmsDefaultStringModel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
+import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsTabbedFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
 /**
  * A dialog for editing the properties, title, url name and template of a sitemap entry.<p>
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.22 $
+ *  @version $Revision: 1.1 $
  *  
  *  @since 8.0.0
  */
-public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
-
-    /** First tab id. */
-    public static final String TAB_1 = "TAB1";
-
-    /** Second tab id. */
-    public static final String TAB_2 = "TAB2";
-
-    /** Third tab id. */
-    public static final String TAB_3 = "TAB3";
-
-    /** The key for the default template. */
-    private static final String DEFAULT_TEMPLATE_VALUE = "";
+public abstract class A_CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
 
     /** The field id for the link selector widget. */
     private static final String FIELD_LINK = "field_link";
@@ -97,29 +84,42 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     /** The field id of the "url name" form field. */
     private static final String FIELD_URLNAME = "field_urlname";
 
+    /** The list of all property names. */
+    protected List<String> m_allProps;
+
     /** The sitemap controller which changes the actual entry data when the user clicks OK in this dialog. */
     protected CmsSitemapController m_controller;
 
     /** The form dialog. */
     protected CmsFormDialog m_dialog;
 
+    /** The sitemap entry being edited. */
+    protected CmsClientSitemapEntry m_entry;
+
+    /** The form containing the fields. */
+    protected CmsForm m_form;
+
     /** The handler for this sitemap entry editor. */
     protected I_CmsSitemapEntryEditorHandler m_handler;
 
-    /** The link selector widget. */
-    protected CmsLinkSelector m_linkSelector = new CmsLinkSelector();
-
     /** The configuration of the properties. */
     protected Map<String, CmsXmlContentProperty> m_propertyConfig;
+
+    /** The URL name field. */
+    protected I_CmsFormField m_urlNameField;
+
+    /** The model for the URL name field. */
+    protected CmsDefaultStringModel m_urlNameModel;
 
     /**
      * Creates a new sitemap entry editor.<p>
      * 
      * @param handler the handler
      */
-    public CmsSitemapEntryEditor(final I_CmsSitemapEntryEditorHandler handler) {
+    public A_CmsSitemapEntryEditor(final I_CmsSitemapEntryEditorHandler handler) {
 
         CmsForm form = new CmsForm(null);
+        m_form = form;
         m_dialog = new CmsFormDialog(handler.getDialogTitle(), form);
 
         m_controller = handler.getController();
@@ -133,9 +133,9 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
             public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
 
                 ReloadMode reloadMode = getReloadMode(fieldValues, editedFields);
-                Map<String, String> changedFieldValues = new HashMap<String, String>(fieldValues);
-                changedFieldValues.keySet().retainAll(editedFields);
-                Map<String, String> changedPropValues = removeTabSuffixes(changedFieldValues);
+                Map<String, String> changedPropValues = removeTabSuffixes(fieldValues);
+                Set<String> editedModels = removeTabSuffixes(editedFields);
+                changedPropValues.keySet().retainAll(editedModels);
                 List<CmsPropertyModification> propChanges = getPropertyChanges(changedPropValues);
                 if (!m_handler.hasEditableName()) {
                     // The root element's name can't be edited 
@@ -203,17 +203,20 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
                 return ReloadMode.none;
             }
 
-            private Map<String, String> removeTabSuffixes(Map<String, String> fieldValues) {
-
-                Map<String, String> result = new HashMap<String, String>();
-                for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
-                    String key = entry.getKey();
-                    String newKey = key.replaceAll("_TAB[123]$", "");
-                    result.put(newKey, entry.getValue());
-                }
-                return result;
-            }
         });
+    }
+
+    /**
+     * Checks whether a widget can be used in the sitemap entry editor, and throws an exception otherwise.<p>
+     * 
+     * @param key the widget key 
+     * @param widget the created widget 
+     */
+    public static void checkWidgetRequirements(String key, I_CmsFormWidget widget) {
+
+        if (!((widget instanceof I_CmsHasGhostValue) && (widget instanceof HasValueChangeHandlers<?>))) {
+            throw new CmsWidgetNotSupportedException(key);
+        }
     }
 
     /**
@@ -221,18 +224,22 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
      */
     public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
 
+        I_CmsFormWidget result = null;
+
         if ("template".equals(key)) {
-            return createTemplateSelector(m_controller.getData().getTemplates());
+            result = createTemplateSelector(m_controller.getData().getTemplates());
         } else if (CmsTextBox.WIDGET_TYPE.equals(key)) {
             CmsTextBox textBox = new CmsTextBox();
             textBox.setErrorMessageWidth("345px");
             // we need this because the tab containing the text box may not be visible 
             // at the time the error message is set, so measuring the field's size would
             // yield an invalid value  
-            return textBox;
+            result = textBox;
         } else {
-            return CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams);
+            result = CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams);
+            checkWidgetRequirements(key, result);
         }
+        return result;
     }
 
     /**
@@ -241,44 +248,29 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     public void start() {
 
         CmsForm form = m_dialog.getForm();
-        form.addLabel(m_handler.getDescriptionText(), false);
-        if (m_handler.isSimpleMode()) {
-            form.setWidget(new CmsSimpleFormFieldPanel());
-        } else {
-            CmsTabbedFormFieldPanel tabs = new CmsTabbedFormFieldPanel();
-            tabs.addTab(TAB_1, Messages.get().key(GUI_PROPERTY_TAB_SIMPLE_0));
-            tabs.addTab(TAB_2, Messages.get().key(GUI_PROPERTY_TAB_STRUCTURE_0));
-            boolean isLeaf = m_handler.getEntry().isLeafType() && !m_handler.getEntry().isFolderType();
-            if (isLeaf) {
-                tabs.addTab(TAB_3, Messages.get().key(GUI_PROPERTY_TAB_RESOURCE_0));
-            }
-            form.setWidget(tabs);
-        }
+        form.setLabel(m_handler.getDescriptionText());
+
+        // creates tabs, etc. if necessary 
+        setupFieldContainer();
+
+        String firstTab = form.getWidget().getDefaultGroup();
 
         if (m_handler.hasEditableName()) {
             // the root entry name can't be edited 
             CmsBasicFormField urlNameField = createUrlNameField();
-            form.addField(TAB_1, urlNameField);
+            form.addField(firstTab, urlNameField);
         }
-
-        //        CmsBasicFormField titleField = createTitleField();
-        //        form.addField(TAB_1, titleField);
 
         CmsClientSitemapEntry entry = m_handler.getEntry();
-        boolean isRedirect = false; // entry.getProperties().containsKey(CmsSitemapManager.Property.isRedirect.getName());
-        if (isRedirect) {
-            CmsBasicFormField linkField = createLinkField();
-            form.addField(TAB_1, linkField);
-        }
 
-        A_CmsPropertyFormBuilder builder = createFormBuilder();
-        builder.setWidgetFactory(this);
-        builder.setForm(form);
         CmsSitemapData data = CmsSitemapView.getInstance().getController().getData();
-        builder.setPropertyDefinitions(m_propertyConfig);
-        builder.setAllPropertyNames(data.getAllPropertyNames());
-        builder.buildFields(entry);
+        m_allProps = data.getAllPropertyNames();
+        m_entry = entry;
+
+        // create fields and add them to the correct location 
+        buildFields();
         form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
+        form.render();
         m_dialog.center();
     }
 
@@ -288,7 +280,42 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     public void startAndValidate() {
 
         start();
-        m_dialog.getForm().doInitialValidation();
+        m_dialog.getForm().validateAllFields();
+    }
+
+    /**
+     * Builds and renders the fields for the properties.<p>
+     */
+    protected abstract void buildFields();
+
+    /**
+     * Creates the text field for editing the URL name.<p>
+     * 
+     * @return the newly created form field 
+      */
+    protected CmsBasicFormField createUrlNameField() {
+
+        if (m_urlNameField != null) {
+            m_urlNameField.unbind();
+        }
+
+        String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
+        String label = message(Messages.GUI_URLNAME_PROPERTY_0);
+        final CmsTextBox textbox = new CmsTextBox();
+
+        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
+        String urlName = m_handler.getName();
+        if (urlName == null) {
+            urlName = "";
+        }
+        List<String> forbiddenUrlNames = m_handler.getForbiddenUrlNames();
+        result.setValidator(new CmsUrlNameValidator(forbiddenUrlNames));
+        I_CmsStringModel model = getUrlNameModel(urlName);
+        result.getWidget().setFormValueAsString(model.getValue());
+        result.bind(model);
+        //result.getWidget().setFormValueAsString(getUrlNameModel().getValue());
+        m_urlNameField = result;
+        return result;
     }
 
     /** 
@@ -345,6 +372,22 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     }
 
     /**
+     * Lazily creates the model object for the URL name field.<p>
+     * 
+     * @param urlName the initial value for the URL name 
+     * 
+     * @return the model object for the URL name field 
+     */
+    protected CmsDefaultStringModel getUrlNameModel(String urlName) {
+
+        if (m_urlNameModel == null) {
+            m_urlNameModel = new CmsDefaultStringModel("urlname");
+            m_urlNameModel.setValue(urlName, false);
+        }
+        return m_urlNameModel;
+    }
+
+    /**
      * Returns a localized message from the message bundle.<p>
      * 
      * @param key the message key
@@ -355,6 +398,52 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     protected String message(String key, Object... args) {
 
         return Messages.get().key(key, args);
+    }
+
+    /** 
+     * Removes the tab suffix from a field id.<p>
+     * 
+     * @param fieldId a field id 
+     * 
+     * @return the field id without the suffix 
+     */
+    protected String removeTabSuffix(String fieldId) {
+
+        return fieldId.replaceAll("#.*$", "");
+    }
+
+    /**
+     * Removes the tab suffixes from each field id of a collection.<p> 
+     * 
+     * @param fieldIds the field ids from which to remove the tab suffix
+     *   
+     * @return a new collection of field ids without tab suffixes 
+     */
+    protected Set<String> removeTabSuffixes(Collection<String> fieldIds) {
+
+        Set<String> result = new HashSet<String>();
+        for (String fieldId : fieldIds) {
+            result.add(removeTabSuffix(fieldId));
+        }
+        return result;
+    }
+
+    /**
+     * Removes the tab suffixes from the keys of a map.<p>
+     * 
+     * @param fieldValues a map of field values 
+     * 
+     * @return a new map of field values, with tab suffixes removed from the keys
+     */
+    protected Map<String, String> removeTabSuffixes(Map<String, String> fieldValues) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
+            String key = entry.getKey();
+            String newKey = removeTabSuffix(key);
+            result.put(newKey, entry.getValue());
+        }
+        return result;
     }
 
     /**
@@ -371,6 +460,11 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
             ((I_CmsHasGhostValue)widget).setGhostValue(value, ghostMode);
         }
     }
+
+    /**
+     * Sets up the widget which will contain the input fields for the properties.<p>
+     */
+    protected abstract void setupFieldContainer();
 
     /**
      * Sets the contents of the URL name field in the form.<p>
@@ -393,39 +487,6 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     }
 
     /**
-     * Creates the form builder instance.<p>
-     * 
-     * @return the form builder to use
-     **/
-    private A_CmsPropertyFormBuilder createFormBuilder() {
-
-        if (CmsSitemapView.getInstance().isNavigationMode()) {
-            return new CmsNavModePropertyFormBuilder();
-        } else {
-            CmsVfsModePropertyFormBuilder result = new CmsVfsModePropertyFormBuilder();
-            boolean isFolder = m_handler.getEntry().isFolderType();
-            result.setShowResourceProperties(!isFolder);
-            return result;
-        }
-    }
-
-    /**
-     * Creates the field for editing the redirect target.<p>
-     *  
-     * @return the new field 
-     */
-    private CmsBasicFormField createLinkField() {
-
-        CmsClientSitemapEntry entry = m_handler.getEntry();
-
-        String description = Messages.get().key(Messages.GUI_REDIRECTION_FIELD_DESCRIPTION_0);
-        String label = Messages.get().key(Messages.GUI_REDIRECTION_FIELD_LABEL_0);
-        m_linkSelector.setLinkBean(entry.getRedirectInfo());
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_LINK, description, label, null, m_linkSelector);
-        return result;
-    }
-
-    /**
      * Helper method for creating the template selection widget.<p>
      * 
      * @param templates the map of available templates
@@ -441,57 +502,7 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
             selectCell.setTemplate(template);
             result.addOption(selectCell);
         }
-        CmsSitemapTemplate defaultTemplate = getDefaultTemplate();
-        if (defaultTemplate != null) {
-            CmsTemplateSelectCell defaultCell = new CmsTemplateSelectCell();
-            defaultCell.setTemplate(defaultTemplate);
-            result.addOption(defaultCell);
-        }
         return result;
-    }
-
-    /**
-     * Creates the text field for editing the URL name.<p>
-     * 
-     * @return the newly created form field 
-     */
-    private CmsBasicFormField createUrlNameField() {
-
-        String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
-        String label = message(Messages.GUI_URLNAME_PROPERTY_0);
-        final CmsTextBox textbox = new CmsTextBox();
-
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
-        String urlName = m_handler.getName();
-        if (urlName == null) {
-            urlName = "";
-        }
-        result.getWidget().setFormValueAsString(urlName);
-        List<String> forbiddenUrlNames = m_handler.getForbiddenUrlNames();
-        result.setValidator(new CmsUrlNameValidator(forbiddenUrlNames));
-        return result;
-    }
-
-    /**
-     * Returns the template which should be used as the "use default" option in the template selector.<p>
-     * 
-     * @return the default template 
-     */
-    private CmsSitemapTemplate getDefaultTemplate() {
-
-        CmsSitemapTemplate template = m_controller.getDefaultTemplate(m_handler.getEntry().getSitePath());
-        if (template != null) {
-            // replace site path with empty string and title with "default" 
-            CmsSitemapTemplate result = new CmsSitemapTemplate(
-                template.getTitle(),
-                template.getDescription(),
-                DEFAULT_TEMPLATE_VALUE,
-                template.getImgPath());
-            result.setShowWeakText(true);
-            return result;
-        }
-        return null;
-
     }
 
     /**

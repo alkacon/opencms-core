@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,13 @@ public interface I_CmsFormWidget {
          */
         STRING_LIST
     }
+
+    /**
+     * Returns the "apparent value", i.e. either the real value if available, or else the ghost value if available, or null otherwise.<p>
+     *  
+     * @return the apparent value 
+     */
+    String getApparentValue();
 
     /**
      * Returns the type of data this widget produces. 

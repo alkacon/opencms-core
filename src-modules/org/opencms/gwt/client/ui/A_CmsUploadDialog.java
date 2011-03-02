@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/25 11:39:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/02 08:25:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,8 +45,8 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsUploadFileBean;
-import org.opencms.gwt.shared.CmsUploadFileBean.I_CmsUploadConstants;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
+import org.opencms.gwt.shared.CmsUploadFileBean.I_CmsUploadConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -134,15 +134,12 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             m_bar.setValue(100);
             m_fileinfo.removeAllRows();
             m_fileinfo.setHTML(0, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_FINISH_UPLOADED_0) + "</b>");
-            m_fileinfo.setText(
-                0,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
-                    new Integer(fileCount),
-                    new Integer(fileCount),
-                    getFileText(),
-                    length));
+            m_fileinfo.setText(0, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
+                new Integer(fileCount),
+                new Integer(fileCount),
+                getFileText(),
+                length));
         }
 
         /**
@@ -191,18 +188,15 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             }
 
             m_fileinfo.setText(0, 1, currFilename);
-            m_fileinfo.setText(
-                1,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
-                    new Integer(currFileIndex + 1),
-                    new Integer(fileCount),
-                    getFileText()));
-            m_fileinfo.setText(
-                2,
-                1,
-                Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2, readBytes, contentLength));
+            m_fileinfo.setText(1, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
+                new Integer(currFileIndex + 1),
+                new Integer(fileCount),
+                getFileText()));
+            m_fileinfo.setText(2, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2,
+                readBytes,
+                contentLength));
         }
 
         /**
@@ -892,7 +886,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
                 /**
                  * @see com.google.gwt.user.client.Command#execute()
                  */
-                @Override
                 public void execute() {
 
                     getDialog().getElement().getStyle().setDisplay(Display.NONE);

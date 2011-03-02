@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsSimpleFormFieldPanel.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,18 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * A simple form field container widget.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -65,17 +66,38 @@ public class CmsSimpleFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsSimpleFormFieldPanel() {
 
         m_panel = new FlowPanel();
+        setBorder(m_panel);
         m_panel.addStyleName(CSS.form());
         m_panel.addStyleName(CSS.formTab());
         initWidget(m_panel);
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel#addField(org.opencms.gwt.client.ui.input.I_CmsFormField, java.lang.String)
+     * @see org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel#getDefaultGroup()
      */
     @Override
-    public void addField(I_CmsFormField field, String fieldGroup) {
+    public String getDefaultGroup() {
 
-        m_panel.add(createRow(field.getLabel(), field.getDescription(), (Widget)field.getWidget()));
+        return "";
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel#renderFields(java.util.Collection)
+     */
+    @Override
+    public void renderFields(Collection<I_CmsFormField> fields) {
+
+        m_panel.clear();
+        if (m_labelText != null) {
+            Label label = new Label(m_labelText);
+            label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formInfo());
+            m_panel.add(label);
+
+        }
+        for (I_CmsFormField field : fields) {
+            CmsFormRow row = createRow(field);
+            m_panel.add(row);
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/02 08:25:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,11 @@ public class CmsFormRow extends Composite {
 
     /** The ui binder instance for this form row. */
     private static I_CmsFormRowUiBinder uiBinder = GWT.create(I_CmsFormRowUiBinder.class);
+
+    /** The label used for displaying the information icon. */
+    @UiField
+    protected Label m_icon;
+
     /** The label for the form row. */
     @UiField
     protected Label m_label;
@@ -137,6 +142,20 @@ public class CmsFormRow extends Composite {
     public Panel getWidgetContainer() {
 
         return m_widgetContainer;
+    }
+
+    /**
+     * Shows the info icon and sets the information text as its title.<p> 
+     * 
+     * @param info
+     */
+    public void setInfo(String info) {
+
+        if (info != null) {
+            m_icon.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inherited());
+            m_icon.setTitle(info);
+        }
+
     }
 
 }
