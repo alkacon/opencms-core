@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/02/22 09:42:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/02 08:16:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -122,7 +122,7 @@ public final class CmsContentEditorDialog {
             + (m_isNew ? "Editing new resource" : m_sitePath));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
 
-        int height = Window.getClientHeight() - 20;
+        int height = Window.getClientHeight() - 50;
         int width = Window.getClientWidth();
         width = (width < 1350) ? width - 50 : 1300;
         m_dialog.setSize(width, height, Unit.PX);
