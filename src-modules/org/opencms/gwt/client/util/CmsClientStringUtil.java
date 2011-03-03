@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsClientStringUtil.java,v $
- * Date   : $Date: 2011/02/07 14:54:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,14 @@
 
 package org.opencms.gwt.client.util;
 
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Additional string related helper methods.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,11 +114,11 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native double parseFloat(String str) /*-{
-        var ret = parseFloat(str, 10);
-        if (isNaN(ret)) {
-        return 0;
-        }
-        return ret;
+		var ret = parseFloat(str, 10);
+		if (isNaN(ret)) {
+			return 0;
+		}
+		return ret;
     }-*/;
 
     /**
@@ -131,10 +132,20 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native int parseInt(String str) /*-{
-        var ret = parseInt(str, 10);
-        if (isNaN(ret)) {
-        return 0;
-        } 
-        return ret;
+		var ret = parseInt(str, 10);
+		if (isNaN(ret)) {
+			return 0;
+		}
+		return ret;
+    }-*/;
+
+    /**
+     * Pushes a String into a javascript array.<p>
+     * 
+     * @param array the array to push the String into
+     * @param s the String to push into the array
+     */
+    public static native void pushArray(JavaScriptObject array, String s) /*-{
+		array.push(s);
     }-*/;
 }

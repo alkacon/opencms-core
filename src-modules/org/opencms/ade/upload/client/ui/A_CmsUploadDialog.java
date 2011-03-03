@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/02 18:29:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,6 +78,8 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -87,13 +89,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides an upload dialog.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -264,6 +267,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     /** Signals that the client currently loading. */
     private boolean m_clientLoading;
 
+    /** The close handler. */
+    private CloseHandler<PopupPanel> m_closeHandler;
+
     /** The sum of all file sizes. */
     private long m_contentLength;
 
@@ -279,6 +285,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     /** The list of file item widgets. */
     private CmsList<I_CmsListItem> m_fileList;
 
+    /** The list of filenames that should be unziped on the server. */
+    private List<String> m_filesToUnzip;
+
     /** The Map of files to upload. */
     private Map<String, CmsFileInfo> m_filesToUpload;
 
@@ -293,6 +302,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
     /** A local reference to the default gwt CSS. */
     private org.opencms.gwt.client.ui.css.I_CmsLayoutBundle m_gwtCss = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE;
+
+    /** The close handler registration. */
+    private HandlerRegistration m_handlerReg;
 
     /** The input file input fields. */
     private Map<String, CmsFileInput> m_inputsToUpload;
@@ -363,6 +375,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         // create a map the holds all the list items for the selection dialog
         m_listItems = new HashMap<String, CmsListItem>();
         m_inputsToUpload = new HashMap<String, CmsFileInput>();
+        m_filesToUnzip = new ArrayList<String>();
         m_fileList = new CmsList<I_CmsListItem>();
         m_fileList.truncate(TM_FILE_UPLOAD_LIST, DIALOG_WIDTH - 20);
 
@@ -398,6 +411,17 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#addCloseHandler(com.google.gwt.event.logical.shared.CloseHandler)
+     */
+    @Override
+    public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler) {
+
+        m_closeHandler = handler;
+        m_handlerReg = super.addCloseHandler(handler);
+        return m_handlerReg;
+    }
+
+    /**
      * Adds the given file input field to this dialog.<p>
      * 
      * @param fileInput the file input field to add
@@ -410,18 +434,31 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         if (fileInput != null) {
             List<CmsFileInfo> fileObjects = Arrays.asList(fileInput.getFiles());
             for (CmsFileInfo file : fileObjects) {
+
+                // store all files
                 m_allFiles.put(file.getFileName(), file);
+
+                // add all files to the list of files to upload
                 if (!isTooLarge(file)) {
                     m_inputsToUpload.put(file.getFileName(), fileInput);
                     m_filesToUpload.put(file.getFileName(), file);
                 }
+
+                // remove those files from the list to upload that were previously unchecked be the user
                 if ((m_listItems.get(file.getFileName()) != null)
                     && (m_listItems.get(file.getFileName()).getCheckBox() != null)
                     && !m_listItems.get(file.getFileName()).getCheckBox().isChecked()) {
                     m_filesToUpload.remove(file.getFileName());
                 }
             }
-            rebuildList(m_allFiles);
+
+            // now rebuild the list: handle all files
+            m_fileList.clearList();
+            List<String> sortedFileNames = new ArrayList<String>(m_allFiles.keySet());
+            Collections.sort(sortedFileNames, String.CASE_INSENSITIVE_ORDER);
+            for (String filename : sortedFileNames) {
+                addFileToList(m_allFiles.get(filename), false, isTooLarge(m_allFiles.get(filename)));
+            }
         }
 
         // set the user info
@@ -613,6 +650,29 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     protected long getContentLength() {
 
         return m_contentLength;
+    }
+
+    /**
+     * Returns the list of file names that have to unziped.<p>
+     * 
+     * @param all <code>true</code> if the returned list should contain those filenames that 
+     * are not inside the map of files to upload. <code>false</code> only those filenames are 
+     * returned that are also inside the map of files to upload
+     * 
+     * @return the list of file names that have to unziped
+     */
+    protected List<String> getFilesToUnzip(boolean all) {
+
+        if (!all) {
+            List<String> result = new ArrayList<String>();
+            for (String fileName : m_filesToUnzip) {
+                if (m_filesToUpload.keySet().contains(fileName)) {
+                    result.add(fileName);
+                }
+            }
+            return result;
+        }
+        return m_filesToUnzip;
     }
 
     /**
@@ -810,8 +870,15 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     protected void showErrorReport(final String message, final String stacktrace) {
 
+        CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
+        if (m_handlerReg != null) {
+            m_handlerReg.removeHandler();
+        }
+        if (m_closeHandler != null) {
+            errDialog.addCloseHandler(m_closeHandler);
+        }
         hide();
-        new CmsErrorDialog(message, stacktrace).center();
+        errDialog.center();
     }
 
     /**
@@ -871,7 +938,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      * @param check the checkbox
      * @param file the file
      */
-    private void addClickHandlerToCheckBox(final CmsCheckBox check, final CmsFileInfo file) {
+    private void addClickHandlerToCheckBox(final CmsCheckBox check, final CmsCheckBox unzip, final CmsFileInfo file) {
 
         check.addClickHandler(new ClickHandler() {
 
@@ -883,8 +950,14 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
                 // add or remove the file from the list of files to upload
                 if (check.isChecked()) {
                     getFilesToUpload().put(file.getFileName(), file);
+                    if (unzip != null) {
+                        unzip.enable();
+                    }
                 } else {
                     getFilesToUpload().remove(file.getFileName());
+                    if (unzip != null) {
+                        unzip.disable(Messages.get().key(Messages.GUI_UPLOAD_FILE_NOT_SELECTED_0));
+                    }
                 }
 
                 // disable or enable the OK button
@@ -905,23 +978,32 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      * Adds a file to the list.<p>
      * 
      * @param file the file to add
-     * @param icon the resource type icon
      * @param invalid signals if the filename is invalid
+     * @param isTooLarge signals if the file size limit is exceeded
      */
-    private void addFileToList(CmsFileInfo file, String icon, boolean invalid, boolean isTooLarge) {
+    private void addFileToList(final CmsFileInfo file, boolean invalid, boolean isTooLarge) {
 
         CmsListInfoBean infoBean = createInfoBean(file);
         CmsListItemWidget listItemWidget = new CmsListItemWidget(infoBean);
+        String icon = CmsIconUtil.getResourceIconClasses(getResourceType(file.getFileName()), file.getFileName(), false);
         listItemWidget.setIcon(icon);
 
         CmsCheckBox check = new CmsCheckBox();
         check.setChecked(false);
         if (!invalid && !isTooLarge) {
+
             if (m_filesToUpload.containsKey(file.getFileName())) {
                 check.setChecked(true);
             }
             check.setTitle(file.getFileName());
-            addClickHandlerToCheckBox(check, file);
+
+            if (!m_selectionDone && file.getFileName().toLowerCase().endsWith(".zip")) {
+                final CmsCheckBox unzip = createUnzipCheckBox(file);
+                addClickHandlerToCheckBox(check, unzip, file);
+                listItemWidget.addButton(unzip);
+            } else {
+                addClickHandlerToCheckBox(check, null, file);
+            }
         } else if (isTooLarge) {
             String message = Messages.get().key(
                 Messages.GUI_UPLOAD_FILE_TOO_LARGE_2,
@@ -939,6 +1021,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             listItemWidget.setBackground(Background.RED);
             listItemWidget.setSubtitleLabel(message);
         }
+
         CmsListItem listItem = new CmsListItem(check, listItemWidget);
         m_fileList.addItem(listItem);
         m_listItems.put(file.getFileName(), listItem);
@@ -983,10 +1066,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             @Override
             public void execute() {
 
-                getUploadService().checkUploadFiles(
-                    new ArrayList<String>(getFilesToUpload().keySet()),
-                    getTargetFolder(),
-                    this);
+                List<String> filesToCheck = new ArrayList<String>(getFilesToUpload().keySet());
+                filesToCheck.removeAll(getFilesToUnzip(false));
+                getUploadService().checkUploadFiles(filesToCheck, getTargetFolder(), this);
             }
 
             /**
@@ -1081,19 +1163,34 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
-     * Creates a Map containing file objects as values and the name of the file as key.<p>
+     * Creates the unzip checkbox.<p>
      * 
-     * @param files the list of files
+     * @param file the file to create the checkbox for
      * 
-     * @return the map of files
+     * @return the unzip checkbox
      */
-    private Map<String, CmsFileInfo> createFileMapFromList(List<CmsFileInfo> files) {
+    private CmsCheckBox createUnzipCheckBox(final CmsFileInfo file) {
 
-        Map<String, CmsFileInfo> result = new HashMap<String, CmsFileInfo>();
-        for (CmsFileInfo file : files) {
-            result.put(file.getFileName(), file);
-        }
-        return result;
+        final CmsCheckBox unzip = new CmsCheckBox();
+        unzip.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        unzip.setChecked(false);
+        unzip.setTitle(Messages.get().key(Messages.GUI_UPLOAD_UNZIP_FILE_0));
+        unzip.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                // add or remove the file from the list of files to upload
+                if (unzip.isChecked()) {
+                    getFilesToUnzip(true).add(file.getFileName());
+                } else {
+                    getFilesToUnzip(true).remove(file.getFileName());
+                }
+            }
+        });
+        return unzip;
     }
 
     /**
@@ -1122,63 +1219,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             buffer.append("</p>");
         }
         m_dialogInfo.setHTML(buffer.toString());
-    }
-
-    /**
-     * Searches in the map of files to upload for the filenames in the given list and
-     * returns a list with the found file objects.<p>
-     * 
-     * @param names the list of filenames to search for
-     * 
-     * @return a list with the found file objects in the files to upload
-     */
-    private List<CmsFileInfo> getFilesForFilenames(final List<String> names) {
-
-        List<CmsFileInfo> result = new ArrayList<CmsFileInfo>();
-        for (String filename : names) {
-            if (m_filesToUpload.containsKey(filename)) {
-                result.add(m_filesToUpload.get(filename));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns a map with filename as key and the according icon classes as value.<p>
-     * 
-     * @param filenames the filenames to get the resource type icons for
-     * 
-     * @return a map with filename as key and the according icon classes as value
-     */
-    private Map<String, String> getResourceIcons(Collection<String> filenames) {
-
-        Map<String, String> result = new HashMap<String, String>();
-        for (String filename : filenames) {
-            String icon = CmsIconUtil.getResourceIconClasses(getResourceType(filename), filename, false);
-            result.put(filename, icon);
-        }
-        return result;
-    }
-
-    /**
-     * Rebuilds the list of files to upload.<p>
-     * 
-     * @param files the map of the files to put in the list
-     */
-    private void rebuildList(Map<String, CmsFileInfo> files) {
-
-        m_fileList.clearList();
-
-        // sort the files for name
-        List<String> sortedFileNames = new ArrayList<String>();
-        sortedFileNames.addAll(files.keySet());
-        Collections.sort(sortedFileNames, String.CASE_INSENSITIVE_ORDER);
-
-        Map<String, String> icons = getResourceIcons(files.keySet());
-
-        for (String filename : sortedFileNames) {
-            addFileToList(files.get(filename), icons.get(filename), false, isTooLarge(files.get(filename)));
-        }
     }
 
     /**
@@ -1217,21 +1257,27 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_selectionDone = true;
         m_okButton.enable();
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
-        // hide the upload button
         m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
+
+        // clear the list
+        m_fileList.clearList();
+
         // handle existing files
-        List<CmsFileInfo> existings = getFilesForFilenames(infoBean.getExistingResourceNames());
-        Map<String, CmsFileInfo> existingFiles = createFileMapFromList(existings);
-        rebuildList(existingFiles);
+        List<String> existings = new ArrayList<String>(infoBean.getExistingResourceNames());
+        Collections.sort(existings, String.CASE_INSENSITIVE_ORDER);
+        for (String filename : existings) {
+            addFileToList(m_filesToUpload.get(filename), false, false);
+        }
 
         // handle the invalid files
         List<String> invalids = new ArrayList<String>(infoBean.getInvalidFileNames());
         Collections.sort(invalids, String.CASE_INSENSITIVE_ORDER);
-        Map<String, String> icons = getResourceIcons(invalids);
         for (String filename : invalids) {
-            addFileToList(m_filesToUpload.get(filename), icons.get(filename), true, false);
+            addFileToList(m_filesToUpload.get(filename), true, false);
             m_filesToUpload.remove(filename);
         }
+
+        // set the height of the content
         setHeight();
     }
 

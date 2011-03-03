@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogImpl.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -147,6 +147,14 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
                 inputFieldsPanel.add(input);
             }
         }
+
+        for (String filename : getFilesToUnzip(false)) {
+            final Hidden filesToUnzip = new Hidden();
+            filesToUnzip.setName(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME);
+            filesToUnzip.setValue(filename);
+            inputFieldsPanel.add(filesToUnzip);
+        }
+
         final Hidden targetFolder = new Hidden();
         targetFolder.setName(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME);
         targetFolder.setValue(getTargetFolder());

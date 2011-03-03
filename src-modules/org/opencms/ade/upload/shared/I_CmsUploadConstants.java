@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/shared/Attic/I_CmsUploadConstants.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,20 +38,20 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsUploadConstants extends IsSerializable {
-
-    /** The request attribute name for the dialog mode. */
-    String ATTR_DIALOG_MODE = "dialogMode";
 
     /** The request attribute name for the close link. */
     String ATTR_CLOSE_LINK = "closeLink";
 
     /** The request attribute name for the current folder. */
     String ATTR_CURRENT_FOLDER = "currentFolder";
+
+    /** The request attribute name for the dialog mode. */
+    String ATTR_DIALOG_MODE = "dialogMode";
 
     /** The explorer URI for the back link. */
     String EXPLORER_URI = "/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview";
@@ -79,6 +79,9 @@ public interface I_CmsUploadConstants extends IsSerializable {
 
     /** The name of the form field that stores the target folder for the upload. */
     String UPLOAD_TARGET_FOLDER_FIELD_NAME = "upload_target_folder";
+
+    /** The name of the form field that stores the file names to unzip. */
+    String UPLOAD_UNZIP_FILES_FIELD_NAME = "upload_unzip_files";
 
     /** The javascript variable name for the upload target folder. */
     String VAR_TARGET_FOLDER = "targetFolder";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.upload;
 
 import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -59,6 +60,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,7 @@ import org.apache.log4j.spi.ThrowableInformation;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -102,11 +104,11 @@ public class CmsUploadBean extends CmsJspBean {
     /** A static map of all listeners. */
     private static Map<CmsUUID, CmsUploadListener> m_listeners = new HashMap<CmsUUID, CmsUploadListener>();
 
-    /** Signals that the start method is called. */
-    private boolean m_called;
-
     /** The gwt message bundle. */
     private CmsMessages m_bundle = org.opencms.ade.upload.Messages.get().getBundle();
+
+    /** Signals that the start method is called. */
+    private boolean m_called;
 
     /** A list of the file items to upload. */
     private List<FileItem> m_multiPartFileItems;
@@ -222,6 +224,9 @@ public class CmsUploadBean extends CmsJspBean {
         // get the target folder
         String targetFolder = getTargetFolder();
 
+        boolean isEncoded = isFileNameEncoded();
+        List<String> filesToUnzip = getFilesToUnzip(isEncoded);
+
         // iterate over the list of files to upload and create each single resource
         for (FileItem fi : m_multiPartFileItems) {
             if ((fi != null) && (!fi.isFormField())) {
@@ -232,16 +237,18 @@ public class CmsUploadBean extends CmsJspBean {
 
                 // determine the new resource name
                 String fileName = fi.getName();
-                if (isFileNameEncoded()) {
+                if (isEncoded) {
                     fileName = URLDecoder.decode(fi.getName(), "UTF-8");
                 }
-                String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
-
-                // create the resource
-                createSingleResource(newResname, content);
-
-                // add the name of the created resource to the list of successful created resources
-                m_resourcesCreated.add(newResname);
+                if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
+                    new CmsImportFolder(content, targetFolder, getCmsObject(), false);
+                } else {
+                    // create the resource
+                    String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
+                    createSingleResource(newResname, content);
+                    // add the name of the created resource to the list of successful created resources
+                    m_resourcesCreated.add(newResname);
+                }
             }
         }
     }
@@ -356,10 +363,7 @@ public class CmsUploadBean extends CmsJspBean {
     private String getCreationErrorMessage() {
 
         String message = new String();
-        if (m_resourcesCreated.isEmpty()) {
-            // no resources have been created on the VFS
-            message = m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_CREATING_0);
-        } else {
+        if (!m_resourcesCreated.isEmpty()) {
             // some resources have been created, tell the user which resources were created successfully
             StringBuffer buf = new StringBuffer(64);
             for (String name : m_resourcesCreated) {
@@ -368,27 +372,37 @@ public class CmsUploadBean extends CmsJspBean {
                 buf.append("<br />");
             }
             message = m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_CREATING_1, buf.toString());
+        } else {
+            // no resources have been created on the VFS
+            message = m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_CREATING_0);
         }
         return message;
     }
 
     /**
-     * Gets the encoding flag from the request parameters and returns <code>true</code>
-     * if the value of the according field is set to <code>true</code>.<p> 
+     * Gets the list of file names that should be unziped.<p>
      * 
-     * @return <code>true</code> if the flag is set to true
+     * @return the list of file names that should be unziped
+     * 
+     * @throws UnsupportedEncodingException if something goes wrong
      */
-    private boolean isFileNameEncoded() {
+    private List<String> getFilesToUnzip(boolean isEncoded) throws UnsupportedEncodingException {
 
-        if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG) != null) {
-            String flag = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG)[0];
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(flag)) {
-                if (flag.equalsIgnoreCase(Boolean.TRUE.toString())) {
-                    return true;
+        if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME) != null) {
+            String[] filesToUnzip = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME);
+            if (filesToUnzip != null) {
+                List<String> result = new ArrayList<String>();
+                for (String filename : filesToUnzip) {
+                    if (isEncoded) {
+                        result.add(URLDecoder.decode(filename, "UTF-8"));
+                    } else {
+                        result.add(filename);
+                    }
                 }
+                return result;
             }
         }
-        return false;
+        return Collections.emptyList();
     }
 
     /**
@@ -423,6 +437,25 @@ public class CmsUploadBean extends CmsJspBean {
             targetFolder += "/";
         }
         return targetFolder;
+    }
+
+    /**
+     * Gets the encoding flag from the request parameters and returns <code>true</code>
+     * if the value of the according field is set to <code>true</code>.<p> 
+     * 
+     * @return <code>true</code> if the flag is set to true
+     */
+    private boolean isFileNameEncoded() {
+
+        if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG) != null) {
+            String flag = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG)[0];
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(flag)) {
+                if (flag.equalsIgnoreCase(Boolean.TRUE.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -82,6 +82,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FILE_INVALID_NAME_2 = "GUI_UPLOAD_FILE_INVALID_NAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILE_NOT_SELECTED_0 = "GUI_UPLOAD_FILE_NOT_SELECTED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FILE_TOO_LARGE_2 = "GUI_UPLOAD_FILE_TOO_LARGE_2";
@@ -139,6 +142,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_SUMMARY_FILES_VALUE_3 = "GUI_UPLOAD_SUMMARY_FILES_VALUE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_UNZIP_FILE_0 = "GUI_UPLOAD_UNZIP_FILE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.upload.clientmessages";

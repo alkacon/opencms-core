@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFormDataImpl.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,19 +87,27 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     @Override
     public void submit() {
 
+        // create a JsArray containing the files to upload
         List<String> orderedFilenamesToUpload = new ArrayList<String>(getFilesToUpload().keySet());
         Collections.sort(orderedFilenamesToUpload, String.CASE_INSENSITIVE_ORDER);
-
-        // create a JsArray containing the files to upload
         JsArray<CmsFileInfo> filesToUpload = JavaScriptObject.createArray().cast();
         for (String filename : orderedFilenamesToUpload) {
             filesToUpload.push(getFilesToUpload().get(filename));
         }
+
+        // create a array that contains the names of the files that should be unziped
+        JavaScriptObject filesToUnzip = JavaScriptObject.createArray();
+        for (String filename : getFilesToUnzip(false)) {
+            CmsClientStringUtil.pushArray(filesToUnzip, filename);
+        }
+
         upload(
             getUploadUri(),
             I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME,
+            I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME,
             getTargetFolder(),
             filesToUpload,
+            filesToUnzip,
             this);
     }
 
@@ -139,15 +148,20 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      * Sends a post request to the upload JSP.<p>
      * 
      * @param uploadUri the URI of the JSP that performs the upload
+     * @param targetFolderFieldName the field name for the target folder
+     * @param unzipFilesFieldName the field name for the file names to unzip
      * @param targetFolder the target folder to upload
+     * @param filesToUpload the files to upload
+     * @param filesToUnzip the file names to unzip
      * @param dialog this dialog
-     * @param jsForm the form
      */
     private native void upload(
         String uploadUri,
         String targetFolderFieldName,
+        String unzipFilesFieldName,
         String targetFolder,
         JsArray<CmsFileInfo> filesToUpload,
+        JavaScriptObject filesToUnzip,
         CmsUploadDialogFormDataImpl dialog) /*-{
 
 		var data = new FormData();
@@ -156,6 +170,10 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 			data.append("file_" + i, filesToUpload[i]);
 		}
 		data.append(targetFolderFieldName, targetFolder);
+
+		for ( var i = 0; i < filesToUnzip.length; ++i) {
+			data.append(unzipFilesFieldName, filesToUnzip[i]);
+		}
 
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", uploadUri, true);

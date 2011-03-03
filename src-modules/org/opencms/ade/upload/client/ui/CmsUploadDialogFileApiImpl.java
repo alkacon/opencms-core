@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFileApiImpl.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/03 18:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +49,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,21 +64,55 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
     @Override
     public void submit() {
 
+        // create a JsArray containing the files to upload
         List<String> orderedFilenamesToUpload = new ArrayList<String>(getFilesToUpload().keySet());
         Collections.sort(orderedFilenamesToUpload, String.CASE_INSENSITIVE_ORDER);
-
-        // create a JsArray containing the files to upload
         JsArray<CmsFileInfo> filesToUpload = JavaScriptObject.createArray().cast();
         for (String filename : orderedFilenamesToUpload) {
             filesToUpload.push(getFilesToUpload().get(filename));
         }
+
+        // create a array that contains the names of the files that should be unziped
+        JavaScriptObject filesToUnzip = JavaScriptObject.createArray();
+        for (String filename : getFilesToUnzip(false)) {
+            CmsClientStringUtil.pushArray(filesToUnzip, filename);
+        }
+
+        // trigger the upload
         upload(
             getUploadUri(),
             I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG,
             I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME,
+            I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME,
             getTargetFolder(),
             filesToUpload,
+            filesToUnzip,
             this);
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#updateSummary()
+     */
+    @Override
+    public void updateSummary() {
+
+        super.updateSummary();
+        if (!getFilesToUpload().isEmpty() && (getContentLength() > MAX_UPLOAD_SIZE)) {
+            String message = Messages.get().key(
+                Messages.GUI_UPLOAD_MAX_SIZE_REACHED_2,
+                formatBytes(new Long(getContentLength()).intValue()),
+                formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+            disableOKButton(message);
+            StringBuffer buffer = new StringBuffer(64);
+            buffer.append("<p class=\"");
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessageImportant());
+            buffer.append("\">");
+            buffer.append(message);
+            buffer.append("</p>");
+            setSummaryHTML(buffer.toString());
+        } else if (!getFilesToUpload().isEmpty()) {
+            enableOKButton();
+        }
     }
 
     /**
@@ -121,16 +156,20 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
      * 
      * @param uploadUri the URI of the JSP that performs the upload
      * @param encodedFieldName the field name that stores the encoded flag
+     * @param targetFolderFieldName the field name that stores the target folder
      * @param targetFolder the target folder to upload
-     * @param dialog this dialog
      * @param filesToUpload the file names to upload
+     * @param filesToUnzip the file names that should be unziped
+     * @param dialog this dialog
      */
     private native void upload(
         String uploadUri,
         String encodedFieldName,
         String targetFolderFieldName,
+        String unzipFilesFieldName,
         String targetFolder,
         JsArray<CmsFileInfo> filesToUpload,
+        JavaScriptObject filesToUnzip,
         CmsUploadDialogFileApiImpl dialog) /*-{
 
 		// is executed when there was an error during reading the file
@@ -153,9 +192,8 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 				file = filesToUpload[curIndex];
 				this.readAsBinaryString(file);
 			} else {
-				// there are no more files left
-				// append the target folder to the request 
-				appendTargetFolder();
+				// there are no more files left append the infos to the request body
+				appendInfos();
 				// create the request and post it
 				var xhr = new XMLHttpRequest();
 				xhr.open("POST", uri, true);
@@ -176,14 +214,24 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 			}
 		}
 
-		// appends the target folder to the request body 
+		// appends the infos to the request body 
 		// should be called at end of creating the body because the boundary is closed here
-		function appendTargetFolder() {
+		function appendInfos() {
+
 			body += "Content-Disposition: form-data; name=" + encodedFieldName
 					+ "\r\n";
 			body += "Content-Type: text/plain\r\n\r\n";
 			body += "true\r\n";
 			body += "--" + boundary + "\r\n";
+
+			for ( var i = 0; i < filesToUnzip.length; ++i) {
+				var filename = filesToUnzip[i];
+				body += "Content-Disposition: form-data; name="
+						+ unzipFilesFieldName + "\r\n";
+				body += "Content-Type: text/plain\r\n\r\n";
+				body += encodeURI(filename) + "\r\n";
+				body += "--" + boundary + "\r\n";
+			}
 
 			body += "Content-Disposition: form-data; name="
 					+ targetFolderFieldName + "\r\n";
@@ -212,29 +260,4 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 			reader.readAsBinaryString(file);
 		}
     }-*/;
-
-    /**
-     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#updateSummary()
-     */
-    @Override
-    public void updateSummary() {
-
-        super.updateSummary();
-        if (!getFilesToUpload().isEmpty() && (getContentLength() > MAX_UPLOAD_SIZE)) {
-            String message = Messages.get().key(
-                Messages.GUI_UPLOAD_MAX_SIZE_REACHED_2,
-                formatBytes(new Long(getContentLength()).intValue()),
-                formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
-            disableOKButton(message);
-            StringBuffer buffer = new StringBuffer(64);
-            buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessageImportant());
-            buffer.append("\">");
-            buffer.append(message);
-            buffer.append("</p>");
-            setSummaryHTML(buffer.toString());
-        } else if (!getFilesToUpload().isEmpty()) {
-            enableOKButton();
-        }
-    }
 }
