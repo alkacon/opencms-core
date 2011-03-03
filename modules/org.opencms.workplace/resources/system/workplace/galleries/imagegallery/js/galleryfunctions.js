@@ -322,7 +322,11 @@ function selectGallery(vfsPath, galleryIndex) {
 		var uploadLink = "upload.jsp?gallery=";
 		uploadLink += vfsPath;
 		if ( uploadVariant == 'gwt' ) {
-			$("#galleryuploadbutton").attr("onclick", "cms_ade_openUploadDialog('" + vfsPath + "'); return false;");
+			$("#galleryuploadbutton").removeAttr('onclick');
+			$("#galleryuploadbutton").click(function() {
+				cms_ade_openUploadDialog(vfsPath);
+				return false;
+			});
 		} else {
 			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
 			$("#galleryitemuploadlink").attr("href", uploadLink);
@@ -332,7 +336,11 @@ function selectGallery(vfsPath, galleryIndex) {
 		var uploadLink = "../galleryelements/upload.jsp?gallery=";
 		uploadLink += vfsPath;
 		if ( uploadVariant == 'gwt' ) {
-			$("#galleryuploadbutton").attr("onclick", "cms_ade_openUploadDialog('" + vfsPath + "'); return false;");
+			$("#galleryuploadbutton").removeAttr('onclick');
+			$("#galleryuploadbutton").click(function() {
+				cms_ade_openUploadDialog(vfsPath);
+				return false;
+			});
 		} else {
 			if ( uploadVariant == 'applet' ) {
 				uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=120&amp;modal=true";
