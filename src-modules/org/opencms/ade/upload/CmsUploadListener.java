@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadListener.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/04 15:45:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.upload;
 
 import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
+import org.opencms.ade.upload.shared.CmsUploadProgessInfo.UPLOAD_STATE;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -67,6 +68,12 @@ public class CmsUploadListener implements ProgressListener, Serializable {
 
     /** The bytes read so far. */
     private long m_bytesRead;
+
+    /** The upload delay*/
+    private int m_delay;
+
+    /** A flag that signals if the upload is finished. */
+    private boolean m_finished;
 
     /** The UUID for this listener. */
     private CmsUUID m_id;
@@ -120,6 +127,16 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     }
 
     /**
+     * Returns the exception.<p>
+     *
+     * @return the exception
+     */
+    public RuntimeException getException() {
+
+        return m_exception;
+    }
+
+    /**
      * Returns the listeners UUID.<p>
      * 
      * @return the listeners UUID
@@ -136,7 +153,20 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      */
     public CmsUploadProgessInfo getInfo() {
 
-        return new CmsUploadProgessInfo(getItem(), (int)getPercent(), true, getContentLength(), getBytesRead());
+        if (m_finished) {
+            return new CmsUploadProgessInfo(
+                getItem(),
+                (int)getPercent(),
+                UPLOAD_STATE.finished,
+                getContentLength(),
+                getBytesRead());
+        }
+        return new CmsUploadProgessInfo(
+            getItem(),
+            (int)getPercent(),
+            UPLOAD_STATE.running,
+            getContentLength(),
+            getBytesRead());
     }
 
     /**
@@ -174,6 +204,36 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     }
 
     /**
+     * Returns the finished.<p>
+     *
+     * @return the finished
+     */
+    public boolean isFinished() {
+
+        return m_finished;
+    }
+
+    /**
+     * Sets the delay.<p>
+     *
+     * @param delay the delay to set
+     */
+    public void setDelay(int delay) {
+
+        m_delay = delay;
+    }
+
+    /**
+     * Sets the finished.<p>
+     *
+     * @param finished the finished to set
+     */
+    public void setFinished(boolean finished) {
+
+        m_finished = finished;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -201,7 +261,6 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      * 
      * @see org.apache.commons.fileupload.ProgressListener#update(long, long, int)
      */
-    @SuppressWarnings("unused")
     public void update(long done, long total, int item) {
 
         if (m_exceptionTrhown) {
@@ -220,9 +279,9 @@ public class CmsUploadListener implements ProgressListener, Serializable {
         }
 
         // Just a way to slow down the upload process and see the progress bar in fast networks.
-        if ((CmsUploadBean.DEFAULT_SLOW_DELAY_MILLIS > 0) && (done < total)) {
+        if ((m_delay > 0) && (done < total)) {
             try {
-                Thread.sleep(CmsUploadBean.DEFAULT_SLOW_DELAY_MILLIS);
+                Thread.sleep(m_delay);
             } catch (Exception e) {
                 m_exception = new RuntimeException(e);
             }

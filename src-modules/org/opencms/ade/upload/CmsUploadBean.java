@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/03/04 10:44:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/04 15:45:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,14 +85,11 @@ import org.apache.log4j.spi.ThrowableInformation;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsUploadBean extends CmsJspBean {
-
-    /** The default delay for slow uploads. */
-    public static final int DEFAULT_SLOW_DELAY_MILLIS = 0;
 
     /** The default upload timeout. */
     public static final int DEFAULT_UPLOAD_TIMEOUT = 20000;
@@ -120,6 +117,9 @@ public class CmsUploadBean extends CmsJspBean {
 
     /** The names of the resources that have been created successfully. */
     private Set<String> m_resourcesCreated = new HashSet<String>();
+
+    /** The server side upload delay. */
+    private int m_uploadDelay;
 
     /**
      * Constructor, with parameters.<p>
@@ -164,6 +164,16 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
+     * Sets the uploadDelay.<p>
+     *
+     * @param uploadDelay the uploadDelay to set
+     */
+    public void setUploadDelay(int uploadDelay) {
+
+        m_uploadDelay = uploadDelay;
+    }
+
+    /**
      * Starts the upload.<p>
      * 
      * @return the response String (JSON)
@@ -182,7 +192,7 @@ public class CmsUploadBean extends CmsJspBean {
             // try to parse the request
             parseRequest(listener);
             // try to create the resources on the VFS
-            createResources();
+            createResources(listener);
         } catch (CmsException e) {
             // an error occurred while creating the resources on the VFS, create a special error message
             LOG.error(e.getMessage(), e);
@@ -211,6 +221,7 @@ public class CmsUploadBean extends CmsJspBean {
     private CmsUploadListener createListener() {
 
         CmsUploadListener listener = new CmsUploadListener(getRequest().getContentLength());
+        listener.setDelay(m_uploadDelay);
         m_listeners.put(listener.getId(), listener);
         getRequest().getSession().setAttribute(SESSION_ATTRIBUTE_LISTENER_ID, listener.getId());
         return listener;
@@ -218,10 +229,11 @@ public class CmsUploadBean extends CmsJspBean {
 
     /**
      * Creates the resources.<p>
+     * @param listener the listener
      * 
      * @throws UnsupportedEncodingException 
      */
-    private void createResources() throws CmsException, UnsupportedEncodingException {
+    private void createResources(CmsUploadListener listener) throws CmsException, UnsupportedEncodingException {
 
         // get the target folder
         String targetFolder = getTargetFolder();
@@ -257,6 +269,10 @@ public class CmsUploadBean extends CmsJspBean {
                     createSingleResource(newResname, content);
                     // add the name of the created resource to the list of successful created resources
                     m_resourcesCreated.add(newResname);
+                }
+
+                if (listener.isCanceled()) {
+                    throw listener.getException();
                 }
             }
         }
@@ -492,6 +508,8 @@ public class CmsUploadBean extends CmsJspBean {
         m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
             getCmsObject().getRequestContext().getEncoding(),
             m_multiPartFileItems);
+
+        listener.setFinished(true);
     }
 
     /**

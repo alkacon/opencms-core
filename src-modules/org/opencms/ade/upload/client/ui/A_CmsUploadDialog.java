@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/04 10:44:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/04 15:45:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -932,9 +932,20 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     protected void updateProgressBar(CmsUploadProgessInfo info) {
 
-        if (info.isRunning()) {
-            stopLoadingAnimation();
-            m_progressInfo.setProgress(info);
+        switch (info.getState()) {
+            case notStarted:
+                break;
+            case running:
+                m_progressInfo.setProgress(info);
+                stopLoadingAnimation();
+                break;
+            case finished:
+                m_progressInfo.finish();
+                displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
+                startLoadingAnimation("Creating resources on the VFS of OpenCms", 1500);
+                break;
+            default:
+                break;
         }
     }
 
@@ -1297,7 +1308,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         m_progressInfo = new CmsUploadProgressInfo();
         m_contentWrapper.add(m_progressInfo);
         m_updateProgressTimer.scheduleRepeating(UPDATE_PROGRESS_INTERVALL);
-        startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_CLIENT_LOADING_0));
+        startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_CLIENT_LOADING_0), 0);
         setHeight();
         changeHeight();
     }
@@ -1309,7 +1320,31 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      * 
      * @param msg the message that should be displayed below the loading animation (can also be HTML as String)
      */
-    private void startLoadingAnimation(String msg) {
+    private void startLoadingAnimation(final String msg, int delayMillis) {
+
+        m_loadingTimer = new Timer() {
+
+            public void run() {
+
+                createLoadingAnimation(msg);
+            }
+        };
+        if (delayMillis > 0) {
+            m_loadingTimer.schedule(delayMillis);
+        } else {
+            m_loadingTimer.run();
+        }
+    }
+
+    /** A timer to delay the loading animation. */
+    private Timer m_loadingTimer;
+
+    /**
+     * Creates the loading animation HTML and adds is to the content wrapper.<p>
+     * 
+     * @param msg the message to display below the animation
+     */
+    protected void createLoadingAnimation(String msg) {
 
         m_clientLoading = true;
         m_loadingPanel = new FlowPanel();
@@ -1333,6 +1368,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     private void stopLoadingAnimation() {
 
+        if (m_loadingTimer != null) {
+            m_loadingTimer.cancel();
+        }
         if (m_clientLoading) {
             m_contentWrapper.remove(m_loadingPanel);
             m_clientLoading = false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadService.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/04 15:45:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.upload;
 import org.opencms.ade.upload.shared.CmsUploadData;
 import org.opencms.ade.upload.shared.CmsUploadFileBean;
 import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
+import org.opencms.ade.upload.shared.CmsUploadProgessInfo.UPLOAD_STATE;
 import org.opencms.ade.upload.shared.rpc.I_CmsUploadService;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
@@ -54,7 +55,7 @@ import org.apache.commons.fileupload.util.Streams;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -134,7 +135,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
      */
     public CmsUploadProgessInfo getUploadProgressInfo() {
 
-        CmsUploadProgessInfo info = new CmsUploadProgessInfo(0, 0, false, 0, 0);
+        CmsUploadProgessInfo info = new CmsUploadProgessInfo(0, 0, UPLOAD_STATE.notStarted, 0, 0);
         if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
             CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
                 CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);

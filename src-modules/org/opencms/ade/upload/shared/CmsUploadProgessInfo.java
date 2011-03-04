@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/shared/Attic/CmsUploadProgessInfo.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/04 15:45:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsUploadProgessInfo implements IsSerializable {
+
+    /** A enum for the upload state. */
+    public static enum UPLOAD_STATE {
+
+        /** Upload is finished. */
+        finished,
+        /** Upload not started. */
+        notStarted,
+        /** Upload is running. */
+        running
+    }
 
     /** Stores the bytes that are already read. */
     private long m_bytesRead;
@@ -56,8 +67,8 @@ public class CmsUploadProgessInfo implements IsSerializable {
     /** The current percentage. */
     private int m_percent;
 
-    /** Signals whether the upload is running or not. */
-    private boolean m_running;
+    /** Stores the state. */
+    private UPLOAD_STATE m_state;
 
     /**
      * Default constructor.<p>
@@ -72,15 +83,15 @@ public class CmsUploadProgessInfo implements IsSerializable {
      * 
      * @param currentFile the current file count
      * @param percent the progress in percent
-     * @param running signals if the upload listener is available or not
+     * @param state the state
      * @param contentLength the content length of the upload request
      * @param bytesRead the count of bytes read so far
      */
-    public CmsUploadProgessInfo(int currentFile, int percent, boolean running, long contentLength, long bytesRead) {
+    public CmsUploadProgessInfo(int currentFile, int percent, UPLOAD_STATE state, long contentLength, long bytesRead) {
 
         m_currentFile = currentFile;
         m_percent = percent;
-        m_running = running;
+        m_state = state;
         m_contentLength = contentLength;
         m_bytesRead = bytesRead;
     }
@@ -126,13 +137,13 @@ public class CmsUploadProgessInfo implements IsSerializable {
     }
 
     /**
-     * Returns the running.<p>
+     * Returns the state.<p>
      *
-     * @return the running
+     * @return the state
      */
-    public boolean isRunning() {
+    public UPLOAD_STATE getState() {
 
-        return m_running;
+        return m_state;
     }
 
     /**
@@ -176,12 +187,12 @@ public class CmsUploadProgessInfo implements IsSerializable {
     }
 
     /**
-     * Sets the running.<p>
+     * Sets the state.<p>
      *
-     * @param running the running to set
+     * @param state the state to set
      */
-    public void setRunning(boolean running) {
+    public void setState(UPLOAD_STATE state) {
 
-        m_running = running;
+        m_state = state;
     }
 }
