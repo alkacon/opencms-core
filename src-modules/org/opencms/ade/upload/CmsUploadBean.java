@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/04 10:44:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,8 +62,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,7 +85,7 @@ import org.apache.log4j.spi.ThrowableInformation;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -117,7 +119,7 @@ public class CmsUploadBean extends CmsJspBean {
     private Map<String, String[]> m_parameterMap;
 
     /** The names of the resources that have been created successfully. */
-    private List<String> m_resourcesCreated = new ArrayList<String>();
+    private Set<String> m_resourcesCreated = new HashSet<String>();
 
     /**
      * Constructor, with parameters.<p>
@@ -241,7 +243,14 @@ public class CmsUploadBean extends CmsJspBean {
                     fileName = URLDecoder.decode(fi.getName(), "UTF-8");
                 }
                 if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
-                    new CmsImportFolder(content, targetFolder, getCmsObject(), false);
+                    // import the zip
+                    CmsImportFolder importZip = new CmsImportFolder();
+                    try {
+                        importZip.importZip(content, targetFolder, getCmsObject(), false);
+                    } finally {
+                        // get the created resource names
+                        m_resourcesCreated.addAll(importZip.getCreatedResourceNames());
+                    }
                 } else {
                     // create the resource
                     String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
@@ -369,7 +378,6 @@ public class CmsUploadBean extends CmsJspBean {
             for (String name : m_resourcesCreated) {
                 buf.append("<br />");
                 buf.append(name);
-                buf.append("<br />");
             }
             message = m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_CREATING_1, buf.toString());
         } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/03/04 10:44:43 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -855,11 +855,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource clone = (CmsResource)resource.clone();
         clone.setFlags(flags);
         // log it
-        log(dbc, new CmsLogEntry(
+        log(
             dbc,
-            resource.getStructureId(),
-            CmsLogEntryType.RESOURCE_FLAGS,
-            new String[] {resource.getRootPath()}), false);
+            new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_FLAGS,
+                new String[] {resource.getRootPath()}),
+            false);
         // write it
         writeResource(dbc, clone);
     }
@@ -889,11 +892,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
         clone.setType(newType.getTypeId());
         // log it
-        log(dbc, new CmsLogEntry(
+        log(
             dbc,
-            resource.getStructureId(),
-            CmsLogEntryType.RESOURCE_TYPE,
-            new String[] {resource.getRootPath()}), false);
+            new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_TYPE,
+                new String[] {resource.getRootPath()}),
+            false);
         // write it
         writeResource(dbc, clone);
     }
@@ -2304,9 +2310,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         report.println(Messages.get().container(Messages.RPT_START_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
         if (versionsToKeep >= 0) {
-            report.println(Messages.get().container(
-                Messages.RPT_START_DELETE_ACT_VERSIONS_1,
-                new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
+            report.println(
+                Messages.get().container(Messages.RPT_START_DELETE_ACT_VERSIONS_1, new Integer(versionsToKeep)),
+                I_CmsReport.FORMAT_HEADLINE);
 
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllNotDeletedEntries(dbc);
             if (resources.isEmpty()) {
@@ -2318,10 +2324,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itResources.hasNext()) {
                 I_CmsHistoryResource histResource = itResources.next();
 
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     dbc.removeSiteRoot(histResource.getRootPath())));
@@ -2356,14 +2364,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if ((versionsDeleted >= 0) || (timeDeleted >= 0)) {
             if (timeDeleted >= 0) {
-                report.println(Messages.get().container(
-                    Messages.RPT_START_DELETE_DEL_VERSIONS_2,
-                    new Integer(versionsDeleted),
-                    new Date(timeDeleted)), I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(
+                        Messages.RPT_START_DELETE_DEL_VERSIONS_2,
+                        new Integer(versionsDeleted),
+                        new Date(timeDeleted)),
+                    I_CmsReport.FORMAT_HEADLINE);
             } else {
-                report.println(Messages.get().container(
-                    Messages.RPT_START_DELETE_DEL_VERSIONS_1,
-                    new Integer(versionsDeleted)), I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(Messages.RPT_START_DELETE_DEL_VERSIONS_1, new Integer(versionsDeleted)),
+                    I_CmsReport.FORMAT_HEADLINE);
             }
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllDeletedEntries(dbc);
             if (resources.isEmpty()) {
@@ -2375,10 +2385,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itResources.hasNext()) {
                 I_CmsHistoryResource histResource = itResources.next();
 
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     dbc.removeSiteRoot(histResource.getRootPath())));
@@ -4930,10 +4942,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             projectResources = readProjectResources(dbc, dbc.currentProject());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2,
-                    resourcename,
-                    dbc.currentProject().getName()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2,
+                        resourcename,
+                        dbc.currentProject().getName()),
+                    e);
             }
             return false;
         }
@@ -5435,9 +5449,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsDriverManager.UPDATE_STRUCTURE_STATE,
                 false);
             // log it
-            log(dbc, new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
-                source.getRootPath(),
-                destination}), false);
+            log(
+                dbc,
+                new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
+                    source.getRootPath(),
+                    destination}),
+                false);
         }
 
         CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -5854,9 +5871,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             lock = m_lockManager.getLock(dbc, resource, false);
             if (!lock.getSystemLock().isPublish()) {
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                        dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                            dbc.removeSiteRoot(resource.getRootPath())),
+                        I_CmsReport.FORMAT_WARNING);
                 }
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
@@ -6061,14 +6080,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             // try to get the sub resources from the cache
-            cacheKey = getCacheKey(new String[] {
-                dbc.currentUser().getName(),
-                getFolders
-                ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
-                : CmsCacheKey.CACHE_KEY_SUBFILES,
-                checkPermissions ? "+" + time : "-",
-                filter.getCacheId(),
-                resource.getRootPath()}, dbc);
+            cacheKey = getCacheKey(
+                new String[] {
+                    dbc.currentUser().getName(),
+                    getFolders
+                    ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
+                    : CmsCacheKey.CACHE_KEY_SUBFILES,
+                    checkPermissions ? "+" + time : "-",
+                    filter.getCacheId(),
+                    resource.getRootPath()},
+                dbc);
 
             resourceList = m_monitor.getCachedResourceList(cacheKey);
         }
@@ -7872,10 +7893,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // clear the cache
         m_monitor.clearResourceCache();
 
-        Map<String, Object> data = new HashMap<String, Object>(2);
-        data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        if ((properties != null) && !properties.isEmpty()) {
+            // resource and properties were modified
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
+        } else {
+            // only the resource was modified
+            Map<String, Object> data = new HashMap<String, Object>(2);
+            data.put(I_CmsEventListener.KEY_RESOURCE, resource);
+            data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        }
     }
 
     /**
@@ -8917,9 +8946,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             publishedResources = getProjectDriver(dbc).readPublishedResources(dbc, publishHistoryId);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1,
-                    publishHistoryId), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1, publishHistoryId),
+                    e);
             }
         }
         if ((publishedResources == null) || publishedResources.isEmpty()) {
@@ -9009,12 +9038,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             I_CmsReport.FORMAT_OK);
                     } catch (CmsException e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_WRITE_EXPORT_POINT_ERROR_1,
-                                currentPublishedResource.getRootPath()), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_WRITE_EXPORT_POINT_ERROR_1,
+                                    currentPublishedResource.getRootPath()),
+                                e);
                         }
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                            I_CmsReport.FORMAT_ERROR);
                     }
                 }
             }
@@ -10019,11 +10051,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean forFolder,
         int depth) throws CmsException {
 
-        String cacheKey = getCacheKey(new String[] {
-            inheritedOnly ? "+" : "-",
-            forFolder ? "+" : "-",
-            Integer.toString(depth),
-            resource.getStructureId().toString()}, dbc);
+        String cacheKey = getCacheKey(
+            new String[] {
+                inheritedOnly ? "+" : "-",
+                forFolder ? "+" : "-",
+                Integer.toString(depth),
+                resource.getStructureId().toString()},
+            dbc);
 
         CmsAccessControlList acl = m_monitor.getCachedACL(cacheKey);
 
@@ -10713,8 +10747,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
 
-            vfsDriver.deleteUrlNameMappingEntries(dbc, false, CmsUrlNameMappingFilter.ALL.filterStructureId(
-                res.getStructureId()).filterState(CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+            vfsDriver.deleteUrlNameMappingEntries(
+                dbc,
+                false,
+                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
             // restore the state to unchanged 
             res.setState(newState);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);

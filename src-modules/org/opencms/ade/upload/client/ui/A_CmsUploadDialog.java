@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/04 10:44:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -428,8 +428,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     public void addFileInput(CmsFileInput fileInput) {
 
-        m_okButton.enable();
-
         // add the files selected by the user to the list of files to upload
         if (fileInput != null) {
             List<CmsFileInfo> fileObjects = Arrays.asList(fileInput.getFiles());
@@ -465,8 +463,16 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_SELECTION_0), false);
         // set the selection summary
         updateSummary();
+
         // add a upload button
         m_uploadButton.createFileInput();
+
+        // enable or disable the OK button
+        if (getFilesToUpload().isEmpty()) {
+            disableOKButton(Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_NO_FILES_0));
+        } else {
+            enableOKButton();
+        }
 
         // show the popup
         if (!isShowing()) {
@@ -991,12 +997,8 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         CmsCheckBox check = new CmsCheckBox();
         check.setChecked(false);
         if (!invalid && !isTooLarge) {
-
-            if (m_filesToUpload.containsKey(file.getFileName())) {
-                check.setChecked(true);
-            }
+            check.setChecked(m_filesToUpload.containsKey(file.getFileName()));
             check.setTitle(file.getFileName());
-
             if (!m_selectionDone && file.getFileName().toLowerCase().endsWith(".zip")) {
                 final CmsCheckBox unzip = createUnzipCheckBox(file);
                 addClickHandlerToCheckBox(check, unzip, file);
@@ -1173,8 +1175,11 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
         final CmsCheckBox unzip = new CmsCheckBox();
         unzip.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        unzip.setChecked(false);
+        unzip.setChecked(getFilesToUnzip(true).contains(file.getFileName()));
         unzip.setTitle(Messages.get().key(Messages.GUI_UPLOAD_UNZIP_FILE_0));
+        if (!m_filesToUpload.containsKey(file.getFileName())) {
+            unzip.disable(Messages.get().key(Messages.GUI_UPLOAD_FILE_NOT_SELECTED_0));
+        }
         unzip.addClickHandler(new ClickHandler() {
 
             /**
