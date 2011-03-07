@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/12/24 15:24:02 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/07 10:19:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.
  */
@@ -269,6 +269,7 @@ public class CmsSearchTab extends A_CmsTab {
     public void clearInput() {
 
         m_searchInput.setText("");
+        ValueChangeEvent.fire(m_searchInput, "");
         m_dateCreatedStartDateBox.setValue(null, true);
         m_dateCreatedEndDateBox.setValue(null, true);
         m_dateModifiedStartDateBox.setValue(null, true);
