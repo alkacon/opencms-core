@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/07 09:35:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/07 13:20:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -612,10 +612,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             @Override
             protected void onResponse(Boolean result) {
 
-                // if the listener wasn't present when the user has canceled the upload hide the dialog
-                if (!result.booleanValue()) {
-                    hide();
-                }
+                hide();
             }
         };
         callback.execute();
@@ -824,11 +821,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         cancelUpdateProgress();
         stopLoadingAnimation();
 
-        // just hide the dialog if user has canceled the upload
-        if (m_canceled) {
-            hide();
-        }
-
         if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
             JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
 
@@ -910,15 +902,17 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
      */
     protected void showErrorReport(final String message, final String stacktrace) {
 
-        CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
-        if (m_handlerReg != null) {
-            m_handlerReg.removeHandler();
+        if (!m_canceled) {
+            CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
+            if (m_handlerReg != null) {
+                m_handlerReg.removeHandler();
+            }
+            if (m_closeHandler != null) {
+                errDialog.addCloseHandler(m_closeHandler);
+            }
+            hide();
+            errDialog.center();
         }
-        if (m_closeHandler != null) {
-            errDialog.addCloseHandler(m_closeHandler);
-        }
-        hide();
-        errDialog.center();
     }
 
     /**

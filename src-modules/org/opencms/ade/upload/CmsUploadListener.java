@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadListener.java,v $
- * Date   : $Date: 2011/03/04 15:45:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/07 13:20:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -69,7 +69,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     /** The bytes read so far. */
     private long m_bytesRead;
 
-    /** The upload delay*/
+    /** The upload delay. */
     private int m_delay;
 
     /** A flag that signals if the upload is finished. */
