@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/shared/rpc/Attic/I_CmsUploadServiceAsync.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/07 09:35:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,7 +66,7 @@ public interface I_CmsUploadServiceAsync {
      * 
      * @param callback the asynchronous callback
      */
-    void cancelUpload(AsyncCallback<Void> callback);
+    void cancelUpload(AsyncCallback<Boolean> callback);
 
     /**
      * Checks the availability of a resource in the VFS, using the 

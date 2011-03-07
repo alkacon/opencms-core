@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/04 15:45:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/07 09:35:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -317,6 +317,9 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
     /** A panel for showing client loading. */
     private FlowPanel m_loadingPanel;
+
+    /** A timer to delay the loading animation. */
+    private Timer m_loadingTimer;
 
     /** The main panel. */
     private FlowPanel m_mainPanel;
@@ -591,9 +594,8 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
         m_canceled = true;
         cancelUpdateProgress();
-        hide();
 
-        CmsRpcAction<Void> callback = new CmsRpcAction<Void>() {
+        CmsRpcAction<Boolean> callback = new CmsRpcAction<Boolean>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -608,12 +610,39 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(Void result) {
+            protected void onResponse(Boolean result) {
 
-                // noop
+                // if the listener wasn't present when the user has canceled the upload hide the dialog
+                if (!result.booleanValue()) {
+                    hide();
+                }
             }
         };
         callback.execute();
+    }
+
+    /**
+     * Creates the loading animation HTML and adds is to the content wrapper.<p>
+     * 
+     * @param msg the message to display below the animation
+     */
+    protected void createLoadingAnimation(String msg) {
+
+        m_clientLoading = true;
+        m_loadingPanel = new FlowPanel();
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingPanel());
+        m_loadingPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
+
+        HTML animationDiv = new HTML();
+        animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingAnimation());
+        m_loadingPanel.add(animationDiv);
+
+        HTML messageDiv = new HTML();
+        messageDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingText());
+        messageDiv.setHTML(msg);
+        m_loadingPanel.add(messageDiv);
+
+        m_contentWrapper.add(m_loadingPanel);
     }
 
     /**
@@ -795,6 +824,11 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         cancelUpdateProgress();
         stopLoadingAnimation();
 
+        // just hide the dialog if user has canceled the upload
+        if (m_canceled) {
+            hide();
+        }
+
         if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
             JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
 
@@ -942,7 +976,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
             case finished:
                 m_progressInfo.finish();
                 displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
-                startLoadingAnimation("Creating resources on the VFS of OpenCms", 1500);
+                startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_INFO_CREATING_RESOURCES_0), 1500);
                 break;
             default:
                 break;
@@ -1334,33 +1368,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         } else {
             m_loadingTimer.run();
         }
-    }
-
-    /** A timer to delay the loading animation. */
-    private Timer m_loadingTimer;
-
-    /**
-     * Creates the loading animation HTML and adds is to the content wrapper.<p>
-     * 
-     * @param msg the message to display below the animation
-     */
-    protected void createLoadingAnimation(String msg) {
-
-        m_clientLoading = true;
-        m_loadingPanel = new FlowPanel();
-        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingPanel());
-        m_loadingPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
-
-        HTML animationDiv = new HTML();
-        animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingAnimation());
-        m_loadingPanel.add(animationDiv);
-
-        HTML messageDiv = new HTML();
-        messageDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingText());
-        messageDiv.setHTML(msg);
-        m_loadingPanel.add(messageDiv);
-
-        m_contentWrapper.add(m_loadingPanel);
     }
 
     /**

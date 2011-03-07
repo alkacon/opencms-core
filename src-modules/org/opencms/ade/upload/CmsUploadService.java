@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadService.java,v $
- * Date   : $Date: 2011/03/04 15:45:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/07 09:35:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.fileupload.util.Streams;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -86,7 +86,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     /**
      * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService#cancelUpload()
      */
-    public void cancelUpload() {
+    public Boolean cancelUpload() {
 
         if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
             CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
@@ -95,8 +95,10 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
             if ((listener != null) && !listener.isCanceled()) {
                 listener.cancelUpload(new CmsUploadException(Messages.get().getBundle().key(
                     Messages.ERR_UPLOAD_USER_CANCELED_0)));
+                return Boolean.TRUE;
             }
         }
+        return Boolean.FALSE;
     }
 
     /**

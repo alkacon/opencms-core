@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/shared/rpc/Attic/I_CmsUploadService.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/07 09:35:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Rudiger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,8 +68,10 @@ public interface I_CmsUploadService extends RemoteService {
 
     /**
      * Cancels the upload.<p>
+     * 
+     * @return <code>true</code> if the listener was canceled <code>false</code> otherwise
      */
-    void cancelUpload();
+    Boolean cancelUpload();
 
     /**
      * Checks the availability of a resource in the VFS, using the 
