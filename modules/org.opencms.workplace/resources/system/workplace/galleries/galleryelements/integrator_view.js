@@ -23,7 +23,7 @@ function initPopup() {
 		sizeY = 730;
 	}
 	if (window.locationbar && window.locationbar.visible == true) {
-        	sizeY += 20;
+        	sizeY += 30;
     	} 
 	window.resizeTo(sizeX, sizeY);
 	

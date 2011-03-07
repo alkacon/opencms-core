@@ -19,7 +19,7 @@ function initPopup() {
 	var sizeX = 650;
 	var sizeY = 700;
 	if (window.locationbar && window.locationbar.visible == true) {
-        	sizeY += 20;
+        	sizeY += 30;
     	} 
 	window.resizeTo(sizeX, sizeY);
 	var collectCategories = true;
