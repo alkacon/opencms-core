@@ -1,5 +1,0 @@
-# Module resources
-# RPC service class, partial path of RPC policy file
-org.opencms.gwt.shared.rpc.I_CmsLogService, 3E00C7EA053DF326835610BE15B692F1.gwt.rpc
-org.opencms.gwt.shared.rpc.I_CmsCoreService, 06980C9DFA64689A1F4D548829311350.gwt.rpc
-org.opencms.ade.upload.shared.rpc.I_CmsUploadService, 74A22FC773CC0E6592D91CAA7BC1255A.gwt.rpc
