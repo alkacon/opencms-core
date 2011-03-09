@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.74 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1949: Database size does not decrease after (completely) deleting resources
 ! Integrated gwt upload dialog into workplace and galleries
 ! Added unzip file support for the gwt upload dialog
+! Added drag and drop support for the gwt upload dialog
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

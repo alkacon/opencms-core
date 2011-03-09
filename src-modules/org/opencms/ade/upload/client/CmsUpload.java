@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/Attic/CmsUpload.java,v $
- * Date   : $Date: 2011/03/02 18:29:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -61,10 +61,10 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-		$wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-				uploadTarget) {
-			@org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-		};
+        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+                uploadTarget) {
+            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+        };
 
     }-*/;
 
@@ -130,7 +130,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-		return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 
@@ -141,7 +141,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-		return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
     }-*/;
 
@@ -152,7 +152,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-		return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
     }-*/;
 }

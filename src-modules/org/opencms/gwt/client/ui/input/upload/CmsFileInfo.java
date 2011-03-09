@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/upload/Attic/CmsFileInfo.java,v $
- * Date   : $Date: 2011/02/11 17:06:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,7 +58,9 @@ public class CmsFileInfo extends JavaScriptObject {
      * @return the file name
      */
     public final native String getFileName() /*-{
+
         return this.fileName;
+
     }-*/;
 
     /**
@@ -67,6 +69,41 @@ public class CmsFileInfo extends JavaScriptObject {
      * @return the file size
      */
     public final native int getFileSize() /*-{
+
         return this.fileSize;
+
+    }-*/;
+
+    /**
+     * Returns the suffix of the file name with the dot at the beginning e.g. <code>".zip"</code>.<p>
+     * 
+     * @return the suffix of the file name
+     */
+    public final native String getFileSuffix() /*-{
+
+        var filename = this.fileName;
+        var dot = filename.lastIndexOf(".");
+        if (dot >= 0) {
+            return filename.substr(dot, filename.length);
+        }
+        return "";
+
+    }-*/;
+
+    /**
+     * Returns <code>true</code> if this file is a folder <code>false</code> otherwise.<p>
+     * 
+     * TODO: Replace with a better logic
+     * 
+     * @return <code>true</code> if this file is a folder <code>false</code> otherwise
+     */
+    public final native boolean isFolder() /*-{
+
+        var dot = this.fileName.lastIndexOf(".");
+        if ((this.fileSize == 0) && (dot < 0)) {
+            return true;
+        }
+        return false;
+
     }-*/;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFileApiImpl.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,32 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 
     /** The maximum upload size in bytes. (50 MB) */
     private static final long MAX_UPLOAD_SIZE = 51200000;
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
+     */
+    public String getFileSizeTooLargeMessage(CmsFileInfo file) {
+
+        if ((file.getFileSize() > MAX_UPLOAD_SIZE)) {
+            return Messages.get().key(
+                Messages.GUI_UPLOAD_FILE_MAX_SIZE_REACHED_2,
+                formatBytes(file.getFileSize()),
+                formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+        }
+        return super.getFileSizeTooLargeMessage(file);
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#isTooLarge(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
+     */
+    @Override
+    public boolean isTooLarge(CmsFileInfo cmsFileInfo) {
+
+        if (super.isTooLarge(cmsFileInfo) || (cmsFileInfo.getFileSize() > MAX_UPLOAD_SIZE)) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#submit()
@@ -172,92 +198,95 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         JavaScriptObject filesToUnzip,
         CmsUploadDialogFileApiImpl dialog) /*-{
 
-		// is executed when there was an error during reading the file
-		function errorHandler(evt) {
-			dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::onBrowserError(Ljava/lang/String;)(evt.target.error.code);
-		}
+        // is executed when there was an error during reading the file
+        function errorHandler(evt) {
+            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::onBrowserError(Ljava/lang/String;)(evt.target.error.code);
+        }
 
-		// is executed when the current file is read completely
-		function loaded(evt) {
-			// get the current file name and obtain the read file data
-			var fileName = file.name;
-			var fileData = evt.target.result;
-			body += "Content-Disposition: form-data; name=\"file_" + curIndex
-					+ "\"; filename=\"" + encodeURI(fileName) + "\"\r\n";
-			body += "Content-Type: application/octet-stream\r\n\r\n";
-			body += fileData + "\r\n";
-			body += "--" + boundary + "\r\n";
-			// are there any more files?, continue reading the next file
-			if (filesToUpload.length > ++curIndex) {
-				file = filesToUpload[curIndex];
-				this.readAsBinaryString(file);
-			} else {
-				// there are no more files left append the infos to the request body
-				appendInfos();
-				// create the request and post it
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", uri, true);
-				// simulate a file MIME POST request.
-				xhr.setRequestHeader("Content-Type",
-						"multipart/form-data; boundary=" + boundary);
-				xhr.overrideMimeType('text/plain; charset=x-user-defined');
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						if (xhr.status == 200) {
-							dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
-						} else if (xhr.status != 200) {
-							dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-						}
-					}
-				}
-				xhr.sendAsBinary(body);
-			}
-		}
+        // is executed when the current file is read completely
+        function loaded(evt) {
+            // get the current file name and obtain the read file data
+            var fileName = file.name;
+            var fileData = evt.target.result;
+            if (fileData == null) {
+                fileData = "";
+            }
+            body += "Content-Disposition: form-data; name=\"file_" + curIndex
+                    + "\"; filename=\"" + encodeURI(fileName) + "\"\r\n";
+            body += "Content-Type: application/octet-stream\r\n\r\n";
+            body += fileData + "\r\n";
+            body += "--" + boundary + "\r\n";
+            // are there any more files?, continue reading the next file
+            if (filesToUpload.length > ++curIndex) {
+                file = filesToUpload[curIndex];
+                this.readAsBinaryString(file);
+            } else {
+                // there are no more files left append the infos to the request body
+                appendInfos();
+                // create the request and post it
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", uri, true);
+                // simulate a file MIME POST request.
+                xhr.setRequestHeader("Content-Type",
+                        "multipart/form-data; boundary=" + boundary);
+                xhr.overrideMimeType('text/plain; charset=x-user-defined');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
+                        } else if (xhr.status != 200) {
+                            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
+                        }
+                    }
+                }
+                xhr.sendAsBinary(body);
+            }
+        }
 
-		// appends the infos to the request body 
-		// should be called at end of creating the body because the boundary is closed here
-		function appendInfos() {
+        // appends the infos to the request body 
+        // should be called at end of creating the body because the boundary is closed here
+        function appendInfos() {
 
-			body += "Content-Disposition: form-data; name=" + encodedFieldName
-					+ "\r\n";
-			body += "Content-Type: text/plain\r\n\r\n";
-			body += "true\r\n";
-			body += "--" + boundary + "\r\n";
+            body += "Content-Disposition: form-data; name=" + encodedFieldName
+                    + "\r\n";
+            body += "Content-Type: text/plain\r\n\r\n";
+            body += "true\r\n";
+            body += "--" + boundary + "\r\n";
 
-			for ( var i = 0; i < filesToUnzip.length; ++i) {
-				var filename = filesToUnzip[i];
-				body += "Content-Disposition: form-data; name="
-						+ unzipFilesFieldName + "\r\n";
-				body += "Content-Type: text/plain\r\n\r\n";
-				body += encodeURI(filename) + "\r\n";
-				body += "--" + boundary + "\r\n";
-			}
+            for ( var i = 0; i < filesToUnzip.length; ++i) {
+                var filename = filesToUnzip[i];
+                body += "Content-Disposition: form-data; name="
+                        + unzipFilesFieldName + "\r\n";
+                body += "Content-Type: text/plain\r\n\r\n";
+                body += encodeURI(filename) + "\r\n";
+                body += "--" + boundary + "\r\n";
+            }
 
-			body += "Content-Disposition: form-data; name="
-					+ targetFolderFieldName + "\r\n";
-			body += "Content-Type: text/plain\r\n\r\n";
-			body += targetFolder + "\r\n";
-			body += "--" + boundary + "--";
-		}
+            body += "Content-Disposition: form-data; name="
+                    + targetFolderFieldName + "\r\n";
+            body += "Content-Type: text/plain\r\n\r\n";
+            body += targetFolder + "\r\n";
+            body += "--" + boundary + "--";
+        }
 
-		// the uri to call
-		var uri = uploadUri;
-		// the boundary
-		var boundary = "26924190726270";
-		// the request body with the starting boundary
-		var body = "--" + boundary + "\r\n";
+        // the uri to call
+        var uri = uploadUri;
+        // the boundary
+        var boundary = "26924190726270";
+        // the request body with the starting boundary
+        var body = "--" + boundary + "\r\n";
 
-		// the main procedure
-		if (filesToUpload) {
+        // the main procedure
+        if (filesToUpload) {
 
-			var curIndex = 0;
-			var file = filesToUpload[curIndex];
+            var curIndex = 0;
+            var file = filesToUpload[curIndex];
 
-			var reader = new FileReader();
-			reader.onloadend = loaded;
-			reader.onerror = errorHandler;
-			// Read file into memory
-			reader.readAsBinaryString(file);
-		}
+            var reader = new FileReader();
+            reader.onloadend = loaded;
+            reader.onerror = errorHandler;
+            // Read file into memory
+            reader.readAsBinaryString(file);
+        }
     }-*/;
 }

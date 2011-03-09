@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/upload/Attic/CmsFileInputImpl.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.dom.client.InputElement;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -49,11 +49,11 @@ public class CmsFileInputImpl implements I_CmsFileInputService {
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#getFiles(com.google.gwt.dom.client.InputElement)
      */
     public native JsArray<CmsFileInfo> getFiles(InputElement inputElement) /*-{
-		var name = inputElement.value.replace(/^.*\\/, '')
-		return inputElement.value && inputElement.value != "" ? [ {
-			fileName : name,
-			fileSize : -1
-		} ] : [];
+        var name = inputElement.value.replace(/^.*\\/, '')
+        return inputElement.value && inputElement.value != "" ? [ {
+            fileName : name,
+            fileSize : -1
+        } ] : [];
     }-*/;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFormDataImpl.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,11 +51,24 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
+
+    private String m_hightLightColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorHighlight();
+
+    private String m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsUploadDialogFormDataImpl() {
+
+        super();
+        addUploadZone(getContentWrapper().getElement(), this);
+    }
 
     /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#createInfoBean(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
@@ -64,8 +78,19 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
         return new CmsListInfoBean(file.getFileName(), formatBytes(file.getFileSize())
             + " ("
-            + getResourceType(file.getFileName())
+            + getResourceType(file)
             + ")", null);
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
+     */
+    public String getFileSizeTooLargeMessage(CmsFileInfo file) {
+
+        return Messages.get().key(
+            Messages.GUI_UPLOAD_FILE_TOO_LARGE_2,
+            formatBytes(file.getFileSize()),
+            formatBytes(new Long(getData().getUploadFileSizeLimit()).intValue()));
     }
 
     /**
@@ -131,6 +156,22 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     }
 
     /**
+     * Adds a javascript file array to the list of files to upload.<p>
+     * 
+     * @param files a javascript file array
+     */
+    protected void addJsFiles(JavaScriptObject files) {
+
+        JsArray<CmsFileInfo> cmsFiles = getFiles(files);
+        CmsFileInfo[] result = new CmsFileInfo[cmsFiles.length()];
+        for (int i = 0; i < cmsFiles.length(); ++i) {
+            result[i] = cmsFiles.get(i);
+        }
+        List<CmsFileInfo> fileObjects = Arrays.asList(result);
+        addFiles(fileObjects);
+    }
+
+    /**
      * Returns the content length.<p>
      * 
      * @return the content length
@@ -143,6 +184,53 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         }
         return new Long(result).longValue();
     }
+
+    /**
+     * Adds a upload drop zone to the given element.<p>
+     * 
+     * @param element the element to add the upload zone
+     * @param dialog this dialog
+     */
+    private native void addUploadZone(JavaScriptObject element, CmsUploadDialogFormDataImpl dialog)/*-{
+
+        function dragover(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
+        }
+
+        function dragleave(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var dt = event.dataTransfer;
+            var files = dt.files;
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+        }
+
+        element.addEventListener("dragover", dragover, false);
+        element.addEventListener("dragexit", dragleave, false);
+        element.addEventListener("dragleave", dragleave, false);
+        element.addEventListener("dragend", dragleave, false);
+        element.addEventListener("drop", drop, false);
+
+    }-*/;
+
+    /**
+     * Converts a JavaScriptObject to an JsArray.<p>
+     * 
+     * @param files the array of files as JavaScriptObject
+     * 
+     * @return a JsArray of CmsFileInfo objects
+     */
+    private native JsArray<CmsFileInfo> getFiles(JavaScriptObject files) /*-{
+        return files;
+    }-*/;
 
     /**
      * Sends a post request to the upload JSP.<p>
@@ -164,29 +252,29 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         JavaScriptObject filesToUnzip,
         CmsUploadDialogFormDataImpl dialog) /*-{
 
-		var data = new FormData();
+        var data = new FormData();
 
-		for (i = 0; i < filesToUpload.length; i++) {
-			data.append("file_" + i, filesToUpload[i]);
-		}
-		data.append(targetFolderFieldName, targetFolder);
+        for (i = 0; i < filesToUpload.length; i++) {
+            data.append("file_" + i, filesToUpload[i]);
+        }
+        data.append(targetFolderFieldName, targetFolder);
 
-		for ( var i = 0; i < filesToUnzip.length; ++i) {
-			data.append(unzipFilesFieldName, filesToUnzip[i]);
-		}
+        for ( var i = 0; i < filesToUnzip.length; ++i) {
+            data.append(unzipFilesFieldName, filesToUnzip[i]);
+        }
 
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", uploadUri, true);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) {
-				if (xhr.status == 200) {
-					dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
-				} else {
-					dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-				}
-			}
-		}
-		xhr.send(data);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadUri, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
+                } else {
+                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
+                }
+            }
+        }
+        xhr.send(data);
 
     }-*/;
 

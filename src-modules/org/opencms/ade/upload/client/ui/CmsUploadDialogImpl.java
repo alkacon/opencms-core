@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogImpl.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,9 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -49,7 +52,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -77,13 +80,24 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         }
     }
 
+    /** The input file input fields. */
+    private Map<String, CmsFileInput> m_inputsToUpload = new HashMap<String, CmsFileInput>();
+
     /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#createInfoBean(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
      */
     @Override
     public CmsListInfoBean createInfoBean(CmsFileInfo file) {
 
-        return new CmsListInfoBean(file.getFileName(), getResourceType(file.getFileName()), null);
+        return new CmsListInfoBean(file.getFileName(), getResourceType(file), null);
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
+     */
+    public String getFileSizeTooLargeMessage(CmsFileInfo file) {
+
+        return "";
     }
 
     /**
@@ -125,6 +139,20 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
     }
 
     /**
+     * Adds the given file input field to this dialog.<p>
+     * 
+     * @param fileInput the file input field to add
+     */
+    protected void addFileInput(CmsFileInput fileInput) {
+
+        // add the files selected by the user to the list of files to upload
+        if (fileInput != null) {
+            m_inputsToUpload.put(fileInput.getFiles()[0].getFileName(), fileInput);
+        }
+        super.addFileInput(fileInput);
+    }
+
+    /**
      * Creates a form that contains the file input fields and the target folder.<p>
      * 
      * @return the form
@@ -140,7 +168,7 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         // create a panel that contains the file input fields and the target folder
         FlowPanel inputFieldsPanel = new FlowPanel();
         int count = 0;
-        for (CmsFileInput input : getInputsToUpload()) {
+        for (CmsFileInput input : m_inputsToUpload.values()) {
             String filename = input.getFiles()[0].getFileName();
             input.setName("file_" + count++);
             if (getFilesToUpload().containsKey(filename)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/09 15:46:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -499,14 +499,13 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
      */
     protected void onChangeAction() {
 
-        if (m_uploadDialog != null) {
-            m_uploadDialog.addFileInput(m_fileInput);
-        } else {
+        if (m_uploadDialog == null) {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
             dialog.setTargetFolder(m_targetFolder);
-            dialog.loadAndShow(m_fileInput);
+            dialog.addFileInput(m_fileInput);
+        } else {
+            m_uploadDialog.addFileInput(m_fileInput);
         }
         createFileInput();
     }
-
 }
