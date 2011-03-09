@@ -185,9 +185,10 @@
 	height:auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "background.standard";
+	gwt-image: "background.state";
 	background-position: 50% 50%;
 	outline: none;
+	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
 @sprite .openerHover.selectBoxSelected {
@@ -195,9 +196,10 @@
 	height: auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "background.hoverState";
+	gwt-image: "background.state";
 	background-position: 50% 50%;
 	outline: none;
+	background-color: value("constants.css.backgroundColorStateHover");
 }
 
 .selectBoxSelector {

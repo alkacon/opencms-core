@@ -72,6 +72,26 @@
 /** This constant defines the background color of the sitemap entry that is highlighted. */
 @def backgroundColorSitemapHighlight #CCFFFF;
 
+/**
+ * The following constants define background colors for transparent background images.
+ * They should be used to style the color of elements that have a state. 
+ */
+/** This constant defines the background color for elements that use the soft standard background image. */
+@def backgroundColorSoftStandard #AAAAAA;
+/** This constant defines the background color for elements have the standard state. */
+@def backgroundColorStateStandard #EDEDED;
+/** This constant defines the background color for elements have the disabled state. */
+@def backgroundColorStateDisabled #E3E3E3;
+/** This constant defines the background color for elements have the hover state. */
+@def backgroundColorStateHover #DBDBDB;
+/** This constant defines the background color for elements have the active state. */
+@def backgroundColorStateActive #F9F9F9;
+/** This constant defines the background color for elements have the changed state. */
+@def backgroundColorStateChanged #FE9F9F;
+/** This constant defines the background color for elements have the new state. */
+@def backgroundColorStateNew #445E80;
+/** This constant defines the background color for elements have the sub sitemap state. */
+@def backgroundColorStateSubSitemap FEFEDB;
 
 /**
  * The shadow background color definitions.

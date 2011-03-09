@@ -38,13 +38,14 @@
 }
 
 @sprite .showParams {
-	gwt-image: "backgrounds.standard";
+	gwt-image: "backgrounds.state";
 	background-position: 50% 50%;
 	height: auto;
 	border:1px solid value("constants.css.borderColor");
 	margin-right:1px;
 	margin-bottom:1px;
 	padding:2px;
+	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
 .tabOptions {

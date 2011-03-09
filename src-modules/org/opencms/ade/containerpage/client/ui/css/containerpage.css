@@ -94,6 +94,7 @@ ul.clipboardList{
 	height: auto;
 	-moz-border-radius: 2px;
 	border: 1px solid value("constants.css.borderColor");
+	background-color: value("constants.css.backgroundColorSoftStandard");
 }
 
 .optionBar .cmsState{

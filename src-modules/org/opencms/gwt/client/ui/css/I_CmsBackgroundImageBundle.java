@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBackgroundImageBundle.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/09 15:35:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -50,69 +50,6 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsBackgroundImageBundle INSTANCE = GWT.create(I_CmsBackgroundImageBundle.class);
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/activeState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource activeState();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/changedState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource changedState();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/standard.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource standard();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/disabledState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource disabledState();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/hoverState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource hoverState();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/newState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource newState();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/backgrounds/subSitemap.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource subSitemap();
 
     /**
      * Access method.<p>
@@ -128,7 +65,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/backgrounds/progress.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource progress();
+    @Source("images/backgrounds/state.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource state();
 }

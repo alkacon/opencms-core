@@ -75,14 +75,27 @@
 
 .cmsButtonMedium{}
 
-.cmsTextButton.cmsState-up-disabled{
+@sprite .cmsTextButton.cmsState-up-disabled{
+    gwt-image: "backgrounds.state";
+    background-position: 50% 50%;
+    background-color: value("constants.css.backgroundColorStateDisabled");
+    height: auto;
     color: value("constants.css.textColorDisabled");
-    background: value("constants.css.backgroundColorDisabled");
 }
-
-
-
-
-@sprite .cmsTextButton.cmsState-up{gwt-image: "backgrounds.standard"; background-position: 50% 50%; height: auto;} 
-@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering{gwt-image: "backgrounds.hoverState"; background-position: 50% 50%; height: auto;}
-@sprite .cmsTextButton.cmsState-down{gwt-image: "backgrounds.activeState"; background-position: 50% 50%;height: auto;}      
+@sprite .cmsTextButton.cmsState-up{
+	gwt-image: "backgrounds.state";
+	background-position: 50% 50%; 
+	height: auto;
+	background-color: value("constants.css.backgroundColorStateStandard");
+} 
+@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering{
+	gwt-image: "backgrounds.state"; 
+	background-position: 50% 50%; 
+	background-color: value("constants.css.backgroundColorStateHover");
+	height: auto;}
+@sprite .cmsTextButton.cmsState-down{
+	gwt-image: "backgrounds.state"; 
+	background-position: 50% 50%;
+	background-color: value("constants.css.backgroundColorStateActive");
+	height: auto;
+}      

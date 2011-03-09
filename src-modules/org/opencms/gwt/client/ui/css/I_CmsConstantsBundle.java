@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsConstantsBundle.java,v $
- * Date   : $Date: 2011/02/22 16:34:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/09 15:35:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -125,6 +125,62 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String backgroundColorSitemapHighlight();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateActive();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorSoftStandard();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateChanged();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateDisabled();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateHover();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateNew();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateStandard();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorStateSubSitemap();
 
         /** 
          * Access method.<p>

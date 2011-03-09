@@ -78,10 +78,11 @@
     font-weight: bold;
     cursor: move;
     padding:5px;
-    gwt-image: "backgrounds.standard"; 
+    gwt-image: "backgrounds.state"; 
     background-position: 50% 50%; 
     height: auto; 
     white-space: nowrap;
+    background-color: value("constants.css.backgroundColorStateStandard");
 }
 .popupButtonPanel{
     margin-top: 5px;

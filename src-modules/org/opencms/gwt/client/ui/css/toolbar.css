@@ -37,6 +37,7 @@
 	color:value("constants.css.textColor");
 	padding:0px;
 	margin:0px;
+	background-color: value("constants.css.backgroundColorSoftStandard");
 }
 
 .toolbarContent{

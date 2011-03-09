@@ -20,7 +20,8 @@
 	gwt-image: "backgrounds.softStandard";
 	background-position: 50% 50%;
 	height: auto;
-	display: block;	
+	display: block;
+	background-color: value("constants.css.backgroundColorSoftStandard");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
@@ -39,7 +40,7 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	gwt-image: "backgrounds.hoverState";
+	gwt-image: "backgrounds.state";
 	background-position: 50% 50%;
 	height: auto;
 	margin:0 0 -1px 2px;
@@ -48,6 +49,7 @@
 	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
+	background-color: value("constants.css.backgroundColorStateHover");
 }
 
 /** browser specific styles **/
@@ -78,9 +80,10 @@
 
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "backgrounds.standard";
+	gwt-image: "backgrounds.state";
 	background-position: 50% 50%;
-	height: auto;	
+	height: auto;
+	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
