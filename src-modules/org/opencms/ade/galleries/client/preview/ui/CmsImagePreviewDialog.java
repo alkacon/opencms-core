@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2010/08/26 13:34:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/10 11:30:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Image;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -114,8 +114,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
             }
             m_initialFill = false;
         }
-        //TODO: fill other tabs
-
         fillPreviewPanel(infoBean);
     }
 
@@ -129,16 +127,12 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         FlowPanel panel = new FlowPanel();
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().imagePanel());
         m_previewImage = new Image();
-
-        // TODO: set the image scale parameters
         StringBuffer urlScaled = new StringBuffer(128);
         urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?").append(
             m_handler.getPreviewScaleParam());
         m_previewImage.setUrl(urlScaled.toString());
         panel.add(m_previewImage);
-
         m_previewPanel.setWidget(panel);
-
     }
 
     /**
