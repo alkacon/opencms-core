@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/07/08 16:45:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/10 08:44:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,6 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The selected locale for search. */
     private String m_locale;
 
-    // TODO: define somewhere the default value
     /** The number of search results to be display pro page. */
     private int m_matchesPerPage;
 
@@ -682,6 +681,10 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void setTypes(List<String> types) {
 
-        m_types = types;
+        if (types == null) {
+            m_types = new ArrayList<String>();
+        } else {
+            m_types = types;
+        }
     }
 }

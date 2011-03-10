@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsCategoryBean.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/10 08:44:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,15 +39,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A specific bean holding all info to be displayed in the categories tab.<p>
  * 
- * The bean can be used for {@link org.opencms.gwt.client.ui.tree.CmsTreeItem}s in a tree or
- * {@link org.opencms.ade.galleries.client.ui.CmsCategoryListItem}s in a list.
- * 
- * @see org.opencms.ade.galleries.client.ui.CmsCategoryListItem
- * @see org.opencms.gwt.client.ui.tree.CmsTreeItem
- * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

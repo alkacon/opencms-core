@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2011/01/19 14:18:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/10 08:44:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -55,6 +55,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
  */
 public interface I_CmsGalleryServiceAsync {
+
+    /**
+     * Deletes the given resource.<p>
+     * 
+     * @param resourcePath the resource path of the resource to delete
+     * @param callback the callback
+     */
+    void deleteResource(String resourcePath, AsyncCallback<Void> callback);
 
     /**
      * Returns all available categories for given galleries.<p>

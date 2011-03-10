@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/01/19 14:18:47 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/03/10 08:44:49 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,9 +44,15 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsLinkWarningDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.gwt.shared.sort.CmsComparatorType;
@@ -69,7 +75,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
@@ -88,10 +94,13 @@ public class CmsGalleryController {
     protected CmsGallerySearchBean m_searchObject;
 
     /** The gallery service instance. */
-    private I_CmsGalleryServiceAsync m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+    private I_CmsGalleryServiceAsync m_gallerySvc;
 
     /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
     private boolean m_searchObjectChanged = true;
+
+    /** The vfs service. */
+    private I_CmsVfsServiceAsync m_vfsService;
 
     /**
      * Constructor.<p>
@@ -271,6 +280,87 @@ public class CmsGalleryController {
     }
 
     /**
+     * Checks for broken links, ask for confirmation and finally deletes the given resource.<p>
+     * 
+     * @param resourcePath the resource path of the resource to delete
+     */
+    public void deleteResource(final String resourcePath) {
+
+        CmsRpcAction<List<CmsBrokenLinkBean>> action = new CmsRpcAction<List<CmsBrokenLinkBean>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getVfsService().getBrokenLinks(resourcePath, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(List<CmsBrokenLinkBean> result) {
+
+                stop(false);
+                if (result.size() > 0) {
+                    I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                         */
+                        public void onClose() {
+
+                            // do nothing 
+                        }
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                         */
+                        public void onOk() {
+
+                            internalDeleteResource(resourcePath);
+                        }
+                    };
+                    CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result, resourcePath);
+                    dialog.center();
+
+                } else {
+
+                    CmsConfirmDialog dialog = new CmsConfirmDialog(
+                        org.opencms.gwt.client.Messages.get().key(
+                            org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TITLE_0),
+                        org.opencms.gwt.client.Messages.get().key(
+                            org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TEXT_1,
+                            resourcePath));
+                    dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                         */
+                        public void onClose() {
+
+                            // do nothing
+                        }
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                         */
+                        public void onOk() {
+
+                            internalDeleteResource(resourcePath);
+                        }
+                    });
+                    dialog.center();
+                }
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Retrieves the sub-folders of a given folder.<p>
      * 
      * @param folder the folder whose sub-folders should be retrieved 
@@ -344,12 +434,13 @@ public class CmsGalleryController {
         if (provider != null) {
             String message = openPreview(provider, m_dialogMode.name(), resourcePath, m_handler.getDialogElementId());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
-                //TODO: improve handling
+                // should never happen
                 CmsDebugLog.getInstance().printLine(message);
             }
+            m_handler.hideShowPreviewButton(false);
             return;
         }
-        //TODO: improve handling
+        // should never be reached
         CmsDebugLog.getInstance().printLine("No provider available");
     }
 
@@ -410,12 +501,12 @@ public class CmsGalleryController {
         if (provider != null) {
             String message = selectResource(provider, m_dialogMode.name(), resourcePath, title);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
-                //TODO: improve handling
+                // should never happen
                 CmsDebugLog.getInstance().printLine(message);
             }
             return;
         }
-        //TODO: improve handling
+        // should never be reached
         CmsDebugLog.getInstance().printLine("No provider available");
     }
 
@@ -606,6 +697,9 @@ public class CmsGalleryController {
             @Override
             public void onResponse(CmsGallerySearchBean searchObj) {
 
+                if (!isNextPage) {
+                    m_handler.hideShowPreviewButton(true);
+                }
                 m_searchObject.setResults(searchObj.getResults());
                 m_searchObject.setResultCount(searchObj.getResultCount());
                 m_searchObject.setSortOrder(searchObj.getSortOrder());
@@ -631,7 +725,47 @@ public class CmsGalleryController {
      */
     protected I_CmsGalleryServiceAsync getGalleryService() {
 
+        if (m_gallerySvc == null) {
+            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+        }
         return m_gallerySvc;
+    }
+
+    /** 
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    protected I_CmsVfsServiceAsync getVfsService() {
+
+        if (m_vfsService == null) {
+            m_vfsService = GWT.create(I_CmsVfsService.class);
+        }
+        return m_vfsService;
+    }
+
+    /**
+     * @param resourcePath
+     */
+    protected void internalDeleteResource(final String resourcePath) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getGalleryService().deleteResource(resourcePath, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                updateResultsTab(false);
+            }
+        };
+        action.execute();
     }
 
     /**
@@ -809,27 +943,32 @@ public class CmsGalleryController {
         String galleryMode,
         String resourcePath,
         String parentElementId)/*-{
-        var openPreview=null;
-        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-        if (providerList){
-        var provider=providerList[previewName];
-        if (provider){
-        openPreview=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
-        if (openPreview){
-        try{
-        openPreview(galleryMode, resourcePath, parentElementId);
-        }catch(err){
-        return "ERROR: " + err.description;
-        }
-        return null;
-        }else{
-        return "Open function not available";
-        }
-        }else{
-        return "Provider "+previewName+" not available";
-        }
-        }else{
-        return "Provider list not available";
+        var openPreview = null;
+        var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList) {
+            var provider = providerList[previewName];
+            if (provider) {
+                openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
+                var removePrevious = $wnd["removePreview" + parentElementId];
+                if (removePrevious != null) {
+                    removePrevious();
+                    $wnd["removePreview" + parentElementId] = null;
+                }
+                if (openPreview) {
+                    try {
+                        openPreview(galleryMode, resourcePath, parentElementId);
+                    } catch (err) {
+                        return "ERROR: " + err.description;
+                    }
+                    return null;
+                } else {
+                    return "Open function not available";
+                }
+            } else {
+                return "Provider " + previewName + " not available";
+            }
+        } else {
+            return "Provider list not available";
         }
     }-*/;
 
@@ -842,26 +981,26 @@ public class CmsGalleryController {
      * @param title the resource title
      */
     private native String selectResource(String previewName, String galleryMode, String resourcePath, String title)/*-{
-        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-        if (providerList){
-        var provider=providerList[previewName];
-        if (provider){
-        var selectResource=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
-        if (selectResource){
-        try{
-        selectResource(galleryMode, resourcePath, title);
-        }catch(err){
-        return err.description;
-        }
-        return null;
-        }else{
-        return "Select function not available";
-        }
-        }else{
-        return "Provider "+previewName+" not available";
-        }
-        }else{
-        return "Provider list not available";
+        var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList) {
+            var provider = providerList[previewName];
+            if (provider) {
+                var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
+                if (selectResource) {
+                    try {
+                        selectResource(galleryMode, resourcePath, title);
+                    } catch (err) {
+                        return err.description;
+                    }
+                    return null;
+                } else {
+                    return "Select function not available";
+                }
+            } else {
+                return "Provider " + previewName + " not available";
+            }
+        } else {
+            return "Provider list not available";
         }
     }-*/;
 }

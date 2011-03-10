@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2011/01/19 14:18:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/10 08:44:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,6 +59,15 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("org.opencms.ade.galleries.CmsGalleryService.gwt")
 public interface I_CmsGalleryService extends RemoteService {
+
+    /**
+     * Deletes the given resource.<p>
+     * 
+     * @param resourcePath the resource path of the resource to delete
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void deleteResource(String resourcePath) throws CmsRpcException;
 
     /**
      * Returns all available categories for given galleries.<p>
