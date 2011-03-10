@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/10 11:27:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,11 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -48,7 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -56,6 +60,9 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
     /** The flag to indicate if the text box value is changed. */
     protected boolean m_isChanged;
+
+    /** The original value. */
+    protected String m_originalValue;
 
     /** The text box. */
     protected CmsTextBox m_textBox;
@@ -86,6 +93,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
     public CmsPropertyForm(String id, int width, String value, String textMetricsKey) {
 
         m_id = id;
+        m_originalValue = value;
         m_isChanged = false;
         m_parentWidth = width;
         m_parent = new FlowPanel();
@@ -102,7 +110,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
         m_inputPanel.getElement().getStyle().setWidth(getInputWidth(), Unit.PX);
         m_inputPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().inputField());
         m_textBox = new CmsTextBox();
-        m_textBox.setText(value);
+        m_textBox.setText(m_originalValue);
         m_textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             /**
@@ -114,9 +122,35 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
                 m_textBox.setChangedStyle();
             }
         });
+        m_textBox.addKeyPressHandler(new KeyPressHandler() {
+
+            public void onKeyPress(KeyPressEvent event) {
+
+                // make sure the value change event is fired on the first change inside the text box
+                if (!isChanged()) {
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                        public void execute() {
+
+                            if (!isChanged() && !getValue().equals(m_originalValue)) {
+                                ValueChangeEvent.fire(m_textBox, getValue());
+                            }
+                        }
+                    });
+                }
+            }
+        });
         m_inputPanel.add(m_textBox);
         m_parent.add(m_inputPanel);
         initWidget(m_parent);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return m_textBox.addValueChangeHandler(handler);
     }
 
     /**
@@ -178,13 +212,5 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
         // 2px: margin-left
         return (m_parentWidth / 3) - 2;
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        return m_textBox.addValueChangeHandler(handler);
     }
 }
