@@ -1,3 +1,5 @@
+@external hidePreview;
+
 /* The height and width are set as inline style. */
 .previewDialog {
 	position:absolute;
@@ -11,6 +13,10 @@
 	display: block;
 	background-color: value("constants.css.backgroundColorDialog");
 	
+}
+
+.hidePreview .previewDialog{
+	display: none;
 }
 
 .hiding{}
@@ -43,6 +49,7 @@
 /* Tabs panel (details) */
 .detailsHolder {	
 	margin:1px;
+	position: relative;
 }
 
 .previewButtonBar{
@@ -50,6 +57,12 @@
 	bottom:0px;
 	right:0px;
 	margin:2px;
+}
+
+.savePropertiesButton{
+	position: absolute;
+	bottom: 1px;
+	left: 1px;
 }
 
 .previewButton {

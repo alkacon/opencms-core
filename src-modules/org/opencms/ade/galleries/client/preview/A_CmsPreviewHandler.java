@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,15 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
+import org.opencms.ade.galleries.client.ui.Messages;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
 import java.util.Map;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Preview dialog handler.<p>
@@ -49,26 +52,30 @@ import com.google.gwt.user.client.Command;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> implements I_CmsPreviewHandler<T> {
 
+    /** The resource info. */
+    protected T m_resourceInfo;
+
     /** The resource preview instance. */
     protected I_CmsResourcePreview m_resourcePreview;
 
-    /** The resource info. */
-    protected T m_resourceInfo;
+    private String m_previewParentId;
 
     /**
      * Constructor.<p>
      * 
      * @param resourcePreview the resource preview instance
+     * @param previewParentId the preview parent element id
      */
-    public A_CmsPreviewHandler(I_CmsResourcePreview resourcePreview) {
+    public A_CmsPreviewHandler(I_CmsResourcePreview resourcePreview, String previewParentId) {
 
         m_resourcePreview = resourcePreview;
+        m_previewParentId = previewParentId;
     }
 
     /**
@@ -77,28 +84,28 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     public void closePreview() {
 
         if (getDialog().hasChanges()) {
-            //TODO: localization
-            getDialog().confirmSaveChanges("Do you want to save before leaving the preview?", new Command() {
+            getDialog().confirmSaveChanges(
+                Messages.get().key(Messages.GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0),
+                new Command() {
 
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
 
-                    if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
-                        CmsPreviewUtil.enableEditorOk(false);
+                        if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
+                            CmsPreviewUtil.enableEditorOk(false);
+                        }
+                        hidePreview();
                     }
-                    getDialog().removePreview();
-                    m_resourcePreview.clear();
-                }
-            }, null);
+                },
+                null);
             return;
         }
         if (getDialog().getGalleryMode() == GalleryMode.editor) {
             CmsPreviewUtil.enableEditorOk(false);
         }
-        getDialog().removePreview();
-        m_resourcePreview.clear();
+        hidePreview();
     }
 
     /**
@@ -114,6 +121,16 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      * @return the dialog
      */
     public abstract A_CmsPreviewDialog<T> getDialog();
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler#removePreview()
+     */
+    public void removePreview() {
+
+        getDialog().removePreview();
+        m_resourceInfo = null;
+        m_resourcePreview.clear();
+    }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler#saveProperties(java.util.Map)
@@ -138,17 +155,19 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
 
         if (getDialog().getGalleryMode() == GalleryMode.editor) {
             if (getDialog().hasChanges()) {
-                //TODO: localization
-                getDialog().confirmSaveChanges("Do you want to save before leaving the dialog?", new Command() {
+                getDialog().confirmSaveChanges(
+                    Messages.get().key(Messages.GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0),
+                    new Command() {
 
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
+                        /**
+                         * @see com.google.gwt.user.client.Command#execute()
+                         */
+                        public void execute() {
 
-                        CmsPreviewUtil.closeDialog();
-                    }
-                }, null);
+                            CmsPreviewUtil.closeDialog();
+                        }
+                    },
+                    null);
                 return false;
             } else {
                 getController().setResource(getDialog().getGalleryMode());
@@ -170,5 +189,13 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
             CmsPreviewUtil.enableEditorOk(true);
         }
         getDialog().fillContent(resourceInfo);
+    }
+
+    /**
+     * Hides the preview, so it may be shown again.<p>
+     */
+    protected void hidePreview() {
+
+        RootPanel.get(m_previewParentId).addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
     }
 }

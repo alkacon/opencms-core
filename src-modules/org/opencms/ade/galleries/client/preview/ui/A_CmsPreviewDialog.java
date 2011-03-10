@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/10/12 06:56:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,21 +32,21 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
+import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
-import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -81,7 +81,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     private static I_CmsPreviewDialogUiBinder uiBinder = GWT.create(I_CmsPreviewDialogUiBinder.class);
 
     /** The close button of the preview dialog. */
-    @UiField
     protected CmsPushButton m_closeButton;
 
     /** The dialog height. */
@@ -142,8 +141,19 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_tabsHolder.add(m_tabbedPanel);
 
         // close button        
-        m_closeButton.setUiIcon(I_CmsButton.UiIcon.closethick);
-        m_closeButton.setShowBorder(false);
+        m_closeButton = new CmsPushButton();
+        m_closeButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        m_closeButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewCloseButton());
+        m_closeButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_HIDE_0));
+        m_closeButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                getHandler().closePreview();
+            }
+        });
+        m_tabsHolder.add(m_closeButton);
+
     }
 
     /**
@@ -220,17 +230,4 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
      * @return the preview handler
      */
     protected abstract I_CmsPreviewHandler<T> getHandler();
-
-    /**
-     * Will be triggered, when the close button of the preview dialog is clicked.<p>
-     * 
-     * The preview dialog is set invisible and removed from parent.
-     *
-     * @param event the click event
-     */
-    @UiHandler("m_closeButton")
-    protected void onCloseClick(ClickEvent event) {
-
-        getHandler().closePreview();
-    }
 }

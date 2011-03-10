@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryResourcePreview.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewDialog;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -44,15 +45,15 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
 
-    private CmsBinaryPreviewController m_controller;
-
     private static CmsBinaryResourcePreview m_instance;
+
+    private CmsBinaryPreviewController m_controller;
 
     /**
      * Constructor.<p>
@@ -116,9 +117,10 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
             parentPanel.getOffsetWidth());
 
         // initialize the controller and controller handler
-        m_controller = new CmsBinaryPreviewController(new CmsBinaryPreviewHandler(previewDialog, this));
+        m_controller = new CmsBinaryPreviewController(new CmsBinaryPreviewHandler(previewDialog, this, parentElementId));
+        exportRemovePreview(parentElementId);
         parentPanel.add(previewDialog);
-
+        parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         //load preview data
         m_controller.loadResourceInfo(resourcePath);
     }
@@ -141,5 +143,26 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
             return true;
         }
         return m_controller.closeGalleryDialog();
+    }
+
+    /**
+     * Exports the remove preview function.<p>
+     * 
+     * @param parentId the previews parent element id
+     */
+    private native void exportRemovePreview(String parentId) /*-{
+        $wnd["removePreview" + parentId] = function() {
+            this.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
+        };
+    }-*/;
+
+    /**
+     * Removes the preview.<p>
+     */
+    private void removePreview() {
+
+        m_instance = null;
+        m_controller.removePreview();
+        m_controller = null;
     }
 }

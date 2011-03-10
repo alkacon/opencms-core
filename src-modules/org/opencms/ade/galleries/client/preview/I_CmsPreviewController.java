@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsPreviewController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -64,6 +64,11 @@ public interface I_CmsPreviewController<T extends CmsResourceInfoBean> {
      * @param resourcePath the resource path
      */
     void loadResourceInfo(String resourcePath);
+
+    /**
+     * Removes the preview.<p>
+     */
+    void removePreview();
 
     /**
      * Saves the changed properties.<p>

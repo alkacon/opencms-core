@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -59,14 +59,14 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
     /** Enumeration of image tag attribute names. */
     public enum Attribute {
-        /** Image alt attribute. */
-        alt,
         /** Image align attribute. */
         align,
-        /** Image copyright info. */
-        copyright,
+        /** Image alt attribute. */
+        alt,
         /** Image class attribute. */
         clazz,
+        /** Image copyright info. */
+        copyright,
         /** Image direction attribute. */
         dir,
         /** The image hash. */
@@ -120,10 +120,14 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
      * 
      * @param previewDialog the reference to the preview dialog 
      * @param resourcePreview the resource preview instance
+     * @param previewParentId the preview parent element id
      */
-    public CmsImagePreviewHandler(CmsImagePreviewDialog previewDialog, I_CmsResourcePreview resourcePreview) {
+    public CmsImagePreviewHandler(
+        CmsImagePreviewDialog previewDialog,
+        I_CmsResourcePreview resourcePreview,
+        String previewParentId) {
 
-        super(resourcePreview);
+        super(resourcePreview, previewParentId);
         m_previewDialog = previewDialog;
         m_previewDialog.init(this);
     }
@@ -144,6 +148,30 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     public A_CmsPreviewDialog<CmsImageInfoBean> getDialog() {
 
         return m_previewDialog;
+    }
+
+    /**
+     * Returns image tag attributes to set for editor plugins.<p>
+     * 
+     * @return the attribute map
+     */
+    public Map<String, String> getImageAttributes() {
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put(Attribute.hash.name(), String.valueOf(getImageIdHash()));
+        m_previewDialog.getImageAttributes(result);
+        m_formatHandler.getImageAttributes(result);
+        return result;
+    }
+
+    /**
+     * Returns the structure id hash of the previewed image.<p>
+     * 
+     * @return the structure id hash
+     */
+    public int getImageIdHash() {
+
+        return m_resourceInfo.getHash();
     }
 
     /**
@@ -194,6 +222,19 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#removePreview()
+     */
+    @Override
+    public void removePreview() {
+
+        super.removePreview();
+        m_controller = null;
+        m_croppingParam = null;
+        m_formatHandler = null;
+        m_previewDialog = null;
+    }
+
+    /**
      * Sets the image format handler.<p>
      * 
      * @param formatHandler the format handler
@@ -203,30 +244,6 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         m_formatHandler = formatHandler;
         m_croppingParam = m_formatHandler.getCroppingParam();
         m_formatHandler.addValueChangeHandler(this);
-    }
-
-    /**
-     * Returns image tag attributes to set for editor plugins.<p>
-     * 
-     * @return the attribute map
-     */
-    public Map<String, String> getImageAttributes() {
-
-        Map<String, String> result = new HashMap<String, String>();
-        result.put(Attribute.hash.name(), String.valueOf(getImageIdHash()));
-        m_previewDialog.getImageAttributes(result);
-        m_formatHandler.getImageAttributes(result);
-        return result;
-    }
-
-    /**
-     * Returns the structure id hash of the previewed image.<p>
-     * 
-     * @return the structure id hash
-     */
-    public int getImageIdHash() {
-
-        return m_resourceInfo.getHash();
     }
 
 }

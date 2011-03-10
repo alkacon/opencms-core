@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewController.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -51,13 +51,6 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
-
-    /**
-     * Returns the preview handler.<p>
-     * 
-     * @return the preview handler
-     */
-    public abstract I_CmsPreviewHandler<T> getHandler();
 
     /**
      * Selects the resource.<p>
@@ -95,6 +88,13 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
     }
 
     /**
+     * Returns the preview handler.<p>
+     * 
+     * @return the preview handler
+     */
+    public abstract I_CmsPreviewHandler<T> getHandler();
+
+    /**
      * Returns the resource path of the current resource.<p>
      * 
      * @return the resource path
@@ -102,6 +102,15 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
     public String getResourcePath() {
 
         return m_infoBean.getResourcePath();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#removePreview()
+     */
+    public void removePreview() {
+
+        getHandler().removePreview();
+        m_infoBean = null;
     }
 
     /**
@@ -123,6 +132,5 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         m_infoBean = resourceInfo;
         getHandler().showData(resourceInfo);
-
     }
 }

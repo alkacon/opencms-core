@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,16 +48,16 @@ import com.google.gwt.core.client.GWT;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsBinaryPreviewController extends A_CmsPreviewController<CmsResourceInfoBean> {
 
+    private CmsBinaryPreviewHandler m_handler;
+
     /** The preview service. */
     private I_CmsPreviewServiceAsync m_previewService;
-
-    private CmsBinaryPreviewHandler m_handler;
 
     /**
      * Hiding constructor.<p>
@@ -68,6 +68,15 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
 
         m_handler = handler;
         m_handler.init(this);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
+     */
+    @Override
+    public I_CmsPreviewHandler<CmsResourceInfoBean> getHandler() {
+
+        return m_handler;
     }
 
     /**
@@ -98,6 +107,17 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#removePreview()
+     */
+    @Override
+    public void removePreview() {
+
+        super.removePreview();
+        m_previewService = null;
+        m_handler = null;
     }
 
     /**
@@ -140,14 +160,5 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             m_previewService = GWT.create(I_CmsPreviewService.class);
         }
         return m_previewService;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
-     */
-    @Override
-    public I_CmsPreviewHandler<CmsResourceInfoBean> getHandler() {
-
-        return m_handler;
     }
 }

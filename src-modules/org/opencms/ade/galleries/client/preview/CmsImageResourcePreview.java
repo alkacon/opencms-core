@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageResourcePreview.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,10 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
-import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -44,16 +45,16 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
 
+    private static CmsImageResourcePreview m_instance;
+
     /** The preview controller. */
     private CmsImagePreviewController m_controller;
-
-    private static CmsImageResourcePreview m_instance;
 
     /**
      * Constructor.<p>
@@ -116,10 +117,10 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
             parentPanel.getOffsetWidth());
 
         // initialize the controller and controller handler
-        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this));
-
+        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId));
+        exportRemovePreview(parentElementId);
         parentPanel.add(preview);
-
+        parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         //load preview data
         m_controller.loadResourceInfo(resourcePath);
     }
@@ -142,5 +143,25 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
             return true;
         }
         return m_controller.closeGalleryDialog();
+    }
+
+    /**
+     * Exports the remove preview function.<p>
+     * 
+     * @param parentId the previews parent element id
+     */
+    private native void exportRemovePreview(String parentId) /*-{
+        $wnd["removePreview" + parentId] = function() {
+            @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
+        };
+    }-*/;
+
+    /**
+     * Removes the preview.<p>
+     */
+    private void removePreview() {
+
+        m_controller.removePreview();
+        m_controller = null;
     }
 }

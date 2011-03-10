@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatHandler.java,v $
- * Date   : $Date: 2010/11/29 07:52:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -420,6 +420,15 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         m_croppingParam = croppingParam;
         m_formatForm.setHeightInput(m_croppingParam.getTargetHeight());
         m_formatForm.setWidthInput(m_croppingParam.getTargetWidth());
+
+        // only in case of the original-format-restriction, the cropping dialog may be opened to override the selected format
+        if (m_currentFormat instanceof CmsOriginalFormatRestriction) {
+            Entry<String, I_CmsFormatRestriction> match = getMatchingFormat(m_croppingParam);
+            if (match != null) {
+                m_currentFormat = match.getValue();
+                m_formatForm.setFormatSelectValue(match.getKey());
+            }
+        }
         m_formatForm.setCropped(true);
         fireValueChangedEvent();
     }

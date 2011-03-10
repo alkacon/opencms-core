@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryPreviewHandler.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/10 08:47:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -60,10 +60,14 @@ public class CmsBinaryPreviewHandler extends A_CmsPreviewHandler<CmsResourceInfo
      * 
      * @param previewDialog the reference to the preview dialog 
      * @param resourcePreview the resource preview instance
+     * @param previewParentId the preview parent element id
      */
-    public CmsBinaryPreviewHandler(CmsBinaryPreviewDialog previewDialog, I_CmsResourcePreview resourcePreview) {
+    public CmsBinaryPreviewHandler(
+        CmsBinaryPreviewDialog previewDialog,
+        I_CmsResourcePreview resourcePreview,
+        String previewParentId) {
 
-        super(resourcePreview);
+        super(resourcePreview, previewParentId);
         m_previewDialog = previewDialog;
         m_previewDialog.init(this);
     }
