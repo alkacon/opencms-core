@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/03/10 07:48:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,16 @@ import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
-import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.adeconfig.CmsConfigurationSourceInfo;
 import org.opencms.adeconfig.CmsContainerPageConfigurationData;
@@ -69,6 +68,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -76,8 +76,6 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
@@ -94,20 +92,15 @@ import org.opencms.xml.sitemap.CmsDetailPageInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -115,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -174,26 +167,30 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, "sitemap_"
                 + subSitemapFolder.getName()
                 + ".config");
-            String containerpageConfigName = CmsStringUtil.joinPaths(folderName, "containerpage_"
-                + subSitemapFolder.getName()
-                + ".config");
+            String containerpageConfigName = CmsStringUtil.joinPaths(
+                folderName,
+                "containerpage_" + subSitemapFolder.getName() + ".config");
             if (!cms.existsResource(folderName)) {
                 tryUnlock(cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId()));
             }
             if (cms.existsResource(sitemapConfigName)) {
-                sitemapConfigName = CmsADEDefaultConfiguration.getNewFileName(cms, CmsStringUtil.joinPaths(
-                    folderName,
-                    "sitemap_" + subSitemapFolder.getName() + "_%(number).config"));
+                sitemapConfigName = CmsADEDefaultConfiguration.getNewFileName(
+                    cms,
+                    CmsStringUtil.joinPaths(folderName, "sitemap_" + subSitemapFolder.getName() + "_%(number).config"));
             }
-            tryUnlock(cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
-                "sitemap_config").getTypeId()));
+            tryUnlock(cms.createResource(
+                sitemapConfigName,
+                OpenCms.getResourceManager().getResourceType("sitemap_config").getTypeId()));
             if (cms.existsResource(containerpageConfigName)) {
-                containerpageConfigName = CmsADEDefaultConfiguration.getNewFileName(cms, CmsStringUtil.joinPaths(
-                    folderName,
-                    "containerpage_" + subSitemapFolder.getName() + "_%(number).config"));
+                containerpageConfigName = CmsADEDefaultConfiguration.getNewFileName(
+                    cms,
+                    CmsStringUtil.joinPaths(folderName, "containerpage_"
+                        + subSitemapFolder.getName()
+                        + "_%(number).config"));
             }
-            tryUnlock(cms.createResource(containerpageConfigName, OpenCms.getResourceManager().getResourceType(
-                "containerpage_config").getTypeId()));
+            tryUnlock(cms.createResource(
+                containerpageConfigName,
+                OpenCms.getResourceManager().getResourceType("containerpage_config").getTypeId()));
 
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(
@@ -211,8 +208,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             CmsSitemapClipboardData clipboard = getClipboardData();
 
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSubSitemapInfo(path, System.currentTimeMillis());
@@ -250,47 +248,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 result.setResourceState(CmsResourceState.STATE_DELETED);
             }
         } catch (Exception e) {
-            error(e);
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getBrokenLinksToSitemapEntries(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
-     */
-    public List<CmsSitemapBrokenLinkBean> getBrokenLinksToSitemapEntries(CmsClientSitemapEntry deleteEntry)
-    throws CmsRpcException {
-
-        List<CmsSitemapBrokenLinkBean> result = null;
-
-        try {
-            ensureSession();
-            CmsObject cms = getCmsObject();
-            List<CmsResource> descendands = new ArrayList<CmsResource>();
-            HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
-            CmsResource entryResource = cms.readResource(deleteEntry.getId());
-
-            descendands.add(entryResource);
-            if (entryResource.isFolder()) {
-                descendands.addAll(cms.readResources(deleteEntry.getSitePath(), CmsResourceFilter.IGNORE_EXPIRATION));
-            }
-            for (CmsResource deleteRes : descendands) {
-                deleteIds.add(deleteRes.getStructureId());
-            }
-            // multimap from resources to (sets of) sitemap entries 
-
-            MultiValueMap linkMap = MultiValueMap.decorate(
-                new HashMap<Object, Object>(),
-                FactoryUtils.instantiateFactory(HashSet.class));
-            for (CmsResource resource : descendands) {
-                List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
-                for (CmsResource source : linkSources) {
-                    linkMap.put(resource, source);
-                }
-            }
-
-            result = getBrokenLinkBeans(linkMap);
-        } catch (Throwable e) {
             error(e);
         }
         return result;
@@ -381,8 +338,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSitemapMergeInfo(getChildren(entryPoint, subSitemapPath, 1), System.currentTimeMillis());
@@ -410,14 +368,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             Map<String, CmsXmlContentProperty> propertyConfig = new HashMap<String, CmsXmlContentProperty>(
                 sitemapMgr.getElementPropertyConfiguration(cms, entryPoint));
-            //TODO: look if resolving macros on properties is necessary
-
-            //            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, sitemap);
-            //            CmsMacroResolver resolver = CmsXmlContentPropertyHelper.getMacroResolverForProperties(cms, contentHandler);
-            //            Map<String, CmsXmlContentProperty> resolvedProps = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
-            //                propertyConfig,
-            //                resolver);
-
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(entryPoint);
 
             String siteRoot = cms.getRequestContext().getSiteRoot();
@@ -463,7 +413,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<String> allPropNames = getPropertyNames(cms);
 
             result = new CmsSitemapData(
-                getDefaultTemplate(entryPoint),
                 getTemplates(),
                 propertyConfig,
                 getClipboardData(),
@@ -520,7 +469,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected CmsSitemapBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
+    protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
@@ -528,32 +477,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsSitemapBrokenLinkBean(title, subtitle);
-    }
-
-    /**
-     * Gets the resources which link to a given (sitemap or structure) id.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the relation target resource
-     * @param deleteIds set of resources to delete
-     *  
-     * @return the list of resources which link to the given id
-     *  
-     * @throws CmsException
-     */
-    protected List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
-    throws CmsException {
-
-        List<CmsRelation> relations = cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES);
-        List<CmsResource> result = new ArrayList<CmsResource>();
-        for (CmsRelation relation : relations) {
-            // only add related resources that are not going to be deleted
-            if (!deleteIds.contains(relation.getSourceId())) {
-                result.add(relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION));
-            }
-        }
-        return result;
+        return new CmsBrokenLinkBean(title, subtitle);
     }
 
     /**
@@ -788,9 +712,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(entryFolderPath, entryFolder, null, generateInheritProperties(
-                    change,
-                    entryFolder));
+                entryFolder = cms.createResource(
+                    entryFolderPath,
+                    entryFolder,
+                    null,
+                    generateInheritProperties(change, entryFolder));
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
                 newRes = cms.createResource(
                     entryPath,
@@ -809,8 +735,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             // mark position as not set
             newEntry.setPosition(-1);
+            change.getClipBoardData().getModifications().remove(null);
+            change.getClipBoardData().getModifications().put(newEntry.getId(), newEntry);
         }
-
         return newEntry;
     }
 
@@ -990,32 +917,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Helper method for converting a map which maps sitemap entries to resources to a list of "broken link" beans,
-     * which have beans representing the source of the corresponding link as children.<p>  
-     * 
-     * @param linkMap a multimap from sitemap entries to resources  
-     * 
-     * @return a list of beans representing links which will be broken 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    @SuppressWarnings("unchecked")
-    private List<CmsSitemapBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
-
-        List<CmsSitemapBrokenLinkBean> result = new ArrayList<CmsSitemapBrokenLinkBean>();
-        for (CmsResource entry : (Set<CmsResource>)linkMap.keySet()) {
-            CmsSitemapBrokenLinkBean parentBean = createSitemapBrokenLinkBean(entry);
-            result.add(parentBean);
-            Collection<CmsResource> values = linkMap.getCollection(entry);
-            for (CmsResource resource : values) {
-                CmsSitemapBrokenLinkBean childBean = createSitemapBrokenLinkBean(resource);
-                parentBean.addChild(childBean);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the sitemap children for the given path with all descendants up to the given level, ie. 
      * <dl><dt>levels=1</dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
      * and so on.<p>
@@ -1057,21 +958,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         result.setModifications(getModifiedList());
         result.setDeletions(getDeletedList());
         return result;
-    }
-
-    /**
-     * Returns the default template for the given sitemap.<p>
-     * 
-     * @param entryPoint the sitemap URI
-     * 
-     * @return the default template
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    private CmsSitemapTemplate getDefaultTemplate(String entryPoint) throws CmsRpcException {
-
-        return null;
-
     }
 
     /**
@@ -1532,14 +1418,18 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             JSONArray modified = new JSONArray();
             if (clipboardData.getModifications() != null) {
                 for (CmsUUID id : clipboardData.getModifications().keySet()) {
-                    modified.put(id.toString());
+                    if (id != null) {
+                        modified.put(id.toString());
+                    }
                 }
             }
             user.setAdditionalInfo(ADDINFO_ADE_MODIFIED_LIST, modified.toString());
             JSONArray deleted = new JSONArray();
             if (clipboardData.getDeletions() != null) {
                 for (CmsUUID id : clipboardData.getDeletions().keySet()) {
-                    deleted.put(id.toString());
+                    if (id != null) {
+                        deleted.put(id.toString());
+                    }
                 }
             }
             user.setAdditionalInfo(ADDINFO_ADE_DELETED_LIST, deleted.toString());
@@ -1621,7 +1511,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
         clientEntry.setResourceTypeName(type);
         return clientEntry;
-
     }
 
     /**

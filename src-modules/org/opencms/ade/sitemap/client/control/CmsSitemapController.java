@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/03/10 07:48:53 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,15 +48,13 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
-import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -65,6 +63,10 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
@@ -91,7 +93,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 8.0.0
  */
@@ -135,6 +137,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
+
+    /** The vfs service. */
+    private I_CmsVfsServiceAsync m_vfsService;
 
     /**
      * Constructor.<p>
@@ -339,7 +344,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             public void onFailure(Throwable caught) {
 
-                // TODO: Auto-generated method stub
+                // nothing to do
             }
 
             public void onSuccess(CmsClientSitemapEntry result) {
@@ -495,15 +500,12 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * which represent the links that would be broken if the sitemap entries
      * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
      * 
-     * @param deleteEntry the entry to delete 
-     * 
+     * @param sitePath the site-path of the resource to delete 
      * @param callback the callback which will be called with the results 
      */
-    public void getBrokenLinks(
-        final CmsClientSitemapEntry deleteEntry,
-        final AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback) {
+    public void getBrokenLinks(final String sitePath, final I_CmsSimpleCallback<List<CmsBrokenLinkBean>> callback) {
 
-        CmsRpcAction<List<CmsSitemapBrokenLinkBean>> action = new CmsRpcAction<List<CmsSitemapBrokenLinkBean>>() {
+        CmsRpcAction<List<CmsBrokenLinkBean>> action = new CmsRpcAction<List<CmsBrokenLinkBean>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -512,17 +514,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                getService().getBrokenLinksToSitemapEntries(deleteEntry, this);
+                getVfsService().getBrokenLinks(sitePath, this);
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(List<CmsSitemapBrokenLinkBean> result) {
+            protected void onResponse(List<CmsBrokenLinkBean> result) {
 
                 stop(false);
-                callback.onSuccess(result);
+                callback.execute(result);
             }
         };
         action.execute();
@@ -594,33 +596,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public CmsSitemapData getData() {
 
         return m_data;
-    }
-
-    /**
-     * This method returns the default template for a given sitemap path.<p>
-     * 
-     * Starting from the given path, it traverses the ancestors of the entry to find a sitemap 
-     * entry with a non-null 'template-inherited' property value, and then returns this value.
-     * 
-     * @param sitemapPath the sitemap path for which the default template should be returned
-     *  
-     * @return the default template 
-     */
-    public CmsSitemapTemplate getDefaultTemplate(String sitemapPath) {
-
-        if ((sitemapPath == null) || sitemapPath.equals("")) {
-            return m_data.getDefaultTemplate();
-        }
-
-        CmsClientSitemapEntry entry = getEntry(sitemapPath);
-        if (entry == null) {
-            return m_data.getDefaultTemplate();
-        }
-        String effectiveTemplate = getEffectiveProperty(entry, CmsSitemapManager.Property.template.name());
-        if (effectiveTemplate != null) {
-            return m_data.getTemplates().get(effectiveTemplate);
-        }
-        return m_data.getDefaultTemplate();
     }
 
     /**
@@ -1281,6 +1256,19 @@ public class CmsSitemapController implements I_CmsSitemapController {
             return entry.getSitePath();
         }
         return CmsResource.getParentFolder(entry.getSitePath()) + newUrlName + "/";
+    }
+
+    /** 
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    protected I_CmsVfsServiceAsync getVfsService() {
+
+        if (m_vfsService == null) {
+            m_vfsService = GWT.create(I_CmsVfsService.class);
+        }
+        return m_vfsService;
     }
 
     /**

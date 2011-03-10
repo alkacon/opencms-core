@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/03/10 07:48:54 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.shared.UmbrellaException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -75,39 +75,38 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
     public void onModuleLoad() {
 
         enableRemoteExceptionHandler();
-
-        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.contextmenuCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.errorDialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.notificationCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.generalCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.headerCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.highlightCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.iconsCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.stateCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.listItemCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.availabilityCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.fieldsetCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.resourceStateCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.dateBoxCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.selectAreaCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.menuButtonCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.progressBarCss().ensureInjected();
+        I_CmsLayoutBundle bundle = I_CmsLayoutBundle.INSTANCE;
+        bundle.buttonCss().ensureInjected();
+        bundle.contentEditorCss().ensureInjected();
+        bundle.contextmenuCss().ensureInjected();
+        bundle.dialogCss().ensureInjected();
+        bundle.errorDialogCss().ensureInjected();
+        bundle.notificationCss().ensureInjected();
+        bundle.dragdropCss().ensureInjected();
+        bundle.floatDecoratedPanelCss().ensureInjected();
+        bundle.generalCss().ensureInjected();
+        bundle.headerCss().ensureInjected();
+        bundle.highlightCss().ensureInjected();
+        bundle.iconsCss().ensureInjected();
+        bundle.linkWarningCss().ensureInjected();
+        bundle.listItemWidgetCss().ensureInjected();
+        bundle.listTreeCss().ensureInjected();
+        bundle.stateCss().ensureInjected();
+        bundle.tabbedPanelCss().ensureInjected();
+        bundle.toolbarCss().ensureInjected();
+        bundle.listItemCss().ensureInjected();
+        bundle.availabilityCss().ensureInjected();
+        bundle.fieldsetCss().ensureInjected();
+        bundle.resourceStateCss().ensureInjected();
+        bundle.dateBoxCss().ensureInjected();
+        bundle.selectAreaCss().ensureInjected();
+        bundle.menuButtonCss().ensureInjected();
+        bundle.progressBarCss().ensureInjected();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 
         I_CmsImageBundle.INSTANCE.style().ensureInjected();
         I_CmsImageBundle.INSTANCE.contextMenuIcons().ensureInjected();
-
-        I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 

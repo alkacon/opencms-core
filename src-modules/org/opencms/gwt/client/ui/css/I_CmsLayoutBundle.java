@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2011/03/10 07:48:53 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 8.0.0
  */
@@ -547,6 +547,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String toolTip();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String truncatingLabel();
     }
 
@@ -660,6 +667,24 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         @ClassName("ui_icon")
         String uiIcon();
 
+    }
+
+    /** Link warning panel CSS. */
+    interface I_CmsLinkWarningCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String brokenLink();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deletedEntryLabel();
     }
 
     /** List item CSS. */
@@ -1544,6 +1569,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("buttonIcons.css")
     @CssResource.NotStrict
     I_CmsIconsCss iconsCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the list item CSS 
+     */
+    @Source("linkWarning.css")
+    I_CmsLinkWarningCss linkWarningCss();
 
     /**
      * Access method.<p>

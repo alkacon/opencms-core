@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/03/10 07:48:54 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  */
@@ -52,6 +52,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_TEXT_1 = "GUI_BROKEN_LINK_TEXT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
@@ -90,6 +96,12 @@ public final class Messages {
     public static final String GUI_DIALOG_CONTENTEDITOR_TITLE_0 = "GUI_DIALOG_CONTENTEDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_DELETE_TEXT_1 = "GUI_DIALOG_DELETE_TEXT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_DELETE_TITLE_0 = "GUI_DIALOG_DELETE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TEXT_0 = "GUI_DIALOG_RESET_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -124,6 +136,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_WARNING_TITLE_0 = "GUI_LINK_WARNING_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
@@ -232,7 +247,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
-
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";

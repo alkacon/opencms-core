@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/10 07:48:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 
 import java.util.List;
@@ -42,11 +43,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsVfsServiceAsync {
+
+    /**
+     * Returns a list of potentially broken links, if the given resource was deleted.<p>
+     * 
+     * @param sitePath the resource site-path
+     * @param callback the callback
+     */
+    void getBrokenLinks(String sitePath, AsyncCallback<List<CmsBrokenLinkBean>> callback);
 
     /**
      * Fetches the list of children of a path.<p>

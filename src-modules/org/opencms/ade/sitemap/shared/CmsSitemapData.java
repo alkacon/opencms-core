@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/10 07:48:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0
  */
@@ -63,9 +63,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The default info bean for new elements. **/
     private CmsNewResourceInfo m_defaultNewElementInfo;
-
-    /** The default template. */
-    private CmsSitemapTemplate m_defaultTemplate;
 
     /** The detail page table. */
     private CmsDetailPageTable m_detailPageTable;
@@ -126,7 +123,6 @@ public class CmsSitemapData implements IsSerializable {
     /**
      * Constructor.<p>
      * 
-     * @param defaultTemplate the default template
      * @param templates the available templates
      * @param properties the properties
      * @param clipboardData the clipboard data
@@ -148,7 +144,6 @@ public class CmsSitemapData implements IsSerializable {
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
      */
     public CmsSitemapData(
-        CmsSitemapTemplate defaultTemplate,
         Map<String, CmsSitemapTemplate> templates,
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
@@ -169,7 +164,6 @@ public class CmsSitemapData implements IsSerializable {
         List<CmsNewResourceInfo> resourceTypeInfos,
         boolean canEditDetailPages) {
 
-        m_defaultTemplate = defaultTemplate;
         m_templates = templates;
         m_properties = properties;
         m_clipboardData = clipboardData;
@@ -230,16 +224,6 @@ public class CmsSitemapData implements IsSerializable {
     public CmsNewResourceInfo getDefaultNewElementInfo() {
 
         return m_defaultNewElementInfo;
-    }
-
-    /**
-     * Returns the default template.<p>
-     *
-     * @return the default template
-     */
-    public CmsSitemapTemplate getDefaultTemplate() {
-
-        return m_defaultTemplate;
     }
 
     /**

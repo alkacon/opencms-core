@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsLinkWarningPanel.java,v $
- * Date   : $Date: 2010/07/23 11:38:25 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLinkWarningPanel.java,v $
+ * Date   : $Date: 2011/03/10 07:48:54 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,14 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.ui;
+package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
-import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.List;
@@ -79,11 +77,13 @@ public class CmsLinkWarningPanel extends Composite {
 
     /**
      * Default constructor.<p>
+     * 
+     * @param sitePath the site-path of the resource going to be deleted
      */
-    public CmsLinkWarningPanel() {
+    public CmsLinkWarningPanel(String sitePath) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        String text = Messages.get().key(Messages.GUI_BROKEN_LINK_TEXT_0);
+        String text = Messages.get().key(Messages.GUI_BROKEN_LINK_TEXT_1, sitePath);
         m_label.setText(text);
     }
 
@@ -92,9 +92,9 @@ public class CmsLinkWarningPanel extends Composite {
      * 
      * @param brokenLinkBeans the beans representing the broken links 
      */
-    public void fill(List<CmsSitemapBrokenLinkBean> brokenLinkBeans) {
+    public void fill(List<CmsBrokenLinkBean> brokenLinkBeans) {
 
-        for (CmsSitemapBrokenLinkBean brokenLinkBean : brokenLinkBeans) {
+        for (CmsBrokenLinkBean brokenLinkBean : brokenLinkBeans) {
             m_linkPanel.add(createTreeItem(brokenLinkBean));
         }
     }
@@ -106,7 +106,7 @@ public class CmsLinkWarningPanel extends Composite {
      * 
      * @return the new list item widget
      */
-    protected CmsListItemWidget createListItemWidget(CmsSitemapBrokenLinkBean brokenLinkBean) {
+    protected CmsListItemWidget createListItemWidget(CmsBrokenLinkBean brokenLinkBean) {
 
         CmsListInfoBean info = new CmsListInfoBean();
         String title = brokenLinkBean.getTitle();
@@ -127,18 +127,18 @@ public class CmsLinkWarningPanel extends Composite {
      * 
      * @return a tree item 
      */
-    protected CmsTreeItem createTreeItem(CmsSitemapBrokenLinkBean brokenLinkBean) {
+    protected CmsTreeItem createTreeItem(CmsBrokenLinkBean brokenLinkBean) {
 
         CmsListItemWidget itemWidget = createListItemWidget(brokenLinkBean);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
-        itemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().deletedEntryLabel());
-        itemWidget.addSubtitleStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().deletedEntryLabel());
-        for (CmsSitemapBrokenLinkBean child : brokenLinkBean.getChildren()) {
+        itemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
+        itemWidget.addSubtitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
+        for (CmsBrokenLinkBean child : brokenLinkBean.getChildren()) {
             CmsListItemWidget childItemWidget = createListItemWidget(child);
             CmsTreeItem childItem = new CmsTreeItem(
                 false,
                 childItemWidget,
-                I_CmsLayoutBundle.INSTANCE.sitemapItemCss().brokenLink());
+                I_CmsLayoutBundle.INSTANCE.linkWarningCss().brokenLink());
             item.addChild(childItem);
         }
         return item;

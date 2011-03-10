@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/03/10 07:48:54 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,11 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
@@ -76,12 +70,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAIL_PAGE_TITLE_1 = "GUI_DETAIL_PAGE_TITLE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_DELETE_TEXT_0 = "GUI_DIALOG_DELETE_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_DELETE_TITLE_0 = "GUI_DIALOG_DELETE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLED_PARENT_SITEMAP_0 = "GUI_DISABLED_PARENT_SITEMAP_0";
@@ -163,9 +151,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LINK_WARNING_TITLE_0 = "GUI_LINK_WARNING_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MAIN_DETAIL_PAGE_TITLE_1 = "GUI_MAIN_DETAIL_PAGE_TITLE_1";

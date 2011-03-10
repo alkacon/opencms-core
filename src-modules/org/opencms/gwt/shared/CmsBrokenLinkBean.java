@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapBrokenLinkBean.java,v $
- * Date   : $Date: 2010/07/23 11:38:26 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsBrokenLinkBean.java,v $
+ * Date   : $Date: 2011/03/10 07:48:54 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
+package org.opencms.gwt.shared;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @since 8.0.0
  */
-public class CmsSitemapBrokenLinkBean implements IsSerializable {
+public class CmsBrokenLinkBean implements IsSerializable {
 
     /** The child beans (usually represent link targets). */
-    private List<CmsSitemapBrokenLinkBean> m_children = new ArrayList<CmsSitemapBrokenLinkBean>();
+    private List<CmsBrokenLinkBean> m_children = new ArrayList<CmsBrokenLinkBean>();
 
     /** The title. */
     private String m_subtitle;
@@ -61,7 +61,7 @@ public class CmsSitemapBrokenLinkBean implements IsSerializable {
      * @param title the title 
      * @param subtitle the subtitle 
      */
-    public CmsSitemapBrokenLinkBean(String title, String subtitle) {
+    public CmsBrokenLinkBean(String title, String subtitle) {
 
         m_title = title;
         m_subtitle = subtitle;
@@ -70,7 +70,7 @@ public class CmsSitemapBrokenLinkBean implements IsSerializable {
     /**
      * Hidden default constructor.<p>
      */
-    protected CmsSitemapBrokenLinkBean() {
+    protected CmsBrokenLinkBean() {
 
         // do nothing
     }
@@ -82,7 +82,7 @@ public class CmsSitemapBrokenLinkBean implements IsSerializable {
      * 
      * @param bean the bean to add as a sub-bean 
      */
-    public void addChild(CmsSitemapBrokenLinkBean bean) {
+    public void addChild(CmsBrokenLinkBean bean) {
 
         getChildren().add(bean);
     }
@@ -92,7 +92,7 @@ public class CmsSitemapBrokenLinkBean implements IsSerializable {
      * 
      * @return the list of child beans 
      */
-    public List<CmsSitemapBrokenLinkBean> getChildren() {
+    public List<CmsBrokenLinkBean> getChildren() {
 
         return m_children;
     }

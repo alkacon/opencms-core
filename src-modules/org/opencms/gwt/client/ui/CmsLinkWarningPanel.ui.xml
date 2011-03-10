@@ -2,8 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:with field="resources" type="org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle" />
-	<ui:with field="baseRes" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.scrollPanel {
 			border: 1px solid;
@@ -26,7 +25,7 @@
 	</ui:style>
 	<g:FlowPanel styleName="{style.root}">
 		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}"  addStyleNames="{style.label}" />
-		<g:ScrollPanel styleName="{style.scrollPanel}"  addStyleNames="{baseRes.generalCss.border} {baseRes.generalCss.cornerAll}" >
+		<g:ScrollPanel styleName="{style.scrollPanel}"  addStyleNames="{resources.generalCss.border} {resources.generalCss.cornerAll}" >
 		<cms:CmsList ui:field="m_linkPanel" addStyleNames="{style.list}" />
 		</g:ScrollPanel>
 	</g:FlowPanel>

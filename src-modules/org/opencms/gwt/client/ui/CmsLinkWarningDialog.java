@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsLinkWarningDialog.java,v $
- * Date   : $Date: 2011/03/01 14:32:45 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLinkWarningDialog.java,v $
+ * Date   : $Date: 2011/03/10 07:48:54 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,13 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.ui;
+package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsPopupDialog;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.shared.CmsBrokenLinkBean;
 
 import java.util.List;
 
@@ -48,7 +45,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -65,11 +62,14 @@ public class CmsLinkWarningDialog extends CmsPopupDialog {
      * 
      * @param handler the handler which should be executed when the user presses the OK button
      * @param brokenLinkBeans the beans representing the links which would be broken 
+     * @param sitePath the site-path of the resource going to be deleted
      */
-    public CmsLinkWarningDialog(I_CmsConfirmDialogHandler handler, List<CmsSitemapBrokenLinkBean> brokenLinkBeans) {
+    public CmsLinkWarningDialog(
+        I_CmsConfirmDialogHandler handler,
+        List<CmsBrokenLinkBean> brokenLinkBeans,
+        String sitePath) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_LINK_WARNING_TITLE_0), new CmsLinkWarningPanel());
+        super(Messages.get().key(Messages.GUI_LINK_WARNING_TITLE_0), new CmsLinkWarningPanel(sitePath));
         m_handler = handler;
         m_content = (CmsLinkWarningPanel)getContent();
         m_content.fill(brokenLinkBeans);
