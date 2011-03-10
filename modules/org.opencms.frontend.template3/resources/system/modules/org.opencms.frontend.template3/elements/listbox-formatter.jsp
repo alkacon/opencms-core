@@ -77,11 +77,11 @@
 						<%-- Image at top|left|right position --%>
 						<c:if test="${!empty entry.image && (listbox.value['PositionImage'] == 'Top' || listbox.value['PositionImage'] == 'Left' || listbox.value['PositionImage'] == 'Right')}">
 							<c:choose>
-								<c:when test="${listbox.value['PositionImage'] == 'Left'}"><c:set var="float" value="left" /></c:when>
-								<c:when test="${listbox.value['PositionImage'] == 'Right'}"><c:set var="float" value="right" /></c:when>
+								<c:when test="${listbox.value['PositionImage'] == 'Left'}"><c:set var="cssFloat" value="left" /></c:when>
+								<c:when test="${listbox.value['PositionImage'] == 'Right'}"><c:set var="cssFloat" value="right" /></c:when>
 							</c:choose>
 		
-							<div <c:if test="${!empty float}">class="${float}"</c:if>>
+							<div <c:if test="${!empty cssFloat}">class="${cssFloat}"</c:if>>
 								<cms:img src="${entry.image}" alt="${entry.title}" scaleType="1" width="100" scaleQuality="90"/>
 							</div>
 						</c:if>
