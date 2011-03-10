@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsClientStringUtil.java,v $
- * Date   : $Date: 2011/03/03 18:01:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/10 07:49:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -114,11 +114,11 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native double parseFloat(String str) /*-{
-		var ret = parseFloat(str, 10);
-		if (isNaN(ret)) {
-			return 0;
-		}
-		return ret;
+        var ret = parseFloat(str, 10);
+        if (isNaN(ret)) {
+            return 0;
+        }
+        return ret;
     }-*/;
 
     /**
@@ -132,11 +132,11 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native int parseInt(String str) /*-{
-		var ret = parseInt(str, 10);
-		if (isNaN(ret)) {
-			return 0;
-		}
-		return ret;
+        var ret = parseInt(str, 10);
+        if (isNaN(ret)) {
+            return 0;
+        }
+        return ret;
     }-*/;
 
     /**
@@ -146,6 +146,6 @@ public final class CmsClientStringUtil {
      * @param s the String to push into the array
      */
     public static native void pushArray(JavaScriptObject array, String s) /*-{
-		array.push(s);
+        array.push(s);
     }-*/;
 }
