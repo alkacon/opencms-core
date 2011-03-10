@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/02 14:24:10 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/03/10 07:46:38 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0
  */
@@ -240,15 +240,7 @@ public class CmsContainerpageHandler {
                 dialog.setFormHandler(formHandler);
                 dialog.center();
             }
-
-            public void onError(String message) {
-
-                // can never happen 
-
-            }
-
         });
-
     }
 
     /**
@@ -410,15 +402,6 @@ public class CmsContainerpageHandler {
                     addToFavorites(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
             }
-
-            /**
-             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-             */
-            public void onError(String message) {
-
-                // TODO: Auto-generated method stub
-
-            }
         });
     }
 
@@ -441,15 +424,6 @@ public class CmsContainerpageHandler {
                 while (it.hasNext()) {
                     addToRecent(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
-            }
-
-            /**
-             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-             */
-            public void onError(String message) {
-
-                // TODO: Auto-generated method stub
-
             }
         });
     }

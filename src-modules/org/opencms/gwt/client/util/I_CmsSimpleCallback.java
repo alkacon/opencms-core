@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/I_CmsSimpleCallback.java,v $
- * Date   : $Date: 2010/03/26 09:42:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/10 07:46:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -50,12 +50,4 @@ public interface I_CmsSimpleCallback<T> {
      * @param arg the argument
      */
     void execute(T arg);
-
-    /**
-     * Method executed if an error occurred.<p>
-     * 
-     * @param message the error message 
-     */
-    void onError(String message);
-
 }

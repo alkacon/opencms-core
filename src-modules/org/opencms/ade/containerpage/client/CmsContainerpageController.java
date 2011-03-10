@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/02/22 09:42:03 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/03/10 07:46:38 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -164,10 +164,7 @@ public final class CmsContainerpageController {
                     elements.put(clientId, m_elements.get(clientId));
                 }
                 m_callback.execute(elements);
-                return;
             }
-            m_callback.onError("An error occurred while retrieving elements.");
-
         }
 
     }
@@ -288,10 +285,7 @@ public final class CmsContainerpageController {
             if (result != null) {
                 addElements(result);
                 m_callback.execute(m_elements.get(m_clientId));
-                return;
             }
-            m_callback.onError("An error occurred while retrieving element with id: '" + m_clientId + "'.");
-
         }
     }
 
@@ -1003,13 +997,7 @@ public final class CmsContainerpageController {
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
                 }
             }
-
-            public void onError(String message) {
-
-                // will never be executed, do nothing 
-            }
         };
-
         getElementWithProperties(clientId, properties, callback);
     }
 

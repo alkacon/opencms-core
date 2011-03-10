@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubcontainerEditor.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/10 07:46:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -204,12 +204,6 @@ public final class CmsSubcontainerEditor extends Composite {
             public void execute(Map<String, CmsContainerElementData> arg) {
 
                 setSubContainerData(arg);
-            }
-
-            public void onError(String message) {
-
-                // TODO: Auto-generated method stub
-
             }
         });
     }
