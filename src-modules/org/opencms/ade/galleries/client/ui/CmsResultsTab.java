@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/03/10 11:29:50 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 8.0.
  */
@@ -81,7 +81,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.37 $
+     * @version $Revision: 1.38 $
      * 
      * @since 8.0.0
      */
@@ -320,6 +320,26 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>    
+     */
+    public void updateListSize() {
+
+        int tabHeight = m_tab.getElement().getClientHeight();
+        // sanity check on tab height
+        tabHeight = tabHeight > 0 ? tabHeight : 434;
+        int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 0;
+        int optionsHeight = m_options.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
+        // 3 is some offset, because of the list border
+        int newListSize = tabHeight - paramsHeight - optionsHeight - 2;
+        // another sanity check, don't set any negative height 
+        if (newListSize > 0) {
+            m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#clearList()
      */
     @Override
@@ -335,24 +355,7 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     protected ArrayList<CmsPair<String, String>> getSortList() {
 
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
-        return list;
+        return getSortList(true);
     }
 
     /**
@@ -414,8 +417,10 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         if (m_types.size() == 1) {
             getList().addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+            m_sortSelectBox.setItems(getSortList(false));
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+            m_sortSelectBox.setItems(getSortList(true));
         }
     }
 
@@ -445,6 +450,37 @@ public class CmsResultsTab extends A_CmsListTab {
 
         int resultsDisplayed = searchObj.getMatchesPerPage() * searchObj.getPage();
         return (resultsDisplayed > searchObj.getResultCount()) ? searchObj.getResultCount() : resultsDisplayed;
+    }
+
+    /**
+     * Returns the list of properties to sort the results according to.<p>
+     * 
+     * @param includeType <code>true</code> to include sort according to type
+     * 
+     * @return the sort list
+     */
+    private ArrayList<CmsPair<String, String>> getSortList(boolean includeType) {
+
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
+        if (includeType) {
+            list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
+                Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
+            list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
+                Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
+        }
+        return list;
     }
 
     /**
@@ -498,28 +534,5 @@ public class CmsResultsTab extends A_CmsListTab {
             m_uploadButton.disable(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0));
         }
 
-    }
-
-    /**
-     * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>    
-     */
-    private void updateListSize() {
-
-        int tabHeight = m_tab.getElement().getClientHeight();
-        // sanity check on tab height
-        tabHeight = tabHeight > 0 ? tabHeight : 434;
-
-        int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
-            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 0;
-
-        int optionsHeight = m_options.getOffsetHeight()
-            + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
-
-        // 3 is some offset, because of the list border
-        int newListSize = tabHeight - paramsHeight - optionsHeight - 2;
-        // another sanity check, don't set any negative height 
-        if (newListSize > 0) {
-            m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
-        }
     }
 }

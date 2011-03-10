@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/03/10 11:29:50 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -73,7 +75,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.
  */
@@ -520,5 +522,20 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
             m_onAttachCommand.execute();
             m_onAttachCommand = null;
         }
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                updateSizes();
+            }
+        });
+    }
+
+    /**
+     * Updates variable ui-element dimensions, execute after dialog has been attached and it's content is displayed.<p>
+     */
+    protected void updateSizes() {
+
+        m_resultsTab.updateListSize();
     }
 }

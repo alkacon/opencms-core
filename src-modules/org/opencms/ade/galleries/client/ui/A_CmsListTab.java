@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/10 11:29:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -101,7 +101,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected FlowPanel m_tab;
 
     /** The select box to change the sort order. */
-    private CmsSelectBox m_sortSelectBox;
+    protected CmsSelectBox m_sortSelectBox;
 
     /**
      * The default constructor with drag handler.<p>
