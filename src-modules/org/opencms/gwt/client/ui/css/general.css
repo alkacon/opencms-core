@@ -30,6 +30,40 @@
 	}
 }
 
+.toolTip{
+	position: absolute;
+	z-index: 1000;
+	border: 1px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorMenu");
+	padding: 4px;
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSizeSmall");
+	color: value("constants.css.textColor");
+}
+
+@if user.agent ie6 {
+	
+	.toolTip {
+		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
+	}
+} @elif user.agent ie8 {
+
+/** Assigned to the body on drag start. */
+	.toolTip {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
+	}
+} @else {
+	.toolTip {
+		opacity: 0.85;
+	}
+}
+
+.toolTip p{
+	white-space: nowrap;
+	margin: 0px;
+	padding: 0px;
+}
+
 .cmsState{
 	border-color: value("constants.css.borderColor");
 	color: value("constants.css.textColor");
