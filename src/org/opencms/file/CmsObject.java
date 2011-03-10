@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/10 11:55:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -567,11 +567,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(
-        String sitePath,
-        CmsResource resource,
-        byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+    public CmsResource createResource(String sitePath, CmsResource resource, byte[] content, List properties)
+    throws CmsException {
 
         resource.setUserLastModified(getRequestContext().getCurrentUser().getId());
         resource.setDateLastModified(System.currentTimeMillis());
@@ -618,7 +615,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
-    public CmsResource createResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
+    public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
     throws CmsException, CmsIllegalArgumentException {
 
         return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
@@ -635,8 +632,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createSibling(String source, String destination, List<CmsProperty> properties)
-    throws CmsException {
+    public CmsResource createSibling(String source, String destination, List properties) throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         return getResourceType(resource).createSibling(this, m_securityManager, resource, destination, properties);
@@ -666,7 +662,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsUser createUser(String userFqn, String password, String description, Map<String, Object> additionalInfos)
+    public CmsUser createUser(String userFqn, String password, String description, Map additionalInfos)
     throws CmsException {
 
         return m_securityManager.createUser(m_context, userFqn, password, description, additionalInfos);
@@ -1164,9 +1160,14 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
-        ? ""
-        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
+        return m_securityManager.getGroupsOfUser(
+            m_context,
+            username,
+            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
+            includeOtherOus,
+            false,
+            directGroupsOnly,
+            remoteAddress);
     }
 
     /**
@@ -1576,8 +1577,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void importAccessControlEntries(CmsResource resource, List<CmsAccessControlEntry> acEntries)
-    throws CmsException {
+    public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
 
         m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
     }
@@ -1616,11 +1616,8 @@ public final class CmsObject {
      * 
      * @see CmsObject#moveToLostAndFound(String)
      */
-    public CmsResource importResource(
-        String resourcename,
-        CmsResource resource,
-        byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+    public CmsResource importResource(String resourcename, CmsResource resource, byte[] content, List properties)
+    throws CmsException {
 
         return getResourceType(resource).importResource(
             this,
@@ -1657,7 +1654,7 @@ public final class CmsObject {
         String email,
         int flags,
         long dateCreated,
-        Map<String, Object> additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         return m_securityManager.importUser(
             m_context,
@@ -3044,8 +3041,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
-    throws CmsException {
+    public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
@@ -3401,7 +3397,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void writePropertyObjects(CmsResource res, List<CmsProperty> properties) throws CmsException {
+    public void writePropertyObjects(CmsResource res, List properties) throws CmsException {
 
         getResourceType(res).writePropertyObjects(this, m_securityManager, res, properties);
     }
@@ -3418,7 +3414,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void writePropertyObjects(String resourcename, List<CmsProperty> properties) throws CmsException {
+    public void writePropertyObjects(String resourcename, List properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).writePropertyObjects(this, m_securityManager, resource, properties);
@@ -3476,7 +3472,7 @@ public final class CmsObject {
      *  
      * @throws CmsException if something goes wrong 
      */
-    public String writeUrlNameMapping(Iterator<String> nameSeq, CmsUUID structureId) throws CmsException {
+    public String writeUrlNameMapping(Iterator nameSeq, CmsUUID structureId) throws CmsException {
 
         return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId);
     }

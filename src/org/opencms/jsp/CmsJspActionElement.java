@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/10 11:55:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -388,7 +389,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes) {
+    public String img(String target, CmsImageScaler scaler, Map attributes) {
 
         return img(target, scaler, attributes, false);
     }
@@ -403,7 +404,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes, boolean partialTag) {
+    public String img(String target, CmsImageScaler scaler, Map attributes, boolean partialTag) {
 
         try {
             return CmsJspTagImage.imageTagAction(target, scaler, attributes, partialTag, getRequest());
@@ -487,8 +488,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, boolean editable, Map<String, Object> parameterMap)
-    throws JspException {
+    public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
 
         if (isNotInitialized()) {
             return;
@@ -498,8 +498,10 @@ public class CmsJspActionElement extends CmsJspBean {
             try {
                 modParameterMap = new HashMap<String, String[]>(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
-                for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
-                    String key = entry.getKey();
+                Iterator i = parameterMap.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry)i.next();
+                    String key = (String)entry.getKey();
                     Object value = entry.getValue();
                     if (value instanceof String[]) {
                         modParameterMap.put(key, (String[])value);
@@ -538,7 +540,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map<String, Object> parameterMap) throws JspException {
+    public void include(String target, String element, Map parameterMap) throws JspException {
 
         include(target, element, false, parameterMap);
     }
@@ -597,7 +599,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param editable flag to indicate if direct edit should be enabled for the element 
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, boolean editable, Map<String, Object> parameterMap) {
+    public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
 
         try {
             include(target, element, editable, parameterMap);
@@ -618,7 +620,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, Map<String, Object> parameterMap) {
+    public void includeSilent(String target, String element, Map parameterMap) {
 
         try {
             include(target, element, parameterMap);
