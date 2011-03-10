@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/11/18 15:28:37 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -68,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.
  */
@@ -80,7 +81,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.36 $
+     * @version $Revision: 1.37 $
      * 
      * @since 8.0.0
      */
@@ -127,11 +128,39 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Click-handler for the delete button.<p>
+     */
+    protected class DeleteHandler implements ClickHandler {
+
+        /** The resource path of the selected item. */
+        protected String m_resourcePath;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param resourcePath the item resource path 
+         */
+        public DeleteHandler(String resourcePath) {
+
+            m_resourcePath = resourcePath;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            getTabHandler().deleteResource(m_resourcePath);
+        }
+
+    }
+
+    /**
      * Special click handler to use with preview button.<p>
      */
     protected class PreviewHandler implements ClickHandler {
 
-        /** The id of the selected item. */
+        /** The resource path of the selected item. */
         private String m_resourcePath;
 
         /** The resource type of the selected item. */
@@ -211,7 +240,11 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
 
+    /** Set of resource types currently displayed in the result list. */
     private Set<String> m_types;
+
+    /** The upload button. */
+    private CmsUploadButton m_uploadButton;
 
     /**
      * The constructor.<p>
@@ -228,7 +261,7 @@ public class CmsResultsTab extends A_CmsListTab {
         m_tabHandler = tabHandler;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
-        m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabOptions());
+        m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabParamsPanel());
         m_tab.insert(m_params, 0);
         getList().addScrollHandler(new CmsAsynchronousScrollToBottomHandler());
     }
@@ -239,7 +272,7 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     public void clearParams() {
 
-        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
+        CmsDebugLog.getInstance().printLine("Unallowed call to clear params in result tab.");
     }
 
     /**
@@ -250,11 +283,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
-        String message = Messages.get().key(
-            Messages.GUI_LABEL_NUM_RESULTS_2,
-            new Integer(getResultsDisplayed(searchObj)),
-            new Integer(searchObj.getResultCount()));
-        m_infoLabel.setText(message);
+        displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
             getList().scrollToTop();
@@ -267,6 +296,7 @@ public class CmsResultsTab extends A_CmsListTab {
             showParams(paramPanels);
             addContent(searchObj);
         }
+        showUpload(searchObj);
     }
 
     /**
@@ -310,10 +340,6 @@ public class CmsResultsTab extends A_CmsListTab {
             Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
         list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
         list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
         list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
@@ -322,7 +348,10 @@ public class CmsResultsTab extends A_CmsListTab {
             Messages.GUI_SORT_LABEL_PATH_ASC_0)));
         list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_PATH_DESC_0)));
-
+        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
         return list;
     }
 
@@ -374,6 +403,7 @@ public class CmsResultsTab extends A_CmsListTab {
             m_types.add(resultItem.getType());
             CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dndHandler);
             listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
+            listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
             if (m_tabHandler.hasSelectResource()) {
                 listItem.addSelectClickHandler(new SelectHandler(
                     resultItem.getPath(),
@@ -387,6 +417,21 @@ public class CmsResultsTab extends A_CmsListTab {
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
         }
+    }
+
+    /**
+     * Displays the result count.<p>
+     * 
+     * @param displayed the displayed result items
+     * @param total the total of result items
+     */
+    private void displayResultCount(int displayed, int total) {
+
+        String message = Messages.get().key(
+            Messages.GUI_LABEL_NUM_RESULTS_2,
+            new Integer(displayed),
+            new Integer(total));
+        m_infoLabel.setText(message);
     }
 
     /**
@@ -421,6 +466,38 @@ public class CmsResultsTab extends A_CmsListTab {
             m_params.add(panel);
         }
         updateListSize();
+    }
+
+    /**
+     * Shows the upload button if appropriate.<p>
+     * 
+     * @param searchObj the current search object
+     */
+    private void showUpload(CmsGallerySearchBean searchObj) {
+
+        Set<String> targets = new HashSet<String>();
+
+        if (searchObj.getGalleries() != null) {
+            targets.addAll(searchObj.getGalleries());
+        }
+        if (searchObj.getFolders() != null) {
+            targets.addAll(searchObj.getFolders());
+        }
+        if (m_uploadButton == null) {
+            m_uploadButton = createUploadButtonForTarget("");
+            m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
+            m_tab.insert(m_uploadButton, 0);
+        }
+        String uploadTarget = null;
+        if (targets.size() == 1) {
+            uploadTarget = targets.iterator().next();
+            m_uploadButton.setTargetFolder(uploadTarget);
+            m_uploadButton.enable();
+            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
+        } else {
+            m_uploadButton.disable(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0));
+        }
+
     }
 
     /**

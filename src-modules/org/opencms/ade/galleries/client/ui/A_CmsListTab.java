@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,10 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.util.CmsPair;
 
@@ -57,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -206,6 +208,25 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         return new CmsList<I_CmsListItem>();
 
+    }
+
+    /**
+     * Creates an upload button for the given target.<p>
+     * 
+     * @param target the upload target folder
+     * 
+     * @return the upload button
+     */
+    protected CmsUploadButton createUploadButtonForTarget(String target) {
+
+        CmsUploadButton uploadButton = new CmsUploadButton();
+        uploadButton.setTargetFolder(target);
+        uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
+        uploadButton.setText(null);
+        uploadButton.setShowBorder(false);
+        uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
+        uploadButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        return uploadButton;
     }
 
     /**

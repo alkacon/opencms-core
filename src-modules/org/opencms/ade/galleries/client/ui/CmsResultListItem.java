@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/10/25 13:29:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,13 +35,11 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,11 +49,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
 public class CmsResultListItem extends CmsListItem {
+
+    /** The delete button. */
+    private CmsPushButton m_deleteButton;
 
     /** The preview button. */
     private CmsPushButton m_previewButton;
@@ -101,11 +102,11 @@ public class CmsResultListItem extends CmsListItem {
      */
     public CmsResultListItem(CmsResultItemBean resultItem, CmsDNDHandler dndHandler) {
 
-        CmsListItemWidget resultItemWidget;
-        CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
-            infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0), resultItem.getExcerpt());
-        }
+        CmsResultItemWidget resultItemWidget;
+        CmsListInfoBean infoBean = new CmsListInfoBean(
+            resultItem.getTitle(),
+            resultItem.getDescription(),
+            resultItem.getAdditionalInfo());
         m_vfsPath = resultItem.getPath();
         resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
         initContent(resultItemWidget);
@@ -119,7 +120,7 @@ public class CmsResultListItem extends CmsListItem {
             }
             initMoveHandle(dndHandler);
         } else {
-            if (((CmsResultItemWidget)resultItemWidget).hasTileView()) {
+            if (resultItemWidget.hasTileView()) {
                 addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
             }
         }
@@ -127,16 +128,28 @@ public class CmsResultListItem extends CmsListItem {
         m_previewButton = new CmsPushButton();
         m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
         m_previewButton.setShowBorder(false);
+        m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         m_previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         resultItemWidget.addButton(m_previewButton);
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
         m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
         m_selectButton.setShowBorder(false);
+        m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
+        // add delete button
+        m_deleteButton = new CmsPushButton();
+        m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
+        m_deleteButton.setShowBorder(false);
+        m_deleteButton.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
+        m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        if (!resultItem.isEditable()) {
+            m_deleteButton.disable(resultItem.getNoEditReson());
+        }
+        resultItemWidget.addButton(m_deleteButton);
         // add file icon
         resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
 
@@ -150,6 +163,16 @@ public class CmsResultListItem extends CmsListItem {
     public void addPreviewClickHandler(ClickHandler handler) {
 
         m_previewButton.addClickHandler(handler);
+    }
+
+    /**
+     * Adds the delete button click handler.<p>
+     * 
+     * @param handler the click handler
+     */
+    public void addDeleteClickHandler(ClickHandler handler) {
+
+        m_deleteButton.addClickHandler(handler);
     }
 
     /**

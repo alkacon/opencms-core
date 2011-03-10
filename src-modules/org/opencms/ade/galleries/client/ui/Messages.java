@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/24 15:23:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,14 +38,17 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GALLERY_UPLOAD_TITLE_0 = "GUI_GALLERY_UPLOAD_TITLE_0";
+    public static final String GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0 = "GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_UPLOAD_TITLE_1 = "GUI_GALLERY_UPLOAD_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_BIG_FORMAT_LABEL_0 = "GUI_IMAGE_BIG_FORMAT_LABEL_0";
@@ -93,13 +96,25 @@ public final class Messages {
     public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_HIDE_0 = "GUI_PREVIEW_BUTTON_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_SAVE_0 = "GUI_PREVIEW_BUTTON_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SAVE_DISABLED_0 = "GUI_PREVIEW_BUTTON_SAVE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_SELECT_0 = "GUI_PREVIEW_BUTTON_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SHOW_0 = "GUI_PREVIEW_BUTTON_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0 = "GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_DATEMODIFIED_0 = "GUI_PREVIEW_LABEL_DATEMODIFIED_0";
@@ -129,7 +144,7 @@ public final class Messages {
     public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESULT_LABEL_EXCERPT_0 = "GUI_RESULT_LABEL_EXCERPT_0";
+    public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0";

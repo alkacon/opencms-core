@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/01/19 14:18:48 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -51,6 +52,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -70,7 +73,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.
  */
@@ -83,8 +86,20 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
 
+    /** The parent panel for the gallery dialog. */
+    protected FlowPanel m_parentPanel;
+
+    /** The tabbed panel. */
+    protected CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
+
+    /** The auto-hide parent to this dialog if present. */
+    private I_CmsAutoHider m_autoHideParent;
+
     /** The categories tab. */
     private CmsCategoriesTab m_categoriesTab;
+
+    /** The gallery controller. */
+    private CmsGalleryController m_controller;
 
     /** The HTML id of the dialog element. */
     private String m_dialogElementId;
@@ -101,29 +116,20 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The command which should be executed when this widget is attached to the DOM. */
     private Command m_onAttachCommand;
 
-    /** The parent panel for the gallery dialog. */
-    private FlowPanel m_parentPanel;
-
-    /** The auto-hide parent to this dialog if present. */
-    private I_CmsAutoHider m_autoHideParent;
-
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
 
     /** The Full-text search tab. */
     private CmsSearchTab m_searchTab;
 
-    /** The tabbed panel. */
-    protected CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
+    /** The show preview button. */
+    private CmsPushButton m_showPreview;
 
     /** The types tab. */
     private CmsTypesTab m_typesTab;
 
     /** The VFS folder tab. */
     private CmsVfsTab m_vfsTab;
-
-    /** The gallery controller. */
-    private CmsGalleryController m_controller;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -144,7 +150,18 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
         m_parentPanel.add(m_tabbedPanel);
+        m_showPreview = new CmsPushButton();
+        m_showPreview.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
+        m_showPreview.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showPreview());
+        m_showPreview.addClickHandler(new ClickHandler() {
 
+            public void onClick(ClickEvent event) {
+
+                m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            }
+        });
+        m_showPreview.setVisible(false);
+        m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
         addResizeHandler(this);
@@ -357,12 +374,19 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Hides or shows the show-preview-button.<p>
+     * 
+     * @param hide <code>true</code> to hide the button
+     */
+    public void hideShowPreviewButton(boolean hide) {
+
+        m_showPreview.setVisible(!hide);
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.BeforeSelectionHandler#onBeforeSelection(com.google.gwt.event.logical.shared.BeforeSelectionEvent)
      */
     public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-
-        // event.cancel(), if the tab selection should be canceled, the tab will not be selected 
-        // Integer index = event.getItem(); the index of the selected tab               
 
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
         int newIndex = event.getItem().intValue();
@@ -403,14 +427,15 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      * Selects a tab by the given id.<p>
      * 
      * @param tabId the tab id
+     * @param fireEvent <code>true</code> to fire the tab event
      */
-    public void selectTab(GalleryTabId tabId) {
+    public void selectTab(GalleryTabId tabId, boolean fireEvent) {
 
         Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
         while (it.hasNext()) {
             A_CmsTab tab = it.next();
-            if (tabId.equals(tab.getTabId())) {
-                m_tabbedPanel.selectTab(tab);
+            if (tabId == GalleryTabId.valueOf(tab.getTabId())) {
+                m_tabbedPanel.selectTab(tab, fireEvent);
                 break;
             }
         }
@@ -496,5 +521,4 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
             m_onAttachCommand = null;
         }
     }
-
 }

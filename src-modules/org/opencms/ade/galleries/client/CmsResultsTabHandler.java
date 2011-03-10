@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/07/09 07:44:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ package org.opencms.ade.galleries.client;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void clearParams() {
 
         // nothing to do here
+    }
+
+    /**
+     * Deletes the given resource.<p>
+     * 
+     * @param resourcePath the resource path of the resource to delete
+     */
+    public void deleteResource(String resourcePath) {
+
+        m_controller.deleteResource(resourcePath);
     }
 
     /**

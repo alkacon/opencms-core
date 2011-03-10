@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  * 
@@ -349,6 +349,19 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     /**
      * Delegate method.<p>
      * 
+     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(Widget index)
+     * 
+     * @param tabWidget the tab widget to select
+     * @param fireEvent <code>true</code> to fire the tab event
+     */
+    public void selectTab(E tabWidget, boolean fireEvent) {
+
+        m_tabPanel.selectTab(tabWidget, fireEvent);
+    }
+
+    /**
+     * Delegate method.<p>
+     * 
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
      * 
      * @param tabIndex the index of the tab to be selected
@@ -356,6 +369,19 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     public void selectTab(int tabIndex) {
 
         m_tabPanel.selectTab(tabIndex);
+    }
+
+    /**
+     * Delegate method.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
+     * 
+     * @param tabIndex the index of the tab to be selected
+     * @param fireEvent <code>true</code> to fire the tab event
+     */
+    public void selectTab(int tabIndex, boolean fireEvent) {
+
+        m_tabPanel.selectTab(tabIndex, fireEvent);
     }
 
     /**

@@ -3,13 +3,23 @@
 	padding:0px;
 	overflow: hidden;
 }
- 
- 
+
+.tabPanel .resultTabUpload{
+	position: absolute;
+	top: 1px;
+	right: 1px;
+} 
 /* The height is set as inline style. */
 .parentPanel {				
 	min-height:483px;
 	min-width:648px;	
 	position:relative;		
+}
+
+.showPreview{
+	position: absolute;
+	top: 8px;
+	right: 8px;
 }
 
 .criteriaList {
@@ -46,6 +56,11 @@
 	margin-bottom:1px;
 	padding:2px;
 	background-color: value("constants.css.backgroundColorStateStandard");
+}
+
+.tabParamsPanel {
+	margin-bottom: 5px;
+	padding-right: 25px;
 }
 
 .tabOptions {

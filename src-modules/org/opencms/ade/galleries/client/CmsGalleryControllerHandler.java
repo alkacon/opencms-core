@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/01/19 14:18:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
 
@@ -80,6 +80,16 @@ public class CmsGalleryControllerHandler {
     public String getDialogElementId() {
 
         return m_galleryDialog.getDialogElementId();
+    }
+
+    /**
+     * Hides or shows the show-preview-button.<p>
+     * 
+     * @param hide <code>true</code> to hide the button
+     */
+    public void hideShowPreviewButton(boolean hide) {
+
+        m_galleryDialog.hideShowPreviewButton(hide);
     }
 
     /**
@@ -182,12 +192,10 @@ public class CmsGalleryControllerHandler {
         if (dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
             m_galleryDialog.fillResultTab(searchObj);
         }
-
         if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
             m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
         }
-
-        m_galleryDialog.selectTab(dialogBean.getStartTab());
+        m_galleryDialog.selectTab(dialogBean.getStartTab(), dialogBean.getStartTab() != GalleryTabId.cms_tab_results);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
             if (m_galleryDialog.isAttached()) {

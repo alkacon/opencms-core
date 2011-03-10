@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/01/03 15:47:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -124,6 +124,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String tabParamsPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String paramsText();
 
         /** Access method.<p>
@@ -131,6 +137,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String parentPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String resultTabUpload();
 
         /** Access method.<p>
          * 
@@ -191,6 +203,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String showParams();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showPreview();
 
         /** Access method.<p>
          * 
@@ -352,6 +370,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String hidePreview();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hiding();
 
         /** Access method.<p>
@@ -431,6 +455,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String propertyRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String savePropertiesButton();
     }
 
     /** The bundle instance. */

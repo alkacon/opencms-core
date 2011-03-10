@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,14 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
-import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsListItem;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
@@ -67,7 +64,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -75,9 +72,6 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "VfsTab";
-
-    /** TODO: set the controller! */
-    protected CmsGalleryController m_controller;
 
     /** A map from tree items to the corresponding data beans. */
     protected IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean> m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
@@ -174,18 +168,12 @@ public class CmsVfsTab extends A_CmsListTab {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(vfsEntry.getDisplayName());
-
+        info.setSubTitle(vfsEntry.getSitePath());
         // info.setSubTitle("...");
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
         liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
         if (vfsEntry.isEditable()) {
-            CmsUploadButton uploadButton = new CmsUploadButton();
-            uploadButton.setTargetFolder(vfsEntry.getSitePath());
-            uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_0));
-            uploadButton.setText(null);
-            uploadButton.setShowBorder(false);
-            uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-            liWidget.addButton(uploadButton);
+            liWidget.addButton(createUploadButtonForTarget(vfsEntry.getSitePath()));
         }
 
         final CmsCheckBox checkbox = new CmsCheckBox();

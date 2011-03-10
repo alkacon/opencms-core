@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -58,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.
  */
@@ -144,13 +142,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
                 checkBox.setChecked(true);
             }
             if (galleryItem.isEditable()) {
-                CmsUploadButton uploadButton = new CmsUploadButton();
-                uploadButton.setTargetFolder(galleryItem.getPath());
-                uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_0));
-                uploadButton.setText(null);
-                uploadButton.setShowBorder(false);
-                uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-                listItemWidget.addButton(uploadButton);
+                listItemWidget.addButton(createUploadButtonForTarget(galleryItem.getPath()));
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
             listItem.setId(galleryItem.getPath());

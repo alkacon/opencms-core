@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.
  */
@@ -271,22 +271,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
         if (treeEntry.getChildren() != null) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntry.getChildren()) {
-                // set the category tree entry bean
-                CmsListInfoBean categoryBean = new CmsListInfoBean(category.getTitle(), category.getDescription(), null);
-
-                // set the list item widget
-                CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
-                listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
-                // the checkbox
-                CmsCheckBox checkBox = new CmsCheckBox();
-                if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
-                    checkBox.setChecked(true);
-                }
-                checkBox.addClickHandler(new CheckboxHandler(category.getPath(), checkBox));
-
                 // set the category tree item and add to list 
-                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
-                treeItem.init(category.getPath(), categoryBean.getTitle(), categoryBean.getSubTitle());
+                CmsCategoryTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
                 addWidgetToList(treeItem);
                 treeItem.setOpen(true);
@@ -307,8 +293,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
             // set the list item widget
             CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
                 categoryBean.getTitle(),
-                categoryBean.getDescription(),
-                null));
+                CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
+                ? categoryBean.getDescription()
+                : categoryBean.getPath(), null));
             listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
             // the checkbox
             CmsCheckBox checkBox = new CmsCheckBox();
@@ -363,20 +350,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {
-                // set the category tree entry bean
-                CmsListInfoBean childBean = new CmsListInfoBean(child.getTitle(), child.getDescription(), null);
-                // set the list item widget
-                CmsListItemWidget childListItemWidget = new CmsListItemWidget(childBean);
-                childListItemWidget.setIcon(CATEGORY_ICON_CLASSES);
-                // the checkbox
-                CmsCheckBox checkBox = new CmsCheckBox();
-                if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
-                    checkBox.setChecked(true);
-                }
-                checkBox.addClickHandler(new CheckboxHandler(child.getPath(), checkBox));
                 // set the category tree item and add to parent tree item
-                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, childListItemWidget);
-                treeItem.init(child.getPath(), childBean.getTitle(), childBean.getSubTitle());
+                CmsCategoryTreeItem treeItem = buildTreeItem(child, selectedCategories);
                 if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
                     parent.setOpen(true);
                     openParents(parent);
@@ -385,6 +360,38 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 addChildren(treeItem, child.getChildren(), selectedCategories);
             }
         }
+    }
+
+    /**
+     * Builds a tree item for the given category.<p>
+     * 
+     * @param category the category
+     * @param selectedCategories the selected categories
+     * 
+     * @return the tree item widget
+     */
+    private CmsCategoryTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
+
+        CmsListInfoBean categoryBean = new CmsListInfoBean(
+            category.getTitle(),
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
+            ? category.getDescription()
+            : category.getPath(), null);
+
+        // set the list item widget
+        CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
+        listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
+        // the checkbox
+        CmsCheckBox checkBox = new CmsCheckBox();
+        if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
+            checkBox.setChecked(true);
+        }
+        checkBox.addClickHandler(new CheckboxHandler(category.getPath(), checkBox));
+
+        // set the category tree item and add to list 
+        CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
+        treeItem.init(category.getPath(), categoryBean.getTitle(), categoryBean.getSubTitle());
+        return treeItem;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultItemWidget.java,v $
- * Date   : $Date: 2010/09/14 14:20:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/10 08:46:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,11 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+
+import java.util.Map.Entry;
 
 import com.google.gwt.user.client.ui.HTML;
 
@@ -46,17 +49,17 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
-    /** The image resource type name. */
-    private static final String IMAGE_TYPE = "image";
-
     /** Standard image tile scale parameter. */
     private static final String IMAGE_SCALE_PARAM = "?__scale=w:142,h:100,t:1,c:transparent,r:2";
+
+    /** The image resource type name. */
+    private static final String IMAGE_TYPE = "image";
 
     /** Tile view flag. */
     private boolean m_hasTileView;
@@ -79,13 +82,12 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             // add tile view marker css classes
 
             // insert tile view image div
-            HTML imageTile = new HTML("<img src="
+            HTML imageTile = new HTML("<img src=\""
                 + CmsCoreProvider.get().link(resourcePath)
                 + IMAGE_SCALE_PARAM
-                + " title="
-                + infoBean.getTitle()
-                + " />");
+                + "\" />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
+            new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);
         }
 
@@ -99,6 +101,26 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     public boolean hasTileView() {
 
         return m_hasTileView;
+    }
+
+    /**
+     * Generates the HTML for the item tool-tip.<p>
+     * 
+     * @param infoBean the item info
+     * 
+     * @return the generated HTML
+     */
+    private String generateTooltipHtml(CmsListInfoBean infoBean) {
+
+        StringBuffer result = new StringBuffer();
+        result.append("<p><b>").append(infoBean.getTitle()).append("</b></p>");
+        result.append("<p>").append(infoBean.getSubTitle()).append("</p>");
+        if (infoBean.getAdditionalInfo() != null) {
+            for (Entry<String, String> entry : infoBean.getAdditionalInfo().entrySet()) {
+                result.append("<p>").append(entry.getKey()).append(":&nbsp;").append(entry.getValue()).append("</p>");
+            }
+        }
+        return result.toString();
     }
 
 }
