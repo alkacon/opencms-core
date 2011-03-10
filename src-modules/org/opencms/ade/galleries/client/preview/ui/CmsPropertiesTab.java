@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/09/08 08:21:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/10 08:47:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -63,13 +63,13 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     /** Text metrics key. */
     private static final String TM_PREVIEW_TAB_PROPERTIES = "PropertiesTab";
 
-    /** The save button. */
-    private CmsPushButton m_saveButton;
+    private FlowPanel m_content;
 
     /** The tab handler. */
     private I_CmsPreviewHandler<?> m_handler;
 
-    private FlowPanel m_content;
+    /** The save button. */
+    private CmsPushButton m_saveButton;
 
     /**
      * The constructor.<p>
@@ -89,9 +89,9 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
         m_main.insert(m_content, 0);
         // buttons
         m_saveButton = new CmsPushButton();
-        m_saveButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewButton());
+        m_saveButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().savePropertiesButton());
         m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
-        m_saveButton.disable("nothing changed");
+        m_saveButton.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_DISABLED_0));
         m_saveButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -103,7 +103,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
             }
         });
 
-        m_buttonBar.add(m_saveButton);
+        m_main.add(m_saveButton);
     }
 
     /**
@@ -172,6 +172,15 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        setChanged(true);
+        m_saveButton.enable();
+    }
+
+    /**
      * Updates the size of the dialog after the window was resized.<p>
      * 
      * @param width the new width
@@ -182,6 +191,15 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
         m_tabHeight = height;
         m_tabWidth = width;
         // TODO: implement
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
+     */
+    @Override
+    protected I_CmsPreviewHandler<?> getHandler() {
+
+        return m_handler;
     }
 
     /**
@@ -197,23 +215,5 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     private int calculateWidth(int width) {
 
         return ((width - 13) / 2) - 18;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
-     */
-    @Override
-    protected I_CmsPreviewHandler<?> getHandler() {
-
-        return m_handler;
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        setChanged(true);
-        m_saveButton.enable();
     }
 }
