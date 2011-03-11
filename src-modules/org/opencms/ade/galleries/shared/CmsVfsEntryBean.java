@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsVfsEntryBean.java,v $
- * Date   : $Date: 2011/02/17 08:54:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/11 09:12:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.util.CmsStringUtil;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -38,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsVfsEntryBean implements IsSerializable {
 
@@ -51,18 +53,23 @@ public class CmsVfsEntryBean implements IsSerializable {
     /** The site path of this VFS entry. */
     private String m_sitePath;
 
+    /** The folder title. */
+    private String m_title;
+
     /**
      * Creates a new VFS entry bean.<p>
      * 
      * @param sitePath the site path
+     * @param title the folder title
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      */
-    public CmsVfsEntryBean(String sitePath, boolean isRoot, boolean editable) {
+    public CmsVfsEntryBean(String sitePath, String title, boolean isRoot, boolean editable) {
 
         m_sitePath = sitePath;
         m_isRoot = isRoot;
         m_editable = editable;
+        m_title = title;
     }
 
     /**
@@ -80,6 +87,9 @@ public class CmsVfsEntryBean implements IsSerializable {
      */
     public String getDisplayName() {
 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_title)) {
+            return m_title;
+        }
         if (m_isRoot) {
             return m_sitePath;
         } else {

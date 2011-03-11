@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/03/10 11:29:50 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/03/11 09:12:05 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.
  */
@@ -81,7 +81,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.38 $
+     * @version $Revision: 1.39 $
      * 
      * @since 8.0.0
      */
@@ -415,12 +415,17 @@ public class CmsResultsTab extends A_CmsListTab {
             }
             addWidgetToList(listItem);
         }
+        String selectValue = m_sortSelectBox.getFormValueAsString();
         if (m_types.size() == 1) {
             getList().addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            m_sortSelectBox.setItems(getSortList(false));
+            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
+                m_sortSelectBox.setItems(getSortList(false));
+            }
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            m_sortSelectBox.setItems(getSortList(true));
+            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
+                m_sortSelectBox.setItems(getSortList(true));
+            }
         }
     }
 

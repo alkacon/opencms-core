@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/03/11 09:12:05 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -102,13 +101,10 @@ public class CmsResultListItem extends CmsListItem {
      */
     public CmsResultListItem(CmsResultItemBean resultItem, CmsDNDHandler dndHandler) {
 
-        CmsResultItemWidget resultItemWidget;
-        CmsListInfoBean infoBean = new CmsListInfoBean(
-            resultItem.getTitle(),
-            resultItem.getDescription(),
-            resultItem.getAdditionalInfo());
-        m_vfsPath = resultItem.getPath();
-        resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
+        CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(
+            resultItem,
+            resultItem.getType(),
+            resultItem.getPath());
         initContent(resultItemWidget);
         if (dndHandler != null) {
             setId(resultItem.getClientId());

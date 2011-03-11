@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsResultItemBean.java,v $
- * Date   : $Date: 2011/03/10 08:44:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/11 09:12:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,11 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.sort.I_CmsHasPath;
 import org.opencms.gwt.shared.sort.I_CmsHasTitle;
 import org.opencms.gwt.shared.sort.I_CmsHasType;
 import org.opencms.util.CmsStringUtil;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsResultListItem}s.<p>
@@ -48,14 +44,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType, IsSerializable {
-
-    /** The additional info. */
-    private Map<String, String> m_additionalInfo;
+public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType {
 
     /** The structured id of the resource. */
     private String m_clientId;
@@ -69,35 +62,8 @@ public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasT
     /** The resource path as a unique resource id. */
     private String m_path;
 
-    /** The result item title. */
-    private String m_title;
-
     /** The resource type name. */
     private String m_type;
-
-    /**
-     * Sets a new additional info.<p> 
-     * 
-     * @param name the additional info name
-     * @param value the additional info value
-     */
-    public void addAdditionalInfo(String name, String value) {
-
-        getAdditionalInfo().put(name, value);
-    }
-
-    /**
-     * Returns the additional info.<p>
-     *
-     * @return the additional info
-     */
-    public Map<String, String> getAdditionalInfo() {
-
-        if (m_additionalInfo == null) {
-            m_additionalInfo = new LinkedHashMap<String, String>();
-        }
-        return m_additionalInfo;
-    }
 
     /**
      * Returns the structured id.<p>
@@ -140,16 +106,6 @@ public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasT
     }
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
      * Returns the resource type name.<p>
      *
      * @return the resource type name
@@ -170,16 +126,6 @@ public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasT
     }
 
     /**
-     * Sets the additional info.<p>
-     *
-     * @param additionalInfo the additional info to set
-     */
-    public void setAdditionalInfo(Map<String, String> additionalInfo) {
-
-        m_additionalInfo = additionalInfo;
-    }
-
-    /**
      * Sets the structure id.<p>
      *
      * @param clientId the structure id to set
@@ -191,11 +137,14 @@ public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasT
 
     /**
      * Sets the description.<p>
+     * 
+     * Also used as sub-title.<p>
      *
      * @param description the description to set
      */
     public void setDescription(String description) {
 
+        super.setSubTitle(description);
         m_description = description;
     }
 
@@ -220,18 +169,17 @@ public class CmsResultItemBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasT
     }
 
     /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
+     * @see org.opencms.gwt.shared.CmsListInfoBean#setSubTitle(java.lang.String)
      */
-    public void setTitle(String title) {
+    @Override
+    public void setSubTitle(String subTitle) {
 
-        m_title = title;
+        setDescription(subTitle);
     }
 
     /**
      * Sets the resource type name.<p>
-     *
+     * 
      * @param type the resource type name to set
      */
     public void setType(String type) {

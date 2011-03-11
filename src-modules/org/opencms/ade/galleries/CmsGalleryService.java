@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/03/10 08:44:49 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/03/11 09:12:05 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
@@ -90,7 +91,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  * 
@@ -461,7 +462,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 CmsResourceTypeFolder.getStaticTypeName());
             for (CmsResource res : resources) {
-                result.add(new CmsVfsEntryBean(cms.getSitePath(res), false, settings.isEditable(cms, res)));
+                String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                result.add(new CmsVfsEntryBean(cms.getSitePath(res), title, false, settings.isEditable(cms, res)));
             }
             return result;
         } catch (Throwable e) {
@@ -581,7 +583,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
-                        sResult.getExcerpt());
+                        sResult.getExcerpt(),
+                        CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
                 bean.addAdditionalInfo(
                     Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
@@ -813,11 +816,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException {
 
         List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
+        CmsObject cms = getCmsObject();
         try {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 CmsResourceTypeFolder.getStaticTypeName());
-
-            rootFolders.add(new CmsVfsEntryBean("/", true, settings.isEditable(
+            String title = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+            rootFolders.add(new CmsVfsEntryBean("/", title, true, settings.isEditable(
                 getCmsObject(),
                 getCmsObject().readResource("/"))));
         } catch (CmsException e) {
