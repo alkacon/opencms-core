@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/02/01 15:02:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/11 09:11:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -288,8 +288,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             String stateKey = Messages.get().key(Messages.GUI_RESOURCE_STATE_0);
             String stateValue = CmsResourceStateUtil.getStateName(state);
             String stateStyle = CmsResourceStateUtil.getStateStyle(state);
-            m_pageInfo.addAdditionalInfo(stateKey, stateValue);
-            m_pageInfo.setValueStyle(stateKey, stateStyle);
+            m_pageInfo.addAdditionalInfo(stateKey, stateValue, stateStyle);
         }
 
         // create the info box

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/11 09:11:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +53,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -192,9 +193,9 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                 }
             });
             m_additionalInfo.clear();
-            for (Entry<String, String> entry : infoBean.getAdditionalInfo().entrySet()) {
-                String valueStyle = infoBean.getValueStyle(entry.getKey());
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue(), valueStyle);
+            for (Entry<String, CmsPair<String, String>> entry : infoBean.getAdditionalInfo().entrySet()) {
+                CmsPair<String, String> values = entry.getValue();
+                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), values.getFirst(), values.getSecond());
                 m_additionalInfo.add(info);
             }
 

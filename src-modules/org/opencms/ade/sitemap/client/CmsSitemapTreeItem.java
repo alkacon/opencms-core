@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/03/11 09:11:12 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,9 +48,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -66,7 +66,6 @@ import org.opencms.util.CmsUUID;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 8.0.0
  * 
@@ -321,12 +320,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         info.setPageIcon(m_pageIcon);
         info.setTitle(m_entry.getTitle());
         info.setSubTitle(getDisplayedUrl(m_entry.getSitePath()));
-
-        Map<String, String> addInfo = new LinkedHashMap<String, String>();
-        addInfo.put(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
-        addInfo.put(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
-        info.setAdditionalInfo(addInfo);
-
+        info.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
+        info.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
         return info;
     }
 
@@ -613,6 +608,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateColor(CmsClientSitemapEntry entry) {
 
+        //TODO: check if still needed
     }
 
     /**

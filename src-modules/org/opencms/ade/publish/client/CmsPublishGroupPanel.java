@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/11 09:11:13 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -159,10 +159,8 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         // this can be null for the source resources of broken relations in the 'broken links' 
         // panel since these resources don't have to be new or deleted or changed
         if (stateName != null) {
-            info.addAdditionalInfo(stateLabel, stateName);
+            info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
         }
-        info.setValueStyle(stateLabel, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
-
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         if (resourceBean.getInfo() != null) {
             Image warningImage = new Image(I_CmsIconBundle.INSTANCE.warningIcon());

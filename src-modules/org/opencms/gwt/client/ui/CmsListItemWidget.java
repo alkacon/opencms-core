@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/02/23 11:39:48 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/03/11 09:11:12 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.0
  */
@@ -117,9 +118,11 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             m_titleLabel.addStyleName(style.itemAdditionalTitle());
             panel.add(m_titleLabel);
             // create value
-            m_valueLabel = new CmsLabel(value);
+            m_valueLabel = new CmsLabel();
             if ((value == null) || (value.trim().length() == 0)) {
                 m_valueLabel.setHTML(CmsDomUtil.Entity.nbsp.html());
+            } else {
+                m_valueLabel.setHTML(value);
             }
             m_valueLabel.addStyleName(style.itemAdditionalValue());
             if (additionalStyle != null) {
@@ -772,9 +775,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                     setAdditionalInfoVisible(!getElement().getClassName().contains(CmsListItemWidget.OPENCLASS));
                 }
             });
-            for (Entry<String, String> entry : infoBean.getAdditionalInfo().entrySet()) {
-                String valueStyle = infoBean.getValueStyle(entry.getKey());
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue(), valueStyle);
+            for (Entry<String, CmsPair<String, String>> entry : infoBean.getAdditionalInfo().entrySet()) {
+                CmsPair<String, String> values = entry.getValue();
+                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), values.getFirst(), values.getSecond());
                 m_additionalInfo.add(info);
             }
         }

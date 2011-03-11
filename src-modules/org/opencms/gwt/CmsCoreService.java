@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/03/11 09:11:13 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -100,7 +99,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  * 
@@ -777,14 +776,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     result.setPageIcon(CmsListInfoBean.PageIcon.standard);
                 }
             }
-            Map<String, String> additionalInfo = new LinkedHashMap<String, String>();
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
             Locale currentLocale = getCmsObject().getRequestContext().getLocale();
             String resTypeNiceName = OpenCms.getWorkplaceManager().getMessages(currentLocale).key(key);
-            additionalInfo.put("Type", resTypeNiceName);
-            result.setAdditionalInfo(additionalInfo);
-
+            result.addAdditionalInfo("Type", resTypeNiceName);
             return result;
         } catch (CmsException e) {
             error(e);
