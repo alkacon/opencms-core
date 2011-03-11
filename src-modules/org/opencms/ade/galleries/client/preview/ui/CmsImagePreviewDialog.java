@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2011/03/10 11:30:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/11 09:10:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Image;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -107,8 +107,11 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         m_propertiesTab.fillProperties(infoBean.getProperties());
         m_imageInfosTab.fillContent(infoBean);
         if (m_initialFill) {
-            m_imageFormatTab.fillContent(infoBean);
+            if (getGalleryMode() == GalleryMode.widget) {
+                m_imageFormatTab.fillContent(infoBean);
+            }
             if (getGalleryMode() == GalleryMode.editor) {
+                m_imageFormatTab.fillContent(infoBean);
                 m_imageEditorFormatsTab.fillContent(infoBean);
                 m_imageAdvancedTab.fillContent(infoBean);
             }
