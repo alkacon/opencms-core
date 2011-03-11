@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPair.java,v $
- * Date   : $Date: 2011/02/18 14:32:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/11 09:09:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,11 @@
 
 package org.opencms.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.base.Objects;
 
 /**
  * Generic pair class.<p>
@@ -46,17 +45,28 @@ import com.google.common.base.Objects;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsPair<A, B> {
+public class CmsPair<A, B> implements Serializable {
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1185676847810113664L;
 
     /** First component of the pair. */
     private A m_first;
 
     /** Second component of the pair. */
     private B m_second;
+
+    /**
+     * Serialization constructor.<p>
+     */
+    public CmsPair() {
+
+        // do nothing
+    }
 
     /**
      * Creates a new pair containing two objects.<p>
@@ -138,7 +148,7 @@ public class CmsPair<A, B> {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object o) {
 
@@ -175,7 +185,10 @@ public class CmsPair<A, B> {
     @Override
     public int hashCode() {
 
-        return Objects.hashCode(getFirst(), getSecond());
+        int hash = super.hashCode();
+        hash += m_first != null ? m_first.hashCode() : 0;
+        hash += m_second != null ? m_second.hashCode() : 0;
+        return hash;
     }
 
 }
