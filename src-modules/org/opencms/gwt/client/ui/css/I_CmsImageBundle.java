@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -146,6 +146,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String addIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String close();
 
         /** Access method.<p>
          * 
@@ -271,6 +277,18 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String triangleDown();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String triangleRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String unlockedIcon();
 
         /** Access method.<p>
@@ -309,6 +327,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the image resource 
+     */
+    @Source("images/close.png")
+    ImageResource close();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the button CSS
      */
     @Source("contextMenuIcons.css")
@@ -321,6 +347,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/crop.png")
     ImageResource crop();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/cropRemove.png")
+    ImageResource cropRemove();
 
     /**
      * Image resource accessor.<p>
@@ -358,6 +392,30 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/listItemMinus.png")
+    ImageResource listItemMinus();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource 
+     */
+    @Source("images/listItemPlus.png")
+    ImageResource listItemPlus();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/loadingBig.gif")
+    ImageResource loadingBig();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/loadingSmall.gif")
     ImageResource loadingSmall();
 
@@ -382,22 +440,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ratioLocked.gif")
-    ImageResource ratioLocked();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ratioUnlocked.gif")
-    ImageResource ratioUnlocked();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
     @Source("images/lockUser.gif")
     ImageResource lockUser();
 
@@ -410,12 +452,29 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource opencmsSymbol();
 
     /**
-     * Image resource accessor.<p>
+     * Access method.<p>
      * 
-     * @return an image resource
+     * @return the image resource
      */
-    @Source("images/cropRemove.png")
-    ImageResource cropRemove();
+    @Source("images/placeholderOverlayTrans.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource placeholderOverlayTrans();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ratioLocked.gif")
+    ImageResource ratioLocked();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ratioUnlocked.gif")
+    ImageResource ratioUnlocked();
 
     /**
      * Access method.<p>
@@ -433,6 +492,22 @@ public interface I_CmsImageBundle extends ClientBundle {
     @NotStrict
     @Source("imageSprites.css")
     I_CmsImageStyle style();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource 
+     */
+    @Source("images/triangleDown.png")
+    ImageResource triangleDown();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource 
+     */
+    @Source("images/triangleRight.png")
+    ImageResource triangleRight();
 
     /**
      * Image resource accessor.<p>
@@ -457,54 +532,4 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/warningSmall.png")
     ImageResource warningSmall();
-
-    /** 
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/iconsActive.png")
-    ImageResource iconsActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/iconsDefault.png")
-    ImageResource iconsDefault();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/loadingBig.gif")
-    ImageResource loadingBig();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/listItemMinus.png")
-    ImageResource listItemMinus();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/placeholderOverlayTrans.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource placeholderOverlayTrans();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource 
-     */
-    @Source("images/listItemPlus.png")
-    ImageResource listItemPlus();
-
 }

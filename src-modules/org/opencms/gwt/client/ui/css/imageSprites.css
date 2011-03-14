@@ -234,3 +234,20 @@
 	display: inline-block;
 	cursor: pointer;
 }
+
+
+@sprite .triangleDown{
+	gwt-image: "triangleDown";
+	display: inline-block;
+	cursor: pointer;
+}
+@sprite .triangleRight{
+	gwt-image: "triangleRight";
+	display: inline-block;
+	cursor: pointer;
+}
+@sprite .close{
+	gwt-image: "close";
+	display: inline-block;
+	cursor: pointer;
+}

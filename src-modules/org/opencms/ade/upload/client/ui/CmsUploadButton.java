@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/03/09 15:46:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -380,26 +380,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
         m_main.setTitle(title);
         m_title = title;
-    }
-
-    /**
-     * Sets the image class of this button using the provided icon.<p>
-     * 
-     * @param icon the icon
-     */
-    public void setUiIcon(I_CmsButton.UiIcon icon) {
-
-        setImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
-    }
-
-    /**
-     * Setting the image class of this button using the provided icon. Use this method from UiBinder only.<p>
-     * 
-     * @param iconName the icon name
-     */
-    public void setUiIconName(String iconName) {
-
-        setUiIcon(I_CmsButton.UiIcon.valueOf(iconName));
     }
 
     /**

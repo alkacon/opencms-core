@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:26 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 8.0.0
  */
@@ -668,19 +668,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String highlightBox();
-    }
-
-    /** Icons CSS, making available a fixed set of icons. */
-    interface I_CmsIconsCss extends I_CmsStateCss {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        @ClassName("ui_icon")
-        String uiIcon();
-
     }
 
     /** Link warning panel CSS. */
@@ -1574,15 +1561,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("highlight.css")
     I_CmsHighlightCss highlightCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the icons CSS
-     */
-    @Source("buttonIcons.css")
-    @CssResource.NotStrict
-    I_CmsIconsCss iconsCss();
 
     /**
      * Access method.<p>

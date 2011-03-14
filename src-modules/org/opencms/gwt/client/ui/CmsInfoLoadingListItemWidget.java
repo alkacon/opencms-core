@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2011/03/11 09:11:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -128,9 +129,11 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
      */
     protected void setIcon(boolean open) {
 
-        I_CmsButton.UiIcon icon = open ? I_CmsButton.UiIcon.triangle_1_s : I_CmsButton.UiIcon.triangle_1_e;
-        m_openClose.setDownUiIcon(icon);
-        m_openClose.setUiIcon(icon);
+        String imageClass = open
+        ? I_CmsImageBundle.INSTANCE.style().triangleDown()
+        : I_CmsImageBundle.INSTANCE.style().triangleRight();
+        m_openClose.setDownImageClass(imageClass);
+        m_openClose.setImageClass(imageClass);
     }
 
     /**
@@ -145,7 +148,9 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
         m_title.setText(infoBean.getTitle());
         m_subtitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
-            m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
+            m_openClose = new CmsPushButton(
+                I_CmsImageBundle.INSTANCE.style().triangleRight(),
+                I_CmsImageBundle.INSTANCE.style().triangleDown());
             setIcon(false);
             m_openClose.setShowBorder(false);
             m_titleRow.insert(m_openClose, 0);

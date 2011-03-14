@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.util.CmsStringUtil;
 
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since version 8.0.0
  */
@@ -124,9 +125,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
             html.append("<div class=\"");
             html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()
                 + " "
-                + I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon()
-                + " "
-                + I_CmsButton.UiIcon.triangle_1_e.name());
+                + I_CmsImageBundle.INSTANCE.style().triangleRight());
             html.append("\"></div>");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_imageClass)) {

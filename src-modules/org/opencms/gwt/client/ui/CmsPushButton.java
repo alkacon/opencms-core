@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -88,24 +88,24 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     /**
      * The constructor. Setting the button icon.<p>
      * 
-     * @param icon the icon
+     * @param imageClass the class for the image
      */
-    public CmsPushButton(I_CmsButton.UiIcon icon) {
+    public CmsPushButton(String imageClass) {
 
         this();
-        setUiIcon(icon);
+        setImageClass(imageClass);
     }
 
     /**
      * The constructor. Setting different icons for the up and down face of the button.<p>
      * 
-     * @param upIcon the up face icon
-     * @param downIcon the down face icon
+     * @param imageClass the class for the up face image
+     * @param downImageClass the class for the down face image
      */
-    public CmsPushButton(I_CmsButton.UiIcon upIcon, I_CmsButton.UiIcon downIcon) {
+    public CmsPushButton(String imageClass, String downImageClass) {
 
-        this(upIcon);
-        setDownUiIcon(downIcon);
+        this(imageClass);
+        setDownImageClass(downImageClass);
     }
 
     /**
@@ -242,16 +242,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     }
 
     /**
-     * Sets the down face icon.<p>
-     * 
-     * @param icon the icon
-     */
-    public void setDownUiIcon(I_CmsButton.UiIcon icon) {
-
-        setDownImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
-    }
-
-    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -333,26 +323,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
         super.setTitle(title);
         m_title = title;
-    }
-
-    /**
-     * Sets the image class of this button using the provided icon.<p>
-     * 
-     * @param icon the icon
-     */
-    public void setUiIcon(I_CmsButton.UiIcon icon) {
-
-        setImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
-    }
-
-    /**
-     * Setting the image class of this button using the provided icon. Use this method from UiBinder only.<p>
-     * 
-     * @param iconName the icon name
-     */
-    public void setUiIconName(String iconName) {
-
-        setUiIcon(I_CmsButton.UiIcon.valueOf(iconName));
     }
 
     /**

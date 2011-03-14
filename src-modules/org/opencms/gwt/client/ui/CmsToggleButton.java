@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2010/05/11 10:43:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/14 18:31:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -312,16 +312,6 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
 
         super.setTitle(title);
         m_title = title;
-    }
-
-    /**
-     * Sets the image class of this button using the provided icon.<p>
-     * 
-     * @param icon the icon
-     */
-    public void setUiIcon(I_CmsButton.UiIcon icon) {
-
-        setImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
     }
 
     /**
