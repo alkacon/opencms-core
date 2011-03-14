@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/11 09:12:05 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2011/03/14 16:07:26 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 8.0.0
  */
@@ -186,6 +186,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsMenuBar();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemIcon();
 
         /** 
          * Access method.<p>
@@ -1625,13 +1632,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("notification.css")
     I_CmsNotificationCss notificationCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image bundle for the backgrounds
-     */
-    I_CmsOtherImageBundle otherImages();
 
     /**
      * Access method.<p>

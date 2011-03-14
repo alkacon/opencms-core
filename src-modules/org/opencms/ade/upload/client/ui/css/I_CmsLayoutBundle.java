@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/14 16:07:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.upload.client.ui.css;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsPopupCss;
-import org.opencms.gwt.client.ui.css.I_CmsOtherImageBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -44,7 +43,7 @@ import com.google.gwt.resources.client.ClientBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -189,13 +188,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the image bundle for the gwt module
      */
     I_CmsImageBundle gwtImages();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image bundle for the backgrounds
-     */
-    I_CmsOtherImageBundle otherImages();
 
     /**
      * Access method.<p>

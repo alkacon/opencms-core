@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/10 07:46:38 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -698,7 +698,7 @@ public class CmsContainerpageHandler {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
 
                 if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
+                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
 
                     cmd = new Command() {
 

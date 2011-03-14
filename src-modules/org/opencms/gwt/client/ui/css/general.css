@@ -102,7 +102,7 @@
 }
 
 @sprite div.disablingOverlay{
-	gwt-image: 'otherImages.placeholderOverlayTrans';
+	gwt-image: 'gwtImages.placeholderOverlayTrans';
 	display: block;
 	position:absolute;
 	z-index: 2;

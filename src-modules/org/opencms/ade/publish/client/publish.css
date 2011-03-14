@@ -23,7 +23,7 @@
 }
 
 @sprite .warning {
-	gwt-image: "icons.warningIcon";
+	gwt-image: "images.warningSmall";
 }
 
 .itemToKeep {

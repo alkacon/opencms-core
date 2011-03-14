@@ -98,4 +98,18 @@
 	background-position: 50% 50%;
 	background-color: value("constants.css.backgroundColorStateActive");
 	height: auto;
-}      
+}
+
+@if user.agent ie6 {
+	.cmsImageButtonTransparent.cmsState-down-disabled, .cmsImageButtonTransparent.cmsState-up-disabled, .cmsImageButtonTransparent.cmsState-up{
+		filter: literal("alpha(opacity = 50)");
+	}
+} @elif user.agent ie8 {
+	.cmsImageButtonTransparent.cmsState-down-disabled, .cmsImageButtonTransparent.cmsState-up-disabled, .cmsImageButtonTransparent.cmsState-up{
+		-ms-filter: "alpha(opacity = 50)";
+	}
+} @else {
+	.cmsImageButtonTransparent.cmsState-down-disabled, .cmsImageButtonTransparent.cmsState-up-disabled, .cmsImageButtonTransparent.cmsState-up{
+        opacity: 0.5;
+	}
+}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBackgroundImageBundle.java,v $
- * Date   : $Date: 2011/03/09 15:35:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/14 16:07:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -56,9 +56,9 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/backgrounds/softStandard.png")
+    @Source("images/backgrounds/soft.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource softStandard();
+    ImageResource soft();
 
     /**
      * Access method.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/14 16:07:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -50,7 +50,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxChecked.png")
+    @Source("images/input/checkboxChecked.png")
     ImageResource checkboxChecked();
 
     /**
@@ -58,7 +58,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxCheckedDisabled.png")
+    @Source("images/input/checkboxCheckedDisabled.png")
     ImageResource checkboxCheckedDisabled();
 
     /**
@@ -66,7 +66,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxCheckedHover.png")
+    @Source("images/input/checkboxCheckedHover.png")
     ImageResource checkboxCheckedHover();
 
     /**
@@ -74,7 +74,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxUnchecked.png")
+    @Source("images/input/checkboxUnchecked.png")
     ImageResource checkboxUnchecked();
 
     /**
@@ -82,7 +82,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxUncheckedDisabled.png")
+    @Source("images/input/checkboxUncheckedDisabled.png")
     ImageResource checkboxUncheckedDisabled();
 
     /**
@@ -90,7 +90,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/checkboxUncheckedHover.png")
+    @Source("images/input/checkboxUncheckedHover.png")
     ImageResource checkboxUncheckedHover();
 
     /** 
@@ -98,7 +98,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioChecked.png")
+    @Source("images/input/radioChecked.png")
     ImageResource radioChecked();
 
     /**
@@ -106,7 +106,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioCheckedDisabled.png")
+    @Source("images/input/radioCheckedDisabled.png")
     ImageResource radioCheckedDisabled();
 
     /** 
@@ -114,7 +114,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioCheckedHover.png")
+    @Source("images/input/radioCheckedHover.png")
     ImageResource radioCheckedHover();
 
     /** 
@@ -122,7 +122,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioUnchecked.png")
+    @Source("images/input/radioUnchecked.png")
     ImageResource radioUnchecked();
 
     /** 
@@ -130,7 +130,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioUncheckedDisabled.png")
+    @Source("images/input/radioUncheckedDisabled.png")
     ImageResource radioUncheckedDisabled();
 
     /** 
@@ -138,7 +138,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/radioUncheckedHover.png")
+    @Source("images/input/radioUncheckedHover.png")
     ImageResource radioUncheckedHover();
 
 }

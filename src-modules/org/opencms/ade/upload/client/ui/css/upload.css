@@ -94,7 +94,7 @@
 
 
 @sprite .warningIcon{
-	gwt-image: "gwtImages.warningIcon";
+	gwt-image: "gwtImages.warningBig";
 	margin: 0px 0px 0px 3px;
 	display: block;
 	float: left;
@@ -121,7 +121,7 @@
 	margin-top: 20px;
 }
 @sprite .loadingAnimation {
-	gwt-image: "otherImages.loadingBig";
+	gwt-image: "gwtImages.loadingSmall";
 	background-position: 50% 50%;
     background-repeat: no-repeat;
 	display: inline-block;

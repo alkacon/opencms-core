@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/02/22 09:42:03 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -248,7 +248,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar = new CmsToolbar();
 
         CmsPushButton toggleToolbarButton = new CmsPushButton();
-        toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsLogo());
+        toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
         RootPanel root = RootPanel.get();
         root.add(toggleToolbarButton);
         toggleToolbarButton.addClickHandler(new ClickHandler() {

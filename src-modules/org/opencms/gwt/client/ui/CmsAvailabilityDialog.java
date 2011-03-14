@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/03/11 09:11:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -482,9 +482,9 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             label.addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().inlineBlock());
             Image img = new Image();
             if (entry.getKey().isGroup()) {
-                img.setResource(I_CmsImageBundle.INSTANCE.groupSmall());
+                img.setResource(I_CmsImageBundle.INSTANCE.group());
             } else {
-                img.setResource(I_CmsImageBundle.INSTANCE.userSmall());
+                img.setResource(I_CmsImageBundle.INSTANCE.user());
             }
             img.addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().principalIcon());
             img.getElement().setAttribute("align", "top");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishLayoutBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.ClientBundle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -72,7 +72,7 @@ public interface I_CmsPublishLayoutBundle extends ClientBundle {
      * 
      * @return an image bundle 
      */
-    I_CmsIconBundle icons();
+    I_CmsImageBundle images();
 
     /**
      * The accessor for the CSS bundle.<p>

@@ -1,181 +1,41 @@
-.arrow, .label, .image{}
+.arrow, .label, .image, .selected, .disabled{}
 
-@sprite .availabilitySmall{
-    gwt-image: "icons.availabilityIconSmall";
-    float: left;
-	margin: 5px 0px 3px 2px;
-	overflow: hidden;
-}
-
-@sprite .cmsMenuItem.selected .delete{
-    gwt-image: "icons.deleteIconActive";
+@sprite .cmsMenuItem .availability{
+    gwt-image: "icons.availabilityIcon";
 }
 @sprite .cmsMenuItem .delete{
-    gwt-image: "icons.deleteIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .delete{
-    gwt-image: "icons.deleteIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .edit{
-    gwt-image: "icons.editorIconActive";
+    gwt-image: "icons.deleteIcon";
 }
 @sprite .cmsMenuItem .edit{
-    gwt-image: "icons.editorIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .edit{
-    gwt-image: "icons.editorIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .availability{
-    gwt-image: "icons.availabilityIconActive";
-}
-@sprite .cmsMenuItem .availability{
-    gwt-image: "icons.availabilityIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .availability{
-    gwt-image: "icons.availabilityIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .move{
-    gwt-image: "icons.moveIconActive";
+    gwt-image: "icons.editIcon";
 }
 @sprite .cmsMenuItem .move{
-    gwt-image: "icons.moveIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .move{
-    gwt-image: "icons.moveIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .newElement{
-    gwt-image: "icons.newIconActive";
+    gwt-image: "icons.moveIcon";
 }
 @sprite .cmsMenuItem .newElement{
-    gwt-image: "icons.newIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .newElement{
-    gwt-image: "icons.newIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .properties{
-    gwt-image: "icons.propertyIconActive";
+    gwt-image: "icons.addIcon";
 }
 @sprite .cmsMenuItem .properties{
-    gwt-image: "icons.propertyIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .properties{
-    gwt-image: "icons.propertyIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .refresh{
-    gwt-image: "icons.refreshIconActive";
+    gwt-image: "icons.propertyIcon";
 }
 @sprite .cmsMenuItem .refresh{
-    gwt-image: "icons.refreshIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .refresh{
-    gwt-image: "icons.refreshIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .selection{
-    gwt-image: "icons.selectionIconActive";
-}
-@sprite .cmsMenuItem .selection{
-    gwt-image: "icons.selectionIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .selection{
-    gwt-image: "icons.selectionIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .gotoPage{
-    gwt-image: "icons.gotoPageIconActive";
+    gwt-image: "icons.refreshIcon";
 }
 @sprite .cmsMenuItem .gotoPage{
-    gwt-image: "icons.gotoPageIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .gotoPage{
-    gwt-image: "icons.gotoPageIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .gotoSub{
-    gwt-image: "icons.gotoSubSitemapIconActive";
+    gwt-image: "icons.gotoPageIcon";
 }
 @sprite .cmsMenuItem .gotoSub{
-    gwt-image: "icons.gotoSubSitemapIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .gotoSub{
-    gwt-image: "icons.gotoPageIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .mergeSitemap{
-    gwt-image: "icons.mergeSitemapIconActive";
+    gwt-image: "icons.gotoSubSitemapIcon";
 }
 @sprite .cmsMenuItem .mergeSitemap{
-    gwt-image: "icons.mergeSitemapIconActive";
-    float: left;
-    margin-top: 3px;
-}
-
-@sprite .cmsMenuItem.disabled .mergeSitemap{
-    gwt-image: "icons.mergeSitemapIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .gotoParent{
-    gwt-image: "icons.gotoParentIconActive";
+    gwt-image: "icons.mergeSitemapIcon";
 }
 @sprite .cmsMenuItem .gotoParent{
-    gwt-image: "icons.gotoParentIconActive";
-    float: left;
-    margin-top: 3px;
-}
-@sprite .cmsMenuItem.disabled .gotoParent{
-    gwt-image: "icons.gotoParentIconDeactivated";
-}
-
-@sprite .cmsMenuItem.selected .subSitemap{
-    gwt-image: "icons.subSitemapIconActive";
+    gwt-image: "icons.gotoParentIcon";
 }
 @sprite .cmsMenuItem .subSitemap{
-    gwt-image: "icons.subSitemapIconActive";
-    float: left;
-    margin-top: 3px;
+    gwt-image: "icons.subSitemapIcon";
 }
-@sprite .cmsMenuItem.disabled .subSitemap{
-    gwt-image: "icons.subSitemapIconDeactivated";
-}
-
 @sprite .cmsMenuItem .bump {
-	gwt-image: "icons.bumpIconActive";
-	float: left;
-	margin-top: 3px; 
+	gwt-image: "icons.bumpIcon";
 }
-
-@sprite .cmsMenuItem.disabled .bump {
-	gwt-image: "icons.bumpIconDeactivated";
-	float: left;
-	margin-top: 3px;
-}
-
-
-
-

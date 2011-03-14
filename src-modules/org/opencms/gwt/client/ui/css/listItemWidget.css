@@ -22,27 +22,27 @@
 
 
 @sprite .export {
-	gwt-image: "gwtImages.statusIconExport"; 
+	gwt-image: "gwtImages.bigIcons.stateExportBigIcon"; 
 	margin-top:  3px;
 	margin-left: 3px;
 }
 @sprite .hidden {
-	gwt-image: "gwtImages.statusIconHidden"; 
+	gwt-image: "gwtImages.bigIcons.stateHiddenBigIcon"; 
 	margin-top:  3px;
 	margin-left: 3px;
 }
 @sprite .normal {
-	gwt-image: "gwtImages.statusIconNormal";
+	gwt-image: "gwtImages.bigIcons.stateNormalBigIcon";
 	margin-top: 3px;
 	margin-left: 3px;
 }
 @sprite .secure {
-	gwt-image: "gwtImages.statusIconSecure";
+	gwt-image: "gwtImages.bigIcons.stateSecureBigIcon";
 	margin-top: 3px;
 	margin-left: 3px;  
 }
 @sprite .redirect { 
-	gwt-image: "gwtImages.statusIconRedirect";
+	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
 	margin-top: 3px;
 	margin-left: 3px;
 }

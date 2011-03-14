@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:09 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.sitemap.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsBigIconBundle;
-import org.opencms.gwt.client.ui.css.I_CmsOtherImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsDragCss;
 
 import com.google.gwt.core.client.GWT;
@@ -43,7 +42,7 @@ import com.google.gwt.resources.client.ClientBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -106,13 +105,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String toolbarRedo();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String toolbarUndo();
     }
 
@@ -139,6 +131,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image bundle instance for other images 
      */
-    I_CmsOtherImageBundle otherImages();
+    org.opencms.gwt.client.ui.css.I_CmsImageBundle otherImages();
 
 }

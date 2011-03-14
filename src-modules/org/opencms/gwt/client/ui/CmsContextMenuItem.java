@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/11/15 15:51:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since version 8.0.0
  */
@@ -133,11 +133,13 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
             // if an image class is set to the menu item show the image in front of the text
             html.append("<div class=\"");
             html.append(m_imageClass);
+            html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
             html.append("\"></div>");
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_imagePath)) {
             // if an image path is set to the menu item show the image in front of the text
             html.append("<div class=\"");
             html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().image());
+            html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
             html.append("\" ");
             html.append("style=\"background: transparent url('" + m_imagePath + "') no-repeat scroll 0 0\"");
             html.append("\"");

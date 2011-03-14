@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/03/11 09:12:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -122,14 +122,14 @@ public class CmsResultListItem extends CmsListItem {
         }
         // add  preview button
         m_previewButton = new CmsPushButton();
-        m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
+        m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
         m_previewButton.setShowBorder(false);
         m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         m_previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         resultItemWidget.addButton(m_previewButton);
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
-        m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
+        m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
         m_selectButton.setShowBorder(false);
         m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBigIconBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/14 16:07:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -49,114 +49,92 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/addBigIconActive.png")
-    ImageResource addBigIconActive(); // toolbarAdd()
+    @Source("images/icons/big/addBigIconActive.png")
+    ImageResource addBigIconActive(); // toolbarNew();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/addBigIconDeactivated.png")
-    ImageResource addBigIconDeactivated(); // toolbarAddSW();
+    @Source("images/icons/big/addBigIconDeactivated.png")
+    ImageResource addBigIconDeactivated(); // toolbarNewSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/clipboardBigIconActive.png")
+    ImageResource clipboardBigIconActive(); // toolbarClipboard();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/clipboardBigIconDeactivated.png")
+    ImageResource clipboardBigIconDeactivated(); // toolbarClipboardSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
 
-    @Source("images/bigicons/brokenLinkBigIcon.png")
-    ImageResource brokenLinkBigIcon();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-
-    @Source("images/bigicons/contextMenuBigIconActive.png")
+    @Source("images/icons/big/contextMenuBigIconActive.png")
     ImageResource contextMenuBigIconActive();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/contextMenuBigIconDeactivated.png")
+    @Source("images/icons/big/contextMenuBigIconDeactivated.png")
     ImageResource contextMenuBigIconDeactivated();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/contextMenuDownBigIcon.png")
+    @Source("images/icons/big/contextMenuDownBigIcon.png")
     ImageResource contextMenuDownBigIcon();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/deleteBigIconActive.png")
+    @Source("images/icons/big/deleteBigIconActive.png")
     ImageResource deleteBigIconActive(); // toolbarRemove();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/deleteBigIconDeactivated.png")
+    @Source("images/icons/big/deleteBigIconDeactivated.png")
     ImageResource deleteBigIconDeactivated(); // toolbarRemoveSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/editBigIconActive.png")
+    @Source("images/icons/big/editBigIconActive.png")
     ImageResource editBigIconActive(); // toolbarEdit();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/editBigIconDeactivated.png")
+    @Source("images/icons/big/editBigIconDeactivated.png")
     ImageResource editBigIconDeactivated(); // toolbarEditSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/exitBigIconActive.png")
-    ImageResource exitBigIconActive(); // toolbarExit();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/exitBigIconDeactivated.png")
-    ImageResource exitBigIconDeactivated(); // toolbarExitSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/favoriteBigIconActive.png")
-    ImageResource favoriteBigIconActive(); // toolbarClipboard();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/favoriteBigIconDeactivated.png")
-    ImageResource favoriteBigIconDeactivated(); // toolbarClipboardSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/gotoBigIconDeactivated.png")
+    @Source("images/icons/big/gotoBigIconDeactivated.png")
     ImageResource gotoBigIconDeactivated();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/gotoPageBigIconActive.png")
+    @Source("images/icons/big/gotoPageBigIconActive.png")
     ImageResource gotoPageBigIconActive();
 
     /** 
@@ -164,7 +142,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * @return an image resource
      */
 
-    @Source("images/bigicons/gotoParentBigIconActive.png")
+    @Source("images/icons/big/gotoParentBigIconActive.png")
     ImageResource gotoParentBigIconActive();
 
     /** 
@@ -172,7 +150,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * @return an image resource
      */
 
-    @Source("images/bigicons/gotoParentBigIconDeactivated.png")
+    @Source("images/icons/big/gotoParentBigIconDeactivated.png")
     ImageResource gotoParentBigIconDeactivated();
 
     /** 
@@ -180,172 +158,193 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * @return an image resource
      */
 
-    @Source("images/bigicons/gotoSubSitemapBigIconActive.png")
+    @Source("images/icons/big/gotoSubSitemapBigIconActive.png")
     ImageResource gotoSubSitemapBigIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/bigicons/magnifierBigIconActive.png")
-    ImageResource magnifierBigIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/bigicons/magnifierBigIconDeactivated.png")
-    ImageResource magnifierBigIconDeactivated();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/moveBigIconActive.png")
+    @Source("images/icons/big/menuBigIconActive.png")
+    ImageResource menuBigIconActive(); // toolbarAdd()
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/menuBigIconDeactivated.png")
+    ImageResource menuBigIconDeactivated(); // toolbarAddSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/moveBigIconActive.png")
     ImageResource moveBigIconActive(); // toolbarMove();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/moveBigIconDeactivated.png")
+    @Source("images/icons/big/moveBigIconDeactivated.png")
     ImageResource moveBigIconDeactivated(); // toolbarMoveSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/newBigIconActive.png")
-    ImageResource newBigIconActive(); // toolbarNew();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/newBigIconDeactivated.png")
-    ImageResource newBigIconDeactivated(); // toolbarNewSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/propertyBigIconActive.png")
+    @Source("images/icons/big/propertyBigIconActive.png")
     ImageResource propertyBigIconActive(); //  toolbarProperties();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/propertyBigIconDeactivated.png")
+    @Source("images/icons/big/propertyBigIconDeactivated.png")
     ImageResource propertyBigIconDeactivated(); //  toolbarPropertiesSW();
-
-    /**
-    @Source("images/bigicons/recentBigIconActive.png")
-    ImageResource recentBigIconActive(); // toolbarRecent();
-
-    @Source("images/bigicons/recentBigIconDeactivated.png")
-    ImageResource recentBigIconDeactivated(); // toolbarRecentSW();
-    
-    **/
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/publishBigIconActive.png")
+    @Source("images/icons/big/publishBigIconActive.png")
     ImageResource publishBigIconActive(); // toolbarPublish();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/publishBigIconDeactivated.png")
+    @Source("images/icons/big/publishBigIconDeactivated.png")
     ImageResource publishBigIconDeactivated(); //  toolbarPublishSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/redoBigIconActive.png")
-    ImageResource redoBigIconActive();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/redoBigIconDeactivated.png")
-    ImageResource redoBigIconDeactivated();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/bigicons/resetBigIconActive.png")
+    @Source("images/icons/big/resetBigIconActive.png")
     ImageResource resetBigIconActive(); // toolbarReset();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/resetBigIconDeactivated.png")
+    @Source("images/icons/big/resetBigIconDeactivated.png")
     ImageResource resetBigIconDeactivated(); //  toolbarResetSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/saveBigIconActive.png")
+    @Source("images/icons/big/saveBigIconActive.png")
     ImageResource saveBigIconActive(); // toolbarSave();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/saveBigIconDeactivated.png")
+    @Source("images/icons/big/saveBigIconDeactivated.png")
     ImageResource saveBigIconDeactivated(); // toolbarSaveSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/selectionBigIconActive.png")
+    @Source("images/icons/big/searchBigIconActive.png")
+    ImageResource searchBigIconActive(); // toolbarAdd()
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/searchBigIconDeactivated.png")
+    ImageResource searchBigIconDeactivated(); // toolbarAddSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/selectionBigIconActive.png")
     ImageResource selectionBigIconActive(); // toolbarSelection();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/selectionBigIconDeactivated.png")
+    @Source("images/icons/big/selectionBigIconDeactivated.png")
     ImageResource selectionBigIconDeactivated(); // toolbarSelectionSW();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/sitemapBigIconActive.png")
+    @Source("images/icons/big/sitemapBigIconActive.png")
     ImageResource sitemapBigIconActive(); // toolbarSitemap();;
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/sitemapBigIconDeactivated.png")
-    ImageResource sitemapBigIconDeactivated(); // toolbarSitemapSW();;
+    @Source("images/icons/big/sitemapBigIconDeactivated.png")
+    ImageResource sitemapBigIconDeactivated(); // toolbarSitemapSW();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/stateExport.png")
+    ImageResource stateExportBigIcon();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/stateHidden.png")
+    ImageResource stateHiddenBigIcon();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/stateNormal.png")
+    ImageResource stateNormalBigIcon();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/stateRedirect.png")
+    ImageResource stateRedirectBigIcon();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/stateSecure.png")
+    ImageResource stateSecureBigIcon();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/undoBigIconActive.png")
+    @Source("images/icons/big/undoBigIconActive.png")
     ImageResource undoBigIconActive();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/bigicons/undoBigIconDeactivated.png")
+    @Source("images/icons/big/undoBigIconDeactivated.png")
     ImageResource undoBigIconDeactivated();
 
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/brokenLinkBigIcon.png")
+    ImageResource brokenLinkBigIcon();
 }

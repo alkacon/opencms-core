@@ -17,11 +17,11 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
-	gwt-image: "backgrounds.softStandard";
+	gwt-image: "backgrounds.soft";
 	background-position: 50% 50%;
 	height: auto;
 	display: block;
-	background-color: value("constants.css.backgroundColorSoftStandard");
+	background-color: value("constants.css.backgroundColorSoft");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
@@ -49,7 +49,7 @@
 	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
-	background-color: value("constants.css.backgroundColorStateHover");
+	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
 /** browser specific styles **/
@@ -83,7 +83,7 @@
 	gwt-image: "backgrounds.state";
 	background-position: 50% 50%;
 	height: auto;
-	background-color: value("constants.css.backgroundColorStateStandard");
+	background-color: value("constants.css.backgroundColorStateHover");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    

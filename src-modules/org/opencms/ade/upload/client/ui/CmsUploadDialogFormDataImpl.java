@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFormDataImpl.java,v $
- * Date   : $Date: 2011/03/09 15:46:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/14 16:07:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.upload.shared.I_CmsUploadConstants;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -51,13 +52,14 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
-    private String m_hightLightColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorHighlight();
+    private String m_hightLightColor = I_CmsConstantsBundle.INSTANCE.css().backgroundColorHighlight();
+    // private String m_hightLightColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorHighlight();
 
     private String m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
 

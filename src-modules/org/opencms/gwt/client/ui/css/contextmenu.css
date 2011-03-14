@@ -22,7 +22,7 @@
 }
 .cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
 	float: left;
-	margin: 3px 0px 3px 2px;
+	margin: 5px 0px 3px 2px;
 	height: 16px;
 	width: 16px;
 	overflow: hidden;
@@ -53,6 +53,25 @@
 	padding: 4px;
 	cursor: default;
 }
+
+.itemIcon {
+	float: left;
+	margin-top: 3px;
+}
+@if user.agent ie6 {
+	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
+		filter: literal("alpha(opacity = 50)");
+	}
+} @elif user.agent ie8 {
+	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
+		-ms-filter: "alpha(opacity = 50)";
+	}
+} @else {
+	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
+        opacity: 0.5;
+	}
+}
+
 
 @if user.agent ie6 { /* IE6 HACK for the separator */
 	.cmsMenuBar .menuItemSeparator {

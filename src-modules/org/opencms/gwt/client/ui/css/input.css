@@ -43,11 +43,11 @@
 }
 
 @sprite .linkEdit {
-	gwt-image: "baseImages.icons.editorIconActive"; 
+	gwt-image: "baseImages.icons.editIcon"; 
 }
 
 @sprite .inherited {
-	gwt-image: "baseImages.icons.inherited";
+	gwt-image: "baseImages.inherited";
 }
 
 @sprite .cmsState-down-disabled .checkBoxImage {
@@ -302,13 +302,13 @@
 }
 
 @sprite .formRowOpenerClosed {
-	gwt-image: "otherImages.plus"
+	gwt-image: "baseImages.listItemPlus"
 }
 
 
 
 @sprite .formRowOpenerOpen {
-	gwt-image: "otherImages.minus"; 
+	gwt-image: "baseImages.listItemMinus"; 
 }
 
 @def fieldOpenerWidth 32px ; 

@@ -25,7 +25,7 @@
 }
 
 @sprite .toolbarBackground{
-	gwt-image: "backgrounds.softStandard";
+	gwt-image: "backgrounds.soft";
 	background-position: 50% 50%;
 	overflow: visible;
 	border-top:medium none;
@@ -37,7 +37,7 @@
 	color:value("constants.css.textColor");
 	padding:0px;
 	margin:0px;
-	background-color: value("constants.css.backgroundColorSoftStandard");
+	background-color: value("constants.css.backgroundColorSoft");
 }
 
 .toolbarContent{
