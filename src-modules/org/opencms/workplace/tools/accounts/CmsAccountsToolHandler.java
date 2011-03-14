@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/14 16:00:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,6 +190,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             String roleName = CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
                 CmsRolesList.PARAM_ROLE);
+            if (roleName == null) {
+                return false;
+            }
             if (!OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.valueOfGroupName(roleName))) {
                 return false;
             }
