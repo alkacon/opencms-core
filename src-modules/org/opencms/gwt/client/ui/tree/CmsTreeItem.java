@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  */
@@ -804,7 +804,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected Image getMinusImage() {
 
-        return new Image(I_CmsImageBundle.INSTANCE.listItemMinus());
+        return new Image(I_CmsImageBundle.INSTANCE.minusImage());
     }
 
     /**
@@ -814,7 +814,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected Image getPlusImage() {
 
-        return new Image(I_CmsImageBundle.INSTANCE.listItemPlus());
+        return new Image(I_CmsImageBundle.INSTANCE.plusImage());
     }
 
     /**

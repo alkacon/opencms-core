@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsGalleryField.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -238,7 +238,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         popup.getFrame().setSize("700px", "490px");
         popup.center();
 
-        CmsPushButton button = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().close());
+        CmsPushButton button = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().closeIcon());
 
         Style style = button.getElement().getStyle();
         style.setRight(4, Unit.PX);

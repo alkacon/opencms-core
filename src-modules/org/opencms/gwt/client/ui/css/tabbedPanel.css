@@ -17,7 +17,7 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
-	gwt-image: "backgrounds.soft";
+	gwt-image: "backgrounds.softBackground";
 	background-position: 50% 50%;
 	height: auto;
 	display: block;
@@ -40,7 +40,7 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	gwt-image: "backgrounds.state";
+	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
 	margin:0 0 -1px 2px;
@@ -80,7 +80,7 @@
 
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "backgrounds.state";
+	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
 	background-color: value("constants.css.backgroundColorStateHover");

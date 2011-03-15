@@ -59,7 +59,7 @@ div.blocking{
 	height: 16px;
 }
 @sprite .loadingAnimation{
-	gwt-image: "gwtImages.loadingBig";
+	gwt-image: "gwtImages.loadingBigImage";
 	display: none;
 }
 

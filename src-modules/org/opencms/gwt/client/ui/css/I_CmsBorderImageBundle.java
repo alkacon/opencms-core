@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBorderImageBundle.java,v $
- * Date   : $Date: 2011/01/14 13:46:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,70 +56,70 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightBottomNew.gif")
+    @Source("images/borders/bottomNewBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightBottomNew();
+    ImageResource bottomNewBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightBottomChanged.gif")
+    @Source("images/borders/bottomChangedBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightBottomChanged();
+    ImageResource bottomChangedBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightLeftNew.gif")
+    @Source("images/borders/leftNewBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightLeftNew();
+    ImageResource leftNewBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightLeftChanged.gif")
+    @Source("images/borders/leftChangedBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightLeftChanged();
+    ImageResource leftChangedBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightRightNew.gif")
+    @Source("images/borders/rightNewBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightRightNew();
+    ImageResource rightNewBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightRightChanged.gif")
+    @Source("images/borders/rightChangedBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightRightChanged();
+    ImageResource rightChangedBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightTopNew.gif")
+    @Source("images/borders/topNewBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightTopNew();
+    ImageResource topNewBorderHighlight();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/borders/highlightTopChanged.gif")
+    @Source("images/borders/topChangedBorderHighlight.gif")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightTopChanged();
+    ImageResource topChangedBorderHighlight();
 }

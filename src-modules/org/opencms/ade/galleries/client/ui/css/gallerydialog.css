@@ -48,7 +48,7 @@
 }
 
 @sprite .showParams {
-	gwt-image: "backgrounds.state";
+	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
 	border:1px solid value("constants.css.borderColor");

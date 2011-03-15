@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2011/03/02 08:25:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @author Ruediger Kurz
  * @author Tobias Herrmann
@@ -218,11 +218,11 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
                 + " "
                 + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
-            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottom());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottomImage());
         } else {
             // hide content
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
-            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRight());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRightImage());
         }
     }
 

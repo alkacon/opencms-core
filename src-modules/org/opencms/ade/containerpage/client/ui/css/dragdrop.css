@@ -15,7 +15,6 @@
 .emptySubContainer{
 	min-height: 50px;
 	background: value("constants.css.backgroundColorEmptyContainer");
-/*	gwt-image: 'otherImages.placeholderOverlayTrans'; */
 }
 
 .currentTarget{
@@ -60,7 +59,7 @@
 }
 
 @sprite .placeholderOverlay{
-	gwt-image: 'otherImages.placeholderOverlayTrans';
+	gwt-image: 'otherImages.placeholderImage';
 	display: none;
 	opacity: 1;
 	position:absolute;

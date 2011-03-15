@@ -47,7 +47,7 @@
 }
 
 @sprite .inherited {
-	gwt-image: "baseImages.inherited";
+	gwt-image: "baseImages.inheritedImage";
 }
 
 @sprite .cmsState-down-disabled .checkBoxImage {
@@ -185,7 +185,7 @@
 	height:auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "background.state";
+	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	outline: none;
 	background-color: value("constants.css.backgroundColorStateStandard");
@@ -196,7 +196,7 @@
 	height: auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "background.state";
+	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	outline: none;
 	background-color: value("constants.css.backgroundColorStateHover");
@@ -302,13 +302,13 @@
 }
 
 @sprite .formRowOpenerClosed {
-	gwt-image: "baseImages.listItemPlus"
+	gwt-image: "baseImages.plusImage"
 }
 
 
 
 @sprite .formRowOpenerOpen {
-	gwt-image: "baseImages.listItemMinus"; 
+	gwt-image: "baseImages.minusImage"; 
 }
 
 @def fieldOpenerWidth 32px ; 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBigIconBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -292,7 +292,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/icons/big/stateExport.png")
+    @Source("images/icons/big/stateExportBigIcon.png")
     ImageResource stateExportBigIcon();
 
     /** 
@@ -300,7 +300,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/icons/big/stateHidden.png")
+    @Source("images/icons/big/stateHiddenBigIcon.png")
     ImageResource stateHiddenBigIcon();
 
     /** 
@@ -308,7 +308,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/icons/big/stateNormal.png")
+    @Source("images/icons/big/stateNormalBigIcon.png")
     ImageResource stateNormalBigIcon();
 
     /** 
@@ -316,7 +316,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/icons/big/stateRedirect.png")
+    @Source("images/icons/big/stateRedirectBigIcon.png")
     ImageResource stateRedirectBigIcon();
 
     /** 
@@ -324,7 +324,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/icons/big/stateSecure.png")
+    @Source("images/icons/big/stateSecureBigIcon.png")
     ImageResource stateSecureBigIcon();
 
     /** 

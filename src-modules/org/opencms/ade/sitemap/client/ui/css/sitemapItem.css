@@ -3,7 +3,7 @@
 }
 
 @sprite .positionIndicator{
-	gwt-image: "baseImages.placeholderOverlayTrans";
+	gwt-image: "baseImages.placeholderImage";
 	height: 4px;
 	right: 6px;
 	left: 46px;
@@ -75,14 +75,14 @@
 }
 
 @sprite .lockClosed, .lockSharedClosed{
-	gwt-image: "baseImages.lockOther";
+	gwt-image: "baseImages.lockOtherImage";
 }
 
 @sprite .lockOpen{
-	gwt-image: "baseImages.lockUser";
+	gwt-image: "baseImages.lockUserImage";
 }
 
 @sprite .lockSharedOpen{
-	gwt-image: "baseImages.lockShared";
+	gwt-image: "baseImages.lockSharedImage";
 }
 

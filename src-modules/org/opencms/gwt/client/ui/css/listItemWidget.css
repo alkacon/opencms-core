@@ -50,7 +50,7 @@
 
 
 @sprite .itemContent {
-    gwt-image: "backgrounds.state";
+    gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
 	position: relative;
@@ -58,35 +58,35 @@
 }
 
 @sprite .itemActive > .itemContent {
-    gwt-image: "backgrounds.state";
+    gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateHover");
 }
 
 @sprite .disabledItem > .itemContent {
-	gwt-image: "backgrounds.state";
+	gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateDisabled");
 }
 
 @sprite .itemBlue > .itemContent {
-    gwt-image: "backgrounds.state";
+    gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateNew");
 }
 
 @sprite .itemRed > .itemContent {
-    gwt-image: "backgrounds.state";
+    gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateChanged");
 }
 
 @sprite .itemYellow > .itemContent {
-    gwt-image: "backgrounds.state";
+    gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateSubSitemap");

@@ -90,7 +90,7 @@ ul.clipboardList{
 }
 
 @sprite .toolbarSelection .optionBar.cmsHovering{
-	gwt-image: "backgrounds.soft";
+	gwt-image: "backgrounds.softBackground";
 	height: auto;
 	-moz-border-radius: 2px;
 	border: 1px solid value("constants.css.borderColor");
@@ -116,7 +116,7 @@ ul.clipboardList{
 }
 
 @sprite .subcontainerOverlay{
-	gwt-image: 'otherImages.placeholderOverlayTrans';
+	gwt-image: 'otherImages.placeholderImage';
 	position: fixed;
 	top: 0;
 	left: 0;

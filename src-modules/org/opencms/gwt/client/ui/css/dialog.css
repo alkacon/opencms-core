@@ -78,7 +78,7 @@
     font-weight: bold;
     cursor: move;
     padding:5px;
-    gwt-image: "backgrounds.state"; 
+    gwt-image: "backgrounds.stateBackground"; 
     background-position: 50% 50%; 
     height: auto; 
     white-space: nowrap;

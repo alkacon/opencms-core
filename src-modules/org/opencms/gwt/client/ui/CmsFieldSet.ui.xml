@@ -6,7 +6,7 @@
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_wrapper">
 		<g:FlowPanel ui:field="m_fieldset">
-			<g:Image ui:field="m_image" resource="{images.arrowBottom}" styleName="{style.fieldsetCss.image}"></g:Image>
+			<g:Image ui:field="m_image" resource="{images.arrowBottomImage}" styleName="{style.fieldsetCss.image}"></g:Image>
 			<input:CmsLabel ui:field="m_legend" styleName="{style.fieldsetCss.legend}"></input:CmsLabel>
 			<g:FlowPanel ui:field="m_content" styleName="{style.fieldsetCss.content}"></g:FlowPanel>
 		</g:FlowPanel>

@@ -39,11 +39,11 @@
 }
 
 @sprite .plus {
-	gwt-image: "gwtImages.listItemPlus";
+	gwt-image: "gwtImages.plusImage";
 }
 
 @sprite .minus {
-	gwt-image: "gwtImages.listItemMinus";
+	gwt-image: "gwtImages.minusImage";
 }
 
 

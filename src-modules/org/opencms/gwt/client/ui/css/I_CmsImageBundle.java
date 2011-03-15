@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/03/15 10:20:02 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -151,7 +151,7 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String close();
+        String closeIcon();
 
         /** Access method.<p>
          * 
@@ -306,16 +306,16 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/arrowBottom.png")
-    ImageResource arrowBottom();
+    @Source("images/arrowBottomImage.png")
+    ImageResource arrowBottomImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/arrowRight.png")
-    ImageResource arrowRight();
+    @Source("images/arrowRightImage.png")
+    ImageResource arrowRightImage();
 
     /**
      * Accessor for the big ícon resource bundle.<p>
@@ -329,8 +329,8 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource 
      */
-    @Source("images/close.png")
-    ImageResource close();
+    @Source("images/closeImage.png")
+    ImageResource closeImage();
 
     /**
      * Access method.<p>
@@ -345,32 +345,32 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/crop.png")
-    ImageResource crop();
+    @Source("images/cropImage.png")
+    ImageResource cropImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/cropRemove.png")
-    ImageResource cropRemove();
+    @Source("images/cropRemoveImage.png")
+    ImageResource cropRemoveImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/error.png")
-    ImageResource error();
+    @Source("images/errorImage.png")
+    ImageResource errorImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/group.png")
-    ImageResource group();
+    @Source("images/groupImage.png")
+    ImageResource groupImage();
 
     /**
      * Accessor for the icon resource bundle.<p>
@@ -384,105 +384,105 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/inherited.png")
-    ImageResource inherited();
+    @Source("images/inheritedImage.png")
+    ImageResource inheritedImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/listItemMinus.png")
-    ImageResource listItemMinus();
+    @Source("images/minusImage.png")
+    ImageResource minusImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource 
      */
-    @Source("images/listItemPlus.png")
-    ImageResource listItemPlus();
+    @Source("images/plusImage.png")
+    ImageResource plusImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/loadingBig.gif")
-    ImageResource loadingBig();
+    @Source("images/loadingBigImage.gif")
+    ImageResource loadingBigImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/loadingSmall.gif")
-    ImageResource loadingSmall();
+    @Source("images/loadingSmallImage.gif")
+    ImageResource loadingSmallImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/lockOther.gif")
-    ImageResource lockOther();
+    @Source("images/lockOtherImage.gif")
+    ImageResource lockOtherImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/lockShared.gif")
-    ImageResource lockShared();
+    @Source("images/lockSharedImage.gif")
+    ImageResource lockSharedImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/lockUser.gif")
-    ImageResource lockUser();
+    @Source("images/lockUserImage.gif")
+    ImageResource lockUserImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/opencmsSymbol.png")
-    ImageResource opencmsSymbol();
+    @Source("images/opencmsSymbolImage.png")
+    ImageResource opencmsSymbolImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/placeholderOverlayTrans.png")
+    @Source("images/placeholderImage.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource placeholderOverlayTrans();
+    ImageResource placeholderImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/ratioLocked.gif")
-    ImageResource ratioLocked();
+    @Source("images/ratioLockedImage.gif")
+    ImageResource ratioLockedImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/ratioUnlocked.gif")
-    ImageResource ratioUnlocked();
+    @Source("images/ratioUnlockedImage.gif")
+    ImageResource ratioUnlockedImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/resetSize.gif")
-    ImageResource resetSize();
+    @Source("images/resetSizeImage.gif")
+    ImageResource resetSizeImage();
 
     /**
      * Access method.<p>
@@ -498,38 +498,38 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource 
      */
-    @Source("images/triangleDown.png")
-    ImageResource triangleDown();
+    @Source("images/triangleDownImage.png")
+    ImageResource triangleDownImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource 
      */
-    @Source("images/triangleRight.png")
-    ImageResource triangleRight();
+    @Source("images/triangleRightImage.png")
+    ImageResource triangleRightImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/user.png")
-    ImageResource user();
+    @Source("images/userImage.png")
+    ImageResource userImage();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/warningBig.png")
-    ImageResource warningBig();
+    @Source("images/warningBigImage.png")
+    ImageResource warningBigImage();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/warningSmall.png")
-    ImageResource warningSmall();
+    @Source("images/warningSmallImage.png")
+    ImageResource warningSmallImage();
 }

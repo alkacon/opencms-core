@@ -13,27 +13,27 @@
 
 
 @sprite .colorRed .borderLeft{
-	gwt-image: 'borders.highlightLeftChanged';
+	gwt-image: 'borders.leftChangedBorderHighlight';
 }
 @sprite .colorRed .borderTop{
-	gwt-image: 'borders.highlightTopChanged';
+	gwt-image: 'borders.topChangedBorderHighlight';
 }
 @sprite .colorRed .borderBottom{
-	gwt-image: 'borders.highlightBottomChanged';
+	gwt-image: 'borders.bottomChangedBorderHighlight';
 }
 @sprite .colorRed .borderRight{
-	gwt-image: 'borders.highlightRightChanged';
+	gwt-image: 'borders.rightChangedBorderHighlight';
 }
 
 @sprite .colorBlue .borderLeft{
-	gwt-image: 'borders.highlightLeftNew';
+	gwt-image: 'borders.leftNewBorderHighlight';
 }
 @sprite .colorBlue .borderTop{
-	gwt-image: 'borders.highlightTopNew';
+	gwt-image: 'borders.topNewBorderHighlight';
 }
 @sprite .colorBlue .borderBottom{
-	gwt-image: 'borders.highlightBottomNew';
+	gwt-image: 'borders.bottomNewBorderHighlight';
 }
 @sprite .colorBlue .borderRight{
-	gwt-image: 'borders.highlightRightNew';
+	gwt-image: 'borders.rightNewBorderHighlight';
 }

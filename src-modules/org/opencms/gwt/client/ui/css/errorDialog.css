@@ -8,7 +8,7 @@
 	white-space: nowrap;
 }
 @sprite .errorIcon{
-	gwt-image: "gwtImages.error";
+	gwt-image: "gwtImages.errorImage";
 	margin: 0px 0px 0px 3px;
 	display: block;
 	float: left;

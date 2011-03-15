@@ -34,7 +34,7 @@
 }
 
 @sprite .meterWrap, .meterValue {
-	gwt-image: "backgrounds.soft";
+	gwt-image: "backgrounds.softBackground";
 	background-position: 50% 50%;
     background-repeat: repeat-x;
     height: 20px;

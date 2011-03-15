@@ -201,53 +201,53 @@
 
 
 @sprite .opencmsSymbol{
-	gwt-image: "opencmsSymbol";
+	gwt-image: "opencmsSymbolImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
 @sprite .lockedIcon{
-	gwt-image: "ratioLocked";
+	gwt-image: "ratioLockedImage";
 	cursor: pointer;
 	width: 12px;
 }
 
 @sprite .unlockedIcon{
-	gwt-image: "ratioUnlocked";
+	gwt-image: "ratioUnlockedImage";
 	cursor: pointer;
 	width: 12px;
 }
 
 @sprite .resetIcon{
-	gwt-image: "resetSize";
+	gwt-image: "resetSizeImage";
 	cursor: pointer;
 }
 
 @sprite .croppingIcon{
-	gwt-image: "crop";
+	gwt-image: "cropImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
 @sprite .removeCroppingIcon{
-	gwt-image: "cropRemove";
+	gwt-image: "cropRemoveImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
 
 @sprite .triangleDown{
-	gwt-image: "triangleDown";
+	gwt-image: "triangleDownImage";
 	display: inline-block;
 	cursor: pointer;
 }
 @sprite .triangleRight{
-	gwt-image: "triangleRight";
+	gwt-image: "triangleRightImage";
 	display: inline-block;
 	cursor: pointer;
 }
-@sprite .close{
-	gwt-image: "close";
+@sprite .closeIcon{
+	gwt-image: "closeImage";
 	display: inline-block;
 	cursor: pointer;
 }
