@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/03/15 14:26:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -217,66 +217,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String toolbarAdd();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarClipboard();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarEdit();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarMove();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarNew();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarProperties();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarPublish();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarRemove();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarSave();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarSitemap();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String triangleDown();
 
         /** Access method.<p>
@@ -378,14 +318,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * @return the icon resource bundle
      */
     I_CmsIconBundle icons();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/inheritedImage.png")
-    ImageResource inheritedImage();
 
     /**
      * Access method.<p>

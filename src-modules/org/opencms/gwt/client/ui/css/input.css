@@ -47,7 +47,7 @@
 }
 
 @sprite .inherited {
-	gwt-image: "baseImages.inheritedImage";
+	gwt-image: "baseImages.icons.inheritedIcon";
 }
 
 @sprite .cmsState-down-disabled .checkBoxImage {
