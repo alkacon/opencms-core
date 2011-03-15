@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2009/12/17 13:07:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,6 +176,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** The id of the list. */
     private String m_listId;
 
+    /** A flag which indicates whether the list should use database paging (only supported for some lists) .**/
+    protected boolean m_lazy;
+
     /** Cached List state in case of {@link #refreshList()} method call. */
     private CmsListState m_listState;
 
@@ -218,8 +221,31 @@ public abstract class A_CmsListDialog extends CmsDialog {
         CmsListOrderEnum sortOrder,
         String searchableColId) {
 
-        super(jsp);
+        this(jsp, listId, listName, sortedColId, sortOrder, searchableColId, false);
+    }
 
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the displayed list
+     * @param listName the name of the list
+     * @param sortedColId the a priory sorted column
+     * @param sortOrder the order of the sorted column
+     * @param searchableColId the column to search into
+     * @param lazy if this parameter is true, the list should load only load the list items of the current page, if possible 
+     */
+    protected A_CmsListDialog(
+        CmsJspActionElement jsp,
+        String listId,
+        CmsMessageContainer listName,
+        String sortedColId,
+        CmsListOrderEnum sortOrder,
+        String searchableColId,
+        boolean lazy) {
+
+        super(jsp);
+        m_lazy = lazy;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_INIT_LIST_1, listId));
         }

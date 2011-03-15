@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/03/10 11:55:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0 
  */
@@ -1160,14 +1160,9 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(
-            m_context,
-            username,
-            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
-            includeOtherOus,
-            false,
-            directGroupsOnly,
-            remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
+        ? ""
+        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.main.CmsException;
 
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.6
  */
@@ -243,6 +244,36 @@ public class CmsOrgUnitManager {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getUsers(cms.getRequestContext(), orgUnit, recursive);
+    }
+
+    /**
+     * Searches users which fit the given search parameters.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param params the user search parameters 
+     * 
+     * @return the users which fit the given search criteria 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsUser> searchUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
+
+        return m_securityManager.searchUsers(cms.getRequestContext(), params);
+    }
+
+    /**
+     * Counts the users which fit the given search criteria.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param params the user search parameters 
+     * 
+     * @return the total number of users which fit the given search parameters 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public long countUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
+
+        return m_securityManager.countUsers(cms.getRequestContext(), params);
     }
 
     /**

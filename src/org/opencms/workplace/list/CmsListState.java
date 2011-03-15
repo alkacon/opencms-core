@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListState.java,v $
- * Date   : $Date: 2009/06/04 14:29:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.list;
 
+import com.google.common.base.Objects;
+
 /**
  * Class for storing the state of a list.<p>
  * 
@@ -45,7 +47,7 @@ package org.opencms.workplace.list;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +63,17 @@ public class CmsListState {
     private int m_page;
 
     /**
+     * Empty constructor, with default values.<p>
+     */
+    public CmsListState() {
+
+        m_page = 1;
+        m_order = CmsListOrderEnum.ORDER_ASCENDING;
+        m_filter = "";
+        m_column = "";
+    }
+
+    /**
      * Default Constructor.<p>
      * 
      * @param list the list to read the state from
@@ -71,17 +84,6 @@ public class CmsListState {
         m_filter = list.getSearchFilter();
         m_page = list.getCurrentPage();
         m_order = list.getCurrentSortOrder();
-    }
-
-    /**
-     * Empty constructor, with default values.<p>
-     */
-    public CmsListState() {
-
-        m_page = 1;
-        m_order = CmsListOrderEnum.ORDER_ASCENDING;
-        m_filter = "";
-        m_column = "";
     }
 
     /**
@@ -162,6 +164,18 @@ public class CmsListState {
     public void setPage(int page) {
 
         m_page = page;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return Objects.toStringHelper(this).add("column", m_column).add("filter", m_filter).add("order", m_order).add(
+            "page",
+            "" + m_page).toString();
+
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2011/02/21 09:55:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,9 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsSelectQuery;
+import org.opencms.db.CmsSimpleQueryFragment;
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
@@ -51,13 +54,15 @@ import java.sql.SQLException;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
 
+import com.google.common.base.Joiner;
+
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -245,4 +250,37 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         }
         internalUpdateUserInfoData(dbc, userId, key, value);
     }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
+     */
+    @Override
+    protected boolean useWindowFunctionsForPaging() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#generateConcat(java.lang.String[])
+     */
+    @Override
+    protected String generateConcat(String... expressions) {
+
+        return Joiner.on(" || ").join(expressions);
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#addFlagCondition(org.opencms.db.CmsSelectQuery, org.opencms.db.CmsSelectQuery.TableAlias, int)
+     */
+    @Override
+    protected void addFlagCondition(CmsSelectQuery select, TableAlias users, int flags) {
+
+        if (flags != 0) {
+            select.addCondition(new CmsSimpleQueryFragment(
+                "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
+                new Integer(flags),
+                new Integer(flags)));
+        }
+    }
+
 }

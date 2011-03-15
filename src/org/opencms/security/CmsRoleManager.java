@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,13 +43,16 @@ import org.opencms.main.OpenCms;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Lists;
 
 /**
  * This manager provide access to the role related operations.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
@@ -57,6 +60,23 @@ public class CmsRoleManager {
 
     /** The security manager. */
     private final CmsSecurityManager m_securityManager;
+
+    /**
+     * Returns the groups which constitute a given role, i.e. the set of groups such that a member of any of them
+     * has the given role.<p>
+     * 
+     * @param cms the CMS context 
+     * @param role the role 
+     * @param directUsersOnly if true, only the role's direct group will be returned
+     *  
+     * @return the groups constituting the given role
+     * 
+     * @throws CmsException if something goes wrong  
+     */
+    public Set<CmsGroup> getRoleGroups(CmsObject cms, CmsRole role, boolean directUsersOnly) throws CmsException {
+
+        return m_securityManager.getRoleGroups(cms.getRequestContext(), role, directUsersOnly);
+    }
 
     /**
      * Default constructor.<p>
@@ -193,20 +213,45 @@ public class CmsRoleManager {
     public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus, boolean includeWebusers)
     throws CmsException {
 
+        List<CmsOrganizationalUnit> ous = getManageableOrgUnits(cms, ouFqn, includeSubOus, includeWebusers);
         List<CmsUser> users = new ArrayList<CmsUser>();
-        Iterator<CmsOrganizationalUnit> it = getOrgUnitsForRole(
-            cms,
-            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
-            includeSubOus).iterator();
+        Iterator<CmsOrganizationalUnit> it = ous.iterator();
         while (it.hasNext()) {
             CmsOrganizationalUnit orgUnit = it.next();
-            if (!includeWebusers && orgUnit.hasFlagWebuser()) {
-                // webuser are never manageable
-                continue;
-            }
             users.addAll(OpenCms.getOrgUnitManager().getUsers(cms, orgUnit.getName(), false));
         }
         return users;
+    }
+
+    /**
+     * Returns a list of those organizational units whose members can be managed by the current user.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param ouFqn the fully qualified name of the organizational unit 
+     * @param includeSubOus if sub organizational units should be included in the search 
+     * @param includeWebusers if webuser organizational units should be included in the search 
+     * 
+     * @return a list of organizational units 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsOrganizationalUnit> getManageableOrgUnits(
+        CmsObject cms,
+        String ouFqn,
+        boolean includeSubOus,
+        boolean includeWebusers) throws CmsException {
+
+        List<CmsOrganizationalUnit> result = Lists.newArrayList();
+        List<CmsOrganizationalUnit> ous = getOrgUnitsForRole(
+            cms,
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
+            includeSubOus);
+        for (CmsOrganizationalUnit ou : ous) {
+            if (includeWebusers || !ou.hasFlagWebuser()) {
+                result.add(ou);
+            }
+        }
+        return result;
     }
 
     /**

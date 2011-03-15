@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2009/12/14 13:07:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -545,6 +545,24 @@ public final class CmsEncoder {
     public static String escapeSql(String source) {
 
         return source.replaceAll("'", "''");
+    }
+
+    /**
+     * Escapes the wildcard characters in a string which will be used as the pattern for a SQL LIKE clause.<p>
+     * 
+     * @param pattern the pattern 
+     * @param escapeChar the character which should be used as the escape character 
+     * 
+     * @return the escaped pattern 
+     */
+    public static String escapeSqlLikePattern(String pattern, char escapeChar) {
+
+        char[] special = new char[] {escapeChar, '%', '_'};
+        String result = pattern;
+        for (char charToEscape : special) {
+            result = result.replaceAll("" + charToEscape, "" + escapeChar + charToEscape);
+        }
+        return result;
     }
 
     /**

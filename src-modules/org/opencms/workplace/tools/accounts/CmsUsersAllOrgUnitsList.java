@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,9 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
+import org.opencms.file.CmsUserSearchParameters.SearchKey;
+import org.opencms.file.CmsUserSearchParameters.SortKey;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -44,6 +47,8 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListState;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,12 +61,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import com.google.common.collect.Lists;
+
 /**
  * User account view over all manageable organizational units.<p>
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -84,9 +91,14 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
      * 
      * @param jsp an initialized JSP action element
      */
+    public CmsUsersAllOrgUnitsList(CmsJspActionElement jsp, boolean lazy) {
+
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), lazy);
+    }
+
     public CmsUsersAllOrgUnitsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0));
+        this(jsp, false);
     }
 
     /**
@@ -95,10 +107,16 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
+     * @param lazy the lazy flag 
      */
+    public CmsUsersAllOrgUnitsList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
+
+        this(new CmsJspActionElement(context, req, res), lazy);
+    }
+
     public CmsUsersAllOrgUnitsList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        this(new CmsJspActionElement(context, req, res));
+        this(context, req, res, false);
     }
 
     /**
@@ -183,8 +201,10 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
+        if (m_lazy) {
+            metadata.setSelfManaged(true);
+        }
         super.setColumns(metadata);
-
         metadata.getColumnDefinition(LIST_COLUMN_GROUPS).setVisible(false);
         metadata.getColumnDefinition(LIST_COLUMN_ROLE).setVisible(false);
         metadata.getColumnDefinition(LIST_COLUMN_ACTIVATE).setVisible(false);
@@ -242,7 +262,6 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
         orgUnitDescDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
         metadata.addItemDetails(orgUnitDescDetails);
-
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_EMAIL));
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_ORGUNIT));
     }
@@ -271,4 +290,79 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
         // no param check needed
     }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getListItems()
+     */
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
+
+        if (!m_lazy) {
+            return super.getListItems();
+        } else {
+
+            CmsUserSearchParameters params = getSearchParams();
+
+            List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
+            int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
+            getList().setSize(count);
+            List<CmsListItem> result = Lists.newArrayList();
+            for (CmsUser user : users) {
+                CmsListItem item = makeListItemForUser(user);
+                result.add(item);
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Gets the search parameters.<p>
+     * 
+     * @return the search parameters
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        params.setAllowedOus(ous);
+        String searchFilter = state.getFilter();
+        params.addSearch(SearchKey.email);
+        params.addSearch(SearchKey.orgUnit);
+        params.setSearchFilter(searchFilter);
+        params.setFilterCore(true);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        return params;
+    }
+
+    /**
+     * Returns the sort key for the column.<p>
+     * 
+     * @param column the list column 
+     * @return the sort key 
+     */
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_ENABLED)) {
+            return SortKey.activated;
+        } else if (column.equals(LIST_COLUMN_LASTLOGIN)) {
+            return SortKey.lastLogin;
+        } else if (column.equals(LIST_COLUMN_DISPLAY)) {
+            return SortKey.loginName;
+        } else if (column.equals(LIST_COLUMN_NAME)) {
+            return SortKey.fullName;
+        } else if (column.equals(LIST_COLUMN_EMAIL)) {
+            return SortKey.email;
+        } else if (column.equals(LIST_COLUMN_ORGUNIT)) {
+            return SortKey.orgUnit;
+        }
+        return null;
+    }
+
 }

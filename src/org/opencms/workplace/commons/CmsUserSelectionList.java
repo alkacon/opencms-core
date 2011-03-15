@@ -1,7 +1,7 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUserSelectionList.java,v $
+ * Date   : $Date: 2011/03/15 17:33:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,15 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
+import org.opencms.file.CmsUserSearchParameters.SortKey;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -47,6 +51,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListState;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 import java.util.ArrayList;
@@ -57,12 +62,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import com.google.common.collect.Lists;
+
 /**
  * User selection dialog.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision$ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +113,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             LIST_COLUMN_LOGIN,
             CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_LOGIN);
+
     }
 
     /**
@@ -118,6 +126,35 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     public CmsUserSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsUserSelectionList(CmsJspActionElement jsp, boolean lazy) {
+
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_USERSELECTION_LIST_NAME_0),
+            LIST_COLUMN_LOGIN,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            LIST_COLUMN_LOGIN,
+            lazy);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsUserSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
+
+        this(new CmsJspActionElement(context, req, res), lazy);
     }
 
     /**
@@ -208,24 +245,57 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Makes a list item from a user.<p>
+     * 
+     * @param user the user 
+     * 
+     * @return the list item 
+     */
+    protected CmsListItem makeListItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+        return item;
+
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        if (!m_lazy) {
 
-        // get content        
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
-            CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_FULLNAME, user.getFullName());
-            ret.add(item);
+            List ret = new ArrayList();
+
+            // get content        
+            List users = getUsers();
+            Iterator itUsers = users.iterator();
+            while (itUsers.hasNext()) {
+                CmsUser user = (CmsUser)itUsers.next();
+                CmsListItem item = makeListItem(user);
+                ret.add(item);
+            }
+
+            return ret;
+        } else {
+            CmsUserSearchParameters params = getSearchParams();
+            if (getParamFlags() != null) {
+                int flags = Integer.parseInt(getParamFlags());
+                params.setFlags(flags);
+            }
+            List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
+            int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
+            getList().setSize(count);
+            List<CmsListItem> result = Lists.newArrayList();
+            for (CmsUser user : users) {
+                CmsListItem item = makeListItem(user);
+                result.add(item);
+            }
+            return result;
         }
-
-        return ret;
     }
 
     /**
@@ -253,6 +323,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -306,6 +377,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -314,6 +386,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -322,6 +395,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {
@@ -335,4 +409,50 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             setParamFlags(null);
         }
     }
+
+    /**
+     * Gets the user search parameters.<p>
+     * 
+     * @return the user search parameters 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        String searchFilter = state.getFilter();
+        params.setSearchFilter(searchFilter);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        String groupStr = getParamGroup();
+        if (groupStr != null) {
+            CmsGroup group = getCms().readGroup(getParamGroup());
+            params.setGroup(group);
+        } else {
+            List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
+            params.setAllowedOus(ous);
+        }
+        return params;
+    }
+
+    /**
+     * Gets the sort key to use.<p>
+     * 
+     * @param column the list column id 
+     * @return the sort key 
+     */
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_FULLNAME)) {
+            return SortKey.fullName;
+        } else if (column.equals(LIST_COLUMN_LOGIN)) {
+            return SortKey.loginName;
+        }
+        return null;
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,8 +120,28 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
-        : null);
+        this(jsp, listId, listName, searchable, false);
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the list
+     * @param listName the name of the list
+     * @param searchable searchable flag
+     * @param lazy the lazy flag 
+     */
+    protected A_CmsGroupUsersList(
+        CmsJspActionElement jsp,
+        String listId,
+        CmsMessageContainer listName,
+        boolean searchable,
+        boolean lazy) {
+
+        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_NAME
+        : null, lazy);
     }
 
     /**
@@ -191,6 +211,10 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      */
     public boolean hasUsersInOtherOus() {
 
+        if (m_lazy) {
+            // if we use database-side paging, we have to assume that there may be users from other OUs 
+            return true;
+        }
         if (m_hasUsersInOtherOus == null) {
             // lazy initialization
             m_hasUsersInOtherOus = Boolean.FALSE;
@@ -208,6 +232,20 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             }
         }
         return m_hasUsersInOtherOus.booleanValue();
+    }
+
+    /**
+     * Makes a list item for a given user.<p>
+     * 
+     * @param user the user 
+     * 
+     * @return the list item 
+     */
+    protected CmsListItem makeListItemForUser(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        setUserData(user, item);
+        return item;
     }
 
     /**
@@ -254,26 +292,48 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Checks whether users of other OUs should be shown.<p>
+     * 
+     * @return true if users of other OUs should be shown 
+     */
+    protected boolean hasOuDetail() {
+
+        CmsListMetadata meta = getList().getMetadata();
+        CmsListItemDetails detail = meta.getItemDetailDefinition(LIST_DETAIL_OTHEROU);
+        return (detail != null) && detail.isVisible();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
 
-        boolean withOtherOus = hasUsersInOtherOus()
-            && (getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU) != null)
-            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
-
+        boolean withOtherOus = hasOuDetail() && hasUsersInOtherOus();
         // get content        
         Iterator itUsers = getUsers(withOtherOus).iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();
-            CmsListItem item = getList().newItem(user.getId().toString());
-            setUserData(user, item);
+            CmsListItem item = makeListItem(user);
             ret.add(item);
         }
-
         return ret;
+    }
+
+    /**
+     * Makes a list item from a user.<p>
+     * 
+     * @param user a user
+     * 
+     * @return a list item 
+     */
+    protected CmsListItem makeListItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        setUserData(user, item);
+        return item;
     }
 
     /**
@@ -453,6 +513,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

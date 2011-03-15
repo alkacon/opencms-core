@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,24 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsCompositeQueryFragment;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPagingQuery;
+import org.opencms.db.CmsSelectQuery;
+import org.opencms.db.CmsSimpleQueryFragment;
+import org.opencms.db.CmsStatementBuilder;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -52,7 +59,10 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsUserSearchParameters.SearchKey;
+import org.opencms.file.CmsUserSearchParameters.SortKey;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -74,6 +84,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -85,6 +96,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,6 +107,8 @@ import java.util.Map;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Joiner;
+
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
@@ -103,7 +117,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  */
@@ -446,13 +460,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(
-                        dbc,
-                        "",
-                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
-                        0,
-                        null,
-                        "/");
+                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
+                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
+                        null), 0, null, "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -607,9 +617,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(
+                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
                         dbc,
-                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+                        organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -1032,97 +1042,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         return CmsSqlManager.getInstance(classname);
     }
 
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#markResourceAsVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource, org.opencms.file.CmsUser)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
-    //    throws CmsDataAccessException {
-    //
-    //        boolean entryExists = false;
-    //        CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
-    //            resource.getStructureId()).filterUser(user.getId());
-    //        // delete existing visited entry for the resource
-    //        if (m_driverManager.getProjectDriver(dbc).readLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
-    //            entryExists = true;
-    //            m_driverManager.getProjectDriver(dbc).deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
-    //        }
-    //
-    //        // create new entry
-    //        List<CmsLogEntry> newEntries = new ArrayList<CmsLogEntry>(1);
-    //        CmsLogEntry entry = new CmsLogEntry(
-    //            user.getId(),
-    //            System.currentTimeMillis(),
-    //            resource.getStructureId(),
-    //            CmsLogEntryType.USER_RESOURCE_VISITED,
-    //            new String[] {user.getName(), resource.getRootPath()});
-    //        newEntries.add(entry);
-    //        m_driverManager.getProjectDriver(dbc).log(dbc, poolName, newEntries);
-    //
-    //        if (!entryExists) {
-    //            // new entry, check if maximum number of stored visited resources is exceeded
-    //            PreparedStatement stmt = null;
-    //            Connection conn = null;
-    //            ResultSet res = null;
-    //            int count = 0;
-    //
-    //            try {
-    //                conn = m_sqlManager.getConnection(poolName);
-    //                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_2");
-    //
-    //                stmt.setString(1, user.getId().toString());
-    //                stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-    //                res = stmt.executeQuery();
-    //
-    //                if (res.next()) {
-    //                    count = res.getInt(1);
-    //                    while (res.next()) {
-    //                        // do nothing only move through all rows because of mssql odbc driver
-    //                    }
-    //                } else {
-    //                    throw new CmsDbConsistencyException(Messages.get().container(
-    //                        Messages.ERR_COUNTING_VISITED_RESOURCES_1,
-    //                        user.getName()));
-    //                }
-    //
-    //                int maxCount = OpenCms.getSubscriptionManager().getMaxVisitedCount();
-    //                if (count > maxCount) {
-    //                    // delete old visited log entries
-    //                    m_sqlManager.closeAll(dbc, null, stmt, res);
-    //                    stmt = m_sqlManager.getPreparedStatement(
-    //                        conn,
-    //                        dbc.currentProject(),
-    //                        "C_VISITED_USER_DELETE_GETDATE_3");
-    //
-    //                    stmt.setString(1, user.getId().toString());
-    //                    stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-    //                    stmt.setInt(3, count - maxCount);
-    //                    res = stmt.executeQuery();
-    //                    long deleteDate = 0;
-    //                    while (res.next()) {
-    //                        // get last date of result set
-    //                        deleteDate = res.getLong(1);
-    //                    }
-    //                    if (deleteDate > 0) {
-    //                        filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
-    //                            user.getId()).filterTo(deleteDate);
-    //                        m_driverManager.getProjectDriver(dbc).deleteLog(
-    //                            dbc,
-    //                            OpenCms.getSubscriptionManager().getPoolName(),
-    //                            filter);
-    //                    }
-    //                }
-    //            } catch (SQLException e) {
-    //                throw new CmsDbSqlException(Messages.get().container(
-    //                    Messages.ERR_GENERIC_SQL_1,
-    //                    CmsDbSqlException.getErrorQuery(stmt)), e);
-    //            } finally {
-    //                m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //            }
-    //        }
-    //    }
-
     /**
      * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
@@ -1244,44 +1163,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
     }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#readAllSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //        ResultSet res = null;
-    //        CmsResource currentResource = null;
-    //        List<CmsResource> resources = new ArrayList<CmsResource>();
-    //
-    //        try {
-    //            conn = m_sqlManager.getConnection(poolName);
-    //            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_SUBSCRIPTION_READ_ALL_1");
-    //
-    //            stmt.setString(1, principal.getId().toString());
-    //            res = stmt.executeQuery();
-    //
-    //            while (res.next()) {
-    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-    //                    res,
-    //                    dbc.currentProject().getUuid(),
-    //                    false);
-    //                resources.add(currentResource);
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //        }
-    //        return resources;
-    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#readChildGroups(org.opencms.db.CmsDbContext, java.lang.String)
@@ -1471,335 +1352,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
     }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#readResourcesVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsVisitedByFilter)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //        ResultSet res = null;
-    //        CmsResource currentResource = null;
-    //        StringBuffer conditions = new StringBuffer(256);
-    //        List<String> params = new ArrayList<String>(1);
-    //        List<CmsResource> resources = new ArrayList<CmsResource>();
-    //
-    //        try {
-    //            conn = m_sqlManager.getConnection(poolName);
-    //
-    //            // path filter
-    //            if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-    //                CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-    //                    dbc,
-    //                    dbc.currentProject().getUuid(),
-    //                    filter.getParentPath(),
-    //                    false);
-    //                conditions.append(BEGIN_INCLUDE_CONDITION);
-    //                if (filter.isIncludeSubFolders()) {
-    //                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-    //                    params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-    //                        + "%");
-    //                } else {
-    //                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-    //                    params.add(parent.getStructureId().toString());
-    //                }
-    //                conditions.append(END_CONDITION);
-    //            }
-    //
-    //            String query = m_sqlManager.readQuery(dbc.currentProject(), "C_VISITED_USER_READ_4");
-    //            query = CmsStringUtil.substitute(query, "%(CONDITIONS)", conditions.toString());
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-    //
-    //            stmt.setString(1, filter.getUser().getId().toString());
-    //            stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-    //            stmt.setLong(3, filter.getFromDate());
-    //            stmt.setLong(4, filter.getToDate());
-    //            for (int i = 0; i < params.size(); i++) {
-    //                stmt.setString(i + 5, params.get(i));
-    //            }
-    //
-    //            res = stmt.executeQuery();
-    //
-    //            while (res.next()) {
-    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-    //                    res,
-    //                    dbc.currentProject().getUuid(),
-    //                    false);
-    //                resources.add(currentResource);
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //        }
-    //        return resources;
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#readSubscribedDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsUser, java.util.List, org.opencms.file.CmsResource, boolean, long)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public List<I_CmsHistoryResource> readSubscribedDeletedResources(
-    //        CmsDbContext dbc,
-    //        String poolName,
-    //        CmsUser user,
-    //        List<CmsGroup> groups,
-    //        CmsResource parent,
-    //        boolean includeSubFolders,
-    //        long deletedFrom) throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //        ResultSet res = null;
-    //        List<I_CmsHistoryResource> resources = new ArrayList<I_CmsHistoryResource>();
-    //        Set<CmsUUID> historyIDs = new HashSet<CmsUUID>();
-    //
-    //        List<String> principalIds = new ArrayList<String>();
-    //        // add user ID
-    //        principalIds.add(user.getId().toString());
-    //        // add group IDs
-    //        if ((groups != null) && !groups.isEmpty()) {
-    //            Iterator<CmsGroup> it = groups.iterator();
-    //            while (it.hasNext()) {
-    //                principalIds.add(it.next().getId().toString());
-    //            }
-    //        }
-    //
-    //        StringBuffer conditions = new StringBuffer(256);
-    //        List<String> params = new ArrayList<String>();
-    //        conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED"));
-    //
-    //        if (principalIds.size() == 1) {
-    //            // single principal filter
-    //            conditions.append(BEGIN_INCLUDE_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPAL_SINGLE"));
-    //            params.add(principalIds.get(0));
-    //            conditions.append(END_CONDITION);
-    //        } else {
-    //            // multiple principals filter
-    //            conditions.append(BEGIN_INCLUDE_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPALS"));
-    //            conditions.append(BEGIN_CONDITION);
-    //            Iterator<String> it = principalIds.iterator();
-    //            while (it.hasNext()) {
-    //                params.add(it.next());
-    //                conditions.append("?");
-    //                if (it.hasNext()) {
-    //                    conditions.append(", ");
-    //                }
-    //            }
-    //            conditions.append(END_CONDITION);
-    //            conditions.append(END_CONDITION);
-    //        }
-    //
-    //        try {
-    //            conn = m_sqlManager.getConnection(poolName);
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-    //
-    //            // set parameters
-    //            stmt.setLong(1, deletedFrom);
-    //            for (int i = 0; i < params.size(); i++) {
-    //                stmt.setString(i + 2, params.get(i));
-    //            }
-    //            res = stmt.executeQuery();
-    //            while (res.next()) {
-    //                historyIDs.add(new CmsUUID(res.getString(1)));
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //        }
-    //
-    //        // get the matching history resources from the found structure IDs
-    //        String parentFolderPath = "";
-    //        if (parent != null) {
-    //            parentFolderPath = CmsResource.getFolderPath(parent.getRootPath());
-    //        }
-    //        for (Iterator<CmsUUID> i = historyIDs.iterator(); i.hasNext();) {
-    //            CmsUUID id = i.next();
-    //            int version = m_driverManager.getHistoryDriver(dbc).readLastVersion(dbc, id);
-    //            if (version > 0) {
-    //                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver(dbc).readResource(dbc, id, version);
-    //                if (parent != null) {
-    //                    if (!includeSubFolders
-    //                        && !parentFolderPath.equals(CmsResource.getFolderPath(histRes.getRootPath()))) {
-    //                        // deleted history resource is not in the specified parent folder, skip it
-    //                        continue;
-    //                    } else if (includeSubFolders && !histRes.getRootPath().startsWith(parentFolderPath)) {
-    //                        // deleted history resource is not in the specified parent folder or sub folder, skip it
-    //                        continue;
-    //                    }
-    //                }
-    //                resources.add(histRes);
-    //            }
-    //        }
-    //
-    //        return resources;
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#readSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsSubscriptionFilter)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //        ResultSet res = null;
-    //        CmsResource currentResource = null;
-    //        List<CmsResource> resources = new ArrayList<CmsResource>();
-    //
-    //        String queryBuf = m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_READ");
-    //
-    //        StringBuffer conditions = new StringBuffer(256);
-    //        List<String> params = new ArrayList<String>();
-    //
-    //        boolean userDefined = filter.getUser() != null;
-    //        boolean groupsDefined = !filter.getGroups().isEmpty();
-    //        if (!groupsDefined && !userDefined) {
-    //            filter.setUser(dbc.currentUser());
-    //            userDefined = true;
-    //        }
-    //        // check if a user has been set for the "visited" and "unvisited" mode
-    //        if (!filter.getMode().isAll() && (filter.getUser() == null)) {
-    //            // change the mode, without user the other modes are not applicable
-    //            filter.setMode(CmsSubscriptionReadMode.ALL);
-    //        }
-    //
-    //        List<String> principalIds = new ArrayList<String>();
-    //        // add user ID
-    //        if (userDefined) {
-    //            principalIds.add(filter.getUser().getId().toString());
-    //        }
-    //        // add group IDs
-    //        if (groupsDefined) {
-    //            Iterator<CmsGroup> it = filter.getGroups().iterator();
-    //            while (it.hasNext()) {
-    //                principalIds.add(it.next().getId().toString());
-    //            }
-    //        }
-    //
-    //        if (principalIds.size() == 1) {
-    //            // single principal filter
-    //            conditions.append(BEGIN_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPAL_SINGLE"));
-    //            params.add(principalIds.get(0));
-    //            conditions.append(END_CONDITION);
-    //        } else {
-    //            // multiple principals filter
-    //            conditions.append(BEGIN_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_FILTER_PRINCIPALS"));
-    //            conditions.append(BEGIN_CONDITION);
-    //            Iterator<String> it = principalIds.iterator();
-    //            while (it.hasNext()) {
-    //                params.add(it.next());
-    //                conditions.append("?");
-    //                if (it.hasNext()) {
-    //                    conditions.append(", ");
-    //                }
-    //            }
-    //            conditions.append(END_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPALS_END"));
-    //            conditions.append(END_CONDITION);
-    //        }
-    //
-    //        // path filter
-    //        if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-    //            CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-    //                dbc,
-    //                dbc.currentProject().getUuid(),
-    //                filter.getParentPath(),
-    //                false);
-    //            conditions.append(BEGIN_INCLUDE_CONDITION);
-    //            if (filter.isIncludeSubFolders()) {
-    //                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-    //                params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-    //                    + "%");
-    //            } else {
-    //                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-    //                params.add(parent.getStructureId().toString());
-    //            }
-    //            conditions.append(END_CONDITION);
-    //        }
-    //
-    //        // check from and to date
-    //        if ((filter.getFromDate() > 0) || (filter.getToDate() < Long.MAX_VALUE)) {
-    //            conditions.append(BEGIN_INCLUDE_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery(
-    //                dbc.currentProject(),
-    //                "C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED"));
-    //            params.add(String.valueOf(filter.getFromDate()));
-    //            params.add(String.valueOf(filter.getToDate()));
-    //            conditions.append(END_CONDITION);
-    //        }
-    //
-    //        try {
-    //            conn = m_sqlManager.getConnection(poolName);
-    //            queryBuf = CmsStringUtil.substitute(queryBuf, "%(CONDITIONS)", conditions.toString());
-    //            if (LOG.isDebugEnabled()) {
-    //                LOG.debug(queryBuf.toString());
-    //            }
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf);
-    //
-    //            // set parameters
-    //            for (int i = 0; i < params.size(); i++) {
-    //                stmt.setString(i + 1, params.get(i));
-    //            }
-    //            res = stmt.executeQuery();
-    //
-    //            while (res.next()) {
-    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-    //                    res,
-    //                    dbc.currentProject().getUuid(),
-    //                    false);
-    //                resources.add(currentResource);
-    //            }
-    //
-    //            // filter the result if in visited/unvisited mode (faster as creating a query with even more joined tables)
-    //            if (!filter.getMode().isAll()) {
-    //                List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
-    //                for (Iterator<CmsResource> i = resources.iterator(); i.hasNext();) {
-    //                    CmsResource resource = i.next();
-    //                    long visitedDate = 0;
-    //                    try {
-    //                        visitedDate = m_driverManager.getDateLastVisitedBy(dbc, poolName, filter.getUser(), resource);
-    //                    } catch (CmsException e) {
-    //                        throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
-    //                    }
-    //                    if (filter.getMode().isUnVisited() && (visitedDate >= resource.getDateLastModified())) {
-    //                        // unvisited mode: resource was visited after the last modification, skip it
-    //                        continue;
-    //                    }
-    //                    if (filter.getMode().isVisited() && (resource.getDateLastModified() > visitedDate)) {
-    //                        // visited mode: resource was not visited after last modification, skip it
-    //                        continue;
-    //                    }
-    //                    // add the current resource to the result
-    //                    result.add(resource);
-    //                }
-    //                resources = result;
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //        }
-    //        return resources;
-    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
@@ -2205,6 +1757,65 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsUserDriver#countUsers(org.opencms.db.CmsDbContext, org.opencms.file.CmsUserSearchParameters)
+     */
+    public long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
+
+        CmsPair<String, List<Object>> queryAndParams = createUserQuery(searchParams, true);
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryAndParams.getFirst());
+            CmsDbUtil.fillParameters(stmt, queryAndParams.getSecond());
+            res = stmt.executeQuery();
+            long result = 0;
+            while (res.next()) {
+                result = res.getLong(1);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#searchUsers(org.opencms.db.CmsDbContext, org.opencms.file.CmsUserSearchParameters)
+     */
+    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams)
+    throws CmsDataAccessException {
+
+        List<CmsUser> users = new ArrayList<CmsUser>();
+        CmsPair<String, List<Object>> queryAndParams = createUserQuery(searchParams, false);
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryAndParams.getFirst());
+            CmsDbUtil.fillParameters(stmt, queryAndParams.getSecond());
+            res = stmt.executeQuery();
+            while (res.next()) {
+                CmsUser user = internalCreateUser(dbc, res);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        }
+        for (CmsUser user : users) {
+            Map info = readUserInfos(dbc, user.getId());
+            user.setAdditionalInfo(info);
+        }
+        return users;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsUserDriver#setDriverManager(org.opencms.db.CmsDriverManager)
      */
     public void setDriverManager(CmsDriverManager driverManager) {
@@ -2219,35 +1830,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         m_sqlManager = (CmsSqlManager)sqlManager;
     }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#setSubscribedResourceAsDeleted(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //        long deletedTime = System.currentTimeMillis();
-    //
-    //        try {
-    //            conn = getSqlManager().getConnection(poolName);
-    //            // set resource as deleted for all users and groups
-    //            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_UPDATE_DATE_2");
-    //            stmt.setLong(1, deletedTime);
-    //            stmt.setString(2, resource.getStructureId().toString());
-    //            stmt.executeUpdate();
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
-    //        }
-    //
-    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#setUsersOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsUser)
@@ -2278,179 +1860,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#subscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver 
-    //     */
-    //    public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
-    //    throws CmsDataAccessException {
-    //
-    //        ResultSet res = null;
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //
-    //        try {
-    //            conn = getSqlManager().getConnection(poolName);
-    //            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CHECK_2");
-    //            stmt.setString(1, principal.getId().toString());
-    //            stmt.setString(2, resource.getStructureId().toString());
-    //            res = stmt.executeQuery();
-    //
-    //            // only create subscription entry if principal is not subscribed to resource
-    //            if (res.next()) {
-    //                while (res.next()) {
-    //                    // do nothing only move through all rows because of mssql odbc driver
-    //                }
-    //            } else {
-    //                // subscribe principal
-    //                m_sqlManager.closeAll(dbc, null, stmt, null);
-    //                stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CREATE_2");
-    //                stmt.setString(1, principal.getId().toString());
-    //                stmt.setString(2, resource.getStructureId().toString());
-    //                stmt.executeUpdate();
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
-    //        }
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, long)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //
-    //        try {
-    //            conn = getSqlManager().getConnection(poolName);
-    //            StringBuffer conditions = new StringBuffer(256);
-    //
-    //            // unsubscribe all deleted resources
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-    //            conditions.append(BEGIN_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_DATE"));
-    //            conditions.append(END_CONDITION);
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-    //            stmt.setLong(1, deletedTo);
-    //            stmt.executeUpdate();
-    //
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
-    //        }
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllResourcesFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //
-    //        try {
-    //            if (principal != null) {
-    //                conn = getSqlManager().getConnection(poolName);
-    //                StringBuffer conditions = new StringBuffer(256);
-    //
-    //                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-    //                conditions.append(BEGIN_CONDITION);
-    //                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
-    //                conditions.append(END_CONDITION);
-    //                stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-    //                stmt.setString(1, principal.getId().toString());
-    //                stmt.executeUpdate();
-    //            }
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
-    //        }
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //
-    //        try {
-    //            conn = getSqlManager().getConnection(poolName);
-    //            StringBuffer conditions = new StringBuffer(256);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-    //            conditions.append(BEGIN_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
-    //            conditions.append(END_CONDITION);
-    //            conditions.append(BEGIN_INCLUDE_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
-    //            conditions.append(END_CONDITION);
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-    //            stmt.setString(1, principal.getId().toString());
-    //            stmt.setString(2, resource.getStructureId().toString());
-    //            stmt.executeUpdate();
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
-    //        }
-    //    }
-
-    //    /**
-    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceForAll(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
-    //     * @deprecated
-    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
-    //     */
-    //    public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource)
-    //    throws CmsDataAccessException {
-    //
-    //        PreparedStatement stmt = null;
-    //        Connection conn = null;
-    //
-    //        try {
-    //            conn = getSqlManager().getConnection(poolName);
-    //            StringBuffer conditions = new StringBuffer(256);
-    //
-    //            // unsubscribe resource for all principals
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-    //            conditions.append(BEGIN_CONDITION);
-    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
-    //            conditions.append(END_CONDITION);
-    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-    //            stmt.setString(1, resource.getStructureId().toString());
-    //            stmt.executeUpdate();
-    //        } catch (SQLException e) {
-    //            throw new CmsDbSqlException(Messages.get().container(
-    //                Messages.ERR_GENERIC_SQL_1,
-    //                CmsDbSqlException.getErrorQuery(stmt)), e);
-    //        } finally {
-    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
-    //        }
-    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
@@ -2731,6 +2140,402 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Creates a query for searching users.<p>
+     * 
+     * @param searchParams the user search criteria 
+     * @param countOnly if true, the query will only count the total number of results instead of returning them
+     *  
+     * @return a pair consisting of the query string and its parameters 
+     */
+    protected CmsPair<String, List<Object>> createUserQuery(CmsUserSearchParameters searchParams, boolean countOnly) {
+
+        CmsSelectQuery select = new CmsSelectQuery();
+        TableAlias users = select.addTable("CMS_USERS", "usr");
+        if (countOnly) {
+            select.addColumn("COUNT(" + users.column("USER_ID") + ")");
+        } else {
+            String[] columns = new String[] {
+                "USER_ID",
+                "USER_NAME",
+                "USER_PASSWORD",
+                "USER_FIRSTNAME",
+                "USER_LASTNAME",
+                "USER_EMAIL",
+                "USER_LASTLOGIN",
+                "USER_FLAGS",
+                "USER_OU",
+                "USER_DATECREATED"};
+            for (String columnName : columns) {
+                select.addColumn(users.column(columnName));
+            }
+        }
+        CmsOrganizationalUnit orgUnit = searchParams.getOrganizationalUnit();
+        boolean recursive = searchParams.recursiveOrgUnits();
+
+        if (orgUnit != null) {
+            addOrgUnitCondition(select, users, orgUnit, recursive);
+        }
+        if (searchParams.isFilterCore()) {
+            select.addCondition(users.column("USER_FLAGS") + " <= " + I_CmsPrincipal.FLAG_CORE_LIMIT);
+        }
+        addAllowedOuCondition(select, users, searchParams.getAllowedOus());
+        addFlagCondition(select, users, searchParams.getFlags());
+        if (orgUnit != null) {
+            addWebuserCondition(select, orgUnit, users);
+        }
+        addSearchFilterCondition(select, users, searchParams);
+        addGroupCondition(select, users, searchParams);
+        if (countOnly) {
+            CmsStatementBuilder builder = new CmsStatementBuilder();
+            select.visit(builder);
+            return CmsPair.create(builder.getQuery(), builder.getParameters());
+        } else {
+            addSorting(select, users, searchParams);
+            return makePaged(select, searchParams);
+        }
+    }
+
+    /**
+     * Adds group conditions to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param searchParams the search parameters 
+     */
+    private void addGroupCondition(CmsSelectQuery select, TableAlias users, CmsUserSearchParameters searchParams) {
+
+        CmsGroup group = searchParams.getGroup();
+        if (group != null) {
+            CmsUUID groupId = group.getId();
+            TableAlias groupUsers = select.addTable("CMS_GROUPUSERS", "groupusrs");
+            select.addCondition(new CmsSimpleQueryFragment(groupUsers.column("GROUP_ID") + " = ? ", groupId.toString()));
+            select.addCondition(new CmsSimpleQueryFragment(groupUsers.column("USER_ID")
+                + " = "
+                + users.column("USER_ID")));
+            if (searchParams.isFilterByGroupOu()) {
+                select.addCondition(new CmsSimpleQueryFragment(users.column("USER_OU") + " = ? ", group.getOuFqn()));
+            }
+        }
+        CmsGroup notGroup = searchParams.getNotGroup();
+        if (notGroup != null) {
+            CmsSimpleQueryFragment notGroupCondition = new CmsSimpleQueryFragment(
+                "NOT EXISTS (SELECT USER_ID FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = "
+                    + users.column("USER_ID")
+                    + " AND GU.GROUP_ID = ?)",
+                notGroup.getId().toString());
+            select.addCondition(notGroupCondition);
+        }
+
+        Collection<CmsGroup> anyGroups = searchParams.getAnyGroups();
+        if ((anyGroups != null) && !anyGroups.isEmpty()) {
+            CmsCompositeQueryFragment groupClause = new CmsCompositeQueryFragment();
+            groupClause.setSeparator(" OR ");
+            for (CmsGroup grp : anyGroups) {
+                groupClause.add(new CmsSimpleQueryFragment("GU.GROUP_ID = ?", grp.getId().toString()));
+            }
+            CmsCompositeQueryFragment existsClause = new CmsCompositeQueryFragment();
+            existsClause.add(new CmsSimpleQueryFragment("EXISTS (SELECT * FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = "
+                + users.column("USER_ID")
+                + " AND "));
+            existsClause.add(groupClause);
+            existsClause.add(new CmsSimpleQueryFragment(" ) "));
+            select.addCondition(existsClause);
+        }
+        Collection<CmsGroup> notAnyGroups = searchParams.getNotAnyGroups();
+        if ((notAnyGroups != null) && (!notAnyGroups.isEmpty())) {
+            CmsCompositeQueryFragment groupClause = new CmsCompositeQueryFragment();
+            groupClause.setSeparator(" OR ");
+            for (CmsGroup grp : notAnyGroups) {
+                groupClause.add(new CmsSimpleQueryFragment("GU.GROUP_ID = ?", grp.getId().toString()));
+            }
+            CmsCompositeQueryFragment notExistsClause = new CmsCompositeQueryFragment();
+            notExistsClause.add(new CmsSimpleQueryFragment(
+                "NOT EXISTS (SELECT * FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = " + users.column("USER_ID") + " AND "));
+            notExistsClause.add(groupClause);
+            notExistsClause.add(new CmsSimpleQueryFragment(" ) "));
+            select.addCondition(notExistsClause);
+        }
+
+    }
+
+    /**
+     * Adds flag checking conditions to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param flags the flags 
+     */
+    protected void addFlagCondition(CmsSelectQuery select, TableAlias users, int flags) {
+
+        if (flags != 0) {
+            select.addCondition(new CmsSimpleQueryFragment(
+                users.column("USER_FLAGS") + " & ? = ? ",
+                new Integer(flags),
+                new Integer(flags)));
+        }
+    }
+
+    /**
+     * Adds OU conditions to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param allowedOus the allowed ous 
+     */
+    protected void addAllowedOuCondition(CmsSelectQuery select, TableAlias users, List<CmsOrganizationalUnit> allowedOus) {
+
+        if ((allowedOus != null) && !allowedOus.isEmpty()) {
+            CmsCompositeQueryFragment ouCondition = new CmsCompositeQueryFragment();
+            ouCondition.setPrefix("(");
+            ouCondition.setSuffix(")");
+            ouCondition.setSeparator(" OR ");
+            for (CmsOrganizationalUnit ou : allowedOus) {
+                String ouName = CmsStringUtil.joinPaths("/", ou.getName());
+                ouCondition.add(new CmsSimpleQueryFragment(users.column("USER_OU") + " = ? ", ouName));
+            }
+            select.addCondition(ouCondition);
+        }
+    }
+
+    /**
+     * Adds a sort order to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param searchParams the user search criteria 
+     */
+    protected void addSorting(CmsSelectQuery select, TableAlias users, CmsUserSearchParameters searchParams) {
+
+        SortKey sortKey = searchParams.getSortKey();
+        boolean ascending = searchParams.isAscending();
+        String ordering = users.column("USER_ID");
+        if (sortKey != null) {
+            switch (sortKey) {
+                case email:
+                    ordering = users.column("USER_EMAIL");
+                    break;
+                case loginName:
+                    ordering = users.column("USER_NAME");
+                    break;
+                case fullName:
+                    ordering = getUserFullNameExpression(users);
+                    break;
+                case lastLogin:
+                    ordering = users.column("USER_LASTLOGIN");
+                    break;
+                case orgUnit:
+                    ordering = users.column("USER_OU");
+                    break;
+                case activated:
+                    ordering = getUserActivatedExpression(users);
+                    break;
+                default:
+                    break;
+
+            }
+            if (ascending) {
+                ordering += " ASC";
+            } else {
+                ordering += " DESC";
+            }
+        }
+        select.setOrdering(ordering);
+    }
+
+    /**
+     * Adds a search condition to a query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param searchParams the search criteria 
+     */
+    protected void addSearchFilterCondition(
+        CmsSelectQuery select,
+        TableAlias users,
+        CmsUserSearchParameters searchParams) {
+
+        String searchFilter = searchParams.getSearchFilter();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
+            CmsCompositeQueryFragment searchCondition = new CmsCompositeQueryFragment();
+            searchCondition.setSeparator(" OR ");
+            searchCondition.setPrefix("(");
+            searchCondition.setSuffix(")");
+            //use coalesce in case any of the name columns are null 
+            String patternExprTemplate = generateConcat(
+                "COALESCE(%1$s, '')",
+                "' '",
+                "COALESCE(%2$s, '')",
+                "' '",
+                "COALESCE(%3$s, '')");
+            String patternExpr = String.format(
+                patternExprTemplate,
+                users.column("USER_NAME"),
+                users.column("USER_FIRSTNAME"),
+                users.column("USER_LASTNAME"));
+            String like = " LIKE ? ESCAPE '!' ";
+            String matchExpr = patternExpr + like;
+            searchFilter = "%" + CmsEncoder.escapeSqlLikePattern(searchFilter, '!') + '%';
+            searchCondition.add(new CmsSimpleQueryFragment(matchExpr, searchFilter));
+            for (SearchKey key : searchParams.getSearchKeys()) {
+                switch (key) {
+                    case email:
+                        searchCondition.add(new CmsSimpleQueryFragment(users.column("USER_EMAIL") + like, searchFilter));
+                        break;
+                    case orgUnit:
+                        searchCondition.add(new CmsSimpleQueryFragment(users.column("USER_OU") + like, searchFilter));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            select.addCondition(searchCondition);
+        }
+    }
+
+    /**
+     * Generates an SQL expression for concatenating several other SQL expressions.<p>
+     * 
+     * @param expressions the expressions to concatenate 
+     * 
+     * @return the concat expression 
+     */
+    protected String generateConcat(String... expressions) {
+
+        return "CONCAT(" + Joiner.on(", ").join(expressions) + ")";
+    }
+
+    /**
+     * Adds a check for an OU to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param users the user table alias 
+     * @param orgUnit the organizational unit 
+     * @param recursive if true, checks for sub-OUs too 
+     */
+    protected void addOrgUnitCondition(
+        CmsSelectQuery select,
+        TableAlias users,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) {
+
+        String ouName = orgUnit.getName();
+        String pattern = CmsOrganizationalUnit.SEPARATOR + ouName;
+        if (recursive) {
+            pattern += "%";
+        }
+        select.addCondition(CmsDbUtil.columnLike(users.column("USER_OU"), pattern));
+    }
+
+    /**
+     * Adds a check for the web user condition to an SQL query.<p>
+     * 
+     * @param select the query 
+     * @param orgUnit the organizational unit
+     * @param users the user table alias 
+     */
+    protected void addWebuserCondition(CmsSelectQuery select, CmsOrganizationalUnit orgUnit, TableAlias users) {
+
+        String webuserConditionTemplate;
+        if (orgUnit.hasFlagWebuser()) {
+            webuserConditionTemplate = "( %1$ >= 32768 AND %1$s < 65536 )";
+        } else {
+            webuserConditionTemplate = "( %1$s < 32768 OR %1$s >= 65536 )";
+        }
+        String webuserCondition = String.format(webuserConditionTemplate, users.column("USER_FLAGS"));
+        select.addCondition(webuserCondition);
+    }
+
+    /**
+     * Returns the SQL expression for generating the user's full name in the format
+     * 'firstname lastname (loginname)'.<p>
+     * 
+     * @param users the user table alias
+     *  
+     * @return the expression for generating the user's full name 
+     */
+    protected String getUserFullNameExpression(TableAlias users) {
+
+        //use coalesce in case any of the name columns are null
+        String template = generateTrim(generateConcat(
+            "COALESCE(%1$s, '')",
+            "' '",
+            "COALESCE(%2$s, '')",
+            "' ('",
+            "%3$s",
+            "')'"));
+        return String.format(
+            template,
+            users.column("USER_FIRSTNAME"),
+            users.column("USER_LASTNAME"),
+            users.column("USER_NAME"));
+    }
+
+    /**
+     * Generates an SQL expression for trimming whitespace from the beginning and end of a string.<p>
+     * 
+     * @param expression the expression to wrap
+     * 
+     * @return the expression for trimming the given expression 
+     */
+    protected String generateTrim(String expression) {
+
+        return "TRIM(" + expression + ")";
+    }
+
+    /**
+     * Returns an expression for checking whether a user is activated.<p>
+     * 
+     * @param users the user table alias 
+     * 
+     * @return the expression for checking whether the user is activated 
+     */
+    protected String getUserActivatedExpression(TableAlias users) {
+
+        return "MOD(" + users.column("USER_FLAGS") + ", 2)";
+    }
+
+    /**
+     * Returns true if window functions should be used for paging.<p>
+     * 
+     * @return true if window functions should be used for paging 
+     */
+    protected boolean useWindowFunctionsForPaging() {
+
+        return false;
+    }
+
+    /**
+     * Creates a query which uses paging from another query.<p>
+     * 
+     * @param select the base query 
+     * @param params the query parameters 
+     * 
+     * @return the paged version of the query 
+     */
+    protected CmsPair<String, List<Object>> makePaged(CmsSelectQuery select, CmsUserSearchParameters params) {
+
+        CmsPagingQuery paging = new CmsPagingQuery(select);
+        paging.setUseWindowFunctions(useWindowFunctionsForPaging());
+        int page = params.getPage();
+        int pageSize = params.getPageSize();
+        paging.setNameSubquery(shouldNameSubqueries());
+        paging.setPaging(pageSize, page);
+        CmsStatementBuilder builder = new CmsStatementBuilder();
+        paging.visit(builder);
+        return CmsPair.create(builder.getQuery(), builder.getParameters());
+    }
+
+    /**
+     * Should return true if subqueries in a FROM clause should be named.<p>
+     *  
+     * @return true if subqueries in a FROM clause should be named 
+     */
+    protected boolean shouldNameSubqueries() {
+
+        return false;
+    }
+
+    /**
      * Internal helper method to create an access control entry from a database record.<p>
      * 
      * @param res resultset of the current query
@@ -2849,9 +2654,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
-            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
-            null));
+            new String[] {ouDescription})
+        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -107,8 +107,8 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
-     * @param listName the name of the list
-     * @param searchable searchable flag
+     * @param listName the name of the list 
+     * @param searchable searchable flag 
      */
     protected A_CmsRoleUsersList(
         CmsJspActionElement jsp,
@@ -116,8 +116,30 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
-        : null);
+        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_NAME
+        : null, false);
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the list
+     * @param listName the name of the list
+     * @param searchable searchable flag
+     * @param lazy the lazy flag 
+     */
+    protected A_CmsRoleUsersList(
+        CmsJspActionElement jsp,
+        String listId,
+        CmsMessageContainer listName,
+        boolean searchable,
+        boolean lazy) {
+
+        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_NAME
+        : null, lazy);
     }
 
     /**
@@ -147,6 +169,10 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      */
     public boolean hasUsersInOtherOus() {
 
+        if (m_lazy) {
+            // if we use database-side paging, we have to assume that there may be users from other OUs 
+            return true;
+        }
         if (m_hasUsersInOtherOus == null) {
             // lazzy initialization
             m_hasUsersInOtherOus = Boolean.FALSE;
@@ -198,29 +224,53 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Checks if other OUs are visible.<p>
+     * 
+     * @return true if other OUs are visible 
+     */
+    protected boolean otherOrgUnitsVisible() {
+
+        return getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_ORGUNIT).isVisible();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
 
-        boolean withOtherOus = hasUsersInOtherOus()
-            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_ORGUNIT).isVisible();
+        boolean withOtherOus = hasUsersInOtherOus() && otherOrgUnitsVisible();
 
         // get content        
         List users = getUsers(withOtherOus);
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
+
             CmsUser user = (CmsUser)itUsers.next();
-            CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_NAME, user.getSimpleName());
-            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
-            item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+            CmsListItem item = makeUserItem(user);
             ret.add(item);
         }
 
         return ret;
+    }
+
+    /**
+     * Makes a list item from a user.<p>
+     * 
+     * @param user the user 
+     * 
+     * @return the list item 
+     */
+    protected CmsListItem makeUserItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_NAME, user.getSimpleName());
+        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+        return item;
     }
 
     /**
@@ -237,6 +287,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
+    @Override
     protected void initializeDetail(String detailId) {
 
         super.initializeDetail(detailId);
@@ -251,6 +302,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -421,6 +473,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add other ou button
@@ -477,6 +530,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

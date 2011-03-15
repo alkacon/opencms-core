@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -460,6 +460,39 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_MENURULE_1, menuRule.getName()));
         }
         m_menuRules.add(menuRule);
+    }
+
+    /** The user list mode. */
+    private String m_userListMode;
+
+    /**
+     * Sets the user list mode.<p>
+     * 
+     * @param mode the user list mode 
+     */
+    public void setUserListMode(String mode) {
+
+        m_userListMode = mode;
+    }
+
+    /**
+     * Returns true if lazy user lists should be used.<p>
+     * 
+     * @return true if lazy user lists should be used 
+     */
+    public boolean supportsLazyUserLists() {
+
+        return "lazy".equalsIgnoreCase(m_userListMode);
+    }
+
+    /**
+     * Returns the user list mode as a string.<p>
+     * 
+     * @return the user list mode as a string 
+     */
+    public String getUserListModeString() {
+
+        return m_userListMode;
     }
 
     /**
@@ -1779,6 +1812,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         // sort the views by their order number
         Collections.sort(m_views);
         return m_views;
+    }
+
+    public boolean lazyUserListsEnabled() {
+
+        return true;
     }
 
 }

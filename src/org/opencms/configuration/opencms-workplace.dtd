@@ -32,7 +32,9 @@
 	user-infos?,
 	default-preferences,
 	workplace-customfoot?,
-	tool-manager?)>
+	tool-manager?,
+	user-lists?
+	)>
 
 <!--
 # The user additional information configuration.
@@ -821,6 +823,8 @@
 <!ELEMENT message-completed (#PCDATA)>	
 <!ELEMENT informrolemembers (#PCDATA)>	
 
+<!ELEMENT user-lists EMPTY>
+<!ATTLIST user-lists mode CDATA #REQUIRED>
 
 <!--
 # Include the explorer types DTD.

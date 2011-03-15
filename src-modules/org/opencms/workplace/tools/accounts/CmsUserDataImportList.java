@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -135,7 +135,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
      */
     public CmsUserDataImportList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_IMPORTLISTCSV_LIST_NAME_0));
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_IMPORTLISTCSV_LIST_NAME_0), false);
         getList().setSortedColumn(LIST_COLUMN_VALIDATION_HIDDEN);
     }
 

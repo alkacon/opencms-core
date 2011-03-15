@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -165,6 +165,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
+
+    /** The name of the user-lists node. */
+    public static final String N_USER_LISTS = "user-lists";
+
+    /** The name of the mode attribute. */
+    public static final String A_MODE = "mode";
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
@@ -797,7 +803,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         }
     }
 
-    /** 
+    /**
      * A common method for all enums since they can't have another base class.<p>
      * 
      * @param <T> Enum type 
@@ -838,6 +844,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);
         // import/export manager finished
         digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
+
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_USER_LISTS, "setUserListMode", 1);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_USER_LISTS, 0, A_MODE);
 
         // add default locale rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTLOCALE, "setDefaultLocale", 0);
@@ -943,7 +952,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         addDefaultAccessControlRules(digester);
         addMultiContextMenuRules(digester);
         addContextMenuRules(digester);
-
         addUserInfoRules(digester);
         addDefaultPreferencesRules(digester);
 
@@ -958,6 +966,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext(xPathPrefix, "setCustomFoot");
 
         addToolManagerRules(digester);
+
     }
 
     /**
@@ -1435,7 +1444,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             rootElement.addElement(N_NAME).addText(root.getName());
             rootElement.addElement(N_HELPTEXT).addText(root.getHelpText());
         }
-
+        String userListsMode = m_workplaceManager.getUserListModeString();
+        if (userListsMode != null) {
+            Element userListsElem = workplaceElement.addElement(N_USER_LISTS);
+            userListsElem.addAttribute(A_MODE, userListsMode);
+        }
         // return the configured node
         return workplaceElement;
     }

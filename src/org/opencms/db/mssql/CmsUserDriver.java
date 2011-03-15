@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mssql/CmsUserDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,14 @@ package org.opencms.db.mssql;
 
 import org.opencms.db.generic.CmsSqlManager;
 
+import com.google.common.base.Joiner;
+
 /**
  * MS SQL implementation of the user driver methods.<p>
  *
  * @author Andras Balogh
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
  * @since 6.0.0
  */
@@ -52,4 +54,32 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         return CmsSqlManager.getInstance(classname);
     }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
+     */
+    @Override
+    protected boolean useWindowFunctionsForPaging() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#generateConcat(java.lang.String[])
+     */
+    @Override
+    protected String generateConcat(String... expressions) {
+
+        return Joiner.on(" + ").join(expressions);
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#generateTrim(java.lang.String)
+     */
+    @Override
+    protected String generateTrim(String expression) {
+
+        return "LTRIM(RTRIM(" + expression + "))";
+    }
+
 }

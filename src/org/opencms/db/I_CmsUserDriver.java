@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/15 17:33:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.main.CmsInitException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -51,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -902,4 +903,29 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException;
+
+    /**
+     * Searches for users which match the given search criteria.<p>
+     * 
+     * @param dbc the database context 
+     * @param searchParams the search criteria
+     *  
+     * @return the users which match the given criteria 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
+
+    /**
+     * Counts the total number of users which match the given search criteria.<p>
+     * 
+     * @param dbc the database context 
+     * @param searchParams the search criteria
+     *  
+     * @return the number of users which match the search criteria
+     *  
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
+
 }

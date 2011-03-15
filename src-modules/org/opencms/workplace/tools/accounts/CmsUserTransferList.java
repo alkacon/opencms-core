@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
+import org.opencms.file.CmsUserSearchParameters.SortKey;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -54,6 +56,7 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
+import org.opencms.workplace.list.CmsListState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,12 +71,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import com.google.common.collect.Lists;
+
 /**
  * Allows to select an user to transfer the permissions and attributes from list of previous selected users.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,6 +160,49 @@ public class CmsUserTransferList extends A_CmsListDialog {
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param lazy the lazy flag 
+     */
+    public CmsUserTransferList(CmsJspActionElement jsp, boolean lazy) {
+
+        this(LIST_ID, jsp, lazy);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     * @param lazy the lazy flag 
+     */
+    public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
+
+        this(new CmsJspActionElement(context, req, res), lazy);
+    }
+
+    /**
+     * Protected constructor.<p>
+     * 
+     * @param listId the id of the specialized list
+     * @param jsp an initialized JSP action element
+     * @param lazy the lazy flag 
+     */
+    protected CmsUserTransferList(String listId, CmsJspActionElement jsp, boolean lazy) {
+
+        super(
+            jsp,
+            listId,
+            Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_NAME_0),
+            LIST_COLUMN_NAME,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null,
+            lazy);
     }
 
     /**
@@ -302,21 +350,38 @@ public class CmsUserTransferList extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-        // get content
-        List users = getUsers();
-        Set selUsers = new HashSet(CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true));
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
-            if (selUsers.contains(user.getId().toString())) {
-                continue;
+        if (!m_lazy) {
+
+            List ret = new ArrayList();
+            // get content
+            List users = getUsers();
+            Set selUsers = new HashSet(CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true));
+            Iterator itUsers = users.iterator();
+            while (itUsers.hasNext()) {
+                CmsUser user = (CmsUser)itUsers.next();
+                if (selUsers.contains(user.getId().toString())) {
+                    continue;
+                }
+                CmsListItem item = getList().newItem(user.getId().toString());
+                setUserData(user, item);
+                ret.add(item);
             }
-            CmsListItem item = getList().newItem(user.getId().toString());
-            setUserData(user, item);
-            ret.add(item);
+            return ret;
+        } else {
+
+            CmsUserSearchParameters params = getSearchParams();
+            List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
+            int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
+            getList().setSize(count);
+            List<CmsListItem> result = Lists.newArrayList();
+            for (CmsUser user : users) {
+                CmsListItem item = getList().newItem(user.getId().toString());
+                setUserData(user, item);
+                result.add(item);
+            }
+            return result;
+
         }
-        return ret;
     }
 
     /**
@@ -347,6 +412,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
+        if (m_lazy) {
+            metadata.setSelfManaged(true);
+        }
         // create column for transfer
         CmsListColumnDefinition transferCol = new CmsListColumnDefinition(LIST_COLUMN_TRANSFER);
         transferCol.setName(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_COLS_TRANSFER_0));
@@ -484,4 +552,32 @@ public class CmsUserTransferList extends A_CmsListDialog {
             }
         }
     }
+
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        String searchFilter = state.getFilter();
+        params.setSearchFilter(searchFilter);
+        params.setFilterCore(true);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        return params;
+    }
+
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_EMAIL)) {
+            return SortKey.email;
+        } else if (column.equals(LIST_COLUMN_LOGIN)) {
+            return SortKey.loginName;
+        } else if (column.equals(LIST_COLUMN_NAME)) {
+            return SortKey.fullName;
+        }
+        return null;
+    }
+
 }

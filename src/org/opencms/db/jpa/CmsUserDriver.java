@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsUserDriver.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/15 17:33:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,13 +43,13 @@ import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.db.jpa.persistence.CmsDAOGroupUsers;
-import org.opencms.db.jpa.persistence.CmsDAOGroupUsers.CmsDAOGroupUsersPK;
 import org.opencms.db.jpa.persistence.CmsDAOGroups;
 import org.opencms.db.jpa.persistence.CmsDAOOfflineAccessControl;
 import org.opencms.db.jpa.persistence.CmsDAOOnlineAccessControl;
 import org.opencms.db.jpa.persistence.CmsDAOUserData;
 import org.opencms.db.jpa.persistence.CmsDAOUsers;
 import org.opencms.db.jpa.persistence.I_CmsDAOAccessControl;
+import org.opencms.db.jpa.persistence.CmsDAOGroupUsers.CmsDAOGroupUsersPK;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -59,6 +59,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
@@ -108,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0 
  */
@@ -539,13 +540,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(
-                        dbc,
-                        "",
-                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
-                        0,
-                        null,
-                        "/");
+                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
+                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
+                        null), 0, null, "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -602,14 +599,11 @@ public class CmsUserDriver implements I_CmsUserDriver {
             u.setUserFlags(flags);
             u.setUserOu(CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
             u.setUserDateCreated((dateCreated == 0 ? System.currentTimeMillis() : dateCreated));
-
             m_sqlManager.persist(dbc, u);
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
         }
-
         internalWriteUserInfos(dbc, id, additionalInfos);
-
         return readUser(dbc, id);
     }
 
@@ -689,9 +683,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(
+                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
                         dbc,
-                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+                        organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -2030,9 +2024,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
-            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
-            null));
+            new String[] {ouDescription})
+        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
@@ -2696,5 +2689,16 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
             }
         }
+    }
+
+    public long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
+
+        throw new UnsupportedOperationException();
+    }
+
+    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams)
+    throws CmsDataAccessException {
+
+        throw new UnsupportedOperationException();
     }
 }
