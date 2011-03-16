@@ -37,6 +37,8 @@
 						<mapping suffix=".doc" />
 						<mapping suffix=".xls" />
 						<mapping suffix=".jar" />
+						<mapping suffix=".flv" />
+						<mapping suffix=".swf" />
 					</mappings>
                     <param name="formatter_gallery_preview">/system/workplace/editors/ade/binary-preview-formatter.jsp</param>
                     <param name="gallery.type.names">downloadgallery</param>
