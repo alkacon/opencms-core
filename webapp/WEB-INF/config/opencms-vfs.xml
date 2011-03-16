@@ -36,6 +36,8 @@
 						<mapping suffix=".doc" />
 						<mapping suffix=".xls" />
 						<mapping suffix=".jar" />
+						<mapping suffix=".flv" />
+						<mapping suffix=".swf" />
 					</mappings>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
