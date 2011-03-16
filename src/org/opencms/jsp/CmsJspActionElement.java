@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2011/03/14 15:42:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/16 09:43:28 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,13 +488,35 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, boolean editable, Map<String, String[]> parameterMap)
-    throws JspException {
+    public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
 
         if (isNotInitialized()) {
             return;
         }
-        Map<String, String[]> modParameterMap = new HashMap<String, String[]>(parameterMap);
+        Map<String, String[]> modParameterMap = null;
+        if (parameterMap != null) {
+            try {
+                modParameterMap = new HashMap<String, String[]>(parameterMap.size());
+                // ensure parameters are always of type String[] not just String
+                Iterator i = parameterMap.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry)i.next();
+                    String key = (String)entry.getKey();
+                    Object value = entry.getValue();
+                    if (value instanceof String[]) {
+                        modParameterMap.put(key, (String[])value);
+                    } else {
+                        if (value == null) {
+                            value = "null";
+                        }
+                        String[] newValue = new String[] {value.toString()};
+                        modParameterMap.put(key, newValue);
+                    }
+                }
+            } catch (UnsupportedOperationException e) {
+                // parameter map is immutable, just use it "as is"
+            }
+        }
         CmsJspTagInclude.includeTagAction(
             getJspContext(),
             target,
@@ -517,7 +540,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map<String, String[]> parameterMap) throws JspException {
+    public void include(String target, String element, Map parameterMap) throws JspException {
 
         include(target, element, false, parameterMap);
     }
@@ -576,7 +599,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param editable flag to indicate if direct edit should be enabled for the element 
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, boolean editable, Map<String, String[]> parameterMap) {
+    public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
 
         try {
             include(target, element, editable, parameterMap);
@@ -597,7 +620,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, Map<String, String[]> parameterMap) {
+    public void includeSilent(String target, String element, Map parameterMap) {
 
         try {
             include(target, element, parameterMap);

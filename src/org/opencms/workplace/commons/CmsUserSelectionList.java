@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUserSelectionList.java,v $
- * Date   : $Date: 2011/03/15 17:33:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/16 09:43:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.list.CmsListState;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
@@ -69,7 +70,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,8 +113,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_USERSELECTION_LIST_NAME_0),
             LIST_COLUMN_LOGIN,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_LOGIN);
-
+            null);
     }
 
     /**
@@ -268,24 +268,24 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
         if (!m_lazy) {
 
-            List ret = new ArrayList();
+        List ret = new ArrayList();
 
-            // get content        
-            List users = getUsers();
-            Iterator itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
+        // get content        
+        List users = getUsers();
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            CmsUser user = (CmsUser)itUsers.next();
                 CmsListItem item = makeListItem(user);
-                ret.add(item);
-            }
+            ret.add(item);
+        }
 
-            return ret;
+        return ret;
         } else {
             CmsUserSearchParameters params = getSearchParams();
             if (getParamFlags() != null) {
                 int flags = Integer.parseInt(getParamFlags());
                 params.setFlags(flags);
-            }
+    }
             List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
             int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
             getList().setSize(count);
@@ -380,7 +380,10 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op        
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
+        searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_FULLNAME));
+        searchAction.setCaseInSensitive(true);
+        metadata.setSearchAction(searchAction);
     }
 
     /**
