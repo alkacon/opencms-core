@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.tools.accounts.*"  %><%
+<%@ page import="org.opencms.workplace.tools.accounts.*"  %><%@ page import="org.opencms.main.*" %><%
 
 	// initialize info dialog
 	CmsRoleOverviewDialog wpInfo = new CmsRoleOverviewDialog(pageContext, request, response);
@@ -9,7 +9,7 @@
 	}
 	// initialize list dialogs
 	
-	CmsShowRoleUsersList wpRoleUsers = new CmsShowRoleUsersList(pageContext, request, response);
+	CmsShowRoleUsersList wpRoleUsers = new CmsShowRoleUsersList(pageContext, request, response, OpenCms.getWorkplaceManager().supportsLazyUserLists());
 	// perform the active list actions
 	wpRoleUsers.displayDialog(true);
 	// write the content of widget dialog

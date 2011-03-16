@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.tools.accounts.*"  %><%
+<%@ page import="org.opencms.workplace.tools.accounts.*"  %><%@page import="org.opencms.main.*" %><%
 
 	// initialize info dialog
 	CmsGroupOverviewDialog wpInfo = new CmsGroupOverviewDialog(pageContext, request, response);
@@ -8,8 +8,8 @@
 		return;
 	}
 	// initialize list dialogs
-	CmsGroupUsersList wpGroupUsers = new CmsGroupUsersList(pageContext, request, response);
-	CmsNotGroupUsersList wpNotGroupUsers = new CmsNotGroupUsersList(pageContext, request, response);
+	CmsGroupUsersList wpGroupUsers = new CmsGroupUsersList(pageContext, request, response, OpenCms.getWorkplaceManager().supportsLazyUserLists());
+	CmsNotGroupUsersList wpNotGroupUsers = new CmsNotGroupUsersList(pageContext, request, response, OpenCms.getWorkplaceManager().supportsLazyUserLists());
 	org.opencms.workplace.list.CmsTwoListsDialogsWOStart wpTwoLists = new org.opencms.workplace.list.CmsTwoListsDialogsWOStart(wpGroupUsers, wpNotGroupUsers);
 	// perform the active list actions
 	wpTwoLists.displayDialog(true);
