@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2010/01/18 10:01:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/16 09:36:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.list.I_CmsListItemComparator;
 
 import java.text.Collator;
@@ -75,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -203,7 +204,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_NAME_0),
             LIST_COLUMN_DISPLAY,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_DISPLAY);
+            null);
     }
 
     /**
@@ -724,6 +725,11 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         groupsAction.setIconPath(PATH_BUTTONS + "group.png");
         groupsAction.setVisible(false);
         metadata.addIndependentAction(groupsAction);
+
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
+        searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));
+        searchAction.setCaseInSensitive(true);
+        metadata.setSearchAction(searchAction);
     }
 
     /**

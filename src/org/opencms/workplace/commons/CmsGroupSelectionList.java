@@ -47,6 +47,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_NAME_0),
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_NAME);
+            null);
     }
 
     /**
@@ -340,7 +341,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op        
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        searchAction.setCaseInSensitive(true);
+        metadata.setSearchAction(searchAction);
     }
 
     /**

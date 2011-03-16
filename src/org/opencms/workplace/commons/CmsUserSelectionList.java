@@ -47,6 +47,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_USERSELECTION_LIST_NAME_0),
             LIST_COLUMN_LOGIN,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_LOGIN);
+            null);
     }
 
     /**
@@ -316,7 +317,10 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op        
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
+        searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_FULLNAME));
+        searchAction.setCaseInSensitive(true);
+        metadata.setSearchAction(searchAction);
     }
 
     /**

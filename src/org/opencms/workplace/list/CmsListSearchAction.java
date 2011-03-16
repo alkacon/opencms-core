@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2010/01/18 10:02:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/16 09:36:51 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,8 +57,11 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
     /** the html id for the input element of the search bar. */
     public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
 
+    /** Signals whether the search is case sensitive or not. */
+    private boolean m_caseInSensitive;
+
     /** Ids of Columns to search into. */
-    private final List m_columns = new ArrayList();
+    private final List<CmsListColumnDefinition> m_columns = new ArrayList<CmsListColumnDefinition>();
 
     /**
      * Default Constructor.<p>
@@ -122,9 +125,9 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
         // delay the composition of the help text as much as possible
         if (getHelpText() == EMPTY_MESSAGE) {
             String columns = "";
-            Iterator it = m_columns.iterator();
+            Iterator<CmsListColumnDefinition> it = m_columns.iterator();
             while (it.hasNext()) {
-                CmsListColumnDefinition col = (CmsListColumnDefinition)it.next();
+                CmsListColumnDefinition col = it.next();
                 columns += "${key." + col.getName().getKey() + "}";
                 if (it.hasNext()) {
                     columns += ", ";
@@ -151,25 +154,34 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
      * 
      * @return the filtered sublist
      */
-    public List filter(List items, String filter) {
+    public List<CmsListItem> filter(List<CmsListItem> items, String filter) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(filter)) {
             return items;
         }
-        List res = new ArrayList();
-        Iterator itItems = items.iterator();
+        String filterCriteria = filter;
+        if (m_caseInSensitive) {
+            filterCriteria = filter.toLowerCase();
+        }
+
+        List<CmsListItem> res = new ArrayList<CmsListItem>();
+        Iterator<CmsListItem> itItems = items.iterator();
         while (itItems.hasNext()) {
-            CmsListItem item = (CmsListItem)itItems.next();
+            CmsListItem item = itItems.next();
             if (res.contains(item)) {
                 continue;
             }
-            Iterator itCols = m_columns.iterator();
+            Iterator<CmsListColumnDefinition> itCols = m_columns.iterator();
             while (itCols.hasNext()) {
-                CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                CmsListColumnDefinition col = itCols.next();
                 if (item.get(col.getId()) == null) {
                     continue;
                 }
-                if (item.get(col.getId()).toString().indexOf(filter) > -1) {
+                String columnValue = item.get(col.getId()).toString();
+                if (m_caseInSensitive) {
+                    columnValue = columnValue.toLowerCase();
+                }
+                if (columnValue.indexOf(filterCriteria) > -1) {
                     res.add(item);
                     break;
                 }
@@ -183,9 +195,29 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
      * 
      * @return a list of {@link CmsListColumnDefinition} objects
      */
-    public List getColumns() {
+    public List<CmsListColumnDefinition> getColumns() {
 
         return Collections.unmodifiableList(m_columns);
+    }
+
+    /**
+     * Returns the caseInSensitive.<p>
+     *
+     * @return the caseInSensitive
+     */
+    public boolean isCaseInSensitive() {
+
+        return m_caseInSensitive;
+    }
+
+    /**
+     * Sets the caseInSensitive.<p>
+     *
+     * @param caseInSensitive the caseInSensitive to set
+     */
+    public void setCaseInSensitive(boolean caseInSensitive) {
+
+        m_caseInSensitive = caseInSensitive;
     }
 
     /**
@@ -195,6 +227,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
      * 
      * @deprecated use {@link CmsHtmlList#setSearchFilter(String)} instead
      */
+    @Deprecated
     public void setSearchFilter(String filter) {
 
         // empty
