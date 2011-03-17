@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/17 16:11:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,48 +41,6 @@ import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
  */
 public interface I_CmsButton {
 
-    /** CSS style variants. */
-    public static enum Size {
-
-        /** Big button style. */
-        big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
-
-        /** Medium button style. */
-        medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium()),
-
-        /** Small button style. */
-        small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
-
-        /** The CSS class name. */
-        private String m_cssClassName;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param cssClassName the CSS class name
-         */
-        Size(String cssClassName) {
-
-            m_cssClassName = cssClassName;
-        }
-
-        /**
-         * Returns the CSS class name of this style.<p>
-         * 
-         * @return the CSS class name
-         */
-        public String getCssClassName() {
-
-            return m_cssClassName;
-        }
-    }
-
     /** Available button icons. */
     public enum ButtonData {
 
@@ -95,12 +53,16 @@ public interface I_CmsButton {
         Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
+        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
+            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+
+        /** Toolbar button. */
         CONTEXT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarContext(), Messages.get().key(
             Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
-        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
-            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+        DELETE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDelete(), Messages.get().key(
+            Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
         EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit(), Messages.get().key(
@@ -178,6 +140,48 @@ public interface I_CmsButton {
         public String getTitle() {
 
             return m_title;
+        }
+    }
+
+    /** CSS style variants. */
+    public static enum Size {
+
+        /** Big button style. */
+        big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
+
+        /** Medium button style. */
+        medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium()),
+
+        /** Small button style. */
+        small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
+
+        /** The CSS class name. */
+        private String m_cssClassName;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param cssClassName the CSS class name
+         */
+        Size(String cssClassName) {
+
+            m_cssClassName = cssClassName;
+        }
+
+        /**
+         * Returns the CSS class name of this style.<p>
+         * 
+         * @return the CSS class name
+         */
+        public String getCssClassName() {
+
+            return m_cssClassName;
         }
     }
 }

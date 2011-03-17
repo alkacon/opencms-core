@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2010/11/18 07:42:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/17 16:11:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -67,10 +67,6 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
         m_handler = handler;
         m_iconClass = buttonData.getIconClass();
     }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#createOptionForElement(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#getIconClass()

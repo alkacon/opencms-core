@@ -82,9 +82,16 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
-	gwt-image: "deleteBigIconDeactivated";
+	gwt-image: "removeBigIconDeactivated";
 }
 @sprite .cmsState-up .toolbarRemove, .cmsState-up-hovering .toolbarRemove, .cmsState-down-hovering .toolbarRemove, .cmsState-down .toolbarRemove{
+    gwt-image: "removeBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
+	gwt-image: "deleteBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete{
     gwt-image: "deleteBigIconActive";
 }
 

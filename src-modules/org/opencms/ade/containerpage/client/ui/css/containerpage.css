@@ -163,6 +163,10 @@ ul.clipboardList{
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarRemove, .optionBar .cmsState-down-disabled .toolbarRemove, .optionBar .cmsState-up .toolbarRemove, .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove{
+    gwt-image: "images.removeIcon";
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarDelete, .optionBar .cmsState-down-disabled .toolbarDelete, .optionBar .cmsState-up .toolbarDelete, .optionBar .cmsState-up-hovering .toolbarDelete, .optionBar .cmsState-down-hovering .toolbarDelete, .optionBar .cmsState-down .toolbarDelete{
     gwt-image: "images.deleteIcon";
 }
 

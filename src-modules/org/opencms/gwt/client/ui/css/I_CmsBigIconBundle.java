@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBigIconBundle.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/17 16:11:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,13 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      */
     @Source("images/icons/big/addBigIconDeactivated.png")
     ImageResource addBigIconDeactivated(); // toolbarNewSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/brokenLinkBigIcon.png")
+    ImageResource brokenLinkBigIcon();
 
     /** 
      * Access method.<p>
@@ -221,6 +228,20 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/removeBigIconActive.png")
+    ImageResource removeBigIconActive(); // toolbarRemove();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/removeBigIconDeactivated.png")
+    ImageResource removeBigIconDeactivated(); // toolbarRemoveSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/resetBigIconActive.png")
     ImageResource resetBigIconActive(); // toolbarReset();
 
@@ -340,11 +361,4 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      */
     @Source("images/icons/big/undoBigIconDeactivated.png")
     ImageResource undoBigIconDeactivated();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/icons/big/brokenLinkBigIcon.png")
-    ImageResource brokenLinkBigIcon();
 }

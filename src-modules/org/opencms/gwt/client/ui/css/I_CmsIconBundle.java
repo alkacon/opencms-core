@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/03/15 14:26:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/17 16:11:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -80,14 +80,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/deleteIcon.png")
     ImageResource deleteIcon();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/icons/inheritedIcon.png")
-    ImageResource inheritedIcon();
 
     /**
      * Access method.<p>
@@ -134,6 +126,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/icons/inheritedIcon.png")
+    ImageResource inheritedIcon();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/icons/mergeSitemapIcon.png")
     ImageResource mergeSitemapIcon();
 
@@ -160,6 +160,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/refreshIcon.png")
     ImageResource refreshIcon();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/removeIcon.png")
+    ImageResource removeIcon();
 
     /**
      * Access method.<p>
