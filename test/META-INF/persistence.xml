@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
 	<persistence-unit name="OpenCmsJPAPool">
-	
+
 		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
 		<class>org.opencms.db.jpa.persistence.CmsDAOContents</class>
@@ -40,29 +44,32 @@
 		<class>org.opencms.db.jpa.persistence.CmsDAOCounters</class>
 		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineUrlNameMappings</class>
 		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineUrlNameMappings</class>
-				
+
 		<properties>
-                  <!-- *** DBCP Connection pool configuration *** -->
-                  <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
-                    
-                  <!-- *** Connection management *** -->
-				  <property name="openjpa.ConnectionRetainMode" value="on-demand"/>
-                         
-                  <!-- *** Synchronize database schema with persistence classes. *** -->
-                  <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
-                  
-                  <!-- *** OpenJPA Query cache configuration *** -->
-                  <property name="openjpa.QueryCompilationCache" value="true"/>
-                  <property name="openjpa.jdbc.QuerySQLCache" value="true"/>
-                  
-                  <!-- *** OpenJPA Query data cache configuration *** -->
-		  		  <property name="openjpa.QueryCache" value="ehcache"/>
-     			
-      			  <!-- *** OpenJPA Data cache configuration *** -->
-				  <property name="openjpa.DataCacheManager" value="ehcache"/>
-                  
-				  <!-- *** DB dictionary settings *** -->
-                  <property name="openjpa.jdbc.DBDictionary" value="JoinSyntax=traditional, SupportsUniqueConstraints=false"/>
-        </properties>
+			<!-- *** DBCP Connection pool configuration *** -->
+			<property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource" />
+
+			<!-- *** Connection management *** -->
+			<property name="openjpa.ConnectionRetainMode" value="on-demand" />
+
+			<!-- *** Synchronize database schema with persistence classes. *** -->
+			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+			<property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)" />
+
+			<!-- *** OpenJPA Query cache configuration *** -->
+			<property name="openjpa.QueryCompilationCache" value="true" />
+			<property name="openjpa.jdbc.QuerySQLCache" value="true" />
+
+			<!-- *** OpenJPA Query data cache configuration *** -->
+			<property name="openjpa.QueryCache" value="ehcache" />
+
+			<!-- *** OpenJPA Data cache configuration *** -->
+			<property name="openjpa.DataCacheManager" value="ehcache" />
+
+			<!-- *** DB dictionary settings *** -->
+			<property name="openjpa.jdbc.DBDictionary" value="JoinSyntax=traditional, SupportsUniqueConstraints=false" />
+
+			<property name="openjpa.Log" value="log4j" />
+		</properties>
 	</persistence-unit>
 </persistence>

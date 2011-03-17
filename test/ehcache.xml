@@ -1,32 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
-	<defaultCache
-	      maxElementsInMemory="1000"
-	      eternal="false"
-	      timeToIdleSeconds="300"
-	      timeToLiveSeconds="600"
-	      overflowToDisk="false"
-	      memoryStoreEvictionPolicy="LRU"
-	      />
+	<defaultCache maxElementsInMemory="1000" eternal="false"
+		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU" />
 
 	<!-- OpenJPA data cache -->
-	<cache name="openjpa"
-		     maxElementsInMemory="5000"
-		     eternal="false"
-		     timeToIdleSeconds="300"
-		     timeToLiveSeconds="600"
-		     overflowToDisk="false"
-		     memoryStoreEvictionPolicy="LRU"
-	      />
-	
+	<cache name="openjpa" maxElementsInMemory="5000" eternal="false"
+		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU" />
+
 	<!-- OpenJPA query cache -->
-	<cache name="openjpa-querycache"
-	       maxElementsInMemory="1000"
-	       eternal="false"
-	       timeToIdleSeconds="300"
-	       timeToLiveSeconds="600"
-	       overflowToDisk="false"
-	       memoryStoreEvictionPolicy="LRU"
-	      />
-	
+	<cache name="openjpa-querycache" maxElementsInMemory="1000"
+		eternal="false" timeToIdleSeconds="300" timeToLiveSeconds="600"
+		overflowToDisk="false" memoryStoreEvictionPolicy="LRU" />
 </ehcache>
