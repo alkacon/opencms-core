@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/18 10:17:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,18 +37,16 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
 
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the specific list item for the results list.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.
  */
@@ -57,41 +55,20 @@ public class CmsResultListItem extends CmsListItem {
     /** The delete button. */
     private CmsPushButton m_deleteButton;
 
+    /** The name. */
+    private String m_name;
+
     /** The preview button. */
     private CmsPushButton m_previewButton;
 
     /** The resource type name of the resource. */
     private String m_resourceType;
 
-    /** The vfs path. */
-    private String m_vfsPath;
-
-    /** The name. */
-    private String m_name;
-
-    /**
-     * Returns the vfs path.<p>
-     *
-     * @return the vfs path
-     */
-    public String getVfsPath() {
-
-        return m_vfsPath;
-    }
-
     /** The select button. */
     private CmsPushButton m_selectButton;
 
-    /**
-     * Creates a new result list item with a main widget and a check box.<p>
-     * 
-     * @param checkbox the check box 
-     * @param mainWidget the main widget 
-     */
-    public CmsResultListItem(CmsCheckBox checkbox, Widget mainWidget) {
-
-        initContent(checkbox, mainWidget);
-    }
+    /** The vfs path. */
+    private String m_vfsPath;
 
     /**
      * Creates a new result list item with a main widget.<p>
@@ -125,14 +102,12 @@ public class CmsResultListItem extends CmsListItem {
         m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
         m_previewButton.setShowBorder(false);
         m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
-        m_previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         resultItemWidget.addButton(m_previewButton);
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
         m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
         m_selectButton.setShowBorder(false);
         m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
-        m_selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
@@ -141,7 +116,6 @@ public class CmsResultListItem extends CmsListItem {
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
         m_deleteButton.setShowBorder(false);
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
-        m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         if (!resultItem.isEditable()) {
             m_deleteButton.disable(resultItem.getNoEditReson());
         }
@@ -152,16 +126,6 @@ public class CmsResultListItem extends CmsListItem {
     }
 
     /**
-     * Adds the preview button click handler.<p>
-     * 
-     * @param handler the click handler
-     */
-    public void addPreviewClickHandler(ClickHandler handler) {
-
-        m_previewButton.addClickHandler(handler);
-    }
-
-    /**
      * Adds the delete button click handler.<p>
      * 
      * @param handler the click handler
@@ -169,6 +133,16 @@ public class CmsResultListItem extends CmsListItem {
     public void addDeleteClickHandler(ClickHandler handler) {
 
         m_deleteButton.addClickHandler(handler);
+    }
+
+    /**
+     * Adds the preview button click handler.<p>
+     * 
+     * @param handler the click handler
+     */
+    public void addPreviewClickHandler(ClickHandler handler) {
+
+        m_previewButton.addClickHandler(handler);
     }
 
     /**
@@ -183,6 +157,16 @@ public class CmsResultListItem extends CmsListItem {
     }
 
     /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
      * Returns the resource type name.<p>
      *
      * @return the resource type name
@@ -193,29 +177,29 @@ public class CmsResultListItem extends CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
-     */
-    @Override
-    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
-
-        if (super.initMoveHandle(dndHandler)) {
-            // move handle should always be visible
-            getMoveHandle().getElement().addClassName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Sets the resource type name.<p>
+     * Returns the vfs path.<p>
      *
-     * @param resourceType the resource type name to set
+     * @return the vfs path
      */
-    public void setResourceType(String resourceType) {
+    public String getVfsPath() {
 
-        m_resourceType = resourceType;
+        return m_vfsPath;
     }
+
+    //    /**
+    //     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
+    //     */
+    //    @Override
+    //    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
+    //
+    //        if (super.initMoveHandle(dndHandler)) {
+    //            // move handle should always be visible
+    //            getMoveHandle().getElement().addClassName(
+    //                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+    //            return true;
+    //        }
+    //        return false;
+    //    }
 
     /**
      * Sets the name.<p>
@@ -228,12 +212,12 @@ public class CmsResultListItem extends CmsListItem {
     }
 
     /**
-     * Returns the name.<p>
+     * Sets the resource type name.<p>
      *
-     * @return the name
+     * @param resourceType the resource type name to set
      */
-    public String getName() {
+    public void setResourceType(String resourceType) {
 
-        return m_name;
+        m_resourceType = resourceType;
     }
 }

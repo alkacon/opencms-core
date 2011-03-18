@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
- * Date   : $Date: 2010/10/25 13:29:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/18 10:17:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
@@ -42,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -95,20 +94,20 @@ public class CmsTypeListItem extends CmsListItem {
         return m_subTitle;
     }
 
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
-     */
-    @Override
-    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
-
-        if (super.initMoveHandle(dndHandler)) {
-            // move handle should always be visible
-            getMoveHandle().getElement().addClassName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            return true;
-        }
-        return false;
-    }
+    //    /**
+    //     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
+    //     */
+    //    @Override
+    //    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
+    //
+    //        if (super.initMoveHandle(dndHandler)) {
+    //            // move handle should always be visible
+    //            getMoveHandle().getElement().addClassName(
+    //                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+    //            return true;
+    //        }
+    //        return false;
+    //    }
 
     /**
      * Sets the itemTitle.<p>

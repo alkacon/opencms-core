@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/03/10 11:29:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/03/18 10:17:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -225,7 +225,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         uploadButton.setText(null);
         uploadButton.setShowBorder(false);
         uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-        uploadButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         return uploadButton;
     }
 
