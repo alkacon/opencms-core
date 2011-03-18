@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/18 10:17:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -129,6 +130,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /** Flag if a button minimum width should be used. */
     private boolean m_useMinWidth;
 
+    /** The current style dependent name. */
+    private String m_styleDependent;
+
     /**
      * The default constructor.<p>
      * 
@@ -141,7 +145,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
         initWidget(m_uiBinder.createAndBindUi(this));
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
-        m_main.setStyleDependentName("up", true);
+        updateState("up");
         m_enabled = true;
         // create a handler for this button
         m_handler = new CmsUploadButtonHandler();
@@ -180,7 +184,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
         }
 
-        m_main.setStyleDependentName("up-disabled", true);
+        updateState("up-disabled");
         super.setTitle(disabledReason);
     }
 
@@ -189,7 +193,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
      */
     public void enable() {
 
-        m_main.setStyleDependentName("up-disabled", false);
+        updateState("up");
         m_enabled = true;
         // show the current file input field
         if (m_fileInput != null) {
@@ -453,7 +457,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     protected void handleMouseOut(MouseOutEvent event) {
 
         if (isEnabled()) {
-            m_main.setStyleDependentName("up-hovering", false);
+            updateState("up");
         }
     }
 
@@ -468,7 +472,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     protected void handleMouseOver(MouseOverEvent event) {
 
         if (isEnabled()) {
-            m_main.setStyleDependentName("up-hovering", true);
+            updateState("up-hovering");
         }
     }
 
@@ -487,5 +491,18 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_uploadDialog.addFileInput(m_fileInput);
         }
         createFileInput();
+    }
+
+    private void updateState(String styleDependent) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(styleDependent)) {
+            // reseting to cmsState-up
+            styleDependent = "up";
+        }
+        if (!styleDependent.equals(m_styleDependent)) {
+            m_main.removeStyleDependentName(m_styleDependent);
+            m_main.setStyleDependentName(styleDependent, true);
+            m_styleDependent = styleDependent;
+        }
     }
 }
