@@ -2,9 +2,15 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.2//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.2/distro-source/core/src/gwt-module.dtd">
 <module>
 	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
-		
+
+	<extend-property name="locale" values="en,de"/>
+	<set-property-fallback name="locale" value="en"/>
+	<set-property name="locale" value="en,de"/>
+	<collapse-property name="locale" values="*" />
+
 	<define-property name="fileapi.support" values="formdata,fileapi,no" />
 	<property-provider name="fileapi.support"><![CDATA[
 		var input = document.createElement('input');
@@ -19,6 +25,20 @@
 		}
 		return 'no';
 	]]></property-provider>
+
+	<set-property name="fileapi.support" value="no" />
+
+	<set-property name="fileapi.support" value="formdata,no" >
+		<any>
+			<when-property-is name="user.agent" value="safari" />
+		</any>
+	</set-property>
+
+	<set-property name="fileapi.support" value="formdata,fileapi,no" >
+		<any>
+			<when-property-is name="user.agent" value="gecko1_8" />
+		</any>
+	</set-property>
 
 	<replace-with class="org.opencms.gwt.client.ui.input.upload.CmsFileInputFileApiImpl">
 		<when-type-is class="org.opencms.gwt.client.ui.input.upload.CmsFileInputImpl" />
