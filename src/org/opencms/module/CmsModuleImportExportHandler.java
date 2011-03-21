@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/21 11:25:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -476,22 +476,6 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_additionalResources != null) {
-                m_additionalResources.clear();
-            }
-        } catch (Exception e) {
-            // noop
-        } finally {
-            super.finalize();
-        }
-    }
-
-    /**
      * Returns the module imported with the digester.<p>
      * 
      * @return the module imported with the digester
@@ -556,7 +540,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             // first check against the already configured resource types
             int externalConflictIndex = OpenCms.getResourceManager().getResourceTypes().indexOf(type);
             if (externalConflictIndex >= 0) {
-                I_CmsResourceType conflictingType = (I_CmsResourceType)OpenCms.getResourceManager().getResourceTypes().get(
+                I_CmsResourceType conflictingType = OpenCms.getResourceManager().getResourceTypes().get(
                     externalConflictIndex);
                 if (!type.isIdentical(conflictingType)) {
                     // if name and id are identical, we assume this is a module replace operation

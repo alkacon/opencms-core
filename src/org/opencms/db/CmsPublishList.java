@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2010/04/26 07:54:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/21 11:25:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  * 
@@ -566,29 +566,6 @@ public class CmsPublishList implements Externalizable {
         while (i.hasNext()) {
             add(i.next(), check);
         }
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_fileList != null) {
-                m_fileList.clear();
-            }
-            if (m_folderList != null) {
-                m_folderList.clear();
-            }
-            if (m_deletedFolderList != null) {
-                m_deletedFolderList.clear();
-            }
-        } catch (Throwable t) {
-            // ignore
-        }
-
-        super.finalize();
     }
 
     /**

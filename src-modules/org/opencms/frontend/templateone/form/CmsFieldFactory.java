@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/21 11:25:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.3 $
  */
 public final class CmsFieldFactory {
 
@@ -129,9 +129,11 @@ public final class CmsFieldFactory {
             }
         } catch (IOException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1,
-                    propertyFile == null ? CUSTOM_FORM_FIELD_PROPERTIES : propertyFile.getAbsolutePath()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1,
+                        propertyFile == null ? CUSTOM_FORM_FIELD_PROPERTIES : propertyFile.getAbsolutePath()),
+                    e);
             }
         }
     }
@@ -148,21 +150,6 @@ public final class CmsFieldFactory {
         }
 
         return sharedInstance;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_registeredFieldTypes != null) {
-                m_registeredFieldTypes.clear();
-            }
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
     }
 
     /**

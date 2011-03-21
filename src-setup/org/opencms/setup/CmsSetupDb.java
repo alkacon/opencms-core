@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupDb.java,v $
- * Date   : $Date: 2010/02/24 12:44:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/21 11:25:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -584,20 +584,6 @@ public class CmsSetupDb extends Object {
         }
 
         return result;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-
-        try {
-            closeConnection();
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
     }
 
     /**

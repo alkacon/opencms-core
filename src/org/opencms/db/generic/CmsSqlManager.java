@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/21 11:25:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -437,26 +437,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         return " ";
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_cachedQueries != null) {
-                m_cachedQueries.clear();
-            }
-
-            if (m_queries != null) {
-                m_queries.clear();
-            }
-        } catch (Throwable t) {
-            // intentionally left blank
-        }
-        super.finalize();
     }
 
     /**
