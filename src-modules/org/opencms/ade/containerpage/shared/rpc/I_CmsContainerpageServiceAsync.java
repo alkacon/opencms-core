@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/21 12:49:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.containerpage.shared.CmsSubContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -176,18 +176,18 @@ public interface I_CmsContainerpageServiceAsync {
     void saveFavoriteList(List<String> clientIds, AsyncCallback<Void> callback);
 
     /**
-     * Saves a sub-container element.<p>
+     * Saves a group-container element.<p>
      * 
      * @param containerpageUri the current URI
      * @param reqParams optional request parameters
-     * @param subContainer the sub-container to save
+     * @param groupContainer the group-container to save
      * @param containers the containers of the current page
      * @param callback the call-back executed on response
      */
-    void saveSubContainer(
+    void saveGroupContainer(
         String containerpageUri,
         String reqParams,
-        CmsSubContainer subContainer,
+        CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
         AsyncCallback<Map<String, CmsContainerElementData>> callback);
 

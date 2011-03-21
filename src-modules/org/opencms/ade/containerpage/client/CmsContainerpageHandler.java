@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,8 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarMenu;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
-import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
-import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsGroupcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 8.0.0
  */
@@ -459,8 +459,8 @@ public class CmsContainerpageHandler {
             return;
         }
 
-        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-            openSubcontainerEditor((CmsSubContainerElement)element);
+        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENTS, element.getElement())) {
+            openGroupcontainerEditor((CmsGroupContainerElement)element);
         } else {
             m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath(), false);
         }
@@ -664,13 +664,13 @@ public class CmsContainerpageHandler {
     }
 
     /**
-     * Opens the sub-container element editor.<p>
+     * Opens the group-container element editor.<p>
      * 
-     * @param subContainer the sub-container element
+     * @param groupContainer the group-container element
      */
-    private void openSubcontainerEditor(CmsSubContainerElement subContainer) {
+    private void openGroupcontainerEditor(CmsGroupContainerElement groupContainer) {
 
-        CmsSubcontainerEditor.openSubcontainerEditor(subContainer, m_controller, this);
+        CmsGroupcontainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
     }
 
     /**

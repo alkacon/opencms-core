@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/02/24 08:06:27 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/03/21 12:49:33 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,11 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsSubContainerBean;
+import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.containerpage.CmsXmlSubContainer;
-import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.containerpage.CmsXmlGroupContainer;
+import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsDetailPageResourceHandler;
 
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 7.6 
  */
@@ -109,8 +109,8 @@ public class CmsJspTagContainer extends TagSupport {
     /** HTML class used to identify container elements. */
     public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
 
-    /** HTML class used to identify sub container elements. */
-    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
+    /** HTML class used to identify group container elements. */
+    public static final String CLASS_GROUP_CONTAINER_ELEMENTS = "cms_ade_groupcontainer";
 
     /** Key used to write container data into the javascript window object. */
     public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
@@ -574,7 +574,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param cms the cms object
      * @param resource the element resource
      * @param elementBean the element
-     * @param isSubcontainer <code>true</code> if element is a sub-container
+     * @param isGroupcontainer <code>true</code> if element is a group-container
      * 
      * @return the opening tag
      * 
@@ -584,11 +584,11 @@ public class CmsJspTagContainer extends TagSupport {
         CmsObject cms,
         CmsResource resource,
         CmsContainerElementBean elementBean,
-        boolean isSubcontainer) throws CmsException {
+        boolean isGroupcontainer) throws CmsException {
 
         StringBuffer result = new StringBuffer("<div class='");
-        if (isSubcontainer) {
-            result.append(CLASS_SUB_CONTAINER_ELEMENTS);
+        if (isGroupcontainer) {
+            result.append(CLASS_GROUP_CONTAINER_ELEMENTS);
         } else {
             result.append(CLASS_CONTAINER_ELEMENTS);
         }
@@ -634,7 +634,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param cms the Cms context 
      * @param resource the element resource 
      * @param elementBean the element bean 
-     * @param isSubContainer true if the element is a subcontainer 
+     * @param isGroupContainer true if the element is a group-container 
      * 
      * @throws IOException if the IO fails
      * @throws CmsException if something goes wrong
@@ -644,10 +644,10 @@ public class CmsJspTagContainer extends TagSupport {
         CmsObject cms,
         CmsResource resource,
         CmsContainerElementBean elementBean,
-        boolean isSubContainer) throws IOException, CmsException {
+        boolean isGroupContainer) throws IOException, CmsException {
 
         if (!online) {
-            pageContext.getOut().print(getElementWrapperTagStart(cms, resource, elementBean, isSubContainer));
+            pageContext.getOut().print(getElementWrapperTagStart(cms, resource, elementBean, isGroupContainer));
         }
     }
 
@@ -789,10 +789,12 @@ public class CmsJspTagContainer extends TagSupport {
 
         CmsResource resUri = cms.readResource(element.getElementId());
 
-        if (resUri.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
-            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, resUri, req);
-            CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(cms, cms.getRequestContext().getLocale());
-            if (!subContainer.getTypes().contains(containerType)) {
+        if (resUri.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, resUri, req);
+            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
+                cms,
+                cms.getRequestContext().getLocale());
+            if (!groupContainer.getTypes().contains(containerType)) {
                 //TODO: change message
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
@@ -803,7 +805,7 @@ public class CmsJspTagContainer extends TagSupport {
             element.setSitePath(cms.getSitePath(resUri));
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, resUri, element, true);
-            for (CmsContainerElementBean subelement : subContainer.getElements()) {
+            for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 CmsResource subelementRes = cms.readResource(subelement.getElementId());
                 String subelementUri = cms.getSitePath(subelementRes);
                 String subelementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(

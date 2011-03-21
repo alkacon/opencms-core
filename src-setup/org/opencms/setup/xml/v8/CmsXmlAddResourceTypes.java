@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddResourceTypes.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -123,9 +123,9 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                 createResourceType(
                     document,
                     xpath,
-                    CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME,
+                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
                     CmsResourceTypeXmlContent.class,
-                    CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID);
+                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID);
                 // parameters
                 createRtParameter(
                     document,
@@ -136,7 +136,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     document,
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
-                    "/system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd");
+                    "/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(4))) {
                 createResourceType(
                     document,
@@ -185,7 +185,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
             m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.getStaticTypeName() + "']");
             m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME + "']");
             m_xpaths.add(xp.toString() + "cntpagegallery" + "']");
-            m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME + "']");
+            m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME + "']");
             m_xpaths.add(xp.toString() + CmsResourceTypeJsp.getContainerPageTemplateTypeName() + "']");
         }
         return m_xpaths;

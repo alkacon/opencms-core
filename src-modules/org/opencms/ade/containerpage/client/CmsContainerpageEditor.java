@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -224,7 +224,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.subcontainerCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();
 
         CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);

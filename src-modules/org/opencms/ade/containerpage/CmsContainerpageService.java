@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/03/01 14:17:34 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.containerpage.shared.CmsSubContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -59,11 +59,11 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsSubContainerBean;
+import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.containerpage.CmsXmlSubContainer;
-import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.containerpage.CmsXmlGroupContainer;
+import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -370,38 +370,40 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveSubContainer(java.lang.String, java.lang.String, org.opencms.ade.containerpage.shared.CmsSubContainer, java.util.Collection)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveGroupContainer(java.lang.String, java.lang.String, org.opencms.ade.containerpage.shared.CmsGroupContainer, java.util.Collection)
      */
-    public Map<String, CmsContainerElementData> saveSubContainer(
+    public Map<String, CmsContainerElementData> saveGroupContainer(
         String containerpageUri,
         String reqParams,
-        CmsSubContainer subContainer,
+        CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
-            String resourceName = subContainer.getSitePath();
-            if (subContainer.isNew()) {
-                CmsResource subContainerResource = OpenCms.getADEManager().createNewElement(
+            String resourceName = groupContainer.getSitePath();
+            if (groupContainer.isNew()) {
+                CmsResource groupContainerResource = OpenCms.getADEManager().createNewElement(
                     getCmsObject(),
                     containerpageUri,
                     getRequest(),
-                    CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
-                resourceName = cms.getSitePath(subContainerResource);
-                subContainer.setSitePath(resourceName);
-                subContainer.setClientId(subContainerResource.getStructureId().toString());
+                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
+                resourceName = cms.getSitePath(groupContainerResource);
+                groupContainer.setSitePath(resourceName);
+                groupContainer.setClientId(groupContainerResource.getStructureId().toString());
             }
-            CmsSubContainerBean subContainerBean = getSubContainerBean(subContainer, containerpageUri);
+            CmsGroupContainerBean groupContainerBean = getGroupContainerBean(groupContainer, containerpageUri);
             cms.lockResourceTemporary(resourceName);
-            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, cms.readFile(resourceName));
-            xmlSubContainer.save(cms, subContainerBean);
+            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
+                cms,
+                cms.readFile(resourceName));
+            xmlGroupContainer.save(cms, groupContainerBean);
             cms.unlockResource(resourceName);
         } catch (Throwable e) {
             error(e);
         }
         Collection<String> ids = new ArrayList<String>();
-        ids.add(subContainer.getClientId());
+        ids.add(groupContainer.getClientId());
         return getElementsData(containerpageUri, reqParams, ids, containers);
     }
 
@@ -615,17 +617,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean element = getCachedElement(elemId);
             CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
             result.put(element.getClientId(), elementData);
-            if (elementData.isSubContainer()) {
-                // this is a sub-container 
-
+            if (elementData.isGroupContainer()) {
+                // this is a group-container 
                 CmsResource elementRes = cms.readResource(element.getElementId());
-                CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, elementRes, getRequest());
-                CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
+                    cms,
+                    elementRes,
+                    getRequest());
+                CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
                     cms,
                     cms.getRequestContext().getLocale());
 
                 // adding all sub-items to the elements data
-                for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                for (CmsContainerElementBean subElement : groupContainer.getElements()) {
                     if (!ids.contains(subElement.getElementId())) {
                         String subId = subElement.getClientId();
                         if (ids.contains(subId)) {
@@ -666,20 +670,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
                 result.add(elementData);
-                if (elementData.isSubContainer()) {
-                    // this is a sub-container 
+                if (elementData.isGroupContainer()) {
+                    // this is a group-container 
 
                     CmsResource elementRes = cms.readResource(element.getElementId());
-                    CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
+                    CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                         cms,
                         elementRes,
                         getRequest());
-                    CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                    CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
                         cms,
                         cms.getRequestContext().getLocale());
 
                     // adding all sub-items to the elements data
-                    for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                    for (CmsContainerElementBean subElement : groupContainer.getElements()) {
                         CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
                         result.add(subItemData);
                     }
@@ -754,19 +758,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Helper method for converting a CmsSubContainer to a CmsSubContainerBean when saving a sub container.<p>
+     * Helper method for converting a CmsGroupContainer to a CmsGroupContainerBean when saving a group container.<p>
      * 
-     * @param subContainer the sub-container data
+     * @param groupContainer the group-container data
      * @param containerpageUri the URI of the container page 
      * 
-     * @return the sub-container bean
+     * @return the group-container bean
      */
-    private CmsSubContainerBean getSubContainerBean(CmsSubContainer subContainer, String containerpageUri) {
+    private CmsGroupContainerBean getGroupContainerBean(CmsGroupContainer groupContainer, String containerpageUri) {
 
         CmsObject cms = getCmsObject();
         CmsADESessionCache cache = getSessionCache();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
-        for (CmsContainerElement elementData : subContainer.getElements()) {
+        for (CmsContainerElement elementData : groupContainer.getElements()) {
             try {
                 if (elementData.isNew()) {
                     elementData = createNewElement(
@@ -785,10 +789,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 log(e.getLocalizedMessage(), e);
             }
         }
-        return new CmsSubContainerBean(
-            subContainer.getTitle(),
-            subContainer.getDescription(),
+        return new CmsGroupContainerBean(
+            groupContainer.getTitle(),
+            groupContainer.getDescription(),
             elements,
-            subContainer.getTypes());
+            groupContainer.getTypes());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -55,14 +55,14 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The contents by container type. */
     private Map<String, String> m_contents;
 
-    /** The sub-container description. */
+    /** The group-container description. */
     private String m_description;
 
     /** The full site path. */
     private String m_sitePath;
 
-    /** Flag for indicating whether this is a subcontainer. */
-    private boolean m_isSubContainer;
+    /** Flag for indicating whether this is a group-container. */
+    private boolean m_isGroupContainer;
 
     /** The last user modifying the element. */
     private String m_lastModifiedByUser;
@@ -91,7 +91,7 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The element title property. */
     private String m_title;
 
-    /** The supported container types of a sub-container. */
+    /** The supported container types of a group-container. */
     private Set<String> m_types;
 
     /**
@@ -225,16 +225,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns if the element is a sub-container.<p>
+     * Returns if the element is a group-container.<p>
      *
-     * @return <code>true</code> if the element is a sub-container
+     * @return <code>true</code> if the element is a group-container
      */
-    public boolean isSubContainer() {
+    public boolean isGroupContainer() {
 
         if (m_subItems == null) {
             m_subItems = new ArrayList<String>();
         }
-        return m_isSubContainer;
+        return m_isGroupContainer;
     }
 
     /**
@@ -328,13 +328,13 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets whether the element is a sub-container.<p>
+     * Sets whether the element is a group-container.<p>
      *
-     * @param isSubContainer <code>true</code> if the element is a sub-container
+     * @param isGroupContainer <code>true</code> if the element is a group-container
      */
-    public void setSubContainer(boolean isSubContainer) {
+    public void setGroupContainer(boolean isGroupContainer) {
 
-        m_isSubContainer = isSubContainer;
+        m_isGroupContainer = isGroupContainer;
     }
 
     /**

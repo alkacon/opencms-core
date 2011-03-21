@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubcontainerEditor.java,v $
- * Date   : $Date: 2011/03/10 07:46:38 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.containerpage.shared.CmsSubContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -69,25 +69,25 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The sub-container editor.<p>
+ * The group-container editor.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public final class CmsSubcontainerEditor extends Composite {
+public final class CmsGroupcontainerEditor extends Composite {
 
     /** The ui-binder interface for this widget. */
-    interface I_CmsSubcontainerEditorUiBinder extends UiBinder<HTMLPanel, CmsSubcontainerEditor> {
+    interface I_CmsGroupcontainerEditorUiBinder extends UiBinder<HTMLPanel, CmsGroupcontainerEditor> {
         // GWT interface, nothing to do here
     }
 
-    private static CmsSubcontainerEditor INSTANCE;
+    private static CmsGroupcontainerEditor INSTANCE;
 
     /** The ui-binder for this widget. */
-    private static I_CmsSubcontainerEditorUiBinder uiBinder = GWT.create(I_CmsSubcontainerEditorUiBinder.class);
+    private static I_CmsGroupcontainerEditorUiBinder uiBinder = GWT.create(I_CmsGroupcontainerEditorUiBinder.class);
 
     /** The cancel button. */
     @UiField
@@ -123,7 +123,7 @@ public final class CmsSubcontainerEditor extends Composite {
     /** The container-page controller. */
     private CmsContainerpageController m_controller;
 
-    /** The sub-container place-holder. */
+    /** The group-container place-holder. */
     private Element m_editingPlaceholder;
 
     /** The editor HTML-id. */
@@ -132,26 +132,26 @@ public final class CmsSubcontainerEditor extends Composite {
     /** The editor widget. */
     private HTMLPanel m_editorWidget;
 
-    /** The index position of the sub-container inside it's parent. */
+    /** The index position of the group-container inside it's parent. */
     private int m_indexPosition;
 
     /** The parent container. */
     private CmsContainerPageContainer m_parentContainer;
 
-    /** The sub-container. */
-    private CmsSubContainerElement m_subContainer;
+    /** The group-container. */
+    private CmsGroupContainerElement m_groupContainer;
 
-    private CmsSubContainer m_subContainerBean;
+    private CmsGroupContainer m_groupContainerBean;
 
     /**
      * Constructor.<p>
      * 
-     * @param subContainer the sub-container
+     * @param groupContainer the group-container
      * @param controller the container-page controller
      * @param handler the container-page handler
      */
-    private CmsSubcontainerEditor(
-        CmsSubContainerElement subContainer,
+    private CmsGroupcontainerEditor(
+        CmsGroupContainerElement groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
@@ -162,32 +162,32 @@ public final class CmsSubcontainerEditor extends Composite {
         m_labelTitle.setText("Title");
         m_editorId = HTMLPanel.createUniqueId();
         m_editorWidget.getElement().setId(m_editorId);
-        m_subContainer = subContainer;
+        m_groupContainer = groupContainer;
         m_backUpElements = new ArrayList<CmsContainerPageElement>();
-        Iterator<Widget> it = m_subContainer.iterator();
+        Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {
                 m_backUpElements.add((CmsContainerPageElement)w);
             }
         }
-        m_parentContainer = (CmsContainerPageContainer)m_subContainer.getParentTarget();
-        CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_subContainer);
-        m_editingPlaceholder = createPlaceholder(m_subContainer.getElement());
-        m_subContainer.setEditingPlaceholder(m_editingPlaceholder);
-        m_indexPosition = m_parentContainer.getWidgetIndex(m_subContainer);
+        m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
+        CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_groupContainer);
+        m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
+        m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
+        m_indexPosition = m_parentContainer.getWidgetIndex(m_groupContainer);
         // inserting placeholder element
-        m_parentContainer.getElement().insertBefore(m_editingPlaceholder, m_subContainer.getElement());
-        m_editorWidget.add(m_subContainer, m_editorId);
-        Style style = m_subContainer.getElement().getStyle();
+        m_parentContainer.getElement().insertBefore(m_editingPlaceholder, m_groupContainer.getElement());
+        m_editorWidget.add(m_groupContainer, m_editorId);
+        Style style = m_groupContainer.getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
         style.setLeft(position.getLeft(), Unit.PX);
         style.setTop(position.getTop(), Unit.PX);
         style.setWidth(position.getWidth(), Unit.PX);
         style.setZIndex(1000);
         setDialogPosition(position);
-        m_subContainer.getElementOptionBar().setVisible(false);
-        m_subContainer.getElementOptionBar().removeStyleName(
+        m_groupContainer.getElementOptionBar().setVisible(false);
+        m_groupContainer.getElementOptionBar().removeStyleName(
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
 
         m_saveButton.setTitle("Save");
@@ -196,36 +196,36 @@ public final class CmsSubcontainerEditor extends Composite {
         m_cancelButton.setTitle("Cancel");
         m_cancelButton.setText("Cancel");
 
-        RootPanel.get().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerEditing());
+        RootPanel.get().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerEditing());
 
-        // Loading data of all contained elements including sub-container element
+        // Loading data of all contained elements including group-container element
         m_controller.getElements(getElementIds(), new I_CmsSimpleCallback<Map<String, CmsContainerElementData>>() {
 
             public void execute(Map<String, CmsContainerElementData> arg) {
 
-                setSubContainerData(arg);
+                setGroupContainerData(arg);
             }
         });
     }
 
     /**
-     * Opens the sub-container editor.<p>
+     * Opens the group-container editor.<p>
      * 
-     * @param subContainer the sub-container
+     * @param groupContainer the group-container
      * @param controller the container-page controller
      * @param handler the container-page handler
      */
-    public static void openSubcontainerEditor(
-        CmsSubContainerElement subContainer,
+    public static void openGroupcontainerEditor(
+        CmsGroupContainerElement groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
-        // making sure only a single instance of the sub-container editor is open
+        // making sure only a single instance of the group-container editor is open
         if (INSTANCE != null) {
-            CmsDebugLog.getInstance().printLine("sub-container editor already open");
+            CmsDebugLog.getInstance().printLine("group-container editor already open");
         } else {
-            if (controller.startEditingSubcontainer(subContainer)) {
-                INSTANCE = new CmsSubcontainerEditor(subContainer, controller, handler);
+            if (controller.startEditingGroupcontainer(groupContainer)) {
+                INSTANCE = new CmsGroupcontainerEditor(groupContainer, controller, handler);
                 RootPanel.get().add(INSTANCE);
             }
         }
@@ -239,7 +239,7 @@ public final class CmsSubcontainerEditor extends Composite {
     @UiHandler("m_cancelButton")
     protected void cancelEdit(ClickEvent event) {
 
-        Iterator<Widget> it = m_subContainer.iterator();
+        Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {
@@ -247,14 +247,14 @@ public final class CmsSubcontainerEditor extends Composite {
             }
         }
         for (CmsContainerPageElement element : m_backUpElements) {
-            m_subContainer.add(element);
+            m_groupContainer.add(element);
         }
 
         closeDialog();
     }
 
     /**
-     * Creates a place-holder for the sub-container.<p>
+     * Creates a place-holder for the group-container.<p>
      * 
      * @param element the element
      * 
@@ -263,7 +263,7 @@ public final class CmsSubcontainerEditor extends Composite {
     protected Element createPlaceholder(Element element) {
 
         Element result = CmsDomUtil.clone(element);
-        result.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerPlaceholder());
+        result.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerPlaceholder());
         result.getStyle().setBackgroundColor("transparent");
         return result;
     }
@@ -276,41 +276,41 @@ public final class CmsSubcontainerEditor extends Composite {
     @UiHandler("m_saveButton")
     protected void saveEdit(ClickEvent event) {
 
-        m_subContainerBean.setTitle(m_inputTitle.getFormValueAsString());
-        m_subContainerBean.setDescription(m_inputDescription.getFormValueAsString());
-        m_subContainerBean.setElements(getElements());
-        m_controller.saveSubcontainer(m_subContainerBean, m_subContainer);
+        m_groupContainerBean.setTitle(m_inputTitle.getFormValueAsString());
+        m_groupContainerBean.setDescription(m_inputDescription.getFormValueAsString());
+        m_groupContainerBean.setElements(getElements());
+        m_controller.saveGroupcontainer(m_groupContainerBean, m_groupContainer);
         closeDialog();
     }
 
     /**
-     * Sets the data of the sub-container to edit.<p>
+     * Sets the data of the group-container to edit.<p>
      * 
-     * @param elementsData the data of all contained elements and the sub-container itself
+     * @param elementsData the data of all contained elements and the group-container itself
      */
-    protected void setSubContainerData(Map<String, CmsContainerElementData> elementsData) {
+    protected void setGroupContainerData(Map<String, CmsContainerElementData> elementsData) {
 
-        CmsContainerElementData elementData = elementsData.get(m_subContainer.getId());
+        CmsContainerElementData elementData = elementsData.get(m_groupContainer.getId());
         if (elementData != null) {
             m_saveButton.enable();
-            m_subContainerBean = new CmsSubContainer();
-            m_subContainerBean.setClientId(elementData.getClientId());
-            m_subContainerBean.setNewType(m_subContainer.getNewType());
-            m_subContainerBean.setSitePath(elementData.getSitePath());
+            m_groupContainerBean = new CmsGroupContainer();
+            m_groupContainerBean.setClientId(elementData.getClientId());
+            m_groupContainerBean.setNewType(m_groupContainer.getNewType());
+            m_groupContainerBean.setSitePath(elementData.getSitePath());
             if (elementData.getTypes().isEmpty()) {
                 Set<String> types = new HashSet<String>();
-                types.add(((CmsContainerPageContainer)m_subContainer.getParentTarget()).getContainerType());
+                types.add(((CmsContainerPageContainer)m_groupContainer.getParentTarget()).getContainerType());
                 elementData.setTypes(types);
-                m_subContainerBean.setTypes(types);
+                m_groupContainerBean.setTypes(types);
             } else {
-                m_subContainerBean.setTypes(elementData.getTypes());
+                m_groupContainerBean.setTypes(elementData.getTypes());
             }
             m_inputDescription.setFormValueAsString(elementData.getDescription());
             m_inputTitle.setFormValueAsString(elementData.getTitle());
-            m_subContainerBean.setTitle(elementData.getTitle());
-            m_subContainerBean.setDescription(elementData.getDescription());
+            m_groupContainerBean.setTitle(elementData.getTitle());
+            m_groupContainerBean.setDescription(elementData.getDescription());
         } else {
-            CmsDebugLog.getInstance().printLine("Loading subcontainer error.");
+            CmsDebugLog.getInstance().printLine("Loading groupcontainer error.");
         }
     }
 
@@ -319,42 +319,42 @@ public final class CmsSubcontainerEditor extends Composite {
      */
     private void closeDialog() {
 
-        m_controller.stopEditingSubcontainer();
-        m_subContainer.clearEditingPlaceholder();
+        m_controller.stopEditingGroupcontainer();
+        m_groupContainer.clearEditingPlaceholder();
         m_editingPlaceholder.removeFromParent();
-        Style style = m_subContainer.getElement().getStyle();
+        Style style = m_groupContainer.getElement().getStyle();
         style.clearPosition();
         style.clearTop();
         style.clearLeft();
         style.clearZIndex();
         style.clearWidth();
-        m_parentContainer.insert(m_subContainer, m_indexPosition);
-        RootPanel.get().removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerEditing());
-        m_subContainer.getElementOptionBar().setVisible(true);
-        if (!m_subContainer.iterator().hasNext()) {
-            // sub-container is empty, mark it
-            m_subContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+        m_parentContainer.insert(m_groupContainer, m_indexPosition);
+        RootPanel.get().removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerEditing());
+        m_groupContainer.getElementOptionBar().setVisible(true);
+        if (!m_groupContainer.iterator().hasNext()) {
+            // group-container is empty, mark it
+            m_groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
         }
         INSTANCE = null;
         this.removeFromParent();
     }
 
     /**
-     * Returns the ids of the contained elements and sub-container itself.<p>
+     * Returns the ids of the contained elements and group-container itself.<p>
      * 
      * @return the element ids
      */
     private Set<String> getElementIds() {
 
         Set<String> subItems = new HashSet<String>();
-        Iterator<Widget> it = m_subContainer.iterator();
+        Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {
                 subItems.add(((CmsContainerPageElement)w).getId());
             }
         }
-        subItems.add(m_subContainer.getId());
+        subItems.add(m_groupContainer.getId());
         return subItems;
     }
 
@@ -366,7 +366,7 @@ public final class CmsSubcontainerEditor extends Composite {
     private List<CmsContainerElement> getElements() {
 
         List<CmsContainerElement> subItems = new ArrayList<CmsContainerElement>();
-        Iterator<Widget> it = m_subContainer.iterator();
+        Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {

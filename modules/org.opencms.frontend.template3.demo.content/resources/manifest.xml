@@ -347,9 +347,9 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/_config/new/new_subcontainer.xml</source>
-			<destination>demo_t3/_config/new/new_subcontainer.xml</destination>
-			<type>subcontainer</type>
+			<source>demo_t3/_config/new/new_groupcontainer.xml</source>
+			<destination>demo_t3/_config/new/new_groupcontainer.xml</destination>
+			<type>groupcontainer</type>
 			<uuidstructure>6d38befb-ea1d-11de-a78f-6352bb47a664</uuidstructure>
 			<uuidresource>6d38befc-ea1d-11de-a78f-6352bb47a664</uuidresource>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
@@ -364,7 +364,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New subcontainer]]></value>
+					<value><![CDATA[New groupcontainer]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4190,7 +4190,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/subcontainers</destination>
+			<destination>demo_t3/groupcontainers</destination>
 			<type>folder</type>
 			<uuidstructure>a2c5da47-ea1d-11de-a78f-6352bb47a664</uuidstructure>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
@@ -4201,16 +4201,16 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Subcontainers]]></value>
+					<value><![CDATA[Groupcontainers]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/subcontainers/toolbox_container.xml</source>
-			<destination>demo_t3/subcontainers/toolbox_container.xml</destination>
-			<type>subcontainer</type>
+			<source>demo_t3/groupcontainers/toolbox_container.xml</source>
+			<destination>demo_t3/groupcontainers/toolbox_container.xml</destination>
+			<type>groupcontainer</type>
 			<uuidstructure>c0685ec0-ea1d-11de-a78f-6352bb47a664</uuidstructure>
 			<uuidresource>c0685ec1-ea1d-11de-a78f-6352bb47a664</uuidresource>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>

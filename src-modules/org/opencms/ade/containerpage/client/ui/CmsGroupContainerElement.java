@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubContainerElement.java,v $
- * Date   : $Date: 2010/11/12 10:56:24 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupContainerElement.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -46,21 +46,21 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Sub-container element. To be used for content elements within a container-page.<p>
- * The sub-container acts as a draggable element and if edited as a container.<p>
+ * Group-container element. To be used for content elements within a container-page.<p>
+ * The group-container acts as a draggable element and if edited as a container.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsSubContainerElement extends CmsContainerPageElement implements I_CmsDropContainer {
+public class CmsGroupContainerElement extends CmsContainerPageElement implements I_CmsDropContainer {
 
     /** The container type. */
     private String m_containerId;
 
-    /** The editing placeholder. Used within sub-container editing. */
+    /** The editing placeholder. Used within group-container editing. */
     private Element m_editingPlaceholder;
 
     /** The placeholder element. */
@@ -79,7 +79,7 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasProps should be true if the element has properties which can be edited 
      */
-    public CmsSubContainerElement(
+    public CmsGroupContainerElement(
         Element element,
         I_CmsDropContainer parent,
         String clientId,

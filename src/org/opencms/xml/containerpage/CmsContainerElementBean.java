@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/02/24 08:04:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -179,17 +179,17 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Tests whether this container element refers to a subcontainer.<p>
+     * Tests whether this container element refers to a groupcontainer.<p>
      * 
      * @param cms the CmsObject used for VFS operations
      *  
-     * @return true if the container element refers to a subcontainer
+     * @return true if the container element refers to a groupcontainer
      * @throws CmsException if something goes wrong 
      */
-    public boolean isSubcontainer(CmsObject cms) throws CmsException {
+    public boolean isGroupcontainer(CmsObject cms) throws CmsException {
 
         CmsResource resource = cms.readResource(m_elementId);
-        return resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID;
+        return resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
     }
 
     /**

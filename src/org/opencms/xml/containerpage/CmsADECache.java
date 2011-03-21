@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECache.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -69,11 +69,11 @@ public final class CmsADECache extends CmsVfsCache {
     /** Cache for online container pages. */
     private Map<String, CmsXmlContainerPage> m_containerPagesOnline;
 
-    /** Cache for offline sub containers. */
-    private Map<String, CmsXmlSubContainer> m_subContainersOffline;
+    /** Cache for offline group containers. */
+    private Map<String, CmsXmlGroupContainer> m_groupContainersOffline;
 
-    /** Cache for online sub containers. */
-    private Map<String, CmsXmlSubContainer> m_subContainersOnline;
+    /** Cache for online group containers. */
+    private Map<String, CmsXmlGroupContainer> m_groupContainersOnline;
 
     /**
      * Initializes the cache. Only intended to be called during startup.<p>
@@ -123,16 +123,16 @@ public final class CmsADECache extends CmsVfsCache {
     }
 
     /**
-     * Flushes the sub containers cache.<p>
+     * Flushes the group containers cache.<p>
      * 
      * @param online if to flush the online or offline cache
      */
-    public void flushSubContainers(boolean online) {
+    public void flushGroupContainers(boolean online) {
 
         if (online) {
-            m_subContainersOnline.clear();
+            m_groupContainersOnline.clear();
         } else {
-            m_subContainersOffline.clear();
+            m_groupContainersOffline.clear();
         }
     }
 
@@ -193,18 +193,18 @@ public final class CmsADECache extends CmsVfsCache {
     }
 
     /**
-     * Returns the cached sub container under the given key and for the given project.<p>
+     * Returns the cached group container under the given key and for the given project.<p>
      * 
      * @param key the cache key
      * @param online if cached in online or offline project
      * 
-     * @return the cached sub container or <code>null</code> if not found
+     * @return the cached group container or <code>null</code> if not found
      */
-    public CmsXmlSubContainer getCacheSubContainer(String key, boolean online) {
+    public CmsXmlGroupContainer getCacheGroupContainer(String key, boolean online) {
 
-        CmsXmlSubContainer retValue;
+        CmsXmlGroupContainer retValue;
         if (online) {
-            retValue = m_subContainersOnline.get(key);
+            retValue = m_groupContainersOnline.get(key);
             if (LOG.isDebugEnabled()) {
                 if (retValue == null) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -218,7 +218,7 @@ public final class CmsADECache extends CmsVfsCache {
                 }
             }
         } else {
-            retValue = m_subContainersOffline.get(key);
+            retValue = m_groupContainersOffline.get(key);
             if (LOG.isDebugEnabled()) {
                 if (retValue == null) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -262,27 +262,27 @@ public final class CmsADECache extends CmsVfsCache {
     }
 
     /**
-     * Caches the given sub container under the given key and for the given project.<p>
+     * Caches the given group container under the given key and for the given project.<p>
      * 
      * @param key the cache key
-     * @param subContainer the object to cache
+     * @param groupContainer the object to cache
      * @param online if to cache in online or offline project
      */
-    public void setCacheSubContainer(String key, CmsXmlSubContainer subContainer, boolean online) {
+    public void setCacheGroupContainer(String key, CmsXmlGroupContainer groupContainer, boolean online) {
 
         if (online) {
-            m_subContainersOnline.put(key, subContainer);
+            m_groupContainersOnline.put(key, groupContainer);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
-                    new Object[] {key, subContainer}));
+                    new Object[] {key, groupContainer}));
             }
         } else {
-            m_subContainersOffline.put(key, subContainer);
+            m_groupContainersOffline.put(key, groupContainer);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
-                    new Object[] {key, subContainer}));
+                    new Object[] {key, groupContainer}));
             }
         }
     }
@@ -305,19 +305,19 @@ public final class CmsADECache extends CmsVfsCache {
     }
 
     /**
-     * Removes the sub container identified by its structure id from the cache.<p>
+     * Removes the group container identified by its structure id from the cache.<p>
      * 
-     * @param structureId the sub container's structure id
+     * @param structureId the group container's structure id
      * @param online if online or offline
      */
-    public void uncacheSubContainer(CmsUUID structureId, boolean online) {
+    public void uncacheGroupContainer(CmsUUID structureId, boolean online) {
 
         if (online) {
-            m_subContainersOnline.remove(getCacheKey(structureId, true));
-            m_subContainersOnline.remove(getCacheKey(structureId, false));
+            m_groupContainersOnline.remove(getCacheKey(structureId, true));
+            m_groupContainersOnline.remove(getCacheKey(structureId, false));
         } else {
-            m_subContainersOffline.remove(getCacheKey(structureId, true));
-            m_subContainersOffline.remove(getCacheKey(structureId, false));
+            m_groupContainersOffline.remove(getCacheKey(structureId, true));
+            m_groupContainersOffline.remove(getCacheKey(structureId, false));
         }
     }
 
@@ -328,7 +328,7 @@ public final class CmsADECache extends CmsVfsCache {
     protected void flush(boolean online) {
 
         flushContainerPages(online);
-        flushSubContainers(online);
+        flushGroupContainers(online);
     }
 
     /**
@@ -345,7 +345,7 @@ public final class CmsADECache extends CmsVfsCache {
             // remove the resource cached by it's structure ID
             uncacheContainerPage(resource.getStructureId(), false);
         } else {
-            uncacheSubContainer(resource.getStructureId(), false);
+            uncacheGroupContainer(resource.getStructureId(), false);
         }
     }
 
@@ -367,12 +367,12 @@ public final class CmsADECache extends CmsVfsCache {
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
 
         // container page caches
-        Map<String, CmsXmlSubContainer> lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOfflineSize());
-        m_subContainersOffline = Collections.synchronizedMap(lruMapSubContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".subContainersOffline", lruMapSubContainer);
+        Map<String, CmsXmlGroupContainer> lruMapGroupContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getGroupContainerOfflineSize());
+        m_groupContainersOffline = Collections.synchronizedMap(lruMapGroupContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOffline", lruMapGroupContainer);
 
-        lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOnlineSize());
-        m_subContainersOnline = Collections.synchronizedMap(lruMapSubContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".subContainersOnline", lruMapSubContainer);
+        lruMapGroupContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getGroupContainerOnlineSize());
+        m_groupContainersOnline = Collections.synchronizedMap(lruMapGroupContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOnline", lruMapGroupContainer);
     }
 }

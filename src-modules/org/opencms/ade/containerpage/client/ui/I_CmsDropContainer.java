@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsDropContainer.java,v $
- * Date   : $Date: 2010/11/12 10:56:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Interface for container page drop targets like containers and sub-containers.<p>
+ * Interface for container page drop targets like containers and group-containers.<p>
  */
 public interface I_CmsDropContainer extends I_CmsDropTarget {
 

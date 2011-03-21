@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddExplorerTypes.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -132,23 +132,23 @@ public class CmsXmlAddExplorerTypes extends A_CmsXmlWorkplace {
                     "ROLE.WORKPLACE_USER",
                     "+r+v+w+c");
             } else if (xpath.equals(getXPathsToUpdate().get(3))) {
-                // <explorertype name="subcontainer" key="fileicon.subcontainer" icon="containerpage.gif" reference="xmlcontent">
+                // <explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="containerpage.gif" reference="xmlcontent">
                 createExplorerType(
                     document,
                     xpath,
-                    "subcontainer",
-                    "fileicon.subcontainer",
+                    "groupcontainer",
+                    "fileicon.groupcontainer",
                     "containerpage.gif",
                     "xmlcontent");
-                // <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=subcontainer" order="10" autosetnavigation="false" autosettitle="false" info="desc.subcontainer"/>
+                // <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer" order="10" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
                 createEtNewResource(
                     document,
                     xpath,
-                    "newresource_xmlcontent.jsp?newresourcetype=subcontainer",
+                    "newresource_xmlcontent.jsp?newresourcetype=groupcontainer",
                     10,
                     false,
                     false,
-                    "desc.subcontainer",
+                    "desc.groupcontainer",
                     "ade");
                 // <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                 setAccessEntry(
@@ -264,7 +264,7 @@ public class CmsXmlAddExplorerTypes extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(
                 xp.toString(),
                 "${etype}",
-                CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME));
+                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "cntpagegallery"));
             m_xpaths.add(CmsStringUtil.substitute(
                 xp.toString(),

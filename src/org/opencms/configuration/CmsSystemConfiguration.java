@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/10/07 14:53:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -447,8 +447,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The size of the memory monitor's cache for users. */
     public static final String N_SIZE_USERS = "size-users";
 
-    /** The subcontainers node name. */
-    public static final String N_SUBCONTAINERS = "subcontainers";
+    /** The groupcontainers node name. */
+    public static final String N_GROUPCONTAINERS = "groupcontainers";
 
     /** The subscriptionmanager node name. */
     public static final String N_SUBSCRIPTIONMANAGER = "subscriptionmanager";
@@ -1123,11 +1123,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_OFFLINE);
         digester.addCallMethod(adeCachePath + "/" + N_CONTAINERPAGES, "setContainerPageOnlineSize", 1);
         digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
-        // subcontainer cache
-        digester.addCallMethod(adeCachePath + "/" + N_SUBCONTAINERS, "setSubContainerOfflineSize", 1);
-        digester.addCallParam(adeCachePath + "/" + N_SUBCONTAINERS, 0, A_OFFLINE);
-        digester.addCallMethod(adeCachePath + "/" + N_SUBCONTAINERS, "setSubContainerOnlineSize", 1);
-        digester.addCallParam(adeCachePath + "/" + N_SUBCONTAINERS, 0, A_ONLINE);
+        // groupcontainer cache
+        digester.addCallMethod(adeCachePath + "/" + N_GROUPCONTAINERS, "setGroupContainerOfflineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_GROUPCONTAINERS, 0, A_OFFLINE);
+        digester.addCallMethod(adeCachePath + "/" + N_GROUPCONTAINERS, "setGroupContainerOnlineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_GROUPCONTAINERS, 0, A_ONLINE);
         // set the settings
         digester.addSetNext(adeCachePath, "setAdeCacheSettings");
 
@@ -1553,10 +1553,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 Element cntPageCacheElem = cacheElem.addElement(N_CONTAINERPAGES);
                 cntPageCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getContainerPageOfflineSize());
                 cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
-                // sub-container cache
-                Element subContainerCacheElem = cacheElem.addElement(N_SUBCONTAINERS);
-                subContainerCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getSubContainerOfflineSize());
-                subContainerCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getSubContainerOnlineSize());
+                // group-container cache
+                Element groupContainerCacheElem = cacheElem.addElement(N_GROUPCONTAINERS);
+                groupContainerCacheElem.addAttribute(A_OFFLINE, ""
+                    + getAdeCacheSettings().getGroupContainerOfflineSize());
+                groupContainerCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getGroupContainerOnlineSize());
             }
         }
 

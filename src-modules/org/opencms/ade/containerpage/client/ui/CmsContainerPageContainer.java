@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/11/12 10:56:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,8 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
-import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -174,9 +174,9 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
                 elements.add((CmsContainerPageElement)w);
             } else {
                 if (CmsDomUtil.hasClass(
-                    org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerPlaceholder(),
+                    org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerPlaceholder(),
                     w.getElement())) {
-                    CmsDebugLog.getInstance().printLine("Ignoring sub-container placeholder.");
+                    CmsDebugLog.getInstance().printLine("Ignoring group container placeholder.");
                 } else {
                     CmsDebugLog.getInstance().printLine(
                         "WARNING: " + w.toString() + " is no instance of CmsDragContainerElement");

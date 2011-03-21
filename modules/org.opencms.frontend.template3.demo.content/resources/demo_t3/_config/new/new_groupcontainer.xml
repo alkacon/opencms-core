@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AlkaconGroupContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd">
+  <AlkaconGroupContainer language="en">
+    <GroupContainers>
+      <Title><![CDATA[New Groupcontainer]]></Title>
+      <Description><![CDATA[Edit description!]]></Description>
+    </GroupContainers>
+  </AlkaconGroupContainer>
+</AlkaconGroupContainers>

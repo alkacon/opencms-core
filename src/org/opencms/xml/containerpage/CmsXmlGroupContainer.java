@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2011/02/24 08:04:03 $
- * Version: $Revision: 1.13 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainer.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,17 +75,17 @@ import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
 
 /**
- * Implementation of a object used to access and manage the xml data of a sub container.<p>
+ * Implementation of a object used to access and manage the xml data of a group container.<p>
  * 
  * In addition to the XML content interface. It also provides access to more comfortable beans.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.9.1
  */
-public class CmsXmlSubContainer extends CmsXmlContent {
+public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /** XML node name constants. */
     public enum XmlNode {
@@ -95,7 +95,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         /** Container elements node name. */
         Element,
         /** Main node name. */
-        SubContainers,
+        GroupContainers,
         /** Container title node name. */
         Title,
         /** Container type node name. */
@@ -105,21 +105,21 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     }
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlSubContainer.class);
+    private static final Log LOG = CmsLog.getLog(CmsXmlGroupContainer.class);
 
-    /** The sub container objects. */
-    private Map<Locale, CmsSubContainerBean> m_subContainers;
+    /** The group container objects. */
+    private Map<Locale, CmsGroupContainerBean> m_groupContainers;
 
     /**
      * Hides the public constructor.<p>
      */
-    protected CmsXmlSubContainer() {
+    protected CmsXmlGroupContainer() {
 
         // do nothing
     }
 
     /**
-     * Creates a new sub container based on the provided XML document.<p>
+     * Creates a new group container based on the provided XML document.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
@@ -128,7 +128,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * @param encoding the encoding of the container page
      * @param resolver the XML entity resolver to use
      */
-    protected CmsXmlSubContainer(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
+    protected CmsXmlGroupContainer(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
 
         // must set document first to be able to get the content definition
         m_document = document;
@@ -139,7 +139,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     }
 
     /**
-     * Create a new sub container based on the given default content,
+     * Create a new group container based on the given default content,
      * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
@@ -150,12 +150,12 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * 
      * @throws CmsException in case the model file is not found or not valid
      */
-    protected CmsXmlSubContainer(CmsObject cms, Locale locale, String modelUri)
+    protected CmsXmlGroupContainer(CmsObject cms, Locale locale, String modelUri)
     throws CmsException {
 
         // init model from given modelUri
         CmsFile modelFile = cms.readFile(modelUri, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-        CmsXmlSubContainer model = CmsXmlSubContainerFactory.unmarshal(cms, modelFile);
+        CmsXmlGroupContainer model = CmsXmlGroupContainerFactory.unmarshal(cms, modelFile);
 
         // initialize macro resolver to use on model file values
         CmsMacroResolver macroResolver = CmsMacroResolver.newInstance().setCmsObject(cms);
@@ -189,7 +189,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * @param encoding the encoding to use when marshalling the container page later
      * @param contentDefinition the content definition to create the content for
      */
-    protected CmsXmlSubContainer(
+    protected CmsXmlGroupContainer(
         CmsObject cms,
         Locale locale,
         String encoding,
@@ -204,24 +204,24 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     }
 
     /**
-     * Returns the sub container bean for the given locale.<p>
+     * Returns the group container bean for the given locale.<p>
      *
      * @param cms the cms context
      * @param locale the locale to use
      *
-     * @return the sub container bean
+     * @return the group container bean
      */
-    public CmsSubContainerBean getSubContainer(CmsObject cms, Locale locale) {
+    public CmsGroupContainerBean getGroupContainer(CmsObject cms, Locale locale) {
 
         Locale theLocale = locale;
-        if (!m_subContainers.containsKey(theLocale)) {
+        if (!m_groupContainers.containsKey(theLocale)) {
             LOG.warn(Messages.get().container(
             // TODO: change message
                 Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
                 cms.getSitePath(getFile()),
                 theLocale.toString()).key());
             theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
-            if (!m_subContainers.containsKey(theLocale)) {
+            if (!m_groupContainers.containsKey(theLocale)) {
                 // locale not found!!
                 LOG.error(Messages.get().container(
                 // TODO: change message
@@ -231,7 +231,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                 return null;
             }
         }
-        return m_subContainers.get(theLocale);
+        return m_groupContainers.get(theLocale);
     }
 
     /**
@@ -247,11 +247,11 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
      * 
      * @param cms the current cms context
-     * @param subCnt the sub-container page to save
+     * @param groupContainer the group-container page to save
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, CmsSubContainerBean subCnt) throws CmsException {
+    public void save(CmsObject cms, CmsGroupContainerBean groupContainer) throws CmsException {
 
         CmsFile file = getFile();
 
@@ -267,7 +267,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
 
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
-        saveSubCnt(cms, parent, subCnt);
+        saveGroupContainer(cms, parent, groupContainer);
 
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -291,7 +291,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     protected CmsResource fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
 
         String xpath = element.getPath();
-        int pos = xpath.lastIndexOf("/" + XmlNode.SubContainers.name() + "/");
+        int pos = xpath.lastIndexOf("/" + XmlNode.GroupContainers.name() + "/");
         if (pos > 0) {
             xpath = xpath.substring(pos + 1);
         }
@@ -313,41 +313,43 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         m_elementLocales = new HashMap<String, Set<Locale>>();
         m_elementNames = new HashMap<Locale, Set<String>>();
         m_locales = new HashSet<Locale>();
-        m_subContainers = new HashMap<Locale, CmsSubContainerBean>();
+        m_groupContainers = new HashMap<Locale, CmsGroupContainerBean>();
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator<Element> itSubContainers = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itSubContainers.hasNext();) {
-            Element cntPage = itSubContainers.next();
+        for (Iterator<Element> itGroupContainers = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itGroupContainers.hasNext();) {
+            Element cntPage = itGroupContainers.next();
 
             try {
                 Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
-                Element subContainer = cntPage.element(XmlNode.SubContainers.name());
+                Element groupContainer = cntPage.element(XmlNode.GroupContainers.name());
 
                 // container itself
-                int cntIndex = CmsXmlUtils.getXpathIndexInt(subContainer.getUniquePath(cntPage));
-                String cntPath = CmsXmlUtils.createXpathElement(subContainer.getName(), cntIndex);
-                I_CmsXmlSchemaType cntSchemaType = definition.getSchemaType(subContainer.getName());
-                I_CmsXmlContentValue cntValue = cntSchemaType.createValue(this, subContainer, locale);
+                int cntIndex = CmsXmlUtils.getXpathIndexInt(groupContainer.getUniquePath(cntPage));
+                String cntPath = CmsXmlUtils.createXpathElement(groupContainer.getName(), cntIndex);
+                I_CmsXmlSchemaType cntSchemaType = definition.getSchemaType(groupContainer.getName());
+                I_CmsXmlContentValue cntValue = cntSchemaType.createValue(this, groupContainer, locale);
                 addBookmark(cntPath, locale, true, cntValue);
                 CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
 
                 //title
-                Element title = subContainer.element(XmlNode.Title.name());
-                addBookmarkForElement(title, locale, subContainer, cntPath, cntDef);
+                Element title = groupContainer.element(XmlNode.Title.name());
+                addBookmarkForElement(title, locale, groupContainer, cntPath, cntDef);
 
                 //description
-                Element description = subContainer.element(XmlNode.Description.name());
-                addBookmarkForElement(description, locale, subContainer, cntPath, cntDef);
+                Element description = groupContainer.element(XmlNode.Description.name());
+                addBookmarkForElement(description, locale, groupContainer, cntPath, cntDef);
 
                 // types
                 Set<String> types = new HashSet<String>();
-                for (Iterator<Element> itTypes = CmsXmlGenericWrapper.elementIterator(subContainer, XmlNode.Type.name()); itTypes.hasNext();) {
+                for (Iterator<Element> itTypes = CmsXmlGenericWrapper.elementIterator(
+                    groupContainer,
+                    XmlNode.Type.name()); itTypes.hasNext();) {
                     Element type = itTypes.next();
-                    addBookmarkForElement(type, locale, subContainer, cntPath, cntDef);
+                    addBookmarkForElement(type, locale, groupContainer, cntPath, cntDef);
                     String typeName = type.getTextTrim();
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeName)) {
                         types.add(typeName);
@@ -357,12 +359,12 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                 List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                 // Elements
                 for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
-                    subContainer,
+                    groupContainer,
                     XmlNode.Element.name()); itElems.hasNext();) {
                     Element element = itElems.next();
 
                     // element itself
-                    int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(subContainer));
+                    int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(groupContainer));
                     String elemPath = CmsXmlUtils.concatXpath(
                         cntPath,
                         CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
@@ -399,7 +401,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elements.add(new CmsContainerElementBean(elementId, null, propertiesMap, false));
                     }
                 }
-                m_subContainers.put(locale, new CmsSubContainerBean(
+                m_groupContainers.put(locale, new CmsGroupContainerBean(
                     title.getText(),
                     description.getText(),
                     elements,
@@ -418,25 +420,26 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * 
      * @param cms the current CMS object
      * @param parent the element to add it
-     * @param subCnt the container page to add
+     * @param groupContainer the container page to add
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void saveSubCnt(CmsObject cms, Element parent, CmsSubContainerBean subCnt) throws CmsException {
+    protected void saveGroupContainer(CmsObject cms, Element parent, CmsGroupContainerBean groupContainer)
+    throws CmsException {
 
         parent.clearContent();
-        Element subCntElem = parent.addElement(XmlNode.SubContainers.name());
+        Element groupContainerElem = parent.addElement(XmlNode.GroupContainers.name());
 
-        subCntElem.addElement(XmlNode.Title.name()).addCDATA(subCnt.getTitle());
-        subCntElem.addElement(XmlNode.Description.name()).addCDATA(subCnt.getDescription());
+        groupContainerElem.addElement(XmlNode.Title.name()).addCDATA(groupContainer.getTitle());
+        groupContainerElem.addElement(XmlNode.Description.name()).addCDATA(groupContainer.getDescription());
 
-        for (String type : subCnt.getTypes()) {
-            subCntElem.addElement(XmlNode.Type.name()).addCDATA(type);
+        for (String type : groupContainer.getTypes()) {
+            groupContainerElem.addElement(XmlNode.Type.name()).addCDATA(type);
         }
 
         // the elements
-        for (CmsContainerElementBean element : subCnt.getElements()) {
-            Element elemElement = subCntElem.addElement(XmlNode.Element.name());
+        for (CmsContainerElementBean element : groupContainer.getElements()) {
+            Element elemElement = groupContainerElem.addElement(XmlNode.Element.name());
 
             // the element
             Element uriElem = elemElement.addElement(XmlNode.Uri.name());

@@ -12,7 +12,7 @@
 
 .dragStarted, .dragPlaceholder{}
 
-.emptySubContainer{
+.emptyGroupContainer{
 	min-height: 50px;
 	background: value("constants.css.backgroundColorEmptyContainer");
 }
@@ -42,7 +42,7 @@
 .dragElementBorder{
 	border: 1px solid value("constants.css.borderColor");
 }
-.dragSubContainer{}
+.dragGroupContainer{}
 
 .overlayShow .placeholderOverlay{
 	display: block;

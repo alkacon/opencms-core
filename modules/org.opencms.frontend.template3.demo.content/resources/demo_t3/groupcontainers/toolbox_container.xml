@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AlkaconSubContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd">
-  <AlkaconSubContainer language="en">
-    <SubContainers>
+<AlkaconGroupContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd">
+  <AlkaconGroupContainer language="en">
+    <GroupContainers>
       <Title><![CDATA[Toolbox container]]></Title>
       <Description><![CDATA[Insert into left toolbox]]></Description>
       <Type><![CDATA[left]]></Type>
@@ -14,6 +14,6 @@
           </link>
         </Uri>
       </Element>
-    </SubContainers>
-  </AlkaconSubContainer>
-</AlkaconSubContainers>
+    </GroupContainers>
+  </AlkaconGroupContainer>
+</AlkaconGroupContainers>

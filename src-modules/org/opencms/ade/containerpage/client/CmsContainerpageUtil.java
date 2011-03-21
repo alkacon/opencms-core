@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/02/24 08:06:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,8 @@ import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
-import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -65,8 +65,8 @@ public class CmsContainerpageUtil {
     /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENTS}. */
     public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
 
-    /** HTML class used to identify sub container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_SUB_CONTAINER_ELEMENTS}. */
-    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
+    /** HTML class used to identify group container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_GROUP_CONTAINER_ELEMENTS}. */
+    public static final String CLASS_GROUP_CONTAINER_ELEMENTS = "cms_ade_groupcontainer";
 
     /** The container page controller. */
     private CmsContainerpageController m_controller;
@@ -99,8 +99,8 @@ public class CmsContainerpageUtil {
         Element child = (Element)container.getElement().getFirstChildElement();
         while (child != null) {
             boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child);
-            boolean isSubcontainerElement = CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child);
-            if (isContainerElement || isSubcontainerElement) {
+            boolean isGroupcontainerElement = CmsDomUtil.hasClass(CLASS_GROUP_CONTAINER_ELEMENTS, child);
+            if (isContainerElement || isGroupcontainerElement) {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
@@ -122,21 +122,21 @@ public class CmsContainerpageUtil {
                     }
                     elements.add(containerElement);
                     DOM.removeChild((Element)container.getElement(), child);
-                } else if (isSubcontainerElement && (container instanceof CmsContainerPageContainer)) {
-                    CmsSubContainerElement subContainer = createSubcontainer(
+                } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
+                    CmsGroupContainerElement groupContainer = createGroupcontainer(
                         child,
                         container,
                         clientId,
                         sitePath,
                         noEditReason,
                         hasProps);
-                    subContainer.setContainerId(container.getContainerId());
-                    elements.add(subContainer);
+                    groupContainer.setContainerId(container.getContainerId());
+                    elements.add(groupContainer);
                     DOM.removeChild((Element)container.getElement(), child);
-                    consumeContainerElements(subContainer);
+                    consumeContainerElements(groupContainer);
 
-                    // important: adding the option-bar only after the sub-elements have been consumed 
-                    addOptionBar(subContainer);
+                    // important: adding the option-bar only after the group-containers have been consumed 
+                    addOptionBar(groupContainer);
                 }
             } else {
                 DOM.removeChild((Element)container.getElement(), child);
@@ -187,7 +187,7 @@ public class CmsContainerpageUtil {
     public CmsContainerPageElement createElement(CmsContainerElementData containerElement, I_CmsDropContainer container)
     throws Exception {
 
-        if (containerElement.isSubContainer()) {
+        if (containerElement.isGroupContainer()) {
             List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
             for (String subId : containerElement.getSubItems()) {
                 CmsContainerElementData element = m_controller.getCachedElement(subId);
@@ -195,7 +195,7 @@ public class CmsContainerpageUtil {
                     subElements.add(element);
                 }
             }
-            return createSubcontainerElement(containerElement, subElements, container);
+            return createGroupcontainerElement(containerElement, subElements, container);
         }
         boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
         com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
@@ -225,7 +225,7 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Creates a drag container element for sub-container elements.<p>
+     * Creates a drag container element for group-container elements.<p>
      * 
      * @param containerElement the container element data 
      * @param subElements the sub-elements
@@ -235,37 +235,37 @@ public class CmsContainerpageUtil {
      * 
      * @throws Exception if something goes wrong
      */
-    public CmsContainerPageElement createSubcontainerElement(
+    public CmsContainerPageElement createGroupcontainerElement(
         CmsContainerElementData containerElement,
         List<CmsContainerElementData> subElements,
         I_CmsDropContainer container) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
-        element.addClassName(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS);
+        element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENTS);
         boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
 
-        CmsSubContainerElement subContainer = createSubcontainer(
+        CmsGroupContainerElement groupContainer = createGroupcontainer(
             element,
             container,
             containerElement.getClientId(),
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
             hasProps);
-        subContainer.setContainerId(container.getContainerId());
+        groupContainer.setContainerId(container.getContainerId());
         //adding sub-elements
         Iterator<CmsContainerElementData> it = subElements.iterator();
         while (it.hasNext()) {
             CmsContainerElementData subElement = it.next();
             if (subElement.getContents().containsKey(container.getContainerId())) {
-                CmsContainerPageElement subDragElement = createElement(subElement, subContainer);
-                subContainer.add(subDragElement);
+                CmsContainerPageElement subDragElement = createElement(subElement, groupContainer);
+                groupContainer.add(subDragElement);
             }
         }
         if (subElements.size() == 0) {
-            subContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+            groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
         }
-        addOptionBar(subContainer);
-        return subContainer;
+        addOptionBar(groupContainer);
+        return groupContainer;
     }
 
     /**
@@ -322,11 +322,11 @@ public class CmsContainerpageUtil {
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason
-     * @param hasProps true if the subcontainer has properties to edit 
+     * @param hasProps true if the group-container has properties to edit 
      * 
      * @return the draggable element
      */
-    private CmsSubContainerElement createSubcontainer(
+    private CmsGroupContainerElement createGroupcontainer(
         com.google.gwt.user.client.Element element,
         I_CmsDropContainer dragParent,
         String clientId,
@@ -334,14 +334,14 @@ public class CmsContainerpageUtil {
         String noEditReason,
         boolean hasProps) {
 
-        CmsSubContainerElement subContainer = new CmsSubContainerElement(
+        CmsGroupContainerElement groupContainer = new CmsGroupContainerElement(
             element,
             dragParent,
             clientId,
             sitePath,
             noEditReason,
             hasProps);
-        return subContainer;
+        return groupContainer;
     }
 
 }

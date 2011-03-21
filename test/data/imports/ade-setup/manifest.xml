@@ -184,8 +184,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd</source>
-			<destination>system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd</destination>
+			<source>system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd</source>
+			<destination>system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd</destination>
 			<type>plain</type>
 			<uuidstructure>5a7d2853-e403-11de-8b28-975b367aae60</uuidstructure>
 			<uuidresource>5a7d2854-e403-11de-8b28-975b367aae60</uuidresource>
@@ -199,8 +199,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.containerpage/schemas/sub_container_content_element.xsd</source>
-			<destination>system/modules/org.opencms.ade.containerpage/schemas/sub_container_content_element.xsd</destination>
+			<source>system/modules/org.opencms.ade.containerpage/schemas/group_container_content_element.xsd</source>
+			<destination>system/modules/org.opencms.ade.containerpage/schemas/group_container_content_element.xsd</destination>
 			<type>plain</type>
 			<uuidstructure>842a6815-ff58-11de-9b94-5179c4152632</uuidstructure>
 			<uuidresource>842a6816-ff58-11de-9b94-5179c4152632</uuidresource>
@@ -214,8 +214,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.containerpage/schemas/sub_container_element.xsd</source>
-			<destination>system/modules/org.opencms.ade.containerpage/schemas/sub_container_element.xsd</destination>
+			<source>system/modules/org.opencms.ade.containerpage/schemas/group_container_element.xsd</source>
+			<destination>system/modules/org.opencms.ade.containerpage/schemas/group_container_element.xsd</destination>
 			<type>plain</type>
 			<uuidstructure>41506a2a-e4a1-11de-95df-975b367aae60</uuidstructure>
 			<uuidresource>41506a2b-e4a1-11de-95df-975b367aae60</uuidresource>

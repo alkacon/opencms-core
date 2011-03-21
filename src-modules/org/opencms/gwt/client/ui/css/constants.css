@@ -65,7 +65,7 @@
 @def backgroundColorToolBarMenuConnect #CFCFCF;
 /** The input error background color. Use this color for input components if the validation goes wrong. */
 @def backgroundColorInputError #FFCCCC;
-/** This constant defines the background color of a empty sub container. */
+/** This constant defines the background color of a empty group container. */
 @def backgroundColorEmptyContainer #AACCFF;
 /** This constant defines the background color of the sitemap editor. */
 @def backgroundColorSitemap #E1E1E1;

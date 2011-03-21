@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECacheSettings.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.containerpage;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -51,14 +51,14 @@ public class CmsADECacheSettings {
     /** The size of the container page online cache. */
     private int m_containerPageOnlineSize;
 
-    /** Default size for sub container caches. */
-    private static final int DEFAULT_SUB_CONTAINER_SIZE = 128;
+    /** Default size for group container caches. */
+    private static final int DEFAULT_GROUP_CONTAINER_SIZE = 128;
 
-    /** The size of the sub container offline cache. */
-    private int m_subContainerOfflineSize;
+    /** The size of the group container offline cache. */
+    private int m_groupContainerOfflineSize;
 
-    /** The size of the sub container online cache. */
-    private int m_subContainerOnlineSize;
+    /** The size of the group container online cache. */
+    private int m_groupContainerOnlineSize;
 
     /**
      * Default constructor.<p>
@@ -115,49 +115,49 @@ public class CmsADECacheSettings {
     }
 
     /**
-     * Returns the size of the sub container offline cache.<p>
+     * Returns the size of the group container offline cache.<p>
      * 
-     * @return the size of the sub container offline cache
+     * @return the size of the group container offline cache
      */
-    public int getSubContainerOfflineSize() {
+    public int getGroupContainerOfflineSize() {
 
-        if (m_subContainerOfflineSize <= 0) {
-            return DEFAULT_SUB_CONTAINER_SIZE;
+        if (m_groupContainerOfflineSize <= 0) {
+            return DEFAULT_GROUP_CONTAINER_SIZE;
         }
-        return m_subContainerOfflineSize;
+        return m_groupContainerOfflineSize;
     }
 
     /**
-     * Returns the size of the sub container online cache.<p>
+     * Returns the size of the group container online cache.<p>
      * 
-     * @return the size of the sub container online cache
+     * @return the size of the group container online cache
      */
-    public int getSubContainerOnlineSize() {
+    public int getGroupContainerOnlineSize() {
 
-        if (m_subContainerOnlineSize <= 0) {
-            return DEFAULT_SUB_CONTAINER_SIZE;
+        if (m_groupContainerOnlineSize <= 0) {
+            return DEFAULT_GROUP_CONTAINER_SIZE;
         }
-        return m_subContainerOnlineSize;
+        return m_groupContainerOnlineSize;
     }
 
     /**
-     * Sets the size of the cache for offline sub containers.<p>
+     * Sets the size of the cache for offline group containers.<p>
      *
-     * @param size the size of the cache for offline sub containers
+     * @param size the size of the cache for offline group containers
      */
-    public void setSubContainerOfflineSize(String size) {
+    public void setGroupContainerOfflineSize(String size) {
 
-        m_subContainerOfflineSize = getIntValue(size, DEFAULT_SUB_CONTAINER_SIZE);
+        m_groupContainerOfflineSize = getIntValue(size, DEFAULT_GROUP_CONTAINER_SIZE);
     }
 
     /**
-     * Sets the size of the cache for online sub containers.<p>
+     * Sets the size of the cache for online group containers.<p>
      *
-     * @param size the size of the cache for online sub containers
+     * @param size the size of the cache for online group containers
      */
-    public void setSubContainerOnlineSize(String size) {
+    public void setGroupContainerOnlineSize(String size) {
 
-        m_subContainerOnlineSize = getIntValue(size, DEFAULT_SUB_CONTAINER_SIZE);
+        m_groupContainerOnlineSize = getIntValue(size, DEFAULT_GROUP_CONTAINER_SIZE);
     }
 
     /**

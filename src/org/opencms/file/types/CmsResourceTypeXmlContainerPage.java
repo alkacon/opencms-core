@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/07/20 13:10:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/21 12:49:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -82,11 +82,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The configuration resource type name. */
     public static final String CONFIGURATION_TYPE_NAME = "containerpage_config";
 
-    /** The sub container resource type id. */
-    public static final int SUB_CONTAINER_TYPE_ID = 17;
+    /** The group container resource type id. */
+    public static final int GROUP_CONTAINER_TYPE_ID = 17;
 
-    /** The sub container resource type name. */
-    public static final String SUB_CONTAINER_TYPE_NAME = "subcontainer";
+    /** The group container resource type name. */
+    public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 
     /** A variable containing the actual configured type id of container pages. */
     private static int containerPageTypeId;
@@ -302,9 +302,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {

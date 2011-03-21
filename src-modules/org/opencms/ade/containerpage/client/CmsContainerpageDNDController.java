@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
-import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -306,8 +306,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     } else {
                         container.insert(containerElement, container.getPlaceholderIndex());
                     }
-                    if (!m_controller.isSubcontainerEditing()) {
-                        // changes are only relevant to the container page if not sub-container editing
+                    if (!m_controller.isGroupcontainerEditing()) {
+                        // changes are only relevant to the container page if not group-container editing
                         m_controller.setPageChanged();
                     }
                     if (draggable instanceof CmsContainerPageElement) {
@@ -316,8 +316,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
                 }
-                if (m_controller.isSubcontainerEditing()) {
-                    container.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+                if (m_controller.isGroupcontainerEditing()) {
+                    container.getElement().removeClassName(
+                        I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
                 }
             } else if (target instanceof CmsList<?>) {
                 m_controller.addToFavoriteList(draggable.getId());
@@ -422,14 +423,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         //            handler.addTarget(dropzone);
         //            helper.getStyle().setDisplay(Display.NONE);
         //        }
-        if (m_controller.isSubcontainerEditing()) {
-            CmsSubContainerElement subContainer = m_controller.getSubcontainer();
-            if ((subContainer != m_initialDropTarget)
-                && elementData.getContents().containsKey(subContainer.getContainerId())) {
+        if (m_controller.isGroupcontainerEditing()) {
+            CmsGroupContainerElement groupContainer = m_controller.getGroupcontainer();
+            if ((groupContainer != m_initialDropTarget)
+                && elementData.getContents().containsKey(groupContainer.getContainerId())) {
                 Element helper = null;
                 Element placeholder = null;
                 try {
-                    String htmlContent = elementData.getContents().get(subContainer.getContainerId());
+                    String htmlContent = elementData.getContents().get(groupContainer.getContainerId());
                     helper = CmsDomUtil.createElement(htmlContent);
                     placeholder = CmsDomUtil.createElement(htmlContent);
                     placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
@@ -438,8 +439,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
 
                 if (helper != null) {
-                    prepareDragInfo(helper, placeholder, subContainer, handler);
-                    subContainer.highlightContainer();
+                    prepareDragInfo(helper, placeholder, groupContainer, handler);
+                    groupContainer.highlightContainer();
                 }
             }
             return;
@@ -452,11 +453,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 Element helper = null;
                 Element placeholder = null;
-                if (elementData.isSubContainer()) {
+                if (elementData.isGroupContainer()) {
                     helper = DOM.createDiv();
                     String content = "";
-                    for (String subId : elementData.getSubItems()) {
-                        CmsContainerElementData subData = m_controller.getCachedElement(subId);
+                    for (String groupId : elementData.getSubItems()) {
+                        CmsContainerElementData subData = m_controller.getCachedElement(groupId);
                         if ((subData != null) && subData.getContents().containsKey(container.getContainerId())) {
                             content += subData.getContents().get(container.getContainerId());
                         }
@@ -464,7 +465,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
                         helper.setInnerHTML(content);
                     } else {
-                        helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+                        helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
                     }
                     placeholder = CmsDomUtil.clone(helper);
                 } else {

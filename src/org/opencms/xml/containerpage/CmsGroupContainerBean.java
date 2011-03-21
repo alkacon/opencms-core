@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsSubContainerBean.java,v $
- * Date   : $Date: 2010/10/12 06:54:08 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsGroupContainerBean.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,37 +35,37 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A sub container.<p>
+ * A group container.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.9.1
  */
-public class CmsSubContainerBean {
+public class CmsGroupContainerBean {
 
-    /** The sub container description. */
+    /** The group container description. */
     private String m_description;
 
-    /** The sub container elements.*/
+    /** The group container elements.*/
     private List<CmsContainerElementBean> m_elements;
 
-    /** The sub container title. */
+    /** The group container title. */
     private String m_title;
 
     /** The supported container types. */
     private Set<String> m_types;
 
     /**
-     * Creates a new sub container bean.<p>
+     * Creates a new group container bean.<p>
      * 
-     * @param title the sub container title
-     * @param description the sub container description
-     * @param elements the sub container elements
+     * @param title the group container title
+     * @param description the group container description
+     * @param elements the group container elements
      * @param types the supported container types
      */
-    public CmsSubContainerBean(
+    public CmsGroupContainerBean(
         String title,
         String description,
         List<CmsContainerElementBean> elements,

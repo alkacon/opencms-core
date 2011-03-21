@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/03/10 07:46:38 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,13 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
-import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.containerpage.shared.CmsSubContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -331,8 +331,8 @@ public final class CmsContainerpageController {
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
-    /** The currently edited sub-container element. */
-    private CmsSubContainerElement m_editingSubcontainer;
+    /** The currently edited group-container element. */
+    private CmsGroupContainerElement m_editingGroupcontainer;
 
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
@@ -545,8 +545,8 @@ public final class CmsContainerpageController {
         while (it.hasNext()) {
             result.addAll(it.next().getAllDragElements());
         }
-        if (isSubcontainerEditing()) {
-            Iterator<Widget> itSub = m_editingSubcontainer.iterator();
+        if (isGroupcontainerEditing()) {
+            Iterator<Widget> itSub = m_editingGroupcontainer.iterator();
             while (itSub.hasNext()) {
                 Widget w = itSub.next();
                 if (w instanceof org.opencms.ade.containerpage.client.ui.CmsContainerPageElement) {
@@ -729,24 +729,24 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the sub-container element being edited.<p>
+     * Returns the group-container element being edited.<p>
      * 
-     * @return the sub-container
+     * @return the group-container
      */
-    public CmsSubContainerElement getSubcontainer() {
+    public CmsGroupContainerElement getGroupcontainer() {
 
-        return m_editingSubcontainer;
+        return m_editingGroupcontainer;
     }
 
     /**
-     * Returns the id of the currently edited sub-container.<p>
+     * Returns the id of the currently edited group-container.<p>
      * 
-     * @return the sub-container id, or <code>null</code> if no editing is taking place
+     * @return the group-container id, or <code>null</code> if no editing is taking place
      */
-    public String getSubcontainerId() {
+    public String getGroupcontainerId() {
 
-        if (m_editingSubcontainer != null) {
-            return m_editingSubcontainer.getContainerId();
+        if (m_editingGroupcontainer != null) {
+            return m_editingGroupcontainer.getContainerId();
         }
         return null;
     }
@@ -838,13 +838,13 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns if a sub-container is currently being edited.<p>
+     * Returns if a group-container is currently being edited.<p>
      * 
-     * @return <code>true</code> if a sub-container is being edited
+     * @return <code>true</code> if a group-container is being edited
      */
-    public boolean isSubcontainerEditing() {
+    public boolean isGroupcontainerEditing() {
 
-        return m_editingSubcontainer != null;
+        return m_editingGroupcontainer != null;
     }
 
     /**
@@ -1009,9 +1009,9 @@ public final class CmsContainerpageController {
     public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement) {
 
         dragElement.removeFromParent();
-        if (isSubcontainerEditing() && !getSubcontainer().iterator().hasNext()) {
-            // sub-container is empty, mark it
-            getSubcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+        if (isGroupcontainerEditing() && !getGroupcontainer().iterator().hasNext()) {
+            // group-container is empty, mark it
+            getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
         }
         setPageChanged();
     }
@@ -1171,14 +1171,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Saves the sub-container.<p>
+     * Saves the group-container.<p>
      * 
-     * @param subContainer the sub-container data to save 
-     * @param subContainerElement the sub container widget
+     * @param groupContainer the group-container data to save 
+     * @param groupContainerElement the group-container widget
      */
-    public void saveSubcontainer(final CmsSubContainer subContainer, final CmsSubContainerElement subContainerElement) {
+    public void saveGroupcontainer(
+        final CmsGroupContainer groupContainer,
+        final CmsGroupContainerElement groupContainerElement) {
 
-        if (getSubcontainer() != null) {
+        if (getGroupcontainer() != null) {
             CmsRpcAction<Map<String, CmsContainerElementData>> action = new CmsRpcAction<Map<String, CmsContainerElementData>>() {
 
                 /**
@@ -1187,10 +1189,10 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveSubContainer(
+                    getContainerpageService().saveGroupContainer(
                         getCurrentUri(),
                         getRequestParams(),
-                        subContainer,
+                        groupContainer,
                         m_containerBeans,
                         this);
                 }
@@ -1204,7 +1206,7 @@ public final class CmsContainerpageController {
                     m_elements.putAll(result);
                     CmsNotification.get().send(
                         Type.NORMAL,
-                        Messages.get().key(Messages.GUI_NOTIFICATION_SUB_CONTAINER_SAVED_0));
+                        Messages.get().key(Messages.GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0));
                 }
             };
             action.execute();
@@ -1256,16 +1258,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Tells the controller that sub-container editing has started.<p>
+     * Tells the controller that group-container editing has started.<p>
      * 
-     * @param subContainer the sub-container
+     * @param groupContainer the group-container
      * 
-     * @return <code>true</code> if sub-container resource was locked and can be edited
+     * @return <code>true</code> if group-container resource was locked and can be edited
      */
-    public boolean startEditingSubcontainer(CmsSubContainerElement subContainer) {
+    public boolean startEditingGroupcontainer(CmsGroupContainerElement groupContainer) {
 
-        if (subContainer.isNew() || CmsCoreProvider.get().lock(subContainer.getSitePath())) {
-            m_editingSubcontainer = subContainer;
+        if (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getSitePath())) {
+            m_editingGroupcontainer = groupContainer;
             return true;
         }
         CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
@@ -1273,11 +1275,11 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Tells the controller that sub-container editing has stopped.<p>
+     * Tells the controller that group-container editing has stopped.<p>
      */
-    public void stopEditingSubcontainer() {
+    public void stopEditingGroupcontainer() {
 
-        m_editingSubcontainer = null;
+        m_editingGroupcontainer = null;
     }
 
     /** 

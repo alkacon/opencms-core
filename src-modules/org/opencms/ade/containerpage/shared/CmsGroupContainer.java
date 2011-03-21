@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsSubContainer.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsGroupContainer.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Sub container bean.<p>
+ * Group container bean.<p>
  * 
  * @author Tobias Herrmann
  * 
@@ -43,24 +43,24 @@ import java.util.Set;
  * 
  * @since 8.0.0
  */
-public class CmsSubContainer extends CmsContainerElement {
+public class CmsGroupContainer extends CmsContainerElement {
 
-    /** The sub-container description. */
+    /** The group-container description. */
     private String m_description;
 
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
-    /** The sub-container title. */
+    /** The group-container title. */
     private String m_title;
 
-    /** The container types supported by this sub container. */
+    /** The container types supported by this group container. */
     private Set<String> m_types;
 
     /**
-     * Returns the sub-container description.<p>
+     * Returns the group-container description.<p>
      *
-     * @return the sub-container description
+     * @return the group-container description
      */
     public String getDescription() {
 
@@ -78,9 +78,9 @@ public class CmsSubContainer extends CmsContainerElement {
     }
 
     /**
-     * Returns the sub-container title.<p>
+     * Returns the group-container title.<p>
      *
-     * @return the sub-container title
+     * @return the group-container title
      */
     public String getTitle() {
 
@@ -98,9 +98,9 @@ public class CmsSubContainer extends CmsContainerElement {
     }
 
     /**
-     * Sets the sub-container description.<p>
+     * Sets the group-container description.<p>
      *
-     * @param description the sub-container description to set
+     * @param description the group-container description to set
      */
     public void setDescription(String description) {
 
@@ -119,9 +119,9 @@ public class CmsSubContainer extends CmsContainerElement {
     }
 
     /**
-     * Sets the sub-container title.<p>
+     * Sets the group-container title.<p>
      *
-     * @param title the sub-container title to set
+     * @param title the group-container title to set
      */
     public void setTitle(String title) {
 

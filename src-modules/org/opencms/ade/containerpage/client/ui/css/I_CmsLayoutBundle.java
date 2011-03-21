@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cms_ade_subcontainer();
+        String cms_ade_groupcontainer();
 
         /** Access method.<p>
          * 
@@ -114,25 +114,25 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String subcontainerEditing();
+        String groupcontainerEditing();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String subcontainerEditor();
+        String groupcontainerEditor();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String subcontainerOverlay();
+        String groupcontainerOverlay();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String subcontainerPlaceholder();
+        String groupcontainerPlaceholder();
 
         /** Access method.<p>
          * 
@@ -211,7 +211,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String dragSubContainer();
+        String dragGroupContainer();
 
         /** 
          * Access method.<p>
@@ -225,7 +225,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String emptySubContainer();
+        String emptyGroupContainer();
 
         /** 
          * Access method.<p>
@@ -243,8 +243,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     }
 
-    /** Sub container editor CSS. */
-    public interface I_CmsSubContainer extends CssResource {
+    /** Group container editor CSS. */
+    public interface I_CmsGroupContainer extends CssResource {
 
         /** Access method.<p>
          * 
@@ -329,6 +329,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the container-page CSS
      */
-    @Source("subcontainer.css")
-    I_CmsSubContainer subcontainerCss();
+    @Source("groupcontainer.css")
+    I_CmsGroupContainer groupcontainerCss();
 }

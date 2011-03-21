@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,9 +48,9 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.containerpage.CmsSubContainerBean;
-import org.opencms.xml.containerpage.CmsXmlSubContainer;
-import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.containerpage.CmsGroupContainerBean;
+import org.opencms.xml.containerpage.CmsXmlGroupContainer;
+import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -192,22 +192,22 @@ public class CmsElementUtil {
         elementBean.setStatus(resUtil.getStateAbbreviation());
 
         Map<String, String> contents = new HashMap<String, String>();
-        if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
+        if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
             Set<String> types = new HashSet<String>();
             Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
             for (CmsContainer container : containers) {
                 types.add(container.getType());
                 containersByName.put(container.getName(), container);
             }
-            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(m_cms, resource, m_req);
-            CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(m_cms, resource, m_req);
+            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
-            elementBean.setSubContainer(true);
-            elementBean.setTypes(subContainer.getTypes());
-            elementBean.setDescription(subContainer.getDescription());
-            if (subContainer.getTypes().isEmpty()) {
-                if (subContainer.getElements().isEmpty()) {
+            elementBean.setGroupContainer(true);
+            elementBean.setTypes(groupContainer.getTypes());
+            elementBean.setDescription(groupContainer.getDescription());
+            if (groupContainer.getTypes().isEmpty()) {
+                if (groupContainer.getElements().isEmpty()) {
                     //TODO: use formatter to generate the 'empty'-content
                     String emptySub = "<div>NEW AND EMPTY</div>";
                     for (String name : containersByName.keySet()) {
@@ -221,7 +221,7 @@ public class CmsElementUtil {
                 // add formatter and content entries for the supported types
                 for (CmsContainer cnt : containersByName.values()) {
                     String type = cnt.getType();
-                    if (subContainer.getTypes().contains(type)) {
+                    if (groupContainer.getTypes().contains(type)) {
                         contents.put(cnt.getName(), "<div>should not be used</div>");
                     }
                 }
@@ -229,7 +229,7 @@ public class CmsElementUtil {
             // add subitems
             List<String> subItems = new ArrayList<String>();
 
-            for (CmsContainerElementBean subElement : subContainer.getElements()) {
+            for (CmsContainerElementBean subElement : groupContainer.getElements()) {
                 // collect ids
                 subItems.add(subElement.getClientId());
             }

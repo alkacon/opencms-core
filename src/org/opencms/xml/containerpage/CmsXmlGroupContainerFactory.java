@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainerFactory.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainerFactory.java,v $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,15 +56,15 @@ import org.dom4j.DocumentHelper;
 import org.xml.sax.EntityResolver;
 
 /**
- * Provides factory methods to unmarshal (read) an sub container object.<p>
+ * Provides factory methods to unmarshal (read) an group container object.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.9.1
  */
-public final class CmsXmlSubContainerFactory {
+public final class CmsXmlGroupContainerFactory {
 
     /** The ADE cache. */
     private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
@@ -72,35 +72,36 @@ public final class CmsXmlSubContainerFactory {
     /**
      * No instances of this class should be created.<p> 
      */
-    private CmsXmlSubContainerFactory() {
+    private CmsXmlGroupContainerFactory() {
 
         // noop
     }
 
     /**
-     * Create a new instance of an sub container based on the given default content,
+     * Create a new instance of an group container based on the given default content,
      * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
-     * @param modelUri the absolute path to the sub container file acting as model
+     * @param modelUri the absolute path to the group container file acting as model
      * 
      * @throws CmsException in case the model file is not found or not valid
      * 
-     * @return the created sub container
+     * @return the created group container
      */
-    public static CmsXmlSubContainer createDocument(CmsObject cms, Locale locale, String modelUri) throws CmsException {
+    public static CmsXmlGroupContainer createDocument(CmsObject cms, Locale locale, String modelUri)
+    throws CmsException {
 
         // create the XML content
-        CmsXmlSubContainer content = new CmsXmlSubContainer(cms, locale, modelUri);
+        CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, locale, modelUri);
         // call prepare for use content handler and return the result 
-        return (CmsXmlSubContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
-     * Create a new instance of a sub container based on the given content definition,
+     * Create a new instance of a group container based on the given content definition,
      * that will have one language node for the given locale all initialized with default values.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
@@ -110,22 +111,22 @@ public final class CmsXmlSubContainerFactory {
      * @param encoding the encoding to use when marshalling the XML content later
      * @param contentDefinition the content definition to create the content for
      * 
-     * @return the created sub container
+     * @return the created group container
      */
-    public static CmsXmlSubContainer createDocument(
+    public static CmsXmlGroupContainer createDocument(
         CmsObject cms,
         Locale locale,
         String encoding,
         CmsXmlContentDefinition contentDefinition) {
 
         // create the XML content
-        CmsXmlSubContainer content = new CmsXmlSubContainer(cms, locale, encoding, contentDefinition);
+        CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, locale, encoding, contentDefinition);
         // call prepare for use content handler and return the result 
-        return (CmsXmlSubContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
-     * Factory method to unmarshal (generate) a sub container instance from a byte array
+     * Factory method to unmarshal (generate) a group container instance from a byte array
      * that contains XML data.<p>
      * 
      * When unmarshalling, the encoding is read directly from the XML header of the byte array. 
@@ -141,18 +142,18 @@ public final class CmsXmlSubContainerFactory {
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
      * 
-     * @return a sub container instance unmarshalled from the byte array
+     * @return a group container instance unmarshalled from the byte array
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, byte[] xmlData, String encoding, EntityResolver resolver)
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, byte[] xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
         return unmarshal(cms, CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
     }
 
     /**
-     * Factory method to unmarshal (read) a sub container instance from a OpenCms VFS file
+     * Factory method to unmarshal (read) a group container instance from a OpenCms VFS file
      * that contains XML data.<p>
      * 
      * <b>Warning:</b><br/>
@@ -163,17 +164,17 @@ public final class CmsXmlSubContainerFactory {
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
      * 
-     * @return a sub container instance unmarshalled from the provided file
+     * @return a group container instance unmarshalled from the provided file
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
 
         return unmarshal(cms, file, true);
     }
 
     /**
-     * Factory method to unmarshal (read) a sub container instance from a OpenCms VFS file
+     * Factory method to unmarshal (read) a group container instance from a OpenCms VFS file
      * that contains XML data, using wither the encoding set
      * in the XML file header, or the encoding set in the VFS file property.<p>
      * 
@@ -190,15 +191,15 @@ public final class CmsXmlSubContainerFactory {
      * @param keepEncoding if <code>true</code>, the encoding specified in the XML header is used, 
      *    otherwise the encoding from the VFS file property is used
      *    
-     * @return a sub container instance unmarshalled from the provided file
+     * @return a group container instance unmarshalled from the provided file
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding)
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding)
     throws CmsXmlException {
 
         // check the cache
-        CmsXmlSubContainer content = getCache(cms, file, keepEncoding);
+        CmsXmlGroupContainer content = getCache(cms, file, keepEncoding);
         if (content != null) {
             return content;
         }
@@ -240,25 +241,28 @@ public final class CmsXmlSubContainerFactory {
             }
         } else {
             // content is empty
-            content = new CmsXmlSubContainer(cms, DocumentHelper.createDocument(), encoding, new CmsXmlEntityResolver(
-                cms));
+            content = new CmsXmlGroupContainer(
+                cms,
+                DocumentHelper.createDocument(),
+                encoding,
+                new CmsXmlEntityResolver(cms));
         }
 
         // set the file
         content.setFile(file);
         // call prepare for use content handler and return the result 
-        CmsXmlSubContainer xmlSubContainer = (CmsXmlSubContainer)content.getContentDefinition().getContentHandler().prepareForUse(
+        CmsXmlGroupContainer xmlGroupContainer = (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(
             cms,
             content);
 
         // set the cache
-        setCache(cms, xmlSubContainer, keepEncoding);
+        setCache(cms, xmlGroupContainer, keepEncoding);
 
-        return xmlSubContainer;
+        return xmlGroupContainer;
     }
 
     /**
-     * Factory method to unmarshal (read) a sub container instance from a OpenCms VFS resource
+     * Factory method to unmarshal (read) a group container instance from a OpenCms VFS resource
      * that contains XML data.<p>
      * 
      * <b>Warning:</b><br/>
@@ -269,14 +273,14 @@ public final class CmsXmlSubContainerFactory {
      * @param cms the current cms object
      * @param resource the resource with the XML data to unmarshal
      * 
-     * @return a sub container instance unmarshalled from the provided resource
+     * @return a group container instance unmarshalled from the provided resource
      * 
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, CmsResource resource) throws CmsException {
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, CmsResource resource) throws CmsException {
 
         // check the cache
-        CmsXmlSubContainer content = getCache(cms, resource, true);
+        CmsXmlGroupContainer content = getCache(cms, resource, true);
         if (content != null) {
             return content;
         }
@@ -290,7 +294,7 @@ public final class CmsXmlSubContainerFactory {
     }
 
     /**
-     * Factory method to unmarshal (read) a sub container instance from
+     * Factory method to unmarshal (read) a group container instance from
      * a resource, using the request attributes as cache.<p>
      * 
      * @param cms the current OpenCms context object
@@ -301,14 +305,14 @@ public final class CmsXmlSubContainerFactory {
      * 
      * @throws CmsException in something goes wrong
      * @throws CmsLoaderException if no loader for the given <code>resource</code> type ({@link CmsResource#getTypeId()}) is available
-     * @throws CmsXmlException if the given <code>resource</code> is not of type sub container
+     * @throws CmsXmlException if the given <code>resource</code> is not of type group container
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, CmsResource resource, ServletRequest req)
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsXmlException, CmsLoaderException, CmsException {
 
         String rootPath = resource.getRootPath();
 
-        //TODO: test if this is really of the sub container resource type
+        //TODO: test if this is really of the group container resource type
 
         //        if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
         //            // sanity check: resource must be of type XML content
@@ -319,7 +323,7 @@ public final class CmsXmlSubContainerFactory {
 
         // try to get the requested content from the current request attribute
         // this is also necessary for historic versions that have been loaded 
-        CmsXmlSubContainer content = (CmsXmlSubContainer)req.getAttribute(rootPath);
+        CmsXmlGroupContainer content = (CmsXmlGroupContainer)req.getAttribute(rootPath);
 
         if (content == null) {
             // unmarshal XML structure from the file content
@@ -333,7 +337,7 @@ public final class CmsXmlSubContainerFactory {
     }
 
     /**
-     * Factory method to unmarshal (generate) a sub container instance from a XML document.<p>
+     * Factory method to unmarshal (generate) a group container instance from a XML document.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
@@ -343,25 +347,25 @@ public final class CmsXmlSubContainerFactory {
      * for history support.<p>
      * 
      * @param cms the cms context, if <code>null</code> no link validation is performed
-     * @param document the XML document to generate the sub container from
-     * @param encoding the encoding to use when marshalling the sub container later
+     * @param document the XML document to generate the group container from
+     * @param encoding the encoding to use when marshalling the group container later
      * @param resolver the XML entity resolver to use
      * 
-     * @return a sub container instance unmarshalled from the String
+     * @return a group container instance unmarshalled from the String
      */
-    public static CmsXmlSubContainer unmarshal(
+    public static CmsXmlGroupContainer unmarshal(
         CmsObject cms,
         Document document,
         String encoding,
         EntityResolver resolver) {
 
-        CmsXmlSubContainer content = new CmsXmlSubContainer(cms, document, encoding, resolver);
+        CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, document, encoding, resolver);
         // call prepare for use content handler and return the result 
-        return (CmsXmlSubContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
-     * Factory method to unmarshal (generate) a sub container instance from a String
+     * Factory method to unmarshal (generate) a group container instance from a String
      * that contains XML data.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
@@ -373,14 +377,14 @@ public final class CmsXmlSubContainerFactory {
      * 
      * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param xmlData the XML data in a String
-     * @param encoding the encoding to use when marshalling the sub container later
+     * @param encoding the encoding to use when marshalling the group container later
      * @param resolver the XML entity resolver to use
      * 
-     * @return a sub container instance unmarshalled from the String
+     * @return a group container instance unmarshalled from the String
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlSubContainer unmarshal(CmsObject cms, String xmlData, String encoding, EntityResolver resolver)
+    public static CmsXmlGroupContainer unmarshal(CmsObject cms, String xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
         // create the XML content object from the provided String
@@ -388,40 +392,40 @@ public final class CmsXmlSubContainerFactory {
     }
 
     /**
-     * Returns the cached sub container.<p>
+     * Returns the cached group container.<p>
      * 
      * @param cms the cms context
-     * @param resource the sub container resource
+     * @param resource the group container resource
      * @param keepEncoding if to keep the encoding while unmarshalling
      * 
-     * @return the cached sub container, or <code>null</code> if not found
+     * @return the cached group container, or <code>null</code> if not found
      */
-    private static CmsXmlSubContainer getCache(CmsObject cms, CmsResource resource, boolean keepEncoding) {
+    private static CmsXmlGroupContainer getCache(CmsObject cms, CmsResource resource, boolean keepEncoding) {
 
         if (resource instanceof I_CmsHistoryResource) {
             return null;
         }
-        return m_cache.getCacheSubContainer(
+        return m_cache.getCacheGroupContainer(
             m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
             cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
-     * Stores the given sub container in the cache.<p>
+     * Stores the given group container in the cache.<p>
      * 
      * @param cms the cms context
-     * @param xmlSubContainer the sub container to cache
+     * @param xmlGroupContainer the group container to cache
      * @param keepEncoding if the encoding was kept while unmarshalling
      */
-    private static void setCache(CmsObject cms, CmsXmlSubContainer xmlSubContainer, boolean keepEncoding) {
+    private static void setCache(CmsObject cms, CmsXmlGroupContainer xmlGroupContainer, boolean keepEncoding) {
 
-        if (xmlSubContainer.getFile() instanceof I_CmsHistoryResource) {
+        if (xmlGroupContainer.getFile() instanceof I_CmsHistoryResource) {
             return;
         }
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        m_cache.setCacheSubContainer(
-            m_cache.getCacheKey(xmlSubContainer.getFile().getStructureId(), keepEncoding),
-            xmlSubContainer,
+        m_cache.setCacheGroupContainer(
+            m_cache.getCacheKey(xmlGroupContainer.getFile().getStructureId(), keepEncoding),
+            xmlGroupContainer,
             online);
     }
 

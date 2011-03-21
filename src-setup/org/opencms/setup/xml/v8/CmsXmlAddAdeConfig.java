@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddAdeConfig.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/21 12:49:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -92,8 +92,8 @@ public class CmsXmlAddAdeConfig extends A_CmsSetupXmlUpdate {
             xp = xpath + "/" + CmsSystemConfiguration.N_ADE_CACHE + "/" + CmsSystemConfiguration.N_CONTAINERPAGES;
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "1024");
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_ONLINE, "1024");
-            // <subcontainers offline="64" online="64" />
-            xp = xpath + "/" + CmsSystemConfiguration.N_ADE_CACHE + "/" + CmsSystemConfiguration.N_SUBCONTAINERS;
+            // <groupcontainers offline="64" online="64" />
+            xp = xpath + "/" + CmsSystemConfiguration.N_ADE_CACHE + "/" + CmsSystemConfiguration.N_GROUPCONTAINERS;
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "64");
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_ONLINE, "64");
 

@@ -1,4 +1,4 @@
-@external cms_ade_subcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
+@external cms_ade_groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
 
 .toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
@@ -102,20 +102,20 @@ ul.clipboardList{
 	display: none;
 }
 
-.dragStarted .optionBar, .dragPlaceholder .optionBar, .subcontainerEditing .optionBar, .cms_ade_subcontainer .dragElement .optionBar{
+.dragStarted .optionBar, .dragPlaceholder .optionBar, .groupcontainerEditing .optionBar, .cms_ade_groupcontainer .dragElement .optionBar{
 	display: none;
 }
-.subcontainerPlaceholder{
+.groupcontainerPlaceholder{
 	position:relative;
 	/** Take the same color for text as for the background to make the text invisible. */
 	color: value("constants.css.backgroundColorDialog");
 	background: value("constants.css.backgroundColorDialog");
 }
-.subcontainerPlaceholder *{
+.groupcontainerPlaceholder *{
 	visibility: hidden !important;
 }
 
-@sprite .subcontainerOverlay{
+@sprite .groupcontainerOverlay{
 	gwt-image: 'otherImages.placeholderImage';
 	position: fixed;
 	top: 0;
@@ -124,9 +124,9 @@ ul.clipboardList{
 	height: 100%;
 }
 
-.subcontainerEditor{}
+.groupcontainerEditor{}
 
-.subcontainerEditing .cms_ade_subcontainer .optionBar {
+.groupcontainerEditing .cms_ade_groupcontainer .optionBar {
 	display: block;
 }
 
