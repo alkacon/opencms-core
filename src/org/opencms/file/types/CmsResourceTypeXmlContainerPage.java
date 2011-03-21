@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2011/03/21 12:49:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/03/21 15:10:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -362,7 +362,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             true,
             CmsResourceFilter.ALL);
         // read the XML content, use the encoding set in the property       
-        CmsXmlContainerPage xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, resource, false);
+        CmsXmlContainerPage xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, resource, false, true);
         // call the content handler for post-processing
         resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
 
