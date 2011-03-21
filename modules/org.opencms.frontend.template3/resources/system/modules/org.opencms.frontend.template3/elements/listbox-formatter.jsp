@@ -53,74 +53,76 @@
 		</c:if>
 		
 		<%-- Entries of the list box --%>
-		<cms:contentload collector="${listbox.value['Collector']}" param="${cms.parameter}" preload="true" >
-		
-			<cms:contentinfo var="info" />			
-			<c:if test="${info.resultSize > 0}">
-				<cms:contentload editable="true">
-					<cms:contentaccess var="resource" />
-					<c:set var="entry" value="${cms.mappedEntry[resource.rawContent]}" />
-					
-					<div class="boxbody_listentry">
-						<h5><a href="${entry.link}">${entry.title}</a></h5>
-		
-						<%-- Author at top position --%>
-						<c:if test="${!empty entry.author && listbox.value['PositionAuthor'] == 'Top'}">
-							<p><small>${entry.author}</small></p>
-						</c:if>
-		
-						<%-- Date at top position --%>
-						<c:if test="${!empty entry.date && listbox.value['PositionDate'] == 'Top'}">
-							<p><small><fmt:formatDate value="${entry.date}" type="date"/></small></p>
-						</c:if>
+		<c:if test="${!listbox.value['Collector'].isEmptyOrWhitespaceOnly}">
+			<cms:contentload collector="${listbox.value['Collector']}" param="${cms.parameter}" preload="true" >
+			
+				<cms:contentinfo var="info" />			
+				<c:if test="${info.resultSize > 0}">
+					<cms:contentload editable="true">
+						<cms:contentaccess var="resource" />
+						<c:set var="entry" value="${cms.mappedEntry[resource.rawContent]}" />
 						
-						<%-- Image at top|left|right position --%>
-						<c:if test="${!empty entry.image && (listbox.value['PositionImage'] == 'Top' || listbox.value['PositionImage'] == 'Left' || listbox.value['PositionImage'] == 'Right')}">
-							<c:choose>
-								<c:when test="${listbox.value['PositionImage'] == 'Left'}"><c:set var="cssFloat" value="left" /></c:when>
-								<c:when test="${listbox.value['PositionImage'] == 'Right'}"><c:set var="cssFloat" value="right" /></c:when>
-							</c:choose>
-		
-							<div <c:if test="${!empty cssFloat}">class="${cssFloat}"</c:if>>
+						<div class="boxbody_listentry">
+							<h5><a href="${entry.link}">${entry.title}</a></h5>
+			
+							<%-- Author at top position --%>
+							<c:if test="${!empty entry.author && listbox.value['PositionAuthor'] == 'Top'}">
+								<p><small>${entry.author}</small></p>
+							</c:if>
+			
+							<%-- Date at top position --%>
+							<c:if test="${!empty entry.date && listbox.value['PositionDate'] == 'Top'}">
+								<p><small><fmt:formatDate value="${entry.date}" type="date"/></small></p>
+							</c:if>
+							
+							<%-- Image at top|left|right position --%>
+							<c:if test="${!empty entry.image && (listbox.value['PositionImage'] == 'Top' || listbox.value['PositionImage'] == 'Left' || listbox.value['PositionImage'] == 'Right')}">
+								<c:choose>
+									<c:when test="${listbox.value['PositionImage'] == 'Left'}"><c:set var="cssFloat" value="left" /></c:when>
+									<c:when test="${listbox.value['PositionImage'] == 'Right'}"><c:set var="cssFloat" value="right" /></c:when>
+								</c:choose>
+			
+								<div <c:if test="${!empty cssFloat}">class="${cssFloat}"</c:if>>
+									<cms:img src="${entry.image}" alt="${entry.title}" scaleType="1" width="100" scaleQuality="90"/>
+								</div>
+							</c:if>
+			
+							<%-- The text of the entry --%>
+							<c:if test="${!empty entry.text}">
+								<div>
+									<c:out value="${entry.text}" escapeXml="false" />
+				
+									<%-- The more link of the entry --%>
+									<c:if test="${!listbox.value['More'].isEmptyOrWhitespaceOnly}">
+										<a href="${entry.link}"><c:out value="${listbox.value['More']}" escapeXml="false" /></a>
+									</c:if>
+								</div>
+							</c:if>
+							
+							<%-- Image at bottom position --%>
+							<c:if test="${!empty entry.image && listbox.value['PositionImage'] == 'Bottom'}">
 								<cms:img src="${entry.image}" alt="${entry.title}" scaleType="1" width="100" scaleQuality="90"/>
-							</div>
-						</c:if>
-		
-						<%-- The text of the entry --%>
-						<c:if test="${!empty entry.text}">
-							<div>
-								<c:out value="${entry.text}" escapeXml="false" />
-			
-								<%-- The more link of the entry --%>
-								<c:if test="${!listbox.value['More'].isEmptyOrWhitespaceOnly}">
-									<a href="${entry.link}"><c:out value="${listbox.value['More']}" escapeXml="false" /></a>
-								</c:if>
-							</div>
-						</c:if>
-						
-						<%-- Image at bottom position --%>
-						<c:if test="${!empty entry.image && listbox.value['PositionImage'] == 'Bottom'}">
-							<cms:img src="${entry.image}" alt="${entry.title}" scaleType="1" width="100" scaleQuality="90"/>
-						</c:if>
-						
-						<%-- Author at bottom position --%>
-						<c:if test="${!empty entry.author && listbox.value['PositionAuthor'] == 'Bottom'}">
-							<p><small>${entry.author}</small></p>
-						</c:if>
-						
-						<%-- Date at bottom position--%>
-						<c:if test="${!empty entry.date && listbox.value['PositionDate'] == 'Bottom'}">
-							<p><small><fmt:formatDate value="${entry.date}" type="date"/></small></p>
-						</c:if>		
-					</div>
-				</cms:contentload>
-			</c:if>
-			
-			<%-- Additional Link --%>
-			<c:if test="${listbox.hasValue['AdditionalLink']}">
-				<a href="<cms:link><c:out value="${listbox.value['AdditionalLink'].value['Link']}" /></cms:link>"><c:out value="${listbox.value['AdditionalLink'].value['Text']}" /></a>
-			</c:if>
-		</cms:contentload>
+							</c:if>
+							
+							<%-- Author at bottom position --%>
+							<c:if test="${!empty entry.author && listbox.value['PositionAuthor'] == 'Bottom'}">
+								<p><small>${entry.author}</small></p>
+							</c:if>
+							
+							<%-- Date at bottom position--%>
+							<c:if test="${!empty entry.date && listbox.value['PositionDate'] == 'Bottom'}">
+								<p><small><fmt:formatDate value="${entry.date}" type="date"/></small></p>
+							</c:if>		
+						</div>
+					</cms:contentload>
+				</c:if>
+				
+				<%-- Additional Link --%>
+				<c:if test="${listbox.hasValue['AdditionalLink']}">
+					<a href="<cms:link><c:out value="${listbox.value['AdditionalLink'].value['Link']}" /></cms:link>"><c:out value="${listbox.value['AdditionalLink'].value['Text']}" /></a>
+				</c:if>
+			</cms:contentload>
+		</c:if>
 		
 	</div>
 				
