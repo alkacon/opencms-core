@@ -4,15 +4,15 @@
 %><!DOCTYPE HTML>
 <html>
   <head>
+  	<title><%= gallery.getTitle() %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title><%= gallery.getTitle() %></title>
+    <%= gallery.exportAll() %>
     <style type="text/css">
     * {
     	zoom: 1; 
     }
     </style>
     <script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.galleries/resources/resources.nocache.js</cms:link>"></script>
-    <%= gallery.exportAll() %>
     <% if (gallery.isEditorMode()){ /* opened from rich text editor (FCKEditor, CKEditor...) include necessary scripts */ %>
     <script type="text/javascript" src="<cms:link>/system/workplace/editors/fckeditor/plugins/galleries/integrator.js</cms:link>"></script>
     <% } else if (gallery.isWidgetMode()){ /* opened as widget include necessary scripts */ %>

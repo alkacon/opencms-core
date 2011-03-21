@@ -4,10 +4,10 @@
 %><!DOCTYPE HTML>
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title><%= jsp.getTitle() %></title>
-    <script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.sitemap/resources/resources.nocache.js</cms:link>"></script>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <%= jsp.exportAll() %>
+    <script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.sitemap/resources/resources.nocache.js</cms:link>"></script>
   </head>
   <body> 
   </body>

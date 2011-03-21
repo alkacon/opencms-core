@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/03/21 09:28:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import com.google.gwt.i18n.server.GwtLocaleFactoryImpl;
+import com.google.gwt.i18n.shared.GwtLocale;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 
@@ -56,7 +58,7 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -109,15 +111,29 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String export(String iconCssClassPrefix) throws Exception {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuffer localeMetaTag = new StringBuffer();
+        String cmsLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()).getLanguage();
+        String locale = null;
+        try {
+            locale = new GwtLocaleFactoryImpl().fromString(cmsLocale).getLanguage();
+        } catch (IllegalArgumentException e) {
+            locale = GwtLocale.DEFAULT_LOCALE;
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
+            locale = GwtLocale.DEFAULT_LOCALE;
+        }
+        String metaLocale = "<meta name=\"gwt:property\" content=\"locale=" + locale + "\">";
+        localeMetaTag.append(metaLocale);
 
+        StringBuffer sb = new StringBuffer();
         String prefetchedData = serialize(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
         sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
         wrapScript(sb);
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
             "\");\n</style>\n");
-        return sb.toString();
+
+        return localeMetaTag.append(sb).toString();
     }
 
     /**
