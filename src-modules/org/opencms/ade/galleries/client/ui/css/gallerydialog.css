@@ -3,11 +3,14 @@
 	padding:0px;
 	overflow: hidden;
 }
-
+@if user.agent ie6 {
+.galleryBody *{
+	zoom: 1;
+}
+}
 .tabPanel .resultTabUpload{
-	position: absolute;
-	top: 1px;
-	right: 1px;
+	float: right;
+	margin: 1px 1px 0 0;
 } 
 /* The height is set as inline style. */
 .parentPanel {				
@@ -64,6 +67,7 @@
 }
 
 .tabOptions {
+	clear: both;
 	margin-bottom: 5px;
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/03/11 09:12:05 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/03/21 11:04:54 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.
  */
@@ -81,7 +81,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.39 $
+     * @version $Revision: 1.40 $
      * 
      * @since 8.0.0
      */
@@ -328,7 +328,7 @@ public class CmsResultsTab extends A_CmsListTab {
         // sanity check on tab height
         tabHeight = tabHeight > 0 ? tabHeight : 434;
         int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
-            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 0;
+            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 21;
         int optionsHeight = m_options.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
         // 3 is some offset, because of the list border
