@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2011/03/21 09:28:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/21 09:44:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,8 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import com.google.gwt.i18n.server.GwtLocaleFactoryImpl;
-import com.google.gwt.i18n.shared.GwtLocale;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 
@@ -58,7 +56,7 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -111,18 +109,14 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String export(String iconCssClassPrefix) throws Exception {
 
+        // determine the workplace locale
+        String wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()).getLanguage();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(wpLocale)) {
+            // if no locale was found, take English as locale
+            wpLocale = Locale.ENGLISH.getLanguage();
+        }
         StringBuffer localeMetaTag = new StringBuffer();
-        String cmsLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()).getLanguage();
-        String locale = null;
-        try {
-            locale = new GwtLocaleFactoryImpl().fromString(cmsLocale).getLanguage();
-        } catch (IllegalArgumentException e) {
-            locale = GwtLocale.DEFAULT_LOCALE;
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
-            locale = GwtLocale.DEFAULT_LOCALE;
-        }
-        String metaLocale = "<meta name=\"gwt:property\" content=\"locale=" + locale + "\">";
+        String metaLocale = "<meta name=\"gwt:property\" content=\"locale=" + wpLocale + "\">";
         localeMetaTag.append(metaLocale);
 
         StringBuffer sb = new StringBuffer();
