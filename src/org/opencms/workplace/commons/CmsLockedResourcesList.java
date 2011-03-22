@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2010/01/18 10:01:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/22 10:57:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
@@ -59,7 +60,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -317,7 +318,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                 if (params.get(CmsMultiDialog.PARAM_RESOURCELIST) != null) {
                     html.append(CmsMultiDialog.PARAM_RESOURCELIST);
                     html.append("=");
-                    html.append(params.get(CmsMultiDialog.PARAM_RESOURCELIST));
+                    html.append(CmsEncoder.escapeXml((String)params.get(CmsMultiDialog.PARAM_RESOURCELIST)));
                     needsAmpersand = true;
                 }
                 if (params.get(CmsDialog.PARAM_RESOURCE) != null) {
@@ -326,7 +327,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     }
                     html.append(CmsDialog.PARAM_RESOURCE);
                     html.append("=");
-                    html.append(params.get(CmsDialog.PARAM_RESOURCE));
+                    html.append(CmsEncoder.escapeXml((String)params.get(CmsDialog.PARAM_RESOURCE)));
                     needsAmpersand = true;
                 }
                 if (params.get(CmsLock.PARAM_INCLUDERELATED) != null) {
@@ -335,7 +336,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     }
                     html.append(CmsLock.PARAM_INCLUDERELATED);
                     html.append("=");
-                    html.append(params.get(CmsLock.PARAM_INCLUDERELATED));
+                    html.append(CmsEncoder.escapeXml((String)params.get(CmsLock.PARAM_INCLUDERELATED)));
                 }
                 if (needsAmpersand) {
                     html.append("&");
