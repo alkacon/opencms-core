@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/03/22 13:55:08 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -338,8 +338,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_move,
             m_edit,
             m_remove,
-            m_addToFavorites,
-            m_properties);
+            m_properties,
+            m_addToFavorites);
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
     }

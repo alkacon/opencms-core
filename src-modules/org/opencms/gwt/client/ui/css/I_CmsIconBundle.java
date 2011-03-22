@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/03/17 16:11:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/22 13:55:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -54,8 +54,16 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/icons/addIcon.png")
-    ImageResource addIcon();
+    @Source("images/icons/addIconActive.png")
+    ImageResource addIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/addIconDeactivated.png")
+    ImageResource addIconDeactivated();
 
     /**
      * Access method.<p>
@@ -78,24 +86,48 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/icons/deleteIcon.png")
-    ImageResource deleteIcon();
+    @Source("images/icons/deleteIconActive.png")
+    ImageResource deleteIconActive();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/icons/editIcon.png")
-    ImageResource editIcon();
+    @Source("images/icons/deleteIconDeactivated.png")
+    ImageResource deleteIconDeactivated();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/icons/favoriteIcon.png")
-    ImageResource favoriteIcon();
+    @Source("images/icons/editIconActive.png")
+    ImageResource editIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/editIconDeactivated.png")
+    ImageResource editIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/favoriteIconActive.png")
+    ImageResource favoriteIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/favoriteIconDeactivated.png")
+    ImageResource favoriteIconDeactivated();
 
     /**
      * Access method.<p>
@@ -142,16 +174,32 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/icons/moveIcon.png")
-    ImageResource moveIcon();
+    @Source("images/icons/moveIconActive.png")
+    ImageResource moveIconActive();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/icons/propertyIcon.png")
-    ImageResource propertyIcon();
+    @Source("images/icons/moveIconDeactivated.png")
+    ImageResource moveIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/propertyIconActive.png")
+    ImageResource propertyIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/propertyIconDeactivated.png")
+    ImageResource propertyIconDeactivated();
 
     /**
      * Access method.<p>
@@ -166,24 +214,48 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/icons/removeIcon.png")
-    ImageResource removeIcon();
+    @Source("images/icons/removeIconActive.png")
+    ImageResource removeIconActive();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/icons/searchIcon.png")
-    ImageResource searchIcon();
+    @Source("images/icons/removeIconDeactivated.png")
+    ImageResource removeIconDeactivated();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/icons/selectionIcon.png")
-    ImageResource selectionIcon();
+    @Source("images/icons/searchIconActive.png")
+    ImageResource searchIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/searchIconDeactivated.png")
+    ImageResource searchIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/selectionIconActive.png")
+    ImageResource selectionIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/selectionIconDeactivated.png")
+    ImageResource selectionIconDeactivated();
 
     /**
      * Access method.<p>
@@ -198,6 +270,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/icons/uploadIcon.png")
-    ImageResource uploadIcon();
+    @Source("images/icons/uploadIconActive.png")
+    ImageResource uploadIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/uploadIconDeactivated.png")
+    ImageResource uploadIconDeactivated();
 }

@@ -1,52 +1,75 @@
 @external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
-@sprite .cmsState-up .searchIcon, .cmsState-up-hovering .searchIcon, .cmsState-down .searchIcon, .cmsState-down-hovering .searchIcon {
-	gwt-image: "icons.searchIcon";
+@sprite .cmsState-up-hovering .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down .addIcon, .cmsState-down-hovering .addIcon, .cmsState-down-disabled .addIcon {
+    gwt-image: "icons.addIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down-disabled .addIcon {
+    gwt-image: "icons.addIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up-hovering .deleteIcon, .cmsState-up-disabled .deleteIcon, .cmsState-down .deleteIcon, .cmsState-down-hovering .deleteIcon, .cmsState-down-disabled .deleteIcon {
+    gwt-image: "icons.deleteIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .deleteIcon, .cmsState-up-disabled .deleteIcon, .cmsState-down-disabled .deleteIcon {
+    gwt-image: "icons.deleteIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up-hovering .editIcon, .cmsState-up-disabled .editIcon, .cmsState-down .editIcon, .cmsState-down-hovering .editIcon, .cmsState-down-disabled .editIcon {
+    gwt-image: "icons.editIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .editIcon, .cmsState-up-disabled .editIcon, .cmsState-down-disabled .editIcon {
+    gwt-image: "icons.editIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up-hovering .moveIcon, .cmsState-up-disabled .moveIcon, .cmsState-down .moveIcon, .cmsState-down-hovering .moveIcon, .cmsState-down-disabled .moveIcon {
+    gwt-image: "icons.moveIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .moveIcon, .cmsState-up-disabled .moveIcon, .cmsState-down-disabled .moveIcon {
+    gwt-image: "icons.moveIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up-hovering .propertyIcon, .cmsState-up-disabled .propertyIcon, .cmsState-down .propertyIcon, .cmsState-down-hovering .propertyIcon, .cmsState-down-disabled .propertyIcon {
+    gwt-image: "icons.propertyIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .propertyIcon, .cmsState-up-disabled .propertyIcon, .cmsState-down-disabled .propertyIcon {
+    gwt-image: "icons.propertyIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up-hovering .searchIcon, .cmsState-down .searchIcon, .cmsState-down-hovering .searchIcon {
+	gwt-image: "icons.searchIconActive";
 	display: inline-block;
 	vertical-align: middle;
 }
-@sprite .cmsState-down-disabled .searchIcon, .cmsState-up-disabled .searchIcon {
-	gwt-image: "icons.searchIcon";
+@sprite .cmsState-up .searchIcon, .cmsState-down-disabled .searchIcon, .cmsState-up-disabled .searchIcon {
+	gwt-image: "icons.searchIconDeactivated";
 	display: inline-block;
 	vertical-align: middle;
 }
-
-@sprite .cmsState-up .deleteIcon, .cmsState-up-hovering .deleteIcon, .cmsState-up-disabled .deleteIcon, .cmsState-down .deleteIcon, .cmsState-down-hovering .deleteIcon, .cmsState-down-disabled .deleteIcon {
-    gwt-image: "icons.deleteIcon";
+@sprite .cmsState-up-hovering .uploadIcon, .cmsState-up-disabled .uploadIcon, .cmsState-down .uploadIcon, .cmsState-down-hovering .uploadIcon, .cmsState-down-disabled .uploadIcon {
+    gwt-image: "icons.uploadIconActive";
     display: inline-block;
     vertical-align: middle;
 }
-
-@sprite .cmsState-up .editIcon, .cmsState-up-hovering .editIcon, .cmsState-up-disabled .editIcon, .cmsState-down .editIcon, .cmsState-down-hovering .editIcon, .cmsState-down-disabled .editIcon {
-    gwt-image: "icons.editIcon";
+@sprite .cmsState-up .uploadIcon, .cmsState-up-disabled .uploadIcon, .cmsState-down-disabled .uploadIcon {
+    gwt-image: "icons.uploadIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
-
-@sprite .cmsState-up .moveIcon, .cmsState-up-hovering .moveIcon, .cmsState-up-disabled .moveIcon, .cmsState-down .moveIcon, .cmsState-down-hovering .moveIcon, .cmsState-down-disabled .moveIcon {
-    gwt-image: "icons.moveIcon";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-up .addIcon, .cmsState-up-hovering .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down .addIcon, .cmsState-down-hovering .addIcon, .cmsState-down-disabled .addIcon {
-    gwt-image: "icons.addIcon";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-up .propertyIcon, .cmsState-up-hovering .propertyIcon, .cmsState-up-disabled .propertyIcon, .cmsState-down .propertyIcon, .cmsState-down-hovering .propertyIcon, .cmsState-down-disabled .propertyIcon {
-    gwt-image: "icons.propertyIcon";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-up .uploadIcon, .cmsState-up-hovering .uploadIcon, .cmsState-up-disabled .uploadIcon, .cmsState-down .uploadIcon, .cmsState-down-hovering .uploadIcon, .cmsState-down-disabled .uploadIcon {
-    gwt-image: "icons.uploadIcon";
-    display: inline-block;
-    vertical-align: middle;
-}
-
 
 @sprite .opencmsSymbol{
 	gwt-image: "opencmsSymbolImage";

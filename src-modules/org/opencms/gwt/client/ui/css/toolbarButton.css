@@ -81,20 +81,6 @@
     gwt-image: "publishBigIconActive";
 }
 
-@sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
-	gwt-image: "removeBigIconDeactivated";
-}
-@sprite .cmsState-up .toolbarRemove, .cmsState-up-hovering .toolbarRemove, .cmsState-down-hovering .toolbarRemove, .cmsState-down .toolbarRemove{
-    gwt-image: "removeBigIconActive";
-}
-
-@sprite .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
-	gwt-image: "deleteBigIconDeactivated";
-}
-@sprite .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete{
-    gwt-image: "deleteBigIconActive";
-}
-
 @sprite .cmsState-up-disabled .toolbarSave, .cmsState-down-disabled .toolbarSave{
 	gwt-image: "saveBigIconDeactivated";
 }
@@ -107,4 +93,14 @@
 }
 @sprite .cmsState-up .toolbarSitemap, .cmsState-up-hovering .toolbarSitemap, .cmsState-down-hovering .toolbarSitemap, .cmsState-down .toolbarSitemap{
     gwt-image: "sitemapBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
+	gwt-image: "removeBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarRemove, .cmsState-up-hovering .toolbarRemove, .cmsState-down-hovering .toolbarRemove, .cmsState-down .toolbarRemove{
+    gwt-image: "removeBigIconActive";
+}
+
+.cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete, .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
 }

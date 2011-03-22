@@ -43,7 +43,7 @@
 }
 
 @sprite .linkEdit {
-	gwt-image: "baseImages.icons.editIcon"; 
+	gwt-image: "baseImages.icons.editIconActive"; 
 }
 
 @sprite .inherited {

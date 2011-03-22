@@ -4,19 +4,19 @@
     gwt-image: "icons.availabilityIcon";
 }
 @sprite .cmsMenuItem .delete{
-    gwt-image: "icons.deleteIcon";
+    gwt-image: "icons.deleteIconActive";
 }
 @sprite .cmsMenuItem .edit{
-    gwt-image: "icons.editIcon";
+    gwt-image: "icons.editIconActive";
 }
 @sprite .cmsMenuItem .move{
-    gwt-image: "icons.moveIcon";
+    gwt-image: "icons.moveIconActive";
 }
 @sprite .cmsMenuItem .newElement{
-    gwt-image: "icons.addIcon";
+    gwt-image: "icons.addIconActive";
 }
 @sprite .cmsMenuItem .properties{
-    gwt-image: "icons.propertyIcon";
+    gwt-image: "icons.propertyIconActive";
 }
 @sprite .cmsMenuItem .refresh{
     gwt-image: "icons.refreshIcon";

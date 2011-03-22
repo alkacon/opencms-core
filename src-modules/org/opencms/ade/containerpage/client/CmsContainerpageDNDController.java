@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/22 13:55:08 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -583,7 +583,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         handler.addTarget(target);
 
         // adding drag handle
-        Element button = (new Image(I_CmsImageBundle.INSTANCE.icons().moveIcon())).getElement();
+        Element button = (new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement();
         button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
         dragHelper.appendChild(button);
     }
