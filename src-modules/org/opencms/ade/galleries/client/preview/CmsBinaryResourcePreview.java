@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryResourcePreview.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/22 16:18:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -152,7 +152,7 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      */
     private native void exportRemovePreview(String parentId) /*-{
         $wnd["removePreview" + parentId] = function() {
-            this.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
+            @org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
         };
     }-*/;
 
@@ -161,7 +161,6 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      */
     private void removePreview() {
 
-        m_instance = null;
         m_controller.removePreview();
         m_controller = null;
     }
