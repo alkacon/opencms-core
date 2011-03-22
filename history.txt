@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/22 10:57:39 $
- * Version: $Revision: 1.1221 $
+ * Date   : $Date: 2011/03/22 13:14:49 $
+ * Version: $Revision: 1.1222 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - month day, year
+* Fixed issue using delete and lock resource: empty string does not result in "/"
 - Added new optional CmsShell start parameter to load additional commands
 * Fixed issue setting the configuration values of the MemoryMonitor to 0
 * Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions

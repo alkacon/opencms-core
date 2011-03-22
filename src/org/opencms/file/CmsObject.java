@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/04/08 16:04:20 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2011/03/22 13:14:49 $
+ * Version: $Revision: 1.171 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -96,7 +97,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.170 $
+ * @version $Revision: 1.171 $
  * 
  * @since 6.0.0 
  */
@@ -982,6 +983,13 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deleteResource(String resourcename, CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
+
+        // throw the exception if resource name is an empty string
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_DELETE_RESOURCE_1,
+                resourcename));
+        }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).deleteResource(this, m_securityManager, resource, siblingMode);
@@ -4634,7 +4642,15 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void lockResource(String resourcename, CmsLockType type) throws CmsException {
+    private void lockResource(String resourcename, CmsLockType type)
+    throws CmsException, CmsVfsResourceNotFoundException {
+
+        // throw the exception if resource name is an empty string
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_LOCK_RESOURCE_1,
+                resourcename));
+        }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);
