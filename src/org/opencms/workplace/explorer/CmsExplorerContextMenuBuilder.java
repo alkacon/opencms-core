@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2010/12/20 14:56:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/22 11:41:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -393,7 +393,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamActtarget())
                                 && (item.getUri() != null)
                                 && item.getUri().startsWith("views/admin/admin-main.jsp")) {
-                                itemTarget = getParamActtarget();
+                                itemTarget = CmsEncoder.escapeXml(getParamActtarget());
                             }
                         }
 

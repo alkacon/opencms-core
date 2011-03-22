@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/09 15:46:28 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2011/03/22 11:41:17 $
+ * Version: $Revision: 1.75 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -72,6 +72,7 @@ OpenCms x.x.x - Month Day, Year
 ! Integrated gwt upload dialog into workplace and galleries
 ! Added unzip file support for the gwt upload dialog
 ! Added drag and drop support for the gwt upload dialog
+* Fixed issue #1945: Avoid reflected XSS on some authenticated resources
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
