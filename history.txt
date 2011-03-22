@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/22 13:27:37 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2011/03/22 14:35:10 $
+ * Version: $Revision: 1.77 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* Fixed issue using delete and lock resource: empty string does not result in "/"
 * Fixed issue: Improved error handling on extracting of the resource content with a special extractor for the resource comparison
 * Fixed issue setting the configuration values of the MemoryMonitor to 0
 ! New user tracking allows subscription of files, tracking of visited resources, listing subsribed resources and many more

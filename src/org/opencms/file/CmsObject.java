@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/22 14:35:10 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
@@ -98,7 +99,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
@@ -796,6 +797,13 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deleteResource(String resourcename, CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
+
+        // throw the exception if resource name is an empty string
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_DELETE_RESOURCE_1,
+                resourcename));
+        }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).deleteResource(this, m_securityManager, resource, siblingMode);
@@ -3617,6 +3625,13 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      */
     private void lockResource(String resourcename, CmsLockType type) throws CmsException {
+
+        // throw the exception if resource name is an empty string
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_LOCK_RESOURCE_1,
+                resourcename));
+        }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);
