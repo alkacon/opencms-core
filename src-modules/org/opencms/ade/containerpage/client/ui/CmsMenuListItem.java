@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/03/01 14:20:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/22 15:03:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -49,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -98,21 +97,6 @@ public class CmsMenuListItem extends CmsListItem {
     public void hideDeleteButton() {
 
         getListItemWidget().removeButton(m_deleteButton);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
-     */
-    @Override
-    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
-
-        if (super.initMoveHandle(dndHandler)) {
-            // move handle should always be visible
-            getMoveHandle().getElement().addClassName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            return true;
-        }
-        return false;
     }
 
     /**
