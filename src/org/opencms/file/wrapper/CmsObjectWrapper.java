@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2009/09/14 11:45:31 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2011/03/22 13:27:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -894,10 +894,21 @@ public class CmsObjectWrapper {
             } else if (resType instanceof CmsResourceTypeXmlPage) {
                 typeMatch = true;
             }
+            if (typeMatch && res.isFile()) {
+                CmsFile file = m_cms.readFile(res);
+                if ((file.getContents().length >= 3)
+                    && (file.getContents()[0] == CmsResourceWrapperUtils.UTF8_MARKER[0])
+                    && (file.getContents()[1] == CmsResourceWrapperUtils.UTF8_MARKER[1])
+                    && (file.getContents()[2] == CmsResourceWrapperUtils.UTF8_MARKER[2])) {
+                    typeMatch = false;
+                }
+            }
 
             return typeMatch;
         } catch (CmsLoaderException e) {
             // noop
+        } catch (CmsException e) {
+            // file always exists and accessible by this session
         }
 
         return false;
