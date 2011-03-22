@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/22 13:14:49 $
- * Version: $Revision: 1.1222 $
+ * Date   : $Date: 2011/03/22 13:30:58 $
+ * Version: $Revision: 1.1223 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue when creating a new user or editing an existing user using an Oracle database
 * Fixed issue #1949: Database size does not decrease after (completely) deleting resources
 * Fixed issue #1945: Avoid reflected XSS on some authenticated resources
+* Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
