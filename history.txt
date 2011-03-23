@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/23 09:42:17 $
- * Version: $Revision: 1.1224 $
+ * Date   : $Date: 2011/03/23 10:04:59 $
+ * Version: $Revision: 1.1225 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
@@ -19,31 +19,31 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms x.x.x - month day, year
+OpenCms 7.5.4 - March 24, 2011
 ! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
-* Fixed issue using delete and lock resource: empty string does not result in "/"
+! The content tool "Change Property Values" now allows more than one placeholder
+- Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
 - Added new optional CmsShell start parameter to load additional commands
-* Fixed issue setting the configuration values of the MemoryMonitor to 0
-* Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
-* Fixed issue #1901: Workplace login page security issue
-* Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
-* Fixed premature publish thread interruption within CmsShell
-! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
+* Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
 * Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values
+* Fixed issue #1895: "All others" entry in permission dialog does not show summary of permissions
 * Fixed issue #1900: Performance Patch for OpenCms
+* Fixed issue #1901: Workplace login page security issue
+* Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
+* Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
 * Fixed issue #1910: An ISO-8859-1 to UTF-8 change in htmlmsg.properties
 * Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js
-* Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
-- Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
-* Fixed issue in galleries: Broken layout with long item file names or titles
 * Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
-* Fixed issue #1942: Publish scheduled jobs are missing after server restart
-* Fixed issue: Error when searching with the group field in the Module Management and at least one module without configured group
-* Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
-* Fixed issue when creating a new user or editing an existing user using an Oracle database
-* Fixed issue #1949: Database size does not decrease after (completely) deleting resources
-* Fixed issue #1945: Avoid reflected XSS on some authenticated resources
 * Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize
+* Fixed issue #1942: Publish scheduled jobs are missing after server restart
+* Fixed issue #1945: Avoid reflected XSS on some authenticated resources
+* Fixed issue #1949: Database size does not decrease after (completely) deleting resources
+* Fixed issue when creating a new user or editing an existing user using an Oracle database
+* Fixed issue using delete and lock resource when called without path parameter
+* Fixed issue setting the configuration values of the MemoryMonitor to 0
+* Fixed issue in galleries: Broken layout with long item file names or titles
+* Fixed issue: Error when searching with the group field in the Module Management when at least one module without configured group name exists
+* Fixed premature publish thread interruption within CmsShell
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
