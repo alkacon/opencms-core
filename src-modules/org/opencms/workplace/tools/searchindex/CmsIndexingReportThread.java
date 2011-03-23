@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2010/01/18 10:01:30 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/23 14:50:38 $
+ * Version: $Revision: 1.19 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -9,7 +9,7 @@
  * modules of the Alkacon OpenCms Software library published by
  * Alkacon Software GmbH, unless otherwise noted.
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ import java.util.Map;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2010/01/18 10:02:52 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/23 14:52:01 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,7 +49,7 @@ import org.apache.commons.httpclient.util.URIUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlValidationErrorHandler.java,v $
- * Date   : $Date: 2010/01/18 10:04:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/23 14:53:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@ import org.xml.sax.SAXParseException;
  * 
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */

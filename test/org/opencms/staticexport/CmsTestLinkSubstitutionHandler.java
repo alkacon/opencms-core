@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/CmsTestLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/01/18 10:04:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/23 14:59:04 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/AllTests.java,v $
- * Date   : $Date: 2010/01/18 10:03:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/23 14:59:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.scheduler}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0
  */

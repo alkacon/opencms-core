@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2010/01/18 10:01:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/23 14:50:50 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,7 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsCaptchaField extends A_CmsField {
 
