@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://bugzilla.opencms.org/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Release Notes for OpenCms 7.5.4</h1>
+<p>March 24, 2011: This is the release of OpenCms 7.5.4. With OpenCms 7.5.4, a number of issues that persisted in the 7.5.3 release have been fixed. Some new features have been added as well.</p>
+<h2>Main new features of OpenCms 7.5</h2>
+<ul>
+    <li>Performance patch for OpenCms</li>
+    <li>Several security issues fixed</li>
+    <li>Better handling of historical versions</li>
+    <li>Optimization of database requests at driver layer</li>
+</ul>
+<h2>New features and improvements in OpenCms 7.5.4</h2>
+<ul>
+    <li>Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0</li>
+    <li>The content tool &quot;Change Property Values&quot; now allows more than one placeholder</li>
+    <li>Collectors &quot;allInFolderNavPos&quot; and &quot;allInSubTreeNavPos&quot; only collect resources with property &quot;NavPos&quot; set</li>
+    <li>Added new optional CmsShell start parameter to load additional commands</li>
+</ul>
+<h2>Fixed issues in OpenCms 7.5.4</h2>
+<ul>
+    <li>Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block</li>
+    <li>Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values</li>
+    <li>Fixed issue #1895: &quot;All others&quot; entry in permission dialog does not show summary of permissions</li>
+    <li>Fixed issue #1900: Performance Patch for OpenCms</li>
+    <li>Fixed issue #1901: Workplace login page security issue</li>
+    <li>Fixed issue #1902: Empty folder without default file renders blank page and no 404 error</li>
+    <li>Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field</li>
+    <li>Fixed issue #1910: An ISO-8859-1 to UTF-8 change in htmlmsg.properties</li>
+    <li>Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js</li>
+    <li>Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog</li>
+    <li>Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize</li>
+    <li>Fixed issue #1942: Publish scheduled jobs are missing after server restart</li>
+    <li>Fixed issue #1945: Avoid reflected XSS on some authenticated resources</li>
+    <li>Fixed issue #1949: Database size does not decrease after (completely) deleting resources</li>
+    <li>Fixed issue when creating a new user or editing an existing user using an Oracle database</li>
+    <li>Fixed issue using delete and lock resource when called without path parameter</li>
+    <li>Fixed issue setting the configuration values of the MemoryMonitor to 0</li>
+    <li>Fixed issue in galleries: Broken layout with long item file names or titles</li>
+    <li>Fixed issue: Error when searching with the group field in the Module Management when at least one module without configured group name exists</li>
+    <li>Fixed premature publish thread interruption within CmsShell</li>
+</ul>
+<h2>Backward compatibility</h2>
+<p>We recommend everyone who uses OpenCms to update to the 7.5.4 release.</p>
+<p>OpenCms 7.5.4 is fully backward compatible to all prior 7.5.x and 7.0.x versions. Templates and other OpenCms developed code from version 7.0 or 7.5 should work &quot;out of the box&quot; with version 7.5.4.</p>
+<p>Users of the Alkacon OCEE packages require a new version of Alkacon OCEE for use with this OpenCms release. OpenCms version 7.5.4 requires Alkacon OCEE version 2.1.4 or newer.</p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 7.5 has been written and tested using Java 1.5 / 1.6. We have tested only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it should in theory run with all compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine. OpenCms works &quot;out of the box&quot; with Tomcat 6.0, which we recommend. Others have reported deploying OpenCms successfully on other servlet containers like JBoss, BEA, Websphere, Glassfish and Resin Professional. We appreciate any feedback regarding other servlet containers.</p>
+<p>On the database side, we have tested with MySQL 4.0.x, MySQL 4.1, MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x and 7.4.x, MS SQL Server 2000 / 2003, DB2 9.1 and HSQLDB 1.8.0. The automatic update wizard for OpenCms 7 supports MySQL, Oracle and PostgreSQL.</p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS tag numbers for all OpenCms 7.5 final releases are &quot;build_7_5_x&quot;, so the 7.5.4 release is tagged &quot;build_7_5_4&quot;. Development of maintenance releases is currently done in CVS HEAD.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)">http://bugzilla.opencms.org/<br />
+</a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 7.5 :-)</p>
+<p>&nbsp;</p>]]></content>
+    </element>
+  </page>
+</pages>
