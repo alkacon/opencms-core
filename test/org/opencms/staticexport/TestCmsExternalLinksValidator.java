@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsExternalLinksValidator.java,v $
- * Date   : $Date: 2011/03/22 11:12:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/23 09:37:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 
 /** 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.0.4
  */
@@ -110,16 +110,6 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
         list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme og tilskadekomst/Ulykker/Nyhedsbrev.aspx");
         list.add("http://www.mim.dk/Udgivelser/Milj%F8Danmark/");
         list.add("http://www.ug.dk/Videnscenter for vejledning/Forside/Virtuelt tidsskrift.aspx");
-
-        // the following links seems to be dead:
-        // list.add("http://www.horesta.dk/Service/Om Horesta/Medier/Dialog.aspx");
-        // list.add("http://www.kbht.dk:80/Emner/klub_1_raekke/1 raekke nr 1.aspx?a=b#test");
-        // list.add("http://www.kbht.dk:80/Emner/klub_1_raekke/1 raekke nr 1.aspx?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
-        // list.add("http://www.kbht.dk/Emner/klub_1_raekke/1%20raekke%20nr%201.aspx");
-        // list.add("http://www.ddc.dk/DESIGNVIDEN/DESIGNnyt#");
-        // list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/Markedsrapporter/Markedsrapporter.htm#");
-        // list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/OmEnergi/OmEnergi.htm#");
-        // list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/Nyhedsbrev fra Magnetfeltudvalget/Nyhedsbrev fra Magnetfeltudvalget.htm#");
 
         // checks the list of external links
         for (int i = 0; i < list.size(); i++) {
