@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2011/03/23 09:42:17 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/03/23 12:49:58 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.pdfbox.encryption.DocumentEncryption;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
@@ -48,11 +47,10 @@ import org.apache.pdfbox.util.PDFTextStripper;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
-@SuppressWarnings("deprecation")
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
@@ -79,7 +77,6 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
-    @SuppressWarnings("deprecation")
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
@@ -93,9 +90,8 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
             // check for encryption
             if (pdfDocument.isEncrypted()) {
-                DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
-                // try using the default password
-                decryptor.decryptDocument("");
+
+                pdfDocument.decrypt("");
             }
 
             // create PDF stripper
