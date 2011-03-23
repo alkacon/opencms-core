@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/22 14:35:10 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2011/03/23 08:11:03 $
+ * Version: $Revision: 1.78 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,7 +20,6 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
-* Fixed issue using delete and lock resource: empty string does not result in "/"
 * Fixed issue: Improved error handling on extracting of the resource content with a special extractor for the resource comparison
 * Fixed issue setting the configuration values of the MemoryMonitor to 0
 ! New user tracking allows subscription of files, tracking of visited resources, listing subsribed resources and many more
@@ -75,6 +74,7 @@ OpenCms x.x.x - Month Day, Year
 ! Added drag and drop support for the gwt upload dialog
 * Fixed issue #1945: Avoid reflected XSS on some authenticated resources
 * Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize
+* Fixed issue using delete and lock resource: empty string does not result in "/"
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
