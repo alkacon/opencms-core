@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/03/22 13:55:08 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/03/23 09:08:10 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0
  */
@@ -277,35 +277,31 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_save.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_save);
 
-        m_selection = new CmsToolbarSelectionButton(containerpageHandler);
-        m_selection.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_selection);
-
         m_move = new CmsToolbarMoveButton(containerpageHandler, dndHandler);
-        m_move.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_move);
 
         m_edit = new CmsToolbarEditButton(containerpageHandler);
-        m_edit.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_edit);
 
         m_addToFavorites = new CmsAddToFavoritesButton(containerpageHandler);
 
         m_remove = new CmsToolbarRemoveButton(containerpageHandler);
-        m_remove.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_remove);
 
         m_properties = new CmsToolbarPropertiesButton(containerpageHandler);
-        m_properties.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_properties);
+
+        m_clipboard = new CmsToolbarClipboardMenu(containerpageHandler);
+        m_clipboard.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_clipboard);
 
         m_add = new CmsToolbarGalleryMenu(containerpageHandler, dndHandler);
         m_add.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_add);
 
-        m_clipboard = new CmsToolbarClipboardMenu(containerpageHandler);
-        m_clipboard.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_clipboard);
+        m_selection = new CmsToolbarSelectionButton(containerpageHandler);
+        m_selection.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_selection);
+
+        m_context = new CmsToolbarContextButton(containerpageHandler);
+        m_context.addClickHandler(clickHandler);
+        m_toolbar.addRight(m_context);
 
         m_sitemap = new CmsToolbarSitemapButton(containerpageHandler);
         m_sitemap.addClickHandler(clickHandler);
@@ -314,10 +310,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         if (controller.getData().getSitemapUri().equals("")) {
             m_sitemap.setEnabled(false);
         }
-
-        m_context = new CmsToolbarContextButton(containerpageHandler);
-        m_context.addClickHandler(clickHandler);
-        m_toolbar.addRight(m_context);
 
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);
