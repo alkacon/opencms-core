@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2011/03/22 13:14:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/03/23 09:42:15 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -65,10 +65,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_BAD_RESOURCENAME_EMPTY_0 = "ERR_BAD_RESOURCENAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_RESOURCE_1 = "ERR_DELETE_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EMPTY_SITEROOT_0 = "ERR_EMPTY_SITEROOT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HISTORYRESOURCE_2 = "ERR_HISTORYRESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_RESOURCE_1 = "ERR_LOCK_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_METHOD_NOT_IMPLEMENTED_1 = "ERR_METHOD_NOT_IMPLEMENTED_1";
@@ -105,12 +111,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESOURCE_TYPE_1 = "ERR_UNKNOWN_RESOURCE_TYPE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_RESOURCE_1 = "ERR_LOCK_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_RESOURCE_1 = "ERR_DELETE_RESOURCE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.file.messages";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2010/01/18 10:02:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/23 09:42:17 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,21 +37,22 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pdfbox.encryption.DocumentEncryption;
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.pdmodel.PDDocumentInformation;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.encryption.DocumentEncryption;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.util.PDFTextStripper;
 
 /**
  * Extracts the text from a PDF document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
+@SuppressWarnings("deprecation")
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
@@ -78,6 +79,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
+    @SuppressWarnings("deprecation")
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
