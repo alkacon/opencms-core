@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2010/01/18 10:00:52 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/03/23 13:49:26 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLockType;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -66,7 +67,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -187,6 +188,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingProjects"));
         suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
         suite.addTest(new TestSiblings("testSiblingsV7PublishIssue"));
+        suite.addTest(new TestSiblings("testSiblingsNewDeletePublishIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -247,87 +249,6 @@ public class TestSiblings extends OpenCmsTestCase {
         if (sib3Resource != null) {
             fail("Sibling " + sib3Name + " has not been deleted!");
         }
-    }
-
-    /**
-     * Tests the link management features with siblings.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testSiblingsRelations() throws Throwable {
-
-        echo("Testing link management features with siblings");
-        CmsObject cms = getCmsObject();
-
-        String sib1Name = "/folder1/sib1.html";
-        String sib2Name = "/folder1/sib2.html";
-        String sib3Name = "/folder1/sib3.html";
-
-        String targetName = "/folder1/image2.gif";
-        CmsResource target = cms.readResource(targetName);
-
-        CmsResource sib1 = cms.createResource(sib1Name, CmsResourceTypeXmlPage.getStaticTypeId());
-        int sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
-        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
-        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources++;
-        List links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        CmsRelation relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-
-        cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
-        CmsResource sib2 = cms.readResource(sib2Name);
-        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources++;
-        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-
-        cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
-        CmsResource sib3 = cms.readResource(sib3Name);
-        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources++;
-        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-
-        // remove the link
-        TestLinkValidation.setContent(cms, sib1Name, "<h1>hello world!</h1>");
-        assertEquals(sources - 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources -= 3;
-        assertTrue(cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS).isEmpty());
-        assertTrue(cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS).isEmpty());
-        assertTrue(cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS).isEmpty());
-
-        // add the link again
-        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
-        assertEquals(sources + 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources += 3;
-        links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(relation, (CmsRelation)links.get(0));
-
-        cms.deleteResource(sib3Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources--;
-        cms.deleteResource(sib2Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources--;
-        cms.deleteResource(sib1Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
-        sources--;
     }
 
     /**
@@ -394,45 +315,6 @@ public class TestSiblings extends OpenCmsTestCase {
 
         }
     }
-
-    /**
-     * Tests the "copy as new sibling" function.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testSiblingsCopy() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        String source = "/index.html";
-        String target = "/index_sibling.html";
-        echo("Copying " + source + " as a new sibling to " + target);
-        copyResourceAsSibling(this, cms, source, target);
-    }
-
-    /**
-     * Does an "undo changes" from the online project on a resource with more than 1 sibling.<p>
-     */
-    /*
-     public static void undoChangesWithSiblings(...) throws Throwable {
-     // this test should do the following:
-     // - create a sibling of a resource
-     // - e.g. touch the black/unchanged sibling so that it gets red/changed
-     // - make an "undo changes" -> the last-modified-in-project ID in the resource record 
-     // of the resource must be the ID of the current project, and not 0
-     // - this is to ensure that the new/changed/deleted other sibling still have a valid
-     // state which consist of the last-modified-in-project ID plus the resource state
-     // - otherwise this may result in grey flags
-
-     Another issue:
-     What happens if a user A has an exclusive lock on a resource X,
-     and user B does a "copy as sibling Y" of X, or "create 
-     new sibling Y" of X. The lock status of the resource X is exclusive
-     to A, but test implies that it would be switched to B after operation!
-     Maybe copy as / create new sibling must not be allowed if original is
-     currently locked by another user? 
-
-     }
-     */
 
     /**
      * Tests the "project last modified" state with sibling operations across different projects.<p>
@@ -564,6 +446,45 @@ public class TestSiblings extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
+    public void testSiblingsCopy() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String source = "/index.html";
+        String target = "/index_sibling.html";
+        echo("Copying " + source + " as a new sibling to " + target);
+        copyResourceAsSibling(this, cms, source, target);
+    }
+
+    /**
+     * Does an "undo changes" from the online project on a resource with more than 1 sibling.<p>
+     */
+    /*
+     public static void undoChangesWithSiblings(...) throws Throwable {
+     // this test should do the following:
+     // - create a sibling of a resource
+     // - e.g. touch the black/unchanged sibling so that it gets red/changed
+     // - make an "undo changes" -> the last-modified-in-project ID in the resource record 
+     // of the resource must be the ID of the current project, and not 0
+     // - this is to ensure that the new/changed/deleted other sibling still have a valid
+     // state which consist of the last-modified-in-project ID plus the resource state
+     // - otherwise this may result in grey flags
+
+     Another issue:
+     What happens if a user A has an exclusive lock on a resource X,
+     and user B does a "copy as sibling Y" of X, or "create 
+     new sibling Y" of X. The lock status of the resource X is exclusive
+     to A, but test implies that it would be switched to B after operation!
+     Maybe copy as / create new sibling must not be allowed if original is
+     currently locked by another user? 
+
+     }
+     */
+
+    /**
+     * Tests the "copy as new sibling" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
     public void testSiblingsCreate() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -596,6 +517,235 @@ public class TestSiblings extends OpenCmsTestCase {
 
         assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
         assertState(cms, target, CmsResourceState.STATE_NEW);
+    }
+
+    /**
+     * Tests an issue, where there is an error in OpenCms V7 when publishing two siblings of the same resource.
+     * One sibling is new created, the other one is a deleted one. In OpenCms V8 this scenario should give no error.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSiblingsNewDeletePublishIssue() throws Exception {
+
+        echo("Tests publish issue with two siblings (one new sibling and one deleted sibling) of the same resource.");
+        CmsObject cms = getCmsObject();
+
+        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+
+        // step 1: create the basic scenario
+
+        // first we create a complete new folder as base for the test
+        String mainFolder = "/test/";
+        cms.createResource(mainFolder, CmsResourceTypeFolder.getStaticTypeId());
+
+        // create the resource where siblings are made from later
+        String source = mainFolder + "testabc.xml";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId(), null, null);
+
+        // create the sub folder /test/de/
+        String subFolderDe = mainFolder + "de/";
+        cms.createResource(subFolderDe, CmsResourceTypeFolder.getStaticTypeId());
+
+        // create the sub folder /test/en/
+        String subFolderEn = mainFolder + "en/";
+        cms.createResource(subFolderEn, CmsResourceTypeFolder.getStaticTypeId());
+
+        // create the sub folder /test/nl/
+        String subFolderNl = mainFolder + "nl/";
+        cms.createResource(subFolderNl, CmsResourceTypeFolder.getStaticTypeId());
+
+        // publish the folder
+        OpenCms.getPublishManager().publishResource(cms, mainFolder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check both online and offline project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+
+        // switch back to the "Offline" project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        // create a new sibling using the "copy as" option
+        // this is the resource which is deleted in step 2
+        String siblingDe = subFolderDe + "testabc.xml";
+        cms.copyResource(source, siblingDe, CmsResource.COPY_AS_SIBLING);
+
+        // create a new sibling using the "copy as" option
+        // with this resource nothing is done in step 2
+        String siblingEn = subFolderEn + "testabc.xml";
+        cms.copyResource(source, siblingEn, CmsResource.COPY_AS_SIBLING);
+
+        // publish the folder
+        OpenCms.getPublishManager().publishResource(cms, mainFolder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check both online and offline project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+
+        // step 2: create the issue scenario
+        // delete one sibling, create another sibling of the same resource and publish the project then
+
+        // switch back to the "Offline" project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        // delete the sibling /test/de/testabc.xml
+        cms.lockResource(siblingDe);
+        cms.deleteResource(siblingDe, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // create a new sibling /test/nl/testabc.xml
+        String siblingNl = subFolderNl + "testabc.xml";
+        cms.copyResource(source, siblingNl, CmsResource.COPY_AS_SIBLING);
+
+        // publish the project
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check that the sibling to delete is really deleted in the "Offline" project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        String offReadSiblDe = null;
+        try {
+            cms.readResource(siblingDe);
+        } catch (CmsException e) {
+            offReadSiblDe = e.toString();
+        }
+        // validate the publish result string
+        assertNotNull("The sibling /test/de/testabc.xml is not deleted in the 'Offline' project.", offReadSiblDe);
+
+        // check that the sibling to delete is really deleted in the "Online" project
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        String onReadSiblDe = null;
+        try {
+            cms.readResource(siblingDe);
+        } catch (CmsException e) {
+            onReadSiblDe = e.toString();
+        }
+        // validate the publish result string
+        assertNotNull("The sibling /test/de/testabc.xml is not deleted in the 'Online' project.", onReadSiblDe);
+
+        // check both online and offline project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingNl, CmsResourceState.STATE_UNCHANGED);
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertState(cms, mainFolder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderDe, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingEn, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, subFolderNl, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, siblingNl, CmsResourceState.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests the link management features with siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsRelations() throws Throwable {
+
+        echo("Testing link management features with siblings");
+        CmsObject cms = getCmsObject();
+
+        String sib1Name = "/folder1/sib1.html";
+        String sib2Name = "/folder1/sib2.html";
+        String sib3Name = "/folder1/sib3.html";
+
+        String targetName = "/folder1/image2.gif";
+        CmsResource target = cms.readResource(targetName);
+
+        CmsResource sib1 = cms.createResource(sib1Name, CmsResourceTypeXmlPage.getStaticTypeId());
+        int sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        List links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        CmsRelation relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
+        CmsResource sib2 = cms.readResource(sib2Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
+        CmsResource sib3 = cms.readResource(sib3Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        // remove the link
+        TestLinkValidation.setContent(cms, sib1Name, "<h1>hello world!</h1>");
+        assertEquals(sources - 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources -= 3;
+        assertTrue(cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS).isEmpty());
+
+        // add the link again
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources += 3;
+        links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.deleteResource(sib3Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib2Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib1Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
     }
 
     /**
