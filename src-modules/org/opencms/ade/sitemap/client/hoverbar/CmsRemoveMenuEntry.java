@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsRemoveMenuEntry.java,v $
- * Date   : $Date: 2011/02/15 11:51:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/23 08:18:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -57,7 +57,7 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsRemoveMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().delete());
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().remove());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_REMOVE_0));
         setActive(true);
         setCommand(new Command() {

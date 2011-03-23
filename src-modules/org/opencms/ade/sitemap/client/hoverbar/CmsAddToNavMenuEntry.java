@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAddToNavMenuEntry.java,v $
- * Date   : $Date: 2011/02/03 15:13:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/23 08:18:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -57,7 +57,7 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsAddToNavMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().delete());
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().newElement());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SHOW_IN_NAV_0));
         setActive(true);
         setCommand(new Command() {

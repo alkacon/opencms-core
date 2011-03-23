@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBigIconBundle.java,v $
- * Date   : $Date: 2011/03/22 13:55:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/23 08:19:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -80,28 +80,6 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      */
     @Source("images/icons/big/clipboardBigIconDeactivated.png")
     ImageResource clipboardBigIconDeactivated();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-
-    @Source("images/icons/big/contextMenuBigIconActive.png")
-    ImageResource contextMenuBigIconActive();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/icons/big/contextMenuBigIconDeactivated.png")
-    ImageResource contextMenuBigIconDeactivated();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/icons/big/contextMenuDownBigIcon.png")
-    ImageResource contextMenuDownBigIcon();
 
     /** 
      * Access method.<p>

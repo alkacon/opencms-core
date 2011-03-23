@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/15 14:26:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/03/23 08:19:40 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -128,6 +128,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String refresh();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String remove();
 
         /** Access method.<p>
          * 

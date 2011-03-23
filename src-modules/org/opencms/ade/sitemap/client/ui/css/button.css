@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/button.css,v $
- * Date   : $Date: 2011/03/14 16:07:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/23 08:19:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -57,14 +57,11 @@
 	display: inline-block;
 }
 
-@sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext{
-    gwt-image: "bigIcons.contextMenuBigIconActive";
-}
-@sprite .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
-	gwt-image: "bigIcons.contextMenuDownBigIcon";
+@sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext, .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
+    gwt-image: "bigIcons.menuBigIconActive";
 }
 @sprite .cmsState-up .hoverbarContext, .cmsState-up-disabled .hoverbarContext, .cmsState-down-disabled .hoverbarContext{
-    gwt-image: "bigIcons.contextMenuBigIconDeactivated";
+    gwt-image: "bigIcons.menuBigIconDeactivated";
 }
 
 
