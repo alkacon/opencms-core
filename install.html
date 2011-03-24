@@ -33,6 +33,27 @@ work.</p>
 <li>
 <a href="#a7">Security issues</a>
 </li>
+<li>
+<a href="#a8">Security tips &amp; tricks</a>
+<ul>
+<li>
+<a href="#a8.1">Password Security</a>
+</li>
+<li>
+<a href="#a8.2">User defined password validation handler</a>
+</li>
+<li>
+<a href="#a8.3">Avoid Cross Site Scripting (XSS) attacks</a>
+</li>
+<li>
+<a href="#a8.4">Disable password field auto complete</a>
+</li>
+<li>
+<a href="#a8.5">Use of HttpOnly cookies</a>
+</li>
+
+</ul>
+</li>
 </ul>
 <h2>
 <a id="a1" name="a1"></a>Install the Java 2 SDK, version 1.5 or newer</h2>
@@ -189,6 +210,120 @@ command line.</p>
 setup wizard.</p>
 <p>Don't forget to add the new user and password to all connect strings of the database in your 
 <code>opencms.properties</code> file. Only the new user can now connect to the OpenCms tables. For
-more information see the MySQL documentation.</p></div>
+more information see the MySQL documentation.</p>
+<h2>
+<a id="a8" name="a8"></a>Security tips &amp; tricks </h2>
+<a id="a8.1" name="a8.1"></a><h3>Password Security</h3>
+
+<p>The OpenCms workplace users should be
+advised to use &quot;strong&quot; passwords to log in to the OpenCms workplace,
+at least with a minimum character count. OpenCms just checks if a password has
+a minimum length of 4 characters. See the next section for an alternative
+password validation method.</p>
+
+<p>The &quot;Admin&quot; user password should
+be changed immediately after OpenCms was installed successfully.</p>
+
+<a id="a8.2" name="a8.2"><h3>User defined password validation handler</h3>
+
+<p>It is possible to write a user defined
+password validation handler class to force the OpenCms users to enter a
+&quot;strong&quot; password matching the requested policies.</p>
+
+<p>Therefore, the interface <code>org.opencms.security.I_CmsPasswordHandler</code> has to be implemented. 
+Usually, it is sufficient to extend the
+class <code>CmsDefaultPasswordHandler</code> in the same package and overwrite the method 
+<code>validatePassword(String password)</code></p>
+
+<p>This handler class has to be configured in
+the OpenCms configuration file <code>WEB-INF/config/opencms-system.xml</code>. 
+The <code>class</code> attribute value of the element <code>&lt;passwordhandler&gt;</code> 
+has to be set to the new password validation handler class.</p>
+
+<div style='border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt'>
+
+<code>&lt;passwordhandler
+class=&quot;<font color="red">com.example.CmsCustomPasswordHandler</font>font>&quot;&gt;<br>
+  &lt;encoding&gt;UTF-8&lt;/encoding&gt;<br>
+  &lt;digest-type&gt;MD5&lt;/digest-type&gt;<br>
+  &lt;param
+name=&quot;compatibility.convert.digestencoding&quot;&gt;false&lt;/param&gt;<br>
+
+&lt;/passwordhandler&gt;</code></p>
+
+</div>
+
+<a id="a8.3" name="a8.3"><h3>Avoid Cross Site Scripting (XSS) attacks</h3>
+
+<p>The OpenCms workplace and its dialogs are
+programmed in a way that XSS attacks should not be possible.</p>
+
+<p>This is not the case for HTML pages
+generated for the website using a template. The template programmer has to care
+for protection of the pages by using standard Java mechanisms (e.g. to use JSTL
+tags).</p>
+
+<p><b>Example</b>: no
+request parameter values should be printed out directly using the EL (element
+language), but they should be escaped using the JSTL (Java Standard TagLib). Of
+course the JSTL core tag library has to be defined in the head of the JSP: </p>
+
+<p><code>&lt;%@
+taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot;%&gt;</code></p>
+
+<p>This is how to display the request
+parameter value &quot;query&quot; in a JSP:</p>
+
+<p><font color="red"><b><i>Wrong</i></b></font>: <code>${param.query}</code></p>
+
+<p><font color="green"><b><i>Correct</i></b></font>: 
+<code>&lt;c:out
+value=&quot;${param.query}&quot; /&gt; or &lt;c:out
+value=&quot;${param.query}&quot; escapeXml=&quot;true&quot; /&gt; (the &lt;c:out&gt;
+ tag escapes XML characters by default)</code></p>
+
+<a id="a8.4" name="a8.4"><h3>Disable password field auto complete</h3>
+
+<p>To avoid cross site scripting (XSS) the password
+auto completion should be disabled in OpenCms. For convenience reasons it is enabled per  default setting. You can disable
+auto completion at the main login form (opencms/opencms/system/login) 
+and at the change password form (/opencms/opencms/system/workplace/commons/preferences.jsp)</p>
+
+
+<a id="a8.5" name="a8.5"><h3>Use of HttpOnly cookies</h3>
+
+<p>To prevent accessing cookies through
+Javascript, you could configure your application server  to use the HttpOnly flag
+when setting cookies.</p>
+
+<p>Though still an <a
+href="http://tools.ietf.org/html/draft-ietf-httpstate-cookie-21">IETF draft</a>,
+the HttpOnly cookie is supported by most of the popular browsers. If in doubt,
+check <a href="http://www.browserscope.org/">http://www.browserscope.org/</a>.</p>
+
+<p>Alkacon Software recommends Tomcat 6.0 as
+an application server. OpenCms works &quot;out of the box&quot; with Tomcat 6.0
+and has been tested with it.</p>
+
+<p>If you use another application server (JBoss, BEA,
+Websphere, Glassfish or other), please check if HttpOnly cookies are supported.</p>
+
+<p>In Tomcat 6.0 the HttpOnly functionality can be enabled in
+conf/context.xml:</p>
+
+<p><code>&lt;Context useHttpOnly=&quot;true&quot;&gt;<br>
+...<br>
+&lt;/Context&gt;</code></p>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
 </body>
 </html>
