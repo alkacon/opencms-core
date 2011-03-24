@@ -244,15 +244,15 @@ has to be set to the new password validation handler class.</p>
 
 <code>&lt;passwordhandler
 class=&quot;<font color="red">com.example.CmsCustomPasswordHandler</font>font>&quot;&gt;<br>
-  &lt;encoding&gt;UTF-8&lt;/encoding&gt;<br>
-  &lt;digest-type&gt;MD5&lt;/digest-type&gt;<br>
-  &lt;param
+  &nbsp;&nbsp;&lt;encoding&gt;UTF-8&lt;/encoding&gt;<br>
+  &nbsp;&nbsp;&lt;digest-type&gt;MD5&lt;/digest-type&gt;<br>
+  &nbsp;&nbsp;&lt;param
 name=&quot;compatibility.convert.digestencoding&quot;&gt;false&lt;/param&gt;<br>
 
-&lt;/passwordhandler&gt;</code></p>
+&lt;/passwordhandler&gt;</code>
 
 </div>
-
+</p>
 <a id="a8.3" name="a8.3"><h3>Avoid Cross Site Scripting (XSS) attacks</h3>
 
 <p>The OpenCms workplace and its dialogs are
@@ -294,18 +294,14 @@ and at the change password form (/opencms/opencms/system/workplace/commons/prefe
 
 <p>To prevent accessing cookies through
 Javascript, you could configure your application server  to use the HttpOnly flag
-when setting cookies.</p>
-
-<p>Though still an <a
+when setting cookies. Though still an <a
 href="http://tools.ietf.org/html/draft-ietf-httpstate-cookie-21">IETF draft</a>,
 the HttpOnly cookie is supported by most of the popular browsers. If in doubt,
 check <a href="http://www.browserscope.org/">http://www.browserscope.org/</a>.</p>
 
 <p>Alkacon Software recommends Tomcat 6.0 as
 an application server. OpenCms works &quot;out of the box&quot; with Tomcat 6.0
-and has been tested with it.</p>
-
-<p>If you use another application server (JBoss, BEA,
+and has been tested with it. If you use another application server (JBoss, BEA,
 Websphere, Glassfish or other), please check if HttpOnly cookies are supported.</p>
 
 <p>In Tomcat 6.0 the HttpOnly functionality can be enabled in
