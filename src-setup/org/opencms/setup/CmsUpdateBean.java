@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2011/03/23 14:52:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/24 10:04:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -169,7 +169,6 @@ public class CmsUpdateBean extends CmsSetupBean {
             Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
             return (Boolean)checkVersion.invoke(manager, version);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
