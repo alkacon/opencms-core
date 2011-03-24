@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/24 13:47:58 $
- * Version: $Revision: 1.1227 $
+ * Date   : $Date: 2011/03/24 14:07:37 $
+ * Version: $Revision: 1.1228 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.4 - March 24, 2011
+OpenCms 7.5.4 - March 28, 2011
 ! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
 ! The content tool "Change Property Values" now allows more than one placeholder
 ! FCKEditor compatible with Internet Explorer 9 and Firefox 4
