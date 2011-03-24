@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/24 11:50:30 $
- * Version: $Revision: 1.1226 $
+ * Date   : $Date: 2011/03/24 13:47:58 $
+ * Version: $Revision: 1.1227 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 7.5.4 - March 24, 2011
 ! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
 ! The content tool "Change Property Values" now allows more than one placeholder
+! FCKEditor compatible with Internet Explorer 9 and Firefox 4
 - Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
 - Added new optional CmsShell start parameter to load additional commands
 * Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
