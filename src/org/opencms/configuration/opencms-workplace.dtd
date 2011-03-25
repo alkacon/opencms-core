@@ -24,6 +24,7 @@
 	enableusermanagement?, 	
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
+	group-translation?,
 	maxfileuploadsize?, 
 	labeledfolders?,
 	workflow?,
@@ -242,6 +243,9 @@
 # depending on the default properties on structure setting.
 -->
 <!ELEMENT enableadvancedpropertytabs (#PCDATA)>
+
+<!ELEMENT group-translation EMPTY>
+<!ATTLIST group-translation class CDATA #REQUIRED>
 
 <!--
 # Limits the size of the files which can be uploaded

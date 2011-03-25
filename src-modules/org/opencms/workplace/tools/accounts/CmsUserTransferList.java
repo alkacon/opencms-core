@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,7 +329,8 @@ public class CmsUserTransferList extends A_CmsListDialog {
                     // groups
                     Iterator itGroups = getCms().getGroupsOfUser(userName, false).iterator();
                     while (itGroups.hasNext()) {
-                        html.append(((CmsGroup)itGroups.next()).getName());
+                        String groupName = ((CmsGroup)itGroups.next()).getName();
+                        html.append(OpenCms.getWorkplaceManager().translateGroupName(groupName, true));
                         if (itGroups.hasNext()) {
                             html.append("<br>");
                         }

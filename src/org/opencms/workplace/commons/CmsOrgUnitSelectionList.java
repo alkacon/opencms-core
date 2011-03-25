@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2011/03/16 09:43:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/25 08:13:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -104,7 +104,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_ORGUNITSELECTION_LIST_NAME_0),
             LIST_COLUMN_PATH,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_PATH);
+            null);
     }
 
     /**

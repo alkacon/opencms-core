@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2011/02/14 11:46:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/25 08:13:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,13 +82,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsChacc extends CmsDialog {
-
-    private static final String UNKNOWN_TYPE = "Unknown";
 
     /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
@@ -140,6 +138,8 @@ public class CmsChacc extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChacc.class);
+
+    private static final String UNKNOWN_TYPE = "Unknown";
 
     /** PermissionSet of the current user for the resource. */
     private CmsPermissionSet m_curPermissions;
@@ -1432,9 +1432,10 @@ public class CmsChacc extends CmsDialog {
         if ((principal != null) && (principal instanceof CmsHistoryPrincipal)) {
             // there is a history principal entry, handle it
             if (principal.isGroup()) {
+                String niceName = OpenCms.getWorkplaceManager().translateGroupName(principal.getName(), false);
                 name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
                     ((CmsHistoryPrincipal)principal).getDescription(),
-                    principal.getSimpleName()});
+                    niceName});
                 ou = CmsOrganizationalUnit.getParentFqn(id);
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
             } else {
@@ -1443,9 +1444,10 @@ public class CmsChacc extends CmsDialog {
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
             }
         } else if ((principal != null) && principal.isGroup()) {
+            String niceName = OpenCms.getWorkplaceManager().translateGroupName(principal.getName(), false);
             name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
                 ((CmsGroup)principal).getDescription(getLocale()),
-                principal.getSimpleName()});
+                niceName});
             ou = CmsOrganizationalUnit.getParentFqn(id);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
         } else if ((principal != null) && principal.isUser()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/25 08:13:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
@@ -106,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,6 +195,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The configured workplace galleries. */
     private Map m_galleries;
+
+    /** The group translation. */
+    private I_CmsGroupNameTranslation m_groupNameTranslation;
+
+    /** The configured group translation class name. */
+    private String m_groupTranslationClass;
 
     /** Contains all folders that should be labeled if siblings exist. */
     private List<String> m_labelSiteFolders;
@@ -860,6 +867,47 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public Map getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Returns the object used for translating group names.<p>
+     * 
+     * @return the group name translator 
+     */
+    public I_CmsGroupNameTranslation getGroupNameTranslation() {
+
+        if (m_groupNameTranslation != null) {
+            return m_groupNameTranslation;
+        }
+        if (m_groupTranslationClass != null) {
+            try {
+                m_groupNameTranslation = (I_CmsGroupNameTranslation)Class.forName(m_groupTranslationClass).newInstance();
+                return m_groupNameTranslation;
+            } catch (ClassNotFoundException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            } catch (IllegalAccessException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            } catch (InstantiationException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            } catch (ClassCastException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            m_groupNameTranslation = getDefaultGroupNameTranslation();
+            return m_groupNameTranslation;
+        } else {
+            m_groupNameTranslation = getDefaultGroupNameTranslation();
+            return m_groupNameTranslation;
+        }
+    }
+
+    /**
+     * Returns the configured class name for translating group names.<p>
+     * 
+     * @return the group translation class name 
+     */
+    public String getGroupTranslationClass() {
+
+        return m_groupTranslationClass;
     }
 
     /**
@@ -1538,6 +1586,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Sets the group translation class name.<p>
+     * 
+     * @param translationClassName the group translation class name 
+     */
+    public void setGroupTranslationClass(String translationClassName) {
+
+        m_groupTranslationClass = translationClassName;
+    }
+
+    /**
      * Sets the configured multi context menu to use in the Explorer view.<p>
      * 
      * @param multiContextMenu the configured multi context menu to use in the Explorer view
@@ -1612,6 +1670,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Translates a group name using the configured {@link I_CmsGroupNameTranslation}.<p>
+     * 
+     * @param groupName the group name 
+     * @param keepOu if true, the OU will be appended to the translated name
+     *  
+     * @return the translated group name 
+     */
+    public String translateGroupName(String groupName, boolean keepOu) {
+
+        I_CmsGroupNameTranslation translation = getGroupNameTranslation();
+        return translation.translateGroupName(groupName, keepOu);
+    }
+
+    /**
      * Creates a copy of the admin cms object which is initialize with the data of the current cms object.<p>
      * 
      * @param cms the current cms object
@@ -1628,6 +1700,27 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         adminCms.getRequestContext().setEncoding(cms.getRequestContext().getEncoding());
         adminCms.getRequestContext().setUri(cms.getRequestContext().getUri());
         return adminCms;
+    }
+
+    /** 
+     * Returns a dummy group name translation which leaves the group names unchanged.<p>
+     * 
+     * @return a dummy group name translation 
+     */
+    private I_CmsGroupNameTranslation getDefaultGroupNameTranslation() {
+
+        return new I_CmsGroupNameTranslation() {
+
+            public String translateGroupName(String group, boolean keepOu) {
+
+                return keepOu ? group : CmsOrganizationalUnit.getSimpleName(group);
+            }
+
+            public String translateGroupName(String group, String defaultValue) {
+
+                return defaultValue;
+            }
+        };
     }
 
     /**

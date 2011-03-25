@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupTransferList.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +81,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DESCRIPTION = "cc";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdis";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
@@ -146,9 +149,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
             jsp,
             listId,
             Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_NAME_0),
-            LIST_COLUMN_NAME,
+            LIST_COLUMN_DISPLAY,
             CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_NAME);
+            LIST_COLUMN_DISPLAY);
     }
 
     /**
@@ -314,6 +317,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
             }
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
+            item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), true));
             item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             try {
                 item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
@@ -355,20 +359,24 @@ public class CmsGroupTransferList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(transferCol);
 
-        // create column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
-        nameCol.setWidth("20%");
+        nameCol.setVisible(false);
+
+        // create column for name
+        CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
+        displayCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
+        displayCol.setWidth("20%");
 
         // create default transfer action
         CmsListDefaultAction defTransferAction = new CmsListDefaultAction(LIST_DEFACTION_TRANSFER);
         defTransferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0));
         defTransferAction.setHelpText(Messages.get().container(
             Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0));
-        nameCol.addDefaultAction(defTransferAction);
+        displayCol.addDefaultAction(defTransferAction);
 
         // add it to the list definition
-        metadata.addColumn(nameCol);
+        metadata.addColumn(displayCol);
 
         // add column for description
         CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
@@ -390,7 +398,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
         // add user users details
         CmsListItemDetails usersDetails = new CmsListItemDetails(LIST_DETAIL_USERS);
-        usersDetails.setAtColumn(LIST_COLUMN_NAME);
+        usersDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         usersDetails.setVisible(false);
         usersDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_USERS_NAME_0));
         usersDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_USERS_HELP_0));
@@ -403,7 +411,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
         // add user children details
         CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDREN);
-        childDetails.setAtColumn(LIST_COLUMN_NAME);
+        childDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         childDetails.setVisible(false);
         childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0));
         childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,11 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
         return m_group.getSimpleName();
     }
 
+    public String getNiceName() {
+
+        return OpenCms.getWorkplaceManager().translateGroupName(m_group.getName(), false);
+    }
+
     /**
      * Returns the user id parameter value.<p>
      * 
@@ -192,6 +197,16 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     public void setName(String name) {
 
         name.length();
+    }
+
+    /**
+     * Dummy setter for the nice name property.<p>
+     * 
+     * @param name a name string
+     */
+    public void setNiceName(String name) {
+
+        // if this method doesn't exist, the constructor of CmsWidgetDialogParameter throws an exception; not sure why  
     }
 
     /**
@@ -289,7 +304,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "niceName", "name", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));

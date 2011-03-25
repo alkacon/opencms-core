@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.3 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -56,7 +57,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,13 +125,9 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(
-            jsp,
-            listId,
-            listName,
-            LIST_COLUMN_DISPLAY,
-            CmsListOrderEnum.ORDER_ASCENDING,
-            searchable ? LIST_COLUMN_DISPLAY : null);
+        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_DISPLAY
+        : null);
     }
 
     /**
@@ -257,7 +254,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsGroup group = (CmsGroup)itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
+            item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
             item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + group.getOuFqn());
             ret.add(item);

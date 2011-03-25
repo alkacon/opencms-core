@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2009/11/12 07:31:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -258,7 +258,8 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
                     Iterator itGroupsOrgUnit = groupsOrgUnit.iterator();
                     while (itGroupsOrgUnit.hasNext()) {
                         CmsGroup group = (CmsGroup)itGroupsOrgUnit.next();
-                        html.append(group.getSimpleName());
+                        String niceGroupName = OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false);
+                        html.append(niceGroupName);
                         if (itGroupsOrgUnit.hasNext()) {
                             html.append("<br>");
                         }

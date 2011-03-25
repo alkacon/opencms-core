@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2009/09/11 15:29:13 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.6 
  */
@@ -139,6 +139,23 @@ public class CmsOrganizationalUnit {
             fqn = fqn.substring(CmsOrganizationalUnit.SEPARATOR.length());
         }
         return fqn;
+    }
+
+    /**
+     * Prefixes a simple name with an OU.<p>
+     * 
+     * @param ou the OU to use as a prefix 
+     * @param principal the simple name to which the OU should be prepended
+     * 
+     * @return the FQN 
+     */
+    public static String prefixWithOu(String ou, String principal) {
+
+        String result = CmsStringUtil.joinPaths(ou, principal);
+        if (result.startsWith("/")) {
+            result = result.substring(1);
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsGroupSelectionList.java,v $
- * Date   : $Date: 2011/03/16 09:43:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_SELECT = "js";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdis";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
@@ -104,7 +107,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
             jsp,
             LIST_ID,
             Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_NAME_0),
-            LIST_COLUMN_NAME,
+            LIST_COLUMN_DISPLAY,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
     }
@@ -278,6 +281,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
             CmsGroup group = (CmsGroup)itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
+            item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), true));
             ret.add(item);
         }
         return ret;
@@ -305,10 +309,15 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(iconCol);
 
-        // create column for login
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_COLS_NAME_0));
-        nameCol.setWidth("100%");
+        nameCol.setVisible(false);
+        metadata.addColumn(nameCol);
+
+        // create column for login
+        CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
+        displayCol.setName(Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_COLS_NAME_0));
+        displayCol.setWidth("100%");
         CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
 
             /**
@@ -323,9 +332,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         };
         selectAction.setName(Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_ACTION_SELECT_NAME_0));
         selectAction.setHelpText(Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_ACTION_SELECT_HELP_0));
-        nameCol.addDefaultAction(selectAction);
+        displayCol.addDefaultAction(selectAction);
         // add it to the list definition
-        metadata.addColumn(nameCol);
+        metadata.addColumn(displayCol);
     }
 
     /**
@@ -343,7 +352,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no-op        
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
+        searchAction.setCaseInSensitive(true);
+        metadata.setSearchAction(searchAction);
     }
 
     /**

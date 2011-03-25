@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -404,7 +404,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             CmsGroup group = (CmsGroup)itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
+            item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
             item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             ret.add(item);
         }

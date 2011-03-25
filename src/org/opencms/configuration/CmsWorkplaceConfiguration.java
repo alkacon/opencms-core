@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software GmbH, please see the
- * company website: http://www.alkacon.com
+ * company website: http://www.alkacon.com 
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -321,6 +321,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the gallery preferences node. */
     public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
+
+    /** The node name of the group-translation node. */
+    public static final String N_GROUP_TRANSLATION = "group-translation";
 
     /** The node name of the helptext node. */
     public static final String N_HELPTEXT = "helptext";
@@ -863,6 +866,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "setEnableAdvancedPropertyTabs",
             0);
 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, "setGroupTranslationClass", 1);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, 0, A_CLASS);
+
         // add rules for dialog handlers
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER,
@@ -1097,6 +1103,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             String.valueOf(m_workplaceManager.isDefaultPropertiesOnStructure()));
         workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS).setText(
             String.valueOf(m_workplaceManager.isEnableAdvancedPropertyTabs()));
+
+        String groupTranslationClass = m_workplaceManager.getGroupTranslationClass();
+        if (groupTranslationClass != null) {
+            Element groupTranslationElement = workplaceElement.addElement(N_GROUP_TRANSLATION);
+            groupTranslationElement.addAttribute(A_CLASS, groupTranslationClass);
+        }
+
         workplaceElement.addElement(N_MAXUPLOADSIZE).setText(String.valueOf(m_workplaceManager.getFileMaxUploadSize()));
 
         // add <labeledfolders> resource list
@@ -1828,6 +1841,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the new created block
         digester.addSetNext(rulePath, "addBlock");
     }
+
 
     /**
      * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2011/03/16 09:43:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/25 08:13:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.workplace.I_CmsGroupNameTranslation;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -76,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -400,7 +401,13 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             I_CmsPrincipal principal = (I_CmsPrincipal)itPrincipals.next();
             CmsListItem item = getList().newItem(principal.getId().toString());
             item.set(LIST_COLUMN_NAME, principal.getName());
-            item.set(LIST_COLUMN_DISPLAY, principal.getSimpleName());
+
+            I_CmsGroupNameTranslation translation = OpenCms.getWorkplaceManager().getGroupNameTranslation();
+            if (principal.isGroup()) {
+                item.set(LIST_COLUMN_DISPLAY, translation.translateGroupName(principal.getName(), false));
+            } else {
+                item.set(LIST_COLUMN_DISPLAY, principal.getSimpleName());
+            }
             if (principal.isUser()) {
                 if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)
                     || principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
