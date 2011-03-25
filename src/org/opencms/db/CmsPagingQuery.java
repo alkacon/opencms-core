@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPagingQuery.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/25 09:50:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,22 +39,45 @@ package org.opencms.db;
  * @see "http://troels.arvin.dk/db/rdbms/#select-limit-offset"
  * 
  * @author Georg Westenberger
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 8.0.0
  */
 public class CmsPagingQuery implements I_CmsQueryFragment {
 
-    /** The wrapped query. */
-    private CmsSelectQuery m_select;
-
-    /** The page size. */
-    private int m_pageSize;
+    /** Flag which indicates whether subqueries should be named. */
+    private boolean m_nameSubquery;
 
     /** The current page. */
     private int m_page;
 
+    /** The page size. */
+    private int m_pageSize;
+
+    /** The wrapped query. */
+    private CmsSelectQuery m_select;
+
     /** If true, use window functions, else use a LIMIT/OFFSET clause. */
     private boolean m_useWindowFunctions;
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param select the wrapped query 
+     */
+    public CmsPagingQuery(CmsSelectQuery select) {
+
+        m_select = select;
+    }
+
+    /**
+     * Enables or disables the naming of subqueries.<p>
+     *  
+     * @param nameSubquery if true, enables naming of subqueries 
+     */
+    public void setNameSubquery(boolean nameSubquery) {
+
+        m_nameSubquery = nameSubquery;
+    }
 
     /**
      * Sets both the page size and current page to use for the query.<p>
@@ -77,29 +100,6 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
         m_useWindowFunctions = useWindowFunctions;
     }
-
-    /**
-     * Creates a new instance.<p>
-     * 
-     * @param select the wrapped query 
-     */
-    public CmsPagingQuery(CmsSelectQuery select) {
-
-        m_select = select;
-    }
-
-    /**
-     * Enables or disables the naming of subqueries.<p>
-     *  
-     * @param nameSubquery if true, enables naming of subqueries 
-     */
-    public void setNameSubquery(boolean nameSubquery) {
-
-        m_nameSubquery = nameSubquery;
-    }
-
-    /** Flag which indicates whether subqueries should be named. */
-    private boolean m_nameSubquery;
 
     /**
      * @see org.opencms.db.I_CmsQueryFragment#visit(org.opencms.db.CmsStatementBuilder)

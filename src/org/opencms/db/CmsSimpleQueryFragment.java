@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSimpleQueryFragment.java,v $
- * Date   : $Date: 2011/03/15 17:33:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/25 09:50:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -55,18 +55,6 @@ public class CmsSimpleQueryFragment implements I_CmsQueryFragment {
     /**
      * Creates a new instance.<p>
      * 
-     * @param fragment the SQL fragment  
-     * @param params the query parameters 
-     */
-    public CmsSimpleQueryFragment(String fragment, Object... params) {
-
-        m_fragment = fragment;
-        m_params = Arrays.asList(params);
-    }
-
-    /**
-     * Creates a new instance.<p>
-     * 
      * @param fragment the SQL fragment 
      * @param params the query parameters 
      */
@@ -74,6 +62,18 @@ public class CmsSimpleQueryFragment implements I_CmsQueryFragment {
 
         m_fragment = fragment;
         m_params = params;
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param fragment the SQL fragment  
+     * @param params the query parameters 
+     */
+    public CmsSimpleQueryFragment(String fragment, Object... params) {
+
+        m_fragment = fragment;
+        m_params = Arrays.asList(params);
     }
 
     /**

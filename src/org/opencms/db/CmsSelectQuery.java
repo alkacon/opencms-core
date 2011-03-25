@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSelectQuery.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/25 09:50:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,14 +90,14 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
     /** The result ordering. */
     private I_CmsQueryFragment m_ordering;
 
+    /** SQL clauses which will be added after the other ones. */
+    private CmsCompositeQueryFragment m_otherClauses = new CmsCompositeQueryFragment();
+
     /** The tables from which the data should be fetched. */
     private List<String> m_tables = Lists.newArrayList();
 
     /** The table aliases which have already been used. */
     private Set<String> m_usedAliases = new HashSet<String>();
-
-    /** SQL clauses which will be added after the other ones. */
-    private CmsCompositeQueryFragment m_otherClauses = new CmsCompositeQueryFragment();
 
     /**
      * Creates a new instance.<p>
@@ -112,13 +112,13 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
     }
 
     /**
-     * Adds an expression which should be added as a column in the result set.<p>
+     * Adds another clause to the query.<p>
      * 
-     * @param column the expression which should be added as a column  
+     * @param clause the clause to add 
      */
-    public void addColumn(String column) {
+    public void addClause(I_CmsQueryFragment clause) {
 
-        m_columns.add(new CmsSimpleQueryFragment(column, Collections.<Object> emptyList()));
+        m_otherClauses.add(clause);
     }
 
     /**
@@ -129,6 +129,16 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
     public void addColumn(I_CmsQueryFragment node) {
 
         m_columns.add(node);
+    }
+
+    /**
+     * Adds an expression which should be added as a column in the result set.<p>
+     * 
+     * @param column the expression which should be added as a column  
+     */
+    public void addColumn(String column) {
+
+        m_columns.add(new CmsSimpleQueryFragment(column, Collections.<Object> emptyList()));
     }
 
     /**
@@ -179,6 +189,16 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
     }
 
     /**
+     * Returns the fragment for the ORDER BY clause.<p>
+     * 
+     * @return the fragment for the ORDER BY clause 
+     */
+    public I_CmsQueryFragment getOrdering() {
+
+        return m_ordering;
+    }
+
+    /**
      * Sets the SQL used for the ORDER BY clause.<p>
      * 
      * @param ordering the SQL used for the ORDER BY clause
@@ -190,16 +210,6 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
         } else {
             m_ordering = null;
         }
-    }
-
-    /**
-     * Returns the fragment for the ORDER BY clause.<p>
-     * 
-     * @return the fragment for the ORDER BY clause 
-     */
-    public I_CmsQueryFragment getOrdering() {
-
-        return m_ordering;
     }
 
     /**
@@ -245,16 +255,6 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
         m_usedAliases.add(result);
         return result;
 
-    }
-
-    /**
-     * Adds another clause to the query.<p>
-     * 
-     * @param clause the clause to add 
-     */
-    public void addClause(I_CmsQueryFragment clause) {
-
-        m_otherClauses.add(clause);
     }
 
 }

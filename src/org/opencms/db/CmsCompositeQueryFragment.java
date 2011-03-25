@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCompositeQueryFragment.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/25 09:50:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.common.collect.Lists;
  * A query fragment which aggregates the results from a list of other query fragments.<p>
  * 
  * @author Georg Westenberger
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 8.0.0
  */
 public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
@@ -48,8 +48,14 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
     /** The list of query fragments which should be aggregated. */
     private List<I_CmsQueryFragment> m_fragments = Lists.newArrayList();
 
+    /** The prefix string. */
+    private String m_prefix;
+
     /** The separator string which should be inserted between the SQL of each constituent query fragment. */
     private String m_separator;
+
+    /** The suffix string. */
+    private String m_suffix;
 
     /**
      * Adds a new query fragment.<p>
@@ -72,6 +78,16 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
     }
 
     /**
+     * Sets the prefix string (will be inserted before the other fragments).<p>
+     * 
+     * @param prefix the prefix string 
+     */
+    public void setPrefix(String prefix) {
+
+        m_prefix = prefix;
+    }
+
+    /**
      * Sets the separator which should be inserted between the constituent query fragments.<p>
      * 
      * @param separator the separator string  
@@ -79,6 +95,16 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
     public void setSeparator(String separator) {
 
         m_separator = separator;
+    }
+
+    /**
+     * Sets the suffix string (will be inserted after the other fragments).<p>
+     * 
+     * @param suffix the suffix string 
+     */
+    public void setSuffix(String suffix) {
+
+        m_suffix = suffix;
     }
 
     /**
@@ -102,30 +128,4 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
             builder.add(m_suffix);
         }
     }
-
-    /**
-     * Sets the prefix string (will be inserted before the other fragments).<p>
-     * 
-     * @param prefix the prefix string 
-     */
-    public void setPrefix(String prefix) {
-
-        m_prefix = prefix;
-    }
-
-    /**
-     * Sets the suffix string (will be inserted after the other fragments).<p>
-     * 
-     * @param suffix the suffix string 
-     */
-    public void setSuffix(String suffix) {
-
-        m_suffix = suffix;
-    }
-
-    /** The prefix string. */
-    private String m_prefix;
-
-    /** The suffix string. */
-    private String m_suffix;
 }
