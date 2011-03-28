@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -58,9 +59,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /** The image class. */
     private String m_imageClass;
-
-    /** Show border flag. */
-    private boolean m_showBorder;
 
     /** The button size. */
     private I_CmsButton.Size m_size;
@@ -81,7 +79,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-        setShowBorder(true);
+        setButtonStyle(ButtonStyle.TEXT);
         setSize(I_CmsButton.Size.medium);
     }
 
@@ -191,16 +189,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     }
 
     /**
-     * Checks if the button has borders.<p>
-     *
-     * @return <code>true</code> if the button has borders
-     */
-    public boolean isShowBorder() {
-
-        return m_showBorder;
-    }
-
-    /**
      * Checks if the button is constraint to a minimal width.<p>
      *
      * @return <code>true</code> if the button is constraint to a minimal width
@@ -208,6 +196,20 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     public boolean isUseMinWidth() {
 
         return m_useMinWidth;
+    }
+
+    /**
+     * Sets the button style.<p>
+     * 
+     * @param style the style to set
+     */
+    public void setButtonStyle(I_CmsButton.ButtonStyle style) {
+
+        setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
+        addStyleName(style.getCssClassName());
+        if (m_size != null) {
+            addStyleName(m_size.getCssClassName());
+        }
     }
 
     /**
@@ -263,31 +265,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     public void setImageClass(String imageClass) {
 
         setUpFace(m_text, imageClass);
-    }
-
-    /**
-     * Tells the button to use or not borders.<p>
-     *
-     * @param showBorder <code>true</code> to use borders
-     */
-    public void setShowBorder(boolean showBorder) {
-
-        if (showBorder != m_showBorder) {
-            if (showBorder) {
-                // removing old style
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
-                //setting new style
-                addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-                addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            } else {
-                // removing old style
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-                //setting new style
-                addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
-            }
-            m_showBorder = showBorder;
-        }
     }
 
     /**

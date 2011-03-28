@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/03/22 15:03:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -48,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -68,7 +69,7 @@ public class CmsMenuListItem extends CmsListItem {
         setId(element.getClientId());
         m_deleteButton = new CmsPushButton();
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        m_deleteButton.setShowBorder(false);
+        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         m_deleteButton.addClickHandler(new ClickHandler() {
 

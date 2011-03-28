@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoSubSitemapButton.java,v $
- * Date   : $Date: 2011/03/18 10:46:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -46,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -61,7 +62,7 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGotoSub());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0));
-        setShowBorder(false);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         setVisible(false);
         addClickHandler(new ClickHandler() {
 

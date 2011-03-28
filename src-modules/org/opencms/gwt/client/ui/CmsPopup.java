@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/03/01 14:32:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -87,6 +87,8 @@ public class CmsPopup implements I_CmsAutoHider {
         m_dialog.setWidth(width + Unit.PX.toString());
         m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
         m_main = new FlowPanel();
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_dialog.setWidget(m_main);
     }
 

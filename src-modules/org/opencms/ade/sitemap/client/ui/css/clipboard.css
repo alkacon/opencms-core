@@ -1,9 +1,5 @@
 @external gwt-TabLayoutPanel;
 
-.clipboardTabPanel{
-	margin:10px 8px 8px;
-}
-
 .itemList.clipboardList{
 	max-height: 385px;
 }

@@ -4,7 +4,6 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{style.menuButtonCss.menu}">
-		<div ui:field="m_menuConnect" class="{style.menuButtonCss.connect} {style.menuButtonCss.hidden} {style.generalCss.cornerTop}"></div>
 		<cms:CmsPushButton ui:field="m_button" addStyleNames="{style.menuButtonCss.button}"></cms:CmsPushButton>
 	</g:HTMLPanel>
 </ui:UiBinder> 

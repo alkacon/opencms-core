@@ -16,28 +16,7 @@
         display: inline-block;
     }
 }
-.menu.toolbarMode .connect{
-	background: value("constants.css.backgroundColorToolBarMenuConnect");
-	height:35px;
-	width:50px;
-}
 
-.menu .connect{
-	background: value("constants.css.backgroundColorMenu");
-	border: 1px solid value("constants.css.borderColor");
-	position: absolute;
-	top: -2px;
-	left: -2px;
-	height: 35px;
-	z-index: 0;
-}
-.menu.showAbove .connect{
-	bottom: -2px;
-	top: auto;
-}
-.menu .connect.hidden{
-	display: none;	
-}
 .menu .button{
 	position: relative;
 }

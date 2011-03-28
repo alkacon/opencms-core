@@ -5,11 +5,12 @@
 	margin: 0 auto;
 }
 
-.root {
-	background-color: value("constants.css.backgroundColorSitemap");
+@sprite .root {
+	gwt-image: "backgrounds.sitemapBackground";
 	font-family: value("constants.css.fontFamily");
 	position: relative;
 	margin: 0;
+	overflow: auto;
 }
 
 @if user.agent ie6 {
@@ -17,5 +18,3 @@
 		zoom: 1; 
 	}
 }
-
-	

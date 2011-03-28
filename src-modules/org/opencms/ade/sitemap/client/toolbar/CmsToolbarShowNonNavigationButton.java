@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarShowNonNavigationButton.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.CmsSitemapView.EditorMode;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -44,7 +45,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -55,8 +56,9 @@ public class CmsToolbarShowNonNavigationButton extends CmsToggleButton {
      */
     public CmsToolbarShowNonNavigationButton() {
 
-        setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.SITEMAP.getIconClass());
         setTitle("Show non navigation resources");
+        setButtonStyle(ButtonStyle.MENU);
 
         addClickHandler(new ClickHandler() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -79,7 +80,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     public CmsRadioButton() {
 
         m_button.setUseMinWidth(false);
-        m_button.setShowBorder(false);
+        m_button.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_button.setImageClass(CSS.radioButtonImage());
         setHorizontalAlignment(ALIGN_RIGHT);
 

@@ -21,7 +21,7 @@
 			margin-bottom: 4px;
 		}
 	</ui:style>
-	<g:FlowPanel addStyleNames="{containerpage.containerpageCss.clipboardTabPanel}">
+	<g:FlowPanel addStyleNames="{resources.tabbedPanelCss.tabPanel}">
 		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
 		<cms:CmsList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
 		<g:FlowPanel ui:field="m_buttonEditingPanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_saveButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /><cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>

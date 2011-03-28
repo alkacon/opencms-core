@@ -1,6 +1,6 @@
 .popup{
     z-index: 500;
-    padding: 3px;
+    /* padding: 3px; */
 }
 
 .popup *{
@@ -24,12 +24,44 @@
 	width: 100%;
 	z-index: 10;
 }
-.popup .popupContent{
+@sprite .popup .popupContent{
+	gwt-image: "backgrounds.dialogBackground";
+	background-position: top;
+    height: auto;
+    /** This background behaves like a border. */
+    background-color: value("constants.css.borderColorDialog");
+    background-repeat:repeat-x;
+    padding: 5px;
     position: relative;
-    background: value("constants.css.backgroundColorDialog");
-    border: solid 1px value("constants.css.borderColor");
+    border: solid 1px value("constants.css.borderColorDialog");
     font-family: value("constants.css.fontFamily");
 }
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	.popup .popupContent{
+		-moz-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
+	}
+} @elif user.agent safari {
+	.popup .popupContent{
+		-webkit-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
+	}
+} @elif user.agent opera {
+	.popup .popupContent{
+		box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
+	}
+} @elif user.agent ie6 {
+	.popup .popupContent{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
+		/** filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"); */
+	}
+} @elif user.agent ie8 {
+	.popup .popupContent{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
+	}
+}
+
 .popupOverlay{
     background: value("constants.css.backgroundColorOverlay");
     z-index: 450;
@@ -40,18 +72,34 @@
     z-index: 0;
     top: 0px;
     left: 0px;
-    background: value("constants.css.backgroundColorPopupShadow");
 }
 
-.popupMainContent{
+@sprite .popupMainContent{
+	gwt-image: "backgrounds.dialogBackgroundTop";
+	background-color: value("constants.css.backgroundColorDialog");
+	background-position: top;
+    background-repeat: repeat-x;
+	height: auto;
     font-size: value("constants.css.fontSize");
-    padding: 5px;
+    padding: 7px 5px 5px 5px;
     position:relative;
 }
 
 .contentSpacer{
 	margin-top: 5px;
 	margin-bottom: 10px;
+}
+
+@sprite .menuArrowTop {
+	gwt-image: "gwtImages.menuArrowTopImage";
+	position: absolute;
+	z-index: 3000;
+}
+
+@sprite .menuArrowBottom {
+	gwt-image: "gwtImages.menuArrowBottomImage";
+	position: absolute;
+	z-index: 3000;
 }
 
 .contentConnect{
@@ -73,16 +121,14 @@
 	display: none;
 }
 
-@sprite .popupHead, .caption{
+.popupHead, .caption{
+	color: value("constants.css.textColorCation");
     font-size: value("constants.css.fontSizeBig");
     font-weight: bold;
     cursor: move;
-    padding:5px;
-    gwt-image: "backgrounds.stateBackground"; 
-    background-position: 50% 50%; 
+    padding: 0px 5px 5px 5px;
     height: auto; 
     white-space: nowrap;
-    background-color: value("constants.css.backgroundColorStateStandard");
 }
 .popupButtonPanel{
     margin-top: 5px;
@@ -90,14 +136,6 @@
 }
 .popupButtonPanel>div{
 	margin-left: 4px;
-}
-
-.popup.menuPopup .popupContent{
-    /** removing rounded corner top-left **/
-    -moz-border-radius-topleft: 0px;
-    -webkit-border-radius-topleft: 0px;
-    border-radius-topright: 0px;
-    border-top: none;
 }
 
 @if user.agent ie6 {

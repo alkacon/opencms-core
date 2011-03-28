@@ -12,7 +12,7 @@
 			margin-bottom: 4px;
 		}
 	</ui:style>
-	<g:FlowPanel styleName="{containerpage.containerpageCss.clipboardTabPanel}">
+	<g:FlowPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
 		<cms:CmsList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
 	</g:FlowPanel>

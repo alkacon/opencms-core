@@ -5,6 +5,27 @@
 .cmsState.cmsState-up-disabled{ cursor: auto; }
 .cmsHovering{}
 
+.spacerRight {
+	margin-right: 4px;
+}
+
+.spacerLeft {
+	margin-left: 4px;
+}
+
+.html-face span{
+	display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.cmsTransparentButton{
+    display: inline-block;
+    vertical-align: top;
+    outline: none;
+    cursor: pointer;
+}
+
 .cmsTextButton { 
     border-width:1px;
     border-style: solid;
@@ -16,28 +37,25 @@
     text-align: center;
 }
 
-.spacerRight {
-	margin-right: 4px;
+.cmsMenuButton, .cmsImageButton { 
+    padding: 2px 4px;
+    display: inline-block;
+    vertical-align: middle;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
 }
 
-.spacerLeft {
-	margin-left: 4px;
-}
-
-.cmsTextButton .html-face{
+.cmsTextButton .html-face, .cmsMenuButton .html-face, .cmsImageButton .html-face{
 	font-family: inherit;
 	font-size: inherit;
 	color: inherit;
 }
-.cmsImageButtonTransparent{
-    display: inline-block;
-    vertical-align: top;
-    outline: none;
-    cursor: pointer;
-}
+
+
 
 @if user.agent ie6 {
-    .cmsTextButton, .cmsImageButtonTransparent{
+    .cmsTextButton, .cmsTransparentButton, .cmsMenuButton, .cmsImageButton{
         white-space: nowrap;
         display: inline;
         vertical-align: middle;
@@ -47,7 +65,7 @@
         overflow: visible !important;
     }
 } @else {
-    .cmsTextButton, .cmsTextButton div, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
+    .cmsTextButton, .cmsTextButton div, .cmsTransparentButton, .cmsTransparentButton div, .cmsMenuButton, .cmsMenuButton div, .cmsImageButton, .cmsImageButton div{
         display: inline-block;
         white-space: nowrap;
         vertical-align: middle;
@@ -57,18 +75,12 @@
     }
 }
 
-.html-face span{
-	display: inline-block;
-    white-space: nowrap;
-    vertical-align: middle;
-}
-
-.cmsTextButton.cmsButtonBig{
+.cmsTextButton.cmsButtonBig, .cmsMenuButton.cmsButtonBig, .cmsImageButton.cmsButtonBig{
     padding: 2px 4px;
     line-height: 16px;
 }
 
-.cmsTextButton.cmsButtonSmall{
+.cmsTextButton.cmsButtonSmall, .cmsMenuButton.cmsButtonSmall, .cmsImageButton.cmsButtonSmall{
     padding: 2px 2px;
     line-height: 12px;
 }
@@ -92,8 +104,75 @@
 	gwt-image: "backgrounds.stateBackground"; 
 	background-position: 50% 50%; 
 	background-color: value("constants.css.backgroundColorStateHover");
-	height: auto;}
+	height: auto;
+}
 @sprite .cmsTextButton.cmsState-down{
+	gwt-image: "backgrounds.stateBackground"; 
+	background-position: 50% 50%;
+	background-color: value("constants.css.backgroundColorStateActive");
+	height: auto;
+}
+
+.cmsMenuButton.cmsState-up-disabled{
+    border-width:1px;
+    border-style: solid;
+    border-color: transparent;
+	background-color: transparent;
+    height: auto;
+}
+.cmsMenuButton.cmsState-up{
+    border-width:1px;
+    border-style: solid;
+    border-color: transparent;
+	background-color: transparent;
+	height: auto;
+} 
+@sprite .cmsMenuButton.cmsState-down-hovering, .cmsMenuButton.cmsState-up-hovering{
+    border-width:1px;
+    border-style: solid;
+	gwt-image: "backgrounds.stateBackground"; 
+	background-position: 50% 50%; 
+	background-color: value("constants.css.backgroundColorStateHover");
+	height: auto;
+}
+.cmsMenuButton.cmsState-down{
+    /** border-width:1px;
+    border-style: solid;
+	gwt-image: "backgrounds.stateBackground"; 
+	background-position: 50% 50%;
+	background-color: value("constants.css.backgroundColorStateActive");*/
+    border-width:1px;
+    border-style: solid;
+    border-color: transparent;
+	background-color: transparent;
+	height: auto;
+}
+
+.cmsImageButton.cmsState-up-disabled{
+    border-width:1px;
+    border-style: solid;
+    border-color: transparent;
+	background-color: transparent;
+    height: auto;
+}
+.cmsImageButton.cmsState-up{
+    border-width:1px;
+    border-style: solid;
+    border-color: transparent;
+	background-color: transparent;
+	height: auto;
+} 
+@sprite .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering{
+    border-width:1px;
+    border-style: solid;
+	gwt-image: "backgrounds.stateBackground"; 
+	background-position: 50% 50%; 
+	background-color: value("constants.css.backgroundColorStateHover");
+	height: auto;
+}
+.cmsImageButton.cmsState-down{
+    border-width:1px;
+    border-style: solid;
 	gwt-image: "backgrounds.stateBackground"; 
 	background-position: 50% 50%;
 	background-color: value("constants.css.backgroundColorStateActive");

@@ -93,9 +93,6 @@
 		-moz-border-radius-topleft: value("constants.css.borderRadius");
 		-moz-border-radius-topright: value("constants.css.borderRadius");
 	}
-	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
-	    -moz-border-radius-topleft: 0px;
-	}
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.cmsMenuBar, .menuPanel{
@@ -109,9 +106,6 @@
 		-webkit-border-top-left-radius: value("constants.css.borderRadius");
 		-webkit-border-top-right-radius: value("constants.css.borderRadius");
 	}
-	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
-    	-webkit-border-radius-topleft: 0px;
-	}
 } @elif user.agent opera {
 	/** opera */
 	.cmsMenuBar, .menuPanel{
@@ -124,8 +118,5 @@
 	.cmsMenuBar .cmsMenuItem:first-child{
 		border-top-left-radius: value("constants.css.borderRadius");
 		border-top-right-radius: value("constants.css.borderRadius");
-	}
-	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
-		border-top-left-radius: 0px;
 	}
 }

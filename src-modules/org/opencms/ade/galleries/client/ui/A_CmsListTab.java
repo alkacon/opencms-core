@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/03/18 10:17:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDia
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -223,7 +224,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         uploadButton.setTargetFolder(target);
         uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
         uploadButton.setText(null);
-        uploadButton.setShowBorder(false);
+        uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT);
         uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
         return uploadButton;
     }

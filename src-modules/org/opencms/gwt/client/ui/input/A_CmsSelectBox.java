@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
@@ -75,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -167,7 +168,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_openClose = new CmsPushButton(
             I_CmsImageBundle.INSTANCE.style().triangleRight(),
             I_CmsImageBundle.INSTANCE.style().triangleDown());
-        m_openClose.setShowBorder(false);
+        m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_openClose.addStyleName(CSS.selectIcon());
         m_panel.add(m_openClose);
         m_openClose.addClickHandler(new ClickHandler() {

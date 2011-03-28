@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2011/02/03 15:13:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -47,7 +48,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -69,7 +70,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
         addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        setShowBorder(false);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**

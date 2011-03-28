@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2011/03/01 14:32:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -101,7 +101,6 @@ public class CmsPopupDialog extends CmsPopup {
             m_buttonPanel = new FlowPanel();
             add(m_buttonPanel);
             m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
-            getDialog().getWidget().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
         }
         m_buttonPanel.insert(button, position);
     }

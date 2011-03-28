@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/02/10 16:36:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,16 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -52,6 +53,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -62,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -117,6 +119,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         String toolbarMode();
     }
 
+    /** Stores the toolbar width. */
+    private static int m_toolbarWidth;
+
     /** The ui-binder instance for this class. */
     private static I_CmsMenuButtonUiBinder uiBinder = GWT.create(I_CmsMenuButtonUiBinder.class);
 
@@ -127,12 +132,11 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     /** The menu content. */
     protected CmsMenuContent m_content;
 
-    /** DIV element connecting the button and the menu pop-up. */
-    @UiField
-    protected DivElement m_menuConnect;
-
     /** Registration of the window resize handler. */
     protected HandlerRegistration m_resizeRegistration;
+
+    /** A DIV element for the arrow that connects the popup with the button. */
+    private Element m_arrow = DOM.createDiv();
 
     /** Flag if the menu is open. */
     private boolean m_isOpen;
@@ -166,6 +170,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setSize(I_CmsButton.Size.big);
+        m_button.setButtonStyle(ButtonStyle.MENU);
         m_content = new CmsMenuContent();
         m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         m_isOpen = false;
@@ -181,9 +186,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                         m_resizeRegistration = null;
                     }
                 }
-                m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
             }
-
         });
     }
 
@@ -233,7 +236,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void hide() {
 
         m_content.setVisible(false);
-        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 
     /**
@@ -271,12 +273,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void openMenu() {
 
-        m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
-
         m_isOpen = true;
         m_button.setDown(true);
 
-        m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
         m_content.show();
 
         positionPopup();
@@ -292,12 +291,24 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Enables or disables the button.<p>
+     */
+    public void enable() {
+
+        m_button.enable();
+    }
+
+    /**
+     * Enables or disables the button.<p>
      * 
      * @param enabled if true, enables the button, else disables it
      */
     public void setEnabled(boolean enabled) {
 
-        m_button.setEnabled(enabled);
+        if (enabled) {
+            m_button.enable();
+        } else {
+            m_button.setEnabled(enabled);
+        }
     }
 
     /**
@@ -329,12 +340,10 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_isToolbarMode = isToolbarMode;
         if (m_isToolbarMode) {
-            addStyleName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().toolbarMode());
             // important, so a click on the button won't trigger the auto-close 
             m_content.addAutoHidePartner(getElement());
             m_content.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         } else {
-            removeStyleName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().toolbarMode());
             m_content.removeAutoHidePartner(getElement());
             m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         }
@@ -346,7 +355,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void show() {
 
         m_content.setVisible(true);
-        m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 
     /**
@@ -373,7 +381,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     protected void hideMenu() {
 
         m_content.hide();
-        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
         if (m_resizeRegistration != null) {
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
@@ -381,57 +388,120 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
-     * Positions the menu popup below the button.<p>
+     * Positions the menu popup the button.<p>
      */
     protected void positionPopup() {
 
-        CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
-        int contentTop;
-        int contentWidth = m_content.getOffsetWidth();
-        int contentLeft = m_isOpenRight ? buttonPosition.getLeft() - 5 : buttonPosition.getLeft()
-            - contentWidth
-            + buttonPosition.getWidth()
-            + 5;
+        int spaceAssurance = 20;
+        int space = getToolbarWidth() + 2 * spaceAssurance;
+
+        // get the window client width
         int windowWidth = Window.getClientWidth();
-        if (m_isToolbarMode) {
-            // overriding position absolute set by PopupPanel 
-            m_content.getElement().getStyle().setPosition(Position.FIXED);
-            contentTop = buttonPosition.getTop() + buttonPosition.getHeight() - Window.getScrollTop() + 4;
-            if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
-                contentLeft = windowWidth - contentWidth - 10;
-            } else {
-                contentLeft -= Window.getScrollLeft();
+        // get the min left position
+        int minLeft = (windowWidth - space) / 2;
+        if (minLeft < spaceAssurance) {
+            minLeft = spaceAssurance;
+        }
+        // get the max right position
+        int maxRight = minLeft + space;
+        // get the middle button position
+        CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
+        int buttonMiddle = buttonPosition.getLeft() - Window.getScrollLeft() + buttonPosition.getWidth() / 2;
+        // get the content width
+        int contentWidth = m_content.getOffsetWidth();
+
+        // the optimum left position is in the middle of the button minus the half content width
+        // assume that the optimum fits into the space
+        int contentLeft = buttonMiddle - contentWidth / 2;
+
+        if (minLeft > contentLeft) {
+            // if the optimum left position of the popup is outside the min left position:
+            // move the popup to the right (take the min left position as left)
+            contentLeft = minLeft;
+        } else if (contentLeft + contentWidth > maxRight) {
+            // if the left position plus the content width is outside the max right position:
+            // move the popup to the left (take the max right position minus the content width)
+            contentLeft = maxRight - contentWidth;
+        }
+
+        // limit the right position if the popup is right outside the window 
+        if (contentLeft + contentWidth + spaceAssurance > windowWidth) {
+            contentLeft = windowWidth - contentWidth - spaceAssurance;
+        }
+
+        // limit the left position if the popup is left outside the window 
+        if (contentLeft < spaceAssurance) {
+            contentLeft = spaceAssurance;
+        }
+
+        int arrowSpace = 10;
+        int arrowWidth = I_CmsLayoutBundle.INSTANCE.gwtImages().menuArrowTopImage().getWidth();
+        int arrowHeight = I_CmsLayoutBundle.INSTANCE.gwtImages().menuArrowTopImage().getHeight();
+
+        // the optimum position for the arrow is in the middle of the button
+        int arrowLeft = buttonMiddle - contentLeft - arrowWidth / 2;
+        if (arrowLeft + arrowWidth + arrowSpace > contentWidth) {
+            // limit the arrow position if the maximum is reached (content width 'minus x')
+            arrowLeft = contentWidth - arrowWidth - arrowSpace;
+        } else if (arrowLeft - arrowSpace < 0) {
+            // limit the arrow position if the minimum is reached ('plus x')
+            arrowLeft = arrowWidth + arrowSpace;
+        }
+
+        int arrowTop = -(arrowHeight - 1);
+        String arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowTop();
+
+        int contentTop = buttonPosition.getTop() + buttonPosition.getHeight() - Window.getScrollTop() + arrowHeight - 2;
+        if (!m_isToolbarMode) {
+            contentTop = buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight - 2;
+            int contentHeight = m_content.getOffsetHeight();
+            int windowHeight = Window.getClientHeight();
+
+            if ((contentHeight + spaceAssurance < windowHeight)
+                && (buttonPosition.getTop() - Window.getScrollTop() > contentHeight)
+                && (contentHeight + spaceAssurance + contentTop - Window.getScrollTop() > windowHeight)) {
+                // content fits into the window height, 
+                // there is enough space above the button 
+                // and there is to little space below the button
+                // so show above
+                contentTop = buttonPosition.getTop() - arrowHeight + 2 - contentHeight;
+                arrowTop = contentHeight - 1;
+                arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowBottom();
             }
-            m_content.setPopupPosition(contentLeft, contentTop);
-            return;
-        }
-
-        contentTop = buttonPosition.getTop() + buttonPosition.getHeight() + 1;
-
-        int contentHeight = m_content.getOffsetHeight();
-        int windowHeight = Window.getClientHeight();
-        boolean showBelowButton = true;
-        if ((contentHeight + 10 < windowHeight)
-            && (buttonPosition.getTop() - Window.getScrollTop() > contentHeight)
-            && (contentHeight + contentTop - Window.getScrollTop() > windowHeight)) {
-            // content fits into the window height, there is enough space above the button and there is to little space below the button
-            // so show above
-            showBelowButton = false;
-            contentTop = buttonPosition.getTop() - 1 - contentHeight;
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().showAbove());
-            m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-            m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         } else {
-            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().showAbove());
-            m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-            m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+            contentLeft = contentLeft - Window.getScrollLeft();
+            m_content.getElement().getStyle().setPosition(Position.FIXED);
         }
 
-        if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
-            contentLeft = windowWidth - contentWidth - 10;
+        m_arrow.setClassName(arrowClass);
+        m_arrow.getStyle().setLeft(arrowLeft, Unit.PX);
+        m_arrow.getStyle().setTop(arrowTop, Unit.PX);
+
+        m_content.getElement().appendChild(m_arrow);
+        m_content.setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
+    }
+
+    /**
+     * Returns the toolbar width.<p>
+     * 
+     * @return the toolbar width
+     */
+    private int getToolbarWidth() {
+
+        if (m_toolbarWidth > 0) {
+            return m_toolbarWidth;
         }
-        m_content.setPopupPosition(contentLeft, contentTop);
-        m_content.showConnect(buttonPosition.getWidth() + 2, m_isOpenRight, showBelowButton);
+        String toolbarWidthConstant = I_CmsLayoutBundle.INSTANCE.constants().css().toolbarWidth().toLowerCase();
+        int posPX = toolbarWidthConstant.indexOf("px");
+        if (posPX != -1) {
+            try {
+                m_toolbarWidth = Integer.parseInt(toolbarWidthConstant.substring(0, posPX));
+                return m_toolbarWidth;
+            } catch (NumberFormatException ex) {
+                // noop
+            }
+        }
+        return 930;
     }
 
     /**
@@ -441,6 +511,5 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_isOpen = false;
         m_button.setDown(false);
-        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 }

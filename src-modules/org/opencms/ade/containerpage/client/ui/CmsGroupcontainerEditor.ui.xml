@@ -7,12 +7,14 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.groupcontainerEditor}">
 		<div style="z-index:400;" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
-		<div ui:field="m_dialog" class="{resources.dialogCss.popup} {resources.dialogCss.popupContent} {resources.generalCss.cornerAll} {containerpage.groupcontainerCss.dialog}">
-			<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Groupcontainer editor</g:Label>
-			<div class="{resources.dialogCss.popupMainContent}">
-				<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelTitle" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputTitle" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
-				<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelDescription" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputDescription" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
-				<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div>
+		<div ui:field="m_dialog" class="{resources.dialogCss.popup}">
+			<div class="{resources.dialogCss.popupContent} {resources.generalCss.cornerAll} {containerpage.groupcontainerCss.dialog}">
+				<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Groupcontainer editor</g:Label>
+				<div class="{resources.dialogCss.popupMainContent} {resources.generalCss.cornerAll}">
+					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelTitle" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputTitle" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
+					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelDescription" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputDescription" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
+					<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div>
+				</div>
 			</div>
 		</div>
 	</g:HTMLPanel>

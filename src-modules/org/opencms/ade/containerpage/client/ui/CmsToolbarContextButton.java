@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2011/02/25 11:39:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -143,6 +143,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
                     setActive(false);
                 }
             });
+            positionPopup();
         } else {
             // if no entries were found, inform the user 
             CmsLabel label = new CmsLabel("No entries found for this resource type!");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoParentButton.java,v $
- * Date   : $Date: 2011/02/11 14:31:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -60,7 +61,7 @@ public class CmsHoverbarGotoParentButton extends CmsPushButton {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
-        setShowBorder(false);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         setVisible(false);
         addClickHandler(new ClickHandler() {
 

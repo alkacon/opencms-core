@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsConstantsBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -187,14 +187,14 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String backgroundColorToolBarMenuConnect();
+        String borderColor();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS constant value
          */
-        String borderColor();
+        String borderColorDialog();
 
         /** 
          * Access method.<p>
@@ -348,6 +348,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        String textColorCation();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         String textColorChanged();
 
         /** 
@@ -370,6 +377,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String textColorNew();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String toolbarWidth();
     }
 
     /** The bundle instance. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 8.0.0
  */
@@ -132,11 +132,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String cmsButtonSmall();
 
         /**
-         * Access method.<p>
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
-        String cmsImageButtonTransparent();
+        String cmsImageButton();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsMenuButton();
 
         /** 
          * Access method.<p>
@@ -145,12 +152,19 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String cmsMinWidth();
 
-        /** 
-         * Access method.<p>
+        /**
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsTextButton();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsTransparentButton();
 
         /**
          *  Access method.<p>
@@ -334,6 +348,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String hideCaption();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuArrowBottom();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuArrowTop();
 
         /** 
          * Access method.<p>
@@ -970,35 +998,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String connect();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String hidden();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String menu();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String showAbove();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarMode();
     }
 
     /** Notification CSS. */
@@ -1357,6 +1357,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String tabLeftMargin();
 
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabPanel();
     }
 
     /** Toolbar CSS. */

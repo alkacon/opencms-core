@@ -18,6 +18,8 @@
 
 /** The default text color. */
 @def textColor #222222;
+/** The default text color. */
+@def textColorCation #FFFFFF;
 /** The disabled text color. Use it for any inactive or disabled texts e.g. input components. */
 @def textColorDisabled #999999;
 /** The new text color. Use it only for displaying texts of new resources. */
@@ -27,6 +29,8 @@
 /** The important text color. Use it only for displaying important text. */
 @def textColorImportant #B31B34;
 
+/** The toolbar width. */
+@def toolbarWidth 930px;
 
 /**
  * The border color definitions.
@@ -34,10 +38,12 @@
 
 /** The default border color. */
 @def borderColor #999999;
+/** The border color for dialogs. */
+@def borderColorDialog #1D2844;
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
 /** The default border radius. */
-@def borderRadius 3px;
+@def borderRadius 5px;
 
 
 /**
@@ -61,8 +67,6 @@
 @def backgroundColorPopupShadow #AAAAAA;
 /** The highlight background color. Use it for hover effects like select box or menu hovering. */
 @def backgroundColorHighlight #E0EDFE;
-/** Connects the tool bar button with the popup. NOTE: This color depends on images! */
-@def backgroundColorToolBarMenuConnect #CFCFCF;
 /** The input error background color. Use this color for input components if the validation goes wrong. */
 @def backgroundColorInputError #FFCCCC;
 /** This constant defines the background color of a empty group container. */
@@ -77,15 +81,15 @@
  * They should be used to style the color of elements that have a state. 
  */
 /** This constant defines the background color for elements that use the soft standard background image. */
-@def backgroundColorSoft #AAAAAA;
+@def backgroundColorSoft #DDDDDD;
 /** This constant defines the background color for elements have the standard state. */
-@def backgroundColorStateStandard #F9F9F9;
+@def backgroundColorStateStandard #DDDDDD;
 /** This constant defines the background color for elements have the disabled state. */
 @def backgroundColorStateDisabled #E3E3E3;
 /** This constant defines the background color for elements have the hover state. */
-@def backgroundColorStateHover #DBDBDB;
+@def backgroundColorStateHover #F9F9F9;
 /** This constant defines the background color for elements have the active state. */
-@def backgroundColorStateActive #E0EDFE;
+@def backgroundColorStateActive #DBDBDB;
 /** This constant defines the background color for elements have the changed state. */
 @def backgroundColorStateChanged #FE9F9F;
 /** This constant defines the background color for elements have the new state. */

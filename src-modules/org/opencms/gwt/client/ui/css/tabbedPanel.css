@@ -35,6 +35,10 @@
 	color:value("constants.css.textColor");
 }
 
+.tabPanel {
+	margin:10px 8px 8px;
+}
+
 .tabLeftMargin {
 	margin-left:30px !important;
 }

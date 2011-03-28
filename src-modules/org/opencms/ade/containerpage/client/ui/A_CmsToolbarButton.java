@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2011/03/17 16:11:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,15 +34,18 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.dom.client.Document;
 
 /**
- * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} for container-page tool-bar buttons.<p>
+ * Abstract button class implementing common methods 
+ * of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
+ * for container-page tool-bar buttons.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -64,6 +67,11 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
     protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
 
         super(buttonData);
+        if (buttonData.isMenu()) {
+            setButtonStyle(ButtonStyle.MENU);
+        } else {
+            setButtonStyle(ButtonStyle.IMAGE);
+        }
         m_handler = handler;
         m_iconClass = buttonData.getIconClass();
     }

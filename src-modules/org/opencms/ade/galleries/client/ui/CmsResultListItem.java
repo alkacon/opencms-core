@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/03/18 10:17:56 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsIconUtil;
 
@@ -46,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -100,13 +101,13 @@ public class CmsResultListItem extends CmsListItem {
         // add  preview button
         m_previewButton = new CmsPushButton();
         m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-        m_previewButton.setShowBorder(false);
+        m_previewButton.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         resultItemWidget.addButton(m_previewButton);
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
         m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
-        m_selectButton.setShowBorder(false);
+        m_selectButton.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
@@ -114,7 +115,7 @@ public class CmsResultListItem extends CmsListItem {
         // add delete button
         m_deleteButton = new CmsPushButton();
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        m_deleteButton.setShowBorder(false);
+        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
         if (!resultItem.isEditable()) {
             m_deleteButton.disable(resultItem.getNoEditReson());

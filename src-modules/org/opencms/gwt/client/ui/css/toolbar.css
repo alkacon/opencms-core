@@ -30,7 +30,7 @@
 	overflow: visible;
 	border-top:medium none;
 	font-weight:normal;
-	height: 35px;
+	height: 34px;
 	position:absolute;
 	width:100%;
 	border-bottom:1px solid value("constants.css.borderColor");
@@ -43,7 +43,7 @@
 .toolbarContent{
 	padding:0px;
 	position:relative;
-	width:930px;
+	width:value("constants.css.toolbarWidth");
 	margin:2px auto;
 }
 .toolbarPlaceholder {

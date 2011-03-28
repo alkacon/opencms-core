@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/02/28 11:10:46 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
@@ -56,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -194,7 +195,7 @@ public class CmsToolbarClipboardView {
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_UNDELETE_0));
-        button.setShowBorder(false);
+        button.setButtonStyle(ButtonStyle.TRANSPARENT);
         button.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -232,7 +233,7 @@ public class CmsToolbarClipboardView {
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        button.setShowBorder(false);
+        button.setButtonStyle(ButtonStyle.TRANSPARENT);
         button.addClickHandler(new ClickHandler() {
 
             /**

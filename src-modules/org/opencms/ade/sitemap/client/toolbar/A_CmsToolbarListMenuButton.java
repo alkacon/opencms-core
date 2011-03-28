@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/A_CmsToolbarListMenuButton.java,v $
- * Date   : $Date: 2011/02/28 11:10:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -82,9 +82,10 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         CmsSitemapToolbar toolbar,
         CmsSitemapController controller) {
 
-        super(title, iconClass);
+        super(null, iconClass);
         m_toolbar = toolbar;
         m_controller = controller;
+        setTitle(title);
         setToolbarMode(true);
         setOpenRight(true);
         if (!m_controller.isEditable()) {
@@ -144,7 +145,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     public FlowPanel createTab(String description, CmsList<? extends I_CmsListItem> list) {
 
         FlowPanel tab = new FlowPanel();
-        tab.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardTabPanel());
+        tab.setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
         Label descriptionLabel = new Label(description);
         descriptionLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().description());
         descriptionLabel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().textBig());

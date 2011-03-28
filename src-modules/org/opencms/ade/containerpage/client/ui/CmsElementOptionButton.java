@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,14 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 /**
  * An optional container element button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -62,7 +63,7 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
 
         super();
         setImageClass(toolbarButton.getIconClass());
-        setShowBorder(false);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         setTitle(toolbarButton.getTitle());
         addStyleName(toolbarButton.getIconClass());
         m_toolbarButton = toolbarButton;

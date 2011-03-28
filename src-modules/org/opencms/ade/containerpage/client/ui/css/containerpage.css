@@ -23,10 +23,6 @@
 	border: none;	
 }
 
-.clipboardTabPanel{
-	margin:10px 8px 8px;
-}
-
 ul.clipboardList{
 	overflow: auto;
 	min-height: 38px;

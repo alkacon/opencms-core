@@ -8,15 +8,15 @@
 	zoom: 1;
 }
 }
-.tabPanel .resultTabUpload{
+.resultTabUpload{
 	float: right;
 	margin: 1px 1px 0 0;
 } 
 /* The height is set as inline style. */
-.parentPanel {				
+.parentPanel {
 	min-height:483px;
-	min-width:648px;	
-	position:relative;		
+	min-width:648px;
+	position:relative;
 }
 
 .showPreview{
@@ -40,10 +40,6 @@
 
 .selectboxWidth {
 	width: 200px;
-}
-
-.tabPanel {
-	margin:10px 8px 8px;
 }
 
 .listIcon {

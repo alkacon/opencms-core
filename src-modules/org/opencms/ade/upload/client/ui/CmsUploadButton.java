@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/03/18 10:17:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -57,7 +58,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -109,9 +110,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /** The icon image css class. */
     private String m_imageClass;
 
-    /** Flag if a button border should be shown. */
-    private boolean m_showBorder;
-
     /** The button size. */
     private I_CmsButton.Size m_size;
 
@@ -152,7 +150,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         setSize(I_CmsButton.Size.medium);
         // create the push button
         setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
-        setShowBorder(true);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         createFileInput();
     }
 
@@ -274,16 +272,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
-     * Checks if the button has borders.<p>
-     *
-     * @return <code>true</code> if the button has borders
-     */
-    public boolean isShowBorder() {
-
-        return m_showBorder;
-    }
-
-    /**
      * Checks if the button is constraint to a minimal width.<p>
      *
      * @return <code>true</code> if the button is constraint to a minimal width
@@ -318,27 +306,16 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
-     * Tells the button to use or not borders.<p>
-     *
-     * @param showBorder <code>true</code> to use borders
+     * Sets the button style.<p>
+     * 
+     * @param style the style to set
      */
-    public void setShowBorder(boolean showBorder) {
+    public void setButtonStyle(I_CmsButton.ButtonStyle style) {
 
-        if (showBorder != m_showBorder) {
-            if (showBorder) {
-                // removing old style
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
-                //setting new style
-                addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-                addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            } else {
-                // removing old style
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-                //setting new style
-                addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
-            }
-            m_showBorder = showBorder;
+        setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
+        addStyleName(style.getCssClassName());
+        if (m_size != null) {
+            addStyleName(m_size.getCssClassName());
         }
     }
 

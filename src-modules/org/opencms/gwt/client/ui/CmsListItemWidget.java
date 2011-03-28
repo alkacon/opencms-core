@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/03/14 18:31:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -79,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -766,7 +767,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             m_openClose = new CmsPushButton(
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),
                 I_CmsImageBundle.INSTANCE.style().triangleDown());
-            m_openClose.setShowBorder(false);
+            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 

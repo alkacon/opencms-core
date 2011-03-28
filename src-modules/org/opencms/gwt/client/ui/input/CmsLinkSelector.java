@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLinkSelector.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
@@ -64,7 +65,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -116,7 +117,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         m_externalCheckbox.setText(label);
         m_inputRow.setCellWidth(m_textbox, "330px");
         m_editButton.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().linkEdit());
-        m_editButton.setShowBorder(false);
+        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT);
 
         m_editButton.addClickHandler(new ClickHandler() {
 

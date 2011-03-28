@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -64,6 +65,7 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
 
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
+        setButtonStyle(ButtonStyle.MENU);
 
         addClickHandler(new ClickHandler() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/23 08:19:40 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -330,22 +330,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/minusImage.png")
-    ImageResource minusImage();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource 
-     */
-    @Source("images/plusImage.png")
-    ImageResource plusImage();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
     @Source("images/loadingBigImage.gif")
     ImageResource loadingBigImage();
 
@@ -386,6 +370,30 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/menuArrowBottomImage.png")
+    ImageResource menuArrowBottomImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/menuArrowTopImage.png")
+    ImageResource menuArrowTopImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/minusImage.png")
+    ImageResource minusImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/opencmsSymbolImage.png")
     ImageResource opencmsSymbolImage();
 
@@ -397,6 +405,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/placeholderImage.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource placeholderImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource 
+     */
+    @Source("images/plusImage.png")
+    ImageResource plusImage();
 
     /**
      * Access method.<p>

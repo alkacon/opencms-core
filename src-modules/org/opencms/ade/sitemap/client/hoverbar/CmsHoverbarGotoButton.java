@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoButton.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -59,7 +60,7 @@ public class CmsHoverbarGotoButton extends CmsPushButton {
         // TODO: this should be a link so it can be opened in a new window or tab by the user
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        setShowBorder(false);
+        setButtonStyle(ButtonStyle.TRANSPARENT);
         addClickHandler(new ClickHandler() {
 
             /**

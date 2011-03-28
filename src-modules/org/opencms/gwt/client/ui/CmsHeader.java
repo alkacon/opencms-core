@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHeader.java,v $
- * Date   : $Date: 2010/04/13 09:11:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -104,7 +104,7 @@ public class CmsHeader extends Widget implements HasText {
      */
     public CmsHeader(String text, String label) {
 
-        this(text, CmsDomUtil.Tag.h1);
+        this(text, CmsDomUtil.Tag.h3);
         m_label = new CmsLabel(label);
         Element element = m_label.getElement();
         element.getStyle().setDisplay(Style.Display.INLINE);

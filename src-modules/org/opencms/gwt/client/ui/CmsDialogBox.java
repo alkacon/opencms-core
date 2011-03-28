@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/03/02 08:29:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -202,11 +202,6 @@ public class CmsDialogBox extends PopupPanel {
         Element dragOverlay = DOM.createDiv();
         dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
         getElement().insertFirst(dragOverlay);
-        Element shadowDiv = DOM.createDiv();
-        shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        getElement().insertFirst(shadowDiv);
         m_caption = new Caption();
         m_caption.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().caption());
         m_caption.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());

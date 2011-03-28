@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -104,7 +105,7 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
 
         m_button = new CmsToggleButton();
         m_button.setUseMinWidth(false);
-        m_button.setShowBorder(false);
+        m_button.setButtonStyle(ButtonStyle.TRANSPARENT);
         m_button.setImageClass(CSS.checkBoxImage());
         if (labelText != null) {
             m_button.setText(labelText);

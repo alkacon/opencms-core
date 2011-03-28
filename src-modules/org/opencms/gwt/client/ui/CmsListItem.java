@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2011/03/02 14:24:08 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/03/28 09:57:06 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  *  
  * @since 8.0.0 
  */
@@ -90,7 +91,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         MoveHandle(CmsListItem draggable) {
 
             setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-            setShowBorder(false);
+            setButtonStyle(ButtonStyle.TRANSPARENT);
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_0));
             m_draggable = draggable;
         }

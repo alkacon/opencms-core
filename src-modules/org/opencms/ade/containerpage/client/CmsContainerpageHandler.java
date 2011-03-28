@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/03/28 09:57:07 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.0
  */
@@ -322,6 +322,7 @@ public class CmsContainerpageHandler {
     public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, String uri) {
 
         List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans, uri);
+        // List<I_CmsContextMenuEntry> menuEntries = transformEntries(generateTestEntries(), uri);
         m_editor.getContext().showMenu(menuEntries);
     }
 
@@ -661,6 +662,43 @@ public class CmsContainerpageHandler {
 
             }
         });
+    }
+
+    private List<CmsContextMenuEntryBean> generateTestEntries() {
+
+        List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
+
+        List<CmsContextMenuEntryBean> subMenu = new ArrayList<CmsContextMenuEntryBean>();
+
+        for (int i = 0; i < 10; i++) {
+            CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean(
+                true,
+                true,
+                null,
+                null,
+                "test label",
+                "test name",
+                null,
+                false,
+                null);
+            subMenu.add(bean);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean(
+                true,
+                true,
+                null,
+                null,
+                "test label",
+                "test name",
+                null,
+                false,
+                subMenu);
+            result.add(bean);
+        }
+
+        return result;
     }
 
     /**
