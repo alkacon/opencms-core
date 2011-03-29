@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,17 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     }
 
     /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param lazy the lazy flag 
+     */
+    public CmsNotGroupUsersList(CmsJspActionElement jsp, boolean lazy) {
+
+        this(jsp, LIST_ID, lazy);
+    }
+
+    /**
      * Public constructor with JSP variables.<p>
      * 
      * @param context the JSP page context
@@ -108,27 +119,6 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     public CmsNotGroupUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Protected constructor.<p>
-     * @param jsp an initialized JSP action element
-     * @param listId the id of the specialized list
-     */
-    protected CmsNotGroupUsersList(CmsJspActionElement jsp, String listId) {
-
-        super(jsp, listId, Messages.get().container(Messages.GUI_NOTGROUPUSERS_LIST_NAME_0), true);
-    }
-
-    /**
-     * Public constructor.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
-     */
-    public CmsNotGroupUsersList(CmsJspActionElement jsp, boolean lazy) {
-
-        this(jsp, LIST_ID, lazy);
     }
 
     /**
@@ -148,19 +138,21 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
      * Protected constructor.<p>
      * @param jsp an initialized JSP action element
      * @param listId the id of the specialized list
+     */
+    protected CmsNotGroupUsersList(CmsJspActionElement jsp, String listId) {
+
+        super(jsp, listId, Messages.get().container(Messages.GUI_NOTGROUPUSERS_LIST_NAME_0), true);
+    }
+
+    /**
+     * Protected constructor.<p>
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the specialized list
      * @param lazy the lazy flag 
      */
     protected CmsNotGroupUsersList(CmsJspActionElement jsp, String listId, boolean lazy) {
 
         super(jsp, listId, Messages.get().container(Messages.GUI_NOTGROUPUSERS_LIST_NAME_0), true, lazy);
-    }
-
-    protected void setColumns(CmsListMetadata meta) {
-
-        if (m_lazy) {
-            meta.setSelfManaged(true);
-        }
-        super.setColumns(meta);
     }
 
     /**
@@ -211,6 +203,74 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     }
 
     /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getListItems()
+     */
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
+
+        if (!m_lazy) {
+            return super.getListItems();
+        } else {
+            CmsUserSearchParameters params = getSearchParams();
+            List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
+            int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
+            getList().setSize(count);
+            List<CmsListItem> result = Lists.newArrayList();
+            for (CmsUser user : users) {
+                CmsListItem item = makeListItemForUser(user);
+                result.add(item);
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Gets the search parameters.<p>
+     * 
+     * @return the search parameters 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        if (hasOuDetail()) {
+            List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
+            params.setAllowedOus(ous);
+        } else {
+            params.setOrganizationalUnit(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()));
+        }
+        CmsGroup group = getCms().readGroup(getParamGroupname());
+        params.setNotGroup(group);
+        String searchFilter = state.getFilter();
+        params.setSearchFilter(searchFilter);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        return params;
+    }
+
+    /**
+     * Gets the sort key for a column.<p>
+     * 
+     * @param column a column 
+     * 
+     * @return the sort key 
+     */
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_NAME)) {
+            return SortKey.loginName;
+        } else if (column.equals(LIST_COLUMN_FULLNAME)) {
+            return SortKey.fullName;
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers(boolean)
      */
     protected List getUsers(boolean withOtherOus) throws CmsException {
@@ -224,6 +284,17 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         }
         users.removeAll(groupusers);
         return users;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata meta) {
+
+        if (m_lazy) {
+            meta.setSelfManaged(true);
+        }
+        super.setColumns(meta);
     }
 
     /**
@@ -308,74 +379,6 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         metadata.addColumn(stateCol);
         // keep the id
         m_addActionIds.add(stateAction.getId());
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getListItems()
-     */
-    @Override
-    protected List<CmsListItem> getListItems() throws CmsException {
-
-        if (!m_lazy) {
-            return super.getListItems();
-        } else {
-            CmsUserSearchParameters params = getSearchParams();
-            List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
-            int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
-            getList().setSize(count);
-            List<CmsListItem> result = Lists.newArrayList();
-            for (CmsUser user : users) {
-                CmsListItem item = makeListItemForUser(user);
-                result.add(item);
-            }
-            return result;
-        }
-    }
-
-    /**
-     * Gets the search parameters.<p>
-     * 
-     * @return the search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected CmsUserSearchParameters getSearchParams() throws CmsException {
-
-        CmsListState state = getListState();
-        CmsUserSearchParameters params = new CmsUserSearchParameters();
-        if (hasOuDetail()) {
-            List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
-            params.setAllowedOus(ous);
-        } else {
-            params.setOrganizationalUnit(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()));
-        }
-        CmsGroup group = getCms().readGroup(getParamGroupname());
-        params.setNotGroup(group);
-        String searchFilter = state.getFilter();
-        params.setSearchFilter(searchFilter);
-        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
-        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
-        return params;
-    }
-
-    /**
-     * Gets the sort key for a column.<p>
-     * 
-     * @param column a column 
-     * 
-     * @return the sort key 
-     */
-    protected SortKey getSortKey(String column) {
-
-        if (column == null) {
-            return null;
-        }
-        if (column.equals(LIST_COLUMN_NAME)) {
-            return SortKey.loginName;
-        } else if (column.equals(LIST_COLUMN_FULLNAME)) {
-            return SortKey.fullName;
-        }
-        return null;
     }
 
 }

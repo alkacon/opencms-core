@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPagingQuery.java,v $
- * Date   : $Date: 2011/03/25 09:50:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.db;
  * @see "http://troels.arvin.dk/db/rdbms/#select-limit-offset"
  * 
  * @author Georg Westenberger
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 8.0.0
  */
 public class CmsPagingQuery implements I_CmsQueryFragment {
@@ -108,12 +108,7 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
         if (m_useWindowFunctions) {
             I_CmsQueryFragment order = m_select.getOrdering();
-            if (order == null) {
-                order = new CmsSimpleQueryFragment("USER_ID");
-            } else {
-                m_select.setOrdering(null);
-            }
-
+            assert order != null;
             CmsCompositeQueryFragment rownumFragment = new CmsCompositeQueryFragment();
             rownumFragment.add(new CmsSimpleQueryFragment("ROW_NUMBER() OVER (ORDER BY "));
             rownumFragment.add(order);

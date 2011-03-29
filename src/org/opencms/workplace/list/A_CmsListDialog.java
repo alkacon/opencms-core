@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** metadata map for all used list metadata objects. */
     private static Map<String, CmsListMetadata> m_metadatas = new HashMap<String, CmsListMetadata>();
 
+    /** A flag which indicates whether the list should use database paging (only supported for some lists) .**/
+    protected boolean m_lazy;
+
     /** Activation decision Flag. */
     private boolean m_active;
 
@@ -175,9 +178,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The id of the list. */
     private String m_listId;
-
-    /** A flag which indicates whether the list should use database paging (only supported for some lists) .**/
-    protected boolean m_lazy;
 
     /** Cached List state in case of {@link #refreshList()} method call. */
     private CmsListState m_listState;

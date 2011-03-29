@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2011/03/25 08:13:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,6 +134,17 @@ public class CmsUserTransferList extends A_CmsListDialog {
     }
 
     /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param lazy the lazy flag 
+     */
+    public CmsUserTransferList(CmsJspActionElement jsp, boolean lazy) {
+
+        this(LIST_ID, jsp, lazy);
+    }
+
+    /**
      * Public constructor with JSP variables.<p>
      * 
      * @param context the JSP page context
@@ -143,6 +154,19 @@ public class CmsUserTransferList extends A_CmsListDialog {
     public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     * @param lazy the lazy flag 
+     */
+    public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
+
+        this(new CmsJspActionElement(context, req, res), lazy);
     }
 
     /**
@@ -160,30 +184,6 @@ public class CmsUserTransferList extends A_CmsListDialog {
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
-    }
-
-    /**
-     * Public constructor.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
-     */
-    public CmsUserTransferList(CmsJspActionElement jsp, boolean lazy) {
-
-        this(LIST_ID, jsp, lazy);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     * @param lazy the lazy flag 
-     */
-    public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
-
-        this(new CmsJspActionElement(context, req, res), lazy);
     }
 
     /**
@@ -386,6 +386,46 @@ public class CmsUserTransferList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the search parameters for lazy list paging.<p>
+     *  
+     * @return the search parameters for lazy list paging
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        String searchFilter = state.getFilter();
+        params.setSearchFilter(searchFilter);
+        params.setFilterCore(true);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        return params;
+    }
+
+    /**
+     * Returns the sort key for lazy list paging.<p>
+     * 
+     * @param column the current column  
+     * @return the sort key to use 
+     */
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_EMAIL)) {
+            return SortKey.email;
+        } else if (column.equals(LIST_COLUMN_LOGIN)) {
+            return SortKey.loginName;
+        } else if (column.equals(LIST_COLUMN_NAME)) {
+            return SortKey.fullName;
+        }
+        return null;
+    }
+
+    /**
      * Returns the list of users to display.<p>
      * 
      * @return the list of users to display
@@ -552,33 +592,6 @@ public class CmsUserTransferList extends A_CmsListDialog {
                 m_userName += CmsHtmlList.ITEM_SEPARATOR;
             }
         }
-    }
-
-    protected CmsUserSearchParameters getSearchParams() throws CmsException {
-
-        CmsListState state = getListState();
-        CmsUserSearchParameters params = new CmsUserSearchParameters();
-        String searchFilter = state.getFilter();
-        params.setSearchFilter(searchFilter);
-        params.setFilterCore(true);
-        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
-        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
-        return params;
-    }
-
-    protected SortKey getSortKey(String column) {
-
-        if (column == null) {
-            return null;
-        }
-        if (column.equals(LIST_COLUMN_EMAIL)) {
-            return SortKey.email;
-        } else if (column.equals(LIST_COLUMN_LOGIN)) {
-            return SortKey.loginName;
-        } else if (column.equals(LIST_COLUMN_NAME)) {
-            return SortKey.fullName;
-        }
-        return null;
     }
 
 }

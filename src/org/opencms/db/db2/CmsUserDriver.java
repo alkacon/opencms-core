@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.db.db2;
 
-import org.opencms.db.CmsSelectQuery;
 import org.opencms.db.CmsSimpleQueryFragment;
+import org.opencms.db.I_CmsQueryFragment;
 import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsSqlManager;
 
@@ -57,12 +57,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
+     * @see org.opencms.db.generic.CmsUserDriver#createFlagCondition(org.opencms.db.CmsSelectQuery.TableAlias, int)
      */
     @Override
-    protected boolean useWindowFunctionsForPaging() {
+    protected I_CmsQueryFragment createFlagCondition(TableAlias users, int flags) {
 
-        return true;
+        return new CmsSimpleQueryFragment(
+            "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
+            new Integer(flags),
+            new Integer(flags));
     }
 
     /**
@@ -75,17 +78,22 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.generic.CmsUserDriver#addFlagCondition(org.opencms.db.CmsSelectQuery, org.opencms.db.CmsSelectQuery.TableAlias, int)
+     * @see org.opencms.db.generic.CmsUserDriver#getUserFlagExpression(org.opencms.db.CmsSelectQuery.TableAlias, int)
      */
     @Override
-    protected void addFlagCondition(CmsSelectQuery select, TableAlias users, int flags) {
+    protected String getUserFlagExpression(TableAlias users, int flags) {
 
-        if (flags != 0) {
-            select.addCondition(new CmsSimpleQueryFragment(
-                "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
-                new Integer(flags),
-                new Integer(flags)));
-        }
+        return "BITAND(" + users.column("USER_FLAGS") + ", " + flags + ")";
+
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
+     */
+    @Override
+    protected boolean useWindowFunctionsForPaging() {
+
+        return true;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUserSelectionList.java,v $
- * Date   : $Date: 2011/03/16 09:43:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/29 14:55:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,18 +117,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsUserSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
@@ -143,6 +131,18 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_LOGIN,
             lazy);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsUserSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -245,22 +245,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Makes a list item from a user.<p>
-     * 
-     * @param user the user 
-     * 
-     * @return the list item 
-     */
-    protected CmsListItem makeListItem(CmsUser user) {
-
-        CmsListItem item = getList().newItem(user.getId().toString());
-        item.set(LIST_COLUMN_LOGIN, user.getName());
-        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
-        return item;
-
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
@@ -268,24 +252,20 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
         if (!m_lazy) {
 
-        List ret = new ArrayList();
+            List ret = new ArrayList();
 
-        // get content        
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
+            // get content        
+            List users = getUsers();
+            Iterator itUsers = users.iterator();
+            while (itUsers.hasNext()) {
+                CmsUser user = (CmsUser)itUsers.next();
                 CmsListItem item = makeListItem(user);
-            ret.add(item);
-        }
+                ret.add(item);
+            }
 
-        return ret;
+            return ret;
         } else {
             CmsUserSearchParameters params = getSearchParams();
-            if (getParamFlags() != null) {
-                int flags = Integer.parseInt(getParamFlags());
-                params.setFlags(flags);
-    }
             List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(getCms(), params);
             int count = (int)OpenCms.getOrgUnitManager().countUsers(getCms(), params);
             getList().setSize(count);
@@ -296,6 +276,56 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             }
             return result;
         }
+    }
+
+    /**
+     * Gets the user search parameters.<p>
+     * 
+     * @return the user search parameters 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsUserSearchParameters getSearchParams() throws CmsException {
+
+        CmsListState state = getListState();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        String searchFilter = state.getFilter();
+        params.setSearchFilter(searchFilter);
+        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
+        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
+        String groupStr = getParamGroup();
+        if (!CmsStringUtil.isEmpty(groupStr)) {
+            CmsGroup group = getCms().readGroup(getParamGroup());
+            params.setGroup(group);
+        } else {
+            List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
+            params.setAllowedOus(ous);
+        }
+        if (getParamFlags() != null) {
+            int flags = Integer.parseInt(getParamFlags());
+            params.setFlags(flags);
+        }
+        params.setCaseSensitive(false);
+        return params;
+    }
+
+    /**
+     * Gets the sort key to use.<p>
+     * 
+     * @param column the list column id 
+     * @return the sort key 
+     */
+    protected SortKey getSortKey(String column) {
+
+        if (column == null) {
+            return null;
+        }
+        if (column.equals(LIST_COLUMN_FULLNAME)) {
+            return SortKey.fullName;
+        } else if (column.equals(LIST_COLUMN_LOGIN)) {
+            return SortKey.loginName;
+        }
+        return null;
     }
 
     /**
@@ -318,6 +348,22 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             return CmsPrincipal.filterFlag(ret, flags);
         }
         return ret;
+    }
+
+    /**
+     * Makes a list item from a user.<p>
+     * 
+     * @param user the user 
+     * 
+     * @return the list item 
+     */
+    protected CmsListItem makeListItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+        return item;
+
     }
 
     /**
@@ -411,51 +457,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         } catch (Throwable e) {
             setParamFlags(null);
         }
-    }
-
-    /**
-     * Gets the user search parameters.<p>
-     * 
-     * @return the user search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected CmsUserSearchParameters getSearchParams() throws CmsException {
-
-        CmsListState state = getListState();
-        CmsUserSearchParameters params = new CmsUserSearchParameters();
-        String searchFilter = state.getFilter();
-        params.setSearchFilter(searchFilter);
-        params.setPaging(getList().getMaxItemsPerPage(), state.getPage());
-        params.setSorting(getSortKey(state.getColumn()), state.getOrder().equals(CmsListOrderEnum.ORDER_ASCENDING));
-        String groupStr = getParamGroup();
-        if (groupStr != null) {
-            CmsGroup group = getCms().readGroup(getParamGroup());
-            params.setGroup(group);
-        } else {
-            List<CmsOrganizationalUnit> ous = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true, false);
-            params.setAllowedOus(ous);
-        }
-        return params;
-    }
-
-    /**
-     * Gets the sort key to use.<p>
-     * 
-     * @param column the list column id 
-     * @return the sort key 
-     */
-    protected SortKey getSortKey(String column) {
-
-        if (column == null) {
-            return null;
-        }
-        if (column.equals(LIST_COLUMN_FULLNAME)) {
-            return SortKey.fullName;
-        } else if (column.equals(LIST_COLUMN_LOGIN)) {
-            return SortKey.loginName;
-        }
-        return null;
     }
 
 }
