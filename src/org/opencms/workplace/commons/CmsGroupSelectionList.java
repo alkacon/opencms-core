@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsGroupSelectionList.java,v $
- * Date   : $Date: 2011/03/25 08:13:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/29 06:44:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -342,7 +342,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
         searchAction.setCaseInSensitive(true);
         metadata.setSearchAction(searchAction);
     }
@@ -352,9 +352,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
-        searchAction.setCaseInSensitive(true);
-        metadata.setSearchAction(searchAction);
+        // no-op        
     }
 
     /**
