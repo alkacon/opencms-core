@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/propertyviewer/CmsPropertyviewList.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/30 10:29:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.5.1
  */
@@ -309,9 +309,11 @@ public class CmsPropertyviewList extends A_CmsListDialog {
         CmsObject cms = getCms();
         for (CmsResource resource : getResources()) {
             item = getList().newItem(resource.getRootPath());
-            fillItem(resource, item, false, idCounter);
-            idCounter++;
-            result.add(item);
+            if (fillItem(resource, item, false, idCounter)) {
+                // there is at least one property to display with content
+                idCounter++;
+                result.add(item);
+            }
 
             if (m_siblings) {
                 try {
@@ -320,16 +322,20 @@ public class CmsPropertyviewList extends A_CmsListDialog {
                         // Don't render siblings that are in the path:
                         if (!isInPaths(sibling)) {
                             item = getList().newItem(sibling.getRootPath());
-                            fillItem(sibling, item, true, idCounter);
-                            idCounter++;
-                            result.add(item);
+                            if (fillItem(sibling, item, true, idCounter)) {
+                                // there is at least one property to display with content
+                                idCounter++;
+                                result.add(item);
+                            }
                         }
                     }
                 } catch (CmsException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_ERR_PROPERTYVIEWER_READSIBL_1,
-                            resource.getRootPath()), e);
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_ERR_PROPERTYVIEWER_READSIBL_1,
+                                resource.getRootPath()),
+                            e);
                     }
                 }
             }
@@ -447,8 +453,10 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * @param item the item to fill
      * @param isSibling if false no boldface markup will be marked.
      * @param id used for the ID column.
+     *
+     * @return true if the item contains at least one property with content, false if there is no property with content 
      */
-    private void fillItem(final CmsResource resource, final CmsListItem item, final boolean isSibling, final int id) {
+    private boolean fillItem(final CmsResource resource, final CmsListItem item, final boolean isSibling, final int id) {
 
         item.set(LIST_COLUMN_ID, ID_NUMBER_FORMAT.format(id));
         I_CmsResourceType type;
@@ -460,6 +468,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
             sitePath = "<b>" + sitePath + "</b>";
         }
         item.set(LIST_COLUMN_PATH, sitePath);
+        // flag is true, if there is at least one property to display with content
+        boolean onePropCont = false;
         for (String property : m_props) {
             CmsProperty prop;
             try {
@@ -468,18 +478,26 @@ public class CmsPropertyviewList extends A_CmsListDialog {
                     pathValue = m_messages.key("GUI_LIST_PROPERTYVIEW_NOTFOUND_0");
                 } else {
                     pathValue = prop.getValue();
+                    onePropCont = true;
                 }
                 item.set(getPropertyColumnID(property), pathValue);
 
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERR_PROPERTYVIEWER_READONEPROP_2,
-                        property,
-                        resource.getRootPath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_ERR_PROPERTYVIEWER_READONEPROP_2,
+                            property,
+                            resource.getRootPath()),
+                        e);
                 }
                 item.set(getPropertyColumnID(property), "n/a");
             }
+        }
+        // check if there is at least one property to display with content
+        if (!onePropCont) {
+            // there is no property to display with content
+            return false;
         }
 
         type = OpenCms.getResourceManager().getResourceType(resource);
@@ -499,6 +517,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
             iconImage = "<img src=\"" + iconPath + "\" alt=\"icon\" />";
         }
         item.set(LIST_COLUMN_ICON, iconImage);
+        // there is at least one property to display with content
+        return true;
     }
 
     /**
