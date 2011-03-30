@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/convertxml/Messages.java,v $
- * Date   : $Date: 2009/10/14 11:03:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2011/03/30 14:47:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.5
  */
@@ -56,16 +56,49 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CONVERTXML_BEGIN_0 = "RPT_CONVERTXML_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_BEGIN_TRANSFORM_0 = "RPT_CONVERTXML_BEGIN_TRANSFORM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_BEGIN_TRANSFORM_THREAD_0 = "RPT_CONVERTXML_BEGIN_TRANSFORM_THREAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1 = "RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1 = "RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_FOUND_FILES_1 = "RPT_CONVERTXML_FOUND_FILES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0 = "RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_LOCKED_FILE_1 = "RPT_CONVERTXML_LOCKED_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_LOCKED_FILES_1 = "RPT_CONVERTXML_LOCKED_FILES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_MISSION_ENCODING_TYPE_1 = "RPT_CONVERTXML_MISSION_ENCODING_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_NO_FILES_FOUND_0 = "RPT_CONVERTXML_NO_FILES_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_NO_VFS_FOLDER_0 = "RPT_CONVERTXML_NO_VFS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_NO_XSD_FILE_0 = "RPT_CONVERTXML_NO_XSD_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_NO_XSLT_FILE_0 = "RPT_CONVERTXML_NO_XSLT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_PARAMETERS_0 = "RPT_CONVERTXML_PARAMETERS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_PARAMETERS_RESOURCE_PATH_1 = "RPT_CONVERTXML_PARAMETERS_RESOURCE_PATH_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_PARAMETERS_INC_SUBFOLDERS_1 = "RPT_CONVERTXML_PARAMETERS_INC_SUBFOLDERS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1 = "RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_PARAMETERS_NEW_XSD_MAINFILE_1 = "RPT_CONVERTXML_PARAMETERS_NEW_XSD_MAINFILE_1";
@@ -74,16 +107,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CONVERTXML_PARAMETERS_ONLY_COUNT_1 = "RPT_CONVERTXML_PARAMETERS_ONLY_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_START_SEARCHING_0 = "RPT_CONVERTXML_START_SEARCHING_0";
+    public static final String RPT_CONVERTXML_PARAMETERS_RESOURCE_PATH_1 = "RPT_CONVERTXML_PARAMETERS_RESOURCE_PATH_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_FOUND_FILES_1 = "RPT_CONVERTXML_FOUND_FILES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_NO_FILES_FOUND_0 = "RPT_CONVERTXML_NO_FILES_FOUND_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_NO_XSLT_FILE_0 = "RPT_CONVERTXML_NO_XSLT_FILE_0";
+    public static final String RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1 = "RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_PUBLISHING_FILES_0 = "RPT_CONVERTXML_PUBLISHING_FILES_0";
@@ -92,28 +119,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CONVERTXML_RESULT_0 = "RPT_CONVERTXML_RESULT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1 = "RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1";
+    public static final String RPT_CONVERTXML_SEARCH_ERROR_0 = "RPT_CONVERTXML_SEARCH_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1 = "RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1";
+    public static final String RPT_CONVERTXML_START_SEARCHING_0 = "RPT_CONVERTXML_START_SEARCHING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_LOCKED_FILES_1 = "RPT_CONVERTXML_LOCKED_FILES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORMING_FAILED_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORMING_SUCCESS_0 = "RPT_CONVERTXML_TRANSFORMING_SUCCESS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_BEGIN_TRANSFORM_THREAD_0 = "RPT_CONVERTXML_BEGIN_TRANSFORM_THREAD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORMING_FAILED2_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORM_END_0 = "RPT_CONVERTXML_TRANSFORM_END_0";
+    public static final String RPT_CONVERTXML_THREAD_END_0 = "RPT_CONVERTXML_THREAD_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME_2 = "RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME_2";
@@ -122,43 +134,34 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME2_2 = "RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME2_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_TRANSFORM_END_0 = "RPT_CONVERTXML_TRANSFORM_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1 = "RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORM_PUBLISHED_FILE_0 = "RPT_CONVERTXML_TRANSFORM_PUBLISHED_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1 = "RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_LOCKED_FILE_1 = "RPT_CONVERTXML_LOCKED_FILE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_THREAD_END_0 = "RPT_CONVERTXML_THREAD_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_BEGIN_TRANSFORM_0 = "RPT_CONVERTXML_BEGIN_TRANSFORM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORMATION_ERROR_0 = "RPT_CONVERTXML_TRANSFORMATION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_NO_XSD_FILE_0 = "RPT_CONVERTXML_NO_XSD_FILE_0";
+    public static final String RPT_CONVERTXML_TRANSFORMING_FAILED_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_NO_VFS_FOLDER_0 = "RPT_CONVERTXML_NO_VFS_FOLDER_0";
+    public static final String RPT_CONVERTXML_TRANSFORMING_FAILED2_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED2_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_SEARCH_ERROR_0 = "RPT_CONVERTXML_SEARCH_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_WRITE_ERROR_0 = "RPT_CONVERTXML_WRITE_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_MISSION_ENCODING_TYPE_1 = "RPT_CONVERTXML_MISSION_ENCODING_TYPE_1";
+    public static final String RPT_CONVERTXML_TRANSFORMING_SUCCESS_0 = "RPT_CONVERTXML_TRANSFORMING_SUCCESS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_UNLOCK_FILE_1 = "RPT_CONVERTXML_UNLOCK_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0 = "RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0";
+    public static final String RPT_CONVERTXML_WRITE_ERROR_1 = "RPT_CONVERTXML_WRITE_ERROR_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CONVERTXML_XMLCONTENT_1 = "RPT_CONVERTXML_XMLCONTENT_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.convertxml.messages";

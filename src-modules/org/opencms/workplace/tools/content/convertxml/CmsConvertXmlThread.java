@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/convertxml/CmsConvertXmlThread.java,v $
- * Date   : $Date: 2011/02/14 11:46:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/30 14:47:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.5
  */
@@ -172,7 +173,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             && lock.isOwnedInProjectBy(getCms().getRequestContext().getCurrentUser(), cmsProject)) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
+        } else if ((lock != null)
+            && !lock.isUnlocked()
+            && !lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
@@ -405,7 +408,12 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             }
         } catch (Exception e) {
             m_errorTransform += 1;
-            report.println(Messages.get().container(Messages.RPT_CONVERTXML_WRITE_ERROR_0), I_CmsReport.FORMAT_ERROR);
+            String reportContent = "<br/>";
+            reportContent = reportContent + CmsEncoder.escapeXml(xmlContent);
+            reportContent = reportContent.replaceAll("\r\n", "<br/>");
+            report.println(
+                Messages.get().container(Messages.RPT_CONVERTXML_WRITE_ERROR_1, reportContent),
+                I_CmsReport.FORMAT_ERROR);
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.toString());
             }
@@ -446,9 +454,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             project2Publish = cms1.createTempfileProject(); // init new
             cms1.getRequestContext().setCurrentProject(project2Publish);
         } catch (CmsException e) {
-            report.println(
-                Messages.get().container(Messages.RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0),
-                I_CmsReport.FORMAT_ERROR);
+            report.println(Messages.get().container(Messages.RPT_CONVERTXML_INITIALIZE_CMS_ERROR_0));
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.toString());
             }
