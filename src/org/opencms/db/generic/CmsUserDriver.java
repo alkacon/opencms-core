@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/29 14:55:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/03/30 15:39:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -119,7 +119,7 @@ import com.google.common.base.Joiner;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0 
  */
@@ -961,41 +961,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public List<CmsUser> getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsDataAccessException {
 
-        List<CmsUser> users = new ArrayList<CmsUser>();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            // create statement
-            conn = m_sqlManager.getConnection(dbc);
-            if (orgUnit.hasFlagWebuser()) {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_WEBUSERS_FOR_ORGUNIT_1");
-            } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
-            }
+        return internalGetUsers(dbc, orgUnit, recursive, true);
+    }
 
-            String param = CmsOrganizationalUnit.SEPARATOR + orgUnit.getName();
-            if (recursive) {
-                param += "%";
-            }
-            stmt.setString(1, param);
-            res = stmt.executeQuery();
-            // create new Cms group objects
-            while (res.next()) {
-                users.add(internalCreateUser(dbc, res));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        for (CmsUser user : users) {
-            Map info = readUserInfos(dbc, user.getId());
-            user.setAdditionalInfo(info);
-        }
-        return users;
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#getUsersWithoutAdditionalInfo(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
+     */
+    public List<CmsUser> getUsersWithoutAdditionalInfo(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsDataAccessException {
+
+        return internalGetUsers(dbc, orgUnit, recursive, false);
     }
 
     /**
@@ -2986,6 +2963,62 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
+    }
+
+    /**
+     * Internal implementation for reading users of an OU, with or without additional infos.<p>
+     * 
+     * @param dbc the database context 
+     * @param orgUnit the OU 
+     * @param recursive if true, sub-OUs should be searched 
+     * @param readAdditionalInfos if true, additional infos should be read 
+     * @return the users which have been read 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected List<CmsUser> internalGetUsers(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive,
+        boolean readAdditionalInfos) throws CmsDataAccessException {
+
+        List<CmsUser> users = new ArrayList<CmsUser>();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            // create statement
+            conn = m_sqlManager.getConnection(dbc);
+            if (orgUnit.hasFlagWebuser()) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_WEBUSERS_FOR_ORGUNIT_1");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
+            }
+
+            String param = CmsOrganizationalUnit.SEPARATOR + orgUnit.getName();
+            if (recursive) {
+                param += "%";
+            }
+            stmt.setString(1, param);
+            res = stmt.executeQuery();
+            // create new Cms group objects
+            while (res.next()) {
+                users.add(internalCreateUser(dbc, res));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        if (readAdditionalInfos) {
+            for (CmsUser user : users) {
+                Map info = readUserInfos(dbc, user.getId());
+                user.setAdditionalInfo(info);
+            }
+        }
+        return users;
+
     }
 
     /**

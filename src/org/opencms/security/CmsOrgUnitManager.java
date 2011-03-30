@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/30 15:39:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
@@ -81,6 +81,21 @@ public class CmsOrgUnitManager {
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         CmsResource resource = cms.readResource(resourceName);
         m_securityManager.addResourceToOrgUnit(cms.getRequestContext(), orgUnit, resource);
+    }
+
+    /**
+     * Counts the users which fit the given search criteria.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param params the user search parameters 
+     * 
+     * @return the total number of users which fit the given search parameters 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public long countUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
+
+        return m_securityManager.countUsers(cms.getRequestContext(), params);
     }
 
     /**
@@ -247,33 +262,21 @@ public class CmsOrgUnitManager {
     }
 
     /**
-     * Searches users which fit the given search parameters.<p>
+     * Returns all users of the given organizational unit, without their additional info.<p>
+     *
+     * @param cms the opencms context
+     * @param ouFqn the fully qualified name of the organizational unit to get all principals for
+     * @param recursive if all users of sub-organizational units should be retrieved too
      * 
-     * @param cms the current CMS context 
-     * @param params the user search parameters 
-     * 
-     * @return the users which fit the given search criteria 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @return all <code>{@link org.opencms.file.CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
      */
-    public List<CmsUser> searchUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
+    public List<CmsUser> getUsersWithoutAdditionalInfo(CmsObject cms, String ouFqn, boolean recursive)
+    throws CmsException {
 
-        return m_securityManager.searchUsers(cms.getRequestContext(), params);
-    }
-
-    /**
-     * Counts the users which fit the given search criteria.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param params the user search parameters 
-     * 
-     * @return the total number of users which fit the given search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public long countUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
-
-        return m_securityManager.countUsers(cms.getRequestContext(), params);
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
+        return m_securityManager.getUsersWithoutAdditionalInfo(cms.getRequestContext(), orgUnit, recursive);
     }
 
     /**
@@ -306,6 +309,21 @@ public class CmsOrgUnitManager {
         CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
         m_securityManager.removeResourceFromOrgUnit(cms.getRequestContext(), orgUnit, resource);
+    }
+
+    /**
+     * Searches users which fit the given search parameters.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param params the user search parameters 
+     * 
+     * @return the users which fit the given search criteria 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsUser> searchUsers(CmsObject cms, CmsUserSearchParameters params) throws CmsException {
+
+        return m_securityManager.searchUsers(cms.getRequestContext(), params);
     }
 
     /**

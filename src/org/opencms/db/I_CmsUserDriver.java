@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/15 17:33:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/30 15:39:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void addResourceToOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException;
+
+    /**
+     * Counts the total number of users which match the given search criteria.<p>
+     * 
+     * @param dbc the database context 
+     * @param searchParams the search criteria
+     *  
+     * @return the number of users which match the search criteria
+     *  
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
 
     /**
      * Creates an access control entry.<p>
@@ -351,16 +363,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Initializes the SQL manager for this driver.<p>
+     * Returns all users of the given organizational unit, without reading their additional infos.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all users for
+     * @param recursive flag to signalize the retrieval of users of sub-organizational units too
      * 
-     * To obtain JDBC connections from different pools, further 
-     * {online|offline|history} pool Urls have to be specified.<p>
-     * 
-     * @param classname the classname of the SQL manager
-     * 
-     * @return the SQL manager for this driver
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsDataAccessException if operation was not successful
      */
-    CmsSqlManager initSqlManager(String classname);
+    List<CmsUser> getUsersWithoutAdditionalInfo(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsDataAccessException;
 
     //    /**
     //     * Mark the given resource as visited by the user.<p>
@@ -377,6 +391,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     //     */
     //    void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
     //    throws CmsDataAccessException;
+
+    /**
+     * Initializes the SQL manager for this driver.<p>
+     * 
+     * To obtain JDBC connections from different pools, further 
+     * {online|offline|history} pool Urls have to be specified.<p>
+     * 
+     * @param classname the classname of the SQL manager
+     * 
+     * @return the SQL manager for this driver
+     */
+    CmsSqlManager initSqlManager(String classname);
 
     /**
      * Publish all access control entries of a resource from the given offline project to the online project.<p>
@@ -417,6 +443,23 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsUUID resource,
         boolean inheritedOnly) throws CmsDataAccessException;
 
+    //    /**
+    //     * Returns all resources subscribed by the given user or group.<p>
+    //     * 
+    //     * @param dbc the database context
+    //     * @param poolName the name of the database pool to use
+    //     * @param principal the principal to read the subscribed resources
+    //     * 
+    //     * @return all resources subscribed by the given user or group
+    //     * 
+    //     * @deprecated
+    //     * @see org.opencms.db.I_CmsSubscriptionDriver
+    //     * 
+    //     * @throws CmsDataAccessException if something goes wrong
+    //     */
+    //    List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
+    //    throws CmsDataAccessException;
+
     /**
      * Reads an access control entry for a given principal that is attached to a resource.<p>
      * 
@@ -434,23 +477,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsProject project,
         CmsUUID resource,
         CmsUUID principal) throws CmsDataAccessException;
-
-    //    /**
-    //     * Returns all resources subscribed by the given user or group.<p>
-    //     * 
-    //     * @param dbc the database context
-    //     * @param poolName the name of the database pool to use
-    //     * @param principal the principal to read the subscribed resources
-    //     * 
-    //     * @return all resources subscribed by the given user or group
-    //     * 
-    //     * @deprecated
-    //     * @see org.opencms.db.I_CmsSubscriptionDriver
-    //     * 
-    //     * @throws CmsDataAccessException if something goes wrong
-    //     */
-    //    List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
-    //    throws CmsDataAccessException;
 
     /**
      * Reads all child groups of a group.<p>
@@ -509,18 +535,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         boolean includeChildOus,
         String remoteAddress,
         boolean readRoles) throws CmsDataAccessException;
-
-    /**
-     * Reads an organizational Unit based on its fully qualified name.<p>
-     *
-     * @param dbc the current db context
-     * @param ouFqn the fully qualified name of the organizational Unit to be read
-     * 
-     * @return the organizational Unit with the provided fully qualified name
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    CmsOrganizationalUnit readOrganizationalUnit(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     //    /**
     //     * Returns the resources that were visited by a user set in the filter.<p>
@@ -582,6 +596,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     //     */
     //    List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
     //    throws CmsDataAccessException;
+
+    /**
+     * Reads an organizational Unit based on its fully qualified name.<p>
+     *
+     * @param dbc the current db context
+     * @param ouFqn the fully qualified name of the organizational Unit to be read
+     * 
+     * @return the organizational Unit with the provided fully qualified name
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    CmsOrganizationalUnit readOrganizationalUnit(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     /**
      * Reads a user based on the user id.<p>
@@ -703,18 +729,16 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Sets the driver manager for this driver if possible.<p>
+     * Searches for users which match the given search criteria.<p>
      * 
-     * @param driverManager the new driver manager
-     */
-    void setDriverManager(CmsDriverManager driverManager);
-
-    /**
-     * Sets the SQL manager for this driver if possible.<p>
+     * @param dbc the database context 
+     * @param searchParams the search criteria
+     *  
+     * @return the users which match the given criteria 
      * 
-     * @param sqlManager the new SQL manager
+     * @throws CmsDataAccessException if something goes wrong 
      */
-    void setSqlManager(CmsSqlManager sqlManager);
+    List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
 
     //    /**
     //     * Marks a subscribed resource as deleted.<p>
@@ -732,16 +756,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     //    throws CmsDataAccessException;
 
     /**
-     * Moves an user to the given organizational unit.<p>
+     * Sets the driver manager for this driver if possible.<p>
      * 
-     * @param dbc the current db context
-     * @param orgUnit the organizational unit to move the user to
-     * @param user the user that is to be moved to the given organizational unit
-     * 
-     * @throws CmsDataAccessException if something goes wrong
+     * @param driverManager the new driver manager
      */
-    void setUsersOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsUser user)
-    throws CmsDataAccessException;
+    void setDriverManager(CmsDriverManager driverManager);
 
     //    /**
     //     * Subscribes the user or group to the resource.<p>
@@ -819,6 +838,25 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     //     */
     //    void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource)
     //    throws CmsDataAccessException;
+
+    /**
+     * Sets the SQL manager for this driver if possible.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    void setSqlManager(CmsSqlManager sqlManager);
+
+    /**
+     * Moves an user to the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to move the user to
+     * @param user the user that is to be moved to the given organizational unit
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void setUsersOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsUser user)
+    throws CmsDataAccessException;
 
     /**
      * Writes an access control entry.<p>
@@ -903,29 +941,5 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException;
-
-    /**
-     * Searches for users which match the given search criteria.<p>
-     * 
-     * @param dbc the database context 
-     * @param searchParams the search criteria
-     *  
-     * @return the users which match the given criteria 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
-
-    /**
-     * Counts the total number of users which match the given search criteria.<p>
-     * 
-     * @param dbc the database context 
-     * @param searchParams the search criteria
-     *  
-     * @return the number of users which match the search criteria
-     *  
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException;
 
 }

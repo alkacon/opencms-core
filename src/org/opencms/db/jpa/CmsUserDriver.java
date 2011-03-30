@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/30 15:39:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0 
  */
@@ -330,6 +330,14 @@ public class CmsUserDriver implements I_CmsUserDriver {
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#countUsers(org.opencms.db.CmsDbContext, org.opencms.file.CmsUserSearchParameters)
+     */
+    public long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -986,6 +994,18 @@ public class CmsUserDriver implements I_CmsUserDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsUserDriver#getUsersWithoutAdditionalInfo(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
+     */
+    public List<CmsUser> getUsersWithoutAdditionalInfo(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsDataAccessException {
+
+        //TODO: disable fetching of additional infos         
+        return getUsers(dbc, orgUnit, recursive);
+    }
+
+    /**
      * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(
@@ -1631,6 +1651,15 @@ public class CmsUserDriver implements I_CmsUserDriver {
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#searchUsers(org.opencms.db.CmsDbContext, org.opencms.file.CmsUserSearchParameters)
+     */
+    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams)
+    throws CmsDataAccessException {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -2689,16 +2718,5 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
             }
         }
-    }
-
-    public long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
-
-        throw new UnsupportedOperationException();
-    }
-
-    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams)
-    throws CmsDataAccessException {
-
-        throw new UnsupportedOperationException();
     }
 }

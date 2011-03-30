@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/30 15:39:52 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -813,6 +813,28 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Counts the total number of users which match the given search criteria.<p>
+     * 
+     * @param requestContext the request context 
+     * @param searchParams the search criteria object
+     *  
+     * @return the number of users which match the search criteria 
+     * @throws CmsException if something goes wrong 
+     */
+    public long countUsers(CmsRequestContext requestContext, CmsUserSearchParameters searchParams) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            return m_driverManager.countUsers(dbc, searchParams);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_USERS_0), e);
+            return -1;
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Creates a new user group.<p>
      *
      * @param context the current request context
@@ -957,6 +979,51 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Creates a new resource with the provided content and properties.<p>
+     * An exception is thrown if a resource with the given name already exists.<p> 
+     * 
+     * @param context the current request context
+     * @param resourcePath the name of the resource to create (full path)
+     * @param resource the new resource to create
+     * @param content the content for the new resource
+     * @param properties the properties for the new resource
+    * 
+     * @return the created resource
+     * 
+     * @throws CmsVfsResourceAlreadyExistsException if a resource with the given name already exists
+     * @throws CmsVfsException if the project in the given database context is the "Online" project
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createResource(
+        CmsRequestContext context,
+        String resourcePath,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsVfsResourceAlreadyExistsException, CmsVfsException, CmsException {
+
+        if (existsResource(context, resourcePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            // check if the resource already exists by name
+            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                resource.getRootPath()));
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsResource newResource = null;
+        try {
+            checkOfflineProject(dbc);
+            newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, false);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_IMPORT_RESOURCE_2,
+                context.getSitePath(resource),
+                resourcePath), e);
+        } finally {
+            dbc.clear();
+        }
+        return newResource;
     }
 
     /**
@@ -1378,31 +1445,6 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_RELATIONS_1,
                 dbc.removeSiteRoot(resource.getRootPath())), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Gets the groups which constitute a given role.<p>
-     * 
-     * @param context the request context 
-     * @param role the role 
-     * @param directUsersOnly if true, only direct users of the role group will be returned 
-     * 
-     * @return the role's groups 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Set<CmsGroup> getRoleGroups(CmsRequestContext context, CmsRole role, boolean directUsersOnly)
-    throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            return m_driverManager.getRoleGroups(dbc, role.getGroupName(), directUsersOnly);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_ROLE_GROUPS_1, role.toString()), e);
-            return null; // will never be executed 
         } finally {
             dbc.clear();
         }
@@ -2415,6 +2457,31 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Gets the groups which constitute a given role.<p>
+     * 
+     * @param context the request context 
+     * @param role the role 
+     * @param directUsersOnly if true, only direct users of the role group will be returned 
+     * 
+     * @return the role's groups 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public Set<CmsGroup> getRoleGroups(CmsRequestContext context, CmsRole role, boolean directUsersOnly)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.getRoleGroups(dbc, role.getGroupName(), directUsersOnly);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_ROLE_GROUPS_1, role.toString()), e);
+            return null; // will never be executed 
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Returns all roles the given user has for the given resource.<p>
      *  
      * @param context the current request context
@@ -2541,6 +2608,38 @@ public final class CmsSecurityManager {
                 Messages.ERR_READ_USER_PUBLIST_1,
                 context.getCurrentUser().getName()), e);
 
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all users of the given organizational unit.<p>
+     *
+     * @param context the current request context
+     * @param orgUnit the organizational unit to get the users for
+     * @param recursive if all users of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
+     * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
+     */
+    public List<CmsUser> getUsersWithoutAdditionalInfo(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsException {
+
+        List<CmsUser> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getUsersWithoutAdditionalInfo(dbc, orgUnit, recursive);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_USERS_1, orgUnit.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -2804,51 +2903,6 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
-    }
-
-    /**
-     * Creates a new resource with the provided content and properties.<p>
-     * An exception is thrown if a resource with the given name already exists.<p> 
-     * 
-     * @param context the current request context
-     * @param resourcePath the name of the resource to create (full path)
-     * @param resource the new resource to create
-     * @param content the content for the new resource
-     * @param properties the properties for the new resource
-    * 
-     * @return the created resource
-     * 
-     * @throws CmsVfsResourceAlreadyExistsException if a resource with the given name already exists
-     * @throws CmsVfsException if the project in the given database context is the "Online" project
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResource(
-        CmsRequestContext context,
-        String resourcePath,
-        CmsResource resource,
-        byte[] content,
-        List<CmsProperty> properties) throws CmsVfsResourceAlreadyExistsException, CmsVfsException, CmsException {
-
-        if (existsResource(context, resourcePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
-            // check if the resource already exists by name
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                resource.getRootPath()));
-        }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsResource newResource = null;
-        try {
-            checkOfflineProject(dbc);
-            newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, false);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_IMPORT_RESOURCE_2,
-                context.getSitePath(resource),
-                resourcePath), e);
-        } finally {
-            dbc.clear();
-        }
-        return newResource;
     }
 
     /**
@@ -4048,6 +4102,33 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns the parent folder to the given structure id.<p>
+     * 
+     * @param context the current request context
+     * @param structureId the child structure id
+     * 
+     * @return the parent folder <code>{@link CmsResource}</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource readParentFolder(CmsRequestContext context, CmsUUID structureId) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsResource result = null;
+        try {
+            result = m_driverManager.readParentFolder(dbc, structureId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_PARENT_FOLDER_2,
+                dbc.currentProject().getName(),
+                structureId), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Builds a list of resources for a given path.<p>
      * 
      * @param context the current request context
@@ -4070,33 +4151,6 @@ public final class CmsSecurityManager {
                 null,
                 Messages.get().container(Messages.ERR_READ_PATH_2, dbc.currentProject().getName(), path),
                 e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns the parent folder to the given structure id.<p>
-     * 
-     * @param context the current request context
-     * @param structureId the child structure id
-     * 
-     * @return the parent folder <code>{@link CmsResource}</code>
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource readParentFolder(CmsRequestContext context, CmsUUID structureId) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsResource result = null;
-        try {
-            result = m_driverManager.readParentFolder(dbc, structureId);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PARENT_FOLDER_2,
-                dbc.currentProject().getName(),
-                structureId), e);
         } finally {
             dbc.clear();
         }
@@ -5158,6 +5212,29 @@ public final class CmsSecurityManager {
                 Messages.ERR_RESTORE_RESOURCE_2,
                 context.getSitePath(resource),
                 new Integer(version)), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Searches users by search criteria.<p>
+     * 
+     * @param requestContext the request context 
+     * @param searchParams the search criteria object 
+     * 
+     * @return a list of users 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsUser> searchUsers(CmsRequestContext requestContext, CmsUserSearchParameters searchParams)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            return m_driverManager.searchUsers(dbc, searchParams);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_SEARCH_USERS_0), e);
+            return null;
         } finally {
             dbc.clear();
         }
@@ -6592,51 +6669,6 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
-    }
-
-    /**
-     * Searches users by search criteria.<p>
-     * 
-     * @param requestContext the request context 
-     * @param searchParams the search criteria object 
-     * 
-     * @return a list of users 
-     * @throws CmsException if something goes wrong 
-     */
-    public List<CmsUser> searchUsers(CmsRequestContext requestContext, CmsUserSearchParameters searchParams)
-    throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
-        try {
-            return m_driverManager.searchUsers(dbc, searchParams);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_SEARCH_USERS_0), e);
-            return null;
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Counts the total number of users which match the given search criteria.<p>
-     * 
-     * @param requestContext the request context 
-     * @param searchParams the search criteria object
-     *  
-     * @return the number of users which match the search criteria 
-     * @throws CmsException if something goes wrong 
-     */
-    public long countUsers(CmsRequestContext requestContext, CmsUserSearchParameters searchParams) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
-        try {
-            return m_driverManager.countUsers(dbc, searchParams);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_USERS_0), e);
-            return -1;
-        } finally {
-            dbc.clear();
-        }
     }
 
 }

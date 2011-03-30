@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/03/15 17:33:18 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/03/30 15:39:52 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4480,6 +4480,74 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Collects the groups which constitute a given role.<p>
+     *   
+     * @param dbc the database context 
+     * @param roleGroupName the group related to the role 
+     * @param directUsersOnly if true, only the group belonging to the entry itself wil
+     * 
+     * @return the set of groups which constitute the role
+     *  
+     * @throws CmsException
+     */
+    public Set<CmsGroup> getRoleGroups(CmsDbContext dbc, String roleGroupName, boolean directUsersOnly)
+    throws CmsException {
+
+        return getRoleGroupsImpl(dbc, roleGroupName, directUsersOnly, new HashMap<String, Set<CmsGroup>>());
+    }
+
+    /**
+     * Collects the groups which constitute a given role.<p>
+     *   
+     * @param dbc the database context 
+     * @param roleGroupName the group related to the role 
+     * @param directUsersOnly if true, only the group belonging to the entry itself wil
+     * @param accumulator a map for memoizing return values of recursive calls  
+     * 
+     * @return the set of groups which constitute the role
+     *  
+     * @throws CmsException
+     */
+    public Set<CmsGroup> getRoleGroupsImpl(
+        CmsDbContext dbc,
+        String roleGroupName,
+        boolean directUsersOnly,
+        Map<String, Set<CmsGroup>> accumulator) throws CmsException {
+
+        Set<CmsGroup> result = new HashSet<CmsGroup>();
+        if (accumulator.get(roleGroupName) != null) {
+            return accumulator.get(roleGroupName);
+        }
+        CmsGroup group = readGroup(dbc, roleGroupName); // check that the group really exists
+        if ((group == null) || (!group.isRole())) {
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, roleGroupName));
+        }
+        result.add(group);
+        if (!directUsersOnly) {
+            CmsRole role = CmsRole.valueOf(group);
+            if (role.getParentRole() != null) {
+                try {
+                    String parentGroup = role.getParentRole().getGroupName();
+                    // iterate the parent roles
+                    result.addAll(getRoleGroupsImpl(dbc, parentGroup, directUsersOnly, accumulator));
+                } catch (CmsDbEntryNotFoundException e) {
+                    // ignore, this may happen while deleting an orgunit
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            String parentOu = CmsOrganizationalUnit.getParentFqn(group.getOuFqn());
+            if (parentOu != null) {
+                // iterate the parent ou's
+                result.addAll(getRoleGroupsImpl(dbc, parentOu + group.getSimpleName(), directUsersOnly, accumulator));
+            }
+        }
+        accumulator.put(roleGroupName, result);
+        return result;
+    }
+
+    /**
      * Returns all roles the given user has for the given resource.<p>
      * 
      * @param dbc the current database context
@@ -4725,6 +4793,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         updateLog(dbc);
         return m_projectDriver.getUsersPubList(dbc, userId);
+    }
+
+    /**
+     * Returns all direct users of the given organizational unit, without their additional info.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all users for
+     * @param recursive if all groups of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
+     * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
+     */
+    public List<CmsUser> getUsersWithoutAdditionalInfo(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsException {
+
+        return getUserDriver(dbc).getUsersWithoutAdditionalInfo(dbc, orgUnit, recursive);
     }
 
     /**
@@ -8175,6 +8265,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Searches for users which fit the given criteria.<p>
+     * 
+     * @param dbc the database context 
+     * @param searchParams the search criteria
+     *  
+     * @return the users which fit the search criteria 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams
+
+    ) throws CmsDataAccessException {
+
+        return getUserDriver(dbc).searchUsers(dbc, searchParams);
+    }
+
+    /**
      * Changes the "expire" date of a resource.<p>
      * 
      * @param dbc the current database context
@@ -9677,6 +9784,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Counts the total number of users which fit the given criteria.<p>
+     * 
+     * @param dbc the database context 
+     * @param searchParams the user search criteria 
+     * 
+     * @return the total number of users matching the criteria 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
+
+        return getUserDriver(dbc).countUsers(dbc, searchParams);
+    }
+
+    /**
      * Checks the parent of a resource during publishing.<p> 
      * 
      * @param dbc the current database context
@@ -10382,74 +10504,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Collects the groups which constitute a given role.<p>
-     *   
-     * @param dbc the database context 
-     * @param roleGroupName the group related to the role 
-     * @param directUsersOnly if true, only the group belonging to the entry itself wil
-     * 
-     * @return the set of groups which constitute the role
-     *  
-     * @throws CmsException
-     */
-    public Set<CmsGroup> getRoleGroups(CmsDbContext dbc, String roleGroupName, boolean directUsersOnly)
-    throws CmsException {
-
-        return getRoleGroupsImpl(dbc, roleGroupName, directUsersOnly, new HashMap<String, Set<CmsGroup>>());
-    }
-
-    /**
-     * Collects the groups which constitute a given role.<p>
-     *   
-     * @param dbc the database context 
-     * @param roleGroupName the group related to the role 
-     * @param directUsersOnly if true, only the group belonging to the entry itself wil
-     * @param accumulator a map for memoizing return values of recursive calls  
-     * 
-     * @return the set of groups which constitute the role
-     *  
-     * @throws CmsException
-     */
-    public Set<CmsGroup> getRoleGroupsImpl(
-        CmsDbContext dbc,
-        String roleGroupName,
-        boolean directUsersOnly,
-        Map<String, Set<CmsGroup>> accumulator) throws CmsException {
-
-        Set<CmsGroup> result = new HashSet<CmsGroup>();
-        if (accumulator.get(roleGroupName) != null) {
-            return accumulator.get(roleGroupName);
-        }
-        CmsGroup group = readGroup(dbc, roleGroupName); // check that the group really exists
-        if ((group == null) || (!group.isRole())) {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, roleGroupName));
-        }
-        result.add(group);
-        if (!directUsersOnly) {
-            CmsRole role = CmsRole.valueOf(group);
-            if (role.getParentRole() != null) {
-                try {
-                    String parentGroup = role.getParentRole().getGroupName();
-                    // iterate the parent roles
-                    result.addAll(getRoleGroupsImpl(dbc, parentGroup, directUsersOnly, accumulator));
-                } catch (CmsDbEntryNotFoundException e) {
-                    // ignore, this may happen while deleting an orgunit
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(e.getLocalizedMessage(), e);
-                    }
-                }
-            }
-            String parentOu = CmsOrganizationalUnit.getParentFqn(group.getOuFqn());
-            if (parentOu != null) {
-                // iterate the parent ou's
-                result.addAll(getRoleGroupsImpl(dbc, parentOu + group.getSimpleName(), directUsersOnly, accumulator));
-            }
-        }
-        accumulator.put(roleGroupName, result);
-        return result;
-    }
-
-    /**
      * Reads all resources that are inside and changed in a specified project.<p>
      * 
      * @param dbc the current database context
@@ -10953,38 +11007,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // update the structure state
             getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
         }
-    }
-
-    /**
-     * Searches for users which fit the given criteria.<p>
-     * 
-     * @param dbc the database context 
-     * @param searchParams the search criteria
-     *  
-     * @return the users which fit the search criteria 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams
-
-    ) throws CmsDataAccessException {
-
-        return getUserDriver(dbc).searchUsers(dbc, searchParams);
-    }
-
-    /**
-     * Counts the total number of users which fit the given criteria.<p>
-     * 
-     * @param dbc the database context 
-     * @param searchParams the user search criteria 
-     * 
-     * @return the total number of users matching the criteria 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
-
-        return getUserDriver(dbc).countUsers(dbc, searchParams);
     }
 
 }
