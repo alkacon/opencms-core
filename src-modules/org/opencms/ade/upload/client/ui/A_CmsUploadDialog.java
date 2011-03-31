@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/09 15:46:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
-import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsProgressBar;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -95,11 +95,11 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsUploadDialog extends CmsPopupDialog {
+public abstract class A_CmsUploadDialog extends CmsPopup {
 
     /**
      * Provides the upload progress information.<p>
@@ -364,7 +364,6 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
         setGlassEnabled(true);
         catchNotifications();
         setWidth(DIALOG_WIDTH + "px");
-        addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogContent());
 
         // create a map that stores all files (upload, existing, invalid)
         m_allFiles = new HashMap<String, CmsFileInfo>();
@@ -1347,6 +1346,7 @@ public abstract class A_CmsUploadDialog extends CmsPopupDialog {
 
         m_loadingTimer = new Timer() {
 
+            @Override
             public void run() {
 
                 createLoadingAnimation(msg);

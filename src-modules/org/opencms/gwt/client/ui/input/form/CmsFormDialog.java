@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.gwt.client.ui.input.form;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -49,11 +49,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
-public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
+public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
 
     /** The widget containing the form fields. */
     protected CmsForm m_form;
@@ -188,7 +188,6 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
     protected void initContent() {
 
         setContent(m_form.getWidget());
-        removePadding();
     }
 
     /**

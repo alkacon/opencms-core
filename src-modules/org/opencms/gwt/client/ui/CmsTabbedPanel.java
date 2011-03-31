@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/03/31 17:46:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  * 
@@ -69,26 +69,29 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
-        /** Small layout size. */
-        small(25),
+        /** blue layout. */
+        steel(24, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().steel()),
 
-        /** Standard layout size. */
-        standard(32);
+        /** black layout. */
+        black(24, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black());
 
         /** The default tabbar height. */
-        public static final CmsTabLayout DEFAULT = standard;
+        public static final CmsTabLayout DEFAULT = black;
 
         /** Property name. */
         private int m_barHeight;
+
+        private String m_tabColor;
 
         /** 
          * Constructor.<p>
          * 
          * @param barHeight the height of the bar
          */
-        private CmsTabLayout(int barHeight) {
+        private CmsTabLayout(int barHeight, String tabColor) {
 
             m_barHeight = barHeight;
+            m_tabColor = tabColor;
         }
 
         /** 
@@ -99,6 +102,16 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         public int getBarHeight() {
 
             return m_barHeight;
+        }
+
+        /** 
+         * Returns the tab bar color.<p>
+         * 
+         * @return the tab bar color
+         */
+        public String getColorClass() {
+
+            return m_tabColor;
         }
 
     }
@@ -138,6 +151,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         if (tabBarDivs.size() == 1) {
             tabBarDivs.get(0).getParentElement().setClassName(
                 I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
+            tabBarDivs.get(0).getParentElement().addClassName(tabbarHeight.getColorClass());
         }
 
         m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
@@ -171,8 +185,31 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
      */
     public void add(E tabContent, String tabName) {
 
+        tabContent.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_tabPanel.add(tabContent, tabName);
 
+        Element tabRootEl = m_tabPanel.getElement();
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        List<Element> tabDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTab(),
+            CmsDomUtil.Tag.div,
+            tabRootEl);
+
+        Iterator<Element> it = tabDivs.iterator();
+        boolean first = true;
+        while (it.hasNext()) {
+
+            Element e = it.next();
+            e.removeClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerLeft());
+            e.removeClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerRight());
+            if (first) {
+                e.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerLeft());
+                first = false;
+            }
+            if (!it.hasNext()) {
+                e.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerRight());
+            }
+        }
     }
 
     /**
@@ -222,6 +259,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
      */
     public void addWithLeftMargin(E tabContent, String tabName) {
 
+        tabContent.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_tabPanel.add(tabContent, tabName);
 
         int tabIndex = m_tabPanel.getWidgetIndex(tabContent);
@@ -232,7 +270,12 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             CmsDomUtil.Tag.div,
             tabRootEl);
         if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
-            tabDivs.get(tabIndex).addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());
+            tabDivs.get(tabIndex).addClassName(
+                I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerAll());
         }
     }
 

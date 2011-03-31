@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public class CmsAvailabilityDialog extends CmsPopupDialog {
+public class CmsAvailabilityDialog extends CmsPopup {
 
     /** The bean that stores the dialog data. */
     protected CmsAvailabilityInfoBean m_availabilityInfo;
@@ -438,7 +438,6 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             }
         });
         addButton(saveButton);
-
     }
 
     /**

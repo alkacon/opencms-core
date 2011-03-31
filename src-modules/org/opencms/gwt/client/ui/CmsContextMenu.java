@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -51,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since version 8.0.0
  */
@@ -85,8 +83,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         m_isFixed = isFixed;
         m_popup = new CmsPopup();
         // clear the width and the padding of the popup content (needed for sub menus)
-        m_popup.getDialog().getContainerElement().getStyle().clearWidth();
-        m_popup.getDialog().getWidget().getElement().getStyle().setPadding(0, Unit.PX);
+        m_popup.setWidth(null);
+        m_popup.removePadding();
         createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());
         m_autoHideParent = autoHideParent;
@@ -210,7 +208,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         setSubMenuPosition(item);
 
         if (m_isFixed) {
-            m_popup.getDialog().getElement().getStyle().setPosition(Position.FIXED);
+            m_popup.setPositionFixed();
         }
     }
 

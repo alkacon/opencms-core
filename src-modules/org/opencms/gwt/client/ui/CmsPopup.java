@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,19 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.UIObject;
@@ -53,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -65,8 +67,8 @@ public class CmsPopup implements I_CmsAutoHider {
     /** The wrapped pop up dialog. */
     private CmsDialogBox m_dialog;
 
-    /** The main widget of this dialog containing all others. */
-    private FlowPanel m_main;
+    /** Signals whether a animation should be used to show the popup or not. */
+    private boolean m_useAnimation = true;
 
     /**
      * Constructor.<p>
@@ -86,10 +88,6 @@ public class CmsPopup implements I_CmsAutoHider {
         m_dialog = new CmsDialogBox(false);
         m_dialog.setWidth(width + Unit.PX.toString());
         m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
-        m_main = new FlowPanel();
-        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
-        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_dialog.setWidget(m_main);
     }
 
     /**
@@ -116,13 +114,27 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /**
+     * The constructor.<p>
+     * 
+     * @param title the title and heading of the dialog
+     * @param content the content widget
+     */
+    public CmsPopup(String title, Widget content) {
+
+        this(title);
+        if (content != null) {
+            setContent(content);
+        }
+    }
+
+    /**
      * Adds the given child widget.<p>
      * 
      * @param w the widget
      */
     public void add(Widget w) {
 
-        m_main.add(w);
+        m_dialog.getMainPanel().add(w);
     }
 
     /**
@@ -131,6 +143,28 @@ public class CmsPopup implements I_CmsAutoHider {
     public void addAutoHidePartner(Element partner) {
 
         m_dialog.addAutoHidePartner(partner);
+    }
+
+    /**
+     * Adds a button widget to the button panel.<p>
+     * 
+     * @param button the button widget
+     */
+    public void addButton(Widget button) {
+
+        addButton(button, 0);
+    }
+
+    /**
+     * Adds a button widget to the button panel before the given position.<p>
+     * 
+     * @param button the button widget
+     * @param position the position to insert the button
+     */
+    public void addButton(Widget button, int position) {
+
+        m_dialog.getButtonPanel().insert(button, position);
+        m_dialog.getButtonPanel().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
     }
 
     /**
@@ -172,6 +206,34 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /**
+     * Replaces current notification widget by an overlay.<p>
+     */
+    public void catchNotifications() {
+
+        // remember current notification widget
+        final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
+        // create our own notification overlay
+        final CmsDialogNotificationWidget notificationWidget = new CmsDialogNotificationWidget();
+        add(notificationWidget);
+        CmsNotification.get().setWidget(notificationWidget);
+
+        // when closing the dialog
+        addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see CloseHandler#onClose(CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                // restore the previous notification widget
+                CmsNotification.get().setWidget(widget);
+                // remove the overlay notification widget
+                remove(notificationWidget);
+            }
+        });
+    }
+
+    /**
      * Opens the dialog at the center of the browser window, or positions it there, if already visible.<p> 
      */
     public void center() {
@@ -184,7 +246,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void clear() {
 
-        m_main.clear();
+        m_dialog.getMainPanel().clear();
     }
 
     /**
@@ -221,6 +283,16 @@ public class CmsPopup implements I_CmsAutoHider {
     public int getAbsoluteTop() {
 
         return m_dialog.getAbsoluteTop();
+    }
+
+    /**
+     * Returns the content widget.<p>
+     * 
+     * @return the content widget
+     */
+    public Widget getContent() {
+
+        return m_dialog.getContent();
     }
 
     /**
@@ -304,7 +376,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public Widget getWidget(int index) {
 
-        return m_main.getWidget(index);
+        return m_dialog.getMainPanel().getWidget(index);
     }
 
     /**
@@ -314,7 +386,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public int getWidgetCount() {
 
-        return m_main.getWidgetCount();
+        return m_dialog.getMainPanel().getWidgetCount();
     }
 
     /**
@@ -326,7 +398,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public int getWidgetIndex(Widget child) {
 
-        return m_main.getWidgetIndex(child);
+        return m_dialog.getMainPanel().getWidgetIndex(child);
     }
 
     /**
@@ -347,7 +419,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
 
-        m_main.insert(w, beforeIndex);
+        m_dialog.getMainPanel().insert(w, beforeIndex);
     }
 
     /**
@@ -357,7 +429,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void insertFront(Widget widget) {
 
-        m_main.insert(widget, 0);
+        m_dialog.getMainPanel().insert(widget, 0);
     }
 
     /**
@@ -467,7 +539,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public Iterator<Widget> iterator() {
 
-        return m_main.iterator();
+        return m_dialog.getMainPanel().iterator();
     }
 
     /**
@@ -491,7 +563,15 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public boolean remove(Widget w) {
 
-        return m_main.remove(w);
+        return m_dialog.getMainPanel().remove(w);
+    }
+
+    /**
+     * Removes all buttons.<p>
+     */
+    public void removeAllButtons() {
+
+        m_dialog.getButtonPanel().clear();
     }
 
     /**
@@ -502,6 +582,27 @@ public class CmsPopup implements I_CmsAutoHider {
     public void removeAutoHidePartner(Element partner) {
 
         m_dialog.removeAutoHidePartner(partner);
+    }
+
+    /**
+     * Removes the given button widget from the button panel.<p>
+     * 
+     * @param button the button widget to remove
+     */
+    public void removeButton(Widget button) {
+
+        m_dialog.getButtonPanel().remove(button);
+        if (m_dialog.getButtonPanel().getWidgetCount() == 0) {
+            m_dialog.getButtonPanel().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
+        }
+    }
+
+    /**
+     * Removes the padding from the popup's content.<p>
+     */
+    public void removePadding() {
+
+        m_dialog.getMainPanel().removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
     }
 
     /**
@@ -554,6 +655,30 @@ public class CmsPopup implements I_CmsAutoHider {
     public void setAutoHideOnHistoryEventsEnabled(boolean enabled) {
 
         m_dialog.setAutoHideOnHistoryEventsEnabled(enabled);
+    }
+
+    /**
+     * Sets the popup's content background.<p>
+     * 
+     * @param color the color to set
+     */
+    public void setBackgroundColor(String color) {
+
+        m_dialog.getMainPanel().getElement().getStyle().setBackgroundColor(color);
+    }
+
+    /**
+     * Sets the content for this dialog replacing any former content.<p>
+     * 
+     * @param widget the content widget
+     */
+    public void setContent(Widget widget) {
+
+        if (m_dialog.getContent() != null) {
+            remove(m_dialog.getContent());
+        }
+        insert(widget, 0);
+        m_dialog.setContent(widget);
     }
 
     /**
@@ -686,6 +811,9 @@ public class CmsPopup implements I_CmsAutoHider {
     public void show() {
 
         m_dialog.show();
+        if (m_useAnimation) {
+            CmsFadeAnimation.fadeIn(m_dialog.getElement(), null, 500);
+        }
     }
 
     /**
@@ -701,13 +829,31 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /**
-     * Returns the dialog widget. 
-     * 
-     * @return the dialog widget
+     * Sets the popup's dialog position to 'fixed' 
      */
-    protected CmsDialogBox getDialog() {
+    protected void setPositionFixed() {
 
-        return m_dialog;
+        m_dialog.getElement().getStyle().setPosition(Position.FIXED);
+    }
+
+    /**
+     * Sets the use animation flag.<p>
+     * 
+     * @param use <code>true</code> if the animation should be used, default is <code>true</code>
+     */
+    protected void setUseAnimation(boolean use) {
+
+        m_useAnimation = use;
+    }
+
+    /**
+     * Appends the arrow element to the popup's dialog.<p>
+     * 
+     * @param arrow the arrow element to add
+     */
+    protected void showArrow(Element arrow) {
+
+        m_dialog.getElement().appendChild(arrow);
     }
 
 }

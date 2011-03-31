@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/31 17:46:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,15 +52,17 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A table-less implementation of {@link com.google.gwt.user.client.ui.DialogBox}.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +77,42 @@ public class CmsDialogBox extends PopupPanel {
          * Default constructor.<p>
          */
         protected Caption() {
+
+            // nothing to do
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onAttach()
+         */
+        @Override
+        protected void onAttach() {
+
+            super.onAttach();
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+        }
+    }
+
+    /**
+     * The dialog button panel.<p>
+     */
+    private class ButtonPanel extends FlowPanel {
+
+        /**
+         * Default constructor.<p>
+         */
+        protected ButtonPanel() {
 
             // nothing to do
         }
@@ -134,6 +172,9 @@ public class CmsDialogBox extends PopupPanel {
     /** The window width. */
     protected int m_windowWidth;
 
+    /** The panel holding the dialog's buttons. */
+    private ButtonPanel m_buttonPanel;
+
     /** The dialog caption. */
     private Caption m_caption;
 
@@ -154,6 +195,12 @@ public class CmsDialogBox extends PopupPanel {
 
     /** Drag starting y position. */
     private int m_dragStartY;
+
+    /** The main widget of this dialog containing all others. */
+    private FlowPanel m_main;
+
+    /** The content widget. */
+    private Widget m_content;
 
     /** The resize handler registration .*/
     private HandlerRegistration m_resizeHandlerRegistration;
@@ -195,26 +242,45 @@ public class CmsDialogBox extends PopupPanel {
         super(autoHide, modal);
         m_containerElement = super.getContainerElement();
         setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
         setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
         Element dragOverlay = DOM.createDiv();
         dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
         getElement().insertFirst(dragOverlay);
+
         m_caption = new Caption();
         m_caption.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().caption());
         m_caption.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-
         // Add the caption to the top of the popup-panel. We need to
         // logically adopt the caption so we can catch mouse events.
         DOM.appendChild(m_containerElement, m_caption.getElement());
         adopt(m_caption);
 
+        m_main = new FlowPanel();
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
+        super.setWidget(m_main);
+
+        m_buttonPanel = new ButtonPanel();
+        m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
+        // Add the caption to the top of the popup-panel. We need to
+        // logically adopt the caption so we can catch mouse events.
+        DOM.appendChild(m_containerElement, m_buttonPanel.getElement());
+        adopt(m_buttonPanel);
+
         MouseHandler mouseHandler = new MouseHandler();
         addDomHandler(mouseHandler, MouseDownEvent.getType());
         addDomHandler(mouseHandler, MouseUpEvent.getType());
         addDomHandler(mouseHandler, MouseMoveEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setWidget(Widget w) {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -420,6 +486,7 @@ public class CmsDialogBox extends PopupPanel {
         } finally {
             // See comment in doDetachChildren for an explanation of this call
             m_caption.onAttach();
+            m_buttonPanel.onAttach();
         }
     }
 
@@ -437,6 +504,7 @@ public class CmsDialogBox extends PopupPanel {
             // This is similar to a {@link ComplexPanel}, but we do not want to expose
             // the caption widget, as its just an internal implementation.
             m_caption.onDetach();
+            m_buttonPanel.onDetach();
         }
     }
 
@@ -458,6 +526,16 @@ public class CmsDialogBox extends PopupPanel {
     }
 
     /**
+     * Returns the button panel.<p>
+     * 
+     * @return the button panel
+     */
+    protected FlowPanel getButtonPanel() {
+
+        return m_buttonPanel;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
      */
     @Override
@@ -467,6 +545,36 @@ public class CmsDialogBox extends PopupPanel {
             m_containerElement = super.getContainerElement();
         }
         return m_containerElement;
+    }
+
+    /**
+     * Returns the main panel.<p>
+     * 
+     * @return the main panel
+     */
+    protected FlowPanel getMainPanel() {
+
+        return m_main;
+    }
+
+    /**
+     * Returns the main content.<p>
+     * 
+     * @return the main content
+     */
+    protected Widget getContent() {
+
+        return m_content;
+    }
+
+    /**
+     * Sets the main content.<p>
+     * 
+     * @param w the content to set
+     */
+    protected void setContent(Widget w) {
+
+        m_content = w;
     }
 
     /**

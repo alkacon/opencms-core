@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,10 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
-import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -64,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -119,6 +117,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         String toolbarMode();
     }
 
+    /** The default pop-up width. */
+    private static final String DEFAULT_WIDTH = "650px";
+
     /** Stores the toolbar width. */
     private static int m_toolbarWidth;
 
@@ -130,7 +131,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     protected CmsPushButton m_button;
 
     /** The menu content. */
-    protected CmsMenuContent m_content;
+    protected CmsPopup m_popup;
 
     /** Registration of the window resize handler. */
     protected HandlerRegistration m_resizeRegistration;
@@ -170,12 +171,15 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setSize(I_CmsButton.Size.big);
-        m_button.setButtonStyle(ButtonStyle.MENU);
-        m_content = new CmsMenuContent();
-        m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
+        m_button.setButtonStyle(ButtonStyle.MENU, null);
         m_isOpen = false;
 
-        m_content.addCloseHandler(new CloseHandler<PopupPanel>() {
+        m_popup = new CmsPopup();
+        m_popup.setModal(false);
+        m_popup.setAutoHideEnabled(true);
+        m_popup.setWidth(DEFAULT_WIDTH);
+        m_popup.removePadding();
+        m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 
@@ -203,7 +207,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void clear() {
 
-        m_content.clear();
+        m_popup.clear();
 
     }
 
@@ -212,7 +216,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void closeMenu() {
 
-        m_content.hide();
+        m_popup.hide();
         setButtonUp();
         if (m_resizeRegistration != null) {
             m_resizeRegistration.removeHandler();
@@ -231,11 +235,19 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Enables or disables the button.<p>
+     */
+    public void enable() {
+
+        m_button.enable();
+    }
+
+    /**
      * Hides the menu content as well as the menu connector.<p>
      */
     public void hide() {
 
-        m_content.setVisible(false);
+        m_popup.hide();
     }
 
     /**
@@ -276,10 +288,8 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_isOpen = true;
         m_button.setDown(true);
 
-        m_content.show();
-
+        m_popup.show();
         positionPopup();
-        CmsSlideAnimation.slideIn(m_content.getElement(), null, 200);
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
@@ -287,14 +297,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                 positionPopup();
             }
         });
-    }
-
-    /**
-     * Enables or disables the button.<p>
-     */
-    public void enable() {
-
-        m_button.enable();
     }
 
     /**
@@ -318,7 +320,8 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void setMenuWidget(Widget widget) {
 
-        m_content.setWidget(widget);
+        m_popup.remove(widget);
+        m_popup.add(widget);
     }
 
     /**
@@ -341,11 +344,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_isToolbarMode = isToolbarMode;
         if (m_isToolbarMode) {
             // important, so a click on the button won't trigger the auto-close 
-            m_content.addAutoHidePartner(getElement());
-            m_content.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
+            m_popup.addAutoHidePartner(getElement());
         } else {
-            m_content.removeAutoHidePartner(getElement());
-            m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
+            m_popup.removeAutoHidePartner(getElement());
         }
     }
 
@@ -354,7 +355,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void show() {
 
-        m_content.setVisible(true);
+        m_popup.show();
     }
 
     /**
@@ -370,9 +371,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      * 
      * @return the popup content
      */
-    protected CmsMenuContent getPopupContent() {
+    protected CmsPopup getPopupContent() {
 
-        return m_content;
+        return m_popup;
     }
 
     /**
@@ -380,7 +381,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     protected void hideMenu() {
 
-        m_content.hide();
+        m_popup.hide();
         if (m_resizeRegistration != null) {
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
@@ -408,7 +409,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
         int buttonMiddle = buttonPosition.getLeft() - Window.getScrollLeft() + buttonPosition.getWidth() / 2;
         // get the content width
-        int contentWidth = m_content.getOffsetWidth();
+        int contentWidth = m_popup.getOffsetWidth();
 
         // the optimum left position is in the middle of the button minus the half content width
         // assume that the optimum fits into the space
@@ -448,13 +449,13 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
             arrowLeft = arrowWidth + arrowSpace;
         }
 
-        int arrowTop = -(arrowHeight - 1);
+        int arrowTop = -(arrowHeight - 2);
         String arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowTop();
 
         int contentTop = buttonPosition.getTop() + buttonPosition.getHeight() - Window.getScrollTop() + arrowHeight - 2;
         if (!m_isToolbarMode) {
             contentTop = buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight - 2;
-            int contentHeight = m_content.getOffsetHeight();
+            int contentHeight = m_popup.getOffsetHeight();
             int windowHeight = Window.getClientHeight();
 
             if ((contentHeight + spaceAssurance < windowHeight)
@@ -465,20 +466,20 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                 // and there is to little space below the button
                 // so show above
                 contentTop = buttonPosition.getTop() - arrowHeight + 2 - contentHeight;
-                arrowTop = contentHeight - 1;
+                arrowTop = contentHeight - 2;
                 arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowBottom();
             }
         } else {
             contentLeft = contentLeft - Window.getScrollLeft();
-            m_content.getElement().getStyle().setPosition(Position.FIXED);
+            m_popup.setPositionFixed();
         }
 
         m_arrow.setClassName(arrowClass);
         m_arrow.getStyle().setLeft(arrowLeft, Unit.PX);
         m_arrow.getStyle().setTop(arrowTop, Unit.PX);
 
-        m_content.getElement().appendChild(m_arrow);
-        m_content.setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
+        m_popup.showArrow(m_arrow);
+        m_popup.setPosition(contentLeft + Window.getScrollLeft(), contentTop);
     }
 
     /**

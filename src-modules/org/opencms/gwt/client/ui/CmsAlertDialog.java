@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2010/11/15 15:34:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/31 17:46:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,11 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsAlertDialog extends CmsPopupDialog {
+public class CmsAlertDialog extends CmsPopup {
 
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
