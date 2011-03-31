@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/31 17:51:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -137,7 +137,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
 
-        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
+        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.black, false);
         m_tabsHolder.add(m_tabbedPanel);
 
         // close button        

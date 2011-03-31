@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/A_CmsToolbarListMenuButton.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/31 17:50:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -97,7 +97,6 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
         tabsContainer.add(m_tabs);
         FlowPanel content = new FlowPanel();
-        content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
         content.add(tabsContainer);
         setMenuWidget(content);
         addClickHandler(new ClickHandler() {

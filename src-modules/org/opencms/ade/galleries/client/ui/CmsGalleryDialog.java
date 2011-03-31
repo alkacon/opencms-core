@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/03/10 11:29:50 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/03/31 17:51:07 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.
  */
@@ -149,7 +149,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         // set the default height of the dialog
         m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
         // tabs
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
+        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.black, false);
         // add tabs to parent widget        
         m_parentPanel.add(m_tabbedPanel);
         m_showPreview = new CmsPushButton();
