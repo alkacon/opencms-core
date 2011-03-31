@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2011/03/31 10:25:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/31 10:41:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -798,22 +798,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         List projects = new ArrayList();
 
         try {
-            System.out.println("###########################################");
             String defProject = null;
             if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
                 defProject = new CmsUserSettings(m_user).getStartProject();
-                System.out.println("Usersetting : " + defProject);
             }
             if (defProject == null) {
                 defProject = getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
-                System.out.println("Default Usersetting : " + defProject);
             }
             if (defProject == null) {
                 defProject = getCms().getRequestContext().getCurrentProject().getName();
-                System.out.println("Current-Project: " + defProject);
             }
-
-            System.out.println("Default-Project: " + defProject);
 
             List projectsList;
             projectsList = OpenCms.getOrgUnitManager().getAllAccessibleProjects(getCms(), getParamOufqn(), false);
@@ -823,10 +817,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             while (itProjects.hasNext()) {
                 boolean selected = false;
                 CmsProject project = (CmsProject)itProjects.next();
-
-                System.out.println("Project SimpleName: " + project.getSimpleName());
-                System.out.println("Project Name: " + project.getName());
-                System.out.println(project.getName() + "=" + defProject);
 
                 String projectName = project.getName();
                 if (projectName.equals(defProject)) {
@@ -841,7 +831,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 } else {
                     projects.add(new CmsSelectWidgetOption(project.getName(), selected, project.getSimpleName(), null));
                 }
-                System.out.println("Project selected: " + selected);
             }
 
         } catch (CmsException e) {
