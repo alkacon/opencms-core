@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/A_CmsFormFieldPanel.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/31 17:47:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.2 $
+ *  @version $Revision: 1.3 $
  *  
  *  @since 8.0.0
  */
@@ -158,7 +158,6 @@ public abstract class A_CmsFormFieldPanel extends Composite {
         String border = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().border();
         widget.addStyleName(border);
         widget.addStyleName(cornerAll);
-        widget.getElement().getStyle().setProperty("borderTop", "none");
     }
 
 }

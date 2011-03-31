@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsExtendedPropertyPanel.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/03/31 17:48:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_STRUCTURE
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -68,7 +67,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -92,8 +91,6 @@ public class CmsExtendedPropertyPanel extends A_CmsFormFieldPanel {
     /** Tab id for the "simple" tab. */
     public static final String TAB_SIMPLE = "simple";
 
-    /** The CSS bundle used for this form. **/
-    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
     /** The list of form fields. */
     protected List<I_CmsFormField> m_fields = Lists.newArrayList();
 
@@ -132,7 +129,6 @@ public class CmsExtendedPropertyPanel extends A_CmsFormFieldPanel {
     public CmsExtendedPropertyPanel(boolean showShared) {
 
         m_panel = new CmsTabbedPanel<FlowPanel>();
-        m_panel.addStyleName(CSS.form());
 
         m_panel.add(m_simpleTab, Messages.get().key(GUI_PROPERTY_TAB_SIMPLE_0));
         CmsDomUtil.makeScrollable(m_simpleTab);
