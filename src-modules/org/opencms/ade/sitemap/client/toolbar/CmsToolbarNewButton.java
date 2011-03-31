@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/02/28 11:10:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/03/31 17:52:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -119,7 +119,6 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             Label messageLabel = new Label(Messages.get().key(Messages.GUI_NO_CREATABLE_ELEMENTS_0));
             messageLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
             SimplePanel content = new SimplePanel();
-            content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
             content.setWidget(messageLabel);
             setMenuWidget(messageLabel);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/11/18 07:42:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/03/31 17:52:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -93,7 +93,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         super(I_CmsButton.ButtonData.CLIPBOARD, handler);
 
         m_content = new FlowPanel();
-        m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel<Widget>();
         m_tabs.addSelectionHandler(new SelectionHandler<Integer>() {
 

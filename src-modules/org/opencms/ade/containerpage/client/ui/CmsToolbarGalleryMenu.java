@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2010/10/21 12:48:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/31 17:52:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -72,8 +72,6 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
         super(I_CmsButton.ButtonData.ADD, handler);
         m_dragHandler = dragHandler;
         m_contentPanel = new FlowPanel();
-        m_contentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
-
         setMenuWidget(m_contentPanel);
     }
 
@@ -83,7 +81,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            m_gallery = CmsGalleryFactory.createDialog(m_dragHandler, m_content);
+            m_gallery = CmsGalleryFactory.createDialog(m_dragHandler, m_popup);
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
             tabsContainer.add(m_gallery);
