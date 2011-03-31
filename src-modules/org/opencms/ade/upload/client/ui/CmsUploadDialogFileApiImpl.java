@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogFileApiImpl.java,v $
- * Date   : $Date: 2011/03/09 15:46:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/31 17:47:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,7 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
     /**
      * @see org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
      */
+    @Override
     public String getFileSizeTooLargeMessage(CmsFileInfo file) {
 
         if ((file.getFileSize() > MAX_UPLOAD_SIZE)) {
