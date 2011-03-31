@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPdf.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/03/31 10:25:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,8 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorPdf;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
-import org.pdfbox.exceptions.CryptographyException;
-import org.pdfbox.exceptions.InvalidPasswordException;
+import org.apache.pdfbox.exceptions.CryptographyException;
+import org.apache.pdfbox.exceptions.InvalidPasswordException;
 
 /**
  * Lucene document factory class to extract index data from a cms resource 
@@ -49,7 +49,7 @@ import org.pdfbox.exceptions.InvalidPasswordException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

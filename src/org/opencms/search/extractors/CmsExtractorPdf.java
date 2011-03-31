@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2009/09/07 12:41:36 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2011/03/31 10:25:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,18 +37,17 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pdfbox.encryption.DocumentEncryption;
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.pdmodel.PDDocumentInformation;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.util.PDFTextStripper;
 
 /**
  * Extracts the text from a PDF document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,10 +89,10 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             pdfDocument = parser.getPDDocument();
 
             // check for encryption
+            // check for encryption
             if (pdfDocument.isEncrypted()) {
-                DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
-                // try using the default password
-                decryptor.decryptDocument("");
+
+                pdfDocument.decrypt("");
             }
 
             // create PDF stripper

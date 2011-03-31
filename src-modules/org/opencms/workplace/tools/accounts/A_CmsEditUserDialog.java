@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2010/11/18 10:09:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/31 10:25:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
@@ -66,12 +68,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Dialog to edit new or existing user in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +89,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /** Request parameter name for the user id. */
     public static final String PARAM_USERID = "userid";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsEditUserDialog.class);
 
     /** Session parameter name for the pwd info object. */
     private static final String PWD_OBJECT = "PWD_INFO";
@@ -112,6 +119,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /** The starting site for the new user. */
     private String m_site;
+
+    /** The starting project for the new user. */
+    private String m_startProject;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -170,14 +180,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             settings.setStartSite(getSite());
             // set starting project
             if (isNewUser()) {
-                try {
-                    String prj = getCms().readProject(
-                        getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject()).getName();
-                    settings.setStartProject(prj);
-                } catch (CmsException e) {
-                    // use root ou project, if project not found
-                    settings.setStartProject(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
-                }
+                settings.setStartProject(getParamOufqn() + getStartProject());
+            } else {
+                settings.setStartProject(getStartProject());
             }
             settings.save(getCms());
 
@@ -302,13 +307,13 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the selfManagement.<p>
+     * Returns the project.<p>
      *
-     * @return the selfManagement
+     * @return the project
      */
-    public boolean isSelfManagement() {
+    public String getStartProject() {
 
-        return !m_user.isManaged();
+        return m_startProject;
     }
 
     /**
@@ -319,6 +324,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public boolean isEnabled() {
 
         return m_user.isEnabled();
+    }
+
+    /**
+     * Returns the selfManagement.<p>
+     *
+     * @return the selfManagement
+     */
+    public boolean isSelfManagement() {
+
+        return !m_user.isManaged();
     }
 
     /**
@@ -340,6 +355,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public void setDescription(String description) {
 
         m_user.setDescription(description);
+    }
+
+    /**
+     * Sets if user is enabled.<p>
+     * 
+     * @param enabled is the user enabled
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_user.setEnabled(enabled);
     }
 
     /**
@@ -406,16 +431,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Sets if user is enabled.<p>
-     * 
-     * @param enabled is the user enabled
-     */
-    public void setEnabled(boolean enabled) {
-
-        m_user.setEnabled(enabled);
-    }
-
-    /**
      * Sets the site.<p>
      *
      * @param site the site to set
@@ -423,6 +438,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public void setSite(String site) {
 
         m_site = site;
+    }
+
+    /**
+     * Sets the start project.<p>
+     *
+     * @param project the start project to set
+     */
+    public void setStartProject(String startProject) {
+
+        m_startProject = startProject;
     }
 
     /**
@@ -460,7 +485,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(6, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            int row = isNewUser() ? 13 : 12;
+            int row = isNewUser() ? 14 : 13;
             if (!webuserOu) {
                 if (getSites().isEmpty()) {
                     row -= 1;
@@ -471,7 +496,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             } else {
-                row = 9;
+                row = 10;
             }
             row++;
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
@@ -541,6 +566,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 if (!getSites().isEmpty()) {
                     addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsSelectWidget(getSites())));
                 }
+                addWidget(new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsSelectWidget(
+                    getProjects())));
                 if (isNewUser()) {
                     addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
                         null,
@@ -564,6 +591,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 if (!getSites().isEmpty()) {
                     addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsDisplayWidget()));
                 }
+                addWidget(new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsDisplayWidget()));
             }
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
@@ -629,6 +657,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
                 m_site = settings.getStartSite();
+                m_startProject = settings.getStartProject();
                 return;
             } else {
                 // this is not the initial call, get the user object from session            
@@ -639,6 +668,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
                 m_site = settings.getStartSite();
+                m_startProject = settings.getStartProject();
                 // test
                 m_user.getId();
                 return;
@@ -657,6 +687,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         }
         m_language = CmsLocaleManager.getDefaultLocale().toString();
         m_site = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+        m_startProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
     }
 
     /**
@@ -757,6 +788,72 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns a list of options for the project selector.<p>
+     * 
+     * @return a list of options for the project selector
+     * @throws CmsException 
+     */
+    private List getProjects() {
+
+        List projects = new ArrayList();
+
+        try {
+            System.out.println("###########################################");
+            String defProject = null;
+            if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
+                defProject = new CmsUserSettings(m_user).getStartProject();
+                System.out.println("Usersetting : " + defProject);
+            }
+            if (defProject == null) {
+                defProject = getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
+                System.out.println("Default Usersetting : " + defProject);
+            }
+            if (defProject == null) {
+                defProject = getCms().getRequestContext().getCurrentProject().getName();
+                System.out.println("Current-Project: " + defProject);
+            }
+
+            System.out.println("Default-Project: " + defProject);
+
+            List projectsList;
+            projectsList = OpenCms.getOrgUnitManager().getAllAccessibleProjects(getCms(), getParamOufqn(), false);
+
+            Iterator itProjects = projectsList.iterator();
+
+            while (itProjects.hasNext()) {
+                boolean selected = false;
+                CmsProject project = (CmsProject)itProjects.next();
+
+                System.out.println("Project SimpleName: " + project.getSimpleName());
+                System.out.println("Project Name: " + project.getName());
+                System.out.println(project.getName() + "=" + defProject);
+
+                String projectName = project.getName();
+                if (projectName.equals(defProject)) {
+                    selected = true;
+                }
+                if (isNewUser()) {
+                    projects.add(new CmsSelectWidgetOption(
+                        project.getSimpleName(),
+                        selected,
+                        project.getSimpleName(),
+                        null));
+                } else {
+                    projects.add(new CmsSelectWidgetOption(project.getName(), selected, project.getSimpleName(), null));
+                }
+                System.out.println("Project selected: " + selected);
+            }
+
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        return projects;
+    }
+
+    /**
      * Returns a list of options for the site selector.<p>
      * 
      * @return a list of options for the site selector
@@ -799,4 +896,5 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         }
         return sites;
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/30 14:47:55 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2011/03/31 10:25:32 $
+ * Version: $Revision: 1.81 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -76,6 +76,8 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize
 * Fixed issue using delete and lock resource: empty string does not result in "/"
 - Content tool "Property viewer": Only show resources with at least one property to display with content
+! Added project selector to the new user and edit user dialog in the account management
+! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
 - Content tool "Convert XML contents": Give out the transformed xml content when problems to write the transformed content
 
 OpenCms 7.9.2 - February 24th, 2010
