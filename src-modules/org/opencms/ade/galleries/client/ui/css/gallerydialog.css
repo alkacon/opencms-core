@@ -124,9 +124,10 @@
 	right:0px; 
 	bottom:0px; 
 	left:0px; 
-	padding: 5px 10px;
+	padding: 5px;
 	border: 1px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
+	margin: 7px 5px 5px 5px;
 }
 .searchTabDesMargin {
 	margin-bottom: 10px;

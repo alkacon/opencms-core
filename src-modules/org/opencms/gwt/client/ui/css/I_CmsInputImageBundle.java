@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/31 17:42:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,17 +33,163 @@ package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Image bundle for this package.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
 public interface I_CmsInputImageBundle extends ClientBundle {
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlackDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlackDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlackHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlackHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlackUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlackUpBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlueDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlueDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlueHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlueHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonBlueUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonBlueUpBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonDisabledBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonDisabledBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonRedDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonRedDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonRedHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonRedHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonRedUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonRedUpBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonSteelDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonSteelDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonSteelHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonSteelHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonSteelUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonSteelUpBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonYellowDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonYellowDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonYellowHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonYellowHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonYellowUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource buttonYellowUpBackground();
 
     /**
      * Image resource accessor.<p>

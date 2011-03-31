@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2011/03/31 17:42:17 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * 
  * @since 8.0.0
  */
@@ -115,7 +115,28 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String black();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String blue();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String cmsButtonBig();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsButtonIndividual();
 
         /**
          *  Access method.<p>
@@ -171,6 +192,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String red();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String spacerLeft();
 
         /**
@@ -179,6 +207,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String spacerRight();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String steel();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String yellow();
     }
 
     /** The content editor dialog CSS. */
@@ -326,6 +368,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String contentPadding();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String contentSpacer();
 
         /** 
@@ -341,6 +390,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String dragOverlay();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hideButtonPanel();
 
         /** 
          * Access method.<p>
@@ -1082,13 +1138,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String menuPopup();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String popup();
 
         /** 
@@ -1299,6 +1348,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String black();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         @ClassName("internal-tabbed")
         String cmsInternalTab();
 
@@ -1349,6 +1405,34 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
         String cmsTabLayoutPanelTabSelected();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerAll();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerLeft();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerRight();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String steel();
 
         /** 
          * Access method.<p>
@@ -1567,6 +1651,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("highlight.css")
     I_CmsHighlightCss highlightCss();
+
+    /**
+     * Returns the image bundle for the input package.<p>
+     * 
+     * @return an image bundle
+     */
+    I_CmsInputImageBundle inputImages();
 
     /**
      * Access method.<p>

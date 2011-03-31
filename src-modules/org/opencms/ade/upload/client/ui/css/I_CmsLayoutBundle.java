@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/14 16:07:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/03/31 17:42:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.ClientBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -142,13 +142,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String uploadDialogButton();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String uploadDialogContent();
 
         /** 
          * Access method.<p>

@@ -43,7 +43,7 @@
 }
 
 @sprite .linkEdit {
-	gwt-image: "baseImages.icons.editIconActive"; 
+	gwt-image: "baseImages.icons.editIconActive";
 }
 
 @sprite .inherited {
@@ -99,7 +99,7 @@
 }
 
 @sprite .cmsState-up-hovering .radioButtonImage {
-	gwt-image: "inputImages.radioUncheckedHover"; 
+	gwt-image: "inputImages.radioUncheckedHover";
 }
 
 @sprite .cmsState-down-hovering .radioButtonImage {
@@ -273,20 +273,6 @@
 	vertical-align: middle;
 }
 
-.form {
-	width: 595px;
-	height: 480px;
-	border: none;
-}
-
-.formTab {
-	margin-left: 15px;
-	margin-top: 10px;
-	margin-right: 7px;
-	overflow-y: auto !important;
-	
-}
-
 .alignBottom {
 	vertical-align: bottom;
 }
@@ -302,13 +288,13 @@
 }
 
 @sprite .formRowOpenerClosed {
-	gwt-image: "baseImages.plusImage"
+	gwt-image: "baseImages.plusImage";
 }
 
 
 
 @sprite .formRowOpenerOpen {
-	gwt-image: "baseImages.minusImage"; 
+	gwt-image: "baseImages.minusImage";
 }
 
 @def fieldOpenerWidth 32px ; 
@@ -367,9 +353,3 @@
 	font-weight: bold;
 	margin-left: 8px;
 }
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-.popup, .menuPopup, .popupContent{}
+.popup, .popupContent{}
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
 	background: value("constants.css.backgroundColorMenu");
@@ -83,40 +83,40 @@
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
 	.cmsMenuBar, .menuPanel{
-		-moz-border-radius: value("constants.css.borderRadius");
+		-moz-border-radius: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
-		-moz-border-radius-bottomright: value("constants.css.borderRadius");
+		-moz-border-radius-bottomleft: 8px;
+		-moz-border-radius-bottomright: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		-moz-border-radius-topleft: value("constants.css.borderRadius");
-		-moz-border-radius-topright: value("constants.css.borderRadius");
+		-moz-border-radius-topleft: 8px;
+		-moz-border-radius-topright: 8px;
 	}
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.cmsMenuBar, .menuPanel{
-		-webkit-border-radius: value("constants.css.borderRadius");
+		-webkit-border-radius: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
-		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
+		-webkit-border-bottom-left-radius: 8px;
+		-webkit-border-bottom-right-radius: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		-webkit-border-top-left-radius: value("constants.css.borderRadius");
-		-webkit-border-top-right-radius: value("constants.css.borderRadius");
+		-webkit-border-top-left-radius: 8px;
+		-webkit-border-top-right-radius: 8px;
 	}
 } @elif user.agent opera {
 	/** opera */
 	.cmsMenuBar, .menuPanel{
-		border-radius: value("constants.css.borderRadius");
+		border-radius: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		border-bottom-left-radius: value("constants.css.borderRadius");
-		border-bottom-right-radius: value("constants.css.borderRadius");
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		border-top-left-radius: value("constants.css.borderRadius");
-		border-top-right-radius: value("constants.css.borderRadius");
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
 	}
 }

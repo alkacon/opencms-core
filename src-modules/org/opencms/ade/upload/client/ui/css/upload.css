@@ -1,8 +1,4 @@
-.menuPopup, .popup{}
-
-.uploadDialogContent .popupContent {
-	background: none repeat scroll 0 0 value("constants.css.backgroundColorMenu");
-}
+.popup, .popupContent {}
 
 .mainContentWidget {
     background-color: value("constants.css.backgroundColorDialog");

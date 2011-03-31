@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/03/31 17:42:17 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -97,13 +97,6 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    String form();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
     String formDescriptionLabel();
 
     /**
@@ -147,13 +140,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String formRowOpenerOpen();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String formTab();
 
     /**
      * Css class reader.<p>

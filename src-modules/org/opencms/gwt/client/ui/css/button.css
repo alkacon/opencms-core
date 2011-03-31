@@ -1,14 +1,11 @@
 @external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
-.cmsState{}
-.cmsState.cmsState-down-disabled{ cursor: auto; }
-.cmsState.cmsState-up-disabled{ cursor: auto; }
-.cmsHovering{}
+.cmsState, .cmsHovering{}
+.cmsState.cmsState-down-disabled, .cmsState.cmsState-up-disabled { cursor: auto; }
 
 .spacerRight {
 	margin-right: 4px;
 }
-
 .spacerLeft {
 	margin-left: 4px;
 }
@@ -19,11 +16,18 @@
     vertical-align: middle;
 }
 
+.cmsTextButton .html-face, .cmsMenuButton .html-face, .cmsImageButton .html-face, .cmsTransparentButton .html-face{
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
 .cmsTransparentButton{
     display: inline-block;
     vertical-align: top;
     outline: none;
     cursor: pointer;
+    text-align: center;
 }
 
 .cmsTextButton { 
@@ -60,7 +64,7 @@
         display: inline;
         vertical-align: middle;
     }
-    .cmsMinWidth{
+    .cmsMinWidth .html-face{
         min-width: 6em;
         overflow: visible !important;
     }
@@ -68,26 +72,28 @@
     .cmsTextButton, .cmsTextButton div, .cmsTransparentButton, .cmsTransparentButton div, .cmsMenuButton, .cmsMenuButton div, .cmsImageButton, .cmsImageButton div{
         display: inline-block;
         white-space: nowrap;
-        vertical-align: middle;
+        /* vertical-align: middle; */
     }
-    .cmsMinWidth{
+    .cmsMinWidth .html-face{
         min-width: 6em;
     }
 }
 
 .cmsTextButton.cmsButtonBig, .cmsMenuButton.cmsButtonBig, .cmsImageButton.cmsButtonBig{
     padding: 2px 4px;
-    line-height: 16px;
+    /* line-height: 16px; */
 }
 
 .cmsTextButton.cmsButtonSmall, .cmsMenuButton.cmsButtonSmall, .cmsImageButton.cmsButtonSmall{
     padding: 2px 2px;
-    line-height: 12px;
+    /* line-height: 12px; */
 }
 
 .cmsButtonMedium{}
+.cmsButtonIndividual{}
 
-@sprite .cmsTextButton.cmsState-up-disabled{
+
+@sprite .cmsTextButton.cmsState-up-disabled, .cmsTextButton.cmsState-down-disabled{
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     background-color: value("constants.css.backgroundColorStateDisabled");
@@ -97,8 +103,8 @@
 @sprite .cmsTextButton.cmsState-up{
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%; 
-	height: auto;
 	background-color: value("constants.css.backgroundColorStateStandard");
+	height: auto;
 } 
 @sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering{
 	gwt-image: "backgrounds.stateBackground"; 
@@ -113,7 +119,7 @@
 	height: auto;
 }
 
-.cmsMenuButton.cmsState-up-disabled{
+.cmsMenuButton.cmsState-up-disabled, .cmsMenuButton.cmsState-down-disabled{
     border-width:1px;
     border-style: solid;
     border-color: transparent;
@@ -136,11 +142,6 @@
 	height: auto;
 }
 .cmsMenuButton.cmsState-down{
-    /** border-width:1px;
-    border-style: solid;
-	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%;
-	background-color: value("constants.css.backgroundColorStateActive");*/
     border-width:1px;
     border-style: solid;
     border-color: transparent;
@@ -148,7 +149,7 @@
 	height: auto;
 }
 
-.cmsImageButton.cmsState-up-disabled{
+.cmsImageButton.cmsState-up-disabled, .cmsImageButton.cmsState-down-disabled{
     border-width:1px;
     border-style: solid;
     border-color: transparent;
@@ -161,8 +162,8 @@
     border-color: transparent;
 	background-color: transparent;
 	height: auto;
-} 
-@sprite .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering{
+}
+@sprite .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering {
     border-width:1px;
     border-style: solid;
 	gwt-image: "backgrounds.stateBackground"; 
@@ -170,11 +171,156 @@
 	background-color: value("constants.css.backgroundColorStateHover");
 	height: auto;
 }
-.cmsImageButton.cmsState-down{
+@sprite .cmsImageButton.cmsState-down{
     border-width:1px;
     border-style: solid;
 	gwt-image: "backgrounds.stateBackground"; 
 	background-position: 50% 50%;
 	background-color: value("constants.css.backgroundColorStateActive");
 	height: auto;
+}
+
+.red {
+	font-weight: bold;
+	color: white !important;
+}
+@sprite .red.cmsState-up{
+	color: white !important;
+	gwt-image: "inputImages.buttonRedUpBackground"; 
+	background-position: 50% 50%;
+    height: auto;
+}
+@sprite .red.cmsState-down{
+	color: white !important;
+	gwt-image: "inputImages.buttonRedDownBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .red.cmsState-up-disabled, .red.cmsState-down-disabled{
+	color: #888 !important;
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto; 
+}
+@sprite .red.cmsState-up-hovering, .red.cmsState-down-hovering{
+	color: white !important;
+	gwt-image: "inputImages.buttonRedHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto; 
+}
+
+.blue {
+	font-weight: bold;
+	color: white !important;
+}
+@sprite .blue.cmsState-up{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlueUpBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .blue.cmsState-down{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlueDownBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .blue.cmsState-up-disabled, .blue.cmsState-down-disabled{
+	color: #888 !important;
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto; 
+}
+@sprite .blue.cmsState-up-hovering, .blue.cmsState-down-hovering{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlueHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto; 
+}
+
+.yellow {
+	font-weight: bold;
+	color: black !important;
+}
+@sprite .yellow.cmsState-up{
+	color: black !important;
+	gwt-image: "inputImages.buttonYellowUpBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .yellow.cmsState-down{
+	color: black !important;
+	gwt-image: "inputImages.buttonYellowDownBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .yellow.cmsState-up-disabled, .yellow.cmsState-down-disabled{
+	color: #888 !important;
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .yellow.cmsState-up-hovering, .yellow.cmsState-down-hovering{
+	color: black !important;
+	gwt-image: "inputImages.buttonYellowHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+
+.steel {
+	font-weight: bold;
+	color: white !important;
+}
+@sprite .steel.cmsState-up{
+	color: white !important;
+	gwt-image: "inputImages.buttonSteelUpBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .steel.cmsState-down{
+	color: white !important;
+	gwt-image: "inputImages.buttonSteelDownBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .steel.cmsState-up-disabled, .steel.cmsState-down-disabled{
+	color: #888 !important;
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .steel.cmsState-up-hovering, .steel.cmsState-down-hovering{
+	color: white !important;
+	gwt-image: "inputImages.buttonSteelHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+
+.black {
+	font-weight: bold;
+	color: white !important;
+}
+@sprite .black.cmsState-up{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlackUpBackground"; 
+	background-position: 50% 50%;
+	height: auto; 
+}
+@sprite .black.cmsState-down{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlackDownBackground";
+	background-position: 50% 50%;
+	height: auto; 
+}
+@sprite .black.cmsState-up-disabled, .black.cmsState-down-disabled{
+	color: #888 !important;
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto; 
+}
+@sprite .black.cmsState-up-hovering, .black.cmsState-down-hovering{
+	color: white !important;
+	gwt-image: "inputImages.buttonBlackHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto; 
 }

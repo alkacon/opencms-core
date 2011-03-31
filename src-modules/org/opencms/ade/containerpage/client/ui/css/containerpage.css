@@ -3,11 +3,6 @@
 .toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
 
-.menuContent{
-	width: 650px;
-	padding: 0px;
-}
-
 .showDropzone .menuTabContainer{
 	display: none;
 }
@@ -54,9 +49,9 @@ ul.clipboardList{
 	display: inline-block;
 }
 
-.menuContent.showDropzone{
+/*.menuContent.showDropzone{
 	padding: 5px 0px;	
-}
+}*/
 
 .showDropzone .clipboardDropzone{
 	display: block;

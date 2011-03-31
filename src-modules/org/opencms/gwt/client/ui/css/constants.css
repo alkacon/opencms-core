@@ -39,7 +39,7 @@
 /** The default border color. */
 @def borderColor #999999;
 /** The border color for dialogs. */
-@def borderColorDialog #1D2844;
+@def borderColorDialog #1F232A;
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
 /** The default border radius. */
