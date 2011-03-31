@@ -95,8 +95,8 @@
       <explorertype name="extendedfolder" key="fileicon.extendedfolder" icon="gallery.gif" reference="folder">
         <newresource uri="newresource.jsp?page=extendedfolder" order="10" autosetnavigation="false" autosettitle="false" info="desc.extendedfolder"/>
       </explorertype>
-      <explorertype name="entrypoint" key="fileicon.extendedfolder" icon="gallery.gif" reference="folder">
-      	<newresource uri="newresource.jsp?page=entrypoint" order="11" autosetnavigation="false" autosettitle="false" info="desc.extendedfolder" />
+      <explorertype name="entrypoint" key="fileicon.entrypoint" icon="gallery.gif" reference="folder">
+      	<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=entrypoint" order="11" autosetnavigation="false" autosettitle="false" info="desc.entrypoint" />
       </explorertype>
       <explorertype name="structurecontent" key="fileicon.structurecontent" icon="xmlcontent.gif" reference="xmlcontent">
         <newresource uri="newresource.jsp?page=structurecontent" order="15" autosetnavigation="false" autosettitle="false" info="desc.structuredcontent"/>
