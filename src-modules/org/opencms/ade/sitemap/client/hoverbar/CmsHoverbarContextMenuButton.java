@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2011/02/22 09:45:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/31 17:49:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -66,9 +66,6 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
-
-    /** The width of the context menu popup. */
-    protected static final int POPUP_WIDTH = 200;
 
     /**
      * Constructor.<p>
@@ -88,7 +85,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         setMenuWidget(m_menuPanel);
         //    getPopupContent().removeAutoHidePartner(getElement());
         getPopupContent().addAutoHidePartner(getElement());
-        getPopupContent().setWidth(POPUP_WIDTH + "px");
+        getPopupContent().setWidth("auto");
         //getPopupContent().setModal(true);
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
