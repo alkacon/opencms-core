@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -153,7 +153,7 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),
                 I_CmsImageBundle.INSTANCE.style().triangleDown());
             setIcon(false);
-            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT);
+            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 

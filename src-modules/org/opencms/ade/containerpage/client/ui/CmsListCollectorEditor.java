@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -193,7 +193,7 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 m_new.setImageClass(I_CmsButton.ButtonData.NEW.getIconClass());
                 m_new.addStyleName(I_CmsButton.ButtonData.NEW.getIconClass());
                 m_new.setTitle(I_CmsButton.ButtonData.NEW.getTitle());
-                m_new.setButtonStyle(ButtonStyle.TRANSPARENT);
+                m_new.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                 add(m_new);
                 m_new.addClickHandler(handler);
             }
@@ -202,7 +202,7 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 m_edit.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
                 m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
                 m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-                m_edit.setButtonStyle(ButtonStyle.TRANSPARENT);
+                m_edit.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                 add(m_edit);
                 m_edit.addClickHandler(handler);
             }
@@ -211,7 +211,7 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 m_delete.setImageClass(I_CmsButton.ButtonData.DELETE.getIconClass());
                 m_delete.addStyleName(I_CmsButton.ButtonData.DELETE.getIconClass());
                 m_delete.setTitle(I_CmsButton.ButtonData.DELETE.getTitle());
-                m_delete.setButtonStyle(ButtonStyle.TRANSPARENT);
+                m_delete.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                 add(m_delete);
                 m_delete.addClickHandler(handler);
             }
@@ -220,7 +220,7 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 selection.setTitle(I_CmsButton.ButtonData.SELECTION.getTitle());
-                selection.setButtonStyle(ButtonStyle.TRANSPARENT);
+                selection.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                 insert(selection, 0);
             }
         } catch (Exception e) {

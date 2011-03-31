@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.
  */
@@ -101,13 +101,13 @@ public class CmsResultListItem extends CmsListItem {
         // add  preview button
         m_previewButton = new CmsPushButton();
         m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-        m_previewButton.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         resultItemWidget.addButton(m_previewButton);
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
         m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
-        m_selectButton.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_selectButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
@@ -115,7 +115,7 @@ public class CmsResultListItem extends CmsListItem {
         // add delete button
         m_deleteButton = new CmsPushButton();
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
         if (!resultItem.isEditable()) {
             m_deleteButton.disable(resultItem.getNoEditReson());

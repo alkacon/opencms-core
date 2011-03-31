@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLinkSelector.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -117,7 +117,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         m_externalCheckbox.setText(label);
         m_inputRow.setCellWidth(m_textbox, "330px");
         m_editButton.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().linkEdit());
-        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
 
         m_editButton.addClickHandler(new ClickHandler() {
 

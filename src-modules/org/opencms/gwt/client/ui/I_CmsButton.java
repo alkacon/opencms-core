@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,68 +41,106 @@ import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
  */
 public interface I_CmsButton {
 
+    /** Available button colors. */
+    public enum ButtonColor {
+
+        /** Button color. */
+        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()),
+        /** Button color. */
+        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+        /** Button color. */
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
+        /** Button color. */
+        STEEL(I_CmsLayoutBundle.INSTANCE.buttonCss().steel()),
+        /** Button color. */
+        YELLOW(I_CmsLayoutBundle.INSTANCE.buttonCss().yellow());
+
+        /** The list of additional style class names for this button style. */
+        private String m_className;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param className the additional classes
+         */
+        private ButtonColor(String className) {
+
+            m_className = className;
+        }
+
+        /**
+         * Returns the additional classes.<p>
+         *
+         * @return the additional classes
+         */
+        public String getClassName() {
+
+            return m_className;
+        }
+    }
+
     /** Available button icons. */
     public enum ButtonData {
 
         /** Toolbar button. */
         ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(), Messages.get().key(
-            Messages.GUI_TOOLBAR_ADD_0), true),
+            Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
         ADD_TO_FAVORITES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(),
-        Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0), false),
+        Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
         CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
-            Messages.GUI_TOOLBAR_CLIPBOARD_0), true),
+            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
 
         /** Toolbar button. */
         CONTEXT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarContext(), Messages.get().key(
-            Messages.GUI_TOOLBAR_CONTEXT_0), true),
+            Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
         DELETE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDelete(), Messages.get().key(
-            Messages.GUI_TOOLBAR_DELETE_0), false),
+            Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
         EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit(), Messages.get().key(
-            Messages.GUI_TOOLBAR_EDIT_0), false),
+            Messages.GUI_TOOLBAR_EDIT_0)),
 
         /** Toolbar button. */
         MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove(), Messages.get().key(
-            Messages.GUI_TOOLBAR_MOVE_0), false),
+            Messages.GUI_TOOLBAR_MOVE_0)),
 
         /** Toolbar button. */
         NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
-            Messages.GUI_TOOLBAR_NEW_0), false),
+            Messages.GUI_TOOLBAR_NEW_0)),
 
         /** Toolbar button. */
         PROPERTIES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties(), Messages.get().key(
-            Messages.GUI_TOOLBAR_PROPERTIES_0), false),
+            Messages.GUI_TOOLBAR_PROPERTIES_0)),
 
         /** Toolbar button. */
         PUBLISH(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish(), Messages.get().key(
-            Messages.GUI_TOOLBAR_PUBLISH_0), false),
+            Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
         REMOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRemove(), Messages.get().key(
-            Messages.GUI_TOOLBAR_REMOVE_0), false),
+            Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
         RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarReset(), Messages.get().key(
-            Messages.GUI_TOOLBAR_RESET_0), false),
+            Messages.GUI_TOOLBAR_RESET_0)),
 
         /** Toolbar button. */
         SAVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSave(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SAVE_0), false),
+            Messages.GUI_TOOLBAR_SAVE_0)),
 
         /** Toolbar button. */
         SELECTION(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SELECTION_0), false),
+            Messages.GUI_TOOLBAR_SELECTION_0)),
 
         /** Toolbar button. */
         SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SITEMAP_0), false);
+            Messages.GUI_TOOLBAR_SITEMAP_0));
 
         /** The icon class name. */
         private String m_iconClass;
@@ -110,39 +148,16 @@ public interface I_CmsButton {
         /** The title. */
         private String m_title;
 
-        private boolean m_menu;
-
-        /**
-         * Returns the menu.<p>
-         *
-         * @return the menu
-         */
-        public boolean isMenu() {
-
-            return m_menu;
-        }
-
-        /**
-         * Sets the menu.<p>
-         *
-         * @param menu the menu to set
-         */
-        public void setMenu(boolean menu) {
-
-            m_menu = menu;
-        }
-
         /**
          * Constructor.<p>
          * 
          * @param iconClass the icon class name
          * @param title the title
          */
-        private ButtonData(String iconClass, String title, boolean menu) {
+        private ButtonData(String iconClass, String title) {
 
             m_iconClass = iconClass;
             m_title = title;
-            m_menu = menu;
         }
 
         /**
@@ -169,20 +184,21 @@ public interface I_CmsButton {
     /** Available button styles. */
     public enum ButtonStyle {
 
-        /** Default button. */
-        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
+        /** Menu button. */
+        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(),
         I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Menu button. */
         MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(),
         I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
-        /** Menu button. */
-        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(),
+        /** Default button. */
+        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
         I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Transparent button. */
-        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton());
+        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         /** The list of additional style class names for this button style. */
         private String[] m_additionalClasses;
@@ -205,16 +221,6 @@ public interface I_CmsButton {
         public String[] getAdditionalClasses() {
 
             return m_additionalClasses;
-        }
-
-        /**
-         * Sets the additional classes.<p>
-         *
-         * @param additionalClasses the additional classes to set
-         */
-        public void setAdditionalClasses(String[] additionalClasses) {
-
-            m_additionalClasses = additionalClasses;
         }
 
         /**
@@ -248,7 +254,10 @@ public interface I_CmsButton {
         /** Small button style. */
         small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
             + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall()),
+
+        /** No specific size. */
+        individual(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonIndividual());
 
         /** The CSS class name. */
         private String m_cssClassName;

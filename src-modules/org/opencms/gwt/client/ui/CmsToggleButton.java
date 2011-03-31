@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -51,6 +53,12 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
 
     /** The current horizontal alignment. */
     private HorizontalAlignmentConstant m_align;
+
+    /** Stores the button style. */
+    private ButtonStyle m_buttonStyle;
+
+    /** Stores the button color. */
+    private I_CmsButton.ButtonColor m_color;
 
     /** The down face image class. */
     private String m_downImageClass;
@@ -78,7 +86,7 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
         super();
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-        setButtonStyle(ButtonStyle.TEXT);
+        setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         setSize(I_CmsButton.Size.medium);
     }
 
@@ -190,14 +198,28 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
      * Sets the button style.<p>
      * 
      * @param style the style to set
+     * @param color the color to set
      */
-    public void setButtonStyle(I_CmsButton.ButtonStyle style) {
+    public void setButtonStyle(I_CmsButton.ButtonStyle style, I_CmsButton.ButtonColor color) {
 
-        setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-        addStyleName(style.getCssClassName());
-        if (m_size != null) {
-            addStyleName(m_size.getCssClassName());
+        if (m_buttonStyle != null) {
+            for (String styleName : m_buttonStyle.getAdditionalClasses()) {
+                removeStyleName(styleName);
+            }
         }
+        if (style == ButtonStyle.TRANSPARENT) {
+            setSize(Size.individual);
+        }
+        addStyleName(style.getCssClassName());
+        m_buttonStyle = style;
+
+        if (m_color != null) {
+            removeStyleName(m_color.getClassName());
+        }
+        if (color != null) {
+            addStyleName(color.getClassName());
+        }
+        m_color = color;
     }
 
     /**

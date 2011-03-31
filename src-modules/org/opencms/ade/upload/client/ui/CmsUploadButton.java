@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,9 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -58,7 +60,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -98,6 +100,12 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /** The horizontal alignment. */
     private HorizontalAlignmentConstant m_align;
 
+    /** Stores the button style. */
+    private ButtonStyle m_buttonStyle;
+
+    /** Stores the button color. */
+    private I_CmsButton.ButtonColor m_color;
+
     /** Flag if button is enabled. */
     private boolean m_enabled;
 
@@ -113,6 +121,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /** The button size. */
     private I_CmsButton.Size m_size;
 
+    /** The current style dependent name. */
+    private String m_styleDependent;
+
     /** The target folder for the file upload. */
     private String m_targetFolder;
 
@@ -127,9 +138,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /** Flag if a button minimum width should be used. */
     private boolean m_useMinWidth;
-
-    /** The current style dependent name. */
-    private String m_styleDependent;
 
     /**
      * The default constructor.<p>
@@ -150,7 +158,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         setSize(I_CmsButton.Size.medium);
         // create the push button
         setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT);
+        setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         createFileInput();
     }
 
@@ -282,6 +290,34 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
+     * Sets the button style.<p>
+     * 
+     * @param style the style to set
+     * @param color the color to set
+     */
+    public void setButtonStyle(I_CmsButton.ButtonStyle style, I_CmsButton.ButtonColor color) {
+
+        if (m_buttonStyle != null) {
+            for (String styleName : m_buttonStyle.getAdditionalClasses()) {
+                removeStyleName(styleName);
+            }
+        }
+        if (style == ButtonStyle.TRANSPARENT) {
+            setSize(Size.individual);
+        }
+        addStyleName(style.getCssClassName());
+        m_buttonStyle = style;
+
+        if (m_color != null) {
+            removeStyleName(m_color.getClassName());
+        }
+        if (color != null) {
+            addStyleName(color.getClassName());
+        }
+        m_color = color;
+    }
+
+    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -303,20 +339,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public void setImageClass(String imageClass) {
 
         setUpFace(m_text, imageClass);
-    }
-
-    /**
-     * Sets the button style.<p>
-     * 
-     * @param style the style to set
-     */
-    public void setButtonStyle(I_CmsButton.ButtonStyle style) {
-
-        setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-        addStyleName(style.getCssClassName());
-        if (m_size != null) {
-            addStyleName(m_size.getCssClassName());
-        }
     }
 
     /**

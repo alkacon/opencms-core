@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,7 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
 
         m_button = new CmsToggleButton();
         m_button.setUseMinWidth(false);
-        m_button.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_button.setImageClass(CSS.checkBoxImage());
         if (labelText != null) {
             m_button.setText(labelText);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchParamPanel.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -86,7 +86,7 @@ public class CmsSearchParamPanel extends Composite {
     public CmsSearchParamPanel(String title, A_CmsTab tab) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_button.setButtonStyle(ButtonStyle.TRANSPARENT);
+        m_button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_title = title;
         m_tab = tab;
     }

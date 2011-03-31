@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/03/28 09:57:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -195,7 +195,7 @@ public class CmsToolbarClipboardView {
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_UNDELETE_0));
-        button.setButtonStyle(ButtonStyle.TRANSPARENT);
+        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         button.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -233,7 +233,7 @@ public class CmsToolbarClipboardView {
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        button.setButtonStyle(ButtonStyle.TRANSPARENT);
+        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         button.addClickHandler(new ClickHandler() {
 
             /**

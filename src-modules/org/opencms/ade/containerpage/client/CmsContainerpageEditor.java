@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/03/23 09:08:10 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/03/31 17:39:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -248,6 +249,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar = new CmsToolbar();
 
         CmsPushButton toggleToolbarButton = new CmsPushButton();
+        toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
         toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
         RootPanel root = RootPanel.get();
         root.add(toggleToolbarButton);
@@ -269,13 +271,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         toggleToolbarButton.getElement().getStyle().setLeft(97, Unit.PCT);
         toggleToolbarButton.getElement().getStyle().setZIndex(10010);
 
-        m_publish = new CmsToolbarPublishButton(containerpageHandler);
-        m_publish.addClickHandler(clickHandler);
-        m_toolbar.addLeft(m_publish);
-
         m_save = new CmsToolbarSaveButton(containerpageHandler);
         m_save.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_save);
+
+        m_publish = new CmsToolbarPublishButton(containerpageHandler);
+        m_publish.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_publish);
 
         m_move = new CmsToolbarMoveButton(containerpageHandler, dndHandler);
 
