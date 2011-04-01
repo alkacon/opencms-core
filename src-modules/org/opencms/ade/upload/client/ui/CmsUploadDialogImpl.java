@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadDialogImpl.java,v $
- * Date   : $Date: 2011/03/31 17:47:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/01 10:33:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -74,7 +74,6 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         /**
          * @see com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler#onSubmitComplete(com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent)
          */
-        @Override
         public void onSubmitComplete(SubmitCompleteEvent event) {
 
             parseResponse(event.getResults());
