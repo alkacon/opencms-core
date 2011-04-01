@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2011/03/31 17:52:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/01 10:37:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,25 +33,19 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.CmsContextMenu;
-import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.CmsContextMenuItem;
-import org.opencms.gwt.client.ui.CmsGUITestDialog;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
-import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 
 import java.util.List;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -61,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -136,7 +130,6 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
         if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
             // if there were entries found for the menu, create the menu
             m_menu = new CmsContextMenu(menuEntries, true, getPopupContent());
-            addTestEntry();
             // add the resize handler for the menu
             m_resizeRegistration = Window.addResizeHandler(m_menu);
             // set the menu as widget for the panel 
@@ -157,38 +150,5 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
             label.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
             m_menuPanel.setWidget(0, 0, label);
         }
-    }
-
-    /**
-     * 
-     */
-    private void addTestEntry() {
-
-        m_menu.addSeparator();
-        CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean(
-            true,
-            true,
-            null,
-            null,
-            "test label",
-            "test name",
-            null,
-            false,
-            null);
-        CmsContextMenuEntry entry = new CmsContextMenuEntry();
-        entry.setBean(bean);
-        Command cmd = new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                new CmsGUITestDialog();
-            }
-        };
-        entry.setCommand(cmd);
-        A_CmsContextMenuItem item = new CmsContextMenuItem(entry);
-        m_menu.addItem(item);
     }
 }
