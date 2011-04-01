@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/01 13:44:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,34 +31,20 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsHtmlList;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
-import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDirectAction;
-import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListItemActionIconComparator;
-import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -67,17 +53,18 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * User dependencies list view. <p>
+ * User dependencies list view including delete and transfer functionality. <p>
  * 
- * displays the dependencies of a user or a list of user.<p>
+ * Displays the dependencies of a user or a list of user.<p>
  * 
- * @author Michael Moossen  
+ * @author Michael Moossen
+ * @author Polina Smagina  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsUserDependenciesList extends A_CmsListDialog {
+public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
 
     /** Value for the delete action. */
     public static final int ACTION_DELETE = 121;
@@ -88,30 +75,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /** Request parameter value for the delete action. */
     public static final String DELETE_ACTION = "delete";
 
-    /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "ai";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_CREATED = "cc";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "ci";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_LASTMODIFIED = "cl";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "cn";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_TYPE = "ct";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_PERMISSIONS = "cp";
-
-    /** List id constant. */
-    public static final String LIST_ID = "lud";
-
     /** Request parameter name for the user id, could be a list of ids. */
     public static final String PARAM_USERID = "userid";
 
@@ -120,9 +83,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
 
     /** Request parameter value for the transfer action. */
     public static final String TRANSFER_ACTION = "transfer";
-
-    /** Stores the value of the request parameter for the user id, could be a list of ids. */
-    private String m_paramUserid;
 
     /** Stores the value of the user name, could be a list of names. */
     private String m_userName;
@@ -157,13 +117,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
      */
     protected CmsUserDependenciesList(String listId, CmsJspActionElement jsp) {
 
-        super(
-            jsp,
-            listId,
-            Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_NAME_0),
-            LIST_COLUMN_NAME,
-            CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_NAME);
+        super(listId, jsp);
     }
 
     /**
@@ -214,32 +168,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
-     */
-    public void executeListMultiActions() {
-
-        throwListUnsupportedActionException();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
-     */
-    public void executeListSingleActions() {
-
-        throwListUnsupportedActionException();
-    }
-
-    /**
-     * Returns the user id parameter value.<p>
-     * 
-     * @return the user id parameter value
-     */
-    public String getParamUserid() {
-
-        return m_paramUserid;
-    }
-
-    /**
      * Returns the user Name.<p>
      *
      * @return the user Name
@@ -247,16 +175,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     public String getUserName() {
 
         return m_userName;
-    }
-
-    /**
-     * Sets the user id parameter value.<p>
-     * 
-     * @param userId the user id parameter value
-     */
-    public void setParamUserid(String userId) {
-
-        m_paramUserid = userId;
     }
 
     /**
@@ -333,93 +251,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
-        Iterator itUsers = CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
-        String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
-        try {
-            getCms().getRequestContext().setSiteRoot("/");
-            while (itUsers.hasNext()) {
-                CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
-                // get content
-                Set resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
-                Iterator itRes = resources.iterator();
-                while (itRes.hasNext()) {
-                    CmsResource resource = (CmsResource)itRes.next();
-                    CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
-                    if (item == null) {
-                        String userCreated = resource.getUserCreated().toString();
-                        try {
-                            userCreated = getCms().readUser(resource.getUserCreated()).getFullName();
-                        } catch (CmsException exc) {
-                            // noop - user id could not be resolved, so display it
-                        }
-                        String userLastmodified = resource.getUserLastModified().toString();
-                        try {
-                            userLastmodified = getCms().readUser(resource.getUserLastModified()).getFullName();
-                        } catch (CmsException exc) {
-                            // noop - user id could not be resolved, so display it
-                        }
-                        item = getList().newItem(resource.getResourceId().toString());
-                        item.set(LIST_COLUMN_NAME, resource.getRootPath());
-                        item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
-                        item.set(LIST_COLUMN_CREATED, userCreated);
-                        item.set(LIST_COLUMN_LASTMODIFIED, userLastmodified);
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                        while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                            if (ace.getPrincipal().equals(user.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    item.set(LIST_COLUMN_PERMISSIONS, user.getName()
-                                        + ": "
-                                        + ace.getPermissions().getPermissionString());
-                                }
-                                break;
-                            }
-                        }
-                        ret.addIdentifiableObject(item.getId(), item);
-                    } else {
-                        String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                        while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                            if (ace.getPrincipal().equals(user.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    String data = user.getName() + ": " + ace.getPermissions().getPermissionString();
-                                    if (oldData != null) {
-                                        data = oldData + ", " + data;
-                                    }
-                                    item.set(LIST_COLUMN_PERMISSIONS, data);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        } finally {
-            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
-        }
-        return ret.elementList();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add cms dialog resource bundle
-        addMessages(org.opencms.workplace.Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -430,78 +261,6 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
         } else if (TRANSFER_ACTION.equals(getParamAction())) {
             setAction(ACTION_TRANSFER);
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        // create column for icon
-        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
-        iconCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_ICON_0));
-        iconCol.setWidth("20");
-        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        iconCol.setListItemComparator(new CmsListItemActionIconComparator());
-
-        // add icon action
-        CmsListDirectAction iconAction = new CmsDependencyIconAction(
-            LIST_ACTION_ICON,
-            CmsDependencyIconActionType.RESOURCE,
-            getCms());
-        iconAction.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_NAME_0));
-        iconAction.setHelpText(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_HELP_0));
-        iconAction.setEnabled(false);
-        iconCol.addDirectAction(iconAction);
-
-        // add it to the list definition
-        metadata.addColumn(iconCol);
-
-        // add column for name
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_NAME_0));
-        nameCol.setWidth("50%");
-        metadata.addColumn(nameCol);
-
-        // add column for created by
-        CmsListColumnDefinition createdCol = new CmsListColumnDefinition(LIST_COLUMN_CREATED);
-        createdCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_CREATED_0));
-        createdCol.setWidth("20%");
-        metadata.addColumn(createdCol);
-
-        // add column for last modified by
-        CmsListColumnDefinition lastModifiedCol = new CmsListColumnDefinition(LIST_COLUMN_LASTMODIFIED);
-        lastModifiedCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_LASTMODIFIED_0));
-        lastModifiedCol.setWidth("20%");
-        metadata.addColumn(lastModifiedCol);
-
-        // add column for permissions
-        CmsListColumnDefinition permissionsCol = new CmsListColumnDefinition(LIST_COLUMN_PERMISSIONS);
-        permissionsCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_PERMISSIONS_0));
-        permissionsCol.setWidth("20%");
-        metadata.addColumn(permissionsCol);
-
-        // add column for type
-        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
-        typeCol.setName(new CmsMessageContainer(null, "type"));
-        typeCol.setVisible(false);
-        metadata.addColumn(typeCol);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setIndependentActions(CmsListMetadata metadata) {
-
-        // no-op       
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // no-op
     }
 
     /**

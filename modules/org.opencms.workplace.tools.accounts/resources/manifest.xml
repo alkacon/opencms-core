@@ -618,6 +618,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/accounts/group_permissions.jsp</source>
+			<destination>system/workplace/admin/accounts/group_permissions.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3b685a9e-5ba9-11e0-883d-e56374e618d7</uuidstructure>
+			<uuidresource>3b685a9f-5ba9-11e0-883d-e56374e618d7</uuidresource>
+			<datelastmodified>Fri, 01 Apr 2011 12:24:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Mar 2011 15:12:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/pemissions.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAME_0}:${key.GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Group Permissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/edit/permissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/accounts/group_transfer.jsp</source>
 			<destination>system/workplace/admin/accounts/group_transfer.jsp</destination>
 			<type>jsp</type>
@@ -1679,6 +1731,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/accounts/user_permissions.jsp</source>
+			<destination>system/workplace/admin/accounts/user_permissions.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>120733db-5ba8-11e0-883d-e56374e618d7</uuidstructure>
+			<uuidresource>120733dc-5ba8-11e0-883d-e56374e618d7</uuidresource>
+			<datelastmodified>Fri, 01 Apr 2011 12:15:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Mar 2011 15:03:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/pemissions.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[User Permissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/permissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/accounts/user_role.jsp</source>
 			<destination>system/workplace/admin/accounts/user_role.jsp</destination>
 			<type>jsp</type>
@@ -2680,6 +2784,30 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/permissions.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/pemissions.png</destination>
+			<type>image</type>
+			<uuidstructure>762ed41f-5c59-11e0-931f-e56374e618d7</uuidstructure>
+			<uuidresource>762ed420-5c59-11e0-931f-e56374e618d7</uuidresource>
+			<datelastmodified>Fri, 01 Apr 2011 12:13:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Apr 2011 12:13:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[pemissions]]></value>
+				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:32,h:32]]></value>
