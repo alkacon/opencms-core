@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/04/01 10:27:00 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  */
@@ -753,8 +753,7 @@ public class CmsTreeItem extends CmsListItem {
     protected CmsToggleButton createOpener() {
 
         final CmsToggleButton opener = new CmsToggleButton();
-        opener.setStyleName(CSS.listTreeItemHandler());
-
+        opener.setStyleName(CSS.listTreeItemOpener());
         opener.setUpFace("", CSS.plus());
         opener.setDownFace("", CSS.minus());
         opener.addClickHandler(new ClickHandler() {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/03/10 07:48:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/01 10:27:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.util.CmsUUID;
@@ -59,7 +60,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -184,7 +185,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 hasChildren = true;
             }
         }
-        return new CmsVfsEntryBean(path, name, isFolder, hasChildren);
+        String resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+
+        return new CmsVfsEntryBean(path, name, resourceType, isFolder, hasChildren);
     }
 
     /**

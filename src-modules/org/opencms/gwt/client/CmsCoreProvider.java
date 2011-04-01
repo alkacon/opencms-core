@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/01 10:27:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
+import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
@@ -48,7 +50,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,6 +69,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** The core service instance. */
     private static I_CmsCoreServiceAsync SERVICE;
+
+    /** The vfs-service instance. */
+    private static I_CmsVfsServiceAsync VFS_SERVICE;
 
     /** The client time when the data is loaded. */
     private long m_clientTime;
@@ -104,6 +109,19 @@ public final class CmsCoreProvider extends CmsCoreData {
             SERVICE = GWT.create(I_CmsCoreService.class);
         }
         return SERVICE;
+    }
+
+    /**
+     * Returns the vfs service instance.<p>
+     * 
+     * @return the vfs service instance
+     */
+    public static I_CmsVfsServiceAsync getVfsService() {
+
+        if (VFS_SERVICE == null) {
+            VFS_SERVICE = GWT.create(I_CmsVfsService.class);
+        }
+        return VFS_SERVICE;
     }
 
     /**

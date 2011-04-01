@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/31 17:42:17 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2011/04/01 10:27:00 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * 
  * @since 8.0.0
  */
@@ -994,7 +994,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String listTreeItemHandler();
+        String listTreeItemOpener();
 
         /** 
          * Access method.<p>
@@ -1037,6 +1037,24 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String plus();
+    }
+
+    /** The single line list item CSS. */
+    public interface I_CmsSingleLineItem extends I_CmsFloatDecoratedPanelCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemFace();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String singleLineItem();
     }
 
     /** The menu button CSS. */
@@ -1731,6 +1749,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("selectArea.css")
     I_CmsSelectArea selectAreaCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the single line list item CSS
+     */
+    @Source("singleLineItem.css")
+    I_CmsSingleLineItem singleLineItemCss();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

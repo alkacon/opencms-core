@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsVfsEntryBean.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/01 10:27:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -56,19 +56,24 @@ public class CmsVfsEntryBean implements IsSerializable {
     /** The path of the resource. */
     private String m_path;
 
+    /** The resource type of the resource. */
+    private String m_resourceType;
+
     /**
      * Constructs a new bean.<p>
      * 
      * @param path the path of the resource
      * @param name the name of the resource
+     * @param resourceType the resource type of the resource
      * @param isFolder true if the resource is a folder   
      * @param hasChildren true if the resource is a folder which isn't empty 
      */
-    public CmsVfsEntryBean(String path, String name, boolean isFolder, boolean hasChildren) {
+    public CmsVfsEntryBean(String path, String name, String resourceType, boolean isFolder, boolean hasChildren) {
 
         m_isFolder = isFolder;
         m_path = path;
         m_name = name;
+        m_resourceType = resourceType;
         m_hasChildren = hasChildren;
     }
 
@@ -98,6 +103,16 @@ public class CmsVfsEntryBean implements IsSerializable {
     public String getPath() {
 
         return m_path;
+    }
+
+    /**
+     * Returns the resource type.<p>
+     *
+     * @return the resource type
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
     }
 
     /**
