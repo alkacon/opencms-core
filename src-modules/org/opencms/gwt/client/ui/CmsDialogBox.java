@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/03/31 17:46:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/01 10:32:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -247,10 +247,10 @@ public class CmsDialogBox extends PopupPanel {
         Element dragOverlay = DOM.createDiv();
         dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
         getElement().insertFirst(dragOverlay);
-
         m_caption = new Caption();
         m_caption.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().caption());
         m_caption.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+
         // Add the caption to the top of the popup-panel. We need to
         // logically adopt the caption so we can catch mouse events.
         DOM.appendChild(m_containerElement, m_caption.getElement());
@@ -273,7 +273,7 @@ public class CmsDialogBox extends PopupPanel {
         addDomHandler(mouseHandler, MouseUpEvent.getType());
         addDomHandler(mouseHandler, MouseMoveEvent.getType());
     }
-
+    
     /**
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
      */
@@ -281,6 +281,24 @@ public class CmsDialogBox extends PopupPanel {
     public void setWidget(Widget w) {
 
         throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#center()
+     */
+    @Override
+    public void center() {
+
+        if (m_resizeHandlerRegistration == null) {
+            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+                public void onResize(ResizeEvent event) {
+
+                    m_windowWidth = event.getWidth();
+                }
+            });
+        }
+        super.center();
     }
 
     /**
