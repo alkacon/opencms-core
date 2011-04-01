@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageAdvancedForm.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/01 10:34:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,11 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
-import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.ui.input.CmsVfsLinkWidget;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.util.CmsJSONMap;
 import org.opencms.util.CmsStringUtil;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -70,9 +71,9 @@ public class CmsImageAdvancedForm extends Composite {
     /** Ui binder instance. */
     private static I_CmsImageAdvancedFormUiBinder m_uiBinder = GWT.create(I_CmsImageAdvancedFormUiBinder.class);
 
-    /** Browse button. */
-    @UiField
-    protected CmsPushButton m_buttonBrowse;
+    //    /** Browse button. */
+    //    @UiField
+    //    protected CmsPushButton m_buttonBrowse;
 
     /** Advisory title input field. */
     @UiField
@@ -100,7 +101,7 @@ public class CmsImageAdvancedForm extends Composite {
 
     /** URL input field. */
     @UiField
-    protected CmsTextBox m_inputUrl;
+    protected CmsVfsLinkWidget m_inputUrl;
 
     /** Advisory title field label. */
     @UiField
@@ -186,9 +187,9 @@ public class CmsImageAdvancedForm extends Composite {
         m_selectTextDirection.addOption("rtl", "Right to left");
         // buttons        
 
-        m_buttonBrowse.setText("Browse server");
-        m_buttonBrowse.setSize(Size.small);
-
+        //        m_buttonBrowse.setText("Browse server");
+        m_inputUrl.setButtonSize(Size.small);
+        m_inputUrl.addInputStyleName(I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().input());
         m_fields = new HashMap<Attribute, I_CmsFormWidget>();
         m_fields.put(Attribute.linkTarget, m_selectTarget);
         m_fields.put(Attribute.dir, m_selectTextDirection);
