@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/01 10:31:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -164,7 +164,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
                          */
                         public void execute() {
 
-                            CmsPreviewUtil.closeDialog();
+                            CmsPreviewUtil.setDataAndCloseDialog();
                         }
                     },
                     null);

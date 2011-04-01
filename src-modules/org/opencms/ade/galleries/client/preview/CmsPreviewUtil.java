@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2011/03/22 16:18:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/01 10:31:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JsArrayString;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -74,6 +74,9 @@ public final class CmsPreviewUtil {
     /** The set link function key. */
     static final String KEY_SET_LINK_FUNCTION = "setLink";
 
+    /** The close dialog function key. */
+    static final String KEY_DIALOG_CLOSE_FUNCTION = "closeDialog";
+
     /**
      * Constructor.<p>
      */
@@ -86,6 +89,14 @@ public final class CmsPreviewUtil {
      * Triggers the dialog OK action.<p>
      */
     public static native void closeDialog() /*-{
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_CLOSE_FUNCTION]
+                ();
+    }-*/;
+
+    /**
+     * Triggers the dialog OK action.<p>
+     */
+    public static native void setDataAndCloseDialog() /*-{
         $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_OK_FUNCTION]
                 ();
     }-*/;

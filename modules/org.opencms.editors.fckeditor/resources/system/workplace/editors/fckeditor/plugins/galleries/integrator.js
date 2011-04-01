@@ -44,8 +44,20 @@ var ENHANCE_PREFIX='aimg_';
  * 
  * @return <code>true</code> to close the dialog
  */
-function Ok(){
+var Ok =function(){
     return setDataInEditor();
+}
+
+/**
+ * Closes the dialog without setting any data.<p>
+ */
+function closeDialog(){
+    enableDialogOk(true);
+    // overriding ok function to avoid setting data
+    Ok =function(){
+        return true;
+    }
+    dialogOk();
 }
 
 /**

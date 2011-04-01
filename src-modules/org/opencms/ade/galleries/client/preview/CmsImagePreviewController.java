@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/01 10:31:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -89,6 +89,7 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
                 Map<String, String> attributes = new HashMap<String, String>();
                 attributes.put("title", title);
                 CmsPreviewUtil.setImage(CmsCoreProvider.get().link(resourcePath), attributes);
+                CmsPreviewUtil.closeDialog();
                 break;
             case sitemap:
             case ade:
