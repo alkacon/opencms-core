@@ -23,28 +23,18 @@
 
 @sprite .export {
 	gwt-image: "gwtImages.bigIcons.stateExportBigIcon"; 
-	margin-top:  3px;
-	margin-left: 3px;
 }
 @sprite .hidden {
 	gwt-image: "gwtImages.bigIcons.stateHiddenBigIcon"; 
-	margin-top:  3px;
-	margin-left: 3px;
 }
 @sprite .normal {
 	gwt-image: "gwtImages.bigIcons.stateNormalBigIcon";
-	margin-top: 3px;
-	margin-left: 3px;
 }
 @sprite .secure {
 	gwt-image: "gwtImages.bigIcons.stateSecureBigIcon";
-	margin-top: 3px;
-	margin-left: 3px;  
 }
 @sprite .redirect { 
 	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
-	margin-top: 3px;
-	margin-left: 3px;
 }
 
 
@@ -93,16 +83,16 @@
 }
 
 .itemIcon{
-	height: 32px;
-	width: 32px;
+	height: 24px;
+	width: 24px;
 	float: left;
 	overflow: hidden;
-	margin: 3px 0px;
+	margin: 7px 0 7px 4px;
 }
 
 .itemIcon .cms_type_icon{
-	height: 32px;
-	width: 32px;
+	height: 24px;
+	width: 24px;
 }
 
 .itemTitle{

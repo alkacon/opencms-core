@@ -27,3 +27,11 @@
 .tilingList .tilingItem{
 	margin: 1px;
 }
+
+.tilingList .cmsHovering .buttonPanel{
+	gwt-image: "backgrounds.softBackground";
+	height: auto;
+	-moz-border-radius: 2px;
+	border: 1px solid value("constants.css.borderColor");
+	background-color: value("constants.css.backgroundColorSoft");
+}
