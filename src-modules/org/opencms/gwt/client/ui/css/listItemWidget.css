@@ -8,7 +8,7 @@
 }
 
 .itemContainer{
-	border: 1px solid value("constants.css.borderColor");
+	border: 1px solid value("constants.css.borderColorListItem");
 	background: value("constants.css.backgroundColorDialog");
 	line-height: 16px;
 	color: value("constants.css.textColor");
@@ -44,7 +44,8 @@
     background-position: 50% 50%;
     height: auto;
 	position: relative;
-	background-color: value("constants.css.backgroundColorStateStandard");
+	/** background-color: value("constants.css.backgroundColorStateStandard"); */
+	background-color: value("constants.css.backgroundColorListItem");
 }
 
 @sprite .itemActive > .itemContent {

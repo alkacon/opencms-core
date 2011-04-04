@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -466,7 +466,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                 // and there is to little space below the button
                 // so show above
                 contentTop = buttonPosition.getTop() - arrowHeight + 2 - contentHeight;
-                arrowTop = contentHeight - 2;
+                arrowTop = contentHeight - 1;
                 arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowBottom();
             }
         } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsMenuListItem extends CmsListItem {
 
     /** The element delete button. */
-    private CmsPushButton m_deleteButton;
+    private CmsPushButton m_removeButton;
 
     /**
      * Constructor.<p>
@@ -67,11 +67,11 @@ public class CmsMenuListItem extends CmsListItem {
 
         super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null)));
         setId(element.getClientId());
-        m_deleteButton = new CmsPushButton();
-        m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        m_deleteButton.addClickHandler(new ClickHandler() {
+        m_removeButton = new CmsPushButton();
+        m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
+        m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        // m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        m_removeButton.addClickHandler(new ClickHandler() {
 
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -95,9 +95,9 @@ public class CmsMenuListItem extends CmsListItem {
     /**
      * Hides the element delete button.<p>
      */
-    public void hideDeleteButton() {
+    public void hideRemoveButton() {
 
-        getListItemWidget().removeButton(m_deleteButton);
+        getListItemWidget().removeButton(m_removeButton);
     }
 
     /**
@@ -133,9 +133,9 @@ public class CmsMenuListItem extends CmsListItem {
     /**
      * Shows the element delete button.<p>
      */
-    public void showDeleteButton() {
+    public void showRemoveButton() {
 
-        getListItemWidget().addButton(m_deleteButton);
+        getListItemWidget().addButton(m_removeButton);
     }
 
     /**

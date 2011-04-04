@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/03/31 17:46:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -60,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  * 
@@ -69,11 +71,11 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
-        /** blue layout. */
-        steel(24, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().steel()),
-
         /** black layout. */
-        black(24, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black());
+        black(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
+
+        /** blue layout. */
+        steel(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().steel());
 
         /** The default tabbar height. */
         public static final CmsTabLayout DEFAULT = black;
@@ -159,6 +161,15 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             + " "
             + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
 
+        m_tabPanel.addAttachHandler(new AttachEvent.Handler() {
+
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+
+                setOverflowVisibleToContent();
+
+            }
+        });
     }
 
     /**
@@ -437,5 +448,22 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         m_tabPanel.setTabText(pos, text);
 
+    }
+
+    /**
+     * Sets the overflow of the tab layout content's parent to visible.<p>  
+     */
+    protected void setOverflowVisibleToContent() {
+
+        Element tabRoot = m_tabPanel.getElement();
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        List<Element> tabContentDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelContent(),
+            CmsDomUtil.Tag.div,
+            tabRoot);
+
+        for (Element e : tabContentDivs) {
+            e.getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
+        }
     }
 }

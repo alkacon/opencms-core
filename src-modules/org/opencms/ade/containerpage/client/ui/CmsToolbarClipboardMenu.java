@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2011/03/31 17:52:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -172,9 +172,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.showDeleteButton();
+            element.showRemoveButton();
         }
-
     }
 
     /**
@@ -228,7 +227,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         while (it.hasNext()) {
             try {
                 CmsMenuListItem element = (CmsMenuListItem)it.next();
-                element.hideDeleteButton();
+                element.hideRemoveButton();
                 clientIds.add(element.getId());
             } catch (ClassCastException e) {
                 CmsDebugLog.getInstance().printLine("Could not cast widget");

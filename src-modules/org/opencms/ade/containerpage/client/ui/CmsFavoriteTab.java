@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/10/22 12:11:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -53,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -82,10 +81,6 @@ public class CmsFavoriteTab extends Composite {
     /** The clip-board menu. */
     protected CmsToolbarClipboardMenu m_clipboard;
 
-    /** The tab description label. */
-    @UiField
-    protected Label m_decriptionLabel;
-
     /** The edit button. */
     @UiField
     protected CmsPushButton m_editButton;
@@ -107,7 +102,6 @@ public class CmsFavoriteTab extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_clipboard = clipboard;
-        m_decriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_FAVORITES_DESCRIPTION_0));
         m_buttonEditingPanel.setVisible(false);
         m_editButton.setText(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
         m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));

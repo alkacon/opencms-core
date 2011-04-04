@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -147,7 +147,8 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Shared
     interface I_CmsImageStyle extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -206,6 +207,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String removeCroppingIcon();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String removeIcon();
 
         /** Access method.<p>
          * 

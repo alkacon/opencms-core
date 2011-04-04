@@ -27,7 +27,8 @@
 	color: value("constants.css.textColor");
 }
 .content {
-	margin: 12px 6px 4px 6px;
+	/* margin: 12px 6px 4px 6px; */
+	margin: 10px 6px 6px;
 	color: value("constants.css.textColor");
 }
 .fieldsetInvisible .content{

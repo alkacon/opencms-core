@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/01 10:27:00 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 8.0.0
  */
@@ -361,13 +361,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String contentConnect();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String contentPadding();
 
         /** 
@@ -548,6 +541,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String border();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String buttonCornerAll();
 
         /** 
          * Access method.<p>

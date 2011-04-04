@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsRecentTab.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 
@@ -39,7 +38,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -47,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -65,17 +63,12 @@ public class CmsRecentTab extends Composite {
     @UiField(provided = true)
     protected CmsList<CmsListItem> m_listPanel = new CmsList<CmsListItem>();
 
-    /** The tab description label. */
-    @UiField
-    protected Label m_decriptionLabel;
-
     /**
      * Constructor.<p>
      */
     public CmsRecentTab() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_decriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_RECENT_DESCRIPTION_0));
     }
 
     /**

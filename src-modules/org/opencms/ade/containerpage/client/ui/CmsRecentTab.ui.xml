@@ -6,14 +6,10 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<ui:style>
 		.itemList{
-			max-height: 412px;
-		}
-		.description{
-			margin-bottom: 4px;
+			max-height: 441px;
 		}
 	</ui:style>
 	<g:FlowPanel styleName="{resources.tabbedPanelCss.tabPanel}">
-		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
 		<cms:CmsList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
 	</g:FlowPanel>
 </ui:UiBinder> 

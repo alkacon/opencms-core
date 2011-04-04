@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -194,7 +194,7 @@ public interface I_CmsButton {
 
         /** Default button. */
         TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
 
         /** Transparent button. */
         TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogBox.java,v $
- * Date   : $Date: 2011/04/01 10:32:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -249,7 +249,6 @@ public class CmsDialogBox extends PopupPanel {
         getElement().insertFirst(dragOverlay);
         m_caption = new Caption();
         m_caption.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().caption());
-        m_caption.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
 
         // Add the caption to the top of the popup-panel. We need to
         // logically adopt the caption so we can catch mouse events.

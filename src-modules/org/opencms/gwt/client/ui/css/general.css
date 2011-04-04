@@ -128,6 +128,9 @@
 	.cornerAll{
 		-moz-border-radius: value("constants.css.borderRadius");
 	}
+	.buttonCornerAll{
+		-moz-border-radius: value("constants.css.borderRadiusButton");
+	}
 	.cornerBottom{
 		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
 		-moz-border-radius-bottomright: value("constants.css.borderRadius");
@@ -146,6 +149,9 @@
 	.cornerAll{
 		-webkit-border-radius: value("constants.css.borderRadius");
 	}
+	.buttonCornerAll{
+		-webkit-border-radius: value("constants.css.borderRadiusButton");
+	}
 	.cornerBottom{
 		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
 		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
@@ -162,6 +168,9 @@
 	/** opera */
 	.cornerAll{
 		border-radius: value("constants.css.borderRadius");
+	}
+	.buttonCornerAll{
+		border-radius: value("constants.css.borderRadiusButton");
 	}
 	.cornerBottom{
 		border-bottom-left-radius: value("constants.css.borderRadius");
@@ -181,13 +190,16 @@
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)");
 	}
-	.cornerAll, .cornerBottom, .cornerTop{} 
+	.cornerAll, .buttonCornerAll, .cornerBottom, .cornerTop{} 
 
 } @elif user.agent ie8 {
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
 	
 	.cornerAll{
 		border-radius: value("constants.css.borderRadius");
+	}
+	.buttonCornerAll{
+		border-radius: value("constants.css.borderRadiusButton");
 	}
 	.cornerBottom{
 		border-bottom-left-radius: value("constants.css.borderRadius");

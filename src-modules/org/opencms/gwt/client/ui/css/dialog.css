@@ -1,6 +1,5 @@
 .popup{
     z-index: 500;
-    /* padding: 3px; */
 }
 
 .popup, .popup *{
@@ -31,16 +30,16 @@
 	background-position: top;
     height: auto;
     /** This background behaves like a border. */
-    background-color: value("constants.css.borderColorDialog");
+    background-color: value("constants.css.backgroundColorDialogBorder");
     background-repeat:repeat-x;
     padding: 6px 5px 5px 5px;
     position: relative;
     border-width: 1px;
     border-style: solid;
-    border-top-color: #606161;
-    border-right-color: black;
-    border-bottom-color: black;
-    border-left-color: black;
+    border-top-color: value("constants.css.borderColorTopDialog");
+    border-right-color: value("constants.css.borderColorDialog");
+    border-bottom-color: value("constants.css.borderColorDialog");
+    border-left-color: value("constants.css.borderColorDialog");
     font-family: value("constants.css.fontFamily");
 }
 
@@ -112,7 +111,7 @@
     background-color: value("constants.css.backgroundColorDialog");
 	background-position: top;
 	background-repeat: repeat-x;
-	padding: 7px 5px 5px 5px;
+	padding: value("constants.css.defaultSpace");
 }
 
 .contentSpacer{
@@ -132,14 +131,6 @@
 	z-index: 3000;
 }
 
-.contentConnect{
-	position: absolute;
-	height: 5px;
-	border-left: solid 1px value("constants.css.borderColor");
-	border-right: solid 1px value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorMenu");
-}
-
 @if user.agent ie6 {
 .popup, .popup * {
     /* fixes a glitch with relatively positioned elements in dialogs which sometimes vanish */
@@ -152,7 +143,7 @@
 }
 
 .popupHead, .caption{
-	color: value("constants.css.textColorCation");
+	color: value("constants.css.textColorCaption");
     font-size: value("constants.css.fontSizeBig");
     font-weight: bold;
     cursor: move;
@@ -168,12 +159,11 @@
 }
 
 .popupButtonPanel{
-    margin-top: 8px;
-    margin-bottom: 2px;
+    margin-top: value("constants.css.defaultSpace");
     text-align: right;
 }
 .popupButtonPanel>div{
-	margin-left: 4px;
+	margin-left: value("constants.css.defaultSpace");
 }
 
 @if user.agent ie6 {

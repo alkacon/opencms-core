@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/04/04 15:20:38 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/04 16:11:31 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -248,7 +249,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsPushButton toggleToolbarButton = new CmsPushButton();
         toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
+        toggleToolbarButton.setSize(Size.small);
         toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
+        toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+
         RootPanel root = RootPanel.get();
         root.add(toggleToolbarButton);
         toggleToolbarButton.addClickHandler(new ClickHandler() {

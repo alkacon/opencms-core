@@ -22,8 +22,14 @@
 
 /** The default text color. */
 @def textColor #222222;
-/** The default text color. */
-@def textColorCation #FFFFFF;
+/** The text color for the caption of dialogs. */
+@def textColorCaption #FFFFFF;
+/** The text color for buttons that have a dark background. */
+@def textColorDarkButton #FFFFFF;
+/** The text color for buttons that have a light background. */
+@def textColorLightButton #222222;
+/** The text color for buttons that are disabled. */
+@def textColorDisabledButton #888888;
 /** The disabled text color. Use it for any inactive or disabled texts e.g. input components. */
 @def textColorDisabled #999999;
 /** The new text color. Use it only for displaying texts of new resources. */
@@ -35,6 +41,8 @@
 
 /** The toolbar width. */
 @def toolbarWidth 930px;
+/** The default content space. */
+@def defaultSpace 6px;
 
 /**
  * The border color definitions.
@@ -42,12 +50,20 @@
 
 /** The default border color. */
 @def borderColor #999999;
-/** The border color for dialogs. */
-@def borderColorDialog #1F232A;
+/** The border color for list items. */
+@def borderColorListItem #CCC;
+/** The border color for the dialog's top. */
+@def borderColorTopDialog #606161;
+/** The border color for the dialogs. */
+@def borderColorDialog #000000;
+/** The background color for the dialog's border (5px dark). */
+@def backgroundColorDialogBorder #1F232A;
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
 /** The default border radius. */
 @def borderRadius 5px;
+/** The default border radius for buttons. */
+@def borderRadiusButton 8px;
 
 
 /**
@@ -61,6 +77,8 @@
 @def backgroundColorDialog #FFFFFF;
 /** The menu background color. Use it for menu backgrounds. NOTE: This color is also used for the CmsTabbedPanel. */
 @def backgroundColorMenu #F9F9F9;
+/** The backgroundColor for a list item. */
+@def backgroundColorListItem #FBFBFB;
 /** The disabled background color. Use it for disabled UI components. */
 @def backgroundColorDisabled #DDDDDD;
 /** The overlay background color. Use it for overlays. */

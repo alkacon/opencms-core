@@ -6,23 +6,21 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<ui:style>
 		.buttonPanel{
-			text-align: right;
-			position: absolute;
-			bottom: 0px;
-			right: 0px;
+			height: 25px;
+		    overflow: hidden;
+		    position: absolute;
+		    right: 0;
+		    top: -29px;
+		    text-align: right;
 		}
 		.buttonPanel > div {
-			margin-left: 5px;
+			margin-left: 6px;
 		}
 		.itemList{
-			max-height: 385px;
-		}
-		.description{
-			margin-bottom: 4px;
+			max-height:441px;
 		}
 	</ui:style>
 	<g:FlowPanel addStyleNames="{resources.tabbedPanelCss.tabPanel}">
-		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
 		<cms:CmsList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
 		<g:FlowPanel ui:field="m_buttonEditingPanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_saveButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /><cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>
 		<g:FlowPanel ui:field="m_buttonUsePanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_editButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>

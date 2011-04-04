@@ -24,16 +24,15 @@
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
 }
 
-
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
 	gwt-image: "backgrounds.dialogBackgroundTop";
     background-color: value("constants.css.backgroundColorMenu");
 	background-position: top;
 	background-repeat: repeat-x;
-    overflow: hidden;
+    overflow: visible;
 	display:block;
 	color:value("constants.css.textColor");
-	padding: 7px 5px 5px 5px;
+	padding:value("constants.css.defaultSpace");
 	margin-top: 6px;
 }
 
@@ -60,16 +59,24 @@
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+	padding: 4px 5px;
+	font-weight: bold;
+	color: value("constants.css.textColorDarkButton");
+	font-size:value("constants.css.fontSize");
+	font-family: value("constants.css.fontFamily");
+}
+
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		-moz-border-radius-topright: value("constants.css.borderRadius");
-		-moz-border-radius-bottomright: value("constants.css.borderRadius");
+		-moz-border-radius-topright: value("constants.css.borderRadiusButton");
+		-moz-border-radius-bottomright: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		-moz-border-radius-topleft: value("constants.css.borderRadius");
-		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
+		-moz-border-radius-topleft: value("constants.css.borderRadiusButton");
+		-moz-border-radius-bottomleft: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		-moz-border-radius: 8px;
@@ -77,12 +84,12 @@
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		-webkit-border-top-right-radius: value("constants.css.borderRadius");
-		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
+		-webkit-border-top-right-radius: value("constants.css.borderRadiusButton");
+		-webkit-border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		-webkit-border-top-left-radius: value("constants.css.borderRadius");
-		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
+		-webkit-border-top-left-radius: value("constants.css.borderRadiusButton");
+		-webkit-border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		-webkit-border-radius: 8px;
@@ -90,12 +97,12 @@
 } @elif user.agent opera {
 	/** opera */
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		border-top-right-radius: value("constants.css.borderRadius");
-		border-bottom-right-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadiusButton");
+		border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		border-top-left-radius: value("constants.css.borderRadius");
-		border-bottom-left-radius: value("constants.css.borderRadius");
+		border-top-left-radius: value("constants.css.borderRadiusButton");
+		border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		border-radius: 8px;
@@ -103,12 +110,12 @@
 } @elif user.agent ie8 {
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		border-top-right-radius: value("constants.css.borderRadius");
-		border-bottom-right-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadiusButton");
+		border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		border-top-left-radius: value("constants.css.borderRadius");
-		border-bottom-left-radius: value("constants.css.borderRadius");
+		border-top-left-radius: value("constants.css.borderRadiusButton");
+		border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
 	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		border-radius: 8px;
@@ -170,12 +177,4 @@
 	gwt-image: "inputImages.buttonSteelDownBackground";
 	background-position: 50% 50%;
 	height: auto;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
-	padding: 3px 5px 4px;
-	color: white !important;
-	font-weight: bold;
-	font-size:value("constants.css.fontSize");
-	font-family: value("constants.css.fontFamily");
 }

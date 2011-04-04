@@ -1,5 +1,5 @@
 .fieldsetSpacer {
-	margin: 18px 0px 0px 0px;
+	margin: 15px 0px 0px 0px;
 }
 
 .labelColumn {
@@ -13,7 +13,7 @@
 }
 
 .inputCombination {
-	width: 215px;
+	width: auto; /* 215px; */
 	display: inline-block;
 	margin-bottom: 2px;
 }
@@ -25,7 +25,7 @@
 }
 
 .dateBox {
-	width: 194px;
+	width: 192px;
 	display: inline-block;
 }
 
