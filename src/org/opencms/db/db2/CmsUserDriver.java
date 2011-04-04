@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/29 14:55:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsSimpleQueryFragment;
 import org.opencms.db.I_CmsQueryFragment;
 import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.CmsUserQueryBuilder;
 
 import com.google.common.base.Joiner;
 
@@ -48,52 +49,60 @@ import com.google.common.base.Joiner;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
+     * @see org.opencms.db.generic.CmsUserDriver#createUserQueryBuilder()
+     */
+    @Override
+    public CmsUserQueryBuilder createUserQueryBuilder() {
+
+        return new CmsUserQueryBuilder() {
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#createFlagCondition(org.opencms.db.CmsSelectQuery.TableAlias, int)
+             */
+            @Override
+            protected I_CmsQueryFragment createFlagCondition(TableAlias users, int flags) {
+
+                return new CmsSimpleQueryFragment("BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ", new Integer(
+                    flags), new Integer(flags));
+            }
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#generateConcat(java.lang.String[])
+             */
+            @Override
+            protected String generateConcat(String... expressions) {
+
+                return Joiner.on(" || ").join(expressions);
+            }
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#getUserFlagExpression(org.opencms.db.CmsSelectQuery.TableAlias, int)
+             */
+            @Override
+            protected String getUserFlagExpression(TableAlias users, int flags) {
+
+                return "BITAND(" + users.column("USER_FLAGS") + ", " + flags + ")";
+
+            }
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#useWindowFunctionsForPaging()
+             */
+            @Override
+            protected boolean useWindowFunctionsForPaging() {
+
+                return true;
+            }
+        };
+    }
+
+    /**
     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
     */
     @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#createFlagCondition(org.opencms.db.CmsSelectQuery.TableAlias, int)
-     */
-    @Override
-    protected I_CmsQueryFragment createFlagCondition(TableAlias users, int flags) {
-
-        return new CmsSimpleQueryFragment(
-            "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
-            new Integer(flags),
-            new Integer(flags));
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#generateConcat(java.lang.String[])
-     */
-    @Override
-    protected String generateConcat(String... expressions) {
-
-        return Joiner.on(" || ").join(expressions);
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#getUserFlagExpression(org.opencms.db.CmsSelectQuery.TableAlias, int)
-     */
-    @Override
-    protected String getUserFlagExpression(TableAlias users, int flags) {
-
-        return "BITAND(" + users.column("USER_FLAGS") + ", " + flags + ")";
-
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
-     */
-    @Override
-    protected boolean useWindowFunctionsForPaging() {
-
-        return true;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSelectQuery.java,v $
- * Date   : $Date: 2011/03/29 14:55:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System 
@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -78,6 +78,16 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
         public String column(String colName) {
 
             return m_name + "." + colName;
+        }
+
+        /**
+         * Returns the name of the table alias.<p>
+         * 
+         * @return the name of the table alias 
+         */
+        public String getName() {
+
+            return m_name;
         }
     }
 

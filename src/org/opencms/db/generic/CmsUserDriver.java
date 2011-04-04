@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/30 15:39:53 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsCompositeQueryFragment;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -40,18 +39,11 @@ import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsPagingQuery;
-import org.opencms.db.CmsSelectQuery;
-import org.opencms.db.CmsSimpleQueryFragment;
-import org.opencms.db.CmsSqlBooleanClause;
-import org.opencms.db.CmsStatementBuilder;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
-import org.opencms.db.I_CmsQueryFragment;
 import org.opencms.db.I_CmsUserDriver;
-import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -63,8 +55,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsUserSearchParameters.SearchKey;
-import org.opencms.file.CmsUserSearchParameters.SortKey;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -98,7 +88,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -109,8 +98,6 @@ import java.util.Map;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
-import com.google.common.base.Joiner;
-
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
@@ -119,7 +106,7 @@ import com.google.common.base.Joiner;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */
@@ -2094,224 +2081,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Adds OU conditions to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param allowedOus the allowed ous 
-     */
-    protected void addAllowedOuCondition(CmsSelectQuery select, TableAlias users, List<CmsOrganizationalUnit> allowedOus) {
-
-        if ((allowedOus != null) && !allowedOus.isEmpty()) {
-            CmsCompositeQueryFragment ouCondition = new CmsCompositeQueryFragment();
-            ouCondition.setPrefix("(");
-            ouCondition.setSuffix(")");
-            ouCondition.setSeparator(" OR ");
-            for (CmsOrganizationalUnit ou : allowedOus) {
-                String ouName = CmsStringUtil.joinPaths("/", ou.getName());
-                ouCondition.add(new CmsSimpleQueryFragment(users.column("USER_OU") + " = ? ", ouName));
-            }
-            select.addCondition(ouCondition);
-        }
-    }
-
-    /**
-     * Adds flag checking conditions to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param flags the flags 
-     */
-    protected void addFlagCondition(CmsSelectQuery select, TableAlias users, int flags, boolean allowCore) {
-
-        if (flags != 0) {
-            I_CmsQueryFragment condition = createFlagCondition(users, flags);
-            if (allowCore) {
-                I_CmsQueryFragment coreCondition = createCoreCondition(users);
-                select.addCondition(CmsSqlBooleanClause.makeOr(condition, coreCondition));
-            } else {
-                select.addCondition(condition);
-            }
-        }
-    }
-
-    /**
-     * Adds a check for an OU to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param orgUnit the organizational unit 
-     * @param recursive if true, checks for sub-OUs too 
-     */
-    protected void addOrgUnitCondition(
-        CmsSelectQuery select,
-        TableAlias users,
-        CmsOrganizationalUnit orgUnit,
-        boolean recursive) {
-
-        String ouName = orgUnit.getName();
-        String pattern = CmsOrganizationalUnit.SEPARATOR + ouName;
-        if (recursive) {
-            pattern += "%";
-        }
-        select.addCondition(CmsDbUtil.columnLike(users.column("USER_OU"), pattern));
-    }
-
-    /**
-     * Adds a search condition to a query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param searchParams the search criteria 
-     */
-    protected void addSearchFilterCondition(
-        CmsSelectQuery select,
-        TableAlias users,
-        CmsUserSearchParameters searchParams) {
-
-        String searchFilter = searchParams.getSearchFilter();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
-            boolean caseInsensitive = !searchParams.isCaseSensitive();
-            if (caseInsensitive) {
-                searchFilter = searchFilter.toLowerCase();
-            }
-            CmsCompositeQueryFragment searchCondition = new CmsCompositeQueryFragment();
-            searchCondition.setSeparator(" OR ");
-            searchCondition.setPrefix("(");
-            searchCondition.setSuffix(")");
-            //use coalesce in case any of the name columns are null 
-            String patternExprTemplate = generateConcat(
-                "COALESCE(%1$s, '')",
-                "' '",
-                "COALESCE(%2$s, '')",
-                "' '",
-                "COALESCE(%3$s, '')");
-            patternExprTemplate = wrapLower(patternExprTemplate, caseInsensitive);
-
-            String patternExpr = String.format(
-                patternExprTemplate,
-                users.column("USER_NAME"),
-                users.column("USER_FIRSTNAME"),
-                users.column("USER_LASTNAME"));
-            String like = " LIKE ? ESCAPE '!' ";
-            String matchExpr = patternExpr + like;
-            searchFilter = "%" + CmsEncoder.escapeSqlLikePattern(searchFilter, '!') + '%';
-            searchCondition.add(new CmsSimpleQueryFragment(matchExpr, searchFilter));
-            for (SearchKey key : searchParams.getSearchKeys()) {
-                switch (key) {
-                    case email:
-                        searchCondition.add(new CmsSimpleQueryFragment(wrapLower(
-                            users.column("USER_EMAIL"),
-                            caseInsensitive)
-                            + like, searchFilter));
-                        break;
-                    case orgUnit:
-                        searchCondition.add(new CmsSimpleQueryFragment(wrapLower(
-                            users.column("USER_OU"),
-                            caseInsensitive)
-                            + like, searchFilter));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            select.addCondition(searchCondition);
-        }
-    }
-
-    /**
-     * Adds a sort order to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param searchParams the user search criteria 
-     */
-    protected void addSorting(CmsSelectQuery select, TableAlias users, CmsUserSearchParameters searchParams) {
-
-        SortKey sortKey = searchParams.getSortKey();
-        boolean ascending = searchParams.isAscending();
-        String ordering = users.column("USER_ID");
-        if (sortKey != null) {
-            switch (sortKey) {
-                case email:
-                    ordering = users.column("USER_EMAIL");
-                    break;
-                case loginName:
-                    ordering = users.column("USER_NAME");
-                    break;
-                case fullName:
-                    ordering = getUserFullNameExpression(users);
-                    break;
-                case lastLogin:
-                    ordering = users.column("USER_LASTLOGIN");
-                    break;
-                case orgUnit:
-                    ordering = users.column("USER_OU");
-                    break;
-                case activated:
-                    ordering = getUserActivatedExpression(users);
-                    break;
-                case flagStatus:
-                    ordering = getUserFlagExpression(users, searchParams.getSortFlags());
-                default:
-                    break;
-
-            }
-            if (ascending) {
-                ordering += " ASC";
-            } else {
-                ordering += " DESC";
-            }
-        }
-        select.setOrdering(ordering);
-    }
-
-    /**
-     * Adds a check for the web user condition to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param orgUnit the organizational unit
-     * @param users the user table alias 
-     */
-    protected void addWebuserCondition(CmsSelectQuery select, CmsOrganizationalUnit orgUnit, TableAlias users) {
-
-        String webuserConditionTemplate;
-        if (orgUnit.hasFlagWebuser()) {
-            webuserConditionTemplate = "( %1$ >= 32768 AND %1$s < 65536 )";
-        } else {
-            webuserConditionTemplate = "( %1$s < 32768 OR %1$s >= 65536 )";
-        }
-        String webuserCondition = String.format(webuserConditionTemplate, users.column("USER_FLAGS"));
-        select.addCondition(webuserCondition);
-    }
-
-    /**
-     * Creates a core user check condition.<p>
-     * 
-     * @param users the user table alias
-     *  
-     * @return the resulting SQL expression 
-     */
-    protected I_CmsQueryFragment createCoreCondition(TableAlias users) {
-
-        return new CmsSimpleQueryFragment(users.column("USER_FLAGS") + " <= " + I_CmsPrincipal.FLAG_CORE_LIMIT);
-    }
-
-    /**
-     * Creates an SQL flag check condition.<p>
-     * 
-     * @param users the user table alias 
-     * @param flags the flags to check 
-     * 
-     * @return the resulting SQL expression 
-     */
-    protected I_CmsQueryFragment createFlagCondition(TableAlias users, int flags) {
-
-        return new CmsSimpleQueryFragment(users.column("USER_FLAGS") + " & ? = ? ", new Integer(flags), new Integer(
-            flags));
-    }
-
-    /**
      * Returns a sql query to select groups.<p>
      * 
      * @param mainQuery the main select sql query
@@ -2350,124 +2119,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected CmsPair<String, List<Object>> createUserQuery(CmsUserSearchParameters searchParams, boolean countOnly) {
 
-        CmsSelectQuery select = new CmsSelectQuery();
-        TableAlias users = select.addTable("CMS_USERS", "usr");
-        if (countOnly) {
-            select.addColumn("COUNT(" + users.column("USER_ID") + ")");
-        } else {
-            String[] columns = new String[] {
-                "USER_ID",
-                "USER_NAME",
-                "USER_PASSWORD",
-                "USER_FIRSTNAME",
-                "USER_LASTNAME",
-                "USER_EMAIL",
-                "USER_LASTLOGIN",
-                "USER_FLAGS",
-                "USER_OU",
-                "USER_DATECREATED"};
-            for (String columnName : columns) {
-                select.addColumn(users.column(columnName));
-            }
-        }
-        CmsOrganizationalUnit orgUnit = searchParams.getOrganizationalUnit();
-        boolean recursive = searchParams.recursiveOrgUnits();
-
-        if (orgUnit != null) {
-            addOrgUnitCondition(select, users, orgUnit, recursive);
-        }
-        if (searchParams.isFilterCore()) {
-            select.addCondition(createCoreCondition(users));
-        }
-        addAllowedOuCondition(select, users, searchParams.getAllowedOus());
-        addFlagCondition(select, users, searchParams.getFlags(), searchParams.keepCoreUsers());
-        if (orgUnit != null) {
-            addWebuserCondition(select, orgUnit, users);
-        }
-        addSearchFilterCondition(select, users, searchParams);
-        addGroupCondition(select, users, searchParams);
-        if (countOnly) {
-            CmsStatementBuilder builder = new CmsStatementBuilder();
-            select.visit(builder);
-            return CmsPair.create(builder.getQuery(), builder.getParameters());
-        } else {
-            addSorting(select, users, searchParams);
-            return makePaged(select, searchParams);
-        }
+        CmsUserQueryBuilder queryBuilder = createUserQueryBuilder();
+        return queryBuilder.createUserQuery(searchParams, countOnly);
     }
 
     /**
-     * Generates an SQL expression for concatenating several other SQL expressions.<p>
+     * Creates a new user query builder.<p>
      * 
-     * @param expressions the expressions to concatenate 
-     * 
-     * @return the concat expression 
+     * @return the new user query builder 
      */
-    protected String generateConcat(String... expressions) {
+    protected CmsUserQueryBuilder createUserQueryBuilder() {
 
-        return "CONCAT(" + Joiner.on(", ").join(expressions) + ")";
-    }
-
-    /**
-     * Generates an SQL expression for trimming whitespace from the beginning and end of a string.<p>
-     * 
-     * @param expression the expression to wrap
-     * 
-     * @return the expression for trimming the given expression 
-     */
-    protected String generateTrim(String expression) {
-
-        return "TRIM(" + expression + ")";
-    }
-
-    /**
-     * Returns an expression for checking whether a user is activated.<p>
-     * 
-     * @param users the user table alias 
-     * 
-     * @return the expression for checking whether the user is activated 
-     */
-    protected String getUserActivatedExpression(TableAlias users) {
-
-        return "MOD(" + users.column("USER_FLAGS") + ", 2)";
-    }
-
-    /**
-     * Returns a bitwise AND expression with a fixed second operand.<p>
-     * 
-     * @param users the user table alias 
-     * @param flags the user flags 
-     * @return the resulting SQL expression 
-     */
-    protected String getUserFlagExpression(TableAlias users, int flags) {
-
-        return users.column("USER_FLAGS") + " & " + flags;
-
-    }
-
-    /**
-     * Returns the SQL expression for generating the user's full name in the format
-     * 'firstname lastname (loginname)'.<p>
-     * 
-     * @param users the user table alias
-     *  
-     * @return the expression for generating the user's full name 
-     */
-    protected String getUserFullNameExpression(TableAlias users) {
-
-        //use coalesce in case any of the name columns are null
-        String template = generateTrim(generateConcat(
-            "COALESCE(%1$s, '')",
-            "' '",
-            "COALESCE(%2$s, '')",
-            "' ('",
-            "%3$s",
-            "')'"));
-        return String.format(
-            template,
-            users.column("USER_FIRSTNAME"),
-            users.column("USER_LASTNAME"),
-            users.column("USER_NAME"));
+        return new CmsUserQueryBuilder();
     }
 
     /**
@@ -3349,120 +3012,4 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
     }
 
-    /**
-     * Creates a query which uses paging from another query.<p>
-     * 
-     * @param select the base query 
-     * @param params the query parameters 
-     * 
-     * @return the paged version of the query 
-     */
-    protected CmsPair<String, List<Object>> makePaged(CmsSelectQuery select, CmsUserSearchParameters params) {
-
-        CmsPagingQuery paging = new CmsPagingQuery(select);
-        paging.setUseWindowFunctions(useWindowFunctionsForPaging());
-        int page = params.getPage();
-        int pageSize = params.getPageSize();
-        paging.setNameSubquery(shouldNameSubqueries());
-        paging.setPaging(pageSize, page);
-        CmsStatementBuilder builder = new CmsStatementBuilder();
-        paging.visit(builder);
-        return CmsPair.create(builder.getQuery(), builder.getParameters());
-    }
-
-    /**
-     * Should return true if subqueries in a FROM clause should be named.<p>
-     *  
-     * @return true if subqueries in a FROM clause should be named 
-     */
-    protected boolean shouldNameSubqueries() {
-
-        return false;
-    }
-
-    /**
-     * Returns true if window functions should be used for paging.<p>
-     * 
-     * @return true if window functions should be used for paging 
-     */
-    protected boolean useWindowFunctionsForPaging() {
-
-        return false;
-    }
-
-    /**
-     * Wraps an SQL expression in a "LOWER" call conditionally.<p>
-     * 
-     * @param expr the expression to wrap 
-     * @param caseInsensitive if false, no wrapping should occur
-     *  
-     * @return the resulting expression 
-     */
-    protected String wrapLower(String expr, boolean caseInsensitive) {
-
-        return caseInsensitive ? "LOWER(" + expr + ")" : expr;
-    }
-
-    /**
-     * Adds group conditions to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param searchParams the search parameters 
-     */
-    private void addGroupCondition(CmsSelectQuery select, TableAlias users, CmsUserSearchParameters searchParams) {
-
-        CmsGroup group = searchParams.getGroup();
-        if (group != null) {
-            CmsUUID groupId = group.getId();
-            TableAlias groupUsers = select.addTable("CMS_GROUPUSERS", "groupusrs");
-            select.addCondition(new CmsSimpleQueryFragment(groupUsers.column("GROUP_ID") + " = ? ", groupId.toString()));
-            select.addCondition(new CmsSimpleQueryFragment(groupUsers.column("USER_ID")
-                + " = "
-                + users.column("USER_ID")));
-            if (searchParams.isFilterByGroupOu()) {
-                select.addCondition(new CmsSimpleQueryFragment(users.column("USER_OU") + " = ? ", group.getOuFqn()));
-            }
-        }
-        CmsGroup notGroup = searchParams.getNotGroup();
-        if (notGroup != null) {
-            CmsSimpleQueryFragment notGroupCondition = new CmsSimpleQueryFragment(
-                "NOT EXISTS (SELECT USER_ID FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = "
-                    + users.column("USER_ID")
-                    + " AND GU.GROUP_ID = ?)",
-                notGroup.getId().toString());
-            select.addCondition(notGroupCondition);
-        }
-
-        Collection<CmsGroup> anyGroups = searchParams.getAnyGroups();
-        if ((anyGroups != null) && !anyGroups.isEmpty()) {
-            CmsCompositeQueryFragment groupClause = new CmsCompositeQueryFragment();
-            groupClause.setSeparator(" OR ");
-            for (CmsGroup grp : anyGroups) {
-                groupClause.add(new CmsSimpleQueryFragment("GU.GROUP_ID = ?", grp.getId().toString()));
-            }
-            CmsCompositeQueryFragment existsClause = new CmsCompositeQueryFragment();
-            existsClause.add(new CmsSimpleQueryFragment("EXISTS (SELECT * FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = "
-                + users.column("USER_ID")
-                + " AND "));
-            existsClause.add(groupClause);
-            existsClause.add(new CmsSimpleQueryFragment(" ) "));
-            select.addCondition(existsClause);
-        }
-        Collection<CmsGroup> notAnyGroups = searchParams.getNotAnyGroups();
-        if ((notAnyGroups != null) && (!notAnyGroups.isEmpty())) {
-            CmsCompositeQueryFragment groupClause = new CmsCompositeQueryFragment();
-            groupClause.setSeparator(" OR ");
-            for (CmsGroup grp : notAnyGroups) {
-                groupClause.add(new CmsSimpleQueryFragment("GU.GROUP_ID = ?", grp.getId().toString()));
-            }
-            CmsCompositeQueryFragment notExistsClause = new CmsCompositeQueryFragment();
-            notExistsClause.add(new CmsSimpleQueryFragment(
-                "NOT EXISTS (SELECT * FROM CMS_GROUPUSERS GU WHERE GU.USER_ID = " + users.column("USER_ID") + " AND "));
-            notExistsClause.add(groupClause);
-            notExistsClause.add(new CmsSimpleQueryFragment(" ) "));
-            select.addCondition(notExistsClause);
-        }
-
-    }
 }

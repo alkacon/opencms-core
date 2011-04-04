@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mssql/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.db.mssql;
 
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.CmsUserQueryBuilder;
 
 import com.google.common.base.Joiner;
 
@@ -40,11 +41,49 @@ import com.google.common.base.Joiner;
  *
  * @author Andras Balogh
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
  * @since 6.0.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
+
+    /**
+     * @see org.opencms.db.generic.CmsUserDriver#createUserQueryBuilder()
+     */
+    @Override
+    public CmsUserQueryBuilder createUserQueryBuilder() {
+
+        return new CmsUserQueryBuilder() {
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#generateConcat(java.lang.String[])
+             */
+            @Override
+            protected String generateConcat(String... expressions) {
+
+                return Joiner.on(" + ").join(expressions);
+            }
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#generateTrim(java.lang.String)
+             */
+            @Override
+            protected String generateTrim(String expression) {
+
+                return "LTRIM(RTRIM(" + expression + "))";
+            }
+
+            /**
+             * @see org.opencms.db.generic.CmsUserQueryBuilder#useWindowFunctionsForPaging()
+             */
+            @Override
+            protected boolean useWindowFunctionsForPaging() {
+
+                return true;
+            }
+        };
+
+    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
@@ -53,33 +92,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#useWindowFunctionsForPaging()
-     */
-    @Override
-    protected boolean useWindowFunctionsForPaging() {
-
-        return true;
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#generateConcat(java.lang.String[])
-     */
-    @Override
-    protected String generateConcat(String... expressions) {
-
-        return Joiner.on(" + ").join(expressions);
-    }
-
-    /**
-     * @see org.opencms.db.generic.CmsUserDriver#generateTrim(java.lang.String)
-     */
-    @Override
-    protected String generateTrim(String expression) {
-
-        return "LTRIM(RTRIM(" + expression + "))";
     }
 
 }

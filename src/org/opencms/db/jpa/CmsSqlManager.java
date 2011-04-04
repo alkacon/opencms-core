@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsSqlManager.java,v $
- * Date   : $Date: 2010/11/30 15:35:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -64,7 +65,7 @@ import org.apache.commons.pool.impl.StackObjectPool;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0 
  */
@@ -366,6 +367,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @param config the opencms properties
      * @param key the pool name
+     * 
+     * @return the connection properties value 
      */
     private static String buildConnectionPropertiesValue(ExtendedProperties config, String key) {
 
@@ -631,6 +634,35 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     }
 
     /**
+     * Returns a Query for a JDBC connection specified by the JPQL query.<p>
+     * 
+     * @param dbc the db context object 
+     * @param query the JPQL query
+     * @param params the parameters to insert into the query
+     *  
+     * @return Query a new Query containing the pre-compiled JPQL statement  
+     */
+    public Query createQueryWithParametersFromJPQL(CmsDbContext dbc, String query, List<Object> params) {
+
+        org.opencms.db.jpa.CmsDbContext jpaDbc = (org.opencms.db.jpa.CmsDbContext)dbc;
+        jpaDbc.getEntityManager().flush();
+        query = CmsStringUtil.substitute(query, "\t", " ");
+        query = CmsStringUtil.substitute(query, "\n", " ");
+        String realQuery = prepareQueryParameters(query, false);
+        Query queryObj = jpaDbc.getEntityManager().createQuery(realQuery);
+        int index = 1;
+        for (Object param : params) {
+            if ((param instanceof String) || (param instanceof Integer) || (param instanceof Long)) {
+                queryObj.setParameter(index, param);
+            } else {
+                throw new IllegalArgumentException();
+            }
+            index += 1;
+        }
+        return queryObj;
+    }
+
+    /**
      * Finds an object in the db and returns it.<p>
      * 
      * @param <T> the class to be returned
@@ -854,8 +886,20 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     private String prepareQueryParameters(String query) {
 
-        String jpqlQuery = m_queriesWithParameters.get(query);
+        return prepareQueryParameters(query, true);
+    }
 
+    /**
+     * Set numbers for parameters of giving JPQL query.<p>
+     * 
+     * @param query - the query
+     * @param cache if true, the query will be cached 
+     * 
+     * @return query with numbered parameter's placeholders
+     */
+    private String prepareQueryParameters(String query, boolean cache) {
+
+        String jpqlQuery = m_queriesWithParameters.get(query);
         if (jpqlQuery != null) {
             return jpqlQuery;
         }
@@ -871,7 +915,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         jpqlQuery = builder.toString();
-        m_queriesWithParameters.put(query, jpqlQuery);
+        if (cache) {
+            m_queriesWithParameters.put(query, jpqlQuery);
+        }
         return jpqlQuery;
     }
 }

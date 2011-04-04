@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsUserDriver.java,v $
- * Date   : $Date: 2011/03/30 15:39:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/04 08:19:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
+import org.opencms.db.generic.CmsUserQueryBuilder;
 import org.opencms.db.jpa.persistence.CmsDAOGroupUsers;
 import org.opencms.db.jpa.persistence.CmsDAOGroups;
 import org.opencms.db.jpa.persistence.CmsDAOOfflineAccessControl;
@@ -82,6 +83,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -109,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0 
  */
@@ -337,7 +339,17 @@ public class CmsUserDriver implements I_CmsUserDriver {
      */
     public long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
 
-        throw new UnsupportedOperationException();
+        long userCount = -1;
+        try {
+            CmsUserQueryBuilder builder = new CmsJpaUserQueryBuilder();
+            CmsPair<String, List<Object>> queryData = builder.createUserQuery(searchParams, true);
+            Query q = m_sqlManager.createQueryWithParametersFromJPQL(dbc, queryData.getFirst(), queryData.getSecond());
+            Number number = (Number)q.getSingleResult();
+            userCount = number.intValue();
+        } catch (PersistenceException e) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
+        }
+        return userCount;
     }
 
     /**
@@ -1659,7 +1671,34 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public List<CmsUser> searchUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams)
     throws CmsDataAccessException {
 
-        throw new UnsupportedOperationException();
+        List<CmsUser> users = new ArrayList<CmsUser>();
+        try {
+            CmsUserQueryBuilder builder = new CmsJpaUserQueryBuilder();
+            CmsPair<String, List<Object>> queryData = builder.createUserQuery(searchParams, false);
+            Query q = m_sqlManager.createQueryWithParametersFromJPQL(dbc, queryData.getFirst(), queryData.getSecond());
+
+            // paging is done here, not in the query string 
+            q.setMaxResults(searchParams.getPageSize());
+            q.setFirstResult(searchParams.getPageSize() * (searchParams.getPage() - 1));
+
+            @SuppressWarnings("unchecked")
+            List res = q.getResultList();
+            // create new Cms group objects
+            for (Object singleRes : res) {
+                CmsDAOUsers daoUser = null;
+                if (singleRes instanceof Object[]) {
+                    Object[] resArray = (Object[])singleRes;
+                    daoUser = (CmsDAOUsers)resArray[0];
+                } else {
+                    daoUser = (CmsDAOUsers)singleRes;
+                }
+                users.add(internalCreateUser(dbc, daoUser));
+            }
+        } catch (PersistenceException e) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
+        }
+
+        return users;
     }
 
     /**
@@ -1907,6 +1946,11 @@ public class CmsUserDriver implements I_CmsUserDriver {
             // default is to insert or update a new value
             internalWriteUserInfo(dbc, userId, key, value);
         }
+    }
+
+    protected Query createQueryFromStringAndParams(String queryString, List<Object> queryParams) {
+
+        return null;
     }
 
     /**
