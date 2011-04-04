@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/04 16:34:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  * 
@@ -163,7 +163,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         m_tabPanel.addAttachHandler(new AttachEvent.Handler() {
 
-            @Override
+            /**
+             * @see com.google.gwt.event.logical.shared.AttachEvent.Handler#onAttachOrDetach(com.google.gwt.event.logical.shared.AttachEvent)
+             */
             public void onAttachOrDetach(AttachEvent event) {
 
                 setOverflowVisibleToContent();
