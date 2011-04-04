@@ -71,53 +71,53 @@
     vertical-align: middle;
 }
 
-@sprite .opencmsSymbol{
+@sprite div.opencmsSymbol, span.opencmsSymbol{
 	gwt-image: "opencmsSymbolImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
-@sprite .lockedIcon{
+@sprite div.lockedIcon, span.lockedIcon{
 	gwt-image: "ratioLockedImage";
 	cursor: pointer;
 	width: 12px;
 }
 
-@sprite .unlockedIcon{
+@sprite div.unlockedIcon, span.unlockedIcon{
 	gwt-image: "ratioUnlockedImage";
 	cursor: pointer;
 	width: 12px;
 }
 
-@sprite .resetIcon{
+@sprite div.resetIcon, span.resetIcon{
 	gwt-image: "resetSizeImage";
 	cursor: pointer;
 }
 
-@sprite .croppingIcon{
+@sprite div.croppingIcon, span.croppingIcon{
 	gwt-image: "cropImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
-@sprite .removeCroppingIcon{
+@sprite div.removeCroppingIcon, span.removeCroppingIcon{
 	gwt-image: "cropRemoveImage";
 	display: inline-block;
 	cursor: pointer;
 }
 
 
-@sprite .triangleDown{
+@sprite div.triangleDown, span.triangleDown{
 	gwt-image: "triangleDownImage";
 	display: inline-block;
 	cursor: pointer;
 }
-@sprite .triangleRight{
+@sprite div.triangleRight, span.triangleRight{
 	gwt-image: "triangleRightImage";
 	display: inline-block;
 	cursor: pointer;
 }
-@sprite .closeIcon{
+@sprite div.closeIcon, span.closeIcon{
 	gwt-image: "closeImage";
 	display: inline-block;
 	cursor: pointer;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/04/04 15:20:38 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,8 +56,6 @@ import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -68,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -264,12 +262,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             }
 
         });
-
-        // TODO: use CSS for these properties
-        toggleToolbarButton.getElement().getStyle().setPosition(Position.FIXED);
-        toggleToolbarButton.getElement().getStyle().setTop(-3, Unit.PX);
-        toggleToolbarButton.getElement().getStyle().setLeft(97, Unit.PCT);
-        toggleToolbarButton.getElement().getStyle().setZIndex(10010);
+        toggleToolbarButton.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().toolbarToggle());
 
         m_save = new CmsToolbarSaveButton(containerpageHandler);
         m_save.addClickHandler(clickHandler);

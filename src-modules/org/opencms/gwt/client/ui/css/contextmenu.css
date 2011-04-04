@@ -4,7 +4,7 @@
 	background: value("constants.css.backgroundColorMenu");
 	border-collapse:collapse;
 }
-.cmsMenuBar { /* the outer menu bar */
+div.cmsMenuBar { /* the outer menu bar */
 	background: value("constants.css.backgroundColorMenu");
 	color: value("constants.css.textColor");
 }

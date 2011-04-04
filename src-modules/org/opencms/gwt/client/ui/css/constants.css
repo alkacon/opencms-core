@@ -11,6 +11,10 @@
 /** The big font size. */
 @def fontSizeBig 14px;
 
+@def lineHeight 14px;
+@def lineHeightSmall 12px;
+@def lineHeightBig 17px;
+
 
 /**
  * The text color definitions.

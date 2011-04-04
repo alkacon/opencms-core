@@ -76,14 +76,17 @@
 .textSmall{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
+	line-height: value("constants.css.lineHeightSmall");
 }
 .textMedium{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
 }
 .textBig{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeBig");
+	line-height: value("constants.css.lineHeightBig");
 }
 
 .border {

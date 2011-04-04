@@ -72,12 +72,43 @@ ul.clipboardList{
 	margin: 2px;
 }
 
-.optionBar{
+div.optionBar{
 	border: 1px solid transparent;
 	position: absolute;
 	top: 2px;
 	right: 2px;
 	z-index: 1;
+}
+
+div.toolbarToggle{
+	position: fixed;
+	left: 97%;
+	top: -3px;
+	z-index: 10100;
+}
+
+.toolbarToggle, .toolbarToggle *{
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+}
+
+.optionBar, .optionBar *{
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
 }
 
 @sprite .toolbarSelection .optionBar.cmsHovering{

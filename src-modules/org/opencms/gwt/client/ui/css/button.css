@@ -30,7 +30,7 @@
     text-align: center;
 }
 
-.cmsTextButton { 
+div.cmsTextButton { 
     border-width:1px;
     border-style: solid;
     padding: 2px 4px;
@@ -41,7 +41,11 @@
     text-align: center;
 }
 
-.cmsMenuButton, .cmsImageButton { 
+.cmsTextButton .html-face{
+	text-align: center;
+}
+
+div.cmsMenuButton, div.cmsImageButton { 
     padding: 2px 4px;
     display: inline-block;
     vertical-align: middle;

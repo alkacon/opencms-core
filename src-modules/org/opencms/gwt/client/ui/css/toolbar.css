@@ -11,17 +11,24 @@
 	display: none;
 }
 
+.toolbar, .toolbar * {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+}
+
 .toolbar{
-	background-color:transparent;
 	left: 0px;
 	top: 0px;
 	position: fixed;
 	width: 100%;
 	z-index: 450;
-	padding: 0px;
-	margin: 0px;
-	font-family: Verdana,Helvetica,Arial,sans-serif;
-	font-size: value("constants.css.fontSize");
 }
 
 @sprite .toolbarBackground{

@@ -3,10 +3,16 @@
     /* padding: 3px; */
 }
 
-.popup *{
+.popup, .popup *{
+	margin: 0;
+	padding: 0;
+	border: none;
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
 }
 .dragOverlay{
 	display: none;
