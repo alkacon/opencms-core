@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspScopedVarBodyTagSuport.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/05 09:33:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  */
@@ -55,7 +55,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
     private static final String[] SCOPES = {"page", "request", "session", "application"};
 
     /** The scopes supported by the page context as a list. */
-    private static final List SCOPES_LIST = Collections.unmodifiableList(Arrays.asList(SCOPES));
+    private static final List<String> SCOPES_LIST = Collections.unmodifiableList(Arrays.asList(SCOPES));
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 6521418315921327927L;
@@ -139,6 +139,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_variable = null;
@@ -200,10 +201,23 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
      * 
      * The values of {@link  #getVar()} and {@link #getScope()} are used to determine how the Object is stored.<p>
      *  
-     * @param obj the Object to store in the JSP page context.
+     * @param obj the Object to store in the JSP page context
      */
     protected void storeAttribute(Object obj) {
 
-        pageContext.setAttribute(getVar(), obj, getScopeInt());
+        storeAttribute(getVar(), obj);
+    }
+
+    /**
+     * Stores the provided Object as attribute with the provided name in the JSP page context.<p>
+     * 
+     * The value of {@link #getScope()} is used to determine how the Object is stored.<p>
+     *  
+     * @param name the name of the attribute to store the Object in
+     * @param obj the Object to store in the JSP page context
+     */
+    protected void storeAttribute(String name, Object obj) {
+
+        pageContext.setAttribute(name, obj, getScopeInt());
     }
 }

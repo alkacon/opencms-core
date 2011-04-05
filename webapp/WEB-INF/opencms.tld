@@ -254,7 +254,7 @@
     
     <tag>
         <description>
-            This tag provides access the the content for the JSP EL.
+            This tag provides access to the content for the JSP EL.
         </description>              
         <name>contentaccess</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentAccess</tag-class>
@@ -262,6 +262,11 @@
         <attribute>
             <name>var</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>val</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>

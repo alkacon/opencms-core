@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentAccess.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/05 09:33:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,13 +55,13 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * For example together with the JSTL, use this tag inside an open tag like this:<pre>
  * &lt;cms:contentload ... &gt;
- *     &lt;cms:contentaccess var="myVarName" scope="page" /&gt;
+ *     &lt;cms:contentaccess var="myVarName" val="myValueVarName" scope="page" /&gt;
  *     ... other code ...
  * &lt;/cms:contentload&gt;</pre>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  */
@@ -73,9 +73,13 @@ public class CmsJspTagContentAccess extends CmsJspScopedVarBodyTagSuport {
     /** Locale of the content node element to show. */
     private Locale m_locale;
 
+    /** Optional name for the attribute that provides direct access to the content value map. */
+    private String m_value;
+
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -88,6 +92,7 @@ public class CmsJspTagContentAccess extends CmsJspScopedVarBodyTagSuport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
@@ -117,6 +122,11 @@ public class CmsJspTagContentAccess extends CmsJspScopedVarBodyTagSuport {
         // store the content access bean in the selected page context scope
         storeAttribute(bean);
 
+        if (m_value != null) {
+            // if the optional "val" parameter has been set, store the value map of the content in the page context scope
+            storeAttribute(getVal(), bean.getValue());
+        }
+
         return SKIP_BODY;
     }
 
@@ -131,11 +141,23 @@ public class CmsJspTagContentAccess extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * Returns the name for the optional attribute that provides direct access to the content value map.<p>
+     * 
+     * @return the name for the optional attribute that provides direct access to the content value map
+     */
+    public String getVal() {
+
+        return m_value;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_locale = null;
+        m_value = null;
         super.release();
     }
 
@@ -150,6 +172,18 @@ public class CmsJspTagContentAccess extends CmsJspScopedVarBodyTagSuport {
             m_locale = null;
         } else {
             m_locale = CmsLocaleManager.getLocale(locale);
+        }
+    }
+
+    /**
+     * Sets the name for the optional attribute that provides direct access to the content value map.<p>
+     * 
+     * @param val the name for the optional attribute that provides direct access to the content value map
+     */
+    public void setVal(String val) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
+            m_value = val.trim();
         }
     }
 }
