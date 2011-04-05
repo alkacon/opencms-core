@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/05 13:08:45 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -1343,7 +1343,8 @@ public final class CmsContainerpageController {
                     org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
                     CmsContainerElement element = new CmsContainerElement();
                     element.setClientId(elementWidget.getId());
-                    element.setNewType(elementWidget.getNewType());
+                    element.setResourceType(elementWidget.getNewType());
+                    element.setNew(elementWidget.isNew());
                     element.setSitePath(elementWidget.getSitePath());
                     elements.add(element);
                 } catch (ClassCastException e) {

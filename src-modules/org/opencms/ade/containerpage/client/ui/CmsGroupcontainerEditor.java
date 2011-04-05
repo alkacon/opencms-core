@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/05 13:08:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -295,7 +295,8 @@ public final class CmsGroupcontainerEditor extends Composite {
             m_saveButton.enable();
             m_groupContainerBean = new CmsGroupContainer();
             m_groupContainerBean.setClientId(elementData.getClientId());
-            m_groupContainerBean.setNewType(m_groupContainer.getNewType());
+            m_groupContainerBean.setResourceType(m_groupContainer.getNewType());
+            m_groupContainerBean.setNew(m_groupContainer.isNew());
             m_groupContainerBean.setSitePath(elementData.getSitePath());
             if (elementData.getTypes().isEmpty()) {
                 Set<String> types = new HashSet<String>();

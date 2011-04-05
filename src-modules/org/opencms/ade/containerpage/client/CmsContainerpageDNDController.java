@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/03/22 13:55:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/05 13:08:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -408,21 +408,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!handler.isDragging()) {
             return;
         }
-        // removing favorites drop zone
-
-        //        if (handler.getDraggable() instanceof CmsContainerPageElement) {
-        //            CmsList<CmsListItem> dropzone = m_controller.getHandler().getDropzone();
-        //            m_controller.getHandler().showDropzone(true);
-        //            CmsListItem temp = m_controller.getContainerpageUtil().createListItem(elementData);
-        //
-        //            Element placeholder = temp.getPlaceholder(dropzone);
-        //            Element helper = temp.getDragHelper(dropzone);
-        //            m_dragInfos.put(
-        //                dropzone,
-        //                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
-        //            handler.addTarget(dropzone);
-        //            helper.getStyle().setDisplay(Display.NONE);
-        //        }
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElement groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElement.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/05 13:08:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -47,11 +47,14 @@ public class CmsContainerElement implements IsSerializable {
     /** The element client id. */
     private String m_clientId;
 
-    /** The full site path. */
-    private String m_sitePath;
+    /** Flag indicating a new element. */
+    private boolean m_new;
 
     /** The resource type for new elements. If this field is not empty, the element is regarded as new and not created yet. */
-    private String m_newType;
+    private String m_resourceType;
+
+    /** The full site path. */
+    private String m_sitePath;
 
     /**
      * Returns the client id.<p>
@@ -64,14 +67,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Returns the resource type name for elements that have not been created in the VFS yet.
-     * Returns <code>null</code> if the element has already been created.<p>
+     * Returns the resource type name for elements.<p>
      * 
-     * @return the new resource type name
+     * @return the resource type name
      */
-    public String getNewType() {
+    public String getResourceType() {
 
-        return m_newType;
+        return m_resourceType;
     }
 
     /**
@@ -85,13 +87,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Returns if if the element is new and has not been created in the VFS yet.<p>
+     * Returns if the element is new and has not been created in the VFS yet.<p>
      * 
      * @return <code>true</code> if the element is not created in the VFS yet
      */
     public boolean isNew() {
 
-        return m_newType != null;
+        return m_new;
     }
 
     /**
@@ -105,14 +107,23 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets the new type. Set the resource type name for elements that are not created in the VFS yet.
-     * Set to <code>null</code>, for all existing elements.<p>
+     * Sets the 'new' flag.<p>
      * 
-     * @param newType the new type
+     * @param isNew <code>true</code> on a new element
      */
-    public void setNewType(String newType) {
+    public void setNew(boolean isNew) {
 
-        m_newType = newType;
+        m_new = isNew;
+    }
+
+    /**
+     * Sets the element resource type.<p>
+     * 
+     * @param resourceType the element resource type
+     */
+    public void setResourceType(String resourceType) {
+
+        m_resourceType = resourceType;
     }
 
     /**

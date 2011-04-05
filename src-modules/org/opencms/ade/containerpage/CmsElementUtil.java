@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/05 13:08:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -179,7 +179,7 @@ public class CmsElementUtil {
         elementBean.setLastModifiedByUser(m_cms.readUser(resource.getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
         elementBean.setTitle(resUtil.getTitle());
-
+        elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
         Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource);
         elementBean.setProperties(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,

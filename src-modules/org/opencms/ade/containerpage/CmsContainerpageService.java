@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/04/05 13:08:45 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -179,6 +179,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             element = new CmsContainerElement();
             element.setClientId(newClientId);
             element.setSitePath(getCmsObject().getSitePath(newResource));
+            element.setResourceType(resourceType);
         } catch (CmsException e) {
             error(e);
         }
@@ -526,7 +527,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementData = createNewElement(
                         containerpageUri,
                         elementData.getClientId(),
-                        elementData.getNewType());
+                        elementData.getResourceType());
                 }
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 
@@ -776,7 +777,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementData = createNewElement(
                         containerpageUri,
                         elementData.getClientId(),
-                        elementData.getNewType());
+                        elementData.getResourceType());
                 }
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 
