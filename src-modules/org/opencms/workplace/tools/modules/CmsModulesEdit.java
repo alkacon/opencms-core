@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2009/06/04 14:33:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/05 09:46:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             if (CmsStringUtil.isEmpty(m_module.getName())) {
                 result.append(dialogBlockStart(key("label.modulefolder")));
                 result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(8, 13));
+                result.append(createDialogRowsHtml(8, 14));
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             }
@@ -144,6 +144,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             addWidget(new CmsWidgetDialogParameter(m_module, "createTemplateFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createElementsFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createResourcesFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createSchemasFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createClassesFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createLibFolder", PAGES[0], new CmsCheckboxWidget()));
         }

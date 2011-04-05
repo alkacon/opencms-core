@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/05 09:46:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,13 +84,16 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /** Resources folder within the module. */
     public static final String PATH_RESOURCES = "resources/";
 
+    /** Schemas folder within the module. */
+    public static final String PATH_SCHEMAS = "schemas/";
+
     /** Template folder within the module. */
     public static final String PATH_TEMPLATES = "templates/";
 
     /** The module object that is edited on this dialog. */
     protected CmsModule m_module;
 
-    /** Modulename. */
+    /** Module name. */
     protected String m_paramModule;
 
     /**
@@ -287,6 +290,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
             || module.isCreateElementsFolder()
             || module.isCreateLibFolder()
             || module.isCreateResourcesFolder()
+            || module.isCreateSchemasFolder()
             || module.isCreateTemplateFolder()) {
             module.setCreateModuleFolder(true);
         }
@@ -309,6 +313,12 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         // check if we have to create the elements folder
         if (module.isCreateElementsFolder()) {
             String path = modulePath + PATH_ELEMENTS;
+            getCms().createResource(path, folderId);
+        }
+
+        // check if we have to create the schemas folder
+        if (module.isCreateSchemasFolder()) {
+            String path = modulePath + PATH_SCHEMAS;
             getCms().createResource(path, folderId);
         }
 

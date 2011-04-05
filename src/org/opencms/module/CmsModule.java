@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2010/02/24 07:18:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/05 09:46:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -111,6 +111,9 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /** Flag to create the resources folder when creating the module. */
     private boolean m_createResourcesFolder;
+
+    /** Flag to create the schemas folder when creating the module. */
+    private boolean m_createSchemasFolder;
 
     /** Flag to create the template folder when creating the module. */
     private boolean m_createTemplateFolder;
@@ -347,6 +350,7 @@ public class CmsModule implements Comparable<CmsModule> {
         result.setCreateLibFolder(m_createLibFolder);
         result.setCreateModuleFolder(m_createModuleFolder);
         result.setCreateResourcesFolder(m_createResourcesFolder);
+        result.setCreateSchemasFolder(m_createSchemasFolder);
         result.setCreateTemplateFolder(m_createTemplateFolder);
 
         result.setResources(new ArrayList<String>(m_resources));
@@ -658,6 +662,16 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Returns the createSchemasFolder flag.<p>
+     *
+     * @return the createSchemasFolder flag
+     */
+    public boolean isCreateSchemasFolder() {
+
+        return m_createSchemasFolder;
+    }
+
+    /**
      * Returns the createTemplateFolder flag.<p>
      *
      * @return the createTemplateFolder flag
@@ -816,6 +830,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public void setCreateResourcesFolder(boolean createResourcesFolder) {
 
         m_createResourcesFolder = createResourcesFolder;
+    }
+
+    /**
+     * Sets the createSchemasFolder flag .<p>
+     *
+     * @param createSchemasFolder the createSchemasFolder flag to set
+     */
+    public void setCreateSchemasFolder(boolean createSchemasFolder) {
+
+        m_createSchemasFolder = createSchemasFolder;
     }
 
     /**
