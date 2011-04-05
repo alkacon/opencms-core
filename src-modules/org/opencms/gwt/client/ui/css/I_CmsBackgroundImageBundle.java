@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsBackgroundImageBundle.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -65,9 +65,9 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/backgrounds/dialogBackgroundTop.png")
+    @Source("images/backgrounds/dialogBackgroundShadow.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource dialogBackgroundTop();
+    ImageResource dialogBackgroundShadow();
 
     /**
      * Access method.<p>

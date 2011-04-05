@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @author Ruediger Kurz
  */
@@ -91,7 +91,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.20 $
+     * @version $Revision: 1.21 $
      * 
      * @author Ruediger Kurz
      */
@@ -496,6 +496,21 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * Checks if the String in the date box input field is a valid date format.<p>
+     * 
+     * @return <code>true</code> if the String in the date box input field is a valid date format
+     */
+    protected boolean isValideDateBox() {
+
+        try {
+            CmsDateConverter.toDate(m_box.getText());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * If the am or pm radio button is clicked update the date box from the date time picker.<p>
      */
     protected void onAmPmClick() {
@@ -560,6 +575,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
                     public void execute() {
 
                         updateCloseBehavior();
+                        if (isValideDateBox()) {
+                            setErrorMessage(null);
+                        }
                     }
                 });
                 break;
@@ -720,21 +738,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
-     * Checks if the String in the date box input field is a valid date format.<p>
-     * 
-     * @return <code>true</code> if the String in the date box input field is a valid date format
-     */
-    private boolean isValideDateBox() {
-
-        try {
-            CmsDateConverter.toDate(m_box.getText());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
      * Checks if the String in the time input field is a valid time format.<p>
      * 
      * @return <code>true</code> if the String in the time input field is a valid time format
@@ -786,6 +789,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         String timeAsString = getTimeText();
         date = CmsDateConverter.getDateWithTime(date, timeAsString);
         setValue(date);
+        setErrorMessage(null);
         CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, date);
         m_oldValue = date;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2011/04/05 13:09:35 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  *  
  * @since 8.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
             setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
             setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_0));
+            setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
             m_draggable = draggable;
         }
 

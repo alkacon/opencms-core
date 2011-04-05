@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/03/22 13:55:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -80,6 +80,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/bumpIcon.png")
     ImageResource bumpIcon();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/changeOrderIconActive.png")
+    ImageResource changeOrderIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/changeOrderIconDeactivated.png")
+    ImageResource changeOrderIconDeactivated();
 
     /**
      * Access method.<p>

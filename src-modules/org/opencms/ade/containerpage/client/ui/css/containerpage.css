@@ -20,7 +20,7 @@
 
 ul.clipboardList{
 	overflow: auto;
-	min-height: 38px;
+	height: 441px;
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");

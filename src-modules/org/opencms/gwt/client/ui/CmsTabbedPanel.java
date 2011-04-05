@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/04/04 16:34:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  * 
@@ -72,10 +72,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
         /** black layout. */
-        black(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
-
-        /** blue layout. */
-        steel(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().steel());
+        black(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black());
 
         /** The default tabbar height. */
         public static final CmsTabLayout DEFAULT = black;
@@ -286,9 +283,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             tabDivs.get(tabIndex).addClassName(
                 I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin()
                     + " "
-                    + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                    + I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()
                     + " "
-                    + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cornerAll());
+                    + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().borderAll());
         }
     }
 

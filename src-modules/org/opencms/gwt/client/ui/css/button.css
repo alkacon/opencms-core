@@ -3,333 +3,219 @@
 .cmsState, .cmsHovering{}
 .cmsState.cmsState-down-disabled, .cmsState.cmsState-up-disabled { cursor: auto; }
 
-.cmsTextButton.cmsState, .cmsMenuButton.cmsState, .cmsImageButton.cmsState, .cmsTransparentButton.cmsState{
-	border-color: value("constants.css.borderColor");
-	color: value("constants.css.textColor");
-}
-
-.spacerRight {
+.spacerRight{
 	margin-right: 4px;
 }
-.spacerLeft {
+.spacerLeft{
 	margin-left: 4px;
 }
 
-.html-face span{
+/** General styling for the html-face class and it's inner span, if an image is present. */
+div.html-face{
+	color: inherit;
+	font-size: inherit;
+	font-family: inherit;
+	font-weight: inherit;
+	text-align: center;
+}
+div.html-face span{
 	display: inline-block;
     white-space: nowrap;
     vertical-align: middle;
 }
 
-.cmsTextButton .html-face, .cmsMenuButton .html-face, .cmsImageButton .html-face, .cmsTransparentButton .html-face{
-	color: inherit;
-	font-size: inherit;
-	font-weight: inherit;
+/** General styling for all buttons (don't let the background expand the button height and position it in the middle). */
+div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton{
+	height: auto !important;
+	background-position: 50% 50% !important;
+	background-color: transparent;
+	vertical-align: middle;
+	outline: none;
+	cursor: pointer;
+	display: inline-block;
 }
 
-.cmsTransparentButton{
-    display: inline-block;
-    vertical-align: top;
-    outline: none;
-    cursor: pointer;
-    text-align: center;
-}
-
-div.cmsTextButton { 
-    border-width:1px;
-    border-style: solid;
-    padding: 3px 4px;
-    display: inline-block;
-    vertical-align: middle;
-    outline: none;
-    cursor: pointer;
-    text-align: center;
-}
-
-.cmsTextButton .html-face{
-	text-align: center;
-}
-
-div.cmsMenuButton, div.cmsImageButton { 
-    padding: 2px 4px;
-    display: inline-block;
-    vertical-align: middle;
-    outline: none;
-    cursor: pointer;
-    text-align: center;
-}
-
-.cmsTextButton .html-face, .cmsMenuButton .html-face, .cmsImageButton .html-face{
-	font-family: inherit;
-	font-size: inherit;
-	color: inherit;
-}
-
-
-
-@if user.agent ie6 {
-    .cmsTextButton, .cmsTransparentButton, .cmsMenuButton, .cmsImageButton{
-        white-space: nowrap;
-        display: inline;
-        vertical-align: middle;
-    }
-    .cmsMinWidth .html-face{
-        min-width: 6em;
-        overflow: visible !important;
-    }
-} @else {
-    .cmsTextButton, .cmsTextButton div, .cmsTransparentButton, .cmsTransparentButton div, .cmsMenuButton, .cmsMenuButton div, .cmsImageButton, .cmsImageButton div{
-        display: inline-block;
-        white-space: nowrap;
-        /* vertical-align: middle; */
-    }
-    .cmsMinWidth .html-face{
-        min-width: 6em;
-    }
-}
-
-.cmsTextButton.cmsButtonBig, .cmsMenuButton.cmsButtonBig, .cmsImageButton.cmsButtonBig{
-    padding: 2px 4px;
-    /* line-height: 16px; */
-}
-
-.cmsTextButton.cmsButtonSmall, .cmsMenuButton.cmsButtonSmall, .cmsImageButton.cmsButtonSmall{
-    padding: 2px 2px;
-    /* line-height: 12px; */
-}
-
-.cmsButtonMedium{}
-.cmsButtonIndividual{}
-
-
-@sprite .cmsTextButton.cmsState-up-disabled, .cmsTextButton.cmsState-down-disabled{
-    gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    background-color: value("constants.css.backgroundColorStateDisabled");
-    height: auto;
-    color: value("constants.css.textColorDisabled");
-}
-@sprite .cmsTextButton.cmsState-up{
+/** Specific button styles (text-, transparent-, menu- and image-Button). */
+@sprite div.cmsTextButton {
 	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%; 
+    border: 1px solid value("constants.css.borderColor");
+    padding: 3px 4px;
+    font-weight: bold;
+}
+div.cmsMenuButton, div.cmsImageButton {
+    border: 1px solid transparent;
+    padding: 2px 4px; 
+}
+div.cmsTransparentButton{
+    vertical-align: top;
+}
+
+/** Specific button size styles (transparent buttons never have a padding by default. */
+div.cmsTextButton.cmsButtonBig, div.cmsMenuButton.cmsButtonBig, div.cmsImageButton.cmsButtonBig{
+    padding: 2px 4px;
+}
+div.cmsTextButton.cmsButtonSmall, div.cmsMenuButton.cmsButtonSmall, div.cmsImageButton.cmsButtonSmall{
+    padding: 2px 2px;
+}
+div.cmsButtonMedium{}
+div.cmsButtonIndividual{}
+
+/**
+ * State depended styles.
+ */
+ 
+/** Set a general text color for all disabled buttons. */
+div.cmsState-up-disabled .html-face, div.cmsState-down-disabled .html-face {
+	color:value("constants.css.textColorDisabledButton") !important;
+}
+/** Text-Button: If no button style is set use the default state behavior. */
+div.cmsTextButton.cmsState-up-disabled, div.cmsTextButton.cmsState-down-disabled{
+    background-color: value("constants.css.backgroundColorStateDisabled");
+}
+div.cmsTextButton.cmsState-up{
 	background-color: value("constants.css.backgroundColorStateStandard");
-	height: auto;
 } 
-@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering{
-	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%; 
+div.cmsTextButton.cmsState-down-hovering, div.cmsTextButton.cmsState-up-hovering{
 	background-color: value("constants.css.backgroundColorStateHover");
-	height: auto;
 }
-@sprite .cmsTextButton.cmsState-down{
-	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%;
+div.cmsTextButton.cmsState-down{
 	background-color: value("constants.css.backgroundColorStateActive");
-	height: auto;
 }
-
-.cmsMenuButton.cmsState-up-disabled, .cmsMenuButton.cmsState-down-disabled{
-    border-width:1px;
-    border-style: solid;
-    border-color: transparent;
-	background-color: transparent;
-    height: auto;
-}
-.cmsMenuButton.cmsState-up{
-    border-width:1px;
-    border-style: solid;
-    border-color: transparent;
-	background-color: transparent;
-	height: auto;
-} 
-@sprite .cmsMenuButton.cmsState-down-hovering, .cmsMenuButton.cmsState-up-hovering{
-    border-width:1px;
-    border-style: solid;
+/** Image-Button: Only show a border and background for the hover- and the down-state. */
+@sprite div.cmsImageButton.cmsState-down-hovering, div.cmsImageButton.cmsState-up-hovering {
 	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%; 
 	background-color: value("constants.css.backgroundColorStateHover");
-	height: auto;
+	border-color: value("constants.css.borderColor");
 }
-.cmsMenuButton.cmsState-down{
-    border-width:1px;
-    border-style: solid;
-    border-color: transparent;
-	background-color: transparent;
-	height: auto;
-}
-
-.cmsImageButton.cmsState-up-disabled, .cmsImageButton.cmsState-down-disabled{
-    border-width:1px;
-    border-style: solid;
-    border-color: transparent;
-	background-color: transparent;
-    height: auto;
-}
-.cmsImageButton.cmsState-up{
-    border-width:1px;
-    border-style: solid;
-    border-color: transparent;
-	background-color: transparent;
-	height: auto;
-}
-@sprite .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering {
-    border-width:1px;
-    border-style: solid;
+@sprite div.cmsImageButton.cmsState-down{
 	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%; 
-	background-color: value("constants.css.backgroundColorStateHover");
-	height: auto;
-}
-@sprite .cmsImageButton.cmsState-down{
-    border-width:1px;
-    border-style: solid;
-	gwt-image: "backgrounds.stateBackground"; 
-	background-position: 50% 50%;
 	background-color: value("constants.css.backgroundColorStateActive");
-	height: auto;
+	border-color: value("constants.css.borderColor");
+}
+/** Menu-Button: Only show a border and background for the hover-state. */
+@sprite div.cmsMenuButton.cmsState-down-hovering, div.cmsMenuButton.cmsState-up-hovering{
+	gwt-image: "backgrounds.stateBackground"; 
+	background-color: value("constants.css.backgroundColorStateHover");
+	border-color: value("constants.css.borderColor");
 }
 
-.red {
-	font-weight: bold;
-	color:value("constants.css.textColorDarkButton");
+/**
+ * Browser specific styles.
+ */
+@if user.agent ie6 {
+	div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton{
+		white-space: nowrap;
+		display: inline !important;
+	}
+	.cmsMinWidth .html-face{
+		min-width: 6em;
+		overflow: visible !important;
+	}
+} @else {
+	div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton{
+		white-space: nowrap;
+		display: inline-block;
+	}
+	.cmsMinWidth .html-face{
+		min-width: 6em;
+	}
+}
+
+/**
+ * Color sprites.
+ */
+.red .html-face{
+	color:value("constants.css.textColorDarkButton") !important;
 }
 @sprite .red.cmsState-up{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonRedUpBackground"; 
-	background-position: 50% 50%;
-    height: auto;
 }
 @sprite .red.cmsState-down{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonRedDownBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .red.cmsState-up-disabled, .red.cmsState-down-disabled{
-	color: value("constants.css.textColorDisabledButton");
 	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto; 
 }
 @sprite .red.cmsState-up-hovering, .red.cmsState-down-hovering{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonRedHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto; 
 }
 
-.blue {
-	font-weight: bold;
-	color:value("constants.css.textColorDarkButton");
+.gray .html-face{
+	color:value("constants.css.textColorDarkButton") !important;
+}
+@sprite .gray.cmsState-up{
+	gwt-image: "inputImages.buttonGrayUpBackground"; 
+}
+@sprite .gray.cmsState-down{
+	gwt-image: "inputImages.buttonGrayDownBackground";
+}
+@sprite .gray.cmsState-up-disabled, .gray.cmsState-down-disabled{
+	gwt-image: "inputImages.buttonDisabledBackground";
+}
+@sprite .gray.cmsState-up-hovering, .gray.cmsState-down-hovering{
+	gwt-image: "inputImages.buttonGrayHoverBackground"; 
+}
+
+.blue .html-face{
+	color:value("constants.css.textColorDarkButton") !important;
 }
 @sprite .blue.cmsState-up{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlueUpBackground"; 
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .blue.cmsState-down{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlueDownBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .blue.cmsState-up-disabled, .blue.cmsState-down-disabled{
-	color: value("constants.css.textColorDisabledButton");
 	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto; 
 }
 @sprite .blue.cmsState-up-hovering, .blue.cmsState-down-hovering{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlueHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto; 
 }
 
-.yellow {
-	font-weight: bold;
-	color:value("constants.css.textColorLightButton");
+.yellow .html-face{
+	color:value("constants.css.textColorLightButton") !important;
 }
 @sprite .yellow.cmsState-up{
-	color:value("constants.css.textColorLightButton");
 	gwt-image: "inputImages.buttonYellowUpBackground"; 
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .yellow.cmsState-down{
-	color:value("constants.css.textColorLightButton");
 	gwt-image: "inputImages.buttonYellowDownBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .yellow.cmsState-up-disabled, .yellow.cmsState-down-disabled{
-	color: value("constants.css.textColorDisabledButton");
 	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .yellow.cmsState-up-hovering, .yellow.cmsState-down-hovering{
-	color:value("constants.css.textColorLightButton");
 	gwt-image: "inputImages.buttonYellowHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
 }
 
-.steel {
-	font-weight: bold;
-	color:value("constants.css.textColorDarkButton");
+.steel .html-face{
+	color:value("constants.css.textColorDarkButton") !important;
 }
 @sprite .steel.cmsState-up{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonSteelUpBackground"; 
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .steel.cmsState-down{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonSteelDownBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .steel.cmsState-up-disabled, .steel.cmsState-down-disabled{
-	color: value("constants.css.textColorDisabledButton");
 	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
 }
 @sprite .steel.cmsState-up-hovering, .steel.cmsState-down-hovering{
-	color: value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonSteelHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
 }
 
-.black {
-	font-weight: bold;
-	color:value("constants.css.textColorDarkButton");
+.black .html-face{
+	color:value("constants.css.textColorDarkButton") !important;
 }
 @sprite .black.cmsState-up{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlackUpBackground"; 
-	background-position: 50% 50%;
-	height: auto; 
 }
 @sprite .black.cmsState-down{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlackDownBackground";
-	background-position: 50% 50%;
-	height: auto; 
 }
 @sprite .black.cmsState-up-disabled, .black.cmsState-down-disabled{
-	color: value("constants.css.textColorDisabledButton");
 	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto; 
 }
 @sprite .black.cmsState-up-hovering, .black.cmsState-down-hovering{
-	color:value("constants.css.textColorDarkButton");
 	gwt-image: "inputImages.buttonBlackHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto; 
 }

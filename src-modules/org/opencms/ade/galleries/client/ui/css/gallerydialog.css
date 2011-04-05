@@ -93,29 +93,26 @@
 
 .searchTabRow {
 	clear: both;
+	height: 22px;
 }
 .searchTabRowRightAlign {
 	clear: both;
 	text-align: right;
 }
 .searchTabLabelLeft {
-	margin-bottom: 10px;
 	width: 120px;
 	float: left;
 }
 .searchTabLabelRight {
-	margin-bottom: 10px;
 	width: 120px;
 	float: right;
 }
 .searchTabInputLeft {
-	margin-bottom: 10px;
-	width: 155px;
+	width: 166px;
 	float: left;
 }
 .searchTabInputRight {
-	margin-bottom: 10px;
-	width: 155px;
+	width: 166px;
 	float: right;
 }
 .searchTabBorderLayer {

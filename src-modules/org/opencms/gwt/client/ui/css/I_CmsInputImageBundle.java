@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -109,6 +109,33 @@ public interface I_CmsInputImageBundle extends ClientBundle {
     @Source("images/input/buttonDisabledBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonDisabledBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonGrayDownBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource buttonGrayDownBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonGrayHoverBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource buttonGrayHoverBackground();
+
+    /** 
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/buttonGrayUpBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource buttonGrayUpBackground();
 
     /** 
      * Image resource accessor.<p>

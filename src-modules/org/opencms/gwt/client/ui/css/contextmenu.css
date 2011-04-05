@@ -22,7 +22,7 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 .cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
 	float: left;
-	margin: 5px 0px 3px 2px;
+	margin: 3px 0px 0px 2px;
 	height: 16px;
 	width: 16px;
 	overflow: hidden;
@@ -49,14 +49,14 @@ div.cmsMenuBar { /* the outer menu bar */
 	overflow: hidden;
 	clear: both;
 }
-.menuInfoLabel {
+.cmsMenuBar .cmsMenuItem .menuInfoLabel {
 	padding: 4px;
 	cursor: default;
 }
 
-.itemIcon {
+.cmsMenuBar .cmsMenuItem .itemIcon {
 	float: left;
-	margin-top: 3px;
+	margin-top: 1px;
 }
 @if user.agent ie6 {
 	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {

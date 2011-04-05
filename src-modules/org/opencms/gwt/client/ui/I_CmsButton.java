@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,8 @@ public interface I_CmsButton {
         BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()),
         /** Button color. */
         BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+        /** Button color. */
+        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
         /** Button color. */
         RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
         /** Button color. */
@@ -108,7 +110,7 @@ public interface I_CmsButton {
 
         /** Toolbar button. */
         MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove(), Messages.get().key(
-            Messages.GUI_TOOLBAR_MOVE_0)),
+            Messages.GUI_TOOLBAR_MOVE_IN_0)),
 
         /** Toolbar button. */
         NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
@@ -246,6 +248,9 @@ public interface I_CmsButton {
             + " "
             + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
 
+        /** No specific size. */
+        individual(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonIndividual()),
+
         /** Medium button style. */
         medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
             + " "
@@ -254,10 +259,7 @@ public interface I_CmsButton {
         /** Small button style. */
         small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
             + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall()),
-
-        /** No specific size. */
-        individual(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonIndividual());
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
 
         /** The CSS class name. */
         private String m_cssClassName;

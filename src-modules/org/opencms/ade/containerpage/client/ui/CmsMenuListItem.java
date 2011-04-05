@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/04/05 13:08:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -50,7 +51,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -72,7 +73,7 @@ public class CmsMenuListItem extends CmsListItem {
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
         m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        // m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        m_removeButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_REMOVE_TEXT_0));
         m_removeButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -149,5 +150,20 @@ public class CmsMenuListItem extends CmsListItem {
         CmsDomUtil.clearOpacity(getElement());
 
         getElement().getStyle().clearDisplay();
+    }
+
+    /**
+     * Sets the icon style.<p>
+     * 
+     * @param imageClass the image class to set
+     * @param title the title (tool-tip) to set
+     */
+    protected void setMoveIconStyle(String imageClass, String title) {
+
+        if (getMoveHandle() instanceof CmsPushButton) {
+            CmsPushButton button = (CmsPushButton)getMoveHandle();
+            button.setImageClass(imageClass);
+            button.setTitle(title);
+        }
     }
 }

@@ -25,7 +25,7 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-	gwt-image: "backgrounds.dialogBackgroundTop";
+	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorMenu");
 	background-position: top;
 	background-repeat: repeat-x;
@@ -129,13 +129,13 @@
 	border-style: solid;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerAll, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.borderAll, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
 	border-color: value("constants.css.borderColor");
 	border-width: 1px;
 	border-style: solid;
 }
 
-.steel, .black{}
+.black{}
 
 @sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab {
 	gwt-image: "inputImages.buttonBlackUpBackground";
@@ -148,33 +148,14 @@
 	height: auto;
 }
 @sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover {
-	gwt-image: "inputImages.buttonRedHoverBackground";
+	gwt-image: "inputImages.buttonBlueUpBackground";
+	color:#222 !important;
 	background-position: 50% 50%;
 	height: auto;
 }
 @sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected{    
-	gwt-image: "inputImages.buttonRedDownBackground";
-	background-position: 50% 50%;
-	height: auto;
-}
-
-@sprite .gwt-TabLayoutPanel .steel .gwt-TabLayoutPanelTab {
-	gwt-image: "inputImages.buttonSteelUpBackground";
-	background-position: 50% 50%;
-	height: auto;
-}
-@sprite .gwt-TabLayoutPanel .steel .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "inputImages.buttonSteelHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
-}
-.gwt-TabLayoutPanel .steel .gwt-TabLayoutPanelTab-selected:hover {
-	gwt-image: "inputImages.buttonSteelHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
-}
-@sprite .gwt-TabLayoutPanel .steel .gwt-TabLayoutPanelTab-selected{    
-	gwt-image: "inputImages.buttonSteelDownBackground";
+	gwt-image: "inputImages.buttonBlueDownBackground";
+	color:#222 !important;
 	background-position: 50% 50%;
 	height: auto;
 }

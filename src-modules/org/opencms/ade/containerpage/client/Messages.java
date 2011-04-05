@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -48,10 +48,16 @@ public final class Messages {
     public static final String GUI_BUTTON_CANCEL_TEXT_0 = "GUI_BUTTON_CANCEL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_CHANGE_ORDER_TEXT_0 = "GUI_BUTTON_CHANGE_ORDER_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_EDITFAVORITES_TEXT_0 = "GUI_BUTTON_EDITFAVORITES_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_LEAVEPAGE_TEXT_0 = "GUI_BUTTON_LEAVEPAGE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_REMOVE_TEXT_0 = "GUI_BUTTON_REMOVE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_RESET_DISABLED_0 = "GUI_BUTTON_RESET_DISABLED_0";
@@ -93,13 +99,13 @@ public final class Messages {
     public static final String GUI_NOTIFICATION_FAVORITES_SAVED_0 = "GUI_NOTIFICATION_FAVORITES_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0 = "GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_PAGE_SAVED_0 = "GUI_NOTIFICATION_PAGE_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_PAGE_UNLOCKED_0 = "GUI_NOTIFICATION_PAGE_UNLOCKED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0 = "GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_UNABLE_TO_LOCK_0 = "GUI_NOTIFICATION_UNABLE_TO_LOCK_0";

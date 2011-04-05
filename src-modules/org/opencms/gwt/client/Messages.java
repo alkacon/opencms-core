@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/17 16:11:01 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  */
@@ -219,7 +219,10 @@ public final class Messages {
     public static final String GUI_TOOLBAR_EXIT_0 = "GUI_TOOLBAR_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_MOVE_0 = "GUI_TOOLBAR_MOVE_0";
+    public static final String GUI_TOOLBAR_MOVE_IN_0 = "GUI_TOOLBAR_MOVE_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_MOVE_TO_0 = "GUI_TOOLBAR_MOVE_TO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_0 = "GUI_TOOLBAR_NEW_0";

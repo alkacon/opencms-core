@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/05 13:09:35 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 8.0.0
  */
@@ -186,6 +186,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsTransparentButton();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String gray();
 
         /**
          *  Access method.<p>
@@ -1000,13 +1007,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String listTreeItemOpener();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String listTreeItemInternal();
 
         /** 
@@ -1035,6 +1035,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String listTreeItemOpener();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String minus();
 
         /** 
@@ -1043,24 +1050,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String plus();
-    }
-
-    /** The single line list item CSS. */
-    public interface I_CmsSingleLineItem extends I_CmsFloatDecoratedPanelCss {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String itemFace();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String singleLineItem();
     }
 
     /** The menu button CSS. */
@@ -1296,6 +1285,24 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String showSelect();
     }
 
+    /** The single line list item CSS. */
+    public interface I_CmsSingleLineItem extends I_CmsFloatDecoratedPanelCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemFace();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String singleLineItem();
+    }
+
     /** General CSS. */
     @Shared
     interface I_CmsStateCss extends CssResource {
@@ -1379,6 +1386,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String borderAll();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         @ClassName("internal-tabbed")
         String cmsInternalTab();
 
@@ -1435,13 +1449,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cornerAll();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String cornerLeft();
 
         /** 
@@ -1450,13 +1457,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cornerRight();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String steel();
 
         /** 
          * Access method.<p>

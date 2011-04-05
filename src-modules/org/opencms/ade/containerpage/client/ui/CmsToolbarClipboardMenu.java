@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/05 18:04:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -172,6 +173,9 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
+            element.setMoveIconStyle(
+                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
+                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
             element.showRemoveButton();
         }
     }
@@ -228,6 +232,9 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
             try {
                 CmsMenuListItem element = (CmsMenuListItem)it.next();
                 element.hideRemoveButton();
+                element.setMoveIconStyle(
+                    I_CmsImageBundle.INSTANCE.style().moveIcon(),
+                    org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_MOVE_TO_0));
                 clientIds.add(element.getId());
             } catch (ClassCastException e) {
                 CmsDebugLog.getInstance().printLine("Could not cast widget");

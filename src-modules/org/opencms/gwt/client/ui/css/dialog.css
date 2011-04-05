@@ -47,6 +47,7 @@
     border-bottom-color: value("constants.css.borderColorDialog");
     border-left-color: value("constants.css.borderColorDialog");
     font-family: value("constants.css.fontFamily");
+    overflow: visible;
 }
 
 /** browser specific styles **/
@@ -103,21 +104,18 @@
 }
 
 .popupMainContent{
-	/* gwt-image: "backgrounds.dialogBackgroundTop";
-	background-color: value("constants.css.backgroundColorMenu"); 
-	background-position: top;
-    background-repeat: repeat-x;*/
 	height: auto;
     font-size: value("constants.css.fontSize");
     position:relative;
 }
 
 @sprite .popupMainContent.contentPadding {
-	gwt-image: "backgrounds.dialogBackgroundTop";
+	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorDialog");
 	background-position: top;
 	background-repeat: repeat-x;
 	padding: value("constants.css.defaultSpace");
+	overflow:visible;
 }
 
 .contentSpacer{
