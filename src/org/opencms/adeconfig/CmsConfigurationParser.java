@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/03/01 14:16:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/05 06:41:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -112,6 +112,9 @@ public class CmsConfigurationParser {
 
     /** Node name for the maximum depth configuration. */
     public static final String N_MAXDEPTH = "MaxDepth";
+
+    /** The tag name of the formatter maximum width. */
+    public static final String N_MAXWIDTH = "MaxWidth";
 
     /** The Page node name. */
     public static final String N_PAGE = "Page";
@@ -606,10 +609,11 @@ public class CmsConfigurationParser {
             String jsp = getSubValueString(cms, fmtValue, N_JSP);
             String width = getSubValueString(cms, fmtValue, N_WIDTH);
             String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
-            formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width));
+            String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
+            formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width, maxwidth));
         }
         if (!formatterConfigBeans.isEmpty()) {
-            CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
+            CmsPair<Map<String, String>, Map<Integer, CmsPair<String, Integer>>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
                 formatterConfigBeans,
                 m_content.getFile().getRootPath());
             CmsTypeFormatterConfiguration fmt = new CmsTypeFormatterConfiguration(

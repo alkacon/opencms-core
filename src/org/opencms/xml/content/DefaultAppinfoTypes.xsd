@@ -132,6 +132,7 @@
 		<xsd:attribute name="type" type="xsd:string" use="required" />
 		<xsd:attribute name="uri" type="xsd:string" use="required" />
 		<xsd:attribute name="width" type="xsd:string" use="optional" />
+		<xsd:attribute name="maxwidth" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoProperties">

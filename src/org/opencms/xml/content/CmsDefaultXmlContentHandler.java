@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/05 06:41:19 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
+
+    /** Constant for the "maxwidth" appinfo attribute name. */
+    public static final String APPINFO_ATTR_MAXWIDTH = "maxwidth";
 
     /** Constant for the "message" appinfo attribute name. */
     public static final String APPINFO_ATTR_MESSAGE = "message";
@@ -347,7 +350,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected Map<String, String> m_validationWarningRules;
 
     /** The map of width-based formatters. */
-    private Map<Integer, String> m_widthFormatters;
+    private Map<Integer, CmsPair<String, Integer>> m_widthFormatters;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -592,7 +595,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidthFormatters()
      */
-    public Map<Integer, String> getWidthFormatters() {
+    public Map<Integer, CmsPair<String, Integer>> getWidthFormatters() {
 
         return Collections.unmodifiableMap(m_widthFormatters);
     }
@@ -1519,7 +1522,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_modelFolder = null;
         m_tabs = new ArrayList<CmsXmlContentTab>();
         m_formatters = new HashMap<String, String>();
-        m_widthFormatters = new HashMap<Integer, String>();
+        m_widthFormatters = new HashMap<Integer, CmsPair<String, Integer>>();
         m_formatters.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
         m_properties = new LinkedHashMap<String, CmsXmlContentProperty>();
     }
@@ -1574,9 +1577,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String widthStr = element.attributeValue(APPINFO_ATTR_WIDTH);
-            configBeans.add(new CmsFormatterConfigBean(uri, type, widthStr));
+            String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
+            configBeans.add(new CmsFormatterConfigBean(uri, type, widthStr, maxWidthStr));
         }
-        CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
+        CmsPair<Map<String, String>, Map<Integer, CmsPair<String, Integer>>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
             configBeans,
             schemaLocation);
         m_formatters.putAll(formatterMaps.getFirst());

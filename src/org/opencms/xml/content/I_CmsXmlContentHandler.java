@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2010/11/11 13:08:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/05 06:41:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsPair;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -56,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,9 +81,6 @@ public interface I_CmsXmlContentHandler {
     /** Prefix for property list mappings. */
     String MAPTO_PROPERTY_LIST = "propertyList:";
 
-    /** Prefix for URL name mappings. */
-    String MAPTO_URLNAME = "urlName";
-
     /** Prefix for property list mappings. */
     String MAPTO_PROPERTY_LIST_INDIVIDUAL = MAPTO_PROPERTY_LIST + CmsProperty.TYPE_INDIVIDUAL + ":";
 
@@ -91,6 +89,9 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for property mappings. */
     String MAPTO_PROPERTY_SHARED = MAPTO_PROPERTY + CmsProperty.TYPE_SHARED + ":";
+
+    /** Prefix for URL name mappings. */
+    String MAPTO_URLNAME = "urlName";
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 
@@ -225,7 +226,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return a map from maximal container widths to formatter jsp uris
      */
-    Map<Integer, String> getWidthFormatters();
+    Map<Integer, CmsPair<String, Integer>> getWidthFormatters();
 
     /**
      * Initializes this content handler for the given XML content definition by

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsFormatterConfigBean.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/05 06:41:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.containerpage;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -44,6 +44,9 @@ public class CmsFormatterConfigBean {
 
     /** The formatter jsp. */
     private String m_jsp;
+
+    /** The formatter max width. */
+    private String m_maxWidth;
 
     /** The formatter container type. */
     private String m_type;
@@ -56,13 +59,16 @@ public class CmsFormatterConfigBean {
      * 
      * @param jsp the formatter jsp 
      * @param type the formatter container type 
-     * @param width the formatter width 
+     * @param width the formatter width
+     * @param maxWidth the formatter max width 
+     *  
      */
-    public CmsFormatterConfigBean(String jsp, String type, String width) {
+    public CmsFormatterConfigBean(String jsp, String type, String width, String maxWidth) {
 
         m_jsp = jsp;
         m_type = type;
         m_width = width;
+        m_maxWidth = maxWidth;
     }
 
     /**
@@ -73,6 +79,16 @@ public class CmsFormatterConfigBean {
     public String getJsp() {
 
         return m_jsp;
+    }
+
+    /**
+     * Gets the maximum width as a string.<p>
+     * 
+     * @return the maximum width as a string 
+     */
+    public String getMaxWidth() {
+
+        return m_maxWidth;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsFormatterUtil.java,v $
- * Date   : $Date: 2010/11/04 12:28:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/05 06:41:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -74,30 +74,39 @@ public final class CmsFormatterUtil {
      *  
      * @return a pair of formatter maps 
      */
-    public static CmsPair<Map<String, String>, Map<Integer, String>> getFormatterMapsFromConfigBeans(
+    public static CmsPair<Map<String, String>, Map<Integer, CmsPair<String, Integer>>> getFormatterMapsFromConfigBeans(
         List<CmsFormatterConfigBean> beans,
         String location) {
 
         Map<String, String> formatters = new HashMap<String, String>();
-        Map<Integer, String> widthFormatters = new HashMap<Integer, String>();
+        Map<Integer, CmsPair<String, Integer>> widthFormatters = new HashMap<Integer, CmsPair<String, Integer>>();
         for (CmsFormatterConfigBean configBean : beans) {
             String type = configBean.getType();
             String uri = configBean.getJsp();
             String widthStr = configBean.getWidth();
+            String maxWidthStr = configBean.getMaxWidth();
             String oldUri = null;
             Object key = null;
             if (type.equals("*") || CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
                 // wildcard formatter; index by width
                 // if no width available, use -1
                 int width = -1;
+                int maxWidth = Integer.MAX_VALUE;
                 try {
                     width = Integer.parseInt(widthStr);
                 } catch (NumberFormatException e) {
                     //ignore; width will be -1 
                 }
+                try {
+                    maxWidth = Integer.parseInt(maxWidthStr);
+                } catch (NumberFormatException e) {
+                    //ignore; maxWidth will be max. integer 
+                }
+
                 key = new Integer(width);
-                oldUri = widthFormatters.get(key);
-                widthFormatters.put((Integer)key, uri);
+                CmsPair<String, Integer> fmt = widthFormatters.get(key);
+                oldUri = fmt != null ? fmt.getFirst() : null;
+                widthFormatters.put((Integer)key, CmsPair.create(uri, new Integer(maxWidth)));
             } else {
                 key = type;
                 oldUri = formatters.get(key);
@@ -130,7 +139,7 @@ public final class CmsFormatterUtil {
      */
     public static String selectFormatter(
         Map<String, String> typeFormatters,
-        Map<Integer, String> widthFormatters,
+        Map<Integer, CmsPair<String, Integer>> widthFormatters,
         String containerType,
         int containerWidth) {
 
@@ -142,18 +151,19 @@ public final class CmsFormatterUtil {
             // interpret negative container size as 'unlimited' 
             containerWidth = Integer.MAX_VALUE;
         }
-        List<Integer> keysLessThanMaxWidth = new ArrayList<Integer>();
-        for (Map.Entry<Integer, String> entry : widthFormatters.entrySet()) {
+        List<Integer> possibleKeys = new ArrayList<Integer>();
+        for (Map.Entry<Integer, CmsPair<String, Integer>> entry : widthFormatters.entrySet()) {
             Integer key = entry.getKey();
-            if (key.intValue() <= containerWidth) {
-                keysLessThanMaxWidth.add(key);
+            if ((key.intValue() <= containerWidth) && (containerWidth <= entry.getValue().getSecond().intValue())) {
+                possibleKeys.add(key);
             }
         }
-        if (keysLessThanMaxWidth.isEmpty()) {
+
+        if (possibleKeys.isEmpty()) {
             return null;
         }
-        Integer maxKey = Collections.max(keysLessThanMaxWidth);
-        return widthFormatters.get(maxKey);
+        Integer maxKey = Collections.max(possibleKeys);
+        return widthFormatters.get(maxKey).getFirst();
     }
 
 }
