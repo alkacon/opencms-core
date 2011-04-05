@@ -12,6 +12,12 @@
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
 }
 .dragOverlay{
 	display: none;

@@ -28,7 +28,7 @@
 	margin: 1px;
 }
 
-.tilingList .cmsHovering .buttonPanel{
+.tilingList .tilingItem .cmsHovering .buttonPanel{
 	gwt-image: "backgrounds.softBackground";
 	height: auto;
 	-moz-border-radius: 2px;

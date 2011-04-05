@@ -14,9 +14,10 @@
 	color: value("constants.css.textColor");
 }
 
-.itemContainer * {
+.itemContainer div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	line-height: 16px;
 }
 
 
@@ -123,16 +124,16 @@
 	visibility: visible;
 }
 
-.buttonPanel > * {
+div.buttonPanel > * {
 	float: right;
 	margin-left: 2px;
 }
 
-.itemAdditional{
+div.itemAdditional{
 	padding: 5px 0px 0px 4px;
 }
 
-.itemAdditionalTitle{
+div.itemAdditionalTitle{
 	float:left;
 	height:16px;
 	margin-right:5px;
@@ -141,9 +142,10 @@
 	width:90px;
 }
 
-.itemAdditionalValue{
+div.itemAdditionalValue{
 	margin-left:95px;
 	vertical-align:top;
+	height:16px;
 }
 
 /** These styles are for dragging. */

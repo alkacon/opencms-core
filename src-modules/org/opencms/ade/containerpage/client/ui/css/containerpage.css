@@ -87,7 +87,7 @@ div.toolbarToggle{
 	z-index: 10100;
 }
 
-.toolbarToggle, .toolbarToggle *{
+.toolbarToggle, .toolbarToggle *, div.optionBar, div.optionBar div, div.optionBar span{
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -97,18 +97,12 @@ div.toolbarToggle{
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
-}
-
-.optionBar, .optionBar *{
-	margin: 0;
-	padding: 0;
-	border: none;
-	color: value("constants.css.textColor");
-	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
-	line-height: value("constants.css.lineHeight");
-	background: transparent;
-	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
 }
 
 @sprite .toolbarSelection .optionBar.cmsHovering{
