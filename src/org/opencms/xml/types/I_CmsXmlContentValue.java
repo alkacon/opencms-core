@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,12 +65,18 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
 
     /**
      * Returns the node index of this XML content value in the source XML document, 
-     * starting with 0.<p>
+     * starting with 0, with special handling of elements in choice groups.<p>
      * 
-     * This is useful in case there are more then one elements 
-     * with the same XML node name in the source XML document.<p> 
+     * This is useful in case there are more than one elements 
+     * with the same XML node name in the source XML document.<p>
      * 
-     * @return the index of this XML content node in the source document
+     * Elements in XML choice groups will share the same number space, so a choice 
+     * sequence will be numbered like this:
+     * <code>Title[1], Text[2], Title[3], Image[4]</code><p> 
+     * 
+     * @return the index of this XML content node in the source document with special handling of elements in choice groups
+     * 
+     * @see #getXmlIndex()
      */
     int getIndex();
 
@@ -117,6 +123,19 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @return the value of this XML content node as a String
      */
     String getStringValue(CmsObject cms);
+
+    /**
+     * Returns the node index of this XML content value in the source XML document, 
+     * starting with 0, based on the XML ordering.<p>
+     * 
+     * Elements in choice groups will be numbered like this:
+     * <code>Title[1], Text[1], Title[2], Image[1]</code><p> 
+     * 
+     * @return the index of this XML content node in the source document with special handling of elements in choice groups
+     * 
+     * @see #getIndex()
+     */
+    int getXmlIndex();
 
     /**
      * Returns <code>true</code> in case this value is searchable by default with 

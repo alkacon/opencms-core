@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2010/01/28 15:04:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -404,6 +404,29 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             return value.getStringValue(cms);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getSubValues(java.lang.String, java.util.Locale)
+     */
+    public List<I_CmsXmlContentValue> getSubValues(String path, Locale locale) {
+
+        List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
+        String bookmark = getBookmarkName(CmsXmlUtils.createXpath(path, 1), locale);
+        I_CmsXmlContentValue value = getBookmark(bookmark);
+        if ((value != null) && !value.isSimpleType()) {
+            // calculate level of current bookmark
+            int depth = CmsResource.getPathLevel(bookmark) + 1;
+            Iterator<String> i = getBookmarks().iterator();
+            while (i.hasNext()) {
+                String bm = i.next();
+                if (bm.startsWith(bookmark) && (CmsResource.getPathLevel(bm) == depth)) {
+                    // add only values directly below the value
+                    result.add(getBookmark(bm));
+                }
+            }
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2009/09/04 15:01:17 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,6 +198,20 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException if something goes wrong
      */
     String getStringValue(CmsObject cms, String path, Locale locale, int index) throws CmsXmlException;
+
+    /**
+     * Returns all content values (of type {@link I_CmsXmlContentValue}) directly below the given path
+     * available in this document for the given locale.<p>
+     * 
+     * If no content value for the given path is available with this locale, an empty list is returned.<p>
+     * 
+     * @param path the path to get the sub content values for
+     * @param locale the locale to get the sub content values for
+     * 
+     * @return all content values (of type {@link I_CmsXmlContentValue}) directly below the given path 
+     *      available in this document for the given locale
+     */
+    List<I_CmsXmlContentValue> getSubValues(String path, Locale locale);
 
     /**
      * Returns the content value Object for the given path,

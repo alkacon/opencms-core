@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2009/10/14 14:38:03 $
- * Version: $Revision: 1.9.2.3 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,8 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsConstantMap;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -62,7 +62,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -153,6 +153,28 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Provides a Map which lets the user access sub value Lists from the selected locale in an XML content, 
+     * the input is assumed to be a String that represents a Locale.<p>
+     */
+    public class CmsLocaleSubValueListTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Locale locale = CmsJspElFunctions.convertLocale(input);
+            Map<String, List<Object>> result;
+            if (getRawContent().hasLocale(locale)) {
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer(locale));
+            } else {
+                result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
+            }
+            return result;
+        }
+    }
+
+    /**
      * Provides a Map which lets the user access value Lists from the selected locale in an XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
@@ -191,6 +213,42 @@ public class CmsJspContentAccessBean {
                 result = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueTransformer(locale));
             } else {
                 result = CONSTANT_NULL_VALUE_WRAPPER_MAP;
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Provides a Map which lets the user access sub value Lists in an XML content, 
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsSubValueListTransformer implements Transformer {
+
+        /** The selected locale. */
+        private Locale m_selectedLocale;
+
+        /**
+         * Constructor with a locale.<p>
+         * 
+         * @param locale the locale to use
+         */
+        public CmsSubValueListTransformer(Locale locale) {
+
+            m_selectedLocale = locale;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            List<I_CmsXmlContentValue> values = getRawContent().getSubValues(String.valueOf(input), m_selectedLocale);
+            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
+            Iterator<I_CmsXmlContentValue> i = values.iterator();
+            while (i.hasNext()) {
+                // XML content API offers List of values only as Objects, must iterate them and create Strings 
+                I_CmsXmlContentValue value = i.next();
+                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value));
             }
             return result;
         }
@@ -282,6 +340,9 @@ public class CmsJspContentAccessBean {
 
     /** The lazy initialized with the locale names. */
     private Map<String, List<String>> m_localeNames;
+
+    /** The lazy initialized with the locale sub value lists. */
+    private Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> m_localeSubValueList;
 
     /** The lazy initialized with the locale value. */
     private Map<String, Map<String, CmsJspContentAccessValueWrapper>> m_localeValue;
@@ -509,6 +570,34 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns a lazy initialized Map that provides a Map that provides Lists of direct sub values 
+     * from the XML content in the selected locale.<p>
+     * 
+     * The first provided Map key is assumed to be a String that represents the Locale,
+     * the second provided Map key is assumed to be a String that represents the xpath to the value.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach var="item" items="${content.localeSubValueList['de']['Items']}"&gt;
+     *         ${item}
+     *     &lt;/c:forEach&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a lazy initialized Map that provides a Map that provides Lists of direct sub values 
+     *      from the XML content in the selected locale
+     * 
+     * @see #getLocaleValue()
+     */
+    public Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> getLocaleSubValueList() {
+
+        if (m_localeSubValueList == null) {
+            m_localeSubValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleSubValueListTransformer());
+        }
+        return m_localeSubValueList;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides a Map that provides 
      * values from the XML content in the selected locale.<p>
      * 
@@ -611,6 +700,30 @@ public class CmsJspContentAccessBean {
             }
         }
         return m_content;
+    }
+
+    /**
+     * Returns a lazy initialized Map that provides Lists of direct sub values 
+     * of the given value from the XML content in the current locale.<p>
+     * 
+     * The provided Map key is assumed to be a String that represents the xpath to the value.
+     * Use this method in case you want to iterate over a List of sub values from the XML content.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach var="teaser" items="${content.subValueList['Items']}"&gt;
+     *         ${item}
+     *     &lt;/c:forEach&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a lazy initialized Map that provides Lists of values from the XML content in the current locale
+     * 
+     * @see #getLocaleValueList()
+     */
+    public Map<String, List<CmsJspContentAccessValueWrapper>> getSubValueList() {
+
+        return getLocaleSubValueList().get(m_locale);
     }
 
     /**

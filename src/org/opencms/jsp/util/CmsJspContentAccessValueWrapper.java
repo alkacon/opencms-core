@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2010/01/06 13:05:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Node;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -86,6 +86,31 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Provides a Map which lets the user access nested sub value Lists directly below the current value, 
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsSubValueListTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getSubValues(
+                createPath(input),
+                obtainContentValue().getLocale());
+            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
+            Iterator<I_CmsXmlContentValue> i = values.iterator();
+            while (i.hasNext()) {
+                // must iterate values from XML content and create wrapper for each 
+                I_CmsXmlContentValue value = i.next();
+                result.add(createWrapper(obtainCmsObject(), value));
+            }
+            return result;
+        }
+    }
+
+    /**
      * Provides a Map which lets the user access nested sub value Lists from the current value, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
@@ -96,14 +121,14 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            List values = obtainContentValue().getDocument().getValues(
+            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getValues(
                 createPath(input),
                 obtainContentValue().getLocale());
-            List result = new ArrayList();
-            Iterator i = values.iterator();
+            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
+            Iterator<I_CmsXmlContentValue> i = values.iterator();
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each 
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
+                I_CmsXmlContentValue value = i.next();
                 result.add(createWrapper(obtainCmsObject(), value));
             }
             return result;
@@ -164,6 +189,12 @@ public final class CmsJspContentAccessValueWrapper {
 
     /** The macro resolver used to resolve macros for this value. */
     private CmsMacroResolver m_macroResolver;
+
+    /** The names of the sub elements. */
+    private List<String> m_names;
+
+    /** The lazy initialized sub value list Map. */
+    private Map<String, List<CmsJspContentAccessValueWrapper>> m_subValueList;
 
     /** The lazy initialized value Map. */
     private Map m_value;
@@ -250,6 +281,7 @@ public final class CmsJspContentAccessValueWrapper {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -395,6 +427,27 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Returns <code>true</code> in case the value is set in the content, 
+     * i.e. the value exists and is not empty or whitespace only.<p> 
+     * 
+     * In case the XML content value does exist and has a non empty value, <code>true</code> is returned.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:if test="${content.value['Link'].isSet}" &gt;
+     *         The content of the "Link" value is not empty. 
+     *     &lt;/c:if&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return <code>true</code> in case the value is set
+     */
+    public boolean getIsSet() {
+
+        return !getIsEmptyOrWhitespaceOnly();
+    }
+
+    /**
      * Returns the Locale of the current XML content value.<p>
      * 
      * In case the XML content value does not exist, the OpenCms system default Locale is returned.<p> 
@@ -428,6 +481,33 @@ public final class CmsJspContentAccessValueWrapper {
             return null;
         }
         return m_contentValue.getName();
+    }
+
+    /**
+     * Returns a list that provides the names of all nested sub values 
+     * directly below the current value from the XML content, including the index.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach items="${content.value['Items'].names}" var="elem"&gt;
+     *         &lt;c:out value="${elem}" /&gt;
+     *     &lt;/c:forEach&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a list with all available elements paths (Strings) available directly below this element
+     */
+    public List<String> getNames() {
+
+        if ((m_names == null)) {
+            m_names = new ArrayList<String>();
+            if (!m_contentValue.isSimpleType()) {
+                for (I_CmsXmlContentValue value : m_contentValue.getDocument().getSubValues(getPath(), getLocale())) {
+                    m_names.add(CmsXmlUtils.createXpathElement(value.getName(), value.getXmlIndex() + 1));
+                }
+            }
+        }
+        return m_names;
     }
 
     /**
@@ -507,6 +587,34 @@ public final class CmsJspContentAccessValueWrapper {
     public String getStringValue() {
 
         return toString();
+    }
+
+    /**
+     * Returns a lazy initialized Map that provides the Lists of sub values directly below
+     * the current value from the XML content.<p>
+     * 
+     * The provided Map key is assumed to be a String that represents the relative xpath to the value.
+     * Use this method in case you want to iterate over a List of sub values from the XML content.<p>
+     * 
+     * In case the current value is not a nested XML content value, or the XML content value does not exist,
+     * the {@link CmsConstantMap#CONSTANT_EMPTY_LIST_MAP} is returned.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach var="desc" items="${content.value['Link'].subValueList['Description']}"&gt;
+     *         ${desc}
+     *     &lt;/c:forEach&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a lazy initialized Map that provides a Lists of direct sub values of the current value from the XML content
+     */
+    public Map getSubValueList() {
+
+        if (m_subValueList == null) {
+            m_subValueList = LazyMap.decorate(new HashMap(), new CmsSubValueListTransformer());
+        }
+        return m_subValueList;
     }
 
     /**
@@ -597,6 +705,7 @@ public final class CmsJspContentAccessValueWrapper {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_contentValue == null) {
@@ -644,6 +753,7 @@ public final class CmsJspContentAccessValueWrapper {
      * @see java.lang.Object#toString()
      * @see #getStringValue()
      */
+    @Override
     public String toString() {
 
         if (m_contentValue == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/11/05 10:33:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/05 09:35:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,7 +88,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /** The content definition this schema type belongs to. */
     private CmsXmlContentDefinition m_contentDefinition;
 
-    /** The index position of this content value. */
+    /** The index position of this content value, with special handling for choice groups. */
     private int m_index;
 
     /** The maximum index of this type that currently exist in the source document. */
@@ -96,6 +96,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
 
     /** Optional localized key prefix identifier. */
     private String m_prefix;
+
+    /** The index position of this content value in the XML order. */
+    private int m_xmlIndex;
 
     /**
      * Default constructor for a XML content type 
@@ -106,6 +109,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_minOccurs = 0;
         m_maxOccurs = Integer.MAX_VALUE;
         m_index = -1;
+        m_xmlIndex = -1;
         m_maxIndex = -1;
     }
 
@@ -127,6 +131,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_maxOccurs = type.getMaxOccurs();
         m_contentDefinition = type.getContentDefinition();
         m_index = -1;
+        m_xmlIndex = -1;
         m_maxIndex = -1;
     }
 
@@ -161,6 +166,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             }
         }
         m_index = -1;
+        m_xmlIndex = -1;
         m_maxIndex = -1;
     }
 
@@ -312,7 +318,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             if (isChoiceOption()) {
                 m_index = m_element.getParent().elements().indexOf(m_element);
             } else {
-                m_index = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+                m_index = getXmlIndex();
             }
         }
         return m_index;
@@ -407,6 +413,17 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     public String getPlainText(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getXmlIndex()
+     */
+    public int getXmlIndex() {
+
+        if (m_xmlIndex < 0) {
+            m_xmlIndex = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+        }
+        return m_xmlIndex;
     }
 
     /**
