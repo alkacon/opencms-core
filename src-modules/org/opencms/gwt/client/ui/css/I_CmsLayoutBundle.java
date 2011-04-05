@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2011/04/05 06:31:22 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 8.0.0
  */
@@ -532,8 +532,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** General CSS, used for general re-occurring styles. */
-    @Shared
-    interface I_CmsGeneralCss extends I_CmsStateCss {
+    interface I_CmsGeneralCss extends CssResource {
 
         /** 
          * Access method.<p>

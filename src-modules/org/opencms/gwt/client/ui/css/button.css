@@ -3,6 +3,11 @@
 .cmsState, .cmsHovering{}
 .cmsState.cmsState-down-disabled, .cmsState.cmsState-up-disabled { cursor: auto; }
 
+.cmsTextButton.cmsState, .cmsMenuButton.cmsState, .cmsImageButton.cmsState, .cmsTransparentButton.cmsState{
+	border-color: value("constants.css.borderColor");
+	color: value("constants.css.textColor");
+}
+
 .spacerRight {
 	margin-right: 4px;
 }

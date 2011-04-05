@@ -202,7 +202,7 @@
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.selectBoxSelector {
+div.selectBoxSelector {
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorDialog");
 	padding-bottom: 2px;
@@ -211,18 +211,30 @@
 
 
 
-.selectorPopup {
+div.selectorPopup, .selectorPopup * {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+}
+
+.selectorPopup{
 	z-index: 99999;
 }
 
-.selectBoxCell {
+div.selectBoxCell {
 	color: value("constants.css.textColor");
 	background-color: value("constants.css.backgroundColorDialog");
 	padding-left: 5px;
 	cursor: pointer;
 }
 
-.selectHover {
+div.selectHover {
 	background-color: value("constants.css.backgroundColorHighlight");
 }
 
@@ -239,7 +251,7 @@
 	position: relative;
 }
 
-.selectBoxOpener {
+div.selectBoxOpener {
 	margin: 3px 12px 3px 5px;
 }
 
@@ -277,7 +289,7 @@
 	vertical-align: bottom;
 }
 
-.formRow {
+div.formRow {
 	margin-bottom: 2px;
 	margin-top: 2px;
 	margin-right: 10px;
