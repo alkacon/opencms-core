@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogNotificationWidget.java,v $
- * Date   : $Date: 2010/11/29 08:27:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/05 06:32:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -161,6 +161,9 @@ public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void setClassForType(Type type) {
 
+        if (type == null) {
+            return;
+        }
         // set the right class
         getElement().addClassName(classForType(type));
     }
