@@ -42,10 +42,12 @@ line-height:12px;
 
 @sprite .plus {
 	gwt-image: "gwtImages.plusImage";
+	margin: 2px 0 3px;
 }
 
 @sprite .minus {
 	gwt-image: "gwtImages.minusImage";
+	margin: 2px 0 3px;
 }
 
 

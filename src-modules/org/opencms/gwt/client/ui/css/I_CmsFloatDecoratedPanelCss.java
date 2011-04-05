@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsFloatDecoratedPanelCss.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/05 14:25:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,16 +32,18 @@
 package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * CSS resource for the CmsFloatDecoratedPanel class.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
+@Shared
 public interface I_CmsFloatDecoratedPanelCss extends CssResource {
 
     /**

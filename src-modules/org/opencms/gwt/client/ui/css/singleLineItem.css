@@ -2,11 +2,11 @@
 
 .primary, .floatBox, .floatDecoratedPanel {}
 
-.singleLineItem .decorationBox {
+li.singleLineItem div.decorationBox {
 	margin-top: 0px;
 }
 
-.singleLineItem{
+li.singleLineItem{
 	line-height: 18px;
 }
 
