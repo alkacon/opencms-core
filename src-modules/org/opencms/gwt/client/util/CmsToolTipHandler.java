@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsToolTipHandler.java,v $
- * Date   : $Date: 2011/03/10 07:50:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/06 15:11:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +90,10 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
 
     /** The tool-tip HTML to show. */
     private String m_toolTipHtml;
+
+    private Timer m_removeTimer;
+
+    private static final int REMOVE_SCHEDULE = 2000;
 
     /**
      * Constructor. Adds the tool-tip handler to the target.<p>
@@ -130,6 +135,7 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
      */
     public void onMouseMove(MouseMoveEvent event) {
 
+        m_removeTimer.schedule(REMOVE_SCHEDULE);
         setToolTipPosition(event.getClientX(), event.getClientY());
     }
 
@@ -138,6 +144,9 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
      */
     public void onMouseOut(MouseOutEvent event) {
 
+        if (m_removeTimer != null) {
+            m_removeTimer.cancel();
+        }
         clearShowing();
     }
 
@@ -147,7 +156,13 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     public void onMouseOver(MouseOverEvent event) {
 
         // make sure not to double assign any handlers
+        if (m_removeTimer != null) {
+            m_removeTimer.cancel();
+        }
         clearShowing();
+
+        createTimer();
+        m_removeTimer.schedule(REMOVE_SCHEDULE);
 
         m_showing = true;
         m_moveHandlerRegistration = m_target.addMouseMoveHandler(this);
@@ -211,7 +226,7 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     /**
      * Removes the tool-tip and mouse move and out handlers.<p>
      */
-    private void clearShowing() {
+    public void clearShowing() {
 
         m_showing = false;
         if (m_toolTip != null) {
@@ -226,6 +241,22 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
             m_outHandlerRegistration.removeHandler();
             m_outHandlerRegistration = null;
         }
+        m_removeTimer = null;
+    }
+
+    private void createTimer() {
+
+        m_removeTimer = new Timer() {
+
+            /**
+             * @see com.google.gwt.user.client.Timer#run()
+             */
+            @Override
+            public void run() {
+
+                clearShowing();
+            }
+        };
     }
 
     /** 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultItemWidget.java,v $
- * Date   : $Date: 2011/03/11 09:12:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/06 15:11:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,8 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /** Tile view flag. */
     private boolean m_hasTileView;
+
+    private CmsToolTipHandler m_tooltipHandler;
 
     /**
      * Constructor.<p>
@@ -85,7 +87,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 + IMAGE_SCALE_PARAM
                 + "\" />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
-            new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
+            m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);
         }
 
@@ -120,6 +122,16 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        m_tooltipHandler.clearShowing();
+        super.onDetach();
     }
 
 }
