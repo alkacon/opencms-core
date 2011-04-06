@@ -167,8 +167,13 @@
 /**
  * The used z-index values for popups, drag operations, highlighting etc.
  */
+ 
+ /** Used for popups and overlays. */
 @def zIndexPopup 2000;
+/** Used during drag and drop. */
 @def zIndexDND 2500;
+/** Used for highlighting. */
 @def zIndexHighlighting 1500;
+/** Used for positioned UI elements. */
 @def zIndexInline 1000;
 
