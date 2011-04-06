@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/06 16:17:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1108,6 +1108,26 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Substitutes a pattern in a string using a {@link I_CmsRegexSubstitution}.<p>
+     * 
+     * @param pattern the pattern to substitute 
+     * @param text the text in which the pattern should be substituted 
+     * @param sub the substitution handler 
+     * 
+     * @return the transformed string 
+     */
+    public static String substitute(Pattern pattern, String text, I_CmsRegexSubstitution sub) {
+
+        StringBuffer buffer = new StringBuffer();
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, sub.substituteMatch(text, matcher));
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    /**
      * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
      * given by the <code>substitutions</code> Map parameter.<p>
      * 
@@ -1656,4 +1676,5 @@ public final class CmsStringUtil {
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();
     }
+
 }

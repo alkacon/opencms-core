@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2009/10/20 13:43:06 $
- * Version: $Revision: 1.116.2.4 $
+ * Date   : $Date: 2011/04/06 16:17:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,8 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsRegexSubstitution;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.File;
@@ -67,13 +69,17 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.SocketException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -83,6 +89,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Maps;
 
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
@@ -118,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.116.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -190,6 +199,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private Map<String, Boolean> m_offlineJsps;
     private Map<String, Boolean> m_onlineJsps;
 
+    /** A map from taglib names to their URIs. */
+    private Map<String, String> m_taglibs = Maps.newHashMap();
+
     /**
      * The constructor of the class is empty, the initial instance will be 
      * created by the resource manager upon startup of OpenCms.<p>
@@ -224,6 +236,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_configuration.put(paramName, paramValue);
+        if (paramName.startsWith("taglib.")) {
+            m_taglibs.put(paramName.replaceFirst("^taglib\\.", ""), paramValue.trim());
+        }
     }
 
     /**
@@ -521,6 +536,58 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 CmsFlexController.removeController(req);
             }
         }
+    }
+
+    /**
+     * Replaces taglib attributes in page directives with taglib directives.<p>
+     * 
+     * @param content the JSP source text
+     *  
+     * @return the transformed JSP text
+     */
+    public String processTaglibAttributes(String content) {
+
+        // matches a whole page directive
+        final Pattern directivePattern = Pattern.compile("(?sm)<%@\\s*page.*?%>");
+        // matches a taglibs attribute and captures its values 
+        final Pattern taglibPattern = Pattern.compile("(?sm)taglibs\\s*=\\s*\"(.*?)\"");
+        final Pattern commaPattern = Pattern.compile("(?sm)\\s*,\\s*");
+        final Set<String> taglibs = new LinkedHashSet<String>();
+        // we insert the marker after the first page directive 
+        final String marker = ":::TAGLIBS:::";
+        I_CmsRegexSubstitution directiveSub = new I_CmsRegexSubstitution() {
+
+            private boolean m_first = true;
+
+            public String substituteMatch(String string, Matcher matcher) {
+
+                String match = string.substring(matcher.start(), matcher.end());
+                I_CmsRegexSubstitution taglibSub = new I_CmsRegexSubstitution() {
+
+                    public String substituteMatch(String string1, Matcher matcher1) {
+
+                        // values of the taglibs attribute 
+                        String match1 = string1.substring(matcher1.start(1), matcher1.end(1));
+                        for (String taglibKey : Splitter.on(commaPattern).split(match1)) {
+                            taglibs.add(taglibKey);
+                        }
+                        return "";
+                    }
+                };
+                String result = CmsStringUtil.substitute(taglibPattern, match, taglibSub);
+                if (m_first) {
+                    result += marker;
+                    m_first = false;
+                }
+                return result;
+            }
+        };
+        String substituted = CmsStringUtil.substitute(directivePattern, content, directiveSub);
+        // insert taglib inclusion  
+        substituted = substituted.replaceAll(marker, generateTaglibInclusions(taglibs));
+        // remove empty page directives 
+        substituted = substituted.replaceAll("(?sm)<%@\\s*page\\s*%>", "");
+        return substituted;
     }
 
     /**
@@ -922,6 +989,25 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
+     * Generates the taglib directives for a collection of taglib identifiers.<p>
+     * 
+     * @param taglibs the taglib identifiers 
+     * 
+     * @return a string containing taglib directives 
+     */
+    protected String generateTaglibInclusions(Collection<String> taglibs) {
+
+        StringBuffer buffer = new StringBuffer();
+        for (String taglib : taglibs) {
+            String uri = m_taglibs.get(taglib);
+            if (uri != null) {
+                buffer.append("<%@ taglib prefix=\"" + taglib + "\" uri=\"" + uri + "\" %>");
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
      * Delivers a Flex controller, either by creating a new one, or by re-using an existing one.<p> 
      * 
      * @param cms the initial CmsObject to wrap in the controller
@@ -1018,6 +1104,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         content = parseJspIncludes(content, controller, updatedFiles);
         // parse for <%@page pageEncoding="..." %> tag
         content = parseJspEncoding(content, encoding, isHardInclude);
+        // Processes magic taglib attributes in page directives          
+        content = processTaglibAttributes(content);
         // convert the result to bytes and return it
         try {
             return content.getBytes(encoding);
