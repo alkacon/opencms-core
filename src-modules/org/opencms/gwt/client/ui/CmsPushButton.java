@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/06 07:56:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -47,7 +46,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -220,7 +219,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
             }
         }
         if (style == ButtonStyle.TRANSPARENT) {
-            setSize(Size.individual);
+            setSize(null);
         }
         addStyleName(style.getCssClassName());
         m_buttonStyle = style;
@@ -299,7 +298,9 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
         if (m_size != null) {
             removeStyleName(m_size.getCssClassName());
         }
-        addStyleName(size.getCssClassName());
+        if (size != null) {
+            addStyleName(size.getCssClassName());
+        }
         m_size = size;
     }
 

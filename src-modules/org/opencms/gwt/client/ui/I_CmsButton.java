@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/06 07:56:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -247,9 +247,6 @@ public interface I_CmsButton {
         big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
             + " "
             + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
-
-        /** No specific size. */
-        individual(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonIndividual()),
 
         /** Medium button style. */
         medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()

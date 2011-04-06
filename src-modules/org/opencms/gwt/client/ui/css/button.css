@@ -50,7 +50,7 @@ div.cmsTransparentButton{
     vertical-align: top;
 }
 
-/** Specific button size styles (transparent buttons never have a padding by default. */
+/** Specific button size styles (transparent buttons never have a padding by default). */
 div.cmsTextButton.cmsButtonBig, div.cmsMenuButton.cmsButtonBig, div.cmsImageButton.cmsButtonBig{
     padding: 2px 4px;
 }
@@ -58,7 +58,6 @@ div.cmsTextButton.cmsButtonSmall, div.cmsMenuButton.cmsButtonSmall, div.cmsImage
     padding: 2px 2px;
 }
 div.cmsButtonMedium{}
-div.cmsButtonIndividual{}
 
 /**
  * State depended styles.
