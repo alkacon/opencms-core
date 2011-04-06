@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/04/06 10:50:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/06 12:57:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,9 +51,9 @@ public interface I_CmsButton {
         /** Button color. */
         GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
         /** Button color. */
-        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
+        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
         /** Button color. */
-        STEEL(I_CmsLayoutBundle.INSTANCE.buttonCss().steel()),
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
         /** Button color. */
         YELLOW(I_CmsLayoutBundle.INSTANCE.buttonCss().yellow());
 

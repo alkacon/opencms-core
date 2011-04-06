@@ -182,20 +182,20 @@ div.yellow div.html-face {
 	gwt-image:"inputImages.buttonYellowHoverBackground"; 
 }
 
-div.steel div.html-face {
+div.green div.html-face {
 	color:value("constants.css.textColorDarkButton");
 }
-@sprite div.steel.cmsState-up {
-	gwt-image:"inputImages.buttonSteelUpBackground"; 
+@sprite div.green.cmsState-up {
+	gwt-image:"inputImages.buttonGreenUpBackground"; 
 }
-@sprite div.steel.cmsState-down {
-	gwt-image:"inputImages.buttonSteelDownBackground";
+@sprite div.green.cmsState-down {
+	gwt-image:"inputImages.buttonGreenDownBackground";
 }
-@sprite div.steel.cmsState-up-disabled, div.steel.cmsState-down-disabled {
+@sprite div.green.cmsState-up-disabled, div.green.cmsState-down-disabled {
 	gwt-image:"inputImages.buttonDisabledBackground";
 }
-@sprite div.steel.cmsState-up-hovering, div.steel.cmsState-down-hovering {
-	gwt-image:"inputImages.buttonSteelHoverBackground"; 
+@sprite div.green.cmsState-up-hovering, div.green.cmsState-down-hovering {
+	gwt-image:"inputImages.buttonGreenHoverBackground"; 
 }
 
 div.black div.html-face {

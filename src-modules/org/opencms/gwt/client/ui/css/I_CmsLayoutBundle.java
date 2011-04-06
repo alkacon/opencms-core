@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/06 12:43:56 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2011/04/06 12:57:00 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * 
  * @since 8.0.0
  */
@@ -192,6 +192,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String green();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String red();
 
         /**
@@ -207,13 +214,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String spacerRight();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String steel();
 
         /**
          *  Access method.<p>
@@ -262,14 +262,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String menuItemSeparator();
+        String menuItemGroupSeparator();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String menuItemGroupSeparator();
+        String menuItemSeparator();
 
         /** 
          * Access method.<p>
