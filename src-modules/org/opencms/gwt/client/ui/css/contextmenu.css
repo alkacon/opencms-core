@@ -1,21 +1,24 @@
 .popup, .popupContent{}
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
-	background: value("constants.css.backgroundColorMenu");
+	background: value("constants.css.backgroundColorDialog");
 	border-collapse:collapse;
 }
 div.cmsMenuBar { /* the outer menu bar */
-	background: value("constants.css.backgroundColorMenu");
+	background: value("constants.css.backgroundColorDialog");
 	color: value("constants.css.textColor");
 }
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
 	clear: both;
-	padding: 3px value("constants.css.defaultSpace");
+	padding: 4px value("constants.css.defaultSpace");
 	min-width: 180px;
 }
-.cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
-	background: value("constants.css.backgroundColorHighlight");
+@sprite .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
+	background-color: #E0E0E0;
+	gwt-image: "backgrounds.stateBackground";
+	background-position: 50% 50%;
+	height: auto;
 }
 .cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
 	color: value("constants.css.textColorDisabled");
@@ -36,7 +39,7 @@ div.cmsMenuBar { /* the outer menu bar */
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;
 	margin-right: 2px;
-	margin: 3px 0px;
+	margin-top: 4px;
 }
 .cmsMenuBar .menuItemSeparator { /* section breaks between menu items */ 
 	height: 1px;
@@ -51,9 +54,11 @@ div.cmsMenuBar { /* the outer menu bar */
 	clear: both;
 }
 .cmsMenuBar .menuItemSeparator.menuItemGroupSeparator {
-	height: 2px;
+	height: 3px;
+	background-color: value("constants.css.borderColorDialog");
 }
-.cmsMenuBar .cmsMenuItem .menuInfoLabel {
+div.menuInfoLabel {
+	background-color: value("constants.css.backgroundColorDialog");
 	padding: 4px;
 	cursor: default;
 }
