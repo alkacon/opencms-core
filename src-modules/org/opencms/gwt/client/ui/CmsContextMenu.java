@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/06 12:43:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since version 8.0.0
  */
@@ -110,23 +111,18 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     }
 
     /**
-     * Adds a separator to this menu.<p> 
+     * Adds a separator to this menu.<p>
+     * 
+     * @param group if <code>true</code> a special class for group separation is added
      */
-    public void addSeparator() {
+    public void addSeparator(boolean group) {
 
         CmsLabel sparator = new CmsLabel();
         sparator.setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuItemSeparator());
+        if (group) {
+            sparator.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuItemGroupSeparator());
+        }
         m_panel.add(sparator);
-    }
-
-    /**
-     * Returns the selected item of this menu.<p>
-     * 
-     * @return the selected item of this menu
-     */
-    public A_CmsContextMenuItem getSelectedItem() {
-
-        return m_selectedItem;
     }
 
     /**
@@ -154,23 +150,6 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     }
 
     /**
-     * Action on close.<p>
-     * 
-     * On close all sub menus should be hidden, the currently selected item should be deselected 
-     * and the popup will be closed.<p>  
-     */
-    public void onClose() {
-
-        if ((m_selectedItem != null)) {
-            if (m_selectedItem.hasSubmenu()) {
-                m_selectedItem.getSubMenu().onClose();
-            }
-            m_selectedItem.deselectItem();
-        }
-        m_popup.hide();
-    }
-
-    /**
      * If the browser's window is resized this method rearranges the sub menus of the selected item.<p>
      * 
      * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
@@ -190,25 +169,6 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
                     getSelectedItem().getSubMenu().onResize(event);
                 }
             });
-        }
-    }
-
-    /**
-     * Opens a sub menu and sets its position.<p>
-     * 
-     * @param item the item to show the sub menu of
-     */
-    public void openPopup(final A_CmsContextMenuItem item) {
-
-        m_popup.add(item.getSubMenu());
-        m_popup.addAutoHidePartner(item.getElement());
-        m_popup.setModal(false);
-        m_popup.show();
-
-        setSubMenuPosition(item);
-
-        if (m_isFixed) {
-            m_popup.setPositionFixed();
         }
     }
 
@@ -238,11 +198,57 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     }
 
     /**
+     * Returns the selected item of this menu.<p>
+     * 
+     * @return the selected item of this menu
+     */
+    protected A_CmsContextMenuItem getSelectedItem() {
+
+        return m_selectedItem;
+    }
+
+    /**
+     * Action on close.<p>
+     * 
+     * On close all sub menus should be hidden, the currently selected item should be deselected 
+     * and the popup will be closed.<p>  
+     */
+    protected void onClose() {
+
+        if ((m_selectedItem != null)) {
+            if (m_selectedItem.hasSubmenu()) {
+                m_selectedItem.getSubMenu().onClose();
+            }
+            m_selectedItem.deselectItem();
+        }
+        m_popup.hide();
+    }
+
+    /**
+     * Opens a sub menu and sets its position.<p>
+     * 
+     * @param item the item to show the sub menu of
+     */
+    protected void openPopup(final A_CmsContextMenuItem item) {
+
+        m_popup.add(item.getSubMenu());
+        m_popup.addAutoHidePartner(item.getElement());
+        m_popup.setModal(false);
+        m_popup.show();
+
+        setSubMenuPosition(item);
+
+        if (m_isFixed) {
+            m_popup.setPositionFixed();
+        }
+    }
+
+    /**
      * Sets the selected item of this menu.<p>
      * 
      * @param selectedItem the item to select
      */
-    public void setSelectedItem(A_CmsContextMenuItem selectedItem) {
+    protected void setSelectedItem(A_CmsContextMenuItem selectedItem) {
 
         m_selectedItem = selectedItem;
     }
@@ -357,12 +363,14 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
      */
     private void createContextMenu(List<I_CmsContextMenuEntry> entries) {
 
-        for (I_CmsContextMenuEntry entry : entries) {
+        Iterator<I_CmsContextMenuEntry> it = entries.iterator();
+        while (it.hasNext()) {
+            I_CmsContextMenuEntry entry = it.next();
             if (!entry.isVisible()) {
                 continue;
             }
             if (entry.isSeparator()) {
-                addSeparator();
+                addSeparator(true);
             } else {
                 if (entry.hasSubMenu()) {
                     CmsContextMenuItem item = new CmsContextMenuItem(entry);
@@ -370,6 +378,9 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
                     addItem(item);
                 } else {
                     addItem(new CmsContextMenuItem(entry));
+                }
+                if (it.hasNext()) {
+                    addSeparator(false);
                 }
             }
         }

@@ -11,7 +11,8 @@ div.cmsMenuBar { /* the outer menu bar */
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
 	clear: both;
-	padding: 0px 2px;
+	padding: 3px value("constants.css.defaultSpace");
+	min-width: 180px;
 }
 .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
 	background: value("constants.css.backgroundColorHighlight");
@@ -29,7 +30,7 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 .cmsMenuBar .cmsMenuItem .label { /* menu item label */
 	padding: 4px 4px 4px 0px;
-	margin: 0px 0px 0px 22px;
+	margin: 0px 0px 0px 26px;
 	font-size: value("constants.css.fontSizeBig");
 }
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
@@ -48,6 +49,9 @@ div.cmsMenuBar { /* the outer menu bar */
 	zoom: 1;
 	overflow: hidden;
 	clear: both;
+}
+.cmsMenuBar .menuItemSeparator.menuItemGroupSeparator {
+	height: 2px;
 }
 .cmsMenuBar .cmsMenuItem .menuInfoLabel {
 	padding: 4px;
