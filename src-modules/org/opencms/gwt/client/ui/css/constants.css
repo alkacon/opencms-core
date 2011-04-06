@@ -78,7 +78,7 @@
 /** The menu background color. Use it for menu backgrounds. NOTE: This color is also used for the CmsTabbedPanel. */
 @def backgroundColorMenu #F9F9F9;
 /** The backgroundColor for a list item. */
-@def backgroundColorListItem #FBFBFB;
+@def backgroundColorListItem #E0E0E0;
 /** The disabled background color. Use it for disabled UI components. */
 @def backgroundColorDisabled #DDDDDD;
 /** The overlay background color. Use it for overlays. */
@@ -109,9 +109,9 @@
 /** This constant defines the background color for elements have the disabled state. */
 @def backgroundColorStateDisabled #E3E3E3;
 /** This constant defines the background color for elements have the hover state. */
-@def backgroundColorStateHover #F9F9F9;
+@def backgroundColorStateHover #CCCCCC;
 /** This constant defines the background color for elements have the active state. */
-@def backgroundColorStateActive #DBDBDB;
+@def backgroundColorStateActive #E0E0E0;
 /** This constant defines the background color for elements have the changed state. */
 @def backgroundColorStateChanged #FE9F9F;
 /** This constant defines the background color for elements have the new state. */
