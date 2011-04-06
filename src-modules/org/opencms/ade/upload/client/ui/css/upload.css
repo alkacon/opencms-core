@@ -107,7 +107,7 @@
     height: 100%;
     position: absolute;
     width: 100%;
-    z-index: 30000;
+    z-index: value("constants.css.zIndexPopup");
     background-color: value("constants.css.backgroundColorDialog");
     text-align: center;
 }

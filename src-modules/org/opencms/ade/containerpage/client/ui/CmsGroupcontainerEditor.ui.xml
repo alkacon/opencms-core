@@ -6,7 +6,7 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.groupcontainerEditor}">
-		<div style="z-index:400;" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
+		<div class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
 		<div ui:field="m_dialog" class="{resources.dialogCss.popup}">
 			<div class="{resources.dialogCss.popupContent} {containerpage.groupcontainerCss.dialog}">
 				<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Groupcontainer editor</g:Label>

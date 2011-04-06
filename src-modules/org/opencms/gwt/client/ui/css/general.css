@@ -36,7 +36,7 @@
 
 .toolTip{
 	position: absolute;
-	z-index: 1000;
+	z-index: value("constants.css.zIndexInline");
 	border: 1px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorMenu");
 	padding: 4px;
@@ -103,7 +103,7 @@
 	gwt-image: 'gwtImages.placeholderImage';
 	display: block;
 	position:absolute;
-	z-index: 2;
+	z-index: value("constants.css.zIndexInline");
 	top: 0px;
 	left: 0px;
 	right: 0px;

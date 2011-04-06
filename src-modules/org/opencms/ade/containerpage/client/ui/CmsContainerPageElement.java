@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/04/05 13:27:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/06 10:11:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -128,7 +128,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         style.setPosition(Position.ABSOLUTE);
         style.setMargin(0, Unit.PX);
         style.setProperty(CmsDomUtil.Style.width.name(), width);
-        style.setZIndex(1001);
+        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
         helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         helper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
         if (!CmsDomUtil.hasBackground(helper)) {

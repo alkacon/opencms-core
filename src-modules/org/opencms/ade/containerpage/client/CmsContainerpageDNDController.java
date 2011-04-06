@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/05 13:08:45 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/06 10:11:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -544,7 +544,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         style.setPosition(Position.ABSOLUTE);
         style.setMargin(0, Unit.PX);
         style.setWidth(width, Unit.PX);
-        style.setZIndex(100);
+        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
         dragHelper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         dragHelper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
         if (!CmsDomUtil.hasBackground(dragHelper)) {

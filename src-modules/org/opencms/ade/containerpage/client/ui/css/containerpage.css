@@ -77,17 +77,31 @@ div.optionBar{
 	position: absolute;
 	top: 2px;
 	right: 2px;
-	z-index: 1000;
+	z-index: value("constants.css.zIndexInline");
+	margin: 0;
+	padding: 0;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
 }
 
 div.toolbarToggle{
 	position: fixed;
 	left: 97%;
 	top: -3px;
-	z-index: 10100;
+	z-index: value("constants.css.zIndexInline");
 }
 
-.toolbarToggle, .toolbarToggle *, div.optionBar, div.optionBar div, div.optionBar span{
+.toolbarToggle, .toolbarToggle *, div.optionBar div, div.optionBar span{
 	margin: 0;
 	padding: 0;
 	border: none;

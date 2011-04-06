@@ -8,7 +8,7 @@
 	right: 6px;
 	left: 46px;
 	position: absolute;
-	z-index: 10;
+	z-index: value("constants.css.zIndexInline");
 	margin-top: -3px;
 	border-left: solid 5px value("constants.css.borderColorHighlight");
 	border-right: solid 5px value("constants.css.borderColorHighlight");
@@ -71,7 +71,7 @@
     left: 15px;
     position: absolute;
     top: 15px;
-    z-index: 2;
+    z-index: value("constants.css.zIndexInline");
 }
 
 @sprite .lockClosed, .lockSharedClosed{

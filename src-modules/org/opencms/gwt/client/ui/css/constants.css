@@ -164,3 +164,11 @@
 /** The currently hovered day. */
 @def dateboxHoveredDayBg #E0EDFE;
 
+/**
+ * The used z-index values for popups, drag operations, highlighting etc.
+ */
+@def zIndexPopup 2000;
+@def zIndexDND 2500;
+@def zIndexHighlighting 1500;
+@def zIndexInline 1000;
+

@@ -7,7 +7,7 @@
 	display: block;
 }
 
-.itemContainer{
+div.itemContainer{
 	border: 1px solid value("constants.css.borderColorListItem");
 	background: value("constants.css.backgroundColorDialog");
 	line-height: 16px;
@@ -40,7 +40,7 @@
 
 
 
-@sprite .itemContent {
+@sprite div.itemContent {
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
@@ -49,35 +49,35 @@
 	background-color: value("constants.css.backgroundColorListItem");
 }
 
-@sprite .itemActive > .itemContent {
+@sprite .itemActive > div.itemContent {
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateHover");
 }
 
-@sprite .disabledItem > .itemContent {
+@sprite .disabledItem > div.itemContent {
 	gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateDisabled");
 }
 
-@sprite .itemBlue > .itemContent {
+@sprite .itemBlue > div.itemContent {
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateNew");
 }
 
-@sprite .itemRed > .itemContent {
+@sprite .itemRed > div.itemContent {
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
     background-color: value("constants.css.backgroundColorStateChanged");
 }
 
-@sprite .itemYellow > .itemContent {
+@sprite .itemYellow > div.itemContent {
     gwt-image: "backgrounds.stateBackground";
     background-position: 50% 50%;
     height: auto;
@@ -95,6 +95,8 @@
 .itemIcon .cms_type_icon{
 	height: 24px;
 	width: 24px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
 }
 
 .itemTitle{
@@ -149,11 +151,11 @@ div.itemAdditionalValue{
 }
 
 /** These styles are for dragging. */
-li.dragging{
+li.dragging, div.dragging{
 	list-style-type: none !important;
 	position: absolute !important;
 	margin: 0px !important;
-	z-index: 100 !important;
+	z-index: value("constants.css.zIndexDND") !important;
 }
 @if user.agent gecko1_8 gecko{
 	.dragging .itemContainer {

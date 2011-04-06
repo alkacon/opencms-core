@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsConstantsBundle.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/06 10:11:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -468,6 +468,34 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String toolbarWidth();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        int zIndexPopup();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        int zIndexDND();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        int zIndexHighlighting();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        int zIndexInline();
     }
 
     /** The bundle instance. */

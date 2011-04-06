@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/04/06 10:11:13 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  *  
  * @since 8.0.0 
  */
@@ -272,7 +272,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
             m_provisionalParent.getStyle().setTop(parentTop, Unit.PX);
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
-            m_provisionalParent.getStyle().setZIndex(99999);
+            m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
 
         }
         return m_helper;

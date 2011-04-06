@@ -1,6 +1,6 @@
 .highlightBox{
 	position: absolute;
-	z-index: 500;
+	z-index: value("constants.css.zIndexHighlighting");
 	background: transparent;
 	opacity: 0.6;
 }

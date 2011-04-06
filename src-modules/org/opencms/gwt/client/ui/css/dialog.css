@@ -1,5 +1,5 @@
 .popup{
-    z-index: 2000;
+    z-index: value("constants.css.zIndexPopup");
 }
 
 .popup, .popup *{
@@ -29,7 +29,7 @@
 	left: 0px;
 	height: 100%;
 	width: 100%;
-	z-index: 10;
+	z-index: value("constants.css.zIndexInline");
 }
 @sprite .popup .popupContent{
 	gwt-image: "backgrounds.dialogBackground";
@@ -93,14 +93,7 @@
 
 .popupOverlay{
     background: value("constants.css.backgroundColorOverlay");
-    z-index: 450;
-}
-.popupShadow{
-    width: 100%;
-    position: absolute;
-    z-index: 0;
-    top: 0px;
-    left: 0px;
+    z-index: value("constants.css.zIndexPopup");
 }
 
 .popupMainContent{
@@ -126,13 +119,13 @@
 @sprite .menuArrowTop {
 	gwt-image: "gwtImages.menuArrowTopImage";
 	position: absolute;
-	z-index: 3000;
+	z-index: value("constants.css.zIndexInline");
 }
 
 @sprite .menuArrowBottom {
 	gwt-image: "gwtImages.menuArrowBottomImage";
 	position: absolute;
-	z-index: 3000;
+	z-index: value("constants.css.zIndexInline");
 }
 
 @if user.agent ie6 {
@@ -171,25 +164,16 @@
 }
 
 @if user.agent ie6 {
-    .popupShadow, .popupOverlay{
+    .popupOverlay{
         filter: literal("alpha(opacity = 50)");
     }
-    .popupShadow{
-        height: literal("expression(this.parentNode.offsetHeight)");
-    }
 } @elif user.agent ie8 {
-	.popupShadow, .popupOverlay{
+	.popupOverlay{
 		-ms-filter: "alpha(opacity = 50)";
 	}
-	.popupShadow{
-		height: 100%;
-	}
 } @else {
-    .popupShadow, .popupOverlay{
+    .popupOverlay{
         opacity: 0.5;
-    }
-    .popupShadow{
-        height: 100%;
     }
 }
 

@@ -4,7 +4,7 @@
 
 .dragHandle{
 	position: absolute;
-	z-index: 1;
+	z-index: value("constants.css.zIndexInline");
 	top: 2px;
 	right: 2px;
 	cursor: pointer;
@@ -50,7 +50,7 @@
 
 .dragOverlay{
 	position: fixed;
-	z-index: 1000000;
+	z-index: value("constants.css.zIndexPopup");
 	top: 0px;
 	left: 0px;
 	height: 100%;
@@ -63,7 +63,7 @@
 	display: none;
 	opacity: 1;
 	position:absolute;
-	z-index: 2;
+	z-index: value("constants.css.zIndexInline");
 	top: 0px;
 	left: 0px;
 	height: 100%;
@@ -99,7 +99,7 @@
 		zoom: 1;
 	}
 	.currentTarget{
-		z-index: 50;
+		z-index: value("constants.css.zIndexInline");
 	}
 } @elif user.agent ie8 {
 
@@ -112,6 +112,6 @@
 		zoom: 1;
 	}
 	.currentTarget{
-		z-index: 50;
+		z-index: value("constants.css.zIndexInline");
 	}
 }
