@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/04/06 07:56:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/06 10:50:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -244,19 +244,13 @@ public interface I_CmsButton {
     public static enum Size {
 
         /** Big button style. */
-        big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
+        big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()),
 
         /** Medium button style. */
-        medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium()),
+        medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()),
 
         /** Small button style. */
-        small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
+        small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall());
 
         /** The CSS class name. */
         private String m_cssClassName;
