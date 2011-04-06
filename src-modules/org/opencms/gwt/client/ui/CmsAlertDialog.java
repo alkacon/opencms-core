@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/06 17:46:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -107,6 +109,7 @@ public class CmsAlertDialog extends CmsPopup {
         m_closeButton.setText(buttonText);
         m_closeButton.setImageClass(buttonIconClass);
         m_closeButton.setUseMinWidth(true);
+        m_closeButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         m_closeButton.addClickHandler(new ClickHandler() {
 
             /**

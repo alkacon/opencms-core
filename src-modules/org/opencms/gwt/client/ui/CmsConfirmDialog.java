@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/11/15 15:34:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/06 17:46:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -73,8 +75,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
         m_okButton = new CmsPushButton();
         m_okButton.setText(Messages.get().key(Messages.GUI_OK_0));
         m_okButton.setUseMinWidth(true);
-        m_okButton.setSize(I_CmsButton.Size.small);
-        getCloseButton().setSize(I_CmsButton.Size.small);
+        m_okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
         m_okButton.addClickHandler(new ClickHandler() {
 
             /**

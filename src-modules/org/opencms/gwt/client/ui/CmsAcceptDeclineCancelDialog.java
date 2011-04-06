@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAcceptDeclineCancelDialog.java,v $
- * Date   : $Date: 2010/11/15 15:34:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/06 17:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
@@ -39,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +68,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
         super(title, content);
         m_acceptButton = new CmsPushButton();
         m_acceptButton.setUseMinWidth(true);
-        m_acceptButton.setSize(I_CmsButton.Size.small);
+        m_acceptButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.GREEN);
         m_acceptButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -78,7 +81,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
         });
         m_declineButton = new CmsPushButton();
         m_declineButton.setUseMinWidth(true);
-        m_declineButton.setSize(I_CmsButton.Size.small);
+        m_declineButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
         m_declineButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -89,7 +92,6 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
                 onDecline();
             }
         });
-        getCloseButton().setSize(I_CmsButton.Size.small);
         addButton(m_declineButton);
         addButton(m_acceptButton);
     }
