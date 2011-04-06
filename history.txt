@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/03/24 14:07:37 $
- * Version: $Revision: 1.1228 $
+ * Date   : $Date: 2011/04/06 15:08:54 $
+ * Version: $Revision: 1.1229 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,10 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 7.5.x - 
+
+* Fixed missing default value for ComboBox widget
 
 OpenCms 7.5.4 - March 28, 2011
 ! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0

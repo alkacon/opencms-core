@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2011/03/23 14:50:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/06 15:08:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Andreas Zahner 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,6 +208,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\"");
+        parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
         if (selected != null) {
             // append the selection 
