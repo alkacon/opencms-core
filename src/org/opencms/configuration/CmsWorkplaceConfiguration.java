@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/04/07 15:12:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/07 15:27:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -666,23 +666,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 newResElement.addAttribute(A_INFO, settings.getInfo());
                 newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
 
-                Map<String, CmsIconRule> iconRules = settings.getIconRules();
-                if ((iconRules != null) && !iconRules.isEmpty()) {
-                    Element iconRulesElem = explorerTypeElement.addElement(N_ICONRULES);
-                    for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
-                        CmsIconRule rule = entry.getValue();
-                        Element ruleElem = iconRulesElem.addElement(N_ICONRULE);
-                        String icon = rule.getIcon();
-                        String bigIcon = rule.getBigIcon();
-                        String extension = rule.getExtension();
-                        ruleElem.addAttribute(A_EXTENSION, extension);
-                        ruleElem.addAttribute(A_ICON, icon);
-                        if (bigIcon != null) {
-                            ruleElem.addAttribute(A_BIGICON, bigIcon);
-                        }
-                    }
-                }
-
                 newResElement.addAttribute(A_KEY, settings.getTitleKey());
                 // create subnode <accesscontrol>            
                 CmsExplorerTypeAccess access = settings.getAccess();
@@ -720,6 +703,24 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                         generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
                     }
                 }
+
+                Map<String, CmsIconRule> iconRules = settings.getIconRules();
+                if ((iconRules != null) && !iconRules.isEmpty()) {
+                    Element iconRulesElem = explorerTypeElement.addElement(N_ICONRULES);
+                    for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
+                        CmsIconRule rule = entry.getValue();
+                        Element ruleElem = iconRulesElem.addElement(N_ICONRULE);
+                        String icon = rule.getIcon();
+                        String bigIcon = rule.getBigIcon();
+                        String extension = rule.getExtension();
+                        ruleElem.addAttribute(A_EXTENSION, extension);
+                        ruleElem.addAttribute(A_ICON, icon);
+                        if (bigIcon != null) {
+                            ruleElem.addAttribute(A_BIGICON, bigIcon);
+                        }
+                    }
+                }
+
             }
         }
     }
