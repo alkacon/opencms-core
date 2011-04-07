@@ -68,11 +68,11 @@ div.cmsTransparentButton {
 
 /** IE correction. */
 @if user.agent ie6 {
-	div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton {
-		display:inline !important;
+	div.cmsTextButton.cmsState, div.cmsTransparentButton.cmsState, div.cmsMenuButton.cmsState, div.cmsImageButton.cmsState {
+		display:inline;
 	}
 	div.cmsMinWidth div.html-face {
-		overflow:visible !important;
+		overflow:visible;
 	}
 }
 
