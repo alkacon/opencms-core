@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/04/06 10:11:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/07 15:08:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -230,7 +230,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void hideEditableListButtons() {
 
-        if (m_editables == null) {
+        if (m_editables != null) {
             for (CmsListCollectorEditor editor : m_editables) {
                 editor.getElement().getStyle().setDisplay(Display.NONE);
             }
@@ -403,7 +403,6 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         // using own implementation as GWT won't do it properly on IE7-8
         CmsDomUtil.clearOpacity(getElement());
         getElement().getStyle().clearDisplay();
-        showEditableListButtons();
     }
 
     /**

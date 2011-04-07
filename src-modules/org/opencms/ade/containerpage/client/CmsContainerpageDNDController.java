@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/06 10:11:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/07 15:06:57 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -157,7 +157,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public static final double MIN_HEIGHT_THRESHOLD = 50.0;
 
     /** The container page controller. */
-    private CmsContainerpageController m_controller;
+    protected CmsContainerpageController m_controller;
 
     /** Map of current drag info beans. */
     private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
@@ -679,7 +679,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_isNew = false;
         m_controller.getHandler().showDropzone(false);
         m_controller.getHandler().deactivateMenuButton();
-        m_controller.resetEditableListButtons();
         m_dragInfos.clear();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -689,6 +688,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             public void execute() {
 
                 handler.clearTargets();
+                m_controller.resetEditableListButtons();
             }
         });
     }
