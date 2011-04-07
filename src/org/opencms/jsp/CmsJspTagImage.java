@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2009/06/10 12:31:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/07 10:06:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -164,8 +164,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         CmsImageScaler reScaler = null;
         if (splitSrc.getQuery() != null) {
             // check if the original URI already has parameters, this is true if original has been cropped
-            String[] scaleStr = (String[])CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(
-                CmsImageScaler.PARAM_SCALE);
+            String[] scaleStr = CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(CmsImageScaler.PARAM_SCALE);
             if (scaleStr != null) {
                 // use cropped image as a base for scaling
                 reScaler = new CmsImageScaler(scaleStr[0]);
@@ -564,7 +563,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      */
     public void setAlt(String value) {
 
-        setAttribute(ATTR_ALT, value);
+        setAttribute(ATTR_ALT, value, true);
 
     }
 
@@ -795,7 +794,19 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      */
     private void setAttribute(String key, String value) {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+        setAttribute(key, value, false);
+    }
+
+    /**
+     * Sets the given key with the given value in the attribute map.<p>
+     * 
+     * @param key the key to set
+     * @param value the value to set
+     * @param allowEmptyValue flag to determine if an empty value (not <code>null</code>!) should be set
+     */
+    private void setAttribute(String key, String value, boolean allowEmptyValue) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) || (allowEmptyValue && (value != null))) {
             if (m_attributes == null) {
                 m_attributes = new HashMap();
             }
