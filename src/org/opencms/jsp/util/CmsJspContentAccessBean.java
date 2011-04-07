@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2011/04/05 09:35:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/07 10:06:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -326,7 +326,7 @@ public class CmsJspContentAccessBean {
     /** The OpenCms context of the current user. */
     private CmsObject m_cms;
 
-    /** The XMl content to access. */
+    /** The XML content to access. */
     private I_CmsXmlDocument m_content;
 
     /** The lazy initialized map for the "has locale" check. */

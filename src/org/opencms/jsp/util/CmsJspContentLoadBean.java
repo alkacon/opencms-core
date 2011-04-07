@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentLoadBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/07 10:06:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2 
  * 
@@ -56,7 +56,7 @@ public class CmsJspContentLoadBean {
     protected CmsObject m_cms;
 
     /** The List of results form the content loader. */
-    protected List m_content;
+    protected List<CmsJspContentAccessBean> m_content;
 
     /** The selected locale for accessing entries from the XML content. */
     protected Locale m_locale;
@@ -82,7 +82,7 @@ public class CmsJspContentLoadBean {
      * @param cms the OpenCms context of the current user
      * @param content the content to access, must contain Object of type {@link CmsResource}
      */
-    public CmsJspContentLoadBean(CmsObject cms, List content) {
+    public CmsJspContentLoadBean(CmsObject cms, List<CmsResource> content) {
 
         this(cms, cms.getRequestContext().getLocale(), content);
     }
@@ -94,7 +94,7 @@ public class CmsJspContentLoadBean {
      * @param locale the Locale to use when accessing the content
      * @param content the content to access, must contain Object of type {@link CmsResource}
      */
-    public CmsJspContentLoadBean(CmsObject cms, Locale locale, List content) {
+    public CmsJspContentLoadBean(CmsObject cms, Locale locale, List<CmsResource> content) {
 
         init(cms, locale, content);
     }
@@ -108,7 +108,7 @@ public class CmsJspContentLoadBean {
      * 
      * @return a list of {@link CmsJspContentAccessBean} objects created from the given {@link CmsResource} objects 
      */
-    public static List convertResourceList(CmsObject cms, List resources) {
+    public static List<CmsJspContentAccessBean> convertResourceList(CmsObject cms, List<CmsResource> resources) {
 
         return convertResourceList(cms, cms.getRequestContext().getLocale(), resources);
     }
@@ -123,11 +123,14 @@ public class CmsJspContentLoadBean {
      * 
      * @return a list of {@link CmsJspContentAccessBean} objects created from the given {@link CmsResource} objects 
      */
-    public static List convertResourceList(CmsObject cms, Locale locale, List resources) {
+    public static List<CmsJspContentAccessBean> convertResourceList(
+        CmsObject cms,
+        Locale locale,
+        List<CmsResource> resources) {
 
-        List result = new ArrayList(resources.size());
+        List<CmsJspContentAccessBean> result = new ArrayList<CmsJspContentAccessBean>(resources.size());
         for (int i = 0, size = resources.size(); i < size; i++) {
-            CmsResource res = (CmsResource)resources.get(i);
+            CmsResource res = resources.get(i);
             result.add(new CmsJspContentAccessBean(cms, locale, res));
         }
         return result;
@@ -150,7 +153,7 @@ public class CmsJspContentLoadBean {
      * @return a List of {@link CmsJspContentAccessBean} instances, which have been wrapped around
      * the original {@link CmsResource} instances of the collector result.<p>
      */
-    public List getContent() {
+    public List<CmsJspContentAccessBean> getContent() {
 
         return m_content;
     }
@@ -172,7 +175,7 @@ public class CmsJspContentLoadBean {
      * @param locale the Locale to use when accessing the content
      * @param content the content to access, must contain Object of type {@link CmsResource}
      */
-    public void init(CmsObject cms, Locale locale, List content) {
+    public void init(CmsObject cms, Locale locale, List<CmsResource> content) {
 
         m_cms = cms;
         m_locale = locale;
