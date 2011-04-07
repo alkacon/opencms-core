@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -43,7 +42,6 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
-import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
@@ -72,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -191,9 +189,9 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
                 start(0, true);
                 if (m_structureId != null) {
-                    CmsCoreProvider.getService().getAvailabilityInfo(m_structureId, this);
+                    CmsCoreProvider.getVfsService().getAvailabilityInfo(m_structureId, this);
                 } else {
-                    CmsCoreProvider.getService().getAvailabilityInfo(m_vfsPath, this);
+                    CmsCoreProvider.getVfsService().getAvailabilityInfo(m_vfsPath, this);
                 }
             }
 
@@ -281,15 +279,6 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
         m_availabilityInfo = dialogBean;
         m_pageInfo = infoBean;
-
-        // create the state info
-        CmsResourceState state = m_pageInfo.getResourceState();
-        if (state != null) {
-            String stateKey = Messages.get().key(Messages.GUI_RESOURCE_STATE_0);
-            String stateValue = CmsResourceStateUtil.getStateName(state);
-            String stateStyle = CmsResourceStateUtil.getStateStyle(state);
-            m_pageInfo.addAdditionalInfo(stateKey, stateValue, stateStyle);
-        }
 
         // create the info box
         CmsListItemWidget info = new CmsListItemWidget(m_pageInfo);

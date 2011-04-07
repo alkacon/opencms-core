@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2011/03/10 07:48:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,11 @@
 
 package org.opencms.gwt.shared.rpc;
 
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsDeleteResourceBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -43,11 +46,35 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsVfsServiceAsync {
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
+     * @param sitePath the site path of the resource to delete
+     * @param callback the callback
+     */
+    void deleteResource(String sitePath, AsyncCallback<Void> callback);
+
+    /**
+     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getAvailabilityInfo(CmsUUID structureId, AsyncCallback<CmsAvailabilityInfoBean> callback);
+
+    /**
+     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getAvailabilityInfo(String vfsPath, AsyncCallback<CmsAvailabilityInfoBean> callback);
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>
@@ -55,7 +82,7 @@ public interface I_CmsVfsServiceAsync {
      * @param sitePath the resource site-path
      * @param callback the callback
      */
-    void getBrokenLinks(String sitePath, AsyncCallback<List<CmsBrokenLinkBean>> callback);
+    void getBrokenLinks(String sitePath, AsyncCallback<CmsDeleteResourceBean> callback);
 
     /**
      * Fetches the list of children of a path.<p>
@@ -64,6 +91,22 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Gets a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsListInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getPageInfo(CmsUUID structureId, AsyncCallback<CmsListInfoBean> callback);
+
+    /**
+     * Gets a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsListInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getPageInfo(String vfsPath, AsyncCallback<CmsListInfoBean> callback);
 
     /**
      * Returns the root entries of the VFS.<p>

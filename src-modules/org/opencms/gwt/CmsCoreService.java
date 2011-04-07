@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/03/11 09:11:13 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,15 +40,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -63,9 +60,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
-import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -99,7 +94,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  * 
@@ -109,14 +104,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
-    /** Serialization uid. */
-    private static final long serialVersionUID = 5915848952948986278L;
-
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    /** Serialization uid. */
+    private static final long serialVersionUID = 5915848952948986278L;
 
     /**
      * Internal helper method for getting a validation service.<p>
@@ -206,34 +201,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsUUID createUUID() {
 
         return new CmsUUID();
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getAvailabilityInfo(org.opencms.util.CmsUUID)
-     */
-    public CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getAvailabilityInfo(res);
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getAvailabilityInfo(java.lang.String)
-     */
-    public CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getAvailabilityInfo(res);
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
     }
 
     /**
@@ -335,34 +302,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getPageInfo(org.opencms.util.CmsUUID)
-     */
-    public CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getPageInfo(res);
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getPageInfo(java.lang.String)
-     */
-    public CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getPageInfo(res);
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
     }
 
     /**
@@ -657,59 +596,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}.<p>
-     * 
-     * @param res the resource to get the availability infos for
-     * 
-     * @return a bean for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    private CmsAvailabilityInfoBean getAvailabilityInfo(CmsResource res) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
-
-            result.setPageInfo(getPageInfo(res));
-
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-            result.setVfsPath(resourceSitePath);
-
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-            result.setResType(type.getTypeName());
-
-            result.setDateReleased(res.getDateReleased());
-            result.setDateExpired(res.getDateExpired());
-
-            String notificationInterval = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
-                result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
-            }
-
-            String notificationEnabled = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
-                result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
-            }
-
-            result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
-
-            result.setResponsibles(getResponsibles(res.getRootPath()));
-
-            return result;
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
-    }
-
-    /**
      * Locks the given resource and returns the lock.<p>
      * 
      * @param resource the resource to lock
@@ -737,115 +623,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         // get current lock
         lock = getCmsObject().getLock(resource);
         return lock;
-    }
-
-    /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     * 
-     * @param res the resource to get the page info for
-     * 
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsListInfoBean result = new CmsListInfoBean();
-
-            result.setResourceState(res.getState());
-
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-
-            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-                result.setTitle(title);
-            } else {
-                result.setTitle("No title attribute set for this resource");
-            }
-            result.setSubTitle(resourceSitePath);
-            String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-            if (Boolean.parseBoolean(secure)) {
-                result.setPageIcon(CmsListInfoBean.PageIcon.secure);
-            } else {
-                String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-                if (Boolean.parseBoolean(export)) {
-                    result.setPageIcon(CmsListInfoBean.PageIcon.export);
-                } else {
-                    result.setPageIcon(CmsListInfoBean.PageIcon.standard);
-                }
-            }
-            String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-            String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-            Locale currentLocale = getCmsObject().getRequestContext().getLocale();
-            String resTypeNiceName = OpenCms.getWorkplaceManager().getMessages(currentLocale).key(key);
-            result.addAdditionalInfo("Type", resTypeNiceName);
-            return result;
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
-        }
-    }
-
-    /**
-     * Returns a map of principals of responsible users together with the resource path where the
-     * responsibility was found.<p> 
-     * 
-     * @param vfsPath the path pointing on the resource to get the responsible users for
-     * 
-     * @return a map of principal beans
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    private Map<CmsPrincipalBean, String> getResponsibles(String vfsPath) throws CmsRpcException {
-
-        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
-        List<CmsResource> parentResources = new ArrayList<CmsResource>();
-
-        CmsObject cms = getCmsObject();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            error(e);
-        }
-
-        for (CmsResource resource : parentResources) {
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            try {
-
-                cms.getRequestContext().setSiteRoot("/");
-                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
-                for (CmsAccessControlEntry ace : entries) {
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
-                                principal.getName(),
-                                principal.getDescription(),
-                                principal.isGroup());
-                            if (!resource.getRootPath().equals(vfsPath)) {
-                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
-                                    result.put(prinBean, sitePath);
-                                } else {
-                                    result.put(prinBean, resource.getRootPath());
-                                }
-                            } else {
-                                result.put(prinBean, null);
-                            }
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                error(e);
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/03/02 14:24:00 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
@@ -53,8 +52,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -81,28 +81,6 @@ public interface I_CmsCoreService extends RemoteService {
     CmsUUID createUUID() throws CmsRpcException;
 
     /**
-     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     * 
-     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
-     * 
-     * @return the {@link CmsAvailabilityInfoBean} for a given resource
-     * 
-     * @throws CmsRpcException if the RPC call goes wrong 
-     */
-    CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException;
-
-    /**
-     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     * 
-     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
-     * 
-     * @return the {@link CmsAvailabilityInfoBean} for a given resource
-     * 
-     * @throws CmsRpcException if the RPC call goes wrong
-     */
-    CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException;
-
-    /**
      * Returns the categories for the given search parameters.<p>
      * 
      * @param fromCatPath the category path to start with, can be <code>null</code> or empty to use the root
@@ -127,28 +105,6 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException;
-
-    /**
-     * Returns a {@link CmsListInfoBean} for a given resource.<p>
-     * 
-     * @param structureId the structure id to create the {@link CmsListInfoBean} for
-     * 
-     * @return the {@link CmsListInfoBean} for a given resource
-     * 
-     * @throws CmsRpcException if the RPC call goes wrong 
-     */
-    CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException;
-
-    /**
-     * Returns a {@link CmsListInfoBean} for a given resource.<p>
-     * 
-     * @param vfsPath the vfs path to create the {@link CmsListInfoBean} for
-     * 
-     * @return the {@link CmsListInfoBean} for a given resource
-     * 
-     * @throws CmsRpcException if the RPC call goes wrong 
-     */
-    CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException;
 
     /**
      * Gets the resource state for a resource with a given path.<p>

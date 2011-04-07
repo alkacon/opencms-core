@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/03/31 17:51:34 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,8 +88,9 @@ import com.google.gwt.user.client.ui.Widget;
  * The container-page handler.<p>
  * 
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.0
  */
@@ -336,8 +337,16 @@ public class CmsContainerpageHandler {
             m_controller.leaveUnsaved(target);
             return;
         }
+        StringBuffer warningMessage = new StringBuffer();
+        warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
+        warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
+
         CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
-            Messages.GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0), Messages.get().key(Messages.GUI_DIALOG_PAGE_NOT_SAVED_0));
+            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), warningMessage.toString());
+        leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
+        leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
+
         leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
 
             /**
@@ -365,9 +374,6 @@ public class CmsContainerpageHandler {
                 m_controller.leaveUnsaved(target);
             }
         });
-        leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
-        leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_LEAVEPAGE_TEXT_0));
-        leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
         leavingDialog.center();
     }
 
@@ -491,9 +497,11 @@ public class CmsContainerpageHandler {
      */
     public void resetPage() {
 
-        CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+        CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(Messages.GUI_DIALOG_RESET_TITLE_0), "<p>"
+            + Messages.get().key(Messages.GUI_DIALOG_PAGE_RESET_0)
+            + "</p>");
+        dialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+        dialog.setOkText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
         dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
             /**
@@ -582,11 +590,16 @@ public class CmsContainerpageHandler {
 
         if (m_controller.hasPageChanged()) {
 
-            CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(
-                org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.GUI_DIALOG_CHANGES_PUBLISH_TITLE_0),
-                org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.GUI_DIALOG_CHANGES_PUBLISH_TEXT_0));
+            StringBuffer warningMessage = new StringBuffer();
+            warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_PUBLISH_NOT_SAVED_0) + "</p>");
+            warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
+
+            CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
+                Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), warningMessage.toString());
+            leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+            leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
+            leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
+
             leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
 
                 /**
@@ -615,17 +628,10 @@ public class CmsContainerpageHandler {
                     openPublish();
                 }
             });
-            leavingDialog.setAcceptText(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_YES_0));
-            leavingDialog.setDeclineText(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_NO_0));
-            leavingDialog.setCloseText(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_CANCEL_0));
             leavingDialog.center();
         } else {
             openPublish();
         }
-
     }
 
     /**

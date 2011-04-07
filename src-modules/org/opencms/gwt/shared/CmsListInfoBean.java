@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2011/03/11 09:11:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,8 +45,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @see org.opencms.gwt.client.ui.CmsListItemWidget
  * 
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -77,8 +78,11 @@ public class CmsListInfoBean implements IsSerializable {
     /** The page icon information: for the type of page icon which should be displayed. */
     private PageIcon m_pageIcon;
 
-    /** Returns the resource state. */
+    /** The resource state. */
     private CmsResourceState m_resourceState;
+
+    /** The resource type name of the resource. */
+    private String m_resourceType;
 
     /** The sub-title. */
     private String m_subTitle;
@@ -180,6 +184,16 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Returns the sub-title.<p>
      *
      * @return the sub-title
@@ -242,6 +256,16 @@ public class CmsListInfoBean implements IsSerializable {
     public void setResourceState(CmsResourceState resourceState) {
 
         m_resourceState = resourceState;
+    }
+
+    /**
+     * Sets the resource type name.<p>
+     *
+     * @param resourceType the resource type name to set
+     */
+    public void setResourceType(String resourceType) {
+
+        m_resourceType = resourceType;
     }
 
     /**

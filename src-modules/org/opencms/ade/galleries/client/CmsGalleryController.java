@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/03/10 08:44:49 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,12 +44,9 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsLinkWarningDialog;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
@@ -64,6 +61,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -75,7 +73,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  */
@@ -286,78 +284,18 @@ public class CmsGalleryController {
      */
     public void deleteResource(final String resourcePath) {
 
-        CmsRpcAction<List<CmsBrokenLinkBean>> action = new CmsRpcAction<List<CmsBrokenLinkBean>>() {
+        CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(resourcePath);
+        Command callback = new Command() {
 
             /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             * @see com.google.gwt.user.client.Command#execute()
              */
-            @Override
             public void execute() {
 
-                start(0, true);
-                getVfsService().getBrokenLinks(resourcePath, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(List<CmsBrokenLinkBean> result) {
-
-                stop(false);
-                if (result.size() > 0) {
-                    I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
-
-                        /**
-                         * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                         */
-                        public void onClose() {
-
-                            // do nothing 
-                        }
-
-                        /**
-                         * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                         */
-                        public void onOk() {
-
-                            internalDeleteResource(resourcePath);
-                        }
-                    };
-                    CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result, resourcePath);
-                    dialog.center();
-
-                } else {
-
-                    CmsConfirmDialog dialog = new CmsConfirmDialog(
-                        org.opencms.gwt.client.Messages.get().key(
-                            org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TITLE_0),
-                        org.opencms.gwt.client.Messages.get().key(
-                            org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TEXT_1,
-                            resourcePath));
-                    dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                        /**
-                         * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                         */
-                        public void onClose() {
-
-                            // do nothing
-                        }
-
-                        /**
-                         * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                         */
-                        public void onOk() {
-
-                            internalDeleteResource(resourcePath);
-                        }
-                    });
-                    dialog.center();
-                }
+                updateResultsTab(false);
             }
         };
-        action.execute();
+        dialog.loadAndShow(callback);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/05 13:08:45 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 8.0.0
  */
@@ -488,29 +488,8 @@ public final class CmsContainerpageController {
         if (elementId.contains(CLIENT_ID_SEPERATOR)) {
             elementId = elementId.substring(0, elementId.indexOf(CLIENT_ID_SEPERATOR));
         }
-        final String id = elementId;
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getContainerpageService().deleteElement(id, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                removeContainerElements(id);
-                reloadElements(new String[] {relatedElementId});
-            }
-        };
-        action.execute();
+        removeContainerElements(elementId);
+        reloadElements(new String[] {relatedElementId});
     }
 
     /**

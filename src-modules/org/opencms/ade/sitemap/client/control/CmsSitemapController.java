@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/03/10 07:48:53 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,8 +63,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
@@ -93,7 +91,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 8.0.0
  */
@@ -493,41 +491,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         };
         applyChange(change, callback);
 
-    }
-
-    /**
-     * Fetches broken link data bean, containing a list of all not yet loaded sub elements and a list of beans 
-     * which represent the links that would be broken if the sitemap entries
-     * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
-     * 
-     * @param sitePath the site-path of the resource to delete 
-     * @param callback the callback which will be called with the results 
-     */
-    public void getBrokenLinks(final String sitePath, final I_CmsSimpleCallback<List<CmsBrokenLinkBean>> callback) {
-
-        CmsRpcAction<List<CmsBrokenLinkBean>> action = new CmsRpcAction<List<CmsBrokenLinkBean>>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(0, true);
-                getVfsService().getBrokenLinks(sitePath, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(List<CmsBrokenLinkBean> result) {
-
-                stop(false);
-                callback.execute(result);
-            }
-        };
-        action.execute();
     }
 
     /**

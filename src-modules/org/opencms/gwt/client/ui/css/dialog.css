@@ -177,3 +177,26 @@
     }
 }
 
+
+
+.alertMainContent {
+	padding: 10px 5px 0px 5px;
+	min-height: 100px;
+}
+
+@sprite .warningSymbol{
+	gwt-image: "gwtImages.warningBigImage";
+	float: left;
+	margin-right: 10px;
+}
+
+.warningContent {
+	margin-top: 15px;
+}
+
+.warningText {
+}
+
+.warningText p {
+	margin-bottom: 5px;
+}

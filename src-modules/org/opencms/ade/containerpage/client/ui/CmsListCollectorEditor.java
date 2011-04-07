@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2011/04/07 15:08:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,11 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsEditableDataJSO;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
@@ -56,6 +55,7 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -63,8 +63,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Class to provide direct edit buttons within list collector elements.<p>
  * 
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -91,25 +92,9 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
             Object source = event.getSource();
             if (source == m_delete) {
                 removeHighlighting();
-                CmsConfirmDialog dialog = new CmsConfirmDialog(
-                    "Deleting Resource",
-                    "You are about to delete a resource from the VFS. Are you sure you want to do that?");
-                dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                    public void onClose() {
-
-                        // nothing to do
-                    }
-
-                    public void onOk() {
-
-                        deleteElement();
-
-                    }
-                });
+                openWarningDialog();
                 CmsDomUtil.ensureMouseOut(m_delete.getElement());
                 CmsDomUtil.ensureMouseOut(getElement());
-                dialog.center();
             }
             if (source == m_edit) {
                 openEditDialog(false);
@@ -119,7 +104,6 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 openEditDialog(true);
                 removeHighlighting();
             }
-
         }
 
         /**
@@ -342,5 +326,24 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
                 false,
                 m_parentResourceId);
         }
+    }
+
+    /**
+     * Shows the delete warning dialog.<p>
+     */
+    protected void openWarningDialog() {
+
+        CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(m_editableData.getSitePath());
+        Command callback = new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                deleteElement();
+            }
+        };
+        dialog.loadAndShow(callback);
     }
 }

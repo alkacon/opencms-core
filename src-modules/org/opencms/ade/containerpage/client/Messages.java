@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -51,10 +51,10 @@ public final class Messages {
     public static final String GUI_BUTTON_CHANGE_ORDER_TEXT_0 = "GUI_BUTTON_CHANGE_ORDER_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUTTON_EDITFAVORITES_TEXT_0 = "GUI_BUTTON_EDITFAVORITES_TEXT_0";
+    public static final String GUI_BUTTON_DISCARD_TEXT_0 = "GUI_BUTTON_DISCARD_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUTTON_LEAVEPAGE_TEXT_0 = "GUI_BUTTON_LEAVEPAGE_TEXT_0";
+    public static final String GUI_BUTTON_EDITFAVORITES_TEXT_0 = "GUI_BUTTON_EDITFAVORITES_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_REMOVE_TEXT_0 = "GUI_BUTTON_REMOVE_TEXT_0";
@@ -66,25 +66,47 @@ public final class Messages {
     public static final String GUI_BUTTON_RESET_TEXT_0 = "GUI_BUTTON_RESET_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_RETURN_TEXT_0 = "GUI_BUTTON_RETURN_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_SAVE_DISABLED_0 = "GUI_BUTTON_SAVE_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_SAVE_TEXT_0 = "GUI_BUTTON_SAVE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_PAGE_NOT_SAVED_0 = "GUI_DIALOG_PAGE_NOT_SAVED_0";
+    public static final String GUI_DIALOG_LEAVE_NOT_SAVED_0 = "GUI_DIALOG_LEAVE_NOT_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0 = "GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0";
+    public static final String GUI_DIALOG_NOT_SAVED_TITLE_0 = "GUI_DIALOG_NOT_SAVED_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_PAGE_RESET_0 = "GUI_DIALOG_PAGE_RESET_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_PAGE_RESET_TITLE_0 = "GUI_DIALOG_PAGE_RESET_TITLE_0";
+    public static final String GUI_DIALOG_PUBLISH_NOT_SAVED_0 = "GUI_DIALOG_PUBLISH_NOT_SAVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_RESET_TITLE_0 = "GUI_DIALOG_RESET_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_SAVE_BEFORE_LEAVING_0 = "GUI_DIALOG_SAVE_BEFORE_LEAVING_0";
+
+    //    /** Message constant for key in the resource bundle. */
+    //    public static final String GUI_DIALOG_PAGE_NOT_SAVED_0 = "GUI_DIALOG_PAGE_NOT_SAVED_0";
+    //
+    //    /** Message constant for key in the resource bundle. */
+    //    public static final String GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0 = "GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0";
+    //
+    //    /** Message constant for key in the resource bundle. */
+    //    public static final String GUI_DIALOG_PAGE_RESET_0 = "GUI_DIALOG_PAGE_RESET_0";
+    //
+    //    /** Message constant for key in the resource bundle. */
+    //    public static final String GUI_DIALOG_PAGE_RESET_TITLE_0 = "GUI_DIALOG_PAGE_RESET_TITLE_0";
+    //
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_SAVE_QUESTION_0 = "GUI_DIALOG_SAVE_QUESTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_PROPERTIES_0 = "GUI_NO_PROPERTIES_0";

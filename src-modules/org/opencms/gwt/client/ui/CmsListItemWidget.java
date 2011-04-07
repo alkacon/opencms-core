@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -38,7 +40,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -79,8 +83,9 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * @author Michael Moossen
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
@@ -763,6 +768,22 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
         m_subtitle.setText(infoBean.getSubTitle());
+
+        // set the resource type icon if present
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {
+            setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getResourceType(), false));
+        }
+
+        // create the state info
+        CmsResourceState state = infoBean.getResourceState();
+        if (state != null) {
+            String stateKey = Messages.get().key(Messages.GUI_RESOURCE_STATE_0);
+            String stateValue = CmsResourceStateUtil.getStateName(state);
+            String stateStyle = CmsResourceStateUtil.getStateStyle(state);
+            infoBean.addAdditionalInfo(stateKey, stateValue, stateStyle);
+        }
+        
+        // set the additional info
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsPushButton(
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),

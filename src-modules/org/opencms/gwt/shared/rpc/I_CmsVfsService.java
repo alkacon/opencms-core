@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsService.java,v $
- * Date   : $Date: 2011/03/10 07:48:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,11 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsDeleteResourceBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -44,13 +47,45 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * A service interface for retrieving information about the VFS tree.<p>
  * 
  * @author Georg Westenberger
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 @RemoteServiceRelativePath("org.opencms.gwt.CmsVfsService.gwt")
 public interface I_CmsVfsService extends RemoteService {
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
+     * @param sitePath the site path of the resource to delete
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    public void deleteResource(String sitePath) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
+     * 
+     * @return the {@link CmsAvailabilityInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
+     * 
+     * @return the {@link CmsAvailabilityInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong
+     */
+    CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException;
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>
@@ -61,7 +96,7 @@ public interface I_CmsVfsService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsBrokenLinkBean> getBrokenLinks(String sitePath) throws CmsRpcException;
+    CmsDeleteResourceBean getBrokenLinks(String sitePath) throws CmsRpcException;
 
     /**
      * Fetches the list of children of a path.<p>
@@ -73,6 +108,28 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsListInfoBean} for
+     * 
+     * @return the {@link CmsListInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsListInfoBean} for
+     * 
+     * @return the {@link CmsListInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException;
 
     /**
      * Returns the root entries of the VFS.<p>

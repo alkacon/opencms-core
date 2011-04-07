@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsDeleteMenuEntry.java,v $
- * Date   : $Date: 2011/03/10 07:48:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/07 16:35:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,14 +34,9 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsLinkWarningDialog;
+import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
-
-import java.util.List;
 
 import com.google.gwt.user.client.Command;
 
@@ -49,8 +44,9 @@ import com.google.gwt.user.client.Command;
  * Sitemap context menu delete entry.<p>
  * 
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -77,70 +73,29 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
                 final String sitePath = getHoverbar().getSitePath();
                 final CmsSitemapController controller = getHoverbar().getController();
 
-                controller.getBrokenLinks(sitePath, new I_CmsSimpleCallback<List<CmsBrokenLinkBean>>() {
+                I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
 
                     /**
-                     * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#execute(java.lang.Object)
+                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
                      */
-                    public void execute(List<CmsBrokenLinkBean> result) {
+                    public void onClose() {
 
-                        if (result.size() > 0) {
-                            I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                                 */
-                                public void onClose() {
-
-                                    // do nothing 
-                                }
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                                 */
-                                public void onOk() {
-
-                                    controller.delete(sitePath);
-                                }
-                            };
-                            CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result, sitePath);
-                            dialog.center();
-
-                        } else {
-
-                            CmsConfirmDialog dialog = new CmsConfirmDialog(
-                                org.opencms.gwt.client.Messages.get().key(
-                                    org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TITLE_0),
-                                org.opencms.gwt.client.Messages.get().key(
-                                    org.opencms.gwt.client.Messages.GUI_DIALOG_DELETE_TEXT_1,
-                                    sitePath));
-                            dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                                 */
-                                public void onClose() {
-
-                                    // do nothing
-                                }
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                                 */
-                                public void onOk() {
-
-                                    controller.delete(sitePath);
-                                }
-                            });
-                            dialog.center();
-                        }
+                        // do nothing 
                     }
 
-                });
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                     */
+                    public void onOk() {
 
+                        controller.delete(sitePath);
+                    }
+                };
+                CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(sitePath);
+                dialog.setHandler(handler);
+                dialog.loadAndShow(null);
             }
         });
-
     }
 
     /**
