@@ -188,7 +188,7 @@ div.toolbarToggle{
 	.toolbarSelection .optionBar.cmsHovering .cmsState{
 		display: inline;
 	}
-} @else{
+} @else {
 	.toolbarRemove .optionBar .toolbarRemove, 
 	.toolbarEdit .optionBar .toolbarEdit, 
 	.toolbarEdit .listCollectorEditor .toolbarNew,
