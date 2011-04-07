@@ -209,6 +209,25 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>    
+    
+    <tag>
+        <description>
+            This tag loads single XML content items for ADE formatters.
+        </description> 
+        <name>formatter</name>
+        <tag-class>org.opencms.jsp.CmsJspTagFormatter</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>val</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>      
+    </tag>        
         
     <tag>
         <description>
