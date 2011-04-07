@@ -85,7 +85,7 @@ div.optionBar{
 	font-size: value("constants.css.fontSize");
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
-	text-align: left;
+	text-align: right;
 	height: auto;
 	width: auto;
 	min-height: 0;
@@ -128,8 +128,7 @@ div.toolbarToggle{
 	background-color: value("constants.css.backgroundColorSoft");
 }
 
-.optionBar .cmsState{
-	float: right;
+.optionBar div.cmsState{
 	display: none;
 }
 
@@ -178,17 +177,29 @@ div.toolbarToggle{
 	visibility: hidden;
 }
 
-.toolbarRemove .optionBar .toolbarRemove, 
-.toolbarEdit .optionBar .toolbarEdit, 
-.toolbarEdit .listCollectorEditor .toolbarNew,
-.toolbarMove .optionBar .toolbarMove, 
-.toolbarNew .optionBar .toolbarNew, 
-.toolbarProperties .optionBar .toolbarProperties, 
-.toolbarSelection .optionBar .toolbarSelection,
-.toolbarSelection .optionBar.cmsHovering .cmsState{
-	display: inline-block;
+@if user.agent ie6 {
+	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarEdit .optionBar .toolbarEdit, 
+	.toolbarEdit .listCollectorEditor .toolbarNew,
+	.toolbarMove .optionBar .toolbarMove, 
+	.toolbarNew .optionBar .toolbarNew, 
+	.toolbarProperties .optionBar .toolbarProperties, 
+	.toolbarSelection .optionBar .toolbarSelection,
+	.toolbarSelection .optionBar.cmsHovering .cmsState{
+		display: inline;
+	}
+} @else{
+	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarEdit .optionBar .toolbarEdit, 
+	.toolbarEdit .listCollectorEditor .toolbarNew,
+	.toolbarMove .optionBar .toolbarMove, 
+	.toolbarNew .optionBar .toolbarNew, 
+	.toolbarProperties .optionBar .toolbarProperties, 
+	.toolbarSelection .optionBar .toolbarSelection,
+	.toolbarSelection .optionBar.cmsHovering .cmsState{
+		display: inline-block;
+	}
 }
-
 @sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard {
     gwt-image: "images.favoriteIconActive";
 }
