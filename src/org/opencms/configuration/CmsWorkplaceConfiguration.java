@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/03/25 08:13:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/07 15:12:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsIconRule;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.CmsMenuRuleTranslator;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
@@ -72,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -664,6 +665,24 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
                 newResElement.addAttribute(A_INFO, settings.getInfo());
                 newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
+
+                Map<String, CmsIconRule> iconRules = settings.getIconRules();
+                if ((iconRules != null) && !iconRules.isEmpty()) {
+                    Element iconRulesElem = explorerTypeElement.addElement(N_ICONRULES);
+                    for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
+                        CmsIconRule rule = entry.getValue();
+                        Element ruleElem = iconRulesElem.addElement(N_ICONRULE);
+                        String icon = rule.getIcon();
+                        String bigIcon = rule.getBigIcon();
+                        String extension = rule.getExtension();
+                        ruleElem.addAttribute(A_EXTENSION, extension);
+                        ruleElem.addAttribute(A_ICON, icon);
+                        if (bigIcon != null) {
+                            ruleElem.addAttribute(A_BIGICON, bigIcon);
+                        }
+                    }
+                }
+
                 newResElement.addAttribute(A_KEY, settings.getTitleKey());
                 // create subnode <accesscontrol>            
                 CmsExplorerTypeAccess access = settings.getAccess();
@@ -1841,7 +1860,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the new created block
         digester.addSetNext(rulePath, "addBlock");
     }
-
 
     /**
      * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
