@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/11/22 15:08:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/07 15:32:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -829,7 +829,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         if (m_scrollEnabled) {
 
-            Direction direction = getScrollDirection(100);
+            Direction direction = getScrollDirection(50);
             if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
                 clearScrollTimer();
             }
