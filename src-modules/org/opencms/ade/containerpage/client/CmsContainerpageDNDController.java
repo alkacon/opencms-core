@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/08 10:00:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/04/08 15:53:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -408,6 +408,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     protected void prepareHelperElements(CmsContainerElementData elementData, CmsDNDHandler handler) {
 
         if (!handler.isDragging()) {
+            return;
+        }
+        if (elementData == null) {
+            CmsDebugLog.getInstance().printLine("elementData == null!");
+            handler.cancel();
             return;
         }
         if (m_controller.isGroupcontainerEditing()) {

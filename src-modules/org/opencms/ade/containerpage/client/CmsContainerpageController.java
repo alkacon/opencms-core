@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/04/08 15:53:51 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.0
  */
@@ -685,29 +685,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the container-page handler.<p>
-     *
-     * @return the container-page handler
-     */
-    public CmsContainerpageHandler getHandler() {
-
-        return m_handler;
-    }
-
-    /**
-     * Returns the new resource client id for the given resource type.
-     * Returns <code>null</code>, if the type is can not be created.<p>
-     * 
-     * @param resourceType the resource type name
-     * 
-     * @return the new resource id
-     */
-    public String getNewResourceId(String resourceType) {
-
-        return getData().getNewTypes().get(resourceType);
-    }
-
-    /**
      * Returns the group-container element being edited.<p>
      * 
      * @return the group-container
@@ -728,6 +705,29 @@ public final class CmsContainerpageController {
             return m_editingGroupcontainer.getContainerId();
         }
         return null;
+    }
+
+    /**
+     * Returns the container-page handler.<p>
+     *
+     * @return the container-page handler
+     */
+    public CmsContainerpageHandler getHandler() {
+
+        return m_handler;
+    }
+
+    /**
+     * Returns the new resource client id for the given resource type.
+     * Returns <code>null</code>, if the type is can not be created.<p>
+     * 
+     * @param resourceType the resource type name
+     * 
+     * @return the new resource id
+     */
+    public String getNewResourceId(String resourceType) {
+
+        return getData().getNewTypes().get(resourceType);
     }
 
     /**
@@ -896,6 +896,7 @@ public final class CmsContainerpageController {
             protected void onResponse(List<CmsContainerElementData> result) {
 
                 stop(false);
+                addElements(result);
                 callback.execute(result);
             }
         };
@@ -928,6 +929,7 @@ public final class CmsContainerpageController {
             protected void onResponse(List<CmsContainerElementData> result) {
 
                 stop(false);
+                addElements(result);
                 callback.execute(result);
             }
         };
@@ -1259,6 +1261,18 @@ public final class CmsContainerpageController {
     public void stopEditingGroupcontainer() {
 
         m_editingGroupcontainer = null;
+    }
+
+    /** 
+     * Adds the given element data to the element cache.<p>
+     * 
+     * @param elements the element data
+     */
+    protected void addElements(List<CmsContainerElementData> elements) {
+
+        for (CmsContainerElementData element : elements) {
+            m_elements.put(element.getClientId(), element);
+        }
     }
 
     /** 
