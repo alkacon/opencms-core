@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2011/04/06 12:43:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/08 07:49:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since version 8.0.0
  */
@@ -112,16 +112,11 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Adds a separator to this menu.<p>
-     * 
-     * @param group if <code>true</code> a special class for group separation is added
      */
-    public void addSeparator(boolean group) {
+    public void addSeparator() {
 
         CmsLabel sparator = new CmsLabel();
         sparator.setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuItemSeparator());
-        if (group) {
-            sparator.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuItemGroupSeparator());
-        }
         m_panel.add(sparator);
     }
 
@@ -370,7 +365,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
                 continue;
             }
             if (entry.isSeparator()) {
-                addSeparator(true);
+                addSeparator();
             } else {
                 if (entry.hasSubMenu()) {
                     CmsContextMenuItem item = new CmsContextMenuItem(entry);
@@ -378,9 +373,6 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
                     addItem(item);
                 } else {
                     addItem(new CmsContextMenuItem(entry));
-                }
-                if (it.hasNext()) {
-                    addSeparator(false);
                 }
             }
         }
