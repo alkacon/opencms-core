@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -777,7 +777,11 @@ public class CmsPreferences extends CmsTabDialog {
         List values = new ArrayList();
         int selectedIndex = 0;
 
-        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
+        List sites = OpenCms.getSiteManager().getAvailableSites(
+            getCms(),
+            true,
+            false,
+            getCms().getRequestContext().getOuFqn());
         String wpSite = getParamTabWpSite();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpSite) && !wpSite.endsWith("/")) {
             wpSite += "/";
@@ -792,7 +796,7 @@ public class CmsPreferences extends CmsTabDialog {
                 siteRoot += "/";
             }
             values.add(siteRoot);
-            options.add(site.getTitle());
+            options.add(substituteSiteTitle(site.getTitle()));
             if (siteRoot.equals(wpSite)) {
                 // this is the user's currently chosen site
                 selectedIndex = pos;

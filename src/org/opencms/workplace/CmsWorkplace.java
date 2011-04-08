@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1977,6 +1978,22 @@ public abstract class CmsWorkplace {
             }
         }
         return map;
+    }
+
+    /**
+     * Replaces the site title, if necessary.<p>
+     * 
+     * @param title the site title
+     *  
+     * @return the new site title 
+     */
+    protected String substituteSiteTitle(String title) {
+
+        if (title.equals(CmsSiteManagerImpl.SHARED_FOLDER_TITLE)) {
+            return Messages.get().getBundle(getSettings().getUserSettings().getLocale()).key(
+                Messages.GUI_SHARED_TITLE_0);
+        }
+        return title;
     }
 
     /**

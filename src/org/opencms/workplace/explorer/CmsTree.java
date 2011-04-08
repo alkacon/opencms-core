@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,15 +274,19 @@ public class CmsTree extends CmsWorkplace {
             includeRootSite = false;
             showSiteUrls = true;
         }
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), includeRootSite);
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            getCms(),
+            includeRootSite,
+            true,
+            getCms().getRequestContext().getOuFqn());
 
         Iterator<CmsSite> i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
             CmsSite site = i.next();
             values.add(site.getSiteRoot());
-            String curOption = site.getTitle();
-            if (showSiteUrls) {
+            String curOption = substituteSiteTitle(site.getTitle());
+            if (showSiteUrls && (site.getSiteMatcher() != null)) {
                 // show the site URL in editor link dialog tree 
                 curOption = site.getUrl() + " (" + curOption + ")";
                 if (getCms().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
@@ -317,6 +321,9 @@ public class CmsTree extends CmsWorkplace {
             StringTokenizer T = new StringTokenizer(getTargetFolder(), "|");
             while (T.hasMoreTokens()) {
                 String currentFolder = T.nextToken().trim();
+                //                if (OpenCms.getSiteManager().startsWithShared(currentFolder)) {
+                //                    currentFolder = OpenCms.getSiteManager().cutShared(currentFolder);
+                //                }
                 targetFolderList.add(currentFolder);
             }
         } else {
@@ -760,6 +767,9 @@ public class CmsTree extends CmsWorkplace {
      */
     private String getSitePrefix(String prefix, String storedSiteRoot) {
 
+        if (OpenCms.getSiteManager().isSharedFolder(prefix)) {
+            return prefix;
+        }
         if (TYPE_PAGELINK.equals(getTreeType())) {
             // in editor link dialog, create a special prefix for internal links
             if (!storedSiteRoot.equals(prefix)) {

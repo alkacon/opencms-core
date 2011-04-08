@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2011/02/02 07:37:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,11 +65,14 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
+
+    /** A placeholder for the title of the shared folder. */
+    public static String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
@@ -99,6 +102,9 @@ public final class CmsSiteManagerImpl {
 
     /** List to access the time offsets. */
     private List<CmsSiteMatcher> m_matchers;
+
+    /** The shared folder name. */
+    private String m_sharedFolder;
 
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
@@ -218,11 +224,12 @@ public final class CmsSiteManagerImpl {
      * @param cms the current OpenCms user context 
      * @param workplaceMode if true, the root and current site is included for the admin user
      *                      and the view permission is required to see the site root
+     * @param showShared if the shared folder should be shown 
      * @param ouFqn the organizational unit
      * 
      * @return a list of all site available for the current user
      */
-    public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
+    public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, boolean showShared, String ouFqn) {
 
         List<String> siteroots = new ArrayList<String>(m_siteMatcherSites.size() + 1);
         Map<String, CmsSiteMatcher> siteServers = new HashMap<String, CmsSiteMatcher>(m_siteMatcherSites.size() + 1);
@@ -259,6 +266,11 @@ public final class CmsSiteManagerImpl {
                     siteroots.add(storedSiteRoot + "/");
                 }
             }
+            String shared = OpenCms.getSiteManager().getSharedFolder();
+            if (showShared && (shared != null) && !siteroots.contains(shared)) {
+                siteroots.add(shared);
+            }
+
             List<CmsResource> resources;
             try {
                 resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
@@ -293,6 +305,9 @@ public final class CmsSiteManagerImpl {
                             if (title == null) {
                                 title = folder;
                             }
+                            if ((shared != null) && folder.equals(shared)) {
+                                title = SHARED_FOLDER_TITLE;
+                            }
                             String position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
                             result.add(new CmsSite(
                                 folder,
@@ -315,6 +330,21 @@ public final class CmsSiteManagerImpl {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return result;
+    }
+
+    /**
+     * Returns a list of all {@link CmsSite} instances that are compatible to the given organizational unit.<p>
+     * 
+     * @param cms the current OpenCms user context 
+     * @param workplaceMode if true, the root and current site is included for the admin user
+     *                      and the view permission is required to see the site root
+     * @param ouFqn the organizational unit
+     * 
+     * @return a list of all site available for the current user
+     */
+    public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
+
+        return getAvailableSites(cms, workplaceMode, workplaceMode, ouFqn);
     }
 
     /**
@@ -351,6 +381,16 @@ public final class CmsSiteManagerImpl {
     public String getDefaultUri() {
 
         return m_defaultUri;
+    }
+
+    /**
+     * Returns the shared folder path.<p>
+     * 
+     * @return the shared folder path 
+     */
+    public String getSharedFolder() {
+
+        return m_sharedFolder;
     }
 
     /**
@@ -612,6 +652,18 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Checks if the given path is that of a shared folder.<p>
+     * 
+     * @param name a path prefix
+     * 
+     * @return true if the given prefix represents a shared folder 
+     */
+    public boolean isSharedFolder(String name) {
+
+        return (m_sharedFolder != null) && m_sharedFolder.equals(CmsStringUtil.joinPaths("/", name, "/"));
+    }
+
+    /**
      * Checks whether a given root path is a site root.<p>
      * 
      * @param rootPath a root path 
@@ -718,6 +770,16 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Sets the shared folder path.<p>
+     * 
+     * @param sharedFolder the shared folder path 
+     */
+    public void setSharedFolder(String sharedFolder) {
+
+        m_sharedFolder = CmsStringUtil.joinPaths("/", sharedFolder, "/");
+    }
+
+    /**
      * Sets the workplace server, this is only allowed during configuration.<p>
      * 
      * If this method is called after the configuration is finished, 
@@ -731,6 +793,18 @@ public final class CmsSiteManagerImpl {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         m_workplaceServer = workplaceServer;
+    }
+
+    /**
+     * Returns true if the path starts with the shared folder path.<p>
+     * 
+     * @param path the path to check 
+     * 
+     * @return true if the path starts with the shared folder path 
+     */
+    public boolean startsWithShared(String path) {
+
+        return (m_sharedFolder != null) && CmsStringUtil.joinPaths(path, "/").startsWith(m_sharedFolder);
     }
 
     /**

@@ -39,6 +39,7 @@
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
+			<shared-folder>/shared/</shared-folder>
 			<site server="http://localhost:8080" uri="/sites/default/"/>
 		</sites>
 		<runtimeproperties>
@@ -110,10 +111,5 @@
                 <groupcontainers offline="64" online="64" />
             </ade-cache>
         </ade>
-        <sitemap>
-            <sitemap-cache>
-                <documents offline="32" online="32" />
-            </sitemap-cache>
-        </sitemap>
 	</system>
 </opencms>

@@ -254,10 +254,12 @@ Each job can have an optional list of parameters.
 #     error: if exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url
 # alias:  alias servers for the site
 -->
-<!ELEMENT sites (workplace-server, default-uri, site+)>
+<!ELEMENT sites (workplace-server, default-uri, shared-folder?, site+)>
 <!ELEMENT workplace-server (#PCDATA)>
 <!ELEMENT default-uri (#PCDATA)>
+<!ELEMENT shared-folder (#PCDATA)>
 <!ELEMENT site (secure?, alias*)>
+
 <!ATTLIST site 
 	server CDATA #REQUIRED
 	uri CDATA #REQUIRED>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2011/03/31 10:41:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -850,7 +850,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     private List getSites() {
 
         List sites = new ArrayList();
-        List sitesList = OpenCms.getSiteManager().getAvailableSites(getCms(), true, getParamOufqn());
+        List sitesList = OpenCms.getSiteManager().getAvailableSites(getCms(), true, false, getParamOufqn());
 
         String defSite = null;
         if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
@@ -881,7 +881,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 siteRoot += "/";
             }
             boolean selected = defSite.equals(siteRoot);
-            sites.add(new CmsSelectWidgetOption(siteRoot, selected, site.getTitle(), null));
+            sites.add(new CmsSelectWidgetOption(siteRoot, selected, substituteSiteTitle(site.getTitle()), null));
         }
         return sites;
     }

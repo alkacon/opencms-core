@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.0 
  */
@@ -86,8 +87,14 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, CmsUUID projectId, CmsResourceState state) {
 
         super(wp);
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_STATE + I_CmsListResourceCollector.SEP_KEYVAL + state;
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_PROJECT + I_CmsListResourceCollector.SEP_KEYVAL + projectId;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + PARAM_STATE
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + state;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + PARAM_PROJECT
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + projectId;
     }
 
     /**
@@ -124,7 +131,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
 
         // show files in the selected project with the selected status
         List resources = cms.readProjectView(projectId, state);
-        
+
         // remove not visible files
         Iterator itRes = resources.iterator();
         // dont's show resources that  are in a different site root
@@ -133,8 +140,10 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
         siteRoot += "/";
         while (itRes.hasNext()) {
             CmsResource resource = (CmsResource)itRes.next();
-            if (!resource.getRootPath().startsWith(siteRoot)
-                && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            String rootPath = resource.getRootPath();
+            if (!rootPath.startsWith(siteRoot)
+                && !rootPath.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+                && !OpenCms.getSiteManager().startsWithShared(rootPath)) {
                 itRes.remove();
             }
         }

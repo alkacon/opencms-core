@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
-import org.opencms.xml.sitemap.CmsSitemapCacheSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -233,6 +232,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the group-users node. */
     public static final String N_GROUP_USERS = "group-users";
+
+    /** The groupcontainers node name. */
+    public static final String N_GROUPCONTAINERS = "groupcontainers";
 
     /** The node name for the publish "history-size" value. */
     public static final String N_HISTORYSIZE = "history-size";
@@ -447,9 +449,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The size of the memory monitor's cache for users. */
     public static final String N_SIZE_USERS = "size-users";
 
-    /** The groupcontainers node name. */
-    public static final String N_GROUPCONTAINERS = "groupcontainers";
-
     /** The subscriptionmanager node name. */
     public static final String N_SUBSCRIPTIONMANAGER = "subscriptionmanager";
 
@@ -494,6 +493,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
+    /** Shared folder node name. */
+    private static final String N_SHARED_FOLDER = "shared-folder";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -585,9 +587,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured site manager. */
     private CmsSiteManagerImpl m_siteManager;
-
-    /** The sitemap cache settings. */
-    private CmsSitemapCacheSettings m_sitemapCacheSettings;
 
     /** The subscription manager. */
     private CmsSubscriptionManager m_subscriptionManager;
@@ -925,6 +924,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_OFFSET);
 
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SHARED_FOLDER, "setSharedFolder", 0);
+
         // add compatibility parameter rules 
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM,
@@ -1131,17 +1132,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // set the settings
         digester.addSetNext(adeCachePath, "setAdeCacheSettings");
 
-        // add rule for sitemap cache settings
-        String sitemapCachePath = "*/" + N_SYSTEM + "/" + N_SITEMAP + "/" + N_SITEMAP_CACHE;
-        digester.addObjectCreate(sitemapCachePath, CmsSitemapCacheSettings.class);
-        // document cache
-        digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOfflineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_OFFLINE);
-        digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOnlineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_ONLINE);
-        // set the settings
-        digester.addSetNext(sitemapCachePath, "setSitemapCacheSettings");
-
         // add rule for subscription manager settings
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, CmsSubscriptionManager.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setEnabled", 1);
@@ -1320,6 +1310,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Element sitesElement = systemElement.addElement(N_SITES);
         sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
         sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
+        String sharedFolder = m_siteManager.getSharedFolder();
+        if (sharedFolder != null) {
+            sitesElement.addElement(N_SHARED_FOLDER).addText(sharedFolder);
+        }
         Iterator<CmsSite> siteIterator = new HashSet<CmsSite>(m_siteManager.getSites().values()).iterator();
         while (siteIterator.hasNext()) {
             CmsSite site = siteIterator.next();
@@ -1561,16 +1555,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
-        // sitemap settings
-        if (getSitemapCacheSettings() != null) {
-            Element sitemapElem = systemElement.addElement(N_SITEMAP);
-            Element cacheElem = sitemapElem.addElement(N_SITEMAP_CACHE);
-            // documents cache
-            Element docsCacheElem = cacheElem.addElement(N_DOCUMENTS);
-            docsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getDocumentOfflineSize());
-            docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
-        }
-
         // subscription manager settings
         if (getSubscriptionManager() != null) {
             Element subscrManElem = systemElement.addElement(N_SUBSCRIPTIONMANAGER);
@@ -1624,11 +1608,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                    m_authorizationHandler),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                m_authorizationHandler), t);
             return new CmsDefaultAuthorizationHandler();
         }
     }
@@ -1914,11 +1896,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
-                    m_sessionStorageProvider),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                m_sessionStorageProvider), t);
             return new CmsDefaultSessionStorageProvider();
         }
     }
@@ -1931,16 +1911,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public CmsSiteManagerImpl getSiteManager() {
 
         return m_siteManager;
-    }
-
-    /**
-     * Returns the settings of the sitemap cache.<p>
-     *
-     * @return the settings of the sitemap cache
-     */
-    public CmsSitemapCacheSettings getSitemapCacheSettings() {
-
-        return m_sitemapCacheSettings;
     }
 
     /**
@@ -1986,9 +1956,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return validationHandler;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1, m_validationHandler),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
+                m_validationHandler), t);
             return new CmsDefaultValidationHandler();
         }
     }
@@ -2410,16 +2380,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
         }
-    }
-
-    /**
-     * Sets the cache settings for the sitemap.<p>
-     *
-     * @param settings the cache settings for the sitemap
-     */
-    public void setSitemapCacheSettings(CmsSitemapCacheSettings settings) {
-
-        m_sitemapCacheSettings = settings;
     }
 
     /**

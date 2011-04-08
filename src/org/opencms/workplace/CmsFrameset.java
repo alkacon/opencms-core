@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFrameset extends CmsWorkplace {
+
+    /** The names of the supported frames. */
+    private static final String[] FRAMES = {"top", "head", "body", "foot"};
+
+    /** The names of the supported frames in a list. */
+    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** Path to the JSP workplace frame loader file. */
     public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
@@ -89,12 +95,6 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
-
-    /** The names of the supported frames. */
-    private static final String[] FRAMES = {"top", "head", "body", "foot"};
-
-    /** The names of the supported frames in a list. */
-    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
@@ -364,7 +364,7 @@ public class CmsFrameset extends CmsWorkplace {
         while (i.hasNext()) {
             CmsSite site = (CmsSite)i.next();
             values.add(site.getSiteRoot());
-            options.add(site.getTitle());
+            options.add(substituteSiteTitle(site.getTitle()));
             if (site.getSiteRoot().equals(getSettings().getSite())) {
                 // this is the user's current site
                 selectedIndex = pos;

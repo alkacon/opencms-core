@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/02/14 10:02:23 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System 
@@ -32,7 +32,6 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.adeconfig.CmsSitemapConfigurationData;
-import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -58,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 7.9.2
  */
@@ -139,12 +138,8 @@ public class CmsSitemapManager {
      */
     public CmsSitemapManager(CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
-        // initialize the sitemap cache
-        CmsSitemapCacheSettings cacheSettings = systemConfiguration.getSitemapCacheSettings();
-        if (cacheSettings == null) {
-            cacheSettings = new CmsSitemapCacheSettings();
-        }
-        CmsVfsMemoryObjectCache structureIdCache = new CmsVfsMemoryObjectCache();
+        // do nothing
+
     }
 
     /**

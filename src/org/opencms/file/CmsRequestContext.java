@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/02/14 10:10:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/08 16:15:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
@@ -49,7 +50,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Ruediger Kurz
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -197,7 +198,11 @@ public final class CmsRequestContext {
         if ((resourcename == null) || (siteRoot == null)) {
             return null;
         }
-        siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
+        if (OpenCms.getSiteManager().startsWithShared(resourcename)) {
+            siteRoot = "";
+        } else {
+            siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
+        }
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length() - 1) != '/'))
