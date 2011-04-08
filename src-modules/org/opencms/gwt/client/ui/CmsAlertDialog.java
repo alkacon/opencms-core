@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/08 13:36:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,11 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -48,11 +48,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsAlertDialog extends CmsPopup {
+
+    /** The panel for the bottom widgets. */
+    private FlowPanel m_bottomWidgets;
 
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
@@ -62,6 +65,12 @@ public class CmsAlertDialog extends CmsPopup {
 
     /** The action handler. */
     private I_CmsCloseDialogHandler m_handler;
+
+    /** The panel for the top widgets. */
+    private FlowPanel m_topWidgets;
+
+    /** The warning message. */
+    private FlexTable m_warningMessage;
 
     /** 
      * Constructor.<p>
@@ -108,6 +117,39 @@ public class CmsAlertDialog extends CmsPopup {
         super.setAutoHideEnabled(false);
         super.setModal(true);
         setGlassEnabled(true);
+
+        // set title for this dialog
+        setText(title);
+
+        // create the dialogs content panel
+        m_content = new FlowPanel();
+        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertMainContent());
+
+        // create the top widget panel
+        m_topWidgets = new FlowPanel();
+        m_topWidgets.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertTopContent());
+        m_topWidgets.getElement().getStyle().setDisplay(Display.NONE);
+        m_content.add(m_topWidgets);
+
+        // create the warning message
+        m_warningMessage = new FlexTable();
+        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningContent());
+        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_warningMessage.setText(0, 0, "");
+        m_warningMessage.setHTML(0, 1, content);
+
+        m_content.add(m_warningMessage);
+
+        // create the bottom widget panel
+        m_bottomWidgets = new FlowPanel();
+        m_bottomWidgets.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertBottomContent());
+        m_bottomWidgets.getElement().getStyle().setDisplay(Display.NONE);
+        m_content.add(m_bottomWidgets);
+
+        // set the content to the popup
+        setContent(m_content);
+
+        // add the close button
         m_closeButton = new CmsPushButton();
         m_closeButton.setText(buttonText);
         m_closeButton.setImageClass(buttonIconClass);
@@ -124,58 +166,31 @@ public class CmsAlertDialog extends CmsPopup {
             }
         });
         addButton(m_closeButton);
-
-        FlowPanel warningContent = new FlowPanel();
-        warningContent.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningContent());
-
-        Label warningSymbol = new Label();
-        warningSymbol.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningSymbol());
-
-        warningContent.add(warningSymbol);
-
-        m_warningText = new HTML(content);
-        m_warningText.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningText());
-        warningContent.add(m_warningText);
-
-        m_content = new FlowPanel();
-        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertMainContent());
-        m_content.add(warningContent);
-
-        setContent(m_content);
-        setText(title);
-    }
-
-    private HTML m_warningText;
-
-    /**
-     * Sets the warning text (HTML possible).<p>
-     * 
-     * @param warningText the warning text to set
-     */
-    public void setWarningText(String warningText) {
-
-        m_warningText.setHTML(warningText);
     }
 
     /**
-     * Adds a widget at the first position of this dialogs content.<p>
+     * Adds a widget to this dialogs bottom content.<p>
      * 
      * @param w the widget to add
      */
-    public void addListItem(Widget w) {
+    public void addBottomWidget(Widget w) {
 
-        addListItem(w, 0);
+        m_content.removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertMainContent());
+        m_bottomWidgets.getElement().getStyle().clearDisplay();
+        m_bottomWidgets.add(w);
+
     }
 
     /**
-     * Inserts a widget into the content at the given position.<p>
+     * Adds a widget to this dialogs top content.<p>
      * 
      * @param w the widget to add
-     * @param position the position to insert the widget
      */
-    public void addListItem(Widget w, int position) {
+    public void addTopWidget(Widget w) {
 
-        m_content.insert(w, position);
+        m_content.removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().alertMainContent());
+        m_topWidgets.getElement().getStyle().clearDisplay();
+        m_topWidgets.add(w);
     }
 
     /**
@@ -186,16 +201,6 @@ public class CmsAlertDialog extends CmsPopup {
 
         super.center();
         getCloseButton().setEnabled(true);
-    }
-
-    /**
-     * Removes the given button widget from the button panel.<p>
-     * 
-     * @param w the button widget to remove
-     */
-    public void removeListItem(Widget w) {
-
-        m_content.remove(w);
     }
 
     /**
@@ -244,6 +249,16 @@ public class CmsAlertDialog extends CmsPopup {
     public void setModal(boolean modal) {
 
         // it is always modal
+    }
+
+    /**
+     * Sets the warning text (HTML possible).<p>
+     * 
+     * @param warningText the warning text to set
+     */
+    public void setWarningMessage(String warningText) {
+
+        m_warningMessage.setHTML(0, 1, warningText);
     }
 
     /**
