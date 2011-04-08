@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/04/08 12:16:36 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -124,12 +124,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            CmsContainerElementBean element = getCachedElement(clientId);
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getFavoriteList(getCmsObject());
-            if (list.contains(element)) {
-                list.remove(list.indexOf(element));
-            }
-            list.add(0, element);
+            updateFavoriteRecentList(clientId, list);
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
@@ -143,12 +139,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            CmsContainerElementBean element = getCachedElement(clientId);
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
-            if (list.contains(element)) {
-                list.remove(list.indexOf(element));
-            }
-            list.add(0, element);
+            updateFavoriteRecentList(clientId, list);
             OpenCms.getADEManager().saveRecentList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
@@ -332,19 +324,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveRecentList(java.util.List)
-     */
-    public void saveRecentList(List<String> clientIds) throws CmsRpcException {
-
-        try {
-            ensureSession();
-            OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
-        } catch (Throwable e) {
-            error(e);
-        }
-    }
-
-    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveGroupContainer(java.lang.String, java.lang.String, org.opencms.ade.containerpage.shared.CmsGroupContainer, java.util.Collection)
      */
     public Map<String, CmsContainerElementData> saveGroupContainer(
@@ -380,6 +359,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Collection<String> ids = new ArrayList<String>();
         ids.add(groupContainer.getClientId());
         return getElementsData(containerpageUri, reqParams, ids, containers);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveRecentList(java.util.List)
+     */
+    public void saveRecentList(List<String> clientIds) throws CmsRpcException {
+
+        try {
+            ensureSession();
+            OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
+        } catch (Throwable e) {
+            error(e);
+        }
     }
 
     /**
@@ -622,6 +614,45 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Helper method for converting a CmsGroupContainer to a CmsGroupContainerBean when saving a group container.<p>
+     * 
+     * @param groupContainer the group-container data
+     * @param containerpageUri the URI of the container page 
+     * 
+     * @return the group-container bean
+     */
+    private CmsGroupContainerBean getGroupContainerBean(CmsGroupContainer groupContainer, String containerpageUri) {
+
+        CmsObject cms = getCmsObject();
+        CmsADESessionCache cache = getSessionCache();
+        List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+        for (CmsContainerElement elementData : groupContainer.getElements()) {
+            try {
+                if (elementData.isNew()) {
+                    elementData = createNewElement(
+                        containerpageUri,
+                        elementData.getClientId(),
+                        elementData.getResourceType());
+                }
+                CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
+
+                // make sure resource is readable, 
+                if (cms.existsResource(element.getElementId())) {
+                    elements.add(element);
+                }
+
+            } catch (Exception e) {
+                log(e.getLocalizedMessage(), e);
+            }
+        }
+        return new CmsGroupContainerBean(
+            groupContainer.getTitle(),
+            groupContainer.getDescription(),
+            elements,
+            groupContainer.getTypes());
+    }
+
+    /**
      * Returns the data of the given elements.<p>
      * 
      * @param listElements the list of element beans to retrieve the data for
@@ -733,41 +764,24 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Helper method for converting a CmsGroupContainer to a CmsGroupContainerBean when saving a group container.<p>
+     * Update favorite or recent list with the given element.<p>
      * 
-     * @param groupContainer the group-container data
-     * @param containerpageUri the URI of the container page 
+     * @param clientId the elements client id
+     * @param list the list to update
      * 
-     * @return the group-container bean
+     * @return the updated list
      */
-    private CmsGroupContainerBean getGroupContainerBean(CmsGroupContainer groupContainer, String containerpageUri) {
+    private List<CmsContainerElementBean> updateFavoriteRecentList(String clientId, List<CmsContainerElementBean> list) {
 
-        CmsObject cms = getCmsObject();
-        CmsADESessionCache cache = getSessionCache();
-        List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
-        for (CmsContainerElement elementData : groupContainer.getElements()) {
-            try {
-                if (elementData.isNew()) {
-                    elementData = createNewElement(
-                        containerpageUri,
-                        elementData.getClientId(),
-                        elementData.getResourceType());
-                }
-                CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
-
-                // make sure resource is readable, 
-                if (cms.existsResource(element.getElementId())) {
-                    elements.add(element);
-                }
-
-            } catch (Exception e) {
-                log(e.getLocalizedMessage(), e);
+        CmsContainerElementBean element = getCachedElement(clientId);
+        Iterator<CmsContainerElementBean> listIt = list.iterator();
+        while (listIt.hasNext()) {
+            CmsContainerElementBean listElem = listIt.next();
+            if (listElem.getElementId().equals(element.getElementId())) {
+                listIt.remove();
             }
         }
-        return new CmsGroupContainerBean(
-            groupContainer.getTitle(),
-            groupContainer.getDescription(),
-            elements,
-            groupContainer.getTypes());
+        list.add(0, element);
+        return list;
     }
 }

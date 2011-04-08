@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/08 12:16:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -51,7 +52,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -67,9 +68,15 @@ public class CmsMenuListItem extends CmsListItem {
      */
     public CmsMenuListItem(CmsContainerElementData element) {
 
-        super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null)));
+        super(new CmsListItemWidget(new CmsListInfoBean(
+            element.getTitle(),
+            element.getSitePath(),
+            element.getFormatedIndividualProperties())));
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
+        if ((element.getProperties() != null) && !element.getProperties().isEmpty()) {
+            getListItemWidget().setBackground(Background.BLUE);
+        }
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
         m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);

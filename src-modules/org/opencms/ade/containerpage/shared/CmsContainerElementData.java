@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/08 12:16:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,15 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -43,7 +47,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -57,9 +61,6 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The group-container description. */
     private String m_description;
-
-    /** The full site path. */
-    private String m_sitePath;
 
     /** Flag for indicating whether this is a group-container. */
     private boolean m_isGroupContainer;
@@ -82,6 +83,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The property for this container element. */
     private Map<String, CmsXmlContentProperty> m_propertyConfig;
 
+    /** The full site path. */
+    private String m_sitePath;
+
     /** The resource status. */
     private char m_status;
 
@@ -93,26 +97,6 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
-
-    /**
-     * Returns the supported container types.<p>
-     *
-     * @return the supported container types
-     */
-    public Set<String> getTypes() {
-
-        return m_types;
-    }
-
-    /**
-     * Sets the supported container types.<p>
-     *
-     * @param types the supported container types to set
-     */
-    public void setTypes(Set<String> types) {
-
-        m_types = types;
-    }
 
     /**
      * Returns the contents.<p>
@@ -132,6 +116,29 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the individual element properties formated with nice-names to be used as additional-info.<p>
+     * 
+     * @return the properties map
+     */
+    public Map<String, CmsPair<String, String>> getFormatedIndividualProperties() {
+
+        Map<String, CmsPair<String, String>> result = new HashMap<String, CmsPair<String, String>>();
+        if (m_properties != null) {
+            for (Entry<String, String> propertyEntry : m_properties.entrySet()) {
+                String propertyKey = propertyEntry.getKey();
+                if (m_propertyConfig.containsKey(propertyEntry.getKey())) {
+                    String niceName = m_propertyConfig.get(propertyEntry.getKey()).getNiceName();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_propertyConfig.get(propertyEntry.getKey()).getNiceName())) {
+                        propertyKey = niceName;
+                    }
+                }
+                result.put(propertyKey, new CmsPair<String, String>(propertyEntry.getValue(), null));
+            }
+        }
+        return result;
     }
 
     /**
@@ -225,6 +232,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
+     * Returns the supported container types.<p>
+     *
+     * @return the supported container types
+     */
+    public Set<String> getTypes() {
+
+        return m_types;
+    }
+
+    /**
      * Returns if the element is a group-container.<p>
      *
      * @return <code>true</code> if the element is a group-container
@@ -255,6 +272,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * Sets whether the element is a group-container.<p>
+     *
+     * @param isGroupContainer <code>true</code> if the element is a group-container
+     */
+    public void setGroupContainer(boolean isGroupContainer) {
+
+        m_isGroupContainer = isGroupContainer;
     }
 
     /**
@@ -328,16 +355,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets whether the element is a group-container.<p>
-     *
-     * @param isGroupContainer <code>true</code> if the element is a group-container
-     */
-    public void setGroupContainer(boolean isGroupContainer) {
-
-        m_isGroupContainer = isGroupContainer;
-    }
-
-    /**
      * Sets the sub-items.<p>
      *
      * @param subItems the sub-items to set
@@ -355,6 +372,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    /**
+     * Sets the supported container types.<p>
+     *
+     * @param types the supported container types to set
+     */
+    public void setTypes(Set<String> types) {
+
+        m_types = types;
     }
 
     /**
