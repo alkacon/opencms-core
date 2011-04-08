@@ -212,7 +212,7 @@
 	 .cornerAll, .cornerBottom, .cornerTop, .shadow{}
 }
 
-.clearStyles, .clearStyles div, .clearStyles span, .clearStyles *{
+.clearStyles, .clearStyles *{
 	margin: 0;
 	padding: 0;
 	border: none;

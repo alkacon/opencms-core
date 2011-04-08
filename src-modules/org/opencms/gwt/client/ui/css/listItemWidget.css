@@ -95,7 +95,7 @@ li div.itemContainer{
 }
 .titleRow{}
 @if user.agent ie6 {
-	.titleRow{
+	div.titleRow{
 		margin-top: 3px;
 		margin-bottom: 3px;
 	}
@@ -162,14 +162,8 @@ li.dragging, div.dragging{
 	.dragging .itemContainer {
 		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
-} @elif user.agent ie6 {
-	.dragging .itemContainer {
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)");
-	}
-} @elif user.agent ie8 {
-	.dragging .itemContainer {
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
-	}
+} @elif user.agent ie6, ie8 {
+	/* no drop shadow as it might conflict with other filters */
 } @else {
 	.dragging .itemContainer {
 		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");

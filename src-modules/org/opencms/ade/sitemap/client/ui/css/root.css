@@ -11,6 +11,7 @@
 	position: relative;
 	margin: 0;
 	overflow: auto;
+	height: 100%;
 }
 
 @if user.agent ie6 {
