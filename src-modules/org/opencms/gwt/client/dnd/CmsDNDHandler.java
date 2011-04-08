@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2011/04/07 15:32:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/08 14:38:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -221,7 +221,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                     break;
                 case Event.ONKEYDOWN:
                     if (nativeEvent.getKeyCode() == 27) {
-                        // cancel on escape
+                        cancel();
                     }
                     break;
                 default:
