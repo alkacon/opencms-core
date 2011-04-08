@@ -8,10 +8,14 @@
 }
 
 div.itemContainer{
-	border: 1px solid value("constants.css.borderColorListItem");
+	border: 1px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	line-height: 16px;
 	color: value("constants.css.textColor");
+}
+
+li div.itemContainer{
+	border: 1px solid value("constants.css.borderColorListItem");
 }
 
 .itemContainer div {

@@ -178,25 +178,35 @@
 }
 
 
-
-.alertMainContent {
-	padding: 10px 5px 0px 5px;
-	min-height: 100px;
+.alertMainContent table {
+	height: 90px;
 }
-
-@sprite .warningSymbol{
-	gwt-image: "gwtImages.warningBigImage";
-	float: left;
-	margin-right: 10px;
+.alertTopContent {
+	margin-bottom: value("constants.css.defaultSpace");
 }
-
+.alertBottomContent {
+	margin-top: value("constants.css.defaultSpace");
+} 
 .warningContent {
-	margin-top: 15px;
+	padding: 15px;
+	width: 100%;
+	border: 1px solid value("constants.css.borderColor");
 }
 
-.warningText {
+@sprite .warningContent > tbody > tr > td:first-child {
+	gwt-image: "gwtImages.warningBigImage";
+	background-position: 50% 50%;
+	vertical-align: middle;
+	padding: 0px;
+}
+.warningContent > tbody > tr > td {
+	vertical-align: middle;
+	padding-left: 15px;
 }
 
-.warningText p {
-	margin-bottom: 5px;
+.warningContent > tbody > tr > td > p:first-child {
+	margin-top: 0px;
+}
+.warningContent > tbody > tr > td > p {
+	margin-top: 5px;
 }

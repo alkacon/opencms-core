@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/04/08 13:36:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/08 13:39:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -134,7 +134,7 @@ public class CmsAlertDialog extends CmsPopup {
         // create the warning message
         m_warningMessage = new FlexTable();
         m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningContent());
-        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_warningMessage.setText(0, 0, "");
         m_warningMessage.setHTML(0, 1, content);
 

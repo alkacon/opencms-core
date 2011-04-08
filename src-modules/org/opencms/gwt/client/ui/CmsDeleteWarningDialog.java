@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDeleteWarningDialog.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/08 13:36:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -44,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -92,10 +91,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
     public CmsDeleteWarningDialog(String sitePath) {
 
         m_sitePath = sitePath;
-        m_content.getElement().getStyle().setDisplay(Display.NONE);
-        addListItem(m_content);
-        setText("Delete Resource");
-        setWarningText("<p>You are about to delete a resource from the file system.</p><p>Are you sure you want to do that?</p>");
+        setText("Delete Resource?");
+        setWarningMessage("<p>You are about to delete a resource from the file system.</p><p>Are you sure you want to do that?</p>");
         setOkText("Delete");
         setCloseText("Cancel");
         setHandler(m_handler);
@@ -153,6 +150,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
         action.execute();
     }
 
+    private static final String TM_DIALOG_LIST = "dialogList";
+
     /**
      * Checks for broken links, ask for confirmation and finally deletes the given resource.<p>
      */
@@ -180,10 +179,14 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
             protected void onResponse(CmsDeleteResourceBean result) {
 
                 stop(false);
-                addListItem(new CmsListItemWidget(result.getPageInfo()));
+                CmsListItemWidget widget = new CmsListItemWidget(result.getPageInfo());
+                widget.truncate(TM_DIALOG_LIST, 370);
+                addTopWidget(widget);
                 if (result.getBrokenLinks().size() > 0) {
                     m_content.fill(result.getSitePath(), result.getBrokenLinks());
                     m_content.getElement().getStyle().clearDisplay();
+                    addBottomWidget(m_content);
+                    setWidth("600px");
                 }
                 center();
             }
