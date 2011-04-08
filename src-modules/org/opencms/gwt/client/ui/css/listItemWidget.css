@@ -49,38 +49,23 @@ div.itemContainer{
 	background-color: value("constants.css.backgroundColorListItem");
 }
 
-@sprite .itemActive > div.itemContent {
-    gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    height: auto;
+.itemActive > div.itemContent {
     background-color: value("constants.css.backgroundColorStateHover");
 }
 
-@sprite .disabledItem > div.itemContent {
-	gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    height: auto;
-    background-color: value("constants.css.backgroundColorStateDisabled");
+.disabledItem > div.itemContent {
+	background-color: value("constants.css.backgroundColorStateDisabled");
 }
 
-@sprite .itemBlue > div.itemContent {
-    gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    height: auto;
+.itemBlue > div.itemContent {
     background-color: value("constants.css.backgroundColorStateNew");
 }
 
-@sprite .itemRed > div.itemContent {
-    gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    height: auto;
+.itemRed > div.itemContent {
     background-color: value("constants.css.backgroundColorStateChanged");
 }
 
-@sprite .itemYellow > div.itemContent {
-    gwt-image: "backgrounds.stateBackground";
-    background-position: 50% 50%;
-    height: auto;
+.itemYellow > div.itemContent {
     background-color: value("constants.css.backgroundColorStateSubSitemap");
 }
 
@@ -104,8 +89,12 @@ div.itemContainer{
     vertical-align: middle;
     white-space: nowrap;
 }
-.titleRow{
-/**	float: left;**/
+.titleRow{}
+@if user.agent ie6 {
+	.titleRow{
+		margin-top: 3px;
+		margin-bottom: 3px;
+	}
 }
 .cmsHovering .buttonPanel{
 	display: block;
@@ -114,7 +103,7 @@ div.itemContainer{
 .buttonPanel{
 	position: absolute;
 	right: 5px;
-	top: 8px;
+	top: 9px;
 	overflow: visible;
 }
 
