@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagNavigation.java,v $
- * Date   : $Date: 2011/04/11 14:11:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/11 15:37:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -54,7 +54,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     /** Constants for <code>type</code> attribute interpretation. */
     public enum TypeUse {
         /** Bread crumb navigation. */
-        BREAD_CRUMB("breadCrump"),
+        BREAD_CRUMB("breadCrumb"),
         /** Navigation for folder. */
         FOR_FOLDER("forFolder"),
         /** Navigation for resource. */
