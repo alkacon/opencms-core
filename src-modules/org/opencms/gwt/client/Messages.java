@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/04/11 07:46:00 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  */
@@ -57,7 +57,7 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROKEN_LINK_TEXT_1 = "GUI_BROKEN_LINK_TEXT_1";
+    public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";

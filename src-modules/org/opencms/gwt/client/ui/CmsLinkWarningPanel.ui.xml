@@ -5,27 +5,23 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.scrollPanel {
-			border: 1px solid;
-			padding-left: 7px;
-			padding-right: 7px;
-			padding-top: 4px;
-			padding-bottom: 4px;
+			padding: 0;
 		}
 		.list{
 			overflow: auto;
-			max-height: 450x;
+			max-height: 250px;
+			margin: 0 2px;
 		}
 		.root * {
 			zoom: 1;
 		}
 		.label {
-			margin-top: 10px;
-			margin-bottom: 10px;
+			padding: 6px;
 		} 
 	</ui:style>
-	<g:FlowPanel styleName="{style.root}">
+	<g:FlowPanel styleName="{style.root}" addStyleNames="{resources.generalCss.border} {resources.generalCss.cornerAll}" >
 		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}"  addStyleNames="{style.label}" />
-		<g:ScrollPanel styleName="{style.scrollPanel}"  addStyleNames="{resources.generalCss.border} {resources.generalCss.cornerAll}" >
+		<g:ScrollPanel styleName="{style.scrollPanel}" >
 		<cms:CmsList ui:field="m_linkPanel" addStyleNames="{style.list}" />
 		</g:ScrollPanel>
 	</g:FlowPanel>

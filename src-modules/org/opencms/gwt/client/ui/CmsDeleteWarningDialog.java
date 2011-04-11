@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDeleteWarningDialog.java,v $
- * Date   : $Date: 2011/04/08 13:36:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/11 07:46:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -183,8 +183,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
                 widget.truncate(TM_DIALOG_LIST, 370);
                 addTopWidget(widget);
                 if (result.getBrokenLinks().size() > 0) {
-                    m_content.fill(result.getSitePath(), result.getBrokenLinks());
-                    m_content.getElement().getStyle().clearDisplay();
+                    m_content.fill(result.getBrokenLinks());
                     addBottomWidget(m_content);
                     setWidth("600px");
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLinkWarningPanel.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/11 07:46:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -81,18 +81,16 @@ public class CmsLinkWarningPanel extends Composite {
     public CmsLinkWarningPanel() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_label.setText(Messages.get().key(Messages.GUI_BROKEN_LINK_TEXT_0));
     }
 
     /**
      * Fills the panel with the tree list of broken links.<p>
      * 
-     * @param sitePath the site path of the resource to be deleted 
      * @param brokenLinkBeans the beans representing the broken links 
      */
-    public void fill(String sitePath, List<CmsBrokenLinkBean> brokenLinkBeans) {
+    public void fill(List<CmsBrokenLinkBean> brokenLinkBeans) {
 
-        String text = Messages.get().key(Messages.GUI_BROKEN_LINK_TEXT_1, sitePath);
-        m_label.setText(text);
         for (CmsBrokenLinkBean brokenLinkBean : brokenLinkBeans) {
             m_linkPanel.add(createTreeItem(brokenLinkBean));
         }
