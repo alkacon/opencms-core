@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/03/28 09:57:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -124,7 +124,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String tabParamsPanel();
+        String noParamsMessage();
 
         /** Access method.<p>
          * 
@@ -215,6 +215,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String tabOptions();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabParamsPanel();
     }
 
     /** The result item CSS. */

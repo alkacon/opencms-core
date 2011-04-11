@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/04/08 12:16:02 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 8.0.
  */
@@ -81,7 +82,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.42 $
+     * @version $Revision: 1.43 $
      * 
      * @since 8.0.0
      */
@@ -234,6 +235,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
 
+    /** A HTML widget for the message if nor search params were selected. */
+    private HTML m_noParamsMessage;
+
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
 
@@ -283,6 +287,9 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
+        if (!searchObj.isEmpty() && (m_noParamsMessage != null)) {
+            m_tab.remove(m_noParamsMessage);
+        }
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
@@ -317,6 +324,25 @@ public class CmsResultsTab extends A_CmsListTab {
 
         super.onSelection();
         updateListSize();
+    }
+
+    /**
+     * Shows the message if no search params were selected.<p> 
+     */
+    public void showNoParamsMessage() {
+
+        if (m_noParamsMessage == null) {
+            StringBuffer buf = new StringBuffer();
+            buf.append("<div class=\"");
+            buf.append(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().noParamsMessage());
+            buf.append(" ");
+            buf.append(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+            buf.append("\">");
+            buf.append("Please select at least one search parameter!");
+            buf.append("</div>");
+            m_noParamsMessage = new HTML(buf.toString());
+        }
+        m_tab.add(m_noParamsMessage);
     }
 
     /**

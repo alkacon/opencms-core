@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/08 13:36:58 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  * 
  * @since 8.0.0
  */
@@ -1472,6 +1472,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cornerRight();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabDisabled();
 
         /** 
          * Access method.<p>

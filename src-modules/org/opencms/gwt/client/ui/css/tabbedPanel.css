@@ -44,19 +44,12 @@
 	margin-left:30px !important;
 }
 
-@sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
-	height: auto;
-	margin:0;
-	padding:0;
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
 	border-width: 1px 1px 1px 0px;
 	border-color: value("constants.css.borderColor");
 	border-style: solid;
-	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
-	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
@@ -137,25 +130,71 @@
 
 .black{}
 
-@sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab {
+@sprite .black .gwt-TabLayoutPanelTab {
 	gwt-image: "inputImages.buttonBlackUpBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:hover {  	
+@sprite .black .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "inputImages.buttonBlackHoverBackground"; 
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover {
+@sprite .black .gwt-TabLayoutPanelTab-selected:hover {
 	gwt-image: "inputImages.buttonBlueUpBackground";
-	color:#222 !important;
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected{    
+@sprite .black .gwt-TabLayoutPanelTab-selected{    
 	gwt-image: "inputImages.buttonBlueDownBackground";
-	color:#222 !important;
 	background-position: 50% 50%;
 	height: auto;
+}
+
+
+@sprite .tabLeftMargin.gwt-TabLayoutPanelTab {
+	gwt-image: "inputImages.buttonRedUpBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .tabLeftMargin.gwt-TabLayoutPanelTab:hover {  	
+	gwt-image: "inputImages.buttonRedHoverBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover {
+	gwt-image: "inputImages.buttonRedHoverBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+@sprite .tabLeftMargin.gwt-TabLayoutPanelTab-selected{    
+	gwt-image: "inputImages.buttonRedDownBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+
+
+@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab {
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+	cursor: default;
+}
+@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab:hover {  	
+	gwt-image: "inputImages.buttonDisabledBackground"; 
+	background-position: 50% 50%;
+	height: auto;
+	cursor: default;
+}
+@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab-selected:hover {
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+	cursor: default;
+}
+@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab-selected{    
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+	cursor: default;
 }

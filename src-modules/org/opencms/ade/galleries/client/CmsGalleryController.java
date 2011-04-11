@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -73,17 +79,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  */
-public class CmsGalleryController {
+public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
 
     /** The gallery dialog bean. */
     protected CmsGalleryDataBean m_dialogBean;
 
     /** The gallery dialog mode. */
     protected I_CmsGalleryProviderConstants.GalleryMode m_dialogMode;
+
+    /** The event bus. */
+    protected SimpleEventBus m_eventBus;
 
     /** The gallery controller handler. */
     protected CmsGalleryControllerHandler m_handler;
@@ -122,6 +131,9 @@ public class CmsGalleryController {
             m_searchObject = new CmsGallerySearchBean();
         }
         m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
+
+        m_eventBus = new SimpleEventBus();
+        addValueChangeHandler(handler);
     }
 
     /**
@@ -133,6 +145,7 @@ public class CmsGalleryController {
 
         m_searchObject.addCategory(categoryPath);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -144,6 +157,7 @@ public class CmsGalleryController {
 
         m_searchObject.setDateCreatedEnd(end);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -155,6 +169,7 @@ public class CmsGalleryController {
 
         m_searchObject.setDateCreatedStart(start);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -166,6 +181,7 @@ public class CmsGalleryController {
 
         m_searchObject.setDateModifiedEnd(end);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -177,6 +193,7 @@ public class CmsGalleryController {
 
         m_searchObject.setDateModifiedStart(start);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -188,6 +205,7 @@ public class CmsGalleryController {
 
         m_searchObject.addFolder(folder);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -199,6 +217,7 @@ public class CmsGalleryController {
 
         m_searchObject.addGallery(galleryPath);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -210,6 +229,7 @@ public class CmsGalleryController {
 
         m_searchObject.setQuery(searchQuery);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -221,6 +241,15 @@ public class CmsGalleryController {
 
         m_searchObject.addType(resourceType);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<CmsGallerySearchBean> handler) {
+
+        return m_eventBus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
     }
 
     /**
@@ -232,6 +261,7 @@ public class CmsGalleryController {
         m_handler.onClearCategories(selectedCategories);
         m_searchObject.clearCategories();
         updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -243,6 +273,7 @@ public class CmsGalleryController {
         m_handler.onClearFolders(selectedFolders);
         m_searchObject.clearFolders();
         updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -254,6 +285,7 @@ public class CmsGalleryController {
         m_handler.onClearGalleries(selectedGalleries);
         m_searchObject.clearGalleries();
         updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -264,6 +296,7 @@ public class CmsGalleryController {
         m_searchObject.clearFullTextSearch();
         m_handler.onClearFullTextSearch();
         updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -275,6 +308,7 @@ public class CmsGalleryController {
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.clearTypes();
         updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -296,6 +330,14 @@ public class CmsGalleryController {
             }
         };
         dialog.loadAndShow(callback);
+    }
+
+    /**
+     * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    public void fireEvent(GwtEvent<?> event) {
+
+        m_eventBus.fireEventFromSource(event, this);
     }
 
     /**
@@ -361,6 +403,17 @@ public class CmsGalleryController {
     }
 
     /**
+     * Checks if any search parameter are selected.<p>
+     * 
+     * @return <code>false</code> if any search parameter is selected, <code>true</code>
+     * if there are no search parameter selected
+     */
+    public boolean isSearchObjectEmpty() {
+
+        return m_searchObject.isEmpty();
+    }
+
+    /**
      * Opens the preview for the given resource by the given resource type.<p>
      * 
      * @param resourcePath the resource path
@@ -391,6 +444,7 @@ public class CmsGalleryController {
 
         m_searchObject.removeCategory(categoryPath);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -402,6 +456,7 @@ public class CmsGalleryController {
 
         m_searchObject.removeFolder(folder);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -413,6 +468,7 @@ public class CmsGalleryController {
 
         m_searchObject.removeGallery(galleryPath);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -424,6 +480,7 @@ public class CmsGalleryController {
 
         m_searchObject.removeType(resourceType);
         m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**
@@ -611,41 +668,48 @@ public class CmsGalleryController {
         // if the RPC call will be sent the search object is in a unchanged state
         m_searchObjectChanged = false;
 
-        /** The RPC search action for the gallery dialog. */
-        CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
+        if (m_searchObject.isEmpty()) {
+            // don't search: notify the user that at least one search criteria should be selected
+            m_handler.showNoParamsMessage();
+        } else {
+            // perform the search
 
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
+            /** The RPC search action for the gallery dialog. */
+            CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
 
-                CmsGallerySearchBean preparedObject = prepareSearchObject();
-                if (isNextPage) {
-                    preparedObject.setPage(preparedObject.getPage() + 1);
-                } else {
-                    preparedObject.setPage(1);
+                /**
+                * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                */
+                @Override
+                public void execute() {
+
+                    CmsGallerySearchBean preparedObject = prepareSearchObject();
+                    if (isNextPage) {
+                        preparedObject.setPage(preparedObject.getPage() + 1);
+                    } else {
+                        preparedObject.setPage(1);
+                    }
+                    getGalleryService().getSearch(preparedObject, this);
                 }
-                getGalleryService().getSearch(preparedObject, this);
-            }
 
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsGallerySearchBean searchObj) {
+                /**
+                * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                */
+                @Override
+                public void onResponse(CmsGallerySearchBean searchObj) {
 
-                if (!isNextPage) {
-                    m_handler.hideShowPreviewButton(true);
+                    if (!isNextPage) {
+                        m_handler.hideShowPreviewButton(true);
+                    }
+                    m_searchObject.setResults(searchObj.getResults());
+                    m_searchObject.setResultCount(searchObj.getResultCount());
+                    m_searchObject.setSortOrder(searchObj.getSortOrder());
+                    m_searchObject.setPage(searchObj.getPage());
+                    m_handler.onResultTabSelection(m_searchObject);
                 }
-                m_searchObject.setResults(searchObj.getResults());
-                m_searchObject.setResultCount(searchObj.getResultCount());
-                m_searchObject.setSortOrder(searchObj.getSortOrder());
-                m_searchObject.setPage(searchObj.getPage());
-                m_handler.onResultTabSelection(m_searchObject);
-            }
-        };
-        searchAction.execute();
+            };
+            searchAction.execute();
+        }
     }
 
     /**

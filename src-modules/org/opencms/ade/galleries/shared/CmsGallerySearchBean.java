@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2011/03/10 08:44:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -457,7 +457,7 @@ public class CmsGallerySearchBean implements IsSerializable {
             Long.valueOf(m_dateModifiedEnd),
             Long.valueOf(m_dateModifiedStart)});
         for (Long date : dates) {
-            if ((date != null) || (date == Long.valueOf(-1L))) {
+            if ((date != null) && (date != Long.valueOf(-1L))) {
                 return false;
             }
         }

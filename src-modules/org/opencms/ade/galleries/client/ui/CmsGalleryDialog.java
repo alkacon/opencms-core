@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/03/31 17:51:07 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 8.0.
  */
@@ -216,6 +216,22 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Disables the search tab.<p>
+     */
+    public void disableSearchTab() {
+
+        m_tabbedPanel.disableTab(m_resultsTab, "no search params selected");
+    }
+
+    /**
+     * Enables the search tab.<p>
+     */
+    public void enableSearchTab() {
+
+        m_tabbedPanel.enableTab(m_resultsTab);
+    }
+
+    /**
      * Displays the search result in the result tab.<p>
      * 
      * @param searchObj the search object
@@ -281,6 +297,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
         m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
         m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
+        disableSearchTab();
+
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
     }
@@ -392,6 +410,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
         int newIndex = event.getItem().intValue();
+        if (m_tabbedPanel.isDisabledTab(newIndex)) {
+            event.cancel();
+            return;
+        }
         if (selectedIndex != newIndex) {
             m_tabbedPanel.getWidget(selectedIndex).onDeselection();
         }

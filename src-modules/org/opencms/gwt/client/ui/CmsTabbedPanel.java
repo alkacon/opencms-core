@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  * 
@@ -114,6 +115,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         }
 
     }
+
+    /** Stores the indexes and the title of disabled tabs. */
+    private Map<Integer, String> m_disabledTabIndexes = new HashMap<Integer, String>();
 
     /** The TabLayoutPanel widget. */
     private TabLayoutPanel m_tabPanel;
@@ -273,19 +277,50 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         m_tabPanel.add(tabContent, tabName);
 
         int tabIndex = m_tabPanel.getWidgetIndex(tabContent);
-        Element tabRootEl = m_tabPanel.getElement();
-        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
-        List<Element> tabDivs = CmsDomUtil.getElementsByClass(
-            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTab(),
-            CmsDomUtil.Tag.div,
-            tabRootEl);
-        if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
-            tabDivs.get(tabIndex).addClassName(
-                I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().borderAll());
+        Element tabElement = getTabElement(tabIndex);
+        if (tabElement != null) {
+            tabElement.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().borderAll());
+        }
+    }
+
+    /**
+     * Disables the tab with the given index.<p>
+     * 
+     * @param tabContent the content of the tab that should be disabled
+     * @param reason the reason why the tab is disabled
+     */
+    public void disableTab(E tabContent, String reason) {
+
+        Integer index = new Integer(m_tabPanel.getWidgetIndex(tabContent));
+        Element tab = getTabElement(index.intValue());
+        if ((tab != null) && !m_disabledTabIndexes.containsKey(index)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tab.getTitle())) {
+                m_disabledTabIndexes.put(index, tab.getTitle());
+            } else {
+                m_disabledTabIndexes.put(index, "");
+            }
+            tab.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabDisabled());
+            tab.setTitle(reason);
+        }
+    }
+
+    /**
+     * Enables the tab with the given index.<p>
+     * 
+     * @param tabContent the content of the tab that should be enabled
+     */
+    public void enableTab(E tabContent) {
+
+        Integer index = new Integer(m_tabPanel.getWidgetIndex(tabContent));
+        Element tab = getTabElement(index.intValue());
+        if ((tab != null) && m_disabledTabIndexes.containsKey(index)) {
+            tab.removeClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabDisabled());
+            tab.setTitle(m_disabledTabIndexes.get(index));
+            m_disabledTabIndexes.remove(index);
         }
     }
 
@@ -364,6 +399,18 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     public void insert(E tabContent, String tabName, int beforeIndex) {
 
         m_tabPanel.insert(tabContent, tabName, beforeIndex);
+    }
+
+    /**
+     * Returns <code>true</code> if the tab with the given index is disabled, <code>false</code> otherwise.<p>
+     * 
+     * @param tabIndex the tab index
+     * 
+     * @return <code>true</code> if the tab with the given index is disabled, <code>false</code> otherwise
+     */
+    public boolean isDisabledTab(int tabIndex) {
+
+        return m_disabledTabIndexes.containsKey(new Integer(tabIndex));
     }
 
     /**
@@ -464,5 +511,26 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         for (Element e : tabContentDivs) {
             e.getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
         }
+    }
+
+    /**
+     * Returns the tab element for the given index.<p>
+     * 
+     * @param tabIndex the tab index to get the tab element for
+     * 
+     * @return the tab element for the given index
+     */
+    private Element getTabElement(int tabIndex) {
+
+        Element tabRootEl = m_tabPanel.getElement();
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        List<Element> tabDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTab(),
+            CmsDomUtil.Tag.div,
+            tabRootEl);
+        if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
+            return tabDivs.get(tabIndex);
+        }
+        return null;
     }
 }

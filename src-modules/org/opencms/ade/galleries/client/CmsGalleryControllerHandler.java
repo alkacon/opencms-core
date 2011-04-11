@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/11 15:30:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,8 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -52,12 +54,12 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
 
  */
-public class CmsGalleryControllerHandler {
+public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGallerySearchBean> {
 
     /** The reference to the gallery dialog. */
     protected CmsGalleryDialog m_galleryDialog;
@@ -279,6 +281,18 @@ public class CmsGalleryControllerHandler {
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
+
+        if (!m_galleryDialog.getController().isSearchObjectEmpty()) {
+            m_galleryDialog.enableSearchTab();
+        } else {
+            m_galleryDialog.disableSearchTab();
+        }
+    }
+
+    /**
      * Sets the list content of the category tab.<p>
      * 
      * @param categoryRoot the root category tree entry
@@ -308,6 +322,15 @@ public class CmsGalleryControllerHandler {
     public void setTypesTabContent(List<CmsResourceTypeBean> typeInfos, List<String> selectedTypes) {
 
         m_galleryDialog.getTypesTab().fillContent(typeInfos, selectedTypes);
+    }
+
+    /**
+     * Shows the message if no search params were selected.<p>
+     */
+    public void showNoParamsMessage() {
+
+        m_galleryDialog.getResultsTab().showNoParamsMessage();
+
     }
 
 }
