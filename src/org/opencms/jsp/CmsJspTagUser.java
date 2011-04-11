@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsJspTagUser extends TagSupport {
         "institution"};
 
     /** Array list for fast lookup. */
-    private static final List USER_PROPERTIES_LIST = Arrays.asList(USER_PROPERTIES);
+    private static final List<String> USER_PROPERTIES_LIST = Arrays.asList(USER_PROPERTIES);
 
     /** The property name. */
     private String m_property;
@@ -136,7 +136,7 @@ public class CmsJspTagUser extends TagSupport {
                 result = "";
                 break;
             case 11: // otherstuff
-                Iterator it = user.getAdditionalInfo().keySet().iterator();
+                Iterator<String> it = user.getAdditionalInfo().keySet().iterator();
                 CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_TAG_USER_ADDITIONALINFO_0);
                 result = Messages.getLocalizedMessage(msgContainer, req);
                 while (it.hasNext()) {
@@ -158,6 +158,7 @@ public class CmsJspTagUser extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws javax.servlet.jsp.JspException {
 
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -192,6 +193,7 @@ public class CmsJspTagUser extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

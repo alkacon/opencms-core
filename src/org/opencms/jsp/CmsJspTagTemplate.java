@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                 boolean found = false;
                 for (int i = 0; i < elements.length; i++) {
                     String el = elements[i].trim();
-                    List locales = content.getLocales(el);
+                    List<Locale> locales = content.getLocales(el);
                     Locale locale = null;
                     if ((locales != null) && (locales.size() != 0)) {
                         locale = OpenCms.getLocaleManager().getBestMatchingLocale(
@@ -154,6 +154,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         if (templateTagAction(m_element, m_elementlist, m_checkall, m_checknone, pageContext.getRequest())) {
@@ -216,6 +217,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

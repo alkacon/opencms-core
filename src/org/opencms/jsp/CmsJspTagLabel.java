@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior
  *  
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
      */
+    @Override
     public int doAfterBody() throws JspException {
 
         ServletRequest req = pageContext.getRequest();

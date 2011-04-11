@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.3
  */
@@ -86,7 +86,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     private String m_configuredParserClassname;
 
     /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
-    private List m_noAutoCloseTags;
+    private List<String> m_noAutoCloseTags;
 
     /** The attribute value of the param attribute. */
     private String m_param = "";
@@ -98,6 +98,7 @@ public class CmsJspTagParse extends BodyTagSupport {
      * 
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -119,7 +120,7 @@ public class CmsJspTagParse extends BodyTagSupport {
                 // thrown
                 try {
                     // load
-                    Class cl = Class.forName(m_configuredParserClassname);
+                    Class<?> cl = Class.forName(m_configuredParserClassname);
                     // Instantiate
                     Object instance = cl.newInstance();
                     // cast
@@ -181,7 +182,7 @@ public class CmsJspTagParse extends BodyTagSupport {
 
         StringBuffer result = new StringBuffer();
         if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
-            Iterator it = m_noAutoCloseTags.iterator();
+            Iterator<String> it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');
             }
@@ -273,6 +274,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_configuredParserClassname = null;

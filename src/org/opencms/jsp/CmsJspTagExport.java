@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagExport.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author Alexander Kandzior
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4 
  */
@@ -61,6 +61,7 @@ public class CmsJspTagExport extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_INCLUDE;

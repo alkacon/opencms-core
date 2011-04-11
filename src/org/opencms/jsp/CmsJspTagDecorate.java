@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -79,7 +79,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     private String m_locale;
 
     /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
-    private List m_noAutoCloseTags;
+    private List<String> m_noAutoCloseTags;
 
     /**
      * Internal action method.<p>
@@ -115,7 +115,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
             }
 
             String encoding = controller.getCmsObject().getRequestContext().getEncoding();
-            // use the correcrt decorator configurator and initalize it
+            // use the correct decorator configurator and initialize it
             I_CmsDecoratorConfiguration config = (I_CmsDecoratorConfiguration)Class.forName(decoratorClassName).newInstance();
             config.init(controller.getCmsObject(), configFile, loc);
 
@@ -134,8 +134,9 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      * @return EVAL_PAGE
-     * @throws JspException in case soemthing goes wrong
+     * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -192,7 +193,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
         StringBuffer result = new StringBuffer();
         if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
-            Iterator it = m_noAutoCloseTags.iterator();
+            Iterator<String> it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');
             }

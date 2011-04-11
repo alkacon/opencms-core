@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,7 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
      * @param data the tag data
      * @return true if attributes are valid, false otherwise
      */
+    @Override
     public boolean isValid(TagData data) {
 
         boolean hasFile = isSpecified(data, ATTR_FILE) || isSpecified(data, ATTR_PAGE);

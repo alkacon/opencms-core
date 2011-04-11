@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -296,6 +296,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
      * 
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         if (m_firstOnPage || m_manualPlacement) {
@@ -318,6 +319,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
      * 
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doStartTag() throws JspException {
 
         if (!CmsFlexController.isCmsOnlineRequest(pageContext.getRequest())
@@ -379,6 +381,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
     /**
      * Releases any resources we may have (or inherit).<p>
      */
+    @Override
     public void release() {
 
         super.release();

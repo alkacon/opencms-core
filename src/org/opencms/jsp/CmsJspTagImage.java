@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2011/04/07 10:06:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/11 09:14:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.util.CmsUriSplitter;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -107,13 +106,13 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         SCALE_ATTR_SRC,
         SCALE_ATTR_TYPE,
         SCALE_ATTR_WIDTH};
-    private static final List SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
+    private static final List<String> SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 6513320107441256414L;
 
     /** Map with additionally set image attributes not needed by the image scaler. */
-    private Map m_attributes;
+    private Map<String, String> m_attributes;
 
     /** Controls if the created HTML image tag is a full or partial tag. */
     private boolean m_partialTag;
@@ -149,7 +148,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public static String imageTagAction(
         String src,
         CmsImageScaler scaler,
-        Map attributes,
+        Map<String, String> attributes,
         boolean partialTag,
         ServletRequest req) throws CmsException {
 
@@ -210,11 +209,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         if (attributes != null) {
             // append the HTML attributes
-            Iterator i = attributes.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
-                String attr = (String)entry.getKey();
-                String value = (String)entry.getValue();
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+                String attr = entry.getKey();
+                String value = entry.getValue();
                 result.append(" ");
                 result.append(attr);
                 result.append("=\"");
@@ -275,6 +272,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -318,6 +316,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_BUFFERED;
@@ -378,6 +377,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @return the value of the HTML "id" attribute
      */
+    @Override
     public String getId() {
 
         return getAttribute(ATTR_ID);
@@ -537,6 +537,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_attributes = null;
@@ -606,6 +607,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @param value the value of the HTML "id" attribute to set
      */
+    @Override
     public void setId(String value) {
 
         setAttribute(ATTR_ID, value);
@@ -781,7 +783,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private String getAttribute(String key) {
 
         if (m_attributes != null) {
-            return (String)m_attributes.get(key);
+            return m_attributes.get(key);
         }
         return null;
     }
@@ -808,7 +810,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) || (allowEmptyValue && (value != null))) {
             if (m_attributes == null) {
-                m_attributes = new HashMap();
+                m_attributes = new HashMap<String, String>();
             }
             m_attributes.put(key, value);
         }

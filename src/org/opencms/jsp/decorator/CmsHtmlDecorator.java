@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2010/03/01 11:22:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/11 09:15:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -169,9 +169,9 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      *
      * @return the List of splitted Substrings
      */
-    public static List splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
+    public static List<String> splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
 
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         String delimiter = "";
         int i = 0;
         int l = source.length();
@@ -300,10 +300,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text) && m_decorate) {
 
             // split the input into single words
-            List wordList = splitAsList(text, delimiters, false, true);
+            List<String> wordList = splitAsList(text, delimiters, false, true);
             int wordCount = wordList.size();
             for (int i = 0; i < wordCount; i++) {
-                String word = (String)wordList.get(i);
+                String word = wordList.get(i);
                 boolean alreadyDecorated = false;
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -344,12 +344,12 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     // test to make a forward lookup as well
                     String secondLevel = word;
                     if (i < wordCount - 1) {
-                        String nextWord = (String)wordList.get(i + 1);
+                        String nextWord = wordList.get(i + 1);
                         if (!nextWord.equals(" ")) {
                             //don't allow HTML entities to be split in the middle during the recursion!
                             String afterNextWord = "";
                             if (i < wordCount - 2) {
-                                afterNextWord = (String)wordList.get(i + 2);
+                                afterNextWord = wordList.get(i + 2);
                             }
                             if (nextWord.contains("&") && afterNextWord.equals(";")) {
                                 secondLevel = word + nextWord + ";";
@@ -472,13 +472,13 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      * 
      * @return true if the word must be decoded, false otherweise
      */
-    private boolean mustDecode(String word, List wordList, int count) {
+    private boolean mustDecode(String word, List<String> wordList, int count) {
 
         boolean decode = true;
         String nextWord = null;
 
         if (count < wordList.size() - 1) {
-            nextWord = (String)wordList.get(count + 1);
+            nextWord = wordList.get(count + 1);
         }
         // test if the current word contains a "&" and the following with a ";"
         // if so, we must not decode the word
