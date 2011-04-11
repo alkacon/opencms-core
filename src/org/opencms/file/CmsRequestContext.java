@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/11 10:28:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,10 +47,9 @@ import java.util.Map;
  * for example the requested URI, the current project, the selected site and more.<p>  
  *
  * @author Alexander Kandzior 
- * @author Michael Emmerich 
- * @author Ruediger Kurz
+ * @author Michael Emmerich
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -151,7 +150,7 @@ public final class CmsRequestContext {
     }
 
     /**
-     * Returns the adjusted site root for a resoure using the provided site root as a base.<p>
+     * Returns the adjusted site root for a resource using the provided site root as a base.<p>
      * 
      * Usually, this would be the site root for the current site.
      * However, if a resource from the <code>/system/</code> folder is requested,
@@ -160,11 +159,12 @@ public final class CmsRequestContext {
      * @param siteRoot the site root of the current site
      * @param resourcename the resource name to get the adjusted site root for
      * 
-     * @return the adjusted site root for the resoure
+     * @return the adjusted site root for the resource
      */
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
 
-        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+            || OpenCms.getSiteManager().startsWithShared(resourcename)) {
             return "";
         } else {
             return siteRoot;
@@ -198,11 +198,7 @@ public final class CmsRequestContext {
         if ((resourcename == null) || (siteRoot == null)) {
             return null;
         }
-        if (OpenCms.getSiteManager().startsWithShared(resourcename)) {
-            siteRoot = "";
-        } else {
             siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
-        }
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length() - 1) != '/'))
