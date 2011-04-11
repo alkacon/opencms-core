@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2011/04/11 10:38:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/11 13:42:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.net.URISyntaxException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsUriSplitter {
 
@@ -245,7 +245,7 @@ public class CmsUriSplitter {
      */
     public String getSuffix() {
 
-        if (m_suffix != null) {
+        if (m_suffix == null) {
             StringBuffer result = new StringBuffer();
             if (m_query != null) {
                 result.append('?');
