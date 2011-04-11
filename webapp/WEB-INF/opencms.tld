@@ -205,25 +205,6 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>    
-    
-    <tag>
-        <description>
-            This tag loads single XML content items for ADE formatters.
-        </description> 
-        <name>formatter</name>
-        <tag-class>org.opencms.jsp.CmsJspTagFormatter</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>var</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>            
-        </attribute>
-        <attribute>
-            <name>val</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>            
-        </attribute>      
-    </tag>        
         
     <tag>
         <description>
@@ -742,6 +723,64 @@
         </attribute>
     </tag>        
     
+    <tag>
+        <description>
+            This tag loads single XML content items for ADE formatters.
+        </description> 
+        <name>formatter</name>
+        <tag-class>org.opencms.jsp.CmsJspTagFormatter</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>val</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>      
+    </tag>        
+        
+    <tag>
+        <description>
+            This tag provides access to the navigation information.
+        </description> 
+        <name>navigation</name>
+        <tag-class>org.opencms.jsp.CmsJspTagNavigation</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>type</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>startLevel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>  
+        <attribute>
+            <name>endLevel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>    
+        <attribute>
+            <name>resource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>param</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>  
+    </tag>     
+          
     <function>
         <description>
             Provides simple access to a OpenCms JSP / EL content vfs access bean.
