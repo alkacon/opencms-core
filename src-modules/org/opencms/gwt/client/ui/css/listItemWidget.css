@@ -26,19 +26,19 @@ li div.itemContainer{
 
 
 
-@sprite .export {
+@sprite .itemIcon div.export {
 	gwt-image: "gwtImages.bigIcons.stateExportBigIcon"; 
 }
-@sprite .hidden {
+@sprite .itemIcon div.hidden {
 	gwt-image: "gwtImages.bigIcons.stateHiddenBigIcon"; 
 }
-@sprite .normal {
+@sprite .itemIcon div.normal {
 	gwt-image: "gwtImages.bigIcons.stateNormalBigIcon";
 }
-@sprite .secure {
+@sprite .itemIcon div.secure {
 	gwt-image: "gwtImages.bigIcons.stateSecureBigIcon";
 }
-@sprite .redirect { 
+@sprite .itemIcon div.redirect { 
 	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
 }
 

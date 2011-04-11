@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/11 12:41:58 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -829,7 +829,7 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /**
-     * Sets the popup's dialog position to 'fixed' 
+     * Sets the popup's dialog position to 'fixed'.<p>
      */
     protected void setPositionFixed() {
 
