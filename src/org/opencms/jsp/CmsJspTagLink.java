@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import javax.servlet.ServletRequest;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,9 +67,6 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -2361021288258405388L;
-
-    /** The value of the <code>detailview</code> attribute. */
-    private String m_detailView;
 
     /**
      * Returns a link to a file in the OpenCms VFS 
@@ -83,53 +81,54 @@ public class CmsJspTagLink extends BodyTagSupport {
      * Relative links are converted to absolute links, using the current element URI as base.<p>
      * 
      * @param target the link that should be calculated, can be relative or absolute
-     * @param detailView the optional detail view URI
      * @param req the current request
      * 
      * @return the target link adjusted according to the web application path and the OpenCms static export rules
      * 
      * @see org.opencms.staticexport.CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)
      */
-    public static String linkTagAction(String target, String detailView, ServletRequest req) {
+    public static String linkTagAction(String target, ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
-
         // be sure the link is absolute
-        String absoluteLink = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
-
-        // deal with possible anchors
-        int pos = absoluteLink.length();
-        int anchorPos = absoluteLink.lastIndexOf('#');
-        if ((anchorPos != -1) && (anchorPos < pos)) {
-            pos = anchorPos;
-        }
-        // deal with possible parameters
-        int paramPos = absoluteLink.lastIndexOf('?');
-        if ((paramPos != -1) && (paramPos < pos)) {
-            pos = paramPos;
-        }
-        // get the vfs name
-        String uri = absoluteLink.substring(0, pos);
-        // get the rest
-        String linkInfo = (pos == absoluteLink.length()) ? "" : absoluteLink.substring(pos);
-
+        String uri = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
         CmsObject cms = controller.getCmsObject();
+        uri = subsituteSitemapUri(uri, cms);
+        // generate the link
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
+    }
+
+    /**
+     * Returns the detail page link for a given uri, if the resource must be displayed with a detail page.<p>
+     * 
+     * @param uri the uri to resolve the detail page link for
+     * @param cms the current OpenCms context
+     * 
+     * @return the detail page link for a given uri, if the resource must be displayed with a detail page
+     */
+    public static String subsituteSitemapUri(String uri, CmsObject cms) {
+
+        // TODO: This method must be more public, muve up to manager level
+        // TODO: check if the uri may require detail page (ie. XMl content) before doing all the stuff with the managers
+
+        // split to include only the uri without parameters and anchors
+        CmsUriSplitter splitter = new CmsUriSplitter(uri);
+        String result = splitter.getPrefix();
+
         try {
             // check for detail view
-            CmsResource res = cms.readResource(uri);
+            CmsResource res = cms.readResource(result);
             I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
             String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
             if (detailPage != null) {
-                uri = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
+                result = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
             }
         } catch (CmsException e) {
             LOG.debug(e.getLocalizedMessage(), e);
         }
-        // append again anchors & parameters
-        uri += linkInfo;
-
-        // generate the link
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
+        // append parameters and anchors that where cut from the uri
+        result += splitter.getSuffix();
+        return result;
     }
 
     /**
@@ -151,7 +150,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, m_detailView, req);
+                String newlink = linkTagAction(link, req);
                 // Write the result back to the page                
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
@@ -167,32 +166,11 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
-     * Returns the set detail view URI.<p>
-     * 
-     * @return the set detail view URI 
-     */
-    public String getDetailview() {
-
-        return m_detailView != null ? m_detailView : "";
-    }
-
-    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {
 
         super.release();
-        m_detailView = null;
-    }
-
-    /**
-     * Sets the detail view URI.<p>
-     * 
-     * @param detailView the detail view URI to set
-     */
-    public void setDetailview(String detailView) {
-
-        m_detailView = detailView;
     }
 }

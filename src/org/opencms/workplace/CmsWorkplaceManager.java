@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2011/03/25 08:13:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,7 +206,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private List<String> m_labelSiteFolders;
 
     /** List of installed workplace locales, sorted ascending. */
-    private List m_locales;
+    private List<Locale> m_locales;
 
     /** The configured list of localized workplace folders. */
     private List<String> m_localizedFolders;
@@ -977,7 +977,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return the set of available workplace locales
      */
-    public List getLocales() {
+    public List<Locale> getLocales() {
 
         return m_locales;
     }

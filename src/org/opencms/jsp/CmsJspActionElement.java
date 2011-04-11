@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2011/03/16 09:43:28 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,7 +389,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map attributes) {
+    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes) {
 
         return img(target, scaler, attributes, false);
     }
@@ -404,7 +404,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map attributes, boolean partialTag) {
+    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes, boolean partialTag) {
 
         try {
             return CmsJspTagImage.imageTagAction(target, scaler, attributes, partialTag, getRequest());
@@ -727,7 +727,7 @@ public class CmsJspActionElement extends CmsJspBean {
             return getMessage(NOT_INITIALIZED);
         }
         try {
-            return CmsJspTagLink.linkTagAction(target, null, getRequest());
+            return CmsJspTagLink.linkTagAction(target, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }

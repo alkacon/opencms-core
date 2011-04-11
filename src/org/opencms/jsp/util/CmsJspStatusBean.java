@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -321,6 +321,8 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      * 
      * @throws JspException in case there were problems including the target
      */
+    @SuppressWarnings("unchecked")
+    // because parameterMap is based on untyped servlet API 
     public void includeTemplatePart(String target, String element, Map parameterMap) throws JspException {
 
         // store current site root and URI
@@ -502,8 +504,8 @@ public class CmsJspStatusBean extends CmsJspActionElement {
         CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
             req,
             OpenCms.getWorkplaceManager().getDefaultLocale());
-        List acceptedLocales = parser.getAcceptedLocales();
-        List workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        List<Locale> acceptedLocales = parser.getAcceptedLocales();
+        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
         m_locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
         if (m_locale == null) {
             // no match found - use OpenCms default locale

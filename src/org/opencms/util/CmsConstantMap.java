@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsConstantMap.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.3.2.1 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.util;
 
+import org.opencms.jsp.util.CmsJspContentAccessValueWrapper;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +45,7 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -62,7 +64,8 @@ public class CmsConstantMap<K, V> implements Map<K, V> {
         Boolean.TRUE);
 
     /** Constant Map that always returns an empty list. */
-    public static final Map<String, List<Object>> CONSTANT_EMPTY_LIST_MAP = new CmsConstantMap(Collections.EMPTY_LIST);
+    public static final Map<String, List<CmsJspContentAccessValueWrapper>> CONSTANT_EMPTY_LIST_MAP = new CmsConstantMap(
+        Collections.EMPTY_LIST);
 
     /** The constant Object this map always returns. */
     private V m_constant;

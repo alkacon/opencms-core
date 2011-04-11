@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.net.URISyntaxException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.3 $
  */
 public class CmsUriSplitter {
 
@@ -62,6 +62,9 @@ public class CmsUriSplitter {
 
     /** The query part of the URI, for example <code>a=b&c=d</code>. */
     private String m_query;
+
+    /** The suffix part of the uri. */
+    private String m_suffix;
 
     /** The original URI String that was split. */
     private String m_uri;
@@ -178,6 +181,7 @@ public class CmsUriSplitter {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -233,6 +237,30 @@ public class CmsUriSplitter {
     }
 
     /**
+     * Returns the suffix part of the uri, a combination of query and anchor, 
+     * for example <code>?a=b&c=d#someanchor</code>, 
+     * or the empty String if no suffix is available.<p>
+     * 
+     * @return the suffix part of the uri
+     */
+    public String getSuffix() {
+
+        if (m_suffix != null) {
+            StringBuffer result = new StringBuffer();
+            if (m_query != null) {
+                result.append('?');
+                result.append(m_query);
+            }
+            if (m_anchor != null) {
+                result.append('#');
+                result.append(m_anchor);
+            }
+            m_suffix = result.toString();
+        }
+        return m_suffix;
+    }
+
+    /**
      * Returns the URI String passed to this URI splitter.<p>
      * 
      * @return the URI String passed to this URI splitter
@@ -245,6 +273,7 @@ public class CmsUriSplitter {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         int hashCode = 0;

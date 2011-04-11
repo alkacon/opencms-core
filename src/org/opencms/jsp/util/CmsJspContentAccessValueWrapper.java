@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2011/04/05 09:35:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Node;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -185,7 +185,7 @@ public final class CmsJspContentAccessValueWrapper {
     private int m_hashCode;
 
     /** The lazy initialized Map that checks if a value is available. */
-    private Map m_hasValue;
+    private Map<String, Boolean> m_hasValue;
 
     /** The macro resolver used to resolve macros for this value. */
     private CmsMacroResolver m_macroResolver;
@@ -197,13 +197,13 @@ public final class CmsJspContentAccessValueWrapper {
     private Map<String, List<CmsJspContentAccessValueWrapper>> m_subValueList;
 
     /** The lazy initialized value Map. */
-    private Map m_value;
+    private Map<String, CmsJspContentAccessValueWrapper> m_value;
 
     /** The lazy initialized value list Map. */
-    private Map m_valueList;
+    private Map<String, List<CmsJspContentAccessValueWrapper>> m_valueList;
 
     /** The lazy initialized XML element Map. */
-    private Map m_xml;
+    private Map<String, String> m_xml;
 
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
@@ -335,10 +335,10 @@ public final class CmsJspContentAccessValueWrapper {
      * @return a lazy initialized Map that provides Booleans that 
      *      indicate if a sub value (xpath) for the current value is available in the XML content
      */
-    public Map getHasValue() {
+    public Map<String, Boolean> getHasValue() {
 
         if (m_hasValue == null) {
-            m_hasValue = LazyMap.decorate(new HashMap(), new CmsHasValueTransformer());
+            m_hasValue = LazyMap.decorate(new HashMap<String, Boolean>(), new CmsHasValueTransformer());
         }
         return m_hasValue;
     }
@@ -609,7 +609,7 @@ public final class CmsJspContentAccessValueWrapper {
      *  
      * @return a lazy initialized Map that provides a Lists of direct sub values of the current value from the XML content
      */
-    public Map getSubValueList() {
+    public Map<String, List<CmsJspContentAccessValueWrapper>> getSubValueList() {
 
         if (m_subValueList == null) {
             m_subValueList = LazyMap.decorate(new HashMap(), new CmsSubValueListTransformer());
@@ -652,7 +652,7 @@ public final class CmsJspContentAccessValueWrapper {
      *  
      * @return a lazy initialized Map that provides a sub value for the current value from the XML content
      */
-    public Map getValue() {
+    public Map<String, CmsJspContentAccessValueWrapper> getValue() {
 
         if (m_value == null) {
             m_value = LazyMap.decorate(new HashMap(), new CmsValueTransformer());
@@ -680,7 +680,7 @@ public final class CmsJspContentAccessValueWrapper {
      *  
      * @return a lazy initialized Map that provides a Lists of sub values for the current value from the XML content
      */
-    public Map getValueList() {
+    public Map<String, List<CmsJspContentAccessValueWrapper>> getValueList() {
 
         if (m_valueList == null) {
             m_valueList = LazyMap.decorate(new HashMap(), new CmsValueListTransformer());
@@ -694,7 +694,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * @return a lazy initialized Map that provides direct access to the XML element for the current value from the XML content
      */
-    public Map getXmlText() {
+    public Map<String, String> getXmlText() {
 
         if (m_xml == null) {
             m_xml = LazyMap.decorate(new HashMap(), new CmsXmlValueTransformer());

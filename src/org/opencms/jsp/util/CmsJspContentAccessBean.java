@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2011/04/07 10:06:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/11 10:38:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -164,7 +164,7 @@ public class CmsJspContentAccessBean {
         public Object transform(Object input) {
 
             Locale locale = CmsJspElFunctions.convertLocale(input);
-            Map<String, List<Object>> result;
+            Map<String, List<CmsJspContentAccessValueWrapper>> result;
             if (getRawContent().hasLocale(locale)) {
                 result = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer(locale));
             } else {
@@ -186,7 +186,7 @@ public class CmsJspContentAccessBean {
         public Object transform(Object input) {
 
             Locale locale = CmsJspElFunctions.convertLocale(input);
-            Map<String, List<Object>> result;
+            Map<String, List<CmsJspContentAccessValueWrapper>> result;
             if (getRawContent().hasLocale(locale)) {
                 result = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueListTransformer(locale));
             } else {
