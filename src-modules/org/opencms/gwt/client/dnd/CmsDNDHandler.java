@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2011/04/08 14:38:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/11 12:42:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -223,6 +223,9 @@ public class CmsDNDHandler implements MouseDownHandler {
                     if (nativeEvent.getKeyCode() == 27) {
                         cancel();
                     }
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    onMouseWheelScroll(nativeEvent);
                     break;
                 default:
                     // do nothing
@@ -702,6 +705,41 @@ public class CmsDNDHandler implements MouseDownHandler {
             m_scrollTimer.cancel();
             m_scrollTimer = null;
         }
+    }
+
+    /**
+     * Execute on mouse wheel event.<p>
+     * 
+     * @param event the native event
+     */
+    protected void onMouseWheelScroll(Event event) {
+
+        int scrollStep = event.getMouseWheelVelocityY() * 5;
+        Element scrollTarget;
+        if (getCurrentTarget() != null) {
+            scrollTarget = getCurrentTarget().getElement();
+        } else {
+            scrollTarget = RootPanel.getBodyElement();
+        }
+        while ((scrollTarget.getScrollHeight() == scrollTarget.getClientHeight())
+            && (scrollTarget != RootPanel.getBodyElement())) {
+            scrollTarget = scrollTarget.getParentElement();
+        }
+        if (scrollTarget == RootPanel.getBodyElement()) {
+            int top = Window.getScrollTop() + scrollStep;
+            int left = Window.getScrollLeft();
+            if (top < 0) {
+                top = 0;
+            }
+            Window.scrollTo(left, top);
+        } else {
+            int top = scrollTarget.getScrollTop() + scrollStep;
+            if (top < 0) {
+                top = 0;
+            }
+            scrollTarget.setScrollTop(top);
+        }
+        onMove(event);
     }
 
     /**

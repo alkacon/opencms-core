@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/03/10 07:49:43 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/04/11 12:42:33 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0
  */
@@ -882,7 +882,7 @@ public final class CmsDomUtil {
      */
     public static int getRelativeX(int x, Element target) {
 
-        return x - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
+        return x - target.getAbsoluteLeft() + /* target.getScrollLeft() + */target.getOwnerDocument().getScrollLeft();
     }
 
     /**
@@ -897,7 +897,7 @@ public final class CmsDomUtil {
      */
     public static int getRelativeY(int y, Element target) {
 
-        return y - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
+        return y - target.getAbsoluteTop() + /* target.getScrollTop() +*/target.getOwnerDocument().getScrollTop();
     }
 
     /**
