@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/04/07 15:27:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/11 15:37:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -650,6 +650,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 explorerTypeElement.addAttribute(A_NAME, settings.getName());
                 explorerTypeElement.addAttribute(A_KEY, settings.getKey());
                 explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+                if (CmsStringUtil.isNotEmpty(settings.getBigIcon())) {
+                    explorerTypeElement.addAttribute(A_BIGICON, settings.getBigIcon());
+                }
                 if (settings.getReference() != null) {
                     explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
                 }
