@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/12 15:16:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,15 +45,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.mortbay.log.Log;
-
 /**
  * This class uses information from the detail page information stored in the sitemap to find the detail page for 
  * a given resource.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,8 +84,6 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
      */
     public String getDetailPage(CmsObject cms, CmsResource res, String linkSource) throws CmsException {
-
-        Log.info("finding detail page for " + res.getRootPath() + " from " + linkSource);
 
         if (!CmsResourceTypeXmlContent.isXmlContent(res)) {
             return null;
