@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/12 14:53:46 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -82,16 +83,16 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @author Ruediger Kurz
  */
-public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit {
+public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
 
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.21 $
+     * @version $Revision: 1.22 $
      * 
      * @author Ruediger Kurz
      */
@@ -303,6 +304,14 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasKeyPressHandlers#addKeyPressHandler(com.google.gwt.event.dom.client.KeyPressHandler)
+     */
+    public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
+
+        return m_box.addHandler(handler, KeyPressEvent.getType());
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) {
@@ -394,6 +403,21 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     public boolean isEnabled() {
 
         return m_box.isEnabled();
+    }
+
+    /**
+     * Checks if the String in the date box input field is a valid date format.<p>
+     * 
+     * @return <code>true</code> if the String in the date box input field is a valid date format
+     */
+    public boolean isValideDateBox() {
+
+        try {
+            CmsDateConverter.toDate(m_box.getText());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -493,21 +517,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             updateFromPicker();
         }
         updateCloseBehavior();
-    }
-
-    /**
-     * Checks if the String in the date box input field is a valid date format.<p>
-     * 
-     * @return <code>true</code> if the String in the date box input field is a valid date format
-     */
-    protected boolean isValideDateBox() {
-
-        try {
-            CmsDateConverter.toDate(m_box.getText());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
