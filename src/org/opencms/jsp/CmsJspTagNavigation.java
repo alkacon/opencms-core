@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagNavigation.java,v $
- * Date   : $Date: 2011/04/11 15:37:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 10:37:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,35 +45,24 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  */
 public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /** Constants for <code>type</code> attribute interpretation. */
-    public enum TypeUse {
+    public enum Type {
         /** Bread crumb navigation. */
-        BREAD_CRUMB("breadCrumb"),
+        breadCrumb,
         /** Navigation for folder. */
-        FOR_FOLDER("forFolder"),
+        forFolder,
         /** Navigation for resource. */
-        FOR_RESOURCE("forResource"),
+        forResource,
         /** Navigation for a site. */
-        FOR_SITE("forSite"),
+        forSite,
         /** Navigation tree for folder. */
-        TREE_FOR_FOLDER("treeForFolder");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p>
-         * @param name the string representation of the constant  
-         **/
-        private TypeUse(String name) {
-
-            m_name = name;
-        }
+        treeForFolder;
 
         /**
          * Parses a string into an enumeration element.<p>
@@ -82,24 +71,14 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
          * 
          * @return the element with the given name or <code>null</code> if not found
          */
-        public static TypeUse parse(String name) {
+        public static Type parse(String name) {
 
-            for (TypeUse fileUse : TypeUse.values()) {
-                if (fileUse.getName().equals(name)) {
-                    return fileUse;
-                }
+            try {
+                return Enum.valueOf(Type.class, name);
+            } catch (IllegalArgumentException e) {
+                // return null
             }
             return null;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
         }
     }
 
@@ -122,7 +101,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     protected String m_startLevel;
 
     /** The navigation type. */
-    protected TypeUse m_type;
+    protected Type m_type;
 
     /**
      * Empty constructor, required for JSP tags.<p> 
@@ -197,13 +176,13 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     /**
      * Returns the selected navigation type.<p>
      * 
-     * This must match one of the elements in {@link TypeUse}.<p>
+     * This must match one of the elements in {@link Type}.<p>
      * 
      * @return the selected navigation type
      */
     public String getType() {
 
-        return m_type == null ? null : m_type.getName();
+        return m_type == null ? null : m_type.toString();
     }
 
     /**
@@ -271,14 +250,14 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     /**
      * Sets the selected navigation type.<p>
      * 
-     * This must match one of the elements in {@link TypeUse}.<p>
+     * This must match one of the elements in {@link Type}.<p>
      * 
      * @param type the navigation type to set
      */
     public void setType(String type) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(type)) {
-            m_type = TypeUse.parse(type.trim());
+            m_type = Type.parse(type.trim());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspResourceAccessBean.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/12 10:37:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 
 /**
  * Allows access to the attributes and properties of a resource, usually used inside a loop of a 
@@ -54,7 +53,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  * 
@@ -291,9 +290,8 @@ public class CmsJspResourceAccessBean {
 
         if (m_historyProperties == null) {
             // create lazy map only on demand
-            m_historyProperties = LazyMap.decorate(
-                new HashMap<String, String>(),
-                new CmsHistoryPropertyLoaderTransformer(m_resource));
+            m_historyProperties = CmsCollectionsGenericWrapper.createLazyMap(new CmsHistoryPropertyLoaderTransformer(
+                m_resource));
         }
         return m_historyProperties;
     }
@@ -315,7 +313,7 @@ public class CmsJspResourceAccessBean {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = LazyMap.decorate(new HashMap<String, String>(), new CmsPropertyLoaderTransformer(m_resource));
+            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(m_resource));
         }
         return m_properties;
     }

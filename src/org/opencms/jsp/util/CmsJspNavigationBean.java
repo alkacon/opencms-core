@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspNavigationBean.java,v $
- * Date   : $Date: 2011/04/11 15:37:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 10:37:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,15 +37,26 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagNavigation;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 
+/**
+ * Allows access to the OpenCms navigation information in combination with the
+ * <code>&lt;cms:navigation&gt;</code> tag.<p>
+ * 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 8.0
+ * 
+ * @see org.opencms.jsp.CmsJspTagContentAccess
+ */
 public class CmsJspNavigationBean {
 
     /**
@@ -125,7 +136,7 @@ public class CmsJspNavigationBean {
     protected int m_startLevel;
 
     /** The selected navigation type. */
-    protected CmsJspTagNavigation.TypeUse m_type;
+    protected CmsJspTagNavigation.Type m_type;
 
     /**
      * Base constructor.<p>
@@ -139,7 +150,7 @@ public class CmsJspNavigationBean {
      */
     public CmsJspNavigationBean(
         CmsObject cms,
-        CmsJspTagNavigation.TypeUse type,
+        CmsJspTagNavigation.Type type,
         int startLevel,
         int endLevel,
         String resource,
@@ -188,7 +199,7 @@ public class CmsJspNavigationBean {
     public Map<String, Boolean> getIsActive() {
 
         if (m_isActive == null) {
-            m_isActive = LazyMap.decorate(new HashMap<String, Boolean>(), new CmsIsActiveTransformer());
+            m_isActive = CmsCollectionsGenericWrapper.createLazyMap(new CmsIsActiveTransformer());
         }
         return m_isActive;
     }
@@ -214,7 +225,7 @@ public class CmsJspNavigationBean {
     public Map<String, Boolean> getIsParent() {
 
         if (m_isParent == null) {
-            m_isParent = LazyMap.decorate(new HashMap<String, Boolean>(), new CmsIsParentTransformer());
+            m_isParent = CmsCollectionsGenericWrapper.createLazyMap(new CmsIsParentTransformer());
         }
         return m_isParent;
     }
@@ -229,7 +240,7 @@ public class CmsJspNavigationBean {
         if (m_items == null) {
             switch (m_type) {
                 // calculate the results based on the given parameters
-                case FOR_FOLDER:
+                case forFolder:
                     if (m_startLevel == Integer.MIN_VALUE) {
                         // no start level set
                         if (m_resource == null) {
@@ -246,14 +257,14 @@ public class CmsJspNavigationBean {
                         }
                     }
                     break;
-                case FOR_SITE:
+                case forSite:
                     if (m_resource == null) {
                         m_items = m_builder.getSiteNavigation();
                     } else {
                         m_items = m_builder.getSiteNavigation(m_resource, m_startLevel);
                     }
                     break;
-                case BREAD_CRUMB:
+                case breadCrumb:
                     if (m_resource != null) {
                         // resource is set
                         m_items = m_builder.getNavigationBreadCrumb(
@@ -276,14 +287,14 @@ public class CmsJspNavigationBean {
                         }
                     }
                     break;
-                case TREE_FOR_FOLDER:
+                case treeForFolder:
                     if (m_resource == null) {
                         m_items = m_builder.getNavigationTreeForFolder(m_startLevel, m_endLevel);
                     } else {
                         m_items = m_builder.getNavigationTreeForFolder(m_resource, m_startLevel, m_endLevel);
                     }
                     break;
-                case FOR_RESOURCE:
+                case forResource:
                 default:
                     List<CmsJspNavElement> items = new ArrayList<CmsJspNavElement>(1);
                     if (m_resource == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2011/04/11 10:38:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/12 10:37:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -40,14 +41,12 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 
 import org.dom4j.Node;
 
@@ -59,7 +58,7 @@ import org.dom4j.Node;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -338,7 +337,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, Boolean> getHasValue() {
 
         if (m_hasValue == null) {
-            m_hasValue = LazyMap.decorate(new HashMap<String, Boolean>(), new CmsHasValueTransformer());
+            m_hasValue = CmsCollectionsGenericWrapper.createLazyMap(new CmsHasValueTransformer());
         }
         return m_hasValue;
     }
@@ -612,7 +611,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, List<CmsJspContentAccessValueWrapper>> getSubValueList() {
 
         if (m_subValueList == null) {
-            m_subValueList = LazyMap.decorate(new HashMap(), new CmsSubValueListTransformer());
+            m_subValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer());
         }
         return m_subValueList;
     }
@@ -655,7 +654,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, CmsJspContentAccessValueWrapper> getValue() {
 
         if (m_value == null) {
-            m_value = LazyMap.decorate(new HashMap(), new CmsValueTransformer());
+            m_value = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueTransformer());
         }
         return m_value;
     }
@@ -683,7 +682,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, List<CmsJspContentAccessValueWrapper>> getValueList() {
 
         if (m_valueList == null) {
-            m_valueList = LazyMap.decorate(new HashMap(), new CmsValueListTransformer());
+            m_valueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueListTransformer());
         }
         return m_valueList;
     }
@@ -697,7 +696,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, String> getXmlText() {
 
         if (m_xml == null) {
-            m_xml = LazyMap.decorate(new HashMap(), new CmsXmlValueTransformer());
+            m_xml = CmsCollectionsGenericWrapper.createLazyMap(new CmsXmlValueTransformer());
         }
         return m_xml;
     }

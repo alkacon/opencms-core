@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/12 10:37:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,13 +42,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 
 /**
  * Provides utility methods that allow convenient access to the OpenCms VFS, 
@@ -56,7 +55,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -92,7 +91,7 @@ public final class CmsJspVfsAccessBean {
         public Object transform(Object input) {
 
             // first read the resource using the lazy map 
-            CmsResource resource = (CmsResource)getReadResource().get(input);
+            CmsResource resource = getReadResource().get(input);
             return Boolean.valueOf((resource != null)
                 && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource)));
         }
@@ -186,11 +185,13 @@ public final class CmsJspVfsAccessBean {
          */
         public Object transform(Object input) {
 
-            Map result = null;
+            Map<String, String> result = null;
             // first read the resource using the lazy map 
-            CmsResource resource = (CmsResource)getReadResource().get(input);
+            CmsResource resource = getReadResource().get(input);
             if (resource != null) {
-                result = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderSingleTransformer(resource, m_search));
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderSingleTransformer(
+                    resource,
+                    m_search));
             }
             // result may still be null
             return (result == null) ? Collections.EMPTY_MAP : result;
@@ -252,7 +253,7 @@ public final class CmsJspVfsAccessBean {
 
             CmsJspContentAccessBean result = null;
             // first read the resource using the lazy map 
-            CmsResource resource = (CmsResource)getReadResource().get(input);
+            CmsResource resource = getReadResource().get(input);
             if ((resource != null)
                 && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource))) {
                 // make sure we have a resource that really is an XML content
@@ -269,28 +270,28 @@ public final class CmsJspVfsAccessBean {
     private CmsObject m_cms;
 
     /** Contains booleans that indicate if a resource exists in the VFS. */
-    private Map m_existsResource;
+    private Map<String, Boolean> m_existsResource;
 
     /** Contains booleans that indicate if a resource exists and is an XML content. */
-    private Map m_existsXml;
+    private Map<String, Boolean> m_existsXml;
 
     /** Links calculated for the OpenCms VFS. */
-    private Map m_links;
+    private Map<String, String> m_links;
 
     /** Resource permissions loaded from the OpenCms VFS. */
-    private Map m_permissions;
+    private Map<String, CmsPermissionSet> m_permissions;
 
     /** Properties loaded from the OpenCms VFS. */
-    private Map m_properties;
+    private Map<String, Map<String, String>> m_properties;
 
     /** Properties loaded from the OpenCms VFS with search. */
-    private Map m_propertiesSearch;
+    private Map<String, Map<String, String>> m_propertiesSearch;
 
     /** Resources loaded from the OpenCms VFS. */
-    private Map m_resources;
+    private Map<String, CmsResource> m_resources;
 
     /** XML contents read from the VFS. */
-    private Map m_xmlContent;
+    private Map<String, CmsJspContentAccessBean> m_xmlContent;
 
     /**
      * Creates a new context bean using the OpenCms context of the current user.<p>
@@ -392,7 +393,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getExistsResource()
      */
-    public Map getExists() {
+    public Map<String, Boolean> getExists() {
 
         return getExistsResource();
     }
@@ -418,11 +419,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getExists() for a short form of this method
      */
-    public Map getExistsResource() {
+    public Map<String, Boolean> getExistsResource() {
 
         if (m_existsResource == null) {
             // create lazy map only on demand
-            m_existsResource = LazyMap.decorate(new HashMap(), new CmsExistsResourceTransformer());
+            m_existsResource = CmsCollectionsGenericWrapper.createLazyMap(new CmsExistsResourceTransformer());
         }
         return m_existsResource;
     }
@@ -438,11 +439,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @return a map that lazily checks if a resources exists in the VFS and is of type XML content or XML page
      */
-    public Map getExistsXml() {
+    public Map<String, Boolean> getExistsXml() {
 
         if (m_existsXml == null) {
             // create lazy map only on demand
-            m_existsXml = LazyMap.decorate(new HashMap(), new CmsExistsXmlTransformer());
+            m_existsXml = CmsCollectionsGenericWrapper.createLazyMap(new CmsExistsXmlTransformer());
         }
         return m_existsXml;
     }
@@ -475,7 +476,7 @@ public final class CmsJspVfsAccessBean {
 
     /**
      * Returns a map that lazily calculates links to files in the OpenCms VFS, 
-     * which has been adjusted according to the web application path and the 
+     * which have been adjusted according to the web application path and the 
      * OpenCms static export rules.<p>
      * 
      * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
@@ -500,11 +501,11 @@ public final class CmsJspVfsAccessBean {
      * @see org.opencms.jsp.CmsJspActionElement#link(String)
      * @see org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)
      */
-    public Map getLink() {
+    public Map<String, String> getLink() {
 
         if (m_links == null) {
             // create lazy map only on demand
-            m_links = LazyMap.decorate(new HashMap(), new CmsVfsLinkTransformer());
+            m_links = CmsCollectionsGenericWrapper.createLazyMap(new CmsVfsLinkTransformer());
         }
         return m_links;
     }
@@ -526,7 +527,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getReadPermissions()
      */
-    public Map getPermissions() {
+    public Map<String, CmsPermissionSet> getPermissions() {
 
         return getReadPermissions();
     }
@@ -542,7 +543,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getReadProperties()
      */
-    public Map getProperty() {
+    public Map<String, Map<String, String>> getProperty() {
 
         return getReadProperties();
     }
@@ -558,7 +559,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getReadPropertiesSearch()
      */
-    public Map getPropertySearch() {
+    public Map<String, Map<String, String>> getPropertySearch() {
 
         return getReadPropertiesSearch();
     }
@@ -580,11 +581,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getPermissions() for a short form of this method
      */
-    public Map getReadPermissions() {
+    public Map<String, CmsPermissionSet> getReadPermissions() {
 
         if (m_permissions == null) {
             // create lazy map only on demand
-            m_permissions = LazyMap.decorate(new HashMap(), new CmsPermissionsLoaderTransformer());
+            m_permissions = CmsCollectionsGenericWrapper.createLazyMap(new CmsPermissionsLoaderTransformer());
         }
         return m_permissions;
     }
@@ -606,11 +607,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getProperty() for a short form of this method
      */
-    public Map getReadProperties() {
+    public Map<String, Map<String, String>> getReadProperties() {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderTransformer(false));
+            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(false));
         }
         return m_properties;
     }
@@ -632,11 +633,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getPropertySearch() for a short form of this method
      */
-    public Map getReadPropertiesSearch() {
+    public Map<String, Map<String, String>> getReadPropertiesSearch() {
 
         if (m_propertiesSearch == null) {
             // create lazy map only on demand
-            m_propertiesSearch = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderTransformer(true));
+            m_propertiesSearch = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(true));
         }
         return m_propertiesSearch;
     }
@@ -658,11 +659,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getResource() for a short form of this method
      */
-    public Map getReadResource() {
+    public Map<String, CmsResource> getReadResource() {
 
         if (m_resources == null) {
             // create lazy map only on demand
-            m_resources = LazyMap.decorate(new HashMap(), new CmsResourceLoaderTransformer());
+            m_resources = CmsCollectionsGenericWrapper.createLazyMap(new CmsResourceLoaderTransformer());
         }
         return m_resources;
     }
@@ -679,11 +680,11 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getXml() for a short form of this method
      */
-    public Map getReadXml() {
+    public Map<String, CmsJspContentAccessBean> getReadXml() {
 
         if (m_xmlContent == null) {
             // create lazy map only on demand
-            m_xmlContent = LazyMap.decorate(new HashMap(), new CmsXmlContentAccessTransformer());
+            m_xmlContent = CmsCollectionsGenericWrapper.createLazyMap(new CmsXmlContentAccessTransformer());
         }
         return m_xmlContent;
     }
@@ -715,7 +716,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getReadResource()
      */
-    public Map getResource() {
+    public Map<String, CmsResource> getResource() {
 
         return getReadResource();
     }
@@ -731,7 +732,7 @@ public final class CmsJspVfsAccessBean {
      * 
      * @see #getReadXml()
      */
-    public Map getXml() {
+    public Map<String, CmsJspContentAccessBean> getXml() {
 
         return getReadXml();
     }
