@@ -8,15 +8,17 @@
 }
 .datePickerMonthSelector { /*the month selector widget*/
 	border-bottom: 1px solid value("constants.css.borderColor");
+	width: 100%;
+}
+.datePickerMonthSelector td {
+	height: 24px;
 }
 .datePickerMonth { /*the month in the month selector widget*/ } 
 .datePickerPreviousButton { /*the previous month button*/ 
 	cursor: pointer;
-	width: 16px;
 } 
 .datePickerNextButton { /*the next month button*/ 
 	cursor: pointer;
-	width: 16px;
 } 
 .datePickerPreviousButton-up-hovering .html-face, .datePickerPreviousButton-down-hovering .html-face, .datePickerNextButton-up-hovering .html-face, .datePickerNextButton-down-hovering .html-face{
 	font-weight: bold;
@@ -52,14 +54,12 @@
 .datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
 
 .dateTime { /* Align the time panel */
-	text-align: center;
-	padding: 3px 0px 4px 0px;
+	padding: 6px;
 }
 .time { /* Format the time input field. */
-	margin: 0px 10px 0px 5px;
+	margin-right: 6px;
 	display: inline-block;
-	text-align: left;
-	vertical-align: middle;
+	vertical-align: top;
 	width: 50px;
 }
 @if user.agent ie6 { /* IE6 HACK for the inline-block */
@@ -68,8 +68,13 @@
 	}
 }
 .ampm { /* Format the am/pm outer div. */
-	margin-right: 5px;
+	margin-left: 6px;
+	vertical-align: top;
 }
-.ampm div span { /* Make a margin to separate the radiobuttons. */
+.dateTime .ampm div {
+	vertical-align: top;
+}
+.dateTime .ampm div span { /* Make a margin to separate the radiobuttons. */
 	margin-right: 1px;
+	vertical-align: top;
 }
