@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/12 09:32:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -369,6 +369,11 @@ public class CmsTree extends CmsWorkplace {
                 }
 
                 String startFolder = getStartFolder();
+                String rcSite = getCms().getRequestContext().getSiteRoot();
+                if (OpenCms.getSiteManager().startsWithShared(currentTargetFolder)
+                    && OpenCms.getSiteManager().startsWithShared(rcSite)) {
+                    currentTargetFolder = currentTargetFolder.substring(OpenCms.getSiteManager().getSharedFolder().length() - 1);
+                }
                 if ((startFolder == null) || (!currentTargetFolder.startsWith(startFolder))) {
                     // no (valid) start folder given, just load current folder        
                     try {

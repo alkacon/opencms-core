@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/12 09:32:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -636,12 +636,20 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.enableNewButton(");
         content.append(writeAccess);
         content.append(");\n");
+
         // the folder
+        String siteFolderPath = CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(
+            currentResource.getRootPath()));
+        if (OpenCms.getSiteManager().startsWithShared(siteFolderPath)
+            && OpenCms.getSiteManager().startsWithShared(getCms().getRequestContext().getSiteRoot())) {
+            siteFolderPath = siteFolderPath.substring(OpenCms.getSiteManager().getSharedFolder().length() - 1);
+        }
+
         content.append("top.setDirectory(\"");
         content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
-        content.append(CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(
-            currentResource.getRootPath())));
+        content.append(siteFolderPath);
+
         content.append("\");\n");
         content.append("top.rD();\n");
 

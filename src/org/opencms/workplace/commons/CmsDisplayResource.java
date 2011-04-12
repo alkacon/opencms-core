@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2011/02/14 11:46:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/12 09:32:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,7 +194,11 @@ public class CmsDisplayResource extends CmsDialog {
             //                    resourceStr = entry.getRootPath();
             //                }
             //            }
-
+            if (OpenCms.getSiteManager().isSharedFolder(getCms().getRequestContext().getSiteRoot())) {
+                if (!OpenCms.getSiteManager().startsWithShared(resourceStr)) {
+                    resourceStr = CmsStringUtil.joinPaths(OpenCms.getSiteManager().getSharedFolder(), resourceStr);
+                }
+            }
             String url = getJsp().link(resourceStr);
             // if in online project
             if ((url.indexOf("://") < 0) && getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
@@ -302,7 +306,7 @@ public class CmsDisplayResource extends CmsDialog {
     private String prependSiteRoot(String url) {
 
         String site = getCms().getRequestContext().getSiteRoot();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(site) || OpenCms.getSiteManager().isSharedFolder(site)) {
             site = OpenCms.getSiteManager().getDefaultUri();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)
                 || (OpenCms.getSiteManager().getSiteForSiteRoot(site) == null)) {

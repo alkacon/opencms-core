@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/12 09:32:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -555,7 +555,25 @@ public abstract class CmsWorkplace {
             startFolder = "/";
             settings.getUserSettings().setStartFolder(startFolder);
         }
-        settings.setExplorerResource(startFolder, cms);
+
+        if (OpenCms.getSiteManager().startsWithShared(cms.getRequestContext().getSiteRoot())) {
+
+            // For some reason, the request context of the CmsObject is different from siteRoot 
+            // when the user changes his preferences while in the shared folder. This would lead
+            // to problems because setExplorerResource uses both the site from the settings and
+            // the site from the CmsObject. To prevent this, we temporarily set the CmsObject's site
+            // root to the site root from the settings.
+
+            String contextSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+                settings.setExplorerResource(startFolder, cms);
+            } finally {
+                cms.getRequestContext().setSiteRoot(contextSiteRoot);
+            }
+        } else {
+            settings.setExplorerResource(startFolder, cms);
+        }
 
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
