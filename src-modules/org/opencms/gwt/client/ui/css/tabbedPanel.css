@@ -180,21 +180,6 @@
 	height: auto;
 	cursor: default;
 }
-@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "inputImages.buttonDisabledBackground"; 
-	background-position: 50% 50%;
-	height: auto;
-	cursor: default;
-}
-@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab-selected:hover {
-	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
-	cursor: default;
-}
-@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab-selected{    
-	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
-	cursor: default;
+.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+	color:value("constants.css.textColorDisabledButton") !important;
 }
