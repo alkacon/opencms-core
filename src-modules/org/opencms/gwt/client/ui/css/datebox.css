@@ -12,8 +12,11 @@
 }
 .datePickerMonthSelector td {
 	height: 24px;
+	width: 20px;
 }
-.datePickerMonth { /*the month in the month selector widget*/ } 
+.datePickerMonthSelector td.datePickerMonth { /*the month in the month selector widget*/
+	width: auto;
+} 
 .datePickerPreviousButton { /*the previous month button*/ 
 	cursor: pointer;
 } 
