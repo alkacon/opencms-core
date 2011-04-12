@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/04/11 15:30:04 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/12 10:48:37 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.
  */
@@ -82,7 +82,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.43 $
+     * @version $Revision: 1.44 $
      * 
      * @since 8.0.0
      */
@@ -332,13 +332,19 @@ public class CmsResultsTab extends A_CmsListTab {
     public void showNoParamsMessage() {
 
         if (m_noParamsMessage == null) {
+
             StringBuffer buf = new StringBuffer();
             buf.append("<div class=\"");
             buf.append(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().noParamsMessage());
             buf.append(" ");
             buf.append(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
             buf.append("\">");
+            buf.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            buf.append("<tr><td></td><td>");
             buf.append("Please select at least one search parameter!");
+            buf.append("</td></tr>");
+            buf.append("</table>");
+
             buf.append("</div>");
             m_noParamsMessage = new HTML(buf.toString());
         }

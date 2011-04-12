@@ -146,5 +146,21 @@
     border:1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorDialog");
     margin: 6px;
-    padding: 6px;
+    padding: 15px;
+}
+.noParamsMessage > table {
+	height: 90px;
+	margin: auto;
+}
+@sprite .noParamsMessage > table > tbody > tr > td:first-child {
+	gwt-image: "gwtImages.informationBigImage";
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	vertical-align: middle;
+	padding: 0px;
+	width: 32px;
+}
+.noParamsMessage > table > tbody > tr > td {
+	vertical-align: middle;
+	padding-left: 15px;
 }
