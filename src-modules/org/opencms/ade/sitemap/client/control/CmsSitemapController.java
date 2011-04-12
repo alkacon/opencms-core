@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/04/12 09:39:17 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,6 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,7 +90,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 8.0.0
  */
@@ -148,9 +147,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
 
         m_hiddenProperties = new HashSet<String>();
-        m_hiddenProperties.add(CmsSitemapManager.Property.internalRedirect.toString());
-        m_hiddenProperties.add(CmsSitemapManager.Property.externalRedirect.toString());
-        m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
         m_detailPageTable = m_data.getDetailPageTable();
         m_data.getRoot().initializeAll(this);
         m_eventBus = new SimpleEventBus();

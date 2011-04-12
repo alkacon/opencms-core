@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/04/12 09:39:17 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0 
  */
@@ -82,12 +81,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
         /** An entry of type sub-sitemap is a reference to a sub-sitemap. */
         subSitemap
     }
-
-    /** Key for the "externalRedirect" property. */
-    protected static final String EXTERNAL_REDIRECT = CmsSitemapManager.Property.externalRedirect.getName();
-
-    /** Key for the "internalRedirect" property. */
-    protected static final String INTERNAL_REDIRECT = CmsSitemapManager.Property.internalRedirect.getName();
 
     /** The cached export name. */
     private String m_cachedExportName;
@@ -179,22 +172,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setEntryType(clone.getEntryType());
         setInNavigation(clone.isInNavigation());
         setResourceTypeName(clone.getResourceTypeName());
-    }
-
-    /**
-     * Static utility method for copying redirect info from a bean to a property map.<p>
-     * 
-     * @param properties the target property map
-     * @param info the bean which contains the redirect info 
-     */
-    public static void setRedirect(Map<String, String> properties, CmsLinkBean info) {
-
-        properties.put(EXTERNAL_REDIRECT, null);
-        properties.put(INTERNAL_REDIRECT, null);
-        if (info != null) {
-            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
-            properties.put(key, info.getLink());
-        }
     }
 
     /**
