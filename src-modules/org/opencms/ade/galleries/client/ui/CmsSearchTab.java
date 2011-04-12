@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/03/07 10:19:42 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/12 14:54:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,21 +43,27 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Provides the widget for the full text search tab.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -78,11 +84,31 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
-     * The listener for the search tab.<p>
+     * The date box change handler.<p>
+     * 
+     * Used for all date boxes inside the search tab.<p>
      * 
      * Delegates the methods to the search tab handler.<p>
      */
-    protected class DateBoxChangeHandler implements ValueChangeHandler<Date> {
+    protected class DateBoxChangeHandler implements ValueChangeHandler<Date>, KeyPressHandler {
+
+        /**
+         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+         */
+        public void onKeyPress(KeyPressEvent event) {
+
+            UIObject source = (UIObject)event.getSource();
+            Element el = source.getElement();
+            if (m_dateCreatedStartDateBox.getElement().isOrHasChild(el)) {
+                Scheduler.get().scheduleDeferred(new DateChangeCommand(m_dateCreatedStartDateBox));
+            } else if (m_dateCreatedEndDateBox.getElement().isOrHasChild(el)) {
+                Scheduler.get().scheduleDeferred(new DateChangeCommand(m_dateCreatedEndDateBox));
+            } else if (m_dateModifiedStartDateBox.getElement().isOrHasChild(el)) {
+                Scheduler.get().scheduleDeferred(new DateChangeCommand(m_dateModifiedStartDateBox));
+            } else if (m_dateModifiedEndDateBox.getElement().isOrHasChild(el)) {
+                Scheduler.get().scheduleDeferred(new DateChangeCommand(m_dateModifiedEndDateBox));
+            }
+        }
 
         /**
          * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
@@ -129,21 +155,75 @@ public class CmsSearchTab extends A_CmsTab {
                 }
             }
         }
+    }
 
+    /**
+     * Scheduled command implementation for the date boxes that fires a value change event for the given date box.<p>
+     */
+    protected class DateChangeCommand implements ScheduledCommand {
+
+        /** The date box to use as source. */
+        private CmsDateBox m_dateBox;
+
+        /**
+         * The constructor.<p>
+         * 
+         * @param dateBox the date box to use as source for the value change event
+         */
+        public DateChangeCommand(CmsDateBox dateBox) {
+
+            m_dateBox = dateBox;
+        }
+
+        /**
+         * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+         */
+        public void execute() {
+
+            if (m_dateBox.isValideDateBox()) {
+                ValueChangeEvent.fire(m_dateBox, m_dateBox.getValue());
+            } else {
+                ValueChangeEvent.fire(m_dateBox, null);
+            }
+        }
     }
 
     /**
      * Implements the ValueChangeHandler for the query input field.<p>
      */
-    protected class QueryChangedHandler implements ValueChangeHandler<String> {
+    protected class QueryChangedHandler implements ValueChangeHandler<String>, KeyPressHandler {
+
+        /**
+         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+         */
+        public void onKeyPress(final KeyPressEvent event) {
+
+            UIObject source = (UIObject)event.getSource();
+            if (m_searchInput.getElement().isOrHasChild(source.getElement())) {
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
+                    }
+                });
+            }
+        }
 
         /**
          * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
          */
         public void onValueChange(ValueChangeEvent<String> event) {
 
-            m_tabHandler.setSearchQuery(event.getValue());
-
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(event.getValue()) && (event.getValue().length() >= 3)) {
+                m_tabHandler.setSearchQuery(event.getValue());
+            } else {
+                m_tabHandler.setSearchQuery(null);
+            }
         }
     }
 
@@ -206,11 +286,11 @@ public class CmsSearchTab extends A_CmsTab {
     /** The tab handler. */
     CmsSearchTabHandler m_tabHandler;
 
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
-
     /** The parent popup to this dialog if present. */
     private I_CmsAutoHider m_autoHideParent;
+
+    /** The search parameter panel for this tab. */
+    private CmsSearchParamPanel m_paramPanel;
 
     /** The tab panel. */
     private HTMLPanel m_tab;
@@ -236,6 +316,7 @@ public class CmsSearchTab extends A_CmsTab {
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
         QueryChangedHandler queryHandler = new QueryChangedHandler();
         m_searchInput.addValueChangeHandler(queryHandler);
+        m_searchInput.addKeyPressHandler(queryHandler);
 
         // set the labels for the date box widgets
         m_dateCreatedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0));
@@ -252,9 +333,13 @@ public class CmsSearchTab extends A_CmsTab {
         // add the handler to the according date box widgets
         DateBoxChangeHandler handler = new DateBoxChangeHandler();
         m_dateCreatedStartDateBox.addValueChangeHandler(handler);
+        m_dateCreatedStartDateBox.addKeyPressHandler(handler);
         m_dateCreatedEndDateBox.addValueChangeHandler(handler);
+        m_dateCreatedEndDateBox.addKeyPressHandler(handler);
         m_dateModifiedStartDateBox.addValueChangeHandler(handler);
+        m_dateModifiedStartDateBox.addKeyPressHandler(handler);
         m_dateModifiedEndDateBox.addValueChangeHandler(handler);
+        m_dateModifiedEndDateBox.addKeyPressHandler(handler);
 
         // add the clear button
         m_clearButton.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_BUTTON_CLEAR_0));
