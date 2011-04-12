@@ -780,7 +780,29 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
     </tag>     
-          
+                    
+    <tag>
+        <description>
+            Provides access to the settings of an ADE container element.
+        </description>
+        <name>elementsetting</name>
+        <tag-class>org.opencms.jsp.CmsJspTagElementSetting</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>escapeHtml</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>         
+        <attribute>
+            <name>default</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute> 
+    </tag>     
+              
     <function>
         <description>
             Provides simple access to a OpenCms JSP / EL content vfs access bean.

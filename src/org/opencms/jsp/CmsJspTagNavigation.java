@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagNavigation.java,v $
- * Date   : $Date: 2011/04/12 10:37:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/12 15:18:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */
@@ -67,18 +67,15 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
         /**
          * Parses a string into an enumeration element.<p>
          * 
-         * @param name the name of the element
+         * @param name the name of the enumeration element
          * 
-         * @return the element with the given name or <code>null</code> if not found
+         * @return the enumeration element with the given name
+         * 
+         * @throws IllegalArgumentException in case of an invalid enumeration name
          */
-        public static Type parse(String name) {
+        public static Type parse(String name) throws IllegalArgumentException {
 
-            try {
-                return Enum.valueOf(Type.class, name);
-            } catch (IllegalArgumentException e) {
-                // return null
-            }
-            return null;
+            return Enum.valueOf(Type.class, name);
         }
     }
 
@@ -270,7 +267,6 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
         CmsFlexController controller = CmsFlexController.getController(pageContext.getRequest());
         m_cms = controller.getCmsObject();
 
-        int todo; // provide error handling in case of wrong "type" or other parameters
         int startLevel = m_startLevel == null ? Integer.MIN_VALUE : Integer.parseInt(m_startLevel);
         int endLevel = m_endLevel == null ? Integer.MIN_VALUE : Integer.parseInt(m_endLevel);
 

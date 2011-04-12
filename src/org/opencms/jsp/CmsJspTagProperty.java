@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/12 15:18:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,13 @@
 
 package org.opencms.jsp;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,8 +112,6 @@ public class CmsJspTagProperty extends TagSupport {
     /** Constants for <code>file</code> attribute interpretation. */
     private enum FileUse {
 
-        /** Use container element. */
-        CONTAINER("container"),
         /** Use element uri. */
         ELEMENT_URI("element.uri"),
         /** Use parent (same as {@link #URI}). */
@@ -242,20 +236,6 @@ public class CmsJspTagProperty extends TagSupport {
                     vfsUri = controller.getCurrentRequest().getElementUri();
                     search = true;
                     break;
-                case CONTAINER:
-                    CmsObject cms = controller.getCmsObject();
-                    // try to find property on the container element
-                    try {
-                        CmsContainerElementBean currentElement = OpenCms.getADEManager().getCurrentElement(req);
-                        return CmsXmlContentPropertyHelper.mergeDefaults(
-                            cms,
-                            cms.readResource(currentElement.getElementId()),
-                            currentElement.getProperties());
-                    } catch (CmsException e) {
-                        // most likely we are not in a container page
-                        LOG.debug(e.getLocalizedMessage(), e);
-                        return new HashMap<String, String>();
-                    }
                 default:
                     // just to prevent the warning since all cases are handled
             }
@@ -282,8 +262,7 @@ public class CmsJspTagProperty extends TagSupport {
      * @param escape if the result html should be escaped or not
      * @param req the current request
      * 
-     * @return String the value of the property or <code>null</code> if not found (and no
-     *      defaultValue provided)
+     * @return the value of the property or <code>null</code> if not found (and no defaultValue was provided)
      *      
      * @throws CmsException if something goes wrong
      */
