@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/04/12 14:53:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/12 15:14:40 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @author Ruediger Kurz
  */
@@ -92,7 +92,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.22 $
+     * @version $Revision: 1.23 $
      * 
      * @author Ruediger Kurz
      */
@@ -768,6 +768,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             date = new Date();
         }
         m_picker.setValue(date, fireEvents);
+        m_picker.setCurrentMonth(date);
         m_time.setText(CmsDateConverter.cutSuffix(CmsDateConverter.getTime(date)).trim());
         if (CmsDateConverter.isAm(date)) {
             m_ampmGroup.selectButton(m_am);
