@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2011/04/12 10:37:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/12 12:10:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsCollectionUtil;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.commons.collections.Transformer;
+import com.google.common.base.Function;
 
 /**
  * Provides utility methods that allow convenient access to the OpenCms VFS, 
@@ -55,7 +55,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -67,12 +67,12 @@ public final class CmsJspVfsAccessBean {
      * Provides Booleans that indicate if a specified resource exists in the OpenCms VFS,  
      * the input is used as String for the resource name to read.<p>
      */
-    public class CmsExistsResourceTransformer implements Transformer {
+    public class CmsExistsResourceFunction implements Function<String, Boolean> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public Boolean apply(String input) {
 
             return Boolean.valueOf(getReadResource().get(input) != null);
         }
@@ -83,12 +83,12 @@ public final class CmsJspVfsAccessBean {
      * and is of type XML content or XML page,
      * the input is used as String for the resource name to read.<p>
      */
-    public class CmsExistsXmlTransformer implements Transformer {
+    public class CmsExistsXmlFunction implements Function<String, Boolean> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public Boolean apply(String input) {
 
             // first read the resource using the lazy map 
             CmsResource resource = getReadResource().get(input);
@@ -98,20 +98,20 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that loads a resource permission from the OpenCms VFS, 
+     * Function that loads a resource permission from the OpenCms VFS, 
      * the input is used as String for the resource name to read the permissions for.<p>
      */
-    public class CmsPermissionsLoaderTransformer implements Transformer {
+    public class CmsPermissionsLoaderFunction implements Function<String, CmsPermissionSet> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public CmsPermissionSet apply(String input) {
 
             CmsPermissionSet result;
             try {
                 // read the requested resource permissions
-                result = getCmsObject().getPermissions((String)input);
+                result = getCmsObject().getPermissions(input);
             } catch (CmsException e) {
                 // unable to read resource, return null
                 result = null;
@@ -121,10 +121,48 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that a properties of a resource from the OpenCms VFS, 
+     * Function that loads properties of a resource from the OpenCms VFS with another lazy map, 
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsPropertyLoaderFunction implements Function<String, Map<String, String>> {
+
+        /** Indicates if properties should be searched when loaded. */
+        private boolean m_search;
+
+        /**
+         * Creates a new property loading Function.<p>
+         * 
+         * @param search indicates if properties should be searched when loaded
+         */
+        public CmsPropertyLoaderFunction(boolean search) {
+
+            m_search = search;
+        }
+
+        /**
+         * @see com.google.common.base.Function#apply(java.lang.Object)
+         */
+        public Map<String, String> apply(String input) {
+
+            Map<String, String> result = null;
+            // first read the resource using the lazy map 
+            CmsResource resource = getReadResource().get(input);
+            if (resource != null) {
+                result = CmsCollectionUtil.makeComputingMap(new CmsPropertyLoaderSingleFunction(resource, m_search));
+            }
+            // result may still be null
+            if (result == null) {
+                result = Collections.emptyMap();
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Function that a properties of a resource from the OpenCms VFS, 
      * the input is used as String for the property name to read.<p>
      */
-    public class CmsPropertyLoaderSingleTransformer implements Transformer {
+    public class CmsPropertyLoaderSingleFunction implements Function<String, String> {
 
         /** The resource where the properties are read from. */
         private CmsResource m_resource;
@@ -133,21 +171,21 @@ public final class CmsJspVfsAccessBean {
         private boolean m_search;
 
         /**
-         * Creates a new property loading Transformer.<p>
+         * Creates a new property loading Function.<p>
          * 
          * @param resource the resource where the properties are read from
          * @param search indicates if properties should be searched when loaded
          */
-        public CmsPropertyLoaderSingleTransformer(CmsResource resource, boolean search) {
+        public CmsPropertyLoaderSingleFunction(CmsResource resource, boolean search) {
 
             m_resource = resource;
             m_search = search;
         }
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public String apply(String input) {
 
             String result;
             try {
@@ -162,52 +200,15 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that loads properties of a resource from the OpenCms VFS with another lazy map, 
+     * Function that loads a resource from the OpenCms VFS, 
      * the input is used as String for the resource name to read.<p>
      */
-    public class CmsPropertyLoaderTransformer implements Transformer {
-
-        /** Indicates if properties should be searched when loaded. */
-        private boolean m_search;
+    public class CmsResourceLoaderFunction implements Function<String, CmsResource> {
 
         /**
-         * Creates a new property loading Transformer.<p>
-         * 
-         * @param search indicates if properties should be searched when loaded
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public CmsPropertyLoaderTransformer(boolean search) {
-
-            m_search = search;
-        }
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
-
-            Map<String, String> result = null;
-            // first read the resource using the lazy map 
-            CmsResource resource = getReadResource().get(input);
-            if (resource != null) {
-                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderSingleTransformer(
-                    resource,
-                    m_search));
-            }
-            // result may still be null
-            return (result == null) ? Collections.EMPTY_MAP : result;
-        }
-    }
-
-    /**
-     * Transformer that loads a resource from the OpenCms VFS, 
-     * the input is used as String for the resource name to read.<p>
-     */
-    public class CmsResourceLoaderTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
+        public CmsResource apply(String input) {
 
             CmsResource result;
             try {
@@ -222,18 +223,18 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that calculates links to resources in the OpenCms VFS, 
+     * Function that calculates links to resources in the OpenCms VFS, 
      * the input is used as String for the resource name to use as link target.<p>
      * 
      * This is using the same logic as 
      * {@link org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)}.<p>
      */
-    public class CmsVfsLinkTransformer implements Transformer {
+    public class CmsVfsLinkFunction implements Function<String, String> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public String apply(String input) {
 
             return OpenCms.getLinkManager().substituteLink(
                 getCmsObject(),
@@ -244,12 +245,12 @@ public final class CmsJspVfsAccessBean {
     /**
      * Provides XML content access beans for VFS resources.<p>
      */
-    public class CmsXmlContentAccessTransformer implements Transformer {
+    public class CmsXmlContentAccessFunction implements Function<String, CmsJspContentAccessBean> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public CmsJspContentAccessBean apply(String input) {
 
             CmsJspContentAccessBean result = null;
             // first read the resource using the lazy map 
@@ -423,7 +424,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_existsResource == null) {
             // create lazy map only on demand
-            m_existsResource = CmsCollectionsGenericWrapper.createLazyMap(new CmsExistsResourceTransformer());
+            m_existsResource = CmsCollectionUtil.makeComputingMap(new CmsExistsResourceFunction());
         }
         return m_existsResource;
     }
@@ -443,7 +444,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_existsXml == null) {
             // create lazy map only on demand
-            m_existsXml = CmsCollectionsGenericWrapper.createLazyMap(new CmsExistsXmlTransformer());
+            m_existsXml = CmsCollectionUtil.makeComputingMap(new CmsExistsXmlFunction());
         }
         return m_existsXml;
     }
@@ -505,7 +506,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_links == null) {
             // create lazy map only on demand
-            m_links = CmsCollectionsGenericWrapper.createLazyMap(new CmsVfsLinkTransformer());
+            m_links = CmsCollectionUtil.makeComputingMap(new CmsVfsLinkFunction());
         }
         return m_links;
     }
@@ -585,7 +586,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_permissions == null) {
             // create lazy map only on demand
-            m_permissions = CmsCollectionsGenericWrapper.createLazyMap(new CmsPermissionsLoaderTransformer());
+            m_permissions = CmsCollectionUtil.makeComputingMap(new CmsPermissionsLoaderFunction());
         }
         return m_permissions;
     }
@@ -611,7 +612,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(false));
+            m_properties = CmsCollectionUtil.makeComputingMap(new CmsPropertyLoaderFunction(false));
         }
         return m_properties;
     }
@@ -637,7 +638,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_propertiesSearch == null) {
             // create lazy map only on demand
-            m_propertiesSearch = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(true));
+            m_propertiesSearch = CmsCollectionUtil.makeComputingMap(new CmsPropertyLoaderFunction(true));
         }
         return m_propertiesSearch;
     }
@@ -663,7 +664,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_resources == null) {
             // create lazy map only on demand
-            m_resources = CmsCollectionsGenericWrapper.createLazyMap(new CmsResourceLoaderTransformer());
+            m_resources = CmsCollectionUtil.makeComputingMap(new CmsResourceLoaderFunction());
         }
         return m_resources;
     }
@@ -684,7 +685,7 @@ public final class CmsJspVfsAccessBean {
 
         if (m_xmlContent == null) {
             // create lazy map only on demand
-            m_xmlContent = CmsCollectionsGenericWrapper.createLazyMap(new CmsXmlContentAccessTransformer());
+            m_xmlContent = CmsCollectionUtil.makeComputingMap(new CmsXmlContentAccessFunction());
         }
         return m_xmlContent;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2011/04/12 10:37:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/12 12:10:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsCollectionUtil;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -46,9 +46,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections.Transformer;
-
 import org.dom4j.Node;
+
+import com.google.common.base.Function;
 
 /**
  * Allows direct access to XML content values, with possible iteration of sub-nodes.<p>
@@ -58,7 +58,7 @@ import org.dom4j.Node;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -71,12 +71,12 @@ public final class CmsJspContentAccessValueWrapper {
      * Provides a Map with Booleans that 
      * indicate if a nested sub value (xpath) for the current value is available in the XML content.<p>
      */
-    public class CmsHasValueTransformer implements Transformer {
+    public class CmsHasValueFunction implements Function<String, Boolean> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public Boolean apply(String input) {
 
             return Boolean.valueOf(obtainContentValue().getDocument().hasValue(
                 createPath(input),
@@ -88,39 +88,14 @@ public final class CmsJspContentAccessValueWrapper {
      * Provides a Map which lets the user access nested sub value Lists directly below the current value, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsSubValueListTransformer implements Transformer {
+    public class CmsSubValueListFunction implements Function<String, List<CmsJspContentAccessValueWrapper>> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public List<CmsJspContentAccessValueWrapper> apply(String input) {
 
             List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getSubValues(
-                createPath(input),
-                obtainContentValue().getLocale());
-            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
-            Iterator<I_CmsXmlContentValue> i = values.iterator();
-            while (i.hasNext()) {
-                // must iterate values from XML content and create wrapper for each 
-                I_CmsXmlContentValue value = i.next();
-                result.add(createWrapper(obtainCmsObject(), value));
-            }
-            return result;
-        }
-    }
-
-    /**
-     * Provides a Map which lets the user access nested sub value Lists from the current value, 
-     * the input is assumed to be a String that represents an xpath in the XML content.<p>
-     */
-    public class CmsValueListTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
-
-            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getValues(
                 createPath(input),
                 obtainContentValue().getLocale());
             List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
@@ -138,12 +113,12 @@ public final class CmsJspContentAccessValueWrapper {
      * Provides a Map which lets the user a nested sub value from the current value, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsValueTransformer implements Transformer {
+    public class CmsValueFunction implements Function<String, CmsJspContentAccessValueWrapper> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public CmsJspContentAccessValueWrapper apply(String input) {
 
             I_CmsXmlContentValue value = obtainContentValue().getDocument().getValue(
                 createPath(input),
@@ -153,17 +128,42 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Provides a Map which lets the user access nested sub value Lists from the current value, 
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsValueListFunction implements Function<String, List<CmsJspContentAccessValueWrapper>> {
+
+        /**
+         * @see com.google.common.base.Function#apply(java.lang.Object)
+         */
+        public List<CmsJspContentAccessValueWrapper> apply(String input) {
+
+            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getValues(
+                createPath(input),
+                obtainContentValue().getLocale());
+            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
+            Iterator<I_CmsXmlContentValue> i = values.iterator();
+            while (i.hasNext()) {
+                // must iterate values from XML content and create wrapper for each 
+                I_CmsXmlContentValue value = i.next();
+                result.add(createWrapper(obtainCmsObject(), value));
+            }
+            return result;
+        }
+    }
+
+    /**
      * Provides a Map which lets the user directly access sub-nodes of the XML represented by the current value,
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsXmlValueTransformer implements Transformer {
+    public class CmsXmlValueFunction implements Function<String, String> {
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public String apply(String input) {
 
-            Node node = obtainContentValue().getElement().selectSingleNode(input.toString());
+            Node node = obtainContentValue().getElement().selectSingleNode(input);
             if (node != null) {
                 return node.getStringValue();
             }
@@ -337,7 +337,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, Boolean> getHasValue() {
 
         if (m_hasValue == null) {
-            m_hasValue = CmsCollectionsGenericWrapper.createLazyMap(new CmsHasValueTransformer());
+            m_hasValue = CmsCollectionUtil.makeComputingMap(new CmsHasValueFunction());
         }
         return m_hasValue;
     }
@@ -611,7 +611,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, List<CmsJspContentAccessValueWrapper>> getSubValueList() {
 
         if (m_subValueList == null) {
-            m_subValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer());
+            m_subValueList = CmsCollectionUtil.makeComputingMap(new CmsSubValueListFunction());
         }
         return m_subValueList;
     }
@@ -654,7 +654,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, CmsJspContentAccessValueWrapper> getValue() {
 
         if (m_value == null) {
-            m_value = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueTransformer());
+            m_value = CmsCollectionUtil.makeComputingMap(new CmsValueFunction());
         }
         return m_value;
     }
@@ -682,7 +682,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, List<CmsJspContentAccessValueWrapper>> getValueList() {
 
         if (m_valueList == null) {
-            m_valueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueListTransformer());
+            m_valueList = CmsCollectionUtil.makeComputingMap(new CmsValueListFunction());
         }
         return m_valueList;
     }
@@ -696,7 +696,7 @@ public final class CmsJspContentAccessValueWrapper {
     public Map<String, String> getXmlText() {
 
         if (m_xml == null) {
-            m_xml = CmsCollectionsGenericWrapper.createLazyMap(new CmsXmlValueTransformer());
+            m_xml = CmsCollectionUtil.makeComputingMap(new CmsXmlValueFunction());
         }
         return m_xml;
     }
@@ -778,14 +778,14 @@ public final class CmsJspContentAccessValueWrapper {
     /**
      * Returns the path to the XML content based on the current element path.<p>
      * 
-     * This is used to create xpath information for sub-elements in the transformers.<p>
+     * This is used to create xpath information for sub-elements in the functions.<p>
      * 
      * @param input the additional path that is appended to the current path
      * 
      * @return the path to the XML content based on the current element path
      */
-    protected String createPath(Object input) {
+    protected String createPath(String input) {
 
-        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
+        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), input);
     }
 }

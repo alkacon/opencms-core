@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspResourceAccessBean.java,v $
- * Date   : $Date: 2011/04/12 10:37:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 12:10:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsCollectionUtil;
 
 import java.util.Map;
 
-import org.apache.commons.collections.Transformer;
+import com.google.common.base.Function;
 
 /**
  * Allows access to the attributes and properties of a resource, usually used inside a loop of a 
@@ -53,7 +53,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  * 
@@ -62,29 +62,29 @@ import org.apache.commons.collections.Transformer;
 public class CmsJspResourceAccessBean {
 
     /**
-     * Transformer that reads a history resource property, 
+     * Function that reads a history resource property, 
      * the input is used as String for the history property name to read.<p>
      */
-    private class CmsHistoryPropertyLoaderTransformer implements Transformer {
+    private class CmsHistoryPropertyLoaderFunction implements Function<String, String> {
 
         /** The resource where the properties are read from. */
         private I_CmsHistoryResource m_res;
 
         /**
-         * Creates a new property loading Transformer.<p>
+         * Creates a new property loading Function.<p>
          * 
          * @param resource the resource where the properties are read from
          */
-        public CmsHistoryPropertyLoaderTransformer(CmsResource resource) {
+        public CmsHistoryPropertyLoaderFunction(CmsResource resource) {
 
             m_res = (I_CmsHistoryResource)resource;
 
         }
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public String apply(String input) {
 
             String result;
             try {
@@ -99,29 +99,29 @@ public class CmsJspResourceAccessBean {
     }
 
     /**
-     * Transformer that reads a resource property, 
+     * Function that reads a resource property, 
      * the input is used as String for the property name to read.<p>
      */
-    private class CmsPropertyLoaderTransformer implements Transformer {
+    private class CmsPropertyLoaderFunction implements Function<String, String> {
 
         /** The resource where the properties are read from. */
         private CmsResource m_res;
 
         /**
-         * Creates a new property loading Transformer.<p>
+         * Creates a new property loading Function.<p>
          * 
          * @param resource the resource where the properties are read from
          */
-        public CmsPropertyLoaderTransformer(CmsResource resource) {
+        public CmsPropertyLoaderFunction(CmsResource resource) {
 
             m_res = resource;
 
         }
 
         /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         * @see com.google.common.base.Function#apply(java.lang.Object)
          */
-        public Object transform(Object input) {
+        public String apply(String input) {
 
             String result;
             try {
@@ -290,8 +290,7 @@ public class CmsJspResourceAccessBean {
 
         if (m_historyProperties == null) {
             // create lazy map only on demand
-            m_historyProperties = CmsCollectionsGenericWrapper.createLazyMap(new CmsHistoryPropertyLoaderTransformer(
-                m_resource));
+            m_historyProperties = CmsCollectionUtil.makeComputingMap(new CmsHistoryPropertyLoaderFunction(m_resource));
         }
         return m_historyProperties;
     }
@@ -313,7 +312,7 @@ public class CmsJspResourceAccessBean {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(m_resource));
+            m_properties = CmsCollectionUtil.makeComputingMap(new CmsPropertyLoaderFunction(m_resource));
         }
         return m_properties;
     }
