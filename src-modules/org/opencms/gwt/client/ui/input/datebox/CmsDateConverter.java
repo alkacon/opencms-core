@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateConverter.java,v $
- * Date   : $Date: 2010/07/07 15:19:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 14:52:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -171,9 +171,8 @@ public final class CmsDateConverter {
     public static Date toDate(final String dateText) throws Exception {
 
         Date date = null;
-
         if (dateText.length() > 0) {
-            date = Z_DATETIME_FORMAT.parse(dateText);
+            date = Z_DATETIME_FORMAT.parse(dateText.trim());
             if (!validateDate(date)) {
                 throw new IllegalArgumentException();
             }
@@ -229,17 +228,31 @@ public final class CmsDateConverter {
     public static native boolean validateTime(String time) /*-{
         var hasMeridian = false;
         var re = /^\d{1,2}[:]\d{2}([:]\d{2})?( [aApP][mM]?)?$/;
-        if (!re.test(time)) { return false; }
-        if (time.toLowerCase().indexOf("p") != -1) { hasMeridian = true; }
-        if (time.toLowerCase().indexOf("a") != -1) { hasMeridian = true; }
-        var values = time.split(":");
-        if ( (parseFloat(values[0]) < 0) || (parseFloat(values[0]) > 23) ) { return false; }
-        if (hasMeridian) {
-        if ( (parseFloat(values[0]) < 1) || (parseFloat(values[0]) > 12) ) { return false; }
+        if (!re.test(time)) {
+            return false;
         }
-        if ( (parseFloat(values[1]) < 0) || (parseFloat(values[1]) > 59) ) { return false; }
+        if (time.toLowerCase().indexOf("p") != -1) {
+            hasMeridian = true;
+        }
+        if (time.toLowerCase().indexOf("a") != -1) {
+            hasMeridian = true;
+        }
+        var values = time.split(":");
+        if ((parseFloat(values[0]) < 0) || (parseFloat(values[0]) > 23)) {
+            return false;
+        }
+        if (hasMeridian) {
+            if ((parseFloat(values[0]) < 1) || (parseFloat(values[0]) > 12)) {
+                return false;
+            }
+        }
+        if ((parseFloat(values[1]) < 0) || (parseFloat(values[1]) > 59)) {
+            return false;
+        }
         if (values.length > 2) {
-        if ( (parseFloat(values[2]) < 0) || (parseFloat(values[2]) > 59) ) { return false; }
+            if ((parseFloat(values[2]) < 0) || (parseFloat(values[2]) > 59)) {
+                return false;
+            }
         }
         return true;
     }-*/;
