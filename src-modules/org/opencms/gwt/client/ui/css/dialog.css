@@ -188,7 +188,6 @@
 	margin-top: value("constants.css.defaultSpace");
 } 
 .warningContent {
-	padding: 15px;
 	width: 100%;
 	border: 1px solid value("constants.css.borderColor");
 }
@@ -198,12 +197,12 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	vertical-align: middle;
-	padding: 0px;
+	padding: 15px;
 	width: 32px;
 }
 .warningContent > tbody > tr > td {
 	vertical-align: middle;
-	padding-left: 15px;
+	padding: 15px 15px 15px 0px;
 }
 
 .warningContent > tbody > tr > td > p:first-child {

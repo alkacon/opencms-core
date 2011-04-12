@@ -146,7 +146,7 @@
     border:1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorDialog");
     margin: 6px;
-    padding: 15px;
+    padding: 6px;
 }
 .noParamsMessage > table {
 	height: 90px;
@@ -157,10 +157,10 @@
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	vertical-align: middle;
-	padding: 0px;
+	padding: 15px;
 	width: 32px;
 }
 .noParamsMessage > table > tbody > tr > td {
 	vertical-align: middle;
-	padding-left: 15px;
+	padding: 15px 15px 15px 0px;
 }
