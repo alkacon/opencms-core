@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/03/21 12:49:33 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -61,7 +62,6 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.sitemap.CmsDetailPageResourceHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 7.6 
  */

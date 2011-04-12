@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsDetailPageTable.java,v $
- * Date   : $Date: 2011/02/14 13:46:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ import com.google.common.collect.ArrayListMultimap;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

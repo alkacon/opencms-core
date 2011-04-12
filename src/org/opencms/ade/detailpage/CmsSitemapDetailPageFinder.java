@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.sitemap;
+package org.opencms.ade.detailpage;
 
 import org.opencms.ade.config.CmsADEConfigurationManager;
 import org.opencms.ade.config.CmsSitemapConfigurationData;
@@ -45,20 +45,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.mortbay.log.Log;
+
 /**
  * This class uses information from the detail page information stored in the sitemap to find the detail page for 
  * a given resource.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
 public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public Collection<String> getAllDetailPages(CmsObject cms, CmsResource res) throws CmsException {
 
@@ -81,9 +83,11 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
     }
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
      */
     public String getDetailPage(CmsObject cms, CmsResource res, String linkSource) throws CmsException {
+
+        Log.info("finding detail page for " + res.getRootPath() + " from " + linkSource);
 
         if (!CmsResourceTypeXmlContent.isXmlContent(res)) {
             return null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/04/12 09:39:17 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.control;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
@@ -67,7 +68,6 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,7 +90,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 8.0.0
  */

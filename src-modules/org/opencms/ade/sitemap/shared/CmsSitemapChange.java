@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/28 11:10:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */

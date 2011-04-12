@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/01/21 14:14:38 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.sitemap;
+package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -42,6 +42,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.Messages;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */

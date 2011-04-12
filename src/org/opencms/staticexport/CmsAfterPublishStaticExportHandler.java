@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2011/01/21 14:14:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.ade.detailpage.CmsDetailPageUtil;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -47,7 +48,6 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.sitemap.CmsDetailPageUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  * 

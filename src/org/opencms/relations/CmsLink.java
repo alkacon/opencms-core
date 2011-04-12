@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2011/04/12 14:08:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.relations;
 
+import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -45,7 +46,6 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
-import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */

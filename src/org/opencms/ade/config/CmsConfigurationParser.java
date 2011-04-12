@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.config;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -53,7 +54,6 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 import org.opencms.xml.types.CmsXmlBooleanValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */

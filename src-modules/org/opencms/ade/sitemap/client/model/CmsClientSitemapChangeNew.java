@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.model;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
@@ -42,14 +43,13 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 /**
  * Stores one addition change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/04/12 14:08:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,13 @@
 package org.opencms.ade.config;
 
 import org.opencms.ade.config.CmsEntryPointCache.EntryPointFolder;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

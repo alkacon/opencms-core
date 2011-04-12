@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.config.CmsConfigurationSourceInfo;
 import org.opencms.ade.config.CmsContainerPageConfigurationData;
 import org.opencms.ade.config.CmsSitemapConfigurationData;
+import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
@@ -87,8 +89,6 @@ import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.sitemap.CmsDetailPageConfigurationWriter;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 

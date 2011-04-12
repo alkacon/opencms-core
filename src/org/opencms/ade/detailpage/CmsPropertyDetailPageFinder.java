@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsPropertyDetailPageFinder.java,v $
- * Date   : $Date: 2011/01/21 14:14:38 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/Attic/CmsPropertyDetailPageFinder.java,v $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.sitemap;
+package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -50,14 +50,14 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
 public class CmsPropertyDetailPageFinder implements I_CmsDetailPageFinder {
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public Collection<String> getAllDetailPages(CmsObject cms, CmsResource res) throws CmsException {
 
@@ -71,7 +71,7 @@ public class CmsPropertyDetailPageFinder implements I_CmsDetailPageFinder {
     }
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
      */
     public String getDetailPage(CmsObject cms, CmsResource res, String linkSource) throws CmsException {
 

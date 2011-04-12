@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsSitemapConfigurationData.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.config;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -39,7 +40,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -55,7 +55,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

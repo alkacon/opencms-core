@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageConfigurationWriter.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageConfigurationWriter.java,v $
+ * Date   : $Date: 2011/04/12 14:41:01 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.sitemap;
+package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;

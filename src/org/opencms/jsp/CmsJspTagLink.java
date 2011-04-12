@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2011/04/12 14:08:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/12 14:41:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -40,7 +41,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
-import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
