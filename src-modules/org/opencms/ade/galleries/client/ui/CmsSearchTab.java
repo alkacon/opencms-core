@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/04/12 14:54:36 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/12 14:56:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.
  */
@@ -196,22 +196,18 @@ public class CmsSearchTab extends A_CmsTab {
         /**
          * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
          */
-        public void onKeyPress(final KeyPressEvent event) {
+        public void onKeyPress(KeyPressEvent event) {
 
-            UIObject source = (UIObject)event.getSource();
-            if (m_searchInput.getElement().isOrHasChild(source.getElement())) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
 
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
-
-                        ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
-                    }
-                });
-            }
+                    ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
+                }
+            });
         }
 
         /**
