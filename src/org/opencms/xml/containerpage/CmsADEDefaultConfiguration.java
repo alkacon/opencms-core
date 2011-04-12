@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/02/24 08:04:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/12 11:59:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.adeconfig.CmsContainerPageConfigurationData;
-import org.opencms.adeconfig.CmsSitemapConfigurationData;
-import org.opencms.adeconfig.CmsTypeFormatterConfiguration;
+import org.opencms.ade.config.CmsContainerPageConfigurationData;
+import org.opencms.ade.config.CmsSitemapConfigurationData;
+import org.opencms.ade.config.CmsTypeFormatterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.6 
  */

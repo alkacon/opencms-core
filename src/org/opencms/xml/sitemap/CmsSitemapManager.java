@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/04/12 09:38:47 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2011/04/12 11:59:14 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System 
@@ -31,7 +31,7 @@
 
 package org.opencms.xml.sitemap;
 
-import org.opencms.adeconfig.CmsSitemapConfigurationData;
+import org.opencms.ade.config.CmsSitemapConfigurationData;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * 
  * @since 7.9.2
  */

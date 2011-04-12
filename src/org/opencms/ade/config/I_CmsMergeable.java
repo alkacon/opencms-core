@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/I_CmsMergeable.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/I_CmsMergeable.java,v $
+ * Date   : $Date: 2011/04/12 11:59:14 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.adeconfig;
+package org.opencms.ade.config;
 
 /**
  * An interface for objects which can be used with other objects.<p>

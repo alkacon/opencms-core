@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/12 11:59:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.main;
 
-import org.opencms.adeconfig.CmsADEConfigurationManager;
+import org.opencms.ade.config.CmsADEConfigurationManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */

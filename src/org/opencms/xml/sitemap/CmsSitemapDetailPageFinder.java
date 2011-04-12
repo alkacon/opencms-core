@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/12 11:59:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
-import org.opencms.adeconfig.CmsADEConfigurationManager;
-import org.opencms.adeconfig.CmsSitemapConfigurationData;
+import org.opencms.ade.config.CmsADEConfigurationManager;
+import org.opencms.ade.config.CmsSitemapConfigurationData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
