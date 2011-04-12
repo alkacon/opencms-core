@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/04/12 10:48:37 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/12 12:02:34 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.
  */
@@ -82,7 +82,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.44 $
+     * @version $Revision: 1.45 $
      * 
      * @since 8.0.0
      */
@@ -287,9 +287,6 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
-        if (!searchObj.isEmpty() && (m_noParamsMessage != null)) {
-            m_tab.remove(m_noParamsMessage);
-        }
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
@@ -322,8 +319,19 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     public void onSelection() {
 
+        removeNoParamMessage();
         super.onSelection();
         updateListSize();
+    }
+
+    /**
+     * Removes the no params message.<p> 
+     */
+    public void removeNoParamMessage() {
+
+        if (m_noParamsMessage != null) {
+            m_tab.remove(m_noParamsMessage);
+        }
     }
 
     /**
@@ -332,7 +340,6 @@ public class CmsResultsTab extends A_CmsListTab {
     public void showNoParamsMessage() {
 
         if (m_noParamsMessage == null) {
-
             StringBuffer buf = new StringBuffer();
             buf.append("<div class=\"");
             buf.append(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().noParamsMessage());
@@ -344,7 +351,6 @@ public class CmsResultsTab extends A_CmsListTab {
             buf.append("Please select at least one search parameter!");
             buf.append("</td></tr>");
             buf.append("</table>");
-
             buf.append("</div>");
             m_noParamsMessage = new HTML(buf.toString());
         }
