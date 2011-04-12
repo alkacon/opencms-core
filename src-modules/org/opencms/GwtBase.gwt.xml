@@ -88,7 +88,7 @@
 	<source path="gwt/client" />
 	<source path="gwt/shared" />
 	<super-source path="gwt/client/super_src/" />
-	<source path="xml/sitemap" >
+	<source path="ade/detailpage" >
 		<include name="CmsDetailPageInfo.java" />
 	</source>
 	<source path="db" >
