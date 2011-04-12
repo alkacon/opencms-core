@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/12 14:08:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -275,7 +275,7 @@ public class CmsFlexRequestKey {
      */
     public String getUri() {
 
-        return m_context.addSiteRoot(m_context.getOriginalUri());
+        return m_context.addSiteRoot(m_context.getUri());
     }
 
     /**

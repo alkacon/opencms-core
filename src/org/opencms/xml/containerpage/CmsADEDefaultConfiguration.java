@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/12 14:08:07 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 7.6 
  */
@@ -161,7 +161,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String typeName = resType.getTypeName();
-        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getOriginalUri());
+        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
             rootPath);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2011/04/11 10:38:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/12 14:08:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +119,7 @@ public class CmsJspTagLink extends BodyTagSupport {
             // check for detail view
             CmsResource res = cms.readResource(result);
             I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
-            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
+            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getUri());
             if (detailPage != null) {
                 result = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
             }

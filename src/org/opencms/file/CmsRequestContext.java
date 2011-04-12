@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/04/11 10:28:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/12 14:08:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsResourceTranslator;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Hashtable;
@@ -49,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -81,9 +80,6 @@ public final class CmsRequestContext {
 
     /** The locale used by this request context. */
     private Locale m_locale;
-
-    /** The original called URI. */
-    private String m_originalUri;
 
     /** The fully qualified name of the organizational unit for this request. */
     private String m_ouFqn;
@@ -138,7 +134,6 @@ public final class CmsRequestContext {
         m_user = user;
         m_currentProject = project;
         m_uri = requestedUri;
-        m_originalUri = requestedUri;
         setSiteRoot(siteRoot);
         m_locale = locale;
         m_encoding = encoding;
@@ -198,7 +193,7 @@ public final class CmsRequestContext {
         if ((resourcename == null) || (siteRoot == null)) {
             return null;
         }
-            siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
+        siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length() - 1) != '/'))
@@ -343,16 +338,6 @@ public final class CmsRequestContext {
     public Locale getLocale() {
 
         return m_locale;
-    }
-
-    /**
-     * Returns the originalUri.<p>
-     *
-     * @return the originalUri
-     */
-    public String getOriginalUri() {
-
-        return m_originalUri;
     }
 
     /**
@@ -604,9 +589,6 @@ public final class CmsRequestContext {
     public void setUri(String value) {
 
         m_uri = value;
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_originalUri)) {
-            m_originalUri = value;
-        }
     }
 
     /**

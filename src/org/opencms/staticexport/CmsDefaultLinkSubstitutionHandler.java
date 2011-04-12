@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/12 14:08:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.0.2
  * 
@@ -102,7 +102,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return "";
         }
         // make sure we have an absolute link        
-        String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getOriginalUri());
+        String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
 
         String vfsName;
         String parameters;
@@ -150,7 +150,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             // first check if this link needs static export
             CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
-            String oriUri = cms.getRequestContext().getOriginalUri();
+            String oriUri = cms.getRequestContext().getUri();
             // check if we need relative links in the exported pages
             if (exportManager.relativeLinksInExport(cms.getRequestContext().getSiteRoot() + oriUri)) {
                 // try to get base URI from cache  

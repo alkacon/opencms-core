@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/12 14:08:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -148,7 +148,7 @@ public class CmsADEConfigurationManager {
     public synchronized CmsContainerPageConfigurationData getContainerPageConfiguration(CmsObject cms)
     throws CmsException {
 
-        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getOriginalUri());
+        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         return getContainerPageConfiguration(cms, rootPath);
 
     }
@@ -205,7 +205,7 @@ public class CmsADEConfigurationManager {
      */
     public synchronized CmsSitemapConfigurationData getSitemapConfiguration(CmsObject cms) throws CmsException {
 
-        String originalRootUri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getOriginalUri());
+        String originalRootUri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         return getSitemapConfiguration(cms, originalRootUri);
     }
 

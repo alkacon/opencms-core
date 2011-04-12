@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/12 14:08:07 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -1219,7 +1219,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             try {
                 vfsRes = cms.readResource(vfsName);
                 I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
-                String detailPage = finder.getDetailPage(cms, vfsRes, cms.getRequestContext().getOriginalUri());
+                String detailPage = finder.getDetailPage(cms, vfsRes, cms.getRequestContext().getUri());
                 if (detailPage != null) {
                     vfsName = CmsStringUtil.joinPaths(detailPage, CmsDetailPageUtil.getBestUrlName(
                         cms,
