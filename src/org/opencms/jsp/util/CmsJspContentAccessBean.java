@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2011/04/12 12:10:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/12 13:51:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.util.CmsCollectionUtil;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.base.Function;
+import org.apache.commons.collections.Transformer;
 
 /**
  * Allows access to the individual elements of an XML content, usually used inside a loop of a 
@@ -62,7 +62,7 @@ import com.google.common.base.Function;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -74,12 +74,12 @@ public class CmsJspContentAccessBean {
      * Provides Booleans that indicate if a specified locale is available in the XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
-    public class CmsHasLocaleFunction implements Function<String, Boolean> {
+    public class CmsHasLocaleTransformer implements Transformer {
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public Boolean apply(String input) {
+        public Object transform(Object input) {
 
             return Boolean.valueOf(getRawContent().hasLocale(CmsJspElFunctions.convertLocale(input)));
         }
@@ -89,17 +89,17 @@ public class CmsJspContentAccessBean {
      * Provides Booleans that indicate if a specified path exists in the XML content,  
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsHasLocaleValueFunction implements Function<String, Map<String, Boolean>> {
+    public class CmsHasLocaleValueTransformer implements Transformer {
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public Map<String, Boolean> apply(String input) {
+        public Object transform(Object input) {
 
             Locale locale = CmsJspElFunctions.convertLocale(input);
             Map<String, Boolean> result;
             if (getRawContent().hasLocale(locale)) {
-                result = CmsCollectionUtil.makeComputingMap(new CmsHasValueFunction(locale));
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsHasValueTransformer(locale));
             } else {
                 result = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
             }
@@ -111,7 +111,7 @@ public class CmsJspContentAccessBean {
      * Provides a Map with Booleans that indicate if a specified path exists in the XML content in the selected Locale,  
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsHasValueFunction implements Function<String, Boolean> {
+    public class CmsHasValueTransformer implements Transformer {
 
         /** The selected locale. */
         private Locale m_selectedLocale;
@@ -121,17 +121,17 @@ public class CmsJspContentAccessBean {
          * 
          * @param locale the locale to use
          */
-        public CmsHasValueFunction(Locale locale) {
+        public CmsHasValueTransformer(Locale locale) {
 
             m_selectedLocale = locale;
         }
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public Boolean apply(String input) {
+        public Object transform(Object input) {
 
-            return Boolean.valueOf(getRawContent().hasValue(input, m_selectedLocale));
+            return Boolean.valueOf(getRawContent().hasValue(String.valueOf(input), m_selectedLocale));
         }
     }
 
@@ -139,14 +139,14 @@ public class CmsJspContentAccessBean {
      * Provides a Map which lets the user access the list of element names from the selected locale in an XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
-    public class CmsLocaleNamesFunction implements Function<String, List<String>> {
+    public class CmsLocaleNamesTransformer implements Transformer {
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public List<String> apply(String input) {
+        public Object transform(Object input) {
 
-            Locale locale = CmsLocaleManager.getLocale(input);
+            Locale locale = CmsLocaleManager.getLocale(String.valueOf(input));
 
             return getRawContent().getNames(locale);
         }
@@ -156,18 +156,39 @@ public class CmsJspContentAccessBean {
      * Provides a Map which lets the user access sub value Lists from the selected locale in an XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
-    public class CmsLocaleSubValueListFunction
-    implements Function<String, Map<String, List<CmsJspContentAccessValueWrapper>>> {
+    public class CmsLocaleSubValueListTransformer implements Transformer {
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public Map<String, List<CmsJspContentAccessValueWrapper>> apply(String input) {
+        public Object transform(Object input) {
 
             Locale locale = CmsJspElFunctions.convertLocale(input);
             Map<String, List<CmsJspContentAccessValueWrapper>> result;
             if (getRawContent().hasLocale(locale)) {
-                result = CmsCollectionUtil.makeComputingMap(new CmsSubValueListFunction(locale));
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer(locale));
+            } else {
+                result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Provides a Map which lets the user access value Lists from the selected locale in an XML content, 
+     * the input is assumed to be a String that represents a Locale.<p>
+     */
+    public class CmsLocaleValueListTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Locale locale = CmsJspElFunctions.convertLocale(input);
+            Map<String, List<CmsJspContentAccessValueWrapper>> result;
+            if (getRawContent().hasLocale(locale)) {
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueListTransformer(locale));
             } else {
                 result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
             }
@@ -179,42 +200,19 @@ public class CmsJspContentAccessBean {
      * Provides a Map which lets the user access a value from the selected locale in an XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
-    public class CmsLocaleValueFunction implements Function<String, Map<String, CmsJspContentAccessValueWrapper>> {
+    public class CmsLocaleValueTransformer implements Transformer {
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public Map<String, CmsJspContentAccessValueWrapper> apply(String input) {
+        public Object transform(Object input) {
 
-            Locale locale = CmsLocaleManager.getLocale(input);
+            Locale locale = CmsLocaleManager.getLocale(String.valueOf(input));
             Map<String, CmsJspContentAccessValueWrapper> result;
             if (getRawContent().hasLocale(locale)) {
-                result = CmsCollectionUtil.makeComputingMap(new CmsValueFunction(locale));
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsValueTransformer(locale));
             } else {
                 result = CONSTANT_NULL_VALUE_WRAPPER_MAP;
-            }
-            return result;
-        }
-    }
-
-    /**
-     * Provides a Map which lets the user access value Lists from the selected locale in an XML content, 
-     * the input is assumed to be a String that represents a Locale.<p>
-     */
-    public class CmsLocaleValueListFunction
-    implements Function<String, Map<String, List<CmsJspContentAccessValueWrapper>>> {
-
-        /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
-         */
-        public Map<String, List<CmsJspContentAccessValueWrapper>> apply(String input) {
-
-            Locale locale = CmsJspElFunctions.convertLocale(input);
-            Map<String, List<CmsJspContentAccessValueWrapper>> result;
-            if (getRawContent().hasLocale(locale)) {
-                result = CmsCollectionUtil.makeComputingMap(new CmsValueListFunction(locale));
-            } else {
-                result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
             }
             return result;
         }
@@ -224,7 +222,7 @@ public class CmsJspContentAccessBean {
      * Provides a Map which lets the user access sub value Lists in an XML content, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsSubValueListFunction implements Function<String, List<CmsJspContentAccessValueWrapper>> {
+    public class CmsSubValueListTransformer implements Transformer {
 
         /** The selected locale. */
         private Locale m_selectedLocale;
@@ -234,17 +232,53 @@ public class CmsJspContentAccessBean {
          * 
          * @param locale the locale to use
          */
-        public CmsSubValueListFunction(Locale locale) {
+        public CmsSubValueListTransformer(Locale locale) {
 
             m_selectedLocale = locale;
         }
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public List<CmsJspContentAccessValueWrapper> apply(String input) {
+        public Object transform(Object input) {
 
-            List<I_CmsXmlContentValue> values = getRawContent().getSubValues(input, m_selectedLocale);
+            List<I_CmsXmlContentValue> values = getRawContent().getSubValues(String.valueOf(input), m_selectedLocale);
+            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
+            Iterator<I_CmsXmlContentValue> i = values.iterator();
+            while (i.hasNext()) {
+                // XML content API offers List of values only as Objects, must iterate them and create Strings 
+                I_CmsXmlContentValue value = i.next();
+                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value));
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Provides a Map which lets the user access value Lists in an XML content, 
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsValueListTransformer implements Transformer {
+
+        /** The selected locale. */
+        private Locale m_selectedLocale;
+
+        /**
+         * Constructor with a locale.<p>
+         * 
+         * @param locale the locale to use
+         */
+        public CmsValueListTransformer(Locale locale) {
+
+            m_selectedLocale = locale;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            List<I_CmsXmlContentValue> values = getRawContent().getValues(String.valueOf(input), m_selectedLocale);
             List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
             Iterator<I_CmsXmlContentValue> i = values.iterator();
             while (i.hasNext()) {
@@ -260,7 +294,7 @@ public class CmsJspContentAccessBean {
      * Provides a Map which lets the user access a value in an XML content, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
-    public class CmsValueFunction implements Function<String, CmsJspContentAccessValueWrapper> {
+    public class CmsValueTransformer implements Transformer {
 
         /** The selected locale. */
         private Locale m_selectedLocale;
@@ -270,54 +304,18 @@ public class CmsJspContentAccessBean {
          * 
          * @param locale the locale to use
          */
-        public CmsValueFunction(Locale locale) {
+        public CmsValueTransformer(Locale locale) {
 
             m_selectedLocale = locale;
         }
 
         /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
-        public CmsJspContentAccessValueWrapper apply(String input) {
+        public Object transform(Object input) {
 
-            I_CmsXmlContentValue value = getRawContent().getValue(input, m_selectedLocale);
+            I_CmsXmlContentValue value = getRawContent().getValue(String.valueOf(input), m_selectedLocale);
             return CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value);
-        }
-    }
-
-    /**
-     * Provides a Map which lets the user access value Lists in an XML content, 
-     * the input is assumed to be a String that represents an xpath in the XML content.<p>
-     */
-    public class CmsValueListFunction implements Function<String, List<CmsJspContentAccessValueWrapper>> {
-
-        /** The selected locale. */
-        private Locale m_selectedLocale;
-
-        /**
-         * Constructor with a locale.<p>
-         * 
-         * @param locale the locale to use
-         */
-        public CmsValueListFunction(Locale locale) {
-
-            m_selectedLocale = locale;
-        }
-
-        /**
-         * @see com.google.common.base.Function#apply(java.lang.Object)
-         */
-        public List<CmsJspContentAccessValueWrapper> apply(String input) {
-
-            List<I_CmsXmlContentValue> values = getRawContent().getValues(input, m_selectedLocale);
-            List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
-            Iterator<I_CmsXmlContentValue> i = values.iterator();
-            while (i.hasNext()) {
-                // XML content API offers List of values only as Objects, must iterate them and create Strings 
-                I_CmsXmlContentValue value = i.next();
-                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value));
-            }
-            return result;
         }
     }
 
@@ -471,7 +469,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Boolean> getHasLocale() {
 
         if (m_hasLocale == null) {
-            m_hasLocale = CmsCollectionUtil.makeComputingMap(new CmsHasLocaleFunction());
+            m_hasLocale = CmsCollectionsGenericWrapper.createLazyMap(new CmsHasLocaleTransformer());
         }
         return m_hasLocale;
     }
@@ -502,7 +500,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, Boolean>> getHasLocaleValue() {
 
         if (m_hasLocaleValue == null) {
-            m_hasLocaleValue = CmsCollectionUtil.makeComputingMap(new CmsHasLocaleValueFunction());
+            m_hasLocaleValue = CmsCollectionsGenericWrapper.createLazyMap(new CmsHasLocaleValueTransformer());
         }
         return m_hasLocaleValue;
     }
@@ -566,7 +564,7 @@ public class CmsJspContentAccessBean {
     public Map<String, List<String>> getLocaleNames() {
 
         if (m_localeNames == null) {
-            m_localeNames = CmsCollectionUtil.makeComputingMap(new CmsLocaleNamesFunction());
+            m_localeNames = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleNamesTransformer());
         }
         return m_localeNames;
     }
@@ -594,7 +592,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> getLocaleSubValueList() {
 
         if (m_localeSubValueList == null) {
-            m_localeSubValueList = CmsCollectionUtil.makeComputingMap(new CmsLocaleSubValueListFunction());
+            m_localeSubValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleSubValueListTransformer());
         }
         return m_localeSubValueList;
     }
@@ -620,7 +618,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, CmsJspContentAccessValueWrapper>> getLocaleValue() {
 
         if (m_localeValue == null) {
-            m_localeValue = CmsCollectionUtil.makeComputingMap(new CmsLocaleValueFunction());
+            m_localeValue = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleValueTransformer());
         }
         return m_localeValue;
     }
@@ -648,7 +646,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> getLocaleValueList() {
 
         if (m_localeValueList == null) {
-            m_localeValueList = CmsCollectionUtil.makeComputingMap(new CmsLocaleValueListFunction());
+            m_localeValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleValueListTransformer());
         }
         return m_localeValueList;
     }

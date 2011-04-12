@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspNavigationBean.java,v $
- * Date   : $Date: 2011/04/12 12:10:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/12 13:51:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,13 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagNavigation;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsCollectionUtil;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Function;
+import org.apache.commons.collections.Transformer;
 
 /**
  * Allows access to the OpenCms navigation information in combination with the
@@ -51,13 +51,59 @@ import com.google.common.base.Function;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0
  * 
  * @see org.opencms.jsp.CmsJspTagContentAccess
  */
 public class CmsJspNavigationBean {
+
+    /**
+     * Provides a Map with Booleans that 
+     * indicate if the given URI is the currently active element in the navigation.<p>
+     */
+    public class CmsIsActiveTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            String resourceName = (String)input;
+            Boolean result = Boolean.FALSE;
+            if (CmsResource.isFolder(resourceName)) {
+                try {
+                    CmsResource defaultFile = m_cms.readDefaultFile(resourceName);
+                    if ((defaultFile != null)
+                        && m_cms.getRequestContext().getSitePath(defaultFile).equals(m_cms.getRequestContext().getUri())) {
+                        result = Boolean.TRUE;
+                    }
+                } catch (CmsException e) {
+                    // error reading resource, result is false
+                }
+            } else {
+                result = Boolean.valueOf(m_cms.getRequestContext().getUri().equals(resourceName));
+            }
+
+            return result;
+        }
+    }
+
+    /**
+     * Provides a Map with Booleans that 
+     * indicate if the given navigation URI is a parent element of the current URI.<p>
+     */
+    public class CmsIsParentTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            return Boolean.valueOf(m_cms.getRequestContext().getUri().startsWith((String)input));
+        }
+    }
 
     /** The navigation builder. */
     protected CmsJspNavBuilder m_builder;
@@ -153,30 +199,7 @@ public class CmsJspNavigationBean {
     public Map<String, Boolean> getIsActive() {
 
         if (m_isActive == null) {
-            m_isParent = CmsCollectionUtil.makeComputingMap(new Function<String, Boolean>() {
-
-                public Boolean apply(String input) {
-
-                    String resourceName = input;
-                    Boolean result = Boolean.FALSE;
-                    if (CmsResource.isFolder(resourceName)) {
-                        try {
-                            CmsResource defaultFile = m_cms.readDefaultFile(resourceName);
-                            if ((defaultFile != null)
-                                && m_cms.getRequestContext().getSitePath(defaultFile).equals(
-                                    m_cms.getRequestContext().getUri())) {
-                                result = Boolean.TRUE;
-                            }
-                        } catch (CmsException e) {
-                            // error reading resource, result is false
-                        }
-                    } else {
-                        result = Boolean.valueOf(m_cms.getRequestContext().getUri().equals(resourceName));
-                    }
-
-                    return result;
-                }
-            });
+            m_isActive = CmsCollectionsGenericWrapper.createLazyMap(new CmsIsActiveTransformer());
         }
         return m_isActive;
     }
@@ -202,13 +225,7 @@ public class CmsJspNavigationBean {
     public Map<String, Boolean> getIsParent() {
 
         if (m_isParent == null) {
-            m_isParent = CmsCollectionUtil.makeComputingMap(new Function<String, Boolean>() {
-
-                public Boolean apply(String input) {
-
-                    return Boolean.valueOf(m_cms.getRequestContext().getUri().startsWith(input));
-                }
-            });
+            m_isParent = CmsCollectionsGenericWrapper.createLazyMap(new CmsIsParentTransformer());
         }
         return m_isParent;
     }
