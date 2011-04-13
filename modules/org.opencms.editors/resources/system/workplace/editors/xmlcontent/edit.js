@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2009/09/11 14:25:48 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2011/04/13 06:22:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,26 +34,33 @@
 //------------------------------------------------------//
 
 // Searches for a frame by the specified name. Will only return siblings or ancestors.
-function getFrame(startFrame, frameName){
+function findFrame(startFrame, frameName){
     if (startFrame == top){
-        if (startFrame.name == frameName){
-            return startFrame;
-        }
+        // there may be security restrictions prohibiting access to the frame name
+        try{
+            if (startFrame.name == frameName){
+                return startFrame;
+            }
+        }catch(err){}
         return null;
     }
     for (var i=0; i<startFrame.parent.frames.length; i++){
-        if (startFrame.parent.frames[i].name == frameName) {
-            return startFrame.parent.frames[i];
-        }
+        // there may be security restrictions prohibiting access to the frame name
+        try{
+            if (startFrame.parent.frames[i].name == frameName) {
+                return startFrame.parent.frames[i];
+            }
+        }catch(err){}
     }
-    return getFrame(startFrame.parent, frameName);
+    return findFrame(startFrame.parent, frameName);
 }
-
 // the editors top frame target, may be !='_top' if in advanced direct edit!
-var editorTopFrameTarget= (editorTopFrame=getFrame(self, 'cmsAdvancedDirectEditor')) ? editorTopFrame.name : '_top';
-
+var editorTopFrameTarget= '_top';
+if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
+    editorTopFrameTarget='cmsAdvancedDirectEditor';
+}
 // edit frame object
-var editFrame=getFrame(self, 'edit');
+var editFrame=findFrame(self,'edit');
 
 // stores the opened window object
 var treewin = null;
