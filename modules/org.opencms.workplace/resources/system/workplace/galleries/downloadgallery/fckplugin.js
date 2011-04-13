@@ -16,25 +16,31 @@ FCKCommands.RegisterCommand(
 );
 
 // Searches for a frame by the specified name. Will only return siblings or ancestors.
-function getFrame(startFrame, frameName){
+function findFrame(startFrame, frameName){
     if (startFrame == top){
-        if (startFrame.name == frameName){
-            return startFrame;
-        }
+        // there may be security restrictions prohibiting access to the frame name
+        try{
+            if (startFrame.name == frameName){
+                return startFrame;
+            }
+        }catch(err){}
         return null;
     }
     for (var i=0; i<startFrame.parent.frames.length; i++){
-        if (startFrame.parent.frames[i].name == frameName) {
-            return startFrame.parent.frames[i];
-        }
+        // there may be security restrictions prohibiting access to the frame name
+        try{
+            if (startFrame.parent.frames[i].name == frameName) {
+                return startFrame.parent.frames[i];
+            }
+        }catch(err){}
     }
-    return getFrame(startFrame.parent, frameName);
+    return findFrame(startFrame.parent, frameName);
 }
 
 // create the path to the item gallery dialog with some request parameters for the dialog
 function downloadGalleryDialogUrl() {
 	var resParam = "";
-    var editFrame=getFrame(self, 'edit');
+    var editFrame=findFrame(self, 'edit');
 	if (editFrame.editedResource != null) {
 		resParam = "&resource=" + editFrame.editedResource;
 		
