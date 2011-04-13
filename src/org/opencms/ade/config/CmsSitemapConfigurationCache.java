@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsSitemapConfigurationCache.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/13 07:06:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -68,7 +68,7 @@ implements I_CmsConfigurationDataReader<CmsSitemapConfigurationData> {
     public CmsSitemapConfigurationData getConfiguration(CmsObject cms, String path) throws CmsException {
 
         cms = initCmsObject(cms);
-        Object cached = getCachedObject(cms, path);
+        Object cached = getCachedObject(cms, cms.getRequestContext().addSiteRoot(path));
         if (cached != null) {
             return (CmsSitemapConfigurationData)cached;
         }
@@ -77,7 +77,7 @@ implements I_CmsConfigurationDataReader<CmsSitemapConfigurationData> {
         CmsSitemapConfigurationData result = parser.getSitemapConfigurationData(new CmsConfigurationSourceInfo(
             configRes,
             false));
-        putCachedObject(cms, path, result);
+        putCachedObject(cms, cms.getRequestContext().addSiteRoot(path), result);
         return result;
     }
 
