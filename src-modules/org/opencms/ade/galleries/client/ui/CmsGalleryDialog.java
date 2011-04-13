@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/04/11 15:30:04 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/13 08:24:33 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.
  */
@@ -249,8 +249,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     paramPanels.add(panel);
                 }
             }
+            m_resultsTab.fillContent(searchObj, paramPanels);
         }
-        m_resultsTab.fillContent(searchObj, paramPanels);
     }
 
     /**

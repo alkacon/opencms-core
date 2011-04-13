@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/04/12 12:02:34 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/04/13 08:24:33 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.
  */
@@ -82,7 +82,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.45 $
+     * @version $Revision: 1.46 $
      * 
      * @since 8.0.0
      */
@@ -287,6 +287,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
+        removeNoParamMessage();
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
@@ -311,17 +312,6 @@ public class CmsResultsTab extends A_CmsListTab {
 
         // not available for this tab
         return null;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        removeNoParamMessage();
-        super.onSelection();
-        updateListSize();
     }
 
     /**
@@ -370,7 +360,7 @@ public class CmsResultsTab extends A_CmsListTab {
         int optionsHeight = m_options.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
         // 3 is some offset, because of the list border
-        int newListSize = tabHeight - paramsHeight - optionsHeight - 2;
+        int newListSize = tabHeight - paramsHeight - optionsHeight - 1;
         // another sanity check, don't set any negative height 
         if (newListSize > 0) {
             m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
