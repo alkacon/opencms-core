@@ -6,7 +6,7 @@
 <cms:contentload collector="singleFile" param="%(opencms.element)" >
 
 	<!-- Title Section of the news -->
-	<h4><cms:contentshow element="Title" /></h4>
+	<h4><a href="<cms:link>${__currentElement.sitePath}</cms:link>" style="color:inherit;"><cms:contentshow element="Title" /></a></h4>
 		<div class="boxbody">
 	<cms:contentcheck ifexists="SubTitle">
 		<p><cms:contentshow element="SubTitle" /></p>
