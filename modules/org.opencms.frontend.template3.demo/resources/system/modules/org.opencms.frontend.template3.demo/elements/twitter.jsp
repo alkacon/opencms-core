@@ -11,7 +11,7 @@
 <cms:contentload collector="singleFile" param="%(opencms.element)" >
 	<cms:contentaccess var="content" />
 	<div>
-		<c:set var="background"><cms:property name="background" file="container" default="43c43f"/></c:set>
+		<c:set var="background"><cms:elementsetting name="background" default="43c43f"/></c:set>
 		<iframe name="twitter" src="<cms:link>/system/modules/org.opencms.frontend.template3.demo/elements/twitterFrame.jsp?title=${content.value['Title']}&amp;subtitle=${content.value['Subtitle']}&amp;channel=${content.value['Channel']}&amp;background=${background}</cms:link>" style="margin: 0; border: none;" height="340" width="228" ></iframe>
 	</div>
 </cms:contentload>
