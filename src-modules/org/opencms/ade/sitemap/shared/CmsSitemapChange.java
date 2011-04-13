@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/13 07:49:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -66,7 +66,9 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         /** The remove from navigation change. */
         remove,
         /** The undelete resource change. */
-        undelete
+        undelete,
+        /** Making a detail page the default. */
+        bump
     }
 
     /** The change type. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/02/22 09:45:22 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/13 07:49:42 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -66,7 +66,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -278,6 +278,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     private void handleDropNewEntry(CmsCreatableListItem createItem, CmsClientSitemapEntry parent) {
 
         CmsNewResourceInfo typeInfo = createItem.getResourceTypeInfo();
+        CmsNewResourceInfo defaultNew = m_controller.getData().getDefaultNewElementInfo();
         CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
         String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
         entry.setName(uniqueName);
@@ -300,7 +301,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         } else {
             entry.setSitePath(m_insertPath + uniqueName + "/");
         }
-        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
+        m_controller.create(entry, defaultNew.getId(), defaultNew.getCopyResourceId());
     }
 
     /**

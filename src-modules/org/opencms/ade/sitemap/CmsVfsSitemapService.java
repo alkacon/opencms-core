@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/04/13 07:49:42 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -581,7 +581,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             modifyEntry(change);
         }
         if (change.hasDetailPageInfos() && (configFile != null)) {
-            saveDetailPages(change.getDetailPageInfos(), configFile);
+            saveDetailPages(change.getDetailPageInfos(), configFile, change.getEntryId());
             tryUnlock(configFile);
         }
         return changedEntry;
@@ -1389,11 +1389,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @throws CmsException
      */
-    private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource) throws CmsException {
+    private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource, CmsUUID newId)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsDetailPageConfigurationWriter writer = new CmsDetailPageConfigurationWriter(cms, resource);
-        writer.updateAndSave(detailPages);
+        writer.updateAndSave(detailPages, newId);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeBumpDetailPage.java,v $
- * Date   : $Date: 2011/02/22 09:46:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/13 07:49:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -44,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *  
  * @since 8.0.0
  */
@@ -99,7 +100,7 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
 
         CmsDetailPageTable table = CmsSitemapView.getInstance().getController().getDetailPageTable().copy();
         table.bump(m_entry.getId());
-        CmsSitemapChange change = new CmsSitemapChange();
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath(), ChangeType.modify);
         change.setDetailPageInfos(table.toList());
         return change;
     }

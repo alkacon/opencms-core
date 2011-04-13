@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageConfigurationWriter.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/13 07:49:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -92,16 +92,17 @@ public class CmsDetailPageConfigurationWriter {
     /**
      * Writes the new detail page information to the configuration file.<p>
      * 
-     * @param infos the new detail page information 
+     * @param infos the new detail page information
+     * @param newId the id to use for new pages  
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void updateAndSave(List<CmsDetailPageInfo> infos) throws CmsException {
+    public void updateAndSave(List<CmsDetailPageInfo> infos, CmsUUID newId) throws CmsException {
 
         //lock(m_cms, m_resource);
         getDocument();
         removeOldValues();
-        writeDetailPageInfos(infos);
+        writeDetailPageInfos(infos, newId);
         byte[] content = m_document.marshal();
         m_file.setContents(content);
         m_cms.writeFile(m_file);
@@ -163,12 +164,17 @@ public class CmsDetailPageConfigurationWriter {
      * Writes the detail page information to the XML content.<p>
      * 
      * @param infos the list of detail page information bean 
+     * @param newId the id to use for new pages 
      */
-    private void writeDetailPageInfos(List<CmsDetailPageInfo> infos) {
+    private void writeDetailPageInfos(List<CmsDetailPageInfo> infos, CmsUUID newId) {
 
         int i = 0;
         for (CmsDetailPageInfo info : infos) {
-            writeValue(info.getType(), info.getId(), i);
+            CmsUUID id = info.getId();
+            if (id == null) {
+                id = newId;
+            }
+            writeValue(info.getType(), id, i);
             i += 1;
         }
     }
