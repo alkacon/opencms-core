@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/13 11:34:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -656,7 +656,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_pwdInfo = new CmsPasswordInfo();
                 CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
-                m_site = settings.getStartSite();
+                m_site = CmsStringUtil.joinPaths(settings.getStartSite(), "/");
                 m_startProject = settings.getStartProject();
                 return;
             } else {
@@ -667,7 +667,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_pwdInfo = (CmsPasswordInfo)dialogObject.get(PWD_OBJECT);
                 CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
-                m_site = settings.getStartSite();
+                m_site = CmsStringUtil.joinPaths(settings.getStartSite(), "/");
                 m_startProject = settings.getStartProject();
                 // test
                 m_user.getId();
@@ -686,7 +686,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             // ignore
         }
         m_language = CmsLocaleManager.getDefaultLocale().toString();
-        m_site = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+        m_site = CmsStringUtil.joinPaths(OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), "/");
         m_startProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/13 11:34:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  */
@@ -322,7 +323,20 @@ public final class CmsSiteManagerImpl {
                 }
             }
 
-            Collections.sort(result);
+            // sort and ensure that the shared folder is the last element in the list
+            Collections.sort(result, new Comparator<CmsSite>() {
+
+                public int compare(CmsSite o1, CmsSite o2) {
+
+                    if (isSharedFolder(o1.getSiteRoot())) {
+                        return +1;
+                    }
+                    if (isSharedFolder(o2.getSiteRoot())) {
+                        return -1;
+                    }
+                    return o1.compareTo(o2);
+                }
+            });
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {
