@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/14 14:41:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.1 $
+ *  @version $Revision: 1.2 $
  *  
  *  @since 8.0.0
  */
@@ -248,7 +248,6 @@ public abstract class A_CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFac
     public void start() {
 
         CmsForm form = m_dialog.getForm();
-        form.setLabel(m_handler.getDescriptionText());
 
         // creates tabs, etc. if necessary 
         setupFieldContainer();

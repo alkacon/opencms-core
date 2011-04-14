@@ -96,13 +96,13 @@
     z-index: value("constants.css.zIndexPopup");
 }
 
-.popupMainContent{
+.popup .popupMainContent{
 	height: auto;
     font-size: value("constants.css.fontSize");
     position:relative;
 }
 
-@sprite .popupMainContent.contentPadding {
+@sprite .popup .popupMainContent.contentPadding {
 	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorDialog");
 	background-position: top;
@@ -210,4 +210,18 @@
 }
 .warningContent > tbody > tr > td > p {
 	margin-top: 5px;
+}
+
+
+.borderPadding {
+	bottom: 0;
+    left: 0;
+    margin: value("constants.css.defaultSpace");
+    padding: value("constants.css.defaultSpace");
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border:1px solid value("constants.css.borderColor");
+    background-color: value("constants.css.backgroundColorDialog");
 }

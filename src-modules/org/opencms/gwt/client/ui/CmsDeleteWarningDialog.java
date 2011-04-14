@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDeleteWarningDialog.java,v $
- * Date   : $Date: 2011/04/11 07:46:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -90,8 +90,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
      */
     public CmsDeleteWarningDialog(String sitePath) {
 
+        super("Delete Resource?");
         m_sitePath = sitePath;
-        setText("Delete Resource?");
         setWarningMessage("<p>You are about to delete a resource from the file system.</p><p>Are you sure you want to do that?</p>");
         setOkText("Delete");
         setCloseText("Cancel");

@@ -296,13 +296,8 @@ div.selectBoxOpener {
 }
 
 div.formRow {
-	margin-bottom: 2px;
-	margin-top: 2px;
-	margin-right: 10px;
-	margin-left: 5px;
-	width: 550px; 
-	
-	
+	margin: 2px 0;
+	position: relative;
 }
 
 @sprite .formRowOpenerClosed {
@@ -345,7 +340,7 @@ div.formRow {
 }
 
 .formWidgetContainer {
-	width: 350px;
+	width: 356px;
 	margin-left: widgetContainerMargin;
 }
 

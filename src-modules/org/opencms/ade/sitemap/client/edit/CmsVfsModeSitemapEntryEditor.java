@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsVfsModeSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,10 @@ package org.opencms.ade.sitemap.client.edit;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.CmsExtendedPropertyPanel;
+import org.opencms.ade.sitemap.client.ui.CmsPropertyPanel;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
-import org.opencms.ade.sitemap.shared.CmsPathValue;
 import org.opencms.ade.sitemap.shared.CmsClientProperty.Mode;
+import org.opencms.ade.sitemap.shared.CmsPathValue;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -81,14 +81,10 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
 
-    /**
-     * The panel used for editing the properties.<p>
-     */
-    private CmsExtendedPropertyPanel m_panel;
+    /** The panel used for editing the properties. */
+    private CmsPropertyPanel m_panel;
 
-    /** 
-     * The properties of the entry.<p>
-     */
+    /** The properties of the entry. */
     private Map<String, CmsClientProperty> m_properties;
 
     /** Flag which indicates whether the resource properties should be editable. */
@@ -102,14 +98,16 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     public CmsVfsModeSitemapEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
 
         super(handler);
+        m_dialog.setCaption(null);
+        m_dialog.removePadding();
         m_properties = CmsClientProperty.makeLazyCopy(handler.getEntry().getOwnProperties());
     }
 
     static {
         tabs = HashBiMap.create();
-        tabs.put(Mode.effective, CmsExtendedPropertyPanel.TAB_SIMPLE);
-        tabs.put(Mode.structure, CmsExtendedPropertyPanel.TAB_INDIVIDUAL);
-        tabs.put(Mode.resource, CmsExtendedPropertyPanel.TAB_SHARED);
+        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
+        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
+        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
     /**
@@ -163,7 +161,7 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     @Override
     protected void setupFieldContainer() {
 
-        m_panel = new CmsExtendedPropertyPanel(m_showResourceProperties);
+        m_panel = new CmsPropertyPanel(m_showResourceProperties);
         m_panel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
 
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
@@ -245,9 +243,9 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             field.getLayoutData().put("info", origin);
         }
         if (!ghost || isShowingGhost) {
-            field.getLayoutData().put(CmsExtendedPropertyPanel.LD_DISPLAY_VALUE, "true");
+            field.getLayoutData().put(CmsPropertyPanel.LD_DISPLAY_VALUE, "true");
         }
-        field.getLayoutData().put(CmsExtendedPropertyPanel.LD_PROPERTY, propName);
+        field.getLayoutData().put(CmsPropertyPanel.LD_PROPERTY, propName);
         m_form.addField(tab, field, initialValue);
     }
 
@@ -423,11 +421,11 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void rebuildIndividualTab() {
 
-        m_form.removeGroup(CmsExtendedPropertyPanel.TAB_INDIVIDUAL);
-        CmsExtendedPropertyPanel panel = ((CmsExtendedPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsExtendedPropertyPanel.TAB_INDIVIDUAL);
+        m_form.removeGroup(CmsPropertyPanel.TAB_INDIVIDUAL);
+        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
+        panel.clearTab(CmsPropertyPanel.TAB_INDIVIDUAL);
         internalBuildFields(Mode.structure);
-        m_form.renderGroup(CmsExtendedPropertyPanel.TAB_INDIVIDUAL);
+        m_form.renderGroup(CmsPropertyPanel.TAB_INDIVIDUAL);
     }
 
     /**
@@ -435,11 +433,11 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void rebuildSharedTab() {
 
-        m_form.removeGroup(CmsExtendedPropertyPanel.TAB_SHARED);
-        CmsExtendedPropertyPanel panel = ((CmsExtendedPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsExtendedPropertyPanel.TAB_SHARED);
+        m_form.removeGroup(CmsPropertyPanel.TAB_SHARED);
+        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
+        panel.clearTab(CmsPropertyPanel.TAB_SHARED);
         internalBuildFields(Mode.resource);
-        m_form.renderGroup(CmsExtendedPropertyPanel.TAB_SHARED);
+        m_form.renderGroup(CmsPropertyPanel.TAB_SHARED);
     }
 
     /**
@@ -447,11 +445,11 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void rebuildSimpleTab() {
 
-        m_form.removeGroup(CmsExtendedPropertyPanel.TAB_SIMPLE);
-        CmsExtendedPropertyPanel panel = ((CmsExtendedPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsExtendedPropertyPanel.TAB_SIMPLE);
-        m_form.addField(CmsExtendedPropertyPanel.TAB_SIMPLE, createUrlNameField());
+        m_form.removeGroup(CmsPropertyPanel.TAB_SIMPLE);
+        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
+        panel.clearTab(CmsPropertyPanel.TAB_SIMPLE);
+        m_form.addField(CmsPropertyPanel.TAB_SIMPLE, createUrlNameField());
         internalBuildConfiguredFields();
-        m_form.renderGroup(CmsExtendedPropertyPanel.TAB_SIMPLE);
+        m_form.renderGroup(CmsPropertyPanel.TAB_SIMPLE);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2011/04/06 17:46:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -57,21 +57,23 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /** 
      * Constructor.<p>
+     * 
+     * @param caption the title for this dialog 
      */
-    public CmsConfirmDialog() {
+    public CmsConfirmDialog(String caption) {
 
-        this("", "");
+        this(caption, "");
     }
 
     /**
      * The constructor.<p>
      * 
-     * @param title the title and heading of the dialog
+     * @param caption the title and heading of the dialog
      * @param content the content text
      */
-    public CmsConfirmDialog(String title, String content) {
+    public CmsConfirmDialog(String caption, String content) {
 
-        super(title, content, Messages.get().key(Messages.GUI_CANCEL_0), null);
+        super(caption, content, Messages.get().key(Messages.GUI_CANCEL_0), null);
         m_okButton = new CmsPushButton();
         m_okButton.setText(Messages.get().key(Messages.GUI_OK_0));
         m_okButton.setUseMinWidth(true);

@@ -5,9 +5,9 @@
 	<ui:with field="istyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:style>
 		.additionalIcon {
-		    float: right;
-		    width: 20px;
-		    height: 20px; 
+    		position: absolute;
+    		left: 537px;
+    		margin-top: -2px;
 		}
 	</ui:style>
 	<g:FlowPanel styleName="{istyle.inputCss.formRow}">

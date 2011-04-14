@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/11 15:30:04 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  * 
  * @since 8.0.0
  */
@@ -370,6 +370,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String alertTopContent();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderPadding();
 
         /** 
          * Access method.<p>

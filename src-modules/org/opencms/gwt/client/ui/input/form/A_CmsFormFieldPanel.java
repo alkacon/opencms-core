@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/A_CmsFormFieldPanel.java,v $
- * Date   : $Date: 2011/03/31 17:47:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 
 import java.util.Collection;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,14 +45,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.3 $
+ *  @version $Revision: 1.4 $
  *  
  *  @since 8.0.0
  */
 public abstract class A_CmsFormFieldPanel extends Composite {
-
-    /** The label text. */
-    protected String m_labelText;
 
     /**
      * Returns the default group name.<p>
@@ -81,16 +79,6 @@ public abstract class A_CmsFormFieldPanel extends Composite {
     public void rerenderFields(String group, Collection<I_CmsFormField> fieldsInGroup) {
 
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Sets the info label text.<p>
-     * 
-     * @param label the text for the info label 
-     */
-    public void setLabel(String label) {
-
-        m_labelText = label;
     }
 
     /**
@@ -158,6 +146,7 @@ public abstract class A_CmsFormFieldPanel extends Composite {
         String border = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().border();
         widget.addStyleName(border);
         widget.addStyleName(cornerAll);
+        widget.getElement().getStyle().setPadding(6, Unit.PX);
     }
 
 }

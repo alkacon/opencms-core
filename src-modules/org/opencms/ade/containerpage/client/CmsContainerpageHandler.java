@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/04/14 14:41:42 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -231,7 +231,6 @@ public class CmsContainerpageHandler {
                 String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
 
                 CmsFormDialog dialog = new CmsFormDialog(title, form);
-                form.setLabel(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TEXT_0));
 
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
                 for (I_CmsFormField field : formFields.values()) {

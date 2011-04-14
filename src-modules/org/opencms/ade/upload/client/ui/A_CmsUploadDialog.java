@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -356,10 +356,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      */
     public A_CmsUploadDialog() {
 
+        super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
+
         I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
         m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObject(getUploadService(), CmsUploadData.DICT_NAME);
 
-        setText(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
@@ -398,7 +399,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         m_mainPanel.add(m_selectionSummary);
 
         // set the main panel as content of the popup
-        setContent(m_mainPanel);
+        setMainContent(m_mainPanel);
 
         // create and add the "OK", "Cancel" and upload button
         createButtons();

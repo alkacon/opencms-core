@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/04/08 13:36:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -165,11 +165,10 @@ public class CmsAvailabilityDialog extends CmsPopup {
      */
     private CmsAvailabilityDialog() {
 
-        setText("Availability / Publish Scheduled");
+        super("Availability / Publish Scheduled", 439);
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
-        setWidth("439px");
     }
 
     /**
@@ -343,7 +342,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         insertValuesIntoForm();
 
         // add the main panel and center the popup
-        setContent(m_panel);
+        setMainContent(m_panel);
         center();
     }
 

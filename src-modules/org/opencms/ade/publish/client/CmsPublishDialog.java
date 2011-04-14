@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2011/03/31 17:46:12 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/14 14:41:42 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  * 
@@ -181,20 +181,21 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public CmsPublishDialog(CmsPublishData initData) {
 
-        super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
+        super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), 800);
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        setWidth("800px");
-        m_panel = (DeckPanel)getContent();
+        addStyleName(CSS.publishDialog());
+
         m_publishSelectPanel = new CmsPublishSelectPanel(this, initData.getProjects(), initData.getOptions());
         m_brokenLinksPanel = new CmsBrokenLinksPanel(this, initData.isCanPublishBrokenRelations());
 
+        m_panel = new DeckPanel();
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
-        setPanel(PANEL_SELECT);
+        setMainContent(m_panel);
 
-        addStyleName(CSS.publishDialog());
+        setPanel(PANEL_SELECT);
         onReceivePublishList(initData.getGroups());
     }
 

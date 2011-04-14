@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2011/04/08 07:49:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since version 8.0.0
  */
@@ -348,7 +348,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         }
 
         // finally set the position of the popup
-        m_popup.setPosition(left, top);
+        m_popup.setPopupPosition(left, top);
     }
 
     /**

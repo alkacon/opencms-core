@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/04/11 12:41:58 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,35 +37,181 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a pop up dialog base.
  * 
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
-public class CmsPopup implements I_CmsAutoHider {
+public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
+
+    /**
+     * The dialog button panel.<p>
+     */
+    private class ButtonPanel extends FlowPanel {
+
+        /**
+         * Default constructor.<p>
+         */
+        protected ButtonPanel() {
+
+            // nothing to do
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onAttach()
+         */
+        @Override
+        protected void onAttach() {
+
+            super.onAttach();
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+        }
+    }
+
+    /**
+     * The dialog caption.<p>
+     */
+    private class Caption extends HTML {
+
+        /**
+         * Default constructor.<p>
+         */
+        protected Caption() {
+
+            // nothing to do
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onAttach()
+         */
+        @Override
+        protected void onAttach() {
+
+            super.onAttach();
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+        }
+    }
+
+    /**
+     * The dialog mouse handler.<p>
+     */
+    private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
+
+        /**
+         * Default constructor.<p>
+         */
+        protected MouseHandler() {
+
+            // nothing to do
+        }
+
+        public void onMouseDown(MouseDownEvent event) {
+
+            beginDragging(event);
+        }
+
+        public void onMouseMove(MouseMoveEvent event) {
+
+            continueDragging(event);
+        }
+
+        public void onMouseUp(MouseUpEvent event) {
+
+            endDragging(event);
+        }
+    }
 
     /** The default width of this dialog. */
     private static final int DEFAULT_WIDTH = 300;
 
-    /** The wrapped pop up dialog. */
-    private CmsDialogBox m_dialog;
+    /** The window width. */
+    protected int m_windowWidth;
+
+    /** The panel holding the dialog's buttons. */
+    private ButtonPanel m_buttonPanel;
+
+    /** The dialog caption. */
+    private Caption m_caption;
+
+    /** Body offset left. */
+    private int m_clientLeft;
+
+    /** Body offset top. */
+    private int m_clientTop;
+
+    /** The popup container element. */
+    private com.google.gwt.user.client.Element m_containerElement;
+
+    /** Flag if dragging. */
+    private boolean m_dragging;
+
+    /** Drag starting x position. */
+    private int m_dragStartX;
+
+    /** Drag starting y position. */
+    private int m_dragStartY;
+
+    /** The main widget of this dialog containing all others. */
+    private FlowPanel m_main;
+
+    /** The resize handler registration .*/
+    private HandlerRegistration m_resizeHandlerRegistration;
 
     /** Signals whether a animation should be used to show the popup or not. */
     private boolean m_useAnimation = true;
@@ -85,9 +231,43 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public CmsPopup(int width) {
 
-        m_dialog = new CmsDialogBox(false);
-        m_dialog.setWidth(width + Unit.PX.toString());
-        m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+        super(false, true);
+        // super(autoHide, modal);
+
+        m_containerElement = super.getContainerElement();
+        setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+        setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
+        Element dragOverlay = DOM.createDiv();
+        dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
+        getElement().insertFirst(dragOverlay);
+
+        m_caption = new Caption();
+        m_caption.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().caption());
+        // Add the caption to the top of the popup-panel. We need to
+        // logically adopt the caption so we can catch mouse events.
+        DOM.appendChild(m_containerElement, m_caption.getElement());
+        adopt(m_caption);
+
+        m_main = new FlowPanel();
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
+        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
+        super.setWidget(m_main);
+
+        m_buttonPanel = new ButtonPanel();
+        m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
+        // Add the caption to the top of the popup-panel. We need to
+        // logically adopt the caption so we can catch mouse events.
+        DOM.appendChild(m_containerElement, m_buttonPanel.getElement());
+        adopt(m_buttonPanel);
+
+        MouseHandler mouseHandler = new MouseHandler();
+        addDomHandler(mouseHandler, MouseDownEvent.getType());
+        addDomHandler(mouseHandler, MouseUpEvent.getType());
+        addDomHandler(mouseHandler, MouseMoveEvent.getType());
+
+        setWidth(width + Unit.PX.toString());
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
     }
 
     /**
@@ -98,7 +278,7 @@ public class CmsPopup implements I_CmsAutoHider {
     public CmsPopup(String caption) {
 
         this();
-        setText(caption);
+        setCaption(caption);
     }
 
     /**
@@ -110,7 +290,7 @@ public class CmsPopup implements I_CmsAutoHider {
     public CmsPopup(String caption, int width) {
 
         this(width);
-        setText(caption);
+        setCaption(caption);
     }
 
     /**
@@ -122,9 +302,16 @@ public class CmsPopup implements I_CmsAutoHider {
     public CmsPopup(String title, Widget content) {
 
         this(title);
-        if (content != null) {
-            setContent(content);
-        }
+        setMainContent(content);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setWidget(Widget w) {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -132,17 +319,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * 
      * @param w the widget
      */
+    @Override
     public void add(Widget w) {
 
-        m_dialog.getMainPanel().add(w);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#addAutoHidePartner(com.google.gwt.dom.client.Element)
-     */
-    public void addAutoHidePartner(Element partner) {
-
-        m_dialog.addAutoHidePartner(partner);
+        m_main.add(w);
     }
 
     /**
@@ -163,46 +343,8 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void addButton(Widget button, int position) {
 
-        m_dialog.getButtonPanel().insert(button, position);
-        m_dialog.getButtonPanel().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
-    }
-
-    /**
-     * Adds a {@link com.google.gwt.event.logical.shared.CloseEvent} handler to the dialog.<p>
-     * 
-     * @param handler the handler to add
-     * 
-     * @return the registration for the event
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#addCloseHandler(com.google.gwt.event.logical.shared.CloseHandler)
-     */
-    public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler) {
-
-        return m_dialog.addCloseHandler(handler);
-    }
-
-    /**
-     * Adds a dependent style name.<p>
-     * 
-     * @param styleSuffix the style suffix
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#addStyleDependentName(java.lang.String)
-     */
-    public void addStyleDependentName(String styleSuffix) {
-
-        m_dialog.addStyleDependentName(styleSuffix);
-    }
-
-    /**
-     * Adds another style name.<p>
-     * 
-     * @param style the style name
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#addStyleName(java.lang.String)
-     */
-    public void addStyleName(String style) {
-
-        m_dialog.addStyleName(style);
+        m_buttonPanel.insert(button, position);
+        m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
     }
 
     /**
@@ -234,137 +376,30 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /**
-     * Opens the dialog at the center of the browser window, or positions it there, if already visible.<p> 
+     * @see com.google.gwt.user.client.ui.PopupPanel#center()
      */
+    @Override
     public void center() {
 
-        m_dialog.center();
+        if (m_resizeHandlerRegistration == null) {
+            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+                public void onResize(ResizeEvent event) {
+
+                    m_windowWidth = event.getWidth();
+                }
+            });
+        }
+        super.center();
     }
 
     /**
-     * Clears all child widgets.<p>
+     * @see com.google.gwt.user.client.ui.Panel#clear()
      */
+    @Override
     public void clear() {
 
-        m_dialog.getMainPanel().clear();
-    }
-
-    /**
-     * Fires the given event to all the appropriate handlers.
-     * 
-     * @param event the event to be fired
-     * 
-     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
-     */
-    public void fireEvent(GwtEvent<?> event) {
-
-        m_dialog.fireEvent(event);
-    }
-
-    /**
-     * Gets the dialog's absolute left position in pixels, as measured from the browser window's client area.<p>
-     * 
-     * @return the dialog's absolute left position
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#getAbsoluteLeft()
-     */
-    public int getAbsoluteLeft() {
-
-        return m_dialog.getAbsoluteLeft();
-    }
-
-    /**
-     * Gets the dialog's absolute top position in pixels, as measured from the browser window's client area.<p>
-     * 
-     * @return the dialog's absolute top position
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#getAbsoluteTop()
-     */
-    public int getAbsoluteTop() {
-
-        return m_dialog.getAbsoluteTop();
-    }
-
-    /**
-     * Returns the content widget.<p>
-     * 
-     * @return the content widget
-     */
-    public Widget getContent() {
-
-        return m_dialog.getContent();
-    }
-
-    /**
-     * Gets the panel's offset height in pixels. Calls to setHeight(String) before the panel's child widget is set will not influence the offset height.<p>
-     * 
-     * @return the object's offset height
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#getOffsetHeight()
-     */
-    public int getOffsetHeight() {
-
-        return m_dialog.getOffsetHeight();
-    }
-
-    /**
-     * Gets the panel's offset width in pixels. Calls to setWidth(String) before the panel's child widget is set will not influence the offset width.<p>
-     * 
-     * @return the object's offset width
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#getOffsetWidth()
-     */
-    public int getOffsetWidth() {
-
-        return m_dialog.getOffsetWidth();
-    }
-
-    /**
-     * Gets the popup's left position relative to the browser's client area.<p>
-     * 
-     * @return the popup's left position
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#getPopupLeft()
-     */
-    public int getPopupLeft() {
-
-        return m_dialog.getPopupLeft();
-    }
-
-    /**
-     * Gets the popup's top position relative to the browser's client area.<p>
-     * 
-     * @return the popup's top position
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#getPopupTop()
-     */
-    public int getPopupTop() {
-
-        return m_dialog.getPopupTop();
-    }
-
-    /**
-     * Returns the caption text content.<p>
-     * 
-     * @return the caption text
-     * 
-     * @see com.google.gwt.user.client.ui.DialogBox#getText()
-     */
-    public String getText() {
-
-        return m_dialog.getText();
-    }
-
-    /**
-     * Returns the pop up dialog's title.<p>
-     * 
-     * @return the title
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#getTitle()
-     */
-    public String getTitle() {
-
-        return m_dialog.getTitle();
+        m_main.clear();
     }
 
     /**
@@ -376,7 +411,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public Widget getWidget(int index) {
 
-        return m_dialog.getMainPanel().getWidget(index);
+        return m_main.getWidget(index);
     }
 
     /**
@@ -386,7 +421,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public int getWidgetCount() {
 
-        return m_dialog.getMainPanel().getWidgetCount();
+        return m_main.getWidgetCount();
     }
 
     /**
@@ -398,15 +433,20 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public int getWidgetIndex(Widget child) {
 
-        return m_dialog.getMainPanel().getWidgetIndex(child);
+        return m_main.getWidgetIndex(child);
     }
 
     /**
-     * Hides the dialog window.<p>
+     * @see com.google.gwt.user.client.ui.PopupPanel#hide()
      */
+    @Override
     public void hide() {
 
-        m_dialog.hide();
+        if (m_resizeHandlerRegistration != null) {
+            m_resizeHandlerRegistration.removeHandler();
+            m_resizeHandlerRegistration = null;
+        }
+        super.hide();
     }
 
     /**
@@ -419,7 +459,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
 
-        m_dialog.getMainPanel().insert(w, beforeIndex);
+        m_main.insert(w, beforeIndex);
     }
 
     /**
@@ -429,107 +469,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void insertFront(Widget widget) {
 
-        m_dialog.getMainPanel().insert(widget, 0);
-    }
-
-    /**
-     * Returns if animation is enabled.<p>
-     * 
-     * @return true if animation is enabled
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isAnimationEnabled()
-     */
-    public boolean isAnimationEnabled() {
-
-        return m_dialog.isAnimationEnabled();
-    }
-
-    /**
-     * Returns if the dialog element is attached to the DOM.<p>
-     * 
-     * @return true if attached
-     * 
-     * @see com.google.gwt.user.client.ui.Widget#isAttached()
-     */
-    public boolean isAttached() {
-
-        return m_dialog.isAttached();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideEnabled()
-     */
-    public boolean isAutoHideEnabled() {
-
-        return m_dialog.isAutoHideEnabled();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideOnHistoryEventsEnabled()
-     */
-    public boolean isAutoHideOnHistoryEventsEnabled() {
-
-        return m_dialog.isAutoHideOnHistoryEventsEnabled();
-    }
-
-    /**
-     * Returns if the dialog overlay is enabled.<p>
-     * 
-     * @return true if the overlay will be shown
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isGlassEnabled()
-     */
-    public boolean isGlassEnabled() {
-
-        return m_dialog.isGlassEnabled();
-    }
-
-    /**
-     * Returns if the dialog is modal.<p>
-     * 
-     * @return true if the dialog is modal
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isModal()
-     */
-    public boolean isModal() {
-
-        return m_dialog.isModal();
-    }
-
-    /**
-     * Returns true if the popup should preview all native events, even if the event has already been consumed by another popup.<p>
-     * 
-     * @return true if the popup should preview all native events
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isPreviewingAllNativeEvents()
-     */
-    public boolean isPreviewingAllNativeEvents() {
-
-        return m_dialog.isPreviewingAllNativeEvents();
-    }
-
-    /**
-     * Determines whether or not this popup is showing.<p>
-     * 
-     * @return Determines whether or not this popup is showing
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isShowing()
-     */
-    public boolean isShowing() {
-
-        return m_dialog.isShowing();
-    }
-
-    /**
-     * Determines whether or not this popup is visible.<p>
-     * 
-     * @return true if the object is visible
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isVisible()
-     */
-    public boolean isVisible() {
-
-        return m_dialog.isVisible();
+        m_main.insert(widget, 0);
     }
 
     /**
@@ -537,21 +477,34 @@ public class CmsPopup implements I_CmsAutoHider {
      * 
      * @return the widget iterator
      */
+    @Override
     public Iterator<Widget> iterator() {
 
-        return m_dialog.getMainPanel().iterator();
+        return m_main.iterator();
     }
 
     /**
-     * Fired whenever a browser event is received.<p>
-     * 
-     * @param event the event
-     * 
-     * @see com.google.gwt.user.client.ui.DialogBox#onBrowserEvent(com.google.gwt.user.client.Event)
+     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
      */
+    @Override
     public void onBrowserEvent(Event event) {
 
-        m_dialog.onBrowserEvent(event);
+        // If we're not yet dragging, only trigger mouse events if the event occurs
+        // in the caption wrapper
+        switch (event.getTypeInt()) {
+            case Event.ONMOUSEDOWN:
+            case Event.ONMOUSEUP:
+            case Event.ONMOUSEMOVE:
+            case Event.ONMOUSEOVER:
+            case Event.ONMOUSEOUT:
+                if (!m_dragging && !isCaptionEvent(event)) {
+                    return;
+                }
+                break;
+            default:
+        }
+
+        super.onBrowserEvent(event);
     }
 
     /**
@@ -561,9 +514,10 @@ public class CmsPopup implements I_CmsAutoHider {
      * 
      * @return <code>true</code> if the child was present
      */
+    @Override
     public boolean remove(Widget w) {
 
-        return m_dialog.getMainPanel().remove(w);
+        return m_main.remove(w);
     }
 
     /**
@@ -571,17 +525,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void removeAllButtons() {
 
-        m_dialog.getButtonPanel().clear();
-    }
-
-    /**
-     * Removes an auto-hide partner.<p>
-     * 
-     * @param partner the auto-hide partner to remove
-     */
-    public void removeAutoHidePartner(Element partner) {
-
-        m_dialog.removeAutoHidePartner(partner);
+        m_buttonPanel.clear();
     }
 
     /**
@@ -591,9 +535,9 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void removeButton(Widget button) {
 
-        m_dialog.getButtonPanel().remove(button);
-        if (m_dialog.getButtonPanel().getWidgetCount() == 0) {
-            m_dialog.getButtonPanel().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
+        m_buttonPanel.remove(button);
+        if (m_buttonPanel.getWidgetCount() == 0) {
+            m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
         }
     }
 
@@ -602,59 +546,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void removePadding() {
 
-        m_dialog.getMainPanel().removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
-    }
-
-    /**
-     * Removes a dependent style name.<p>
-     * 
-     * @param styleSuffix the dependent style name to remove
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#removeStyleDependentName(java.lang.String)
-     */
-    public void removeStyleDependentName(String styleSuffix) {
-
-        m_dialog.removeStyleDependentName(styleSuffix);
-    }
-
-    /**
-     * Removes a style name.<p>
-     * 
-     * @param style the style name to remove
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#removeStyleName(java.lang.String)
-     */
-    public void removeStyleName(String style) {
-
-        m_dialog.removeStyleName(style);
-    }
-
-    /**
-     * Sets the animation enabled.<p>
-     * 
-     * @param enable true to enable, false to disable
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setAnimationEnabled(boolean)
-     */
-    public void setAnimationEnabled(boolean enable) {
-
-        m_dialog.setAnimationEnabled(enable);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideEnabled(boolean)
-     */
-    public void setAutoHideEnabled(boolean autoHide) {
-
-        m_dialog.setAutoHideEnabled(autoHide);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideOnHistoryEventsEnabled(boolean)
-     */
-    public void setAutoHideOnHistoryEventsEnabled(boolean enabled) {
-
-        m_dialog.setAutoHideOnHistoryEventsEnabled(enabled);
+        m_main.removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
     }
 
     /**
@@ -664,80 +556,18 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void setBackgroundColor(String color) {
 
-        m_dialog.getMainPanel().getElement().getStyle().setBackgroundColor(color);
+        m_main.getElement().getStyle().setBackgroundColor(color);
     }
 
     /**
-     * Sets the content for this dialog replacing any former content.<p>
+     * Replaces the content from the main widget.<p>
      * 
-     * @param widget the content widget
+     * @param w the widget that should replace the main content
      */
-    public void setContent(Widget widget) {
+    public void setMainContent(Widget w) {
 
-        if (m_dialog.getContent() != null) {
-            remove(m_dialog.getContent());
-        }
-        insert(widget, 0);
-        m_dialog.setContent(widget);
-    }
-
-    /**
-     * When enabled, the background will be blocked with a semi-transparent pane the next time it is shown. If the PopupPanel is already visible, the glass will not be displayed until it is hidden and shown again.<p>
-     * 
-     * @param enabled enable true to enable, false to disable
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setGlassEnabled(boolean)
-     */
-    public void setGlassEnabled(boolean enabled) {
-
-        m_dialog.setGlassEnabled(enabled);
-    }
-
-    /**
-     * Set the dialog to modal.<p>
-     * 
-     * @param modal enable true to enable, false to disable
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setModal(boolean)
-     */
-    public void setModal(boolean modal) {
-
-        m_dialog.setModal(modal);
-    }
-
-    /**
-     * Sets the object's size, in pixels, not including decorations such as border, margin, and padding.<p>
-     * 
-     * @param width the object's new width, in pixels
-     * @param height the object's new height, in pixels
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#setPixelSize(int, int)
-     */
-    public void setPixelSize(int width, int height) {
-
-        m_dialog.setPixelSize(width, height);
-    }
-
-    /**
-     * Sets the popup's position using a {@link PositionCallback}, and shows the popup. The callback allows positioning to be performed based on the offsetWidth and offsetHeight of the popup, which are normally not available until the popup is showing. By positioning the popup before it is shown, the the popup will not jump from its original position to the new position.<p>
-     * 
-     * @param callback the callback
-     */
-    public void setPopupPositionAndShow(PositionCallback callback) {
-
-        m_dialog.setPopupPositionAndShow(callback);
-    }
-
-    /**
-     * Sets the popup's position relative to the browser's client area.<p>
-     * 
-     * @param left position left in pixels
-     * @param top position top in pixels
-     */
-    public void setPosition(int left, int top) {
-
-        m_dialog.setPopupPosition(left, top);
-
+        m_main.clear();
+        m_main.add(w);
     }
 
     /**
@@ -749,83 +579,179 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void setSize(int width, int height, Unit unit) {
 
-        m_dialog.setSize(width + unit.toString(), height + unit.toString());
+        setSize(width + unit.toString(), height + unit.toString());
     }
 
     /**
-     * Sets the object's size. This size does not include decorations such as border, margin, and padding.<p>
-     * 
-     * @param width the object's new width, in CSS units (e.g. "10px", "1em")
-     * @param height the object's new height, in CSS units (e.g. "10px", "1em")
-     * @see com.google.gwt.user.client.ui.UIObject#setSize(java.lang.String, java.lang.String)
-     */
-    public void setSize(String width, String height) {
-
-        m_dialog.setSize(width, height);
-    }
-
-    /**
-     * Sets the captions text.<p>
-     * 
-     * @param text the text to set
-     * 
-     * @see com.google.gwt.user.client.ui.DialogBox#setText(java.lang.String)
-     */
-    public void setText(String text) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
-            m_dialog.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
-            m_dialog.setText(text);
-        } else {
-            m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
-        }
-    }
-
-    /**
-     * Sets the dialog widget title.<p>
-     * 
-     * @param title the title to set
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setTitle(java.lang.String)
-     */
-    public void setTitle(String title) {
-
-        m_dialog.setTitle(title);
-    }
-
-    /**
-     * Sets the dialog width.<p>
-     * 
-     * @param width the width, in CSS units (e.g. "10px", "1em")
-     * 
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidth(java.lang.String)
      */
+    @Override
     public void setWidth(String width) {
 
-        m_dialog.setWidth(width);
-    }
-
-    /**
-     * Shows the popup and attach it to the page. It must have a child widget before this method is called.<p>
-     */
-    public void show() {
-
-        m_dialog.show();
-        if (m_useAnimation) {
-            CmsFadeAnimation.fadeIn(m_dialog.getElement(), null, 500);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(width)) {
+            m_containerElement.getStyle().clearWidth();
+        } else {
+            m_containerElement.getStyle().setProperty("width", width);
         }
     }
 
     /**
-     * Normally, the popup is positioned directly below the relative target, with its left edge aligned with the left edge of the target. Depending on the width and height of the popup and the distance from the target to the bottom and right edges of the window, the popup may be displayed directly above the target, and/or its right edge may be aligned with the right edge of the target.<p>
-     * 
-     * @param target the target to show the popup below
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#showRelativeTo(com.google.gwt.user.client.ui.UIObject)
+     * @see com.google.gwt.user.client.ui.PopupPanel#show()
      */
-    public final void showRelativeTo(UIObject target) {
+    @Override
+    public void show() {
 
-        m_dialog.showRelativeTo(target);
+        if (m_useAnimation) {
+            CmsFadeAnimation.fadeIn(getElement(), null, 500);
+        }
+        if (m_resizeHandlerRegistration == null) {
+            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+                public void onResize(ResizeEvent event) {
+
+                    m_windowWidth = event.getWidth();
+                }
+            });
+        }
+        super.show();
+    }
+
+    /**
+     * Called on mouse down in the caption area, begins the dragging loop by
+     * turning on event capture.
+     * 
+     * @see DOM#setCapture
+     * @see #continueDragging
+     * @param event the mouse down event that triggered dragging
+     */
+    protected void beginDragging(MouseDownEvent event) {
+
+        m_dragging = true;
+        m_windowWidth = Window.getClientWidth();
+        m_clientLeft = Document.get().getBodyOffsetLeft();
+        m_clientTop = Document.get().getBodyOffsetTop();
+        DOM.setCapture(getElement());
+        m_dragStartX = event.getX();
+        m_dragStartY = event.getY();
+        addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
+    }
+
+    /**
+     * Called on mouse move in the caption area, continues dragging if it was
+     * started by {@link #beginDragging}.
+     * 
+     * @see #beginDragging
+     * @see #endDragging
+     * @param event the mouse move event that continues dragging
+     */
+    protected void continueDragging(MouseMoveEvent event) {
+
+        if (m_dragging) {
+            int absX = event.getX() + getAbsoluteLeft();
+            int absY = event.getY() + getAbsoluteTop();
+
+            // if the mouse is off the screen to the left, right, or top, don't
+            // move the dialog box. This would let users lose dialog boxes, which
+            // would be bad for modal popups.
+            if ((absX < m_clientLeft) || (absX >= m_windowWidth) || (absY < m_clientTop)) {
+                return;
+            }
+
+            setPopupPosition(absX - m_dragStartX, absY - m_dragStartY);
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Panel#doAttachChildren()
+     */
+    @Override
+    protected void doAttachChildren() {
+
+        try {
+            super.doAttachChildren();
+        } finally {
+            // See comment in doDetachChildren for an explanation of this call
+            m_caption.onAttach();
+            m_buttonPanel.onAttach();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Panel#doDetachChildren()
+     */
+    @Override
+    protected void doDetachChildren() {
+
+        try {
+            super.doDetachChildren();
+        } finally {
+            // We need to detach the caption specifically because it is not part of the
+            // iterator of Widgets that the {@link SimplePanel} super class returns.
+            // This is similar to a {@link ComplexPanel}, but we do not want to expose
+            // the caption widget, as its just an internal implementation.
+            m_caption.onDetach();
+            m_buttonPanel.onDetach();
+        }
+    }
+
+    /**
+     * Called on mouse up in the caption area, ends dragging by ending event
+     * capture.
+     * 
+     * @param event the mouse up event that ended dragging
+     * 
+     * @see DOM#releaseCapture
+     * @see #beginDragging
+     * @see #endDragging
+     */
+    protected void endDragging(MouseUpEvent event) {
+
+        m_dragging = false;
+        DOM.releaseCapture(getElement());
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
+     */
+    @Override
+    protected com.google.gwt.user.client.Element getContainerElement() {
+
+        if (m_containerElement == null) {
+            m_containerElement = super.getContainerElement();
+        }
+        return m_containerElement;
+    }
+
+    /**
+     * Override to work around the glass overlay still showing after dialog hide.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.Widget#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        if (getGlassElement() != null) {
+            getGlassElement().removeFromParent();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+     */
+    @Override
+    protected void onPreviewNativeEvent(NativePreviewEvent event) {
+
+        // We need to preventDefault() on mouseDown events (outside of the
+        // DialogBox content) to keep text from being selected when it
+        // is dragged.
+        NativeEvent nativeEvent = event.getNativeEvent();
+
+        if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && isCaptionEvent(nativeEvent)) {
+            nativeEvent.preventDefault();
+        }
+        super.onPreviewNativeEvent(event);
     }
 
     /**
@@ -833,7 +759,7 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     protected void setPositionFixed() {
 
-        m_dialog.getElement().getStyle().setPosition(Position.FIXED);
+        getElement().getStyle().setPosition(Position.FIXED);
     }
 
     /**
@@ -853,7 +779,53 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     protected void showArrow(Element arrow) {
 
-        m_dialog.getElement().appendChild(arrow);
+        getElement().appendChild(arrow);
     }
 
+    /**
+     * Checks if the target of the given event is the caption or a child of the caption.<p>
+     * 
+     * @param event the event to check
+     * 
+     * @return <code>true</code> if the target of the given event is the caption <code>false</code> otherwise
+     */
+    private boolean isCaptionEvent(NativeEvent event) {
+
+        EventTarget target = event.getEventTarget();
+        if (Element.is(target)) {
+            return m_caption.getElement().isOrHasChild(Element.as(target));
+        }
+        return false;
+    }
+
+    /**
+     * Sets the captions text.<p>
+     * 
+     * @param caption the text to set
+     */
+    public void setCaption(String caption) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(caption)) {
+            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+            m_caption.setText(caption);
+        } else {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+        }
+    }
+
+    /**
+     * Wraps the given Widget with a cornered border, padding and margin.<p>
+     *  
+     * @param w the widget to wrap
+     * 
+     * @return a new widget that wraps the given one
+     */
+    public static Widget wrapWithBorderPadding(Widget w) {
+
+        w.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().borderPadding());
+        w.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        SimplePanel panel = new SimplePanel();
+        panel.add(w);
+        return panel;
+    }
 }

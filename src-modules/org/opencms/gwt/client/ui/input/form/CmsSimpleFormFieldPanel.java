@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsSimpleFormFieldPanel.java,v $
- * Date   : $Date: 2011/03/31 17:47:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,21 +31,19 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 
 import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * A simple form field container widget.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -83,12 +81,6 @@ public class CmsSimpleFormFieldPanel extends A_CmsFormFieldPanel {
     public void renderFields(Collection<I_CmsFormField> fields) {
 
         m_panel.clear();
-        if (m_labelText != null) {
-            Label label = new Label(m_labelText);
-            label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formInfo());
-            m_panel.add(label);
-
-        }
         for (I_CmsFormField field : fields) {
             CmsFormRow row = createRow(field);
             m_panel.add(row);

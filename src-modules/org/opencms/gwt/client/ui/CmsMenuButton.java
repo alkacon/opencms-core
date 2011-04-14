@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/04/04 16:11:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -479,7 +479,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_arrow.getStyle().setTop(arrowTop, Unit.PX);
 
         m_popup.showArrow(m_arrow);
-        m_popup.setPosition(contentLeft + Window.getScrollLeft(), contentTop);
+        m_popup.setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
     }
 
     /**

@@ -2,13 +2,9 @@
 
 .gwt-TabLayoutPanel {	
 	display:block;
-    /* background:value("constants.css.backgroundColorMenu") none repeat scroll 0 0; */   
-    border:1px solid value("constants.css.borderColor");
 	height: 100%;
 	margin:0;
 	padding:0;
-/*	font-size:value("constants.css.fontSize");
-	font-family: value("constants.css.fontFamily"); */   	
 }
 
 /*TODO: remove if not used within gallery preview*/

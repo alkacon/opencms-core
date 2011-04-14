@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/04/08 13:39:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -113,13 +113,10 @@ public class CmsAlertDialog extends CmsPopup {
      */
     public CmsAlertDialog(String title, String content, String buttonText, String buttonIconClass) {
 
-        super(439);
+        super(title, 439);
         super.setAutoHideEnabled(false);
         super.setModal(true);
         setGlassEnabled(true);
-
-        // set title for this dialog
-        setText(title);
 
         // create the dialogs content panel
         m_content = new FlowPanel();
@@ -147,7 +144,7 @@ public class CmsAlertDialog extends CmsPopup {
         m_content.add(m_bottomWidgets);
 
         // set the content to the popup
-        setContent(m_content);
+        setMainContent(m_content);
 
         // add the close button
         m_closeButton = new CmsPushButton();

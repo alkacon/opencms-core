@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2011/03/15 10:20:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/14 14:41:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @author Ruediger Kurz
  * @author Tobias Herrmann
@@ -164,6 +164,16 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     public FlowPanel getContentPanel() {
 
         return m_content;
+    }
+
+    /**
+     * Returns the count of widgets inside this fieldset.<p>
+     * 
+     * @return the count of widgets inside this fieldset
+     */
+    public int getWidgetCount() {
+
+        return m_content.getWidgetCount();
     }
 
     /**
