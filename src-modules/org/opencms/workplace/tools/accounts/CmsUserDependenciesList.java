@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2011/04/01 13:44:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/14 07:31:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     public CmsUserDependenciesList(CmsJspActionElement jsp) {
 
         this(LIST_ID, jsp);
+        m_showAttributes = true;
     }
 
     /**
@@ -107,6 +108,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     public CmsUserDependenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+        m_showAttributes = true;
     }
 
     /**
@@ -118,6 +120,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     protected CmsUserDependenciesList(String listId, CmsJspActionElement jsp) {
 
         super(listId, jsp);
+        m_showAttributes = true;
     }
 
     /**

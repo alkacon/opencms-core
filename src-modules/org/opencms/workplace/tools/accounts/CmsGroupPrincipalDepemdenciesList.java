@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupPrincipalDepemdenciesList.java,v $
- * Date   : $Date: 2011/04/01 13:44:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/14 07:31:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.9.* 
  */
@@ -91,6 +91,9 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the group id, could be a list of ids. */
     private String m_paramGroupid;
 
+    /** Flag to show resources with file attributes */
+    protected boolean m_showAttributes;
+
     /**
      * Public constructor.<p>
      * 
@@ -99,6 +102,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     public CmsGroupPrincipalDepemdenciesList(CmsJspActionElement jsp) {
 
         this(LIST_ID, jsp);
+        m_showAttributes = false;
     }
 
     /**
@@ -111,6 +115,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     public CmsGroupPrincipalDepemdenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+        m_showAttributes = false;
     }
 
     /**
@@ -128,6 +133,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_NAME);
+        m_showAttributes = false;
     }
 
     /**
@@ -187,7 +193,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
             while (itGroups.hasNext()) {
                 CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next().toString()));
                 // get content
-                Set resources = getCms().getResourcesForPrincipal(group.getId(), null, true);
+                Set resources = getCms().getResourcesForPrincipal(group.getId(), null, m_showAttributes);
                 Iterator itRes = resources.iterator();
                 while (itRes.hasNext()) {
                     CmsResource resource = (CmsResource)itRes.next();

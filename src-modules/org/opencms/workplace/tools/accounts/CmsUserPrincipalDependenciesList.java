@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserPrincipalDependenciesList.java,v $
- * Date   : $Date: 2011/04/01 13:44:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/14 07:31:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.9.* 
  */
@@ -96,6 +96,9 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the user id, could be a list of ids. */
     private String m_paramUserid;
 
+    /** Flag to show resources with file attributes */
+    protected boolean m_showAttributes;
+
     /**
      * Public constructor.<p>
      * 
@@ -104,6 +107,8 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     public CmsUserPrincipalDependenciesList(CmsJspActionElement jsp) {
 
         this(LIST_ID, jsp);
+        m_showAttributes = false;
+
     }
 
     /**
@@ -116,6 +121,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     public CmsUserPrincipalDependenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+        m_showAttributes = false;
     }
 
     /**
@@ -133,6 +139,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_NAME);
+        m_showAttributes = false;
     }
 
     /**
@@ -193,7 +200,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
             while (itUsers.hasNext()) {
                 CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
                 // get content
-                Set resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
+                Set resources = getCms().getResourcesForPrincipal(user.getId(), null, m_showAttributes);
                 Iterator itRes = resources.iterator();
                 while (itRes.hasNext()) {
                     CmsResource resource = (CmsResource)itRes.next();
