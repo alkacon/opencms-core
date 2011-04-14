@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/14 06:36:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationPublishValidator;
 import org.opencms.relations.CmsRelationValidatorInfoEntry;
-import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
@@ -77,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -430,7 +429,7 @@ public class CmsPublish {
      */
     public void publishResources(List<CmsResource> resources) throws CmsException {
 
-        I_CmsReport report = new CmsShellReport(m_locale);
+        I_CmsReport report = null;
         CmsPublishList publishList = OpenCms.getPublishManager().getPublishListAll(
             m_cms,
             resources,
