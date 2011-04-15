@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2010/03/02 14:35:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/15 07:05:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -357,12 +357,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         ServletResponse res) throws JspException {
 
         try {
-            // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimiter later
-            context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
             // add the target to the include list (the list will be initialized if it is currently empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap, attributeMap);
             // now use the Flex dispatcher to include the target (this will also work for targets in the OpenCms VFS)
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
+            // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimiter later
+            context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
         } catch (ServletException e) {
             // store original Exception in controller in order to display it later
             Throwable t = (e.getRootCause() != null) ? e.getRootCause() : e;
