@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2011/04/15 09:33:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/15 12:18:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.collections.Transformer;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0
  */
@@ -165,6 +165,7 @@ public class CmsContainerPageBean {
     public List<CmsContainerElementBean> getElements() {
 
         if (m_elements == null) {
+            m_elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerBean container : m_containers.values()) {
                 m_elements.addAll(container.getElements());
             }
