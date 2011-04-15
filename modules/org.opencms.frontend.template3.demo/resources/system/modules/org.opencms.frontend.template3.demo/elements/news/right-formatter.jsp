@@ -1,35 +1,27 @@
-<%@ page import="org.opencms.file.*" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page taglibs="c,cms" %>
 <div class="box box_schema2">
-<cms:contentload collector="singleFile" param="%(opencms.element)" >
-
-	<!-- Title Section of the news -->
-	<h4><a href="<cms:link>${__currentElement.sitePath}</cms:link>" style="color:inherit;"><cms:contentshow element="Title" /></a></h4>
+	<cms:formatter var="content">
+	
+		<!-- Title Section of the news -->
+		<h4><a href="<cms:link>${content.filename}</cms:link>" style="color:inherit;">${content.value.Title}</a></h4>
 		<div class="boxbody">
-	<cms:contentcheck ifexists="SubTitle">
-		<p><cms:contentshow element="SubTitle" /></p>
-	</cms:contentcheck>
-	
-	<!-- Optional image of the paragraph -->
-	<cms:contentloop element="Paragraph">
-	
-		<!-- Optional headline of the paragraph -->
-		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
-		
-	</cms:contentloop>
-	
-	<!-- Author of the news -->
-	<p>
-		<cms:contentcheck ifexists="AuthorMail">
-			<c:set var="authorMail"><cms:contentshow element="AuthorMail" /></c:set>
-		</cms:contentcheck>
-		<c:choose>
-			<c:when test="${!empty authorMail}"><a href="mailto:${authorMail}"><cms:contentshow element="Author" /></a></c:when>
-			<c:otherwise><cms:contentshow element="Author" /></c:otherwise>
-		</c:choose>
-	</p>
-</div>
-</cms:contentload>
+			<c:if test="${content.value.SubTitle.isSet}">
+				<p>${content.value.SubTitle}</p>
+			</c:if>
+			<!-- Optional image of the paragraph -->
+			<c:forEach var="paragraph" items="${content.valueList.Paragraph}">
+			
+				<!-- Optional headline of the paragraph -->
+				<c:if test="${paragraph.value.Headline.isSet}"><h3>${paragraph.value.Headline}</h3></c:if>
+				
+			</c:forEach>
+			<!-- Author of the news -->
+			<p>
+				<c:choose>
+					<c:when test="${content.value.AuthorMail.isSet}"><a href="mailto:${content.value.AuthorMail}">${content.value.Author}</a></c:when>
+					<c:otherwise>${content.value.Author}</c:otherwise>
+				</c:choose>
+			</p>
+		</div>
+	</cms:formatter>
 </div>

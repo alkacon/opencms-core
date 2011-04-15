@@ -1,25 +1,22 @@
-<%@ page import="org.opencms.file.*" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page taglibs="c,cms,fn" import="org.opencms.file.*" %>
 <div>
-<cms:contentload collector="singleFile" param="%(opencms.element)" >
+<cms:formatter var="content">
 
 	<!-- Title Section of the news -->
-	<h2><cms:contentshow element="Title" /></h2>
-	<cms:contentcheck ifexists="SubTitle">
-		<p><cms:contentshow element="SubTitle" /></p>
-	</cms:contentcheck>
+	<h2>${content.value.Title}</h2>
+	<c:if test="${content.value.SubTitle.isSet}">
+				<p>${content.value.SubTitle}</p>
+			</c:if>
 	
 	<!-- Optional image of the paragraph -->
-	<cms:contentloop element="Paragraph">
-		<cms:contentloop element="Image">
-			<c:set var="imagePath"><cms:contentshow element="Image" /></c:set>
+	<c:forEach var="paragraph" items="${content.valueList.Paragraph}">
+		<c:forEach var="image" items="${paragraph.valueList.Image}">
+			<c:set var="imagePath">${image.value.Image}</c:set>
 			<c:set var="imageName" value="${imagePath}" />
 			<c:if test="${fn:indexOf(imagePath, '?') != - 1}">
 				<c:set var="imageName" value="${fn:substringBefore(imagePath, '?')}" />
 			</c:if>
-			<c:set var="imageTitle">${cms:vfs(pageContext).property[imageName]['Title']}</c:set>
+			<c:set var="imageTitle">${content.vfs.property[imageName]['Title']}</c:set>
 			<c:set var="imageFolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imageName")) %></c:set>
 			<div class="image">
 				<cms:img scaleType="1" width="200">
@@ -27,47 +24,40 @@
 				</cms:img>
 				<div class="description">
 					${imageTitle}<br />
-					<cms:contentcheck ifexists="Description">
-						<cms:contentshow element="Description" />
-					</cms:contentcheck>
+					<c:if test="${image.value.Description.isSet}">
+						${image.value.Description}
+					</c:if>
 				</div>
 			</div>
-		</cms:contentloop>
+		</c:forEach>
 		
 		<!-- Optional headline of the paragraph -->
-		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
+		<c:if test="${paragraph.value.Headline.isSet}"><h3>${paragraph.value.Headline}</h3></c:if>
 		
 		<!-- Text of the paragraph -->
-		<p><cms:contentshow element="Text" /></p>
+		${paragraph.value.Text}
 	
 		<!-- Optional links of the paragraph -->
-		<cms:contentcheck ifexists="Links">
+		<c:if test="${!empty paragraph.valueList.Links}">
 			<ul>
-				<cms:contentloop element="Links">
-					<c:set var="newWindow"><cms:contentshow element="URI" /></c:set>
-					<li><a href="<cms:link><cms:contentshow element="URI" /></cms:link>" <c:if test="${newWindow}">target="_blank"</c:if>>
-						<cms:contentcheck ifexists="Description">
-							<c:set var="desc"><cms:contentshow element="Description" /></c:set>
-						</cms:contentcheck>
+				<c:forEach var="link" items="${paragraph.valueList.Links}">
+					<li><a href="<cms:link>${link.value.URI}</cms:link>">
 						<c:choose>
-							<c:when test="${!empty desc}"><c:out value="${desc}" /></c:when>
-							<c:otherwise><cms:contentshow element="URI" /></c:otherwise>
+							<c:when test="${link.value.Description.isSet}">${link.value.Description}</c:when>
+							<c:otherwise>${link.value.URI}</c:otherwise>
 						</c:choose>
 					</a></li>
-				</cms:contentloop>
+				</c:forEach>
 			</ul>
-		</cms:contentcheck>
-	</cms:contentloop>
+		</c:if>
+	</c:forEach>
 	
 	<!-- Author of the news -->
 	<p>
-		<cms:contentcheck ifexists="AuthorMail">
-			<c:set var="authorMail"><cms:contentshow element="AuthorMail" /></c:set>
-		</cms:contentcheck>
 		<c:choose>
-			<c:when test="${!empty authorMail}"><a href="mailto:${authorMail}"><cms:contentshow element="Author" /></a></c:when>
-			<c:otherwise><cms:contentshow element="Author" /></c:otherwise>
+			<c:when test="${content.value.AuthorMail.isSet}"><a href="mailto:${content.value.AuthorMail}">${content.value.Author}</a></c:when>
+			<c:otherwise>${content.value.Author}</c:otherwise>
 		</c:choose>
 	</p>
-</cms:contentload>
+</cms:formatter>
 </div>

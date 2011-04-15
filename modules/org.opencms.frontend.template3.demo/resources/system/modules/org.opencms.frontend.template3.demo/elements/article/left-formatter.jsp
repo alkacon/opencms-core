@@ -1,21 +1,18 @@
-<%@ page import="org.opencms.file.*" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<cms:contentload collector="singleFile" param="%(opencms.element)" >
+<%@ page taglibs="c,cms"%>
+<cms:formatter var="content">
 <div class="box box_schema1">
 
 	<!-- Title of the article -->
-	<h4><cms:contentshow element="Title" /></h4>
+	<h4>${content.value.Title}</h4>
 
 <div class="boxbody">
 	<!-- Paragraphs of the article -->
-	<cms:contentloop element="Paragraphs">	
+	<c:forEach var="paragraph" items="${content.valueList.Paragraphs}">
 		<!-- Optional headline of the paragraph -->
-		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
-		<!-- or the text -->
-		<cms:contentcheck ifexistsnone="Headline"><cms:contentshow element="Text" /></cms:contentcheck>
-	</cms:contentloop>
+		<c:choose><c:when test="${paragraph.value.Headline.isSet}"><h3>${paragraph.value.Headline}</h3></c:when>
+		<c:otherwise>${paragraph.value.Text}</c:otherwise>
+		</c:choose>
+	</c:forEach>
 </div>
 </div>
-</cms:contentload>
+</cms:formatter>
