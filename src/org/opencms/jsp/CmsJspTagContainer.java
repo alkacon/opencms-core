@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/04/15 11:03:06 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 7.6 
  */
@@ -567,7 +567,7 @@ public class CmsJspTagContainer extends TagSupport {
      */
     protected String getElementWrapperTagEnd() {
 
-        return "</div><!-- endtag -->";
+        return "</div>";
     }
 
     /**
@@ -865,15 +865,19 @@ public class CmsJspTagContainer extends TagSupport {
                             false,
                             isOnline,
                             null,
-                            null,
+                            Collections.<String, Object> singletonMap(
+                                CmsJspStandardContextBean.ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN,
+                                standardContext),
                             req,
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter);
                     } finally {
@@ -903,15 +907,19 @@ public class CmsJspTagContainer extends TagSupport {
                     false,
                     isOnline,
                     null,
-                    null,
+                    Collections.<String, Object> singletonMap(
+                        CmsJspStandardContextBean.ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN,
+                        standardContext),
                     req,
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        elementFormatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            elementFormatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             } finally {
