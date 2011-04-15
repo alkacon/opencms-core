@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/15 10:19:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  */
@@ -166,7 +166,7 @@ public final class CmsJspStandardContextBean {
      * 
      * @return the current locale
      */
-    public Locale getLocal() {
+    public Locale getLocale() {
 
         return getRequestContext().getLocale();
     }
