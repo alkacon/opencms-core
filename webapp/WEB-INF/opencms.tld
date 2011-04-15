@@ -840,12 +840,23 @@
     
     <function>
         <description>
-            Returns the current OpenCms user context form the page context.
+            Returns the current OpenCms user context from the page context.
         </description>
         <name>getCmsObject</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
             org.opencms.file.CmsObject getCmsObject(java.lang.Object)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Returns the size of the given list.
+        </description>
+        <name>getListSize</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Integer getListSize(java.util.List)
         </function-signature>
     </function>
         

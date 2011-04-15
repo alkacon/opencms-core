@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/15 15:36:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.2
  * 
@@ -340,6 +340,21 @@ public final class CmsJspElFunctions {
     public static CmsObject getCmsObject(Object input) {
 
         return convertCmsObject(input);
+    }
+
+    /**
+     * Returns the size of the given list.<p>
+     * 
+     * @param input the list of objects to obtain the size from
+     * @return the size of the given list
+     */
+    public static Integer getListSize(List<Object> input) {
+
+        if (input != null) {
+            return Integer.valueOf(input.size());
+        }
+        // input was null
+        return Integer.valueOf(0);
     }
 
     /**
