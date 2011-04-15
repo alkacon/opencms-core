@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/15 09:33:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,17 +47,17 @@ import java.util.Map;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0
  */
 public class CmsContainerElementBean {
 
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
-    private boolean m_createNew;
+    private final boolean m_createNew;
 
     /** The client ADE editor hash. */
-    private transient String m_editorHash;
+    private final transient String m_editorHash;
 
     /** The element's structure id. */
     private final CmsUUID m_elementId;
@@ -69,7 +69,7 @@ public class CmsContainerElementBean {
     private transient CmsResource m_resource;
 
     /** The configured properties. */
-    private Map<String, String> m_settings;
+    private final Map<String, String> m_settings;
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;

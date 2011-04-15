@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/15 09:33:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,30 +31,44 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.Transformer;
 
 /**
  * One container of a container page.<p>
  * 
  * @author Michael Moossen
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
- * @since 7.6 
+ * @since 8.0
  */
 public class CmsContainerBean {
 
-    /** The container elements.*/
+    /** A lazy initialized map that describes if a certain element if part of this container. */
+    private transient Map<CmsUUID, Boolean> m_containsElement;
+
+    /** The id's of of all elements in this container. */
+    private transient List<CmsUUID> m_elementIds;
+
+    /** The container elements. */
     private final List<CmsContainerElementBean> m_elements;
 
-    /** The maximal number of elements in the container.*/
+    /** The maximal number of elements in the container. */
     private int m_maxElements;
 
-    /** The container name.*/
+    /** The container name. */
     private final String m_name;
 
-    /** The container type.*/
+    /** The container type. */
     private final String m_type;
 
     /** The container width set by the rendering container tag. */
@@ -79,9 +93,56 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the elements.<p>
+     * Returns <code>true</code> if the element with the provided id is contained in this container.<p>
+     *  
+     * @param elementId the element id to check
+     * 
+     * @return <code>true</code> if the element with the provided id is contained in this container
+     */
+    public boolean containsElement(CmsUUID elementId) {
+
+        return getElementIds().contains(elementId);
+    }
+
+    /**
+     * Returns a lazy initialized map that describes if a certain element if part of this container.<p>
+     * 
+     * @return a lazy initialized map that describes if a certain element if part of this container
+     */
+    public Map<CmsUUID, Boolean> getContainsElement() {
+
+        if (m_containsElement == null) {
+            m_containsElement = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object input) {
+
+                    return Boolean.valueOf(containsElement((CmsUUID)input));
+                }
+            });
+        }
+        return m_containsElement;
+    }
+
+    /**
+     * Returns the id's of all elements in this container.<p>
      *
-     * @return the elements
+     * @return the id's of all elements in this container
+     */
+    public List<CmsUUID> getElementIds() {
+
+        if (m_elementIds == null) {
+            m_elementIds = new ArrayList<CmsUUID>(m_elements.size());
+            for (CmsContainerElementBean element : m_elements) {
+                m_elementIds.add(element.getId());
+            }
+        }
+        return m_elementIds;
+    }
+
+    /**
+     * Returns the elements in this container.<p>
+     *
+     * @return the elements in this container
      */
     public List<CmsContainerElementBean> getElements() {
 
@@ -89,9 +150,9 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the maximal number of elements in the container.<p>
+     * Returns the maximal number of elements in this container.<p>
      *
-     * @return the maximal number of elements in the container
+     * @return the maximal number of elements in this container
      */
     public int getMaxElements() {
 
@@ -99,9 +160,9 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the name.<p>
+     * Returns the name of this container.<p>
      *
-     * @return the name
+     * @return the name of this container
      */
     public String getName() {
 
@@ -109,9 +170,9 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the type.<p>
+     * Returns the type of this container.<p>
      *
-     * @return the type
+     * @return the type of this container
      */
     public String getType() {
 
@@ -139,9 +200,9 @@ public class CmsContainerBean {
     }
 
     /**
-     * Sets the container width set by the rendering container tag.<p>
+     * Sets the client side render with of this container.<p>
      *
-     * @param width the container width
+     * @param width the client side render with of this container
      */
     public void setWidth(String width) {
 

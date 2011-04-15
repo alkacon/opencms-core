@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/15 09:33:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsUUID;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,19 +43,31 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.Transformer;
+
 /**
  * Describes one locale of a container page.<p>
  * 
  * @author Michael Moossen
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
- * @since 7.6
+ * @since 8.0
  */
 public class CmsContainerPageBean {
 
     /** The containers. */
     private final Map<String, CmsContainerBean> m_containers;
+
+    /** A lazy initialized map that describes if a certain element if part of this container. */
+    private transient Map<CmsUUID, Boolean> m_containsElement;
+
+    /** The id's of of all elements in this page. */
+    private transient List<CmsUUID> m_elementIds;
+
+    /** The container elements. */
+    private transient List<CmsContainerElementBean> m_elements;
 
     /** The locale. */
     private final Locale m_locale;
@@ -86,13 +101,75 @@ public class CmsContainerPageBean {
     }
 
     /**
-     * Returns the containers.<p>
+     * Returns <code>true</code> if the element with the provided id is contained in this container.<p>
+     *  
+     * @param elementId the element id to check
+     * 
+     * @return <code>true</code> if the element with the provided id is contained in this container
+     */
+    public boolean containsElement(CmsUUID elementId) {
+
+        return getElementIds().contains(elementId);
+    }
+
+    /**
+     * Returns all container of this page.<p>
      *
-     * @return the containers
+     * @return all container of this page
      */
     public Map<String, CmsContainerBean> getContainers() {
 
         return m_containers;
+    }
+
+    /**
+     * Returns a lazy initialized map that describes if a certain element if part of this container.<p>
+     * 
+     * @return a lazy initialized map that describes if a certain element if part of this container
+     */
+    public Map<CmsUUID, Boolean> getContainsElement() {
+
+        if (m_containsElement == null) {
+            m_containsElement = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object input) {
+
+                    return Boolean.valueOf(containsElement((CmsUUID)input));
+                }
+            });
+        }
+        return m_containsElement;
+    }
+
+    /**
+     * Returns the id's of all elements in this container.<p>
+     *
+     * @return the id's of all elements in this container
+     */
+    public List<CmsUUID> getElementIds() {
+
+        if (m_elementIds == null) {
+            m_elementIds = new ArrayList<CmsUUID>(getElements().size());
+            for (CmsContainerElementBean element : getElements()) {
+                m_elementIds.add(element.getId());
+            }
+        }
+        return m_elementIds;
+    }
+
+    /**
+     * Returns the elements of all containers in this page.<p>
+     * 
+     * @return the elements of all containers in this page
+     */
+    public List<CmsContainerElementBean> getElements() {
+
+        if (m_elements == null) {
+            for (CmsContainerBean container : m_containers.values()) {
+                m_elements.addAll(container.getElements());
+            }
+        }
+        return m_elements;
     }
 
     /**
