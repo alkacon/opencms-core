@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2011/02/24 08:06:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/15 08:09:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -82,7 +82,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1 = "ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1";
+    public static final String ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2 = "ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONTAINER_PAGE_NO_TYPE_3 = "ERR_CONTAINER_PAGE_NO_TYPE_3";

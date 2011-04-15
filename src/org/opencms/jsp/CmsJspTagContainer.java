@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/15 08:09:13 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
@@ -51,7 +52,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 7.6 
  */
@@ -94,6 +94,8 @@ public class CmsJspTagContainer extends TagSupport {
 
         /** The list of elements. */
         elements,
+        /** Flag for the detail view container. */
+        isDetailView,
         /** The max allowed number of elements in the container. */
         maxElem,
         /** The container name. */
@@ -101,9 +103,7 @@ public class CmsJspTagContainer extends TagSupport {
         /** The container type. */
         type,
         /** The container width. */
-        width,
-        /** Flag for the detail view container. */
-        isDetailView;
+        width;
     }
 
     /** HTML class used to identify container elements. */
@@ -111,6 +111,9 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** HTML class used to identify group container elements. */
     public static final String CLASS_GROUP_CONTAINER_ELEMENTS = "cms_ade_groupcontainer";
+
+    /** HTML class used to identify error message for elements where rendering failed to render. */
+    public static final String CLASS_ELEMENT_ERROR = "cms_ade_element_error";
 
     /** Key used to write container data into the javascript window object. */
     public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
@@ -159,7 +162,7 @@ public class CmsJspTagContainer extends TagSupport {
      *
      * @throws JSONException if there is a problem with JSON manipulation
      */
-    protected static String getCntDataTag(CmsContainerBean container, String widthStr, boolean isDetailView)
+    protected static String getContainerDataTag(CmsContainerBean container, String widthStr, boolean isDetailView)
     throws JSONException {
 
         // add container data for the editor
@@ -233,14 +236,13 @@ public class CmsJspTagContainer extends TagSupport {
         boolean detailView = m_detailView;
         ServletRequest req = pageContext.getRequest();
 
-        // TODO: remove old ADE functions
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
 
         // get the container page itself, checking the history first
-        CmsResource containerPage = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
-        if (containerPage == null) {
-            containerPage = cms.readResource(cms.getRequestContext().getUri());
+        CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
+        if (pageResource == null) {
+            pageResource = cms.readResource(cms.getRequestContext().getUri());
         }
 
         // create tag for container if necessary
@@ -251,62 +253,71 @@ public class CmsJspTagContainer extends TagSupport {
             pageContext.getOut().print(getTagOpen(tagName, containerName, tagClass));
         }
 
-        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, containerPage, req);
-        CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-        Locale locale = cntPage.getLocale();
+        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
+        CmsContainerPageBean containerPage = xmlContainerPage.getCntPage(cms, cms.getRequestContext().getLocale());
+        Locale locale = containerPage.getLocale();
 
         // get the maximal number of elements
-        int maxElements = getMaxElements(cms, containerPage, locale);
+        int maxElements = getMaxElements(cms, pageResource, locale);
 
         // get the container
-        CmsContainerBean container = cntPage.getContainers().get(containerName);
+        CmsContainerBean container = containerPage.getContainers().get(containerName);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-
+        CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
+        standardContext.setPage(containerPage);
         boolean isUsedAsDetailView = false;
-        CmsUUID detailContentId = CmsDetailPageResourceHandler.getDetailId(req);
+        CmsUUID detailContentId = standardContext.getDetailContentId();
         if (m_detailView && (detailContentId != null)) {
             isUsedAsDetailView = true;
         }
         if (container == null) {
-            // container not found
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().container(
-                    Messages.LOG_CONTAINER_NOT_FOUND_3,
-                    cms.getSitePath(containerPage),
-                    locale,
-                    containerName).key());
-            }
-            if (!isOnline) {
-                // add container data for the editor
-                try {
-                    pageContext.getOut().print(
-                        getCntDataTag(
-                            new CmsContainerBean(containerName, containerType, maxElements, null),
-                            width,
-                            isUsedAsDetailView));
-                } catch (JSONException e) {
-                    // should never happen
-                    throw new JspException(e);
+            if (!isUsedAsDetailView) {
+                // container not found
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_CONTAINER_NOT_FOUND_3,
+                        cms.getSitePath(pageResource),
+                        locale,
+                        containerName));
                 }
-            }
+                if (!isOnline) {
+                    // add container data for the editor
+                    try {
+                        pageContext.getOut().print(
+                            getContainerDataTag(
+                                new CmsContainerBean(containerName, containerType, maxElements, null),
+                                width,
+                                isUsedAsDetailView));
+                    } catch (JSONException e) {
+                        // should never happen
+                        throw new JspException(e);
+                    }
+                }
 
-            // close tag for the empty container
-            if (createTag) {
-                pageContext.getOut().print(getTagClose(tagName));
+                // close tag for the empty container
+                if (createTag) {
+                    pageContext.getOut().print(getTagClose(tagName));
+                }
+                return;
+            } else {
+                container = new CmsContainerBean(
+                    containerName,
+                    getType(),
+                    maxElements,
+                    Collections.<CmsContainerElementBean> emptyList());
             }
-            return;
         }
-
+        standardContext.setContainer(container);
         // validate the type
         if (!containerType.equals(container.getType())) {
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}));
+                new Object[] {cms.getSitePath(pageResource), locale, containerName, containerType}));
         }
 
         // actualize the cache
         container.setMaxElements(maxElements);
-
+        container.setWidth(getWidth());
         List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
         allElems.addAll(container.getElements());
 
@@ -318,7 +329,7 @@ public class CmsJspTagContainer extends TagSupport {
             // add container data for the editor
             try {
                 pageContext.getOut().print(
-                    getCntDataTag(
+                    getContainerDataTag(
                         new CmsContainerBean(containerName, containerType, maxElements, allElems),
                         width,
                         isUsedAsDetailView));
@@ -347,8 +358,6 @@ public class CmsJspTagContainer extends TagSupport {
             renderElems = maxElements;
         }
 
-        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER, container);
-        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER_WIDTH, width);
         // iterate the elements
         for (CmsContainerElementBean element : allElems) {
             if (renderElems < 1) {
@@ -356,19 +365,13 @@ public class CmsJspTagContainer extends TagSupport {
             }
             renderElems--;
             try {
-                renderContainerElement(cms, element);
-            } catch (CmsException e) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        Messages.get().container(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_1,
-                            element.getSitePath()),
-                        e);
+                renderContainerElement(cms, standardContext, element, locale);
+            } catch (Exception e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
                 }
             }
         }
-        req.removeAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER);
-        req.removeAttribute(CmsContainerPageBean.ATTR_KEY_CURRENTCONTAINER_WIDTH);
         // close tag for container
         if (createTag) {
             pageContext.getOut().print(getTagClose(tagName));
@@ -564,7 +567,7 @@ public class CmsJspTagContainer extends TagSupport {
      */
     protected String getElementWrapperTagEnd() {
 
-        return "</div>";
+        return "</div><!-- endtag -->";
     }
 
     /**
@@ -616,13 +619,13 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * Prints the closing tag for an element wrapper if in online mode.<p>
      * 
-     * @param online if true, we are online 
+     * @param isOnline if true, we are online 
      * 
      * @throws IOException if the output fails 
      */
-    protected void printElementWrapperTagEnd(boolean online) throws IOException {
+    protected void printElementWrapperTagEnd(boolean isOnline) throws IOException {
 
-        if (!online) {
+        if (!isOnline) {
             pageContext.getOut().print(getElementWrapperTagEnd());
         }
     }
@@ -630,7 +633,7 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * Prints the opening element wrapper tag for the container page editor if we are in Offline mode.<p>
      *  
-     * @param online true if we are in Online mode 
+     * @param isOnline true if we are in Online mode 
      * @param cms the Cms context 
      * @param resource the element resource 
      * @param elementBean the element bean 
@@ -640,13 +643,13 @@ public class CmsJspTagContainer extends TagSupport {
      * @throws CmsException if something goes wrong
      */
     protected void printElementWrapperTagStart(
-        boolean online,
+        boolean isOnline,
         CmsObject cms,
         CmsResource resource,
         CmsContainerElementBean elementBean,
         boolean isGroupContainer) throws IOException, CmsException {
 
-        if (!online) {
+        if (!isOnline) {
             pageContext.getOut().print(getElementWrapperTagStart(cms, resource, elementBean, isGroupContainer));
         }
     }
@@ -741,7 +744,7 @@ public class CmsJspTagContainer extends TagSupport {
             }
         } else {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().container(
+                LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_MAXELEMENTS_NOT_SET_3,
                     new Object[] {containerName, locale, cms.getSitePath(containerPage)}));
             }
@@ -768,18 +771,43 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Prints an element error tag to the response out.<p>
+     * 
+     * @param isOnline true if we are in Online mode 
+     * @param elementSitePath the element site path
+     * @param formatterSitePath the formatter site path
+     * 
+     * @throws IOException if something goes wrong writing to response out
+     */
+    private void printElementErrorTag(boolean isOnline, String elementSitePath, String formatterSitePath)
+    throws IOException {
+
+        if (!isOnline) {
+            pageContext.getOut().print(
+                "<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\""
+                    + CLASS_ELEMENT_ERROR
+                    + "\">"
+                    + Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        elementSitePath,
+                        formatterSitePath)
+                    + "</div>");
+        }
+    }
+
+    /**
      * Renders a container element.<p>
      * 
      * @param cms the CMS context 
-     * @param element
-     * @throws CmsException
-     * @throws CmsXmlException
-     * @throws CmsLoaderException
-     * @throws IOException
-     * @throws JspException
+     * @param element the container element to render
+     * @throws CmsException if something goes wrong reading the resources
+     * @throws IOException if something goes wrong writing to the response
      */
-    private void renderContainerElement(CmsObject cms, CmsContainerElementBean element)
-    throws CmsException, CmsXmlException, CmsLoaderException, IOException, JspException {
+    private void renderContainerElement(
+        CmsObject cms,
+        CmsJspStandardContextBean standardContext,
+        CmsContainerElementBean element,
+        Locale locale) throws CmsException, CmsXmlException, CmsLoaderException, IOException {
 
         ServletRequest req = pageContext.getRequest();
         ServletResponse res = pageContext.getResponse();
@@ -806,36 +834,58 @@ public class CmsJspTagContainer extends TagSupport {
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, resUri, element, true);
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
-                CmsResource subelementRes = cms.readResource(subelement.getElementId());
-                String subelementUri = cms.getSitePath(subelementRes);
-                String subelementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
-                    cms,
-                    subelementRes,
-                    containerType,
-                    containerWidth);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter) && LOG.isErrorEnabled()) {
-                    // skip this element, it has no formatter for this container type defined
-                    LOG.error(new CmsIllegalStateException(Messages.get().container(
-                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                        subelementUri,
-                        OpenCms.getResourceManager().getResourceType(subelementRes).getTypeName(),
-                        containerType)));
-                    continue;
+                try {
+                    CmsResource subelementRes = cms.readResource(subelement.getElementId());
+                    String subelementUri = cms.getSitePath(subelementRes);
+                    String subelementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                        cms,
+                        subelementRes,
+                        containerType,
+                        containerWidth);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter) && LOG.isErrorEnabled()) {
+                        // skip this element, it has no formatter for this container type defined
+                        LOG.error(new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                            subelementUri,
+                            OpenCms.getResourceManager().getResourceType(subelementRes).getTypeName(),
+                            containerType)));
+                        continue;
+                    }
+                    subelement.setSitePath(subelementUri);
+                    // execute the formatter jsp for the given element uri
+                    // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
+                    printElementWrapperTagStart(isOnline, cms, subelementRes, subelement, false);
+                    standardContext.setElement(subelement);
+                    try {
+                        CmsJspTagInclude.includeTagAction(
+                            pageContext,
+                            subelementFormatter,
+                            null,
+                            locale,
+                            false,
+                            isOnline,
+                            null,
+                            null,
+                            req,
+                            res);
+                    } catch (Exception e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
+                        }
+                        printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter);
+                    } finally {
+                        printElementWrapperTagEnd(isOnline);
+                    }
+                } catch (Exception e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
+                    }
                 }
-                subelement.setSitePath(subelementUri);
-                // execute the formatter jsp for the given element uri
-                // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
-                printElementWrapperTagStart(isOnline, cms, subelementRes, subelement, false);
-                CmsJspTagInclude.includeTagAction(
-                    pageContext,
-                    subelementFormatter,
-                    null,
-                    false,
-                    null,
-                    Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)subelement),
-                    req,
-                    res);
-                printElementWrapperTagEnd(isOnline);
             }
             printElementWrapperTagEnd(isOnline);
 
@@ -844,17 +894,33 @@ public class CmsJspTagContainer extends TagSupport {
 
             element.setSitePath(cms.getSitePath(resUri));
             printElementWrapperTagStart(isOnline, cms, resUri, element, false);
-            // execute the formatter jsp for the given element uri
-            CmsJspTagInclude.includeTagAction(
-                pageContext,
-                elementFormatter,
-                null,
-                false,
-                null,
-                Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
-                req,
-                res);
-            printElementWrapperTagEnd(isOnline);
+            standardContext.setElement(element);
+            try {
+                // execute the formatter jsp for the given element uri
+                CmsJspTagInclude.includeTagAction(
+                    pageContext,
+                    elementFormatter,
+                    null,
+                    locale,
+                    false,
+                    isOnline,
+                    null,
+                    null,
+                    req,
+                    res);
+            } catch (Exception e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            elementFormatter),
+                        e);
+                }
+                printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
+            } finally {
+                printElementWrapperTagEnd(isOnline);
+            }
         }
     }
 
