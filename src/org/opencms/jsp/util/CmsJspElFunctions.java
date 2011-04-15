@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2011/04/15 07:55:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -65,7 +64,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.2
  * 
@@ -341,27 +340,6 @@ public final class CmsJspElFunctions {
     public static CmsObject getCmsObject(Object input) {
 
         return convertCmsObject(input);
-    }
-
-    /**
-     * Returns the current container page element if available, so it can be <code>null</code>.<p> 
-     * 
-     * @param input the request convertible object to get the container element from
-     * 
-     * @return the current container element, or <code>null</code>
-     */
-    public static CmsContainerElementBean getContainerElement(Object input) {
-
-        ServletRequest req = convertRequest(input);
-        if (req == null) {
-            return null;
-        }
-        try {
-            return OpenCms.getADEManager().getCurrentElement(req);
-        } catch (CmsException e) {
-            // container page is not available
-            return null;
-        }
     }
 
     /**

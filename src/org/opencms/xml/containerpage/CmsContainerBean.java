@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2010/01/11 14:40:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -56,6 +56,9 @@ public class CmsContainerBean {
 
     /** The container type.*/
     private final String m_type;
+
+    /** The container width set by the rendering container tag. */
+    private String m_width;
 
     /** 
      * Creates a new container bean.<p> 
@@ -116,6 +119,16 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns the container width set by the rendering container tag.<p>
+     *
+     * @return the container width
+     */
+    public String getWidth() {
+
+        return m_width;
+    }
+
+    /**
      * Sets the maximal number of elements in the container.<p>
      *
      * @param maxElements the maximal number of elements to set
@@ -123,5 +136,15 @@ public class CmsContainerBean {
     public void setMaxElements(int maxElements) {
 
         m_maxElements = maxElements;
+    }
+
+    /**
+     * Sets the container width set by the rendering container tag.<p>
+     *
+     * @param width the container width
+     */
+    public void setWidth(String width) {
+
+        m_width = width;
     }
 }

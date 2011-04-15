@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,8 +172,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "remoteaddress", // 4
         "webapp", // 5
         "webbasepath", // 6 
-        "version", // 7
-        "element"};
+        "version" // 7
+    };
 
     /** The "magic" commands wrapped in a List. */
     public static final List<String> VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
@@ -636,21 +635,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         // version
                         value = OpenCms.getSystemInfo().getVersionNumber();
                         break;
-                    case 8:
-                        // element
-                        if (m_jspPageContext != null) {
-                            try {
-                                CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(
-                                    m_jspPageContext.getRequest());
-                                value = element.getSitePath();
-                            } catch (CmsException e) {
-                                if (!LOG.isDebugEnabled()) {
-                                    LOG.warn(e.getLocalizedMessage());
-                                }
-                                LOG.debug(e.getLocalizedMessage(), e);
-                            }
-                        }
-                        break;
                     default:
                         // return the key "as is"
                         value = originalKey;
@@ -801,6 +785,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 case '-':
                     // subtract delta from current time
                     resultTime -= delta;
+                    break;
+                default:
                     break;
             }
             return String.valueOf(resultTime);

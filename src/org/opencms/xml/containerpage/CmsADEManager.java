@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/02/24 08:04:54 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 7.6
  */
@@ -228,13 +229,7 @@ public class CmsADEManager {
      */
     public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
 
-        // TODO: remove this and use always the getFormatterInfo method instead
-        CmsContainerElementBean element = null;
-        try {
-            element = (CmsContainerElementBean)req.getAttribute(ATTR_CURRENT_ELEMENT);
-        } catch (Exception e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0), e);
-        }
+        CmsContainerElementBean element = CmsJspStandardContextBean.getInstance(req).getElement();
         if (element == null) {
             throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
         }

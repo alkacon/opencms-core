@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2011/02/18 07:40:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,20 +45,11 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6
  */
 public class CmsContainerPageBean {
-
-    /** The request attribute key for the container-page bean. */
-    public static final String ATTR_KEY_CONTAINERPAGE_BEAN = "containerpageBean";
-
-    /** The request attribute key for the current container. */
-    public static final String ATTR_KEY_CURRENTCONTAINER = "currentContainer";
-
-    /** The request attribute key for the current container. */
-    public static final String ATTR_KEY_CURRENTCONTAINER_WIDTH = "currentContainerWidth";
 
     /** The containers. */
     private final Map<String, CmsContainerBean> m_containers;

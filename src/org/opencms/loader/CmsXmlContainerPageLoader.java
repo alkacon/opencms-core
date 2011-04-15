@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContainerPageLoader.java,v $
- * Date   : $Date: 2011/02/18 07:40:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
@@ -54,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6
  */
@@ -106,11 +105,6 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        // ensure the requested XML document gets cached in the request attributes
-        CmsXmlContainerPage document = unmarshalXmlDocument(cms, resource, req);
-
-        CmsContainerPageBean cntPageBean = document.getCntPage(cms, cms.getRequestContext().getLocale());
-        req.setAttribute(CmsContainerPageBean.ATTR_KEY_CONTAINERPAGE_BEAN, cntPageBean);
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
             resource,

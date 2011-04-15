@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/05 13:08:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/15 08:08:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -46,9 +47,12 @@ import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -57,6 +61,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +94,8 @@ public class CmsElementUtil {
 
     /** The http response. */
     private HttpServletResponse m_res;
+
+    private CmsJspStandardContextBean m_standardContext;
 
     /**
      * Creates a new instance.<p>
@@ -107,6 +114,15 @@ public class CmsElementUtil {
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
+        // initializing request for standard context bean
+        req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
+        m_standardContext = CmsJspStandardContextBean.getInstance(req);
+        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
+            cms,
+            m_cms.readResource(cntPageUri),
+            req);
+        CmsContainerPageBean containerPage = xmlContainerPage.getCntPage(cms, cms.getRequestContext().getLocale());
+        m_standardContext.setPage(containerPage);
     }
 
     /**
@@ -121,7 +137,7 @@ public class CmsElementUtil {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getElementContent(CmsContainerElementBean element, CmsResource formatter)
+    private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
     throws CmsException, ServletException, IOException {
 
         CmsResource elementRes = m_cms.readResource(element.getElementId());
@@ -133,16 +149,27 @@ public class CmsElementUtil {
         String oldUri = m_cms.getRequestContext().getUri();
         try {
             m_cms.getRequestContext().setUri(m_cntPageUri);
-
+            CmsContainerBean containerBean = null;
+            if (m_standardContext.getPage().getContainers().containsKey(container.getName())) {
+                containerBean = m_standardContext.getPage().getContainers().get(container.getName());
+            } else {
+                containerBean = new CmsContainerBean(
+                    container.getName(),
+                    container.getType(),
+                    container.getMaxElements(),
+                    Collections.<CmsContainerElementBean> emptyList());
+            }
+            if (containerBean.getWidth() == null) {
+                containerBean.setWidth(String.valueOf(container.getWidth()));
+            }
+            m_standardContext.setContainer(containerBean);
+            element.setSitePath(m_cms.getSitePath(elementRes));
+            m_standardContext.setElement(element);
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(elementRes));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-
-            element.setSitePath(m_cms.getSitePath(elementRes));
-            m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
-
             String encoding = m_res.getCharacterEncoding();
             return (new String(loaderFacade.getLoader().dump(
                 m_cms,
@@ -237,12 +264,7 @@ public class CmsElementUtil {
         } else {
             // get map from type/width combination to formatter uri 
             Map<CmsPair<String, Integer>, String> formatters = getFormatterMap(resource, containers);
-            // find unique formatters (we don't want to call the same formatter twice)  
-            Set<String> formatterUris = new HashSet<String>(formatters.values());
-            // get map from formatter uris to content 
-            Map<String, String> contentsByFormatter = getContentsByFormatter(element, formatterUris);
-            // combine them into mapping from container names to contents 
-            Map<String, String> contentsByName = getContentsByContainerName(containers, formatters, contentsByFormatter);
+            Map<String, String> contentsByName = getContentsByContainerName(element, containers, formatters);
             contents = contentsByName;
         }
         elementBean.setContents(contents);
@@ -260,9 +282,9 @@ public class CmsElementUtil {
      * @return a map from container names to contents 
      */
     private Map<String, String> getContentsByContainerName(
+        CmsContainerElementBean element,
         Collection<CmsContainer> containers,
-        Map<CmsPair<String, Integer>, String> formatters,
-        Map<String, String> contentsByFormatter) {
+        Map<CmsPair<String, Integer>, String> formatters) {
 
         Map<String, String> contentsByName = new HashMap<String, String>();
         for (CmsContainer container : containers) {
@@ -270,41 +292,22 @@ public class CmsElementUtil {
             CmsPair<String, Integer> key = CmsPair.create(container.getType(), new Integer(container.getWidth()));
             String fmtUri = formatters.get(key);
             if (fmtUri != null) {
-                String content = contentsByFormatter.get(fmtUri);
+                String content = null;
+                try {
+                    content = getElementContent(element, m_cms.readResource(fmtUri), container);
+                } catch (Exception e) {
+                    //                    LOG.error(Messages.get().getBundle().key(
+                    //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
+                    //                        m_cms.getSitePath(resource),
+                    //                        formatterUri,
+                    //                        type), e);
+                }
                 if (content != null) {
                     contentsByName.put(name, content);
                 }
             }
         }
         return contentsByName;
-    }
-
-    /**
-     * Formats the contents of an element using a set of formatters and returns a map from formatter uris to the 
-     * corresponding formatted output.<p>
-     * 
-     * @param element the content element 
-     * @param formatterUris a set of formatter jsp uris 
-     * 
-     * @return a map from formatter jsp uris to formatted contents 
-     */
-    private Map<String, String> getContentsByFormatter(CmsContainerElementBean element, Set<String> formatterUris) {
-
-        Map<String, String> contentsByFormatter = new HashMap<String, String>();
-        for (String formatterUri : formatterUris) {
-            try {
-                String jspResult = getElementContent(element, m_cms.readResource(formatterUri));
-                // set the results
-                contentsByFormatter.put(formatterUri, jspResult);
-            } catch (Exception e) {
-                //                    LOG.error(Messages.get().getBundle().key(
-                //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
-                //                        m_cms.getSitePath(resource),
-                //                        formatterUri,
-                //                        type), e);
-            }
-        }
-        return contentsByFormatter;
     }
 
     /**
@@ -328,8 +331,8 @@ public class CmsElementUtil {
                 String formatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
                     m_cms,
                     resource,
-                    key.getFirst(),
-                    key.getSecond().intValue());
+                    container.getType(),
+                    container.getWidth());
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatter)) {
                     formatters.put(key, formatter);
                 }
