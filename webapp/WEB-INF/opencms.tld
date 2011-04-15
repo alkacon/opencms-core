@@ -828,6 +828,18 @@
     
     <function>
         <description>
+            Returns a list of attribute values specified by the attribute name
+            of the items of the given list.
+        </description>
+        <name>convertList</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.util.List convertList(java.util.List, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
             Returns the current OpenCms user context form the page context.
         </description>
         <name>getCmsObject</name>

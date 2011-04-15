@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/15 07:55:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,8 +47,10 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -56,12 +58,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 /**
  * Provides utility methods to be used as functions from a JSP with the EL.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.2
  * 
@@ -177,6 +181,29 @@ public final class CmsJspElFunctions {
                 }
             }
         }
+        return result;
+    }
+
+    /**
+     * Returns a list of attribute values specified by the attribute name of the items of the given list.<p>
+     * 
+     * @param input the list of objects to obtain the attribute values from
+     * @param attributeName the name of the attribute to obtain
+     * @return a list of attributes specified by the attribute name of the items of the given list
+     */
+    public static List<Object> convertList(List<Object> input, String attributeName) {
+
+        List<Object> result = new ArrayList<Object>(input.size());
+
+        for (Object item : input) {
+            try {
+                result.add(PropertyUtils.getProperty(item, attributeName));
+            } catch (Exception e) {
+                // specified attribute is not implemented, return empty list
+                return Collections.emptyList();
+            }
+        }
+
         return result;
     }
 
