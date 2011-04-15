@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -140,7 +140,7 @@ public class CmsElementUtil {
     private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
     throws CmsException, ServletException, IOException {
 
-        CmsResource elementRes = m_cms.readResource(element.getElementId());
+        CmsResource elementRes = m_cms.readResource(element.getId());
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
             formatter), elementRes, formatter);
 
@@ -163,7 +163,7 @@ public class CmsElementUtil {
                 containerBean.setWidth(String.valueOf(container.getWidth()));
             }
             m_standardContext.setContainer(containerBean);
-            element.setSitePath(m_cms.getSitePath(elementRes));
+            element.initResource(elementRes, m_cms.getSitePath(elementRes));
             m_standardContext.setElement(element);
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
@@ -196,11 +196,11 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
-        CmsResource resource = m_cms.readResource(element.getElementId());
+        CmsResource resource = m_cms.readResource(element.getId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         //      resElement.put(JsonElement.objtype.name(), TYPE_ELEMENT);
         CmsContainerElementData elementBean = new CmsContainerElementData();
-        elementBean.setClientId(element.getClientId());
+        elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
         elementBean.setLastModifiedDate(resource.getDateLastModified());
         elementBean.setLastModifiedByUser(m_cms.readUser(resource.getUserLastModified()).getName());
@@ -210,7 +210,7 @@ public class CmsElementUtil {
         Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource);
         elementBean.setProperties(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
-            element.getProperties(),
+            element.getSettings(),
             propertyConfig));
         elementBean.setPropertyConfig(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
 
@@ -258,7 +258,7 @@ public class CmsElementUtil {
 
             for (CmsContainerElementBean subElement : groupContainer.getElements()) {
                 // collect ids
-                subItems.add(subElement.getClientId());
+                subItems.add(subElement.editorHash());
             }
             elementBean.setSubItems(subItems);
         } else {

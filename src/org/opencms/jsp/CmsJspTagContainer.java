@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/15 08:09:13 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 7.6 
  */
@@ -183,7 +183,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         JSONArray jsonElements = new JSONArray();
         for (CmsContainerElementBean element : container.getElements()) {
-            jsonElements.put(element.getClientId());
+            jsonElements.put(element.editorHash());
         }
         jsonContainer.put(CmsContainerJsonKeys.ELEMENTS, jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
@@ -348,7 +348,7 @@ public class CmsJspTagContainer extends TagSupport {
                     sessionCache);
             }
             for (CmsContainerElementBean element : allElems) {
-                sessionCache.setCacheContainerElement(element.getClientId(), element);
+                sessionCache.setCacheContainerElement(element.editorHash(), element);
             }
         }
 
@@ -599,7 +599,7 @@ public class CmsJspTagContainer extends TagSupport {
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         String noEditReason = new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale);
 
-        result.append(" title='").append(elementBean.getClientId()).append("'");
+        result.append(" title='").append(elementBean.editorHash()).append("'");
         result.append(" alt='").append(elementBean.getSitePath()).append("'");
         if (elementBean.isCreateNew()) {
             String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
@@ -815,7 +815,7 @@ public class CmsJspTagContainer extends TagSupport {
         int containerWidth = getContainerWidth();
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
-        CmsResource resUri = cms.readResource(element.getElementId());
+        CmsResource resUri = cms.readResource(element.getId());
 
         if (resUri.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, resUri, req);
@@ -830,12 +830,12 @@ public class CmsJspTagContainer extends TagSupport {
                     OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
                     containerType));
             }
-            element.setSitePath(cms.getSitePath(resUri));
+            element.initResource(resUri, cms.getSitePath(resUri));
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, resUri, element, true);
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 try {
-                    CmsResource subelementRes = cms.readResource(subelement.getElementId());
+                    CmsResource subelementRes = cms.readResource(subelement.getId());
                     String subelementUri = cms.getSitePath(subelementRes);
                     String subelementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
                         cms,
@@ -851,7 +851,7 @@ public class CmsJspTagContainer extends TagSupport {
                             containerType)));
                         continue;
                     }
-                    subelement.setSitePath(subelementUri);
+                    subelement.initResource(subelementRes, subelementUri);
                     // execute the formatter jsp for the given element uri
                     // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
                     printElementWrapperTagStart(isOnline, cms, subelementRes, subelement, false);
@@ -870,12 +870,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter);
                     } finally {
@@ -892,7 +890,7 @@ public class CmsJspTagContainer extends TagSupport {
         } else {
             String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
 
-            element.setSitePath(cms.getSitePath(resUri));
+            element.initResource(resUri, cms.getSitePath(resUri));
             printElementWrapperTagStart(isOnline, cms, resUri, element, false);
             standardContext.setElement(element);
             try {
@@ -910,12 +908,10 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            elementFormatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        elementFormatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             } finally {

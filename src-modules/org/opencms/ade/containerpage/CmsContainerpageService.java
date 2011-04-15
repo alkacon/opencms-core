@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/08 15:53:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0
  */
@@ -165,9 +165,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
                 null,
-                bean.getProperties(),
+                bean.getSettings(),
                 false);
-            String newClientId = newBean.getClientId();
+            String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
             element.setClientId(newClientId);
@@ -215,7 +215,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParams, getRequest(), getResponse());
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
             CmsContainerElementBean elementBean = createElement(serverId, properties);
-            getSessionCache().setCacheContainerElement(elementBean.getClientId(), elementBean);
+            getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
             error(e);
@@ -498,7 +498,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 
                 // make sure resource is readable, 
-                CmsResource resource = cms.readResource(element.getElementId());
+                CmsResource resource = cms.readResource(element.getId());
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
@@ -511,9 +511,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (hasValidFormatter) {
                     CmsResource formatter = cms.readResource(formatterUri);
                     elements.add(new CmsContainerElementBean(
-                        element.getElementId(),
+                        element.getId(),
                         formatter.getStructureId(),
-                        element.getProperties(),
+                        element.getSettings(),
                         false));
                 }
             } catch (Exception e) {
@@ -583,10 +583,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             CmsContainerElementBean element = getCachedElement(elemId);
             CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
-            result.put(element.getClientId(), elementData);
+            result.put(element.editorHash(), elementData);
             if (elementData.isGroupContainer()) {
                 // this is a group-container 
-                CmsResource elementRes = cms.readResource(element.getElementId());
+                CmsResource elementRes = cms.readResource(element.getId());
                 CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                     cms,
                     elementRes,
@@ -597,8 +597,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 // adding all sub-items to the elements data
                 for (CmsContainerElementBean subElement : groupContainer.getElements()) {
-                    if (!ids.contains(subElement.getElementId())) {
-                        String subId = subElement.getClientId();
+                    if (!ids.contains(subElement.getId())) {
+                        String subId = subElement.editorHash();
                         if (ids.contains(subId)) {
                             continue;
                         }
@@ -637,7 +637,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 
                 // make sure resource is readable, 
-                if (cms.existsResource(element.getElementId())) {
+                if (cms.existsResource(element.getId())) {
                     elements.add(element);
                 }
 
@@ -674,14 +674,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainerElementData> result = new ArrayList<CmsContainerElementData>();
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
-            if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-                cache.setCacheContainerElement(element.getClientId(), element);
+            if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                cache.setCacheContainerElement(element.editorHash(), element);
                 CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
                 result.add(elementData);
                 if (elementData.isGroupContainer()) {
                     // this is a group-container 
 
-                    CmsResource elementRes = cms.readResource(element.getElementId());
+                    CmsResource elementRes = cms.readResource(element.getId());
                     CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                         cms,
                         elementRes,
@@ -779,7 +779,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Iterator<CmsContainerElementBean> listIt = list.iterator();
         while (listIt.hasNext()) {
             CmsContainerElementBean listElem = listIt.next();
-            if (listElem.getElementId().equals(element.getElementId())) {
+            if (listElem.getId().equals(element.getId())) {
                 listIt.remove();
             }
         }

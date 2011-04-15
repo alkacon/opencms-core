@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADESessionCache.java,v $
- * Date   : $Date: 2011/01/19 13:44:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.9.2
  */
@@ -147,7 +147,7 @@ public final class CmsADESessionCache {
         m_recentLists.clear();
         m_recentLists.addAll(list);
         for (CmsContainerElementBean element : m_recentLists) {
-            setCacheContainerElement(element.getClientId(), element);
+            setCacheContainerElement(element.editorHash(), element);
         }
     }
 

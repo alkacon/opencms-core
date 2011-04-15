@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/15 08:08:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 7.6
  */
@@ -247,7 +247,7 @@ public class CmsADEManager {
     public Map<String, CmsProperty> getElementProperties(CmsObject cms, CmsContainerElementBean element) {
 
         Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
-        Iterator<Map.Entry<String, String>> itProperties = element.getProperties().entrySet().iterator();
+        Iterator<Map.Entry<String, String>> itProperties = element.getSettings().entrySet().iterator();
         while (itProperties.hasNext()) {
             Map.Entry<String, String> entry = itProperties.next();
             String propertyName = entry.getKey();
@@ -257,7 +257,7 @@ public class CmsADEManager {
         try {
             Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(
                 cms,
-                cms.readResource(element.getElementId()));
+                cms.readResource(element.getId()));
             Iterator<Map.Entry<String, CmsXmlContentProperty>> itPropertyDefs = propertyDefs.entrySet().iterator();
             while (itPropertyDefs.hasNext()) {
                 Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
@@ -278,7 +278,7 @@ public class CmsADEManager {
             LOG.error(
                 Messages.get().getBundle().key(
                     Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                    element.getElementId()),
+                    element.getId()),
                 e);
         }
         return properties;
@@ -626,12 +626,12 @@ public class CmsADEManager {
         JSONObject data = null;
         try {
             data = new JSONObject();
-            data.put(FavListProp.ELEMENT.name().toLowerCase(), element.getElementId().toString());
+            data.put(FavListProp.ELEMENT.name().toLowerCase(), element.getId().toString());
             if (element.getFormatterId() != null) {
                 data.put(FavListProp.FORMATTER.name().toLowerCase(), element.getFormatterId().toString());
             }
             JSONObject properties = new JSONObject();
-            for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
+            for (Map.Entry<String, String> entry : element.getSettings().entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
             }
             data.put(FavListProp.PROPERTIES.name().toLowerCase(), properties);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,18 +45,19 @@ import java.util.Map;
  * One element of a container in a container page.<p>
  * 
  * @author Michael Moossen
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
- * @since 7.6 
+ * @since 8.0
  */
 public class CmsContainerElementBean {
 
-    /** The client id including properties-hash. */
-    private final transient String m_clientId;
-
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
     private boolean m_createNew;
+
+    /** The client ADE editor hash. */
+    private transient String m_editorHash;
 
     /** The element's structure id. */
     private final CmsUUID m_elementId;
@@ -64,8 +65,11 @@ public class CmsContainerElementBean {
     /** The formatter's structure id. */
     private final CmsUUID m_formatterId;
 
+    /** The resource of this element. */
+    private transient CmsResource m_resource;
+
     /** The configured properties. */
-    private final Map<String, String> m_properties;
+    private Map<String, String> m_settings;
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
@@ -75,26 +79,36 @@ public class CmsContainerElementBean {
      *  
      * @param elementId the element's structure id
      * @param formatterId the formatter's structure id, could be <code>null</code>
-     * @param properties the properties as a map of name/value pairs
+     * @param settings the element settings as a map of name/value pairs
      * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
      **/
     public CmsContainerElementBean(
         CmsUUID elementId,
         CmsUUID formatterId,
-        Map<String, String> properties,
+        Map<String, String> settings,
         boolean createNew) {
 
         m_elementId = elementId;
         m_formatterId = formatterId;
-        Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
-        m_properties = Collections.unmodifiableMap(props);
+        Map<String, String> newSettings = (settings == null ? new HashMap<String, String>() : settings);
+        m_settings = Collections.unmodifiableMap(newSettings);
         String clientId = m_elementId.toString();
-        if (!m_properties.isEmpty()) {
-            int hash = m_properties.toString().hashCode();
+        if (!m_settings.isEmpty()) {
+            int hash = m_settings.toString().hashCode();
             clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
-        m_clientId = clientId;
+        m_editorHash = clientId;
         m_createNew = createNew;
+    }
+
+    /**
+     * Returns the ADE client editor has value.<p>
+     * 
+     * @return the ADE client editor has value
+     */
+    public String editorHash() {
+
+        return m_editorHash;
     }
 
     /**
@@ -106,33 +120,13 @@ public class CmsContainerElementBean {
         if (!(obj instanceof CmsContainerElementBean)) {
             return false;
         }
-        return getClientId().equals(((CmsContainerElementBean)obj).getClientId());
+        return editorHash().equals(((CmsContainerElementBean)obj).editorHash());
     }
 
     /**
-     * Returns the client side id including the property-hash.<p>
-     * 
-     * @return the id
-     */
-    public String getClientId() {
-
-        return m_clientId;
-    }
-
-    /**
-     * Returns the element's structure id.<p>
+     * Returns the structure id of the formatter of this element.<p>
      *
-     * @return the element's structure id
-     */
-    public CmsUUID getElementId() {
-
-        return m_elementId;
-    }
-
-    /**
-     * Returns the formatter's structure id.<p>
-     *
-     * @return the formatter's structure id
+     * @return the structure id of the formatter of this element
      */
     public CmsUUID getFormatterId() {
 
@@ -140,19 +134,47 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Returns the configured properties.<p>
-     * 
-     * @return the configured properties
+     * Returns the structure id of the resource of this element.<p>
+     *
+     * @return the structure id of the resource of this element
      */
-    public Map<String, String> getProperties() {
+    public CmsUUID getId() {
 
-        return m_properties;
+        return m_elementId;
     }
 
     /**
-     * Returns the element site path, only set while rendering.<p>
+     * Returns the resource of this element.<p>
      * 
-     * @return the element site path
+     * If is required to call {@link #initResource(CmsResource, String)} before this method can be used.<p>
+     * 
+     * @return the resource of this element
+     * 
+     * @see #initResource(CmsResource, String)
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
+    }
+
+    /**
+     * Returns the settings of this element.<p>
+     * 
+     * @return the settings of this element
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
+    }
+
+    /**
+     * Returns the site path of the resource of this element.<p>
+     * 
+     * If is required to call {@link #initResource(CmsResource, String)} before this method can be used.<p>
+     * 
+     * @return the site path of the resource of this element
+     * 
+     * @see #initResource(CmsResource, String)
      */
     public String getSitePath() {
 
@@ -165,7 +187,19 @@ public class CmsContainerElementBean {
     @Override
     public int hashCode() {
 
-        return m_clientId.hashCode();
+        return m_editorHash.hashCode();
+    }
+
+    /**
+     * Sets the resource and the site path of this element.<p>
+     * 
+     * @param resource the resource of this element
+     * @param sitePath the site path of this element
+     */
+    public void initResource(CmsResource resource, String sitePath) {
+
+        m_resource = resource;
+        m_sitePath = sitePath;
     }
 
     /**
@@ -179,27 +213,18 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Tests whether this container element refers to a groupcontainer.<p>
+     * Tests whether this element refers to a group container.<p>
      * 
      * @param cms the CmsObject used for VFS operations
      *  
-     * @return true if the container element refers to a groupcontainer
+     * @return true if the container element refers to a group container
+     * 
      * @throws CmsException if something goes wrong 
      */
-    public boolean isGroupcontainer(CmsObject cms) throws CmsException {
+    public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
         CmsResource resource = cms.readResource(m_elementId);
         return resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
-    }
-
-    /**
-     * Sets the element's site path.<p>
-     * 
-     * @param sitePath the element's site path to set
-     */
-    public void setSitePath(String sitePath) {
-
-        m_sitePath = sitePath;
     }
 
     /**
@@ -208,6 +233,6 @@ public class CmsContainerElementBean {
     @Override
     public String toString() {
 
-        return getClientId();
+        return editorHash();
     }
 }

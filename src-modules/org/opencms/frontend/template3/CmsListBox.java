@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2011/04/15 08:44:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -209,7 +209,7 @@ public class CmsListBox extends CmsJspActionElement {
         try {
             CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
             CmsObject cms = getCmsObject();
-            CmsFile file = cms.readFile(cms.readResource(element.getElementId()));
+            CmsFile file = cms.readFile(cms.readResource(element.getId()));
             m_content = CmsXmlContentFactory.unmarshal(cms, file);
 
             // process the default mappings (if set / available)
