@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2011/04/12 13:51:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/15 07:55:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -62,7 +63,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.2
  * 
@@ -530,6 +531,25 @@ public class CmsJspContentAccessBean {
     public Map<String, Boolean> getHasValue() {
 
         return getHasLocaleValue().get(m_locale);
+    }
+
+    /**
+     * Returns the structure ID of the current resource, that is the ID of 
+     * the resource obtained by {@link #getFile()}.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Site path of the resource: "${content.id}";
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return the structure ID of the current resource
+     * 
+     * @see CmsResource#getStructureId()
+     */
+    public CmsUUID getId() {
+
+        return getRawContent().getFile().getStructureId();
     }
 
     /**
