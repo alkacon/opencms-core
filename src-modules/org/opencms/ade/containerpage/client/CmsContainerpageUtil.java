@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/15 08:10:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -109,6 +109,7 @@ public class CmsContainerpageUtil {
 
                 if (isContainerElement) {
                     Element elementRoot = (Element)child.getFirstChildElement();
+                    CmsDomUtil.removeScriptTags(elementRoot);
                     DOM.removeChild(child, elementRoot);
                     CmsContainerPageElement containerElement = createElement(
                         elementRoot,
@@ -123,6 +124,7 @@ public class CmsContainerpageUtil {
                     elements.add(containerElement);
                     DOM.removeChild((Element)container.getElement(), child);
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
+                    CmsDomUtil.removeScriptTags(child);
                     CmsGroupContainerElement groupContainer = createGroupcontainer(
                         child,
                         container,
@@ -200,7 +202,6 @@ public class CmsContainerpageUtil {
         boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
         com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
             container.getContainerId()));
-
         return createElement(
             element,
             container,

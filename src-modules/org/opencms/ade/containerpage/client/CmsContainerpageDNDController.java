@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/08 15:53:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/15 08:10:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -424,7 +424,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 try {
                     String htmlContent = elementData.getContents().get(groupContainer.getContainerId());
                     helper = CmsDomUtil.createElement(htmlContent);
-                    placeholder = CmsDomUtil.createElement(htmlContent);
+                    placeholder = CmsDomUtil.clone(helper);
                     placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
@@ -464,7 +464,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     try {
                         String htmlContent = elementData.getContents().get(container.getContainerId());
                         helper = CmsDomUtil.createElement(htmlContent);
-                        placeholder = CmsDomUtil.createElement(htmlContent);
+                        placeholder = CmsDomUtil.clone(helper);
                         placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine(e.getMessage());
@@ -575,7 +575,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         handler.addTarget(target);
 
         // adding drag handle
-        Element button = (new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement();
+        Element button = DOM.createDiv();
+        button.appendChild((new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement());
         button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
         dragHelper.appendChild(button);
     }

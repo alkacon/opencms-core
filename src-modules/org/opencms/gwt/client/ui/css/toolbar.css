@@ -32,8 +32,8 @@
 .toolbar{
 	left: 0px;
 	top: 0px;
+	right: 0px;
 	position: fixed;
-	width: 100%;
 	z-index: value("constants.css.zIndexInline");
 }
 
@@ -45,7 +45,9 @@
 	font-weight:normal;
 	height: 34px;
 	position:absolute;
-	width:100%;
+	top:0px;
+	left:0px;
+	right: 0px;
 	border-bottom:1px solid value("constants.css.borderColor");
 	color:value("constants.css.textColor");
 	padding:0px;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/11 12:42:33 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/04/15 08:10:09 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -511,8 +511,8 @@ public final class CmsDomUtil {
 
     /**
      * This method will create an {@link com.google.gwt.user.client.Element} for the given HTML. 
-     * The HTML should have a single root tag, if not, the first tag will be used and all others discarded.
-     * Script-tags will be ignored.
+     * The HTML should have a single root tag, if not, the first tag will be used and all others discarded.<p>
+     * Script-tags will be removed.<p>
      * 
      * @param html the HTML to use for the element
      * 
@@ -523,6 +523,7 @@ public final class CmsDomUtil {
     public static com.google.gwt.user.client.Element createElement(String html) throws Exception {
 
         com.google.gwt.user.client.Element wrapperDiv = DOM.createDiv();
+        html = removeScriptTags(html);
         wrapperDiv.setInnerHTML(html);
         com.google.gwt.user.client.Element elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
         DOM.removeChild(wrapperDiv, elementRoot);
@@ -534,7 +535,7 @@ public final class CmsDomUtil {
         if (elementRoot == null) {
             CmsDebugLog.getInstance().printLine(
                 "Could not create element as the given HTML has no appropriate root element");
-            throw new UnsupportedOperationException(
+            throw new IllegalArgumentException(
                 "Could not create element as the given HTML has no appropriate root element");
         }
         return elementRoot;
@@ -1215,11 +1216,45 @@ public final class CmsDomUtil {
         return hasClass;
     }
 
+    /**
+     * Returns the document style implementation.<p>
+     * 
+     * @return the document style implementation
+     */
     private static DocumentStyleImpl getStyleImpl() {
 
         if (styleImpl == null) {
             styleImpl = GWT.create(DocumentStyleImpl.class);
         }
         return styleImpl;
+    }
+
+    /**
+     * Removes all script tags from the given string.<p>
+     * 
+     * @param source the source string
+     * 
+     * @return the resulting string
+     */
+    public static native String removeScriptTags(String source)/*-{
+
+        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+        return source.replace(matchTag, "");
+    }-*/;
+
+    /**
+     * Removes all script tags from the given element.<p>
+     * 
+     * @param element the element to remove the script tags from
+     * 
+     * @return the resulting element
+     */
+    public static Element removeScriptTags(Element element) {
+
+        NodeList<Element> scriptTags = element.getElementsByTagName(Tag.script.name());
+        for (int i = 0; i < scriptTags.getLength(); i++) {
+            scriptTags.getItem(i).removeFromParent();
+        }
+        return element;
     }
 }
