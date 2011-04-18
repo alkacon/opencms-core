@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/04/18 07:26:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/18 12:24:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,12 +71,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * ADE publishing features.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -487,13 +489,14 @@ public class CmsPublish {
         blockingFilter = blockingFilter.filterNotLockableByUser(user);
 
         ResourcesAndRelated result = new ResourcesAndRelated();
+        Map<String, CmsResource> cache1 = Maps.newHashMap();
         for (CmsResource resource : getPublishResources().getResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
             }
             try {
-                result.getResources().addAll(m_cms.getLockedResources(resource, blockingFilter));
+                result.getResources().addAll(m_cms.getLockedResourcesWithCache(resource, blockingFilter, cache1));
             } catch (Exception e) {
                 // error reading the resource list, should usually never happen
                 if (LOG.isErrorEnabled()) {
@@ -507,7 +510,7 @@ public class CmsPublish {
                 continue;
             }
             try {
-                result.getRelatedResources().addAll(m_cms.getLockedResources(resource, blockingFilter));
+                result.getRelatedResources().addAll(m_cms.getLockedResourcesWithCache(resource, blockingFilter, cache1));
             } catch (Exception e) {
                 // error reading the resource list, should usually never happen
                 if (LOG.isErrorEnabled()) {

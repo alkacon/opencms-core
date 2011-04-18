@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/03/30 15:39:52 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/04/18 12:24:35 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4045,6 +4045,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return m_lockManager.getLockedResources(dbc, resource, filter);
+    }
+
+    /**
+     * Returns all locked resources in a given folder, but uses a cache for resource lookups<p>
+     *
+     * @param dbc the current database context
+     * @param resource the folder to search in
+     * @param filter the lock filter
+     * @param cache the cache to use for resource lookups
+     * 
+     * @return a list of locked resources
+     * 
+     * @throws CmsException if the current project is locked
+     */
+    public List<CmsResource> getLockedResourcesObjectsWithCache(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsLockFilter filter,
+        Map<String, CmsResource> cache) throws CmsException {
+
+        return m_lockManager.getLockedResourcesWithCache(dbc, resource, filter, cache);
     }
 
     /**

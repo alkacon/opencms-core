@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/03/22 14:35:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/04/18 12:24:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */
@@ -1235,6 +1235,25 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getLockedResources(m_context, resource, filter);
+    }
+
+    /**
+     * Returns all locked resources within a folder or matches the lock of the given resource, but uses a cache for resource lookup.<p>
+     *
+     * @param resource the resource to check
+     * @param filter the lock filter
+     * @param cache the cache to use for resource lookups 
+     * 
+     * @return a list of locked resources
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List<CmsResource> getLockedResourcesWithCache(
+        CmsResource resource,
+        CmsLockFilter filter,
+        Map<String, CmsResource> cache) throws CmsException {
+
+        return m_securityManager.getLockedResourcesObjectsWithCache(m_context, resource, filter, cache);
     }
 
     /**

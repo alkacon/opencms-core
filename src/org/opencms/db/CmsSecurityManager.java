@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2011/03/30 15:39:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/18 12:24:35 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2099,6 +2099,40 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             result = m_driverManager.getLockedResourcesObjects(dbc, resource, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all locked resources in a given folder, but uses a cache for resource lookups.<p>
+     *
+     * @param context the current request context
+     * @param resource the folder to search in
+     * @param filter the lock filter
+     * @param cache the cache to use 
+     * 
+     * @return a list of locked resource paths (relative to current site)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> getLockedResourcesObjectsWithCache(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsLockFilter filter,
+        Map<String, CmsResource> cache) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List<CmsResource> result = null;
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
+            result = m_driverManager.getLockedResourcesObjectsWithCache(dbc, resource, filter, cache);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/18 12:24:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -246,6 +246,11 @@ public final class CmsLockManager {
         while (itLocks.hasNext()) {
             CmsLock lock = itLocks.next();
             CmsResource lockedResource;
+            boolean matchesFilter = filter.match(resource.getRootPath(), lock);
+            if (!matchesFilter && !filter.isSharedExclusive()) {
+                // we don't need to read the resource if the filter didn't match and we don't need to look at the siblings
+                continue;
+            }
             try {
                 lockedResource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
             } catch (CmsVfsResourceNotFoundException e) {
@@ -262,7 +267,87 @@ public final class CmsLockManager {
                     }
                 }
             }
-            if (filter.match(resource.getRootPath(), lock)) {
+            if (matchesFilter) {
+                lockedResources.add(lockedResource);
+            }
+        }
+        Collections.sort(lockedResources, I_CmsResource.COMPARE_ROOT_PATH);
+        return lockedResources;
+    }
+
+    /**
+     * Returns all exclusive locked resources matching the given resource and filter, but uses a cache for resource loookups.<p>
+     * 
+     * @param dbc the database context
+     * @param resource the resource
+     * @param filter the lock filter
+     * @param cache a cache to use for resource lookups 
+     * 
+     * @return a list of resources
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsResource> getLockedResourcesWithCache(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsLockFilter filter,
+        Map<String, CmsResource> cache) throws CmsException {
+
+        List<CmsResource> lockedResources = new ArrayList<CmsResource>();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = itLocks.next();
+            CmsResource lockedResource;
+            boolean matchesFilter = filter.match(resource.getRootPath(), lock);
+            if (!matchesFilter && !filter.isSharedExclusive()) {
+                // we don't need to read the resource if the filter didn't match and we don't need to look at the siblings
+                continue;
+            }
+            lockedResource = cache.get(lock.getResourceName());
+            if (lockedResource == null) {
+                try {
+                    lockedResource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                    cache.put(lock.getResourceName(), lockedResource);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
+                    // we put a dummy resource object in the map so we won't need to read the nonexistent resource again 
+                    CmsResource dummy = new CmsResource(
+                        null,
+                        null,
+                        null,
+                        0,
+                        false,
+                        0,
+                        null,
+                        null,
+                        0,
+                        null,
+                        0,
+                        null,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0);
+                    cache.put(lock.getResourceName(), dummy);
+                    continue;
+                }
+            } else if (lockedResource.getStructureId() == null) {
+                // dummy resource, i.e. the resource was not found in a previous readResource call 
+                continue;
+            }
+            if (filter.isSharedExclusive() && (lockedResource.getSiblingCount() > 1)) {
+                Iterator<CmsResource> itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
+                while (itSiblings.hasNext()) {
+                    CmsResource sibling = itSiblings.next();
+                    CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
+                    if (filter.match(resource.getRootPath(), siblingLock)) {
+                        lockedResources.add(sibling);
+                    }
+                }
+            }
+            if (matchesFilter) {
                 lockedResources.add(lockedResource);
             }
         }
