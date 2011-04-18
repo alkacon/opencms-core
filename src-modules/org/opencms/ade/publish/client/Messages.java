@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -112,6 +112,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHING_0 = "GUI_PUBLISHING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_COUNT_1 = "GUI_RESOURCE_COUNT_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.clientmessages";

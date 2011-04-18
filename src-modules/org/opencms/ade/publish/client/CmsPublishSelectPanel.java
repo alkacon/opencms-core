@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/02/24 15:30:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -41,19 +42,18 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.util.CmsListSplitter;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -79,11 +79,12 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
-public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSelectionChangeHandler {
+public class CmsPublishSelectPanel extends Composite
+implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandler {
 
     /** The UiBinder interface for this widget. */
     protected interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
@@ -147,6 +148,12 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     /** The publish dialog which contains this panel. */
     protected CmsPublishDialog m_publishDialog;
 
+    /** The data model for the publish dialog. */
+    protected CmsPublishDataModel m_model;
+
+    /** The global map of selection controllers for all groups. */
+    protected Map<CmsUUID, CmsPublishItemSelectionController> m_selectionControllers = Maps.newHashMap();
+
     /** The current publish list options. */
     protected CmsPublishOptions m_publishOptions;
 
@@ -181,14 +188,18 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
 
-    /** The publish list resources indexed by UUID. */
-    private Map<CmsUUID, CmsPublishResource> m_publishResources;
+    /** The current group panel. */
+    private CmsPublishGroupPanel m_currentGroupPanel;
 
-    /** The publish list resources indexed by path. */
-    private Map<String, CmsPublishResource> m_publishResourcesByPath;
+    /** The current group index used for scrolling. */
+    private int m_currentGroupIndex;
 
-    /** The list splitter which gets the next set of groups when the user scrolls down. */
-    private CmsListSplitter<CmsPublishGroupPanel> m_splitter;
+    /** The label displaying the resource count. */
+    @UiField
+    protected InlineLabel m_resourceCountLabel;
+
+    /** Flag which indicates whether only resources with problems should be shown. */
+    private boolean m_showProblemsOnly;
 
     /**
      * Creates a new instance.<p>
@@ -225,7 +236,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         }
         m_projectSelector.setItems(items);
         m_projectSelector.addStyleName(CSS.selector());
-
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
@@ -301,8 +311,8 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
              */
             public void onClick(ClickEvent e) {
 
-                setAllCheckboxes(true);
-                onChangePublishSelection();
+                m_model.signalAll(Signal.publish);
+                CmsPublishSelectPanel.this.onChangePublishSelection();
             }
         });
 
@@ -313,8 +323,8 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
              */
             public void onClick(ClickEvent e) {
 
-                setAllCheckboxes(false);
-                onChangePublishSelection();
+                m_model.signalAll(Signal.unpublish);
+                CmsPublishSelectPanel.this.onChangePublishSelection();
             }
         });
 
@@ -329,6 +339,18 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     }
 
     /** 
+     * Formats a number of publish resources in a more user-friendly form.<p>
+     * 
+     * @param resourceCount a number of resources
+     *  
+     * @return the formatted number of resources 
+     */
+    public static String formatResourceCount(int resourceCount) {
+
+        return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
+    }
+
+    /** 
      * Check for problems with new/deleted folders in the publish selection.<p>
      * 
      * @param resourceIds the ids of the resources selected for publishing 
@@ -339,11 +361,11 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         List<CmsPublishResource> pubResources = new ArrayList<CmsPublishResource>();
         Set<CmsUUID> publishIds = getResourcesToPublish();
         for (CmsUUID publishId : publishIds) {
-            pubResources.add(m_publishResources.get(publishId));
+            pubResources.add(m_model.getPublishResources().get(publishId));
         }
         for (CmsPublishResource pubResource : pubResources) {
             String parentPath = CmsResource.getParentFolder(pubResource.getName());
-            CmsPublishResource parent = m_publishResourcesByPath.get(parentPath);
+            CmsPublishResource parent = m_model.getPublishResourcesByPath().get(parentPath);
             if (parent != null) {
                 boolean parentIsNew = parent.getState().isNew();
                 boolean parentIsDeleted = parent.getState().isDeleted();
@@ -403,11 +425,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      */
     public Set<CmsUUID> getResourcesToPublish() {
 
-        Set<CmsUUID> result = new HashSet<CmsUUID>();
-        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
-            result.addAll(groupPanel.getResourcesToPublish());
-        }
-        return result;
+        return new HashSet<CmsUUID>(m_model.getPublishIds());
     }
 
     /**
@@ -417,11 +435,17 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      */
     public Set<CmsUUID> getResourcesToRemove() {
 
-        Set<CmsUUID> result = new HashSet<CmsUUID>();
-        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
-            result.addAll(groupPanel.getResourcesToRemove());
-        }
-        return result;
+        return new HashSet<CmsUUID>(m_model.getRemoveIds());
+    }
+
+    /**
+     * Gets the global map of selection controllers.<p>
+     * 
+     * @return the map of selection controller 
+     */
+    public Map<CmsUUID, CmsPublishItemSelectionController> getSelectionControllers() {
+
+        return m_selectionControllers;
     }
 
     /**
@@ -429,61 +453,67 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      */
     public void onChangePublishSelection() {
 
-        boolean enablePublishButton = (getResourcesToRemove().size() != 0) || (getResourcesToPublish().size() != 0);
-        m_publishButton.setEnabled(enablePublishButton);
+        m_publishButton.setEnabled(shouldEnablePublishButton());
 
-    }
-
-    /**
-     * Sets the state of all publish checkboxes in this widget to a given value.<p>
-     * 
-     * @param checked the new value for all the publish checkboxes
-     */
-    public void setAllCheckboxes(boolean checked) {
-
-        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
-            groupPanel.setAllSelected(checked);
-        }
     }
 
     /**
      * Sets the publish groups used by this widget.<p>
      * 
-     * @param groups the new publish groups 
+     * @param groups the new publish groups
+     * @param newData true if the groups are new data which has been loaded  
      */
-    public void setGroups(List<CmsPublishGroup> groups) {
+    public void setGroups(List<CmsPublishGroup> groups, boolean newData) {
 
+        m_model = new CmsPublishDataModel(groups, this);
+        m_resourceCountLabel.setText(formatResourceCount(m_model.getPublishResources().size()));
+        m_currentGroupIndex = 0;
+        m_currentGroupPanel = null;
         m_problemsPanel.clear();
-        m_checkboxProblems.setChecked(false);
-        m_checkboxProblems.setVisible(false);
-        m_problemsPanel.setVisible(false);
+        if (newData) {
+            m_showProblemsOnly = false;
+            m_checkboxProblems.setChecked(false);
+            m_checkboxProblems.setVisible(false);
+            m_problemsPanel.setVisible(false);
+        }
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
         m_publishButton.setEnabled(false);
 
         int numGroups = groups.size();
         setResourcesVisible(numGroups > 0);
+
         if (numGroups == 0) {
             return;
         }
-        int numProblems = 0;
-        m_publishResources = new HashMap<CmsUUID, CmsPublishResource>();
-        m_publishResourcesByPath = new HashMap<String, CmsPublishResource>();
-        for (CmsPublishGroup group : groups) {
-            String header = group.getName();
-            List<CmsPublishResource> resourceBeans = group.getResources();
-            CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans, this);
-            m_groupPanels.add(groupPanel);
-            numProblems += groupPanel.countProblems();
-            for (CmsPublishResource pubResource : group.getResources()) {
-                m_publishResources.put(pubResource.getId(), pubResource);
-                m_publishResourcesByPath.put(pubResource.getName(), pubResource);
-            }
-        }
-        resetGroups();
+
         m_publishButton.setEnabled(true);
-        showProblemCount(numProblems);
+        addMoreListItems();
+        showProblemCount(m_model.countProblems());
         onChangePublishSelection();
+    }
+
+    /**
+     * Returns true if the publish button should be enabled.<p>
+     * 
+     * @return true if the publish button should be enabled 
+     */
+    public boolean shouldEnablePublishButton() {
+
+        boolean enablePublishButton = (getResourcesToRemove().size() != 0) || (getResourcesToPublish().size() != 0);
+        return enablePublishButton;
+
+    }
+
+    /**
+     * @see org.opencms.ade.publish.client.I_CmsPublishItemStatusUpdateHandler#update(org.opencms.util.CmsUUID, org.opencms.ade.publish.client.CmsPublishItemStatus)
+     */
+    public void update(CmsUUID id, CmsPublishItemStatus status) {
+
+        CmsPublishItemSelectionController selectionController = m_selectionControllers.get(id);
+        if (selectionController != null) {
+            selectionController.update(status);
+        }
     }
 
     /**
@@ -491,9 +521,18 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      */
     protected void addMoreGroups() {
 
-        if ((m_splitter != null) && m_splitter.hasMore()) {
-            for (CmsPublishGroupPanel groupPanel : m_splitter.getMore()) {
-                m_groupPanelContainer.add(groupPanel);
+        //TODO: adding more groups  
+    }
+
+    /**
+     * Adds more publish list items to the panel.<p>
+     */
+    protected void addMoreListItems() {
+
+        for (int i = 0; i < MIN_BATCH_SIZE; i++) {
+            boolean hasMore = addNextItem();
+            if (!hasMore) {
+                return;
             }
         }
     }
@@ -529,10 +568,68 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      */
     protected void setProblemMode(boolean enabled) {
 
-        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
-            groupPanel.setProblemMode(enabled);
+        m_showProblemsOnly = enabled;
+        setGroups(m_model.getGroups(), false);
+    }
+
+    /**
+     * Adds a new group panel.<p>
+     * 
+     * @param group the publish group for which a panel should be added   
+     * @param currentIndex the index of the publish group 
+     * 
+     * @return the publish group panel which has been added    
+     */
+    private CmsPublishGroupPanel addGroupPanel(CmsPublishGroup group, int currentIndex) {
+
+        String header = group.getName();
+        CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(
+            header,
+            currentIndex,
+            this,
+            m_model,
+            m_selectionControllers,
+            m_showProblemsOnly);
+        m_groupPanels.add(groupPanel);
+        m_groupPanelContainer.add(groupPanel);
+        return groupPanel;
+    }
+
+    /**
+     * Tries to add a new publish list item to the panel, and returns false if there aren't any items left.<p>
+     * 
+     * @return true if an item could be added, false if no items are left 
+     */
+    private boolean addNextItem() {
+
+        // this method is so complicated because to add the next item, 
+        // you may need to skip to another group and create the corresponding widget
+
+        if (m_model.isEmpty()) {
+            return false;
         }
-        resetGroups();
+        // now we know there is at least one group
+        if (m_currentGroupPanel == null) {
+            // this case happens if the method is called for the first time  
+            m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(0), 0);
+        }
+        while (true) {
+            if (m_currentGroupPanel.hasMoreItems()) {
+                // found next item in the current group 
+                boolean found = m_currentGroupPanel.addNextItem();
+                if (found) {
+                    return true;
+                }
+            } else if (m_currentGroupIndex < m_model.getGroups().size() - 1) {
+                // didn't find item in the current group, so skip to next group if available  
+                // and create the group widget 
+                m_currentGroupIndex += 1;
+                m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
+            } else {
+                // all groups exhausted 
+                return false;
+            }
+        }
     }
 
     /**
@@ -548,23 +645,10 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
              */
             public void run() {
 
-                addMoreGroups();
+                addMoreListItems();
             }
         }, SCROLL_THRESHOLD));
 
-    }
-
-    /**
-     * Resets the publish group view.<p>
-     * 
-     * This method is called when the 'only show resources with problems' mode is toggled.
-     */
-    private void resetGroups() {
-
-        m_groupPanelContainer.clear();
-        m_splitter = new CmsListSplitter<CmsPublishGroupPanel>(m_groupPanels, MIN_BATCH_SIZE);
-        addMoreGroups();
-        m_scrollPanel.setScrollPosition(0);
     }
 
     /**

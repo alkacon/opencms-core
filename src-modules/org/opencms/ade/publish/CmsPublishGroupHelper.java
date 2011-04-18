@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishGroupHelper.java,v $
- * Date   : $Date: 2010/11/23 11:37:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -66,6 +66,7 @@ public class CmsPublishGroupHelper {
         young
     }
 
+    /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishGroupHelper.class);
 
     /** The gap between session groups. */

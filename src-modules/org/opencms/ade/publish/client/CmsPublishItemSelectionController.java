@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishItemSelectionController.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,19 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.ade.publish.client.CmsPublishItemStatus.State;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 /**
  * A helper class for managing the selection status of a resource item in the publish dialog.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -59,51 +61,36 @@ class CmsPublishItemSelectionController {
     /** The checkbox for selecting the resource for publishing. */
     private final CmsCheckBox m_selectedCheckBox;
 
+    /** The CSS bundle used for this widget. */
+    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
+    /** A style variable which is changed depending on the "removed" state of the corresponding publish item. */
+    private final CmsStyleVariable m_removeStyle;
+
     /**
      * Constructs a new instance.<p>
      * 
      * @param id the id of the resource
      * @param selectedCheckBox the checkbox representing the selection status of the resource
      * @param removeCheckBox the checkbox representing the remove status of the resource 
+     * @param removeStyle the style variable to keep track of the "remove" status  
      * @param hasProblems a flag indicating whether there are problems with the resource
      */
     public CmsPublishItemSelectionController(
         CmsUUID id,
         CmsCheckBox selectedCheckBox,
         CmsCheckBox removeCheckBox,
+        CmsStyleVariable removeStyle,
         boolean hasProblems) {
 
         m_id = id;
         m_hasProblems = hasProblems;
         m_selectedCheckBox = selectedCheckBox;
         m_removeCheckBox = removeCheckBox;
+        m_removeStyle = removeStyle;
         if (m_hasProblems) {
             m_selectedCheckBox.setChecked(false);
             m_selectedCheckBox.setEnabled(false);
-        }
-    }
-
-    /**
-     * Adds the resource's id to a given list if the resource is selected for publishing.<p>
-     * 
-     * @param ids the list of ids
-     */
-    public void addIdToPublish(List<CmsUUID> ids) {
-
-        if (isSelected()) {
-            ids.add(m_id);
-        }
-    }
-
-    /**
-     * Adds the resource's id to a given list if the resource is selected for removal.<p>
-     * 
-     * @param ids the list of ids
-     */
-    public void addIdToRemove(List<CmsUUID> ids) {
-
-        if (shouldBeRemoved()) {
-            ids.add(m_id);
         }
     }
 
@@ -118,49 +105,54 @@ class CmsPublishItemSelectionController {
     }
 
     /**
-     * Returns true if the resource has been selected for publishing.<p>
+     * Updates the list item and checkboxes with the current item status from the model.<p>
      * 
-     * @return true if the resource has been selected
+     * @param status the status which should be used to update the widgets 
      */
-    public boolean isSelected() {
+    public void update(CmsPublishItemStatus status) {
 
-        return m_selectedCheckBox.isChecked();
-    }
+        if (status.isDisabled()) {
+            m_selectedCheckBox.setEnabled(false);
+            m_selectedCheckBox.setChecked(false);
+            m_removeCheckBox.setChecked(status.getState() == State.remove);
+            updateRemoval(status.getState() == State.remove);
+        } else {
+            switch (status.getState()) {
+                case remove:
+                    m_selectedCheckBox.setChecked(false);
+                    m_selectedCheckBox.setEnabled(false);
+                    m_removeCheckBox.setChecked(true);
+                    updateRemoval(true);
+                    break;
+                case publish:
+                    m_selectedCheckBox.setEnabled(true);
+                    m_selectedCheckBox.setChecked(true);
+                    m_removeCheckBox.setChecked(false);
+                    updateRemoval(false);
+                    break;
+                case normal:
+                default:
+                    m_selectedCheckBox.setChecked(false);
+                    m_selectedCheckBox.setEnabled(true);
+                    m_removeCheckBox.setChecked(false);
+                    updateRemoval(false);
+                    break;
 
-    /**
-     * The method which should be called when the "remove" checkbox is clicked.<p>
-     * 
-     * @param remove if true, the "remove" checkbox has been checked 
-     */
-    public void onClickRemove(boolean remove) {
-
-        if (!m_hasProblems) {
-            m_selectedCheckBox.setChecked(!remove);
-            m_selectedCheckBox.setEnabled(!remove);
+            }
         }
     }
 
     /**
-     * Selects this controller's publish checkbox state.<p>
+     * Updates the style of the list item depending on whether it is marked to be removed or not.<p>
      * 
-     * Setting the state to "checked" will only work if the resource doesn't have a  problem and hasn't already
-     * been selected for removal.
-     * 
-     * @param select if true, try to check the checkbox, else uncheck it
+     * @param remove true if the item is marked to be removed 
      */
-    public void selectIfPossible(boolean select) {
+    public void updateRemoval(boolean remove) {
 
-        m_selectedCheckBox.setChecked(select && !m_hasProblems && !shouldBeRemoved());
+        I_CmsListItemWidgetCss itemWidgetCss = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
+        m_removeStyle.setValue(remove ? itemWidgetCss.disabledItem() : CSS.itemToKeep());
+        m_removeCheckBox.setTitle(remove
+        ? Messages.get().key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
+        : Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
     }
-
-    /**
-     * Returns true if the resource has been selected for removal.<p>
-     * 
-     * @return true if the resource has been selected for removal
-     */
-    public boolean shouldBeRemoved() {
-
-        return m_removeCheckBox.isChecked();
-    }
-
 }

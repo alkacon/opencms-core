@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2011/04/14 14:41:42 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  * 
@@ -297,7 +297,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onReceivePublishList(List<CmsPublishGroup> groups) {
 
-        m_publishSelectPanel.setGroups(groups);
+        m_publishSelectPanel.setGroups(groups, true);
         setPanel(PANEL_SELECT);
         if (!isVisible()) {
             center();

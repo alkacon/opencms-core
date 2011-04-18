@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/04/14 06:36:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/18 07:26:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -350,7 +350,10 @@ public class CmsPublish {
 
         List<CmsResource> pubList = new ArrayList<CmsResource>();
         try {
+            long t1 = System.currentTimeMillis();
             pubList = OpenCms.getPublishManager().getUsersPubList(m_cms);
+            long t2 = System.currentTimeMillis();
+            System.out.println("time for reading publish list: " + (t2 - t1));
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);

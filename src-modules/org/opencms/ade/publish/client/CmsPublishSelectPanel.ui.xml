@@ -15,6 +15,7 @@
 			<g:InlineLabel ui:field="m_selectLabel" />
 			<cms:CmsPushButton ui:field="m_selectAll" />
 			<cms:CmsPushButton ui:field="m_selectNone" />
+			<g:InlineLabel ui:field="m_resourceCountLabel" />
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
 		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
