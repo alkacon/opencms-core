@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/04/14 14:41:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/18 17:07:08 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
@@ -55,14 +54,17 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.WidgetCollection;
 
 /**
  * Provides a pop up dialog base.
@@ -70,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -189,6 +191,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The dialog caption. */
     private Caption m_caption;
 
+    private WidgetCollection m_children;
+
     /** Body offset left. */
     private int m_clientLeft;
 
@@ -208,7 +212,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     private int m_dragStartY;
 
     /** The main widget of this dialog containing all others. */
-    private FlowPanel m_main;
+    private Element m_main;
 
     /** The resize handler registration .*/
     private HandlerRegistration m_resizeHandlerRegistration;
@@ -248,12 +252,11 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         // logically adopt the caption so we can catch mouse events.
         DOM.appendChild(m_containerElement, m_caption.getElement());
         adopt(m_caption);
-
-        m_main = new FlowPanel();
-        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
-        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
-        super.setWidget(m_main);
-
+        m_children = new WidgetCollection(this);
+        m_main = DOM.createDiv();
+        m_main.addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
+        m_main.addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
+        DOM.appendChild(m_containerElement, m_main);
         m_buttonPanel = new ButtonPanel();
         m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
         // Add the caption to the top of the popup-panel. We need to
@@ -306,12 +309,19 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
+     * Wraps the given Widget with a cornered border, padding and margin.<p>
+     *  
+     * @param w the widget to wrap
+     * 
+     * @return a new widget that wraps the given one
      */
-    @Override
-    public void setWidget(Widget w) {
+    public static Widget wrapWithBorderPadding(Widget w) {
 
-        throw new UnsupportedOperationException();
+        w.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().borderPadding());
+        w.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        SimplePanel panel = new SimplePanel();
+        panel.add(w);
+        return panel;
     }
 
     /**
@@ -322,7 +332,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void add(Widget w) {
 
-        m_main.add(w);
+        add(w, m_main);
     }
 
     /**
@@ -399,7 +409,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void clear() {
 
-        m_main.clear();
+        for (Widget w : this) {
+            // Orphan.
+            try {
+                orphan(w);
+            } finally {
+                // Physical detach.
+                Element elem = w.getElement();
+                DOM.removeChild(DOM.getParent(elem), elem);
+            }
+        }
+        m_children = new WidgetCollection(this);
     }
 
     /**
@@ -411,7 +431,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public Widget getWidget(int index) {
 
-        return m_main.getWidget(index);
+        return getChildren().get(index);
     }
 
     /**
@@ -421,7 +441,19 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public int getWidgetCount() {
 
-        return m_main.getWidgetCount();
+        return getChildren().size();
+    }
+
+    /**
+     * Returns the index of the given widget.<p>
+     * 
+     * @param child the child widget
+     * 
+     * @return the index of the child widget
+     */
+    public int getWidgetIndex(IsWidget child) {
+
+        return getWidgetIndex(asWidgetOrNull(child));
     }
 
     /**
@@ -433,7 +465,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public int getWidgetIndex(Widget child) {
 
-        return m_main.getWidgetIndex(child);
+        return getChildren().indexOf(child);
     }
 
     /**
@@ -459,7 +491,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
 
-        m_main.insert(w, beforeIndex);
+        insert(w, m_main, beforeIndex, true);
     }
 
     /**
@@ -469,18 +501,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void insertFront(Widget widget) {
 
-        m_main.insert(widget, 0);
+        insert(widget, 0);
     }
 
     /**
-     * Gets an iterator for the contained widgets.<p>
-     * 
-     * @return the widget iterator
+     * @see com.google.gwt.user.client.ui.SimplePanel#iterator()
      */
     @Override
     public Iterator<Widget> iterator() {
 
-        return m_main.iterator();
+        return getChildren().iterator();
     }
 
     /**
@@ -508,16 +538,43 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
-     * Removes the given child widget.<p>
+     * Removes a child widget.<p>
      * 
-     * @param w the widget to remove
+     * @param index the index of the widget to remove
      * 
-     * @return <code>true</code> if the child was present
+     * @return <code>true</code> if the there was a widget at the given index to remove
+     */
+    public boolean remove(int index) {
+
+        Widget w = getWidget(index);
+        if (w != null) {
+            return remove(getWidget(index));
+        }
+        return false;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.SimplePanel#remove(com.google.gwt.user.client.ui.Widget)
      */
     @Override
     public boolean remove(Widget w) {
 
-        return m_main.remove(w);
+        // Validate.
+        if (w.getParent() != this) {
+            return false;
+        }
+        // Orphan.
+        try {
+            orphan(w);
+        } finally {
+            // Physical detach.
+            Element elem = w.getElement();
+            DOM.removeChild(DOM.getParent(elem), elem);
+
+            // Logical detach.
+            getChildren().remove(w);
+        }
+        return true;
     }
 
     /**
@@ -546,7 +603,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void removePadding() {
 
-        m_main.removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
+        m_main.removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
     }
 
     /**
@@ -556,7 +613,22 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void setBackgroundColor(String color) {
 
-        m_main.getElement().getStyle().setBackgroundColor(color);
+        m_main.getStyle().setBackgroundColor(color);
+    }
+
+    /**
+     * Sets the captions text.<p>
+     * 
+     * @param caption the text to set
+     */
+    public void setCaption(String caption) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(caption)) {
+            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+            m_caption.setText(caption);
+        } else {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+        }
     }
 
     /**
@@ -566,8 +638,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void setMainContent(Widget w) {
 
-        m_main.clear();
-        m_main.add(w);
+        clear();
+        add(w);
     }
 
     /**
@@ -580,6 +652,15 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     public void setSize(int width, int height, Unit unit) {
 
         setSize(width + unit.toString(), height + unit.toString());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setWidget(Widget w) {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -617,6 +698,53 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Adds a new child widget to the panel, attaching its Element to the
+     * specified container Element.
+     * 
+     * @param child the child widget to be added
+     * @param container the element within which the child will be contained
+     */
+    protected void add(Widget child, Element container) {
+
+        // Detach new child.
+        child.removeFromParent();
+
+        // Logical attach.
+        getChildren().add(child);
+
+        // Physical attach.
+        DOM.appendChild(container, child.getElement());
+
+        // Adopt.
+        adopt(child);
+    }
+
+    /**
+     * Adjusts beforeIndex to account for the possibility that the given widget is
+     * already a child of this panel.
+     * 
+     * @param child the widget that might be an existing child
+     * @param beforeIndex the index at which it will be added to this panel
+     * @return the modified index
+     */
+    protected int adjustIndex(Widget child, int beforeIndex) {
+
+        checkIndexBoundsForInsertion(beforeIndex);
+
+        // Check to see if this widget is already a direct child.
+        if (child.getParent() == this) {
+            // If the Widget's previous position was left of the desired new position
+            // shift the desired position left to reflect the removal
+            int idx = getWidgetIndex(child);
+            if (idx < beforeIndex) {
+                beforeIndex--;
+            }
+        }
+
+        return beforeIndex;
+    }
+
+    /**
      * Called on mouse down in the caption area, begins the dragging loop by
      * turning on event capture.
      * 
@@ -634,6 +762,32 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         m_dragStartX = event.getX();
         m_dragStartY = event.getY();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
+    }
+
+    /**
+     * Checks that <code>index</code> is in the range [0, getWidgetCount()), which
+     * is the valid range on accessible indexes.
+     * 
+     * @param index the index being accessed
+     */
+    protected void checkIndexBoundsForAccess(int index) {
+
+        if ((index < 0) || (index >= getWidgetCount())) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    /**
+     * Checks that <code>index</code> is in the range [0, getWidgetCount()], which
+     * is the valid range for indexes on an insertion.
+     * 
+     * @param index the index where insertion will occur
+     */
+    protected void checkIndexBoundsForInsertion(int index) {
+
+        if ((index < 0) || (index > getWidgetCount())) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     /**
@@ -712,6 +866,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Gets the list of children contained in this panel.
+     * 
+     * @return a collection of child widgets
+     */
+    protected WidgetCollection getChildren() {
+
+        return m_children;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
      */
     @Override
@@ -721,6 +885,43 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             m_containerElement = super.getContainerElement();
         }
         return m_containerElement;
+    }
+
+    /**
+     * Insert a new child Widget into this Panel at a specified index, attaching
+     * its Element to the specified container Element. The child Element will
+     * either be attached to the container at the same index, or simply appended
+     * to the container, depending on the value of <code>domInsert</code>.
+     * 
+     * @param child the child Widget to be added
+     * @param container the Element within which <code>child</code> will be
+     *          contained
+     * @param beforeIndex the index before which <code>child</code> will be
+     *          inserted
+     * @param domInsert if <code>true</code>, insert <code>child</code> into
+     *          <code>container</code> at <code>beforeIndex</code>; otherwise
+     *          append <code>child</code> to the end of <code>container</code>.
+     */
+    protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert) {
+
+        // Validate index; adjust if the widget is already a child of this panel.
+        beforeIndex = adjustIndex(child, beforeIndex);
+
+        // Detach new child.
+        child.removeFromParent();
+
+        // Logical attach.
+        getChildren().insert(child, beforeIndex);
+
+        // Physical attach.
+        if (domInsert) {
+            DOM.insertChild(container, child.getElement(), beforeIndex);
+        } else {
+            DOM.appendChild(container, child.getElement());
+        }
+
+        // Adopt.
+        adopt(child);
     }
 
     /**
@@ -792,40 +993,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     private boolean isCaptionEvent(NativeEvent event) {
 
         EventTarget target = event.getEventTarget();
-        if (Element.is(target)) {
-            return m_caption.getElement().isOrHasChild(Element.as(target));
+        if (com.google.gwt.dom.client.Element.is(target)) {
+            return m_caption.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
-    }
-
-    /**
-     * Sets the captions text.<p>
-     * 
-     * @param caption the text to set
-     */
-    public void setCaption(String caption) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(caption)) {
-            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
-            m_caption.setText(caption);
-        } else {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
-        }
-    }
-
-    /**
-     * Wraps the given Widget with a cornered border, padding and margin.<p>
-     *  
-     * @param w the widget to wrap
-     * 
-     * @return a new widget that wraps the given one
-     */
-    public static Widget wrapWithBorderPadding(Widget w) {
-
-        w.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().borderPadding());
-        w.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        SimplePanel panel = new SimplePanel();
-        panel.add(w);
-        return panel;
     }
 }
