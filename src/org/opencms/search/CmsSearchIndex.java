@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2010/11/25 13:17:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/19 15:29:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1669,8 +1669,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 extendPathFilter(pathFilter, searchRoot);
             }
         } else {
-            // just use the current site root as the search root
+            // use the current site root as the search root
             extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
+            // also add the shared folder (v 8.0)
+            extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
         }
 
         // add the calculated path filter for the root path
