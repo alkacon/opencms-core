@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/03/23 14:50:29 $
- * Version: $Revision: 1.655 $
+ * Date   : $Date: 2011/04/19 10:09:20 $
+ * Version: $Revision: 1.656 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4621,8 +4621,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // check the ou
         CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
-        // check the password
-        validatePassword(password);
 
         // check webuser ou
         if (ou.hasFlagWebuser() && ((flags & I_CmsPrincipal.FLAG_USER_WEBUSER) == 0)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/04/06 15:08:54 $
- * Version: $Revision: 1.1229 $
+ * Date   : $Date: 2011/04/19 10:11:08 $
+ * Version: $Revision: 1.1230 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,7 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.5.x - 
-
+* Fixed issue #1969: Import user dialog validates encrypted password, resulting in a failing user import
 * Fixed missing default value for ComboBox widget
 
 OpenCms 7.5.4 - March 28, 2011
