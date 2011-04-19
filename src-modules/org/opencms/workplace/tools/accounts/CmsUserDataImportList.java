@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2011/03/15 17:33:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/19 10:10:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
@@ -583,16 +583,18 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 Method method = CmsUser.class.getMethod("set"
                                     + curValue.substring(0, 1).toUpperCase()
                                     + curValue.substring(1), new Class[] {String.class});
+                                String value = "";
                                 if ((lineValues.size() > i) && (lineValues.get(i) != null)) {
-                                    String value = (String)lineValues.get(i);
-                                    if (curValue.equals("password")) {
-                                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-                                            value = m_paramPassword;
-                                        }
+                                    value = (String)lineValues.get(i);
+
+                                }
+                                if (curValue.equals("password")) {
+                                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                                        value = m_paramPassword;
                                     }
-                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) && !value.equals("null")) {
-                                        method.invoke(curUser, new Object[] {value});
-                                    }
+                                }
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) && !value.equals("null")) {
+                                    method.invoke(curUser, new Object[] {value});
                                 }
                             } catch (NoSuchMethodException ne) {
                                 curUser.setAdditionalInfo(curValue, lineValues.get(i));

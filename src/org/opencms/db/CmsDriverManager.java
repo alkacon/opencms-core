@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/04/18 12:24:35 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/04/19 10:09:59 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4899,7 +4899,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param id the id of the user
      * @param name the new name for the user
-     * @param password the new password for the user
+     * @param password the new password for the user (already encrypted)
      * @param firstname the firstname of the user
      * @param lastname the lastname of the user
      * @param email the email of the user
@@ -4933,8 +4933,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // check the ou
         CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
-        // check the password
-        validatePassword(password);
 
         // check webuser ou
         if (ou.hasFlagWebuser() && ((flags & I_CmsPrincipal.FLAG_USER_WEBUSER) == 0)) {
