@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/04/18 12:24:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/19 08:56:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,14 @@ import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -78,7 +80,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -243,8 +245,9 @@ public class CmsPublish {
                                 CmsPublishResource pubRes = resourceToBean(theResource, null, false, null);
                                 related.add(pubRes);
                             } catch (CmsException e) {
-                                // should never happen
-                                LOG.error(e.getLocalizedMessage(), e);
+                                CmsPublishResource pubRes = relationToBean(relation);
+                                related.add(pubRes);
+                                LOG.warn(e.getLocalizedMessage(), e);
                             }
                         }
                         CmsPublishResourceInfo info = new CmsPublishResourceInfo(
@@ -441,6 +444,26 @@ public class CmsPublish {
             m_options.isIncludeSiblings(),
             true);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
+    }
+
+    /**
+     * Creates a publish resource bean from the target information of a relation object.<p>
+     * 
+     * @param relation the relation to use
+     *  
+     * @return the publish resource bean for the relation target 
+     */
+    public CmsPublishResource relationToBean(CmsRelation relation) {
+
+        return new CmsPublishResource(
+            relation.getTargetId(),
+            relation.getTargetPath(),
+            relation.getTargetPath(),
+            CmsResourceTypePlain.getStaticTypeName(),
+            CmsResourceState.STATE_UNCHANGED,
+            false,
+            null,
+            null);
     }
 
     /**
