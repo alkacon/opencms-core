@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2011/04/06 16:17:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/19 15:28:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -652,6 +652,31 @@ public final class CmsStringUtil {
         int result;
         try {
             result = Integer.valueOf(value).intValue();
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the closest Integer (int) value for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as int, can also represent a float value
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the closest int value for the given parameter value String
+     */
+    public static int getIntValueRounded(String value, int defaultValue, String key) {
+
+        int result;
+        try {
+            result = Math.round(Float.parseFloat(value));
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2011/04/11 09:14:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/19 15:28:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -588,7 +588,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      */
     public void setHeight(String value) {
 
-        m_scaler.setHeight(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_HEIGHT));
+        m_scaler.setHeight(CmsStringUtil.getIntValueRounded(value, 0, SCALE_ATTR_HEIGHT));
     }
 
     /** 
@@ -771,7 +771,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      */
     public void setWidth(String value) {
 
-        m_scaler.setWidth(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_WIDTH));
+        m_scaler.setWidth(CmsStringUtil.getIntValueRounded(value, 0, SCALE_ATTR_WIDTH));
     }
 
     /**
