@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/04/18 07:26:25 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/04/19 07:13:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,8 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -79,7 +81,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +91,44 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The UiBinder interface for this widget. */
     protected interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
         // empty
+    }
+
+    /**
+     * Command for adding more list items to the list of publish items.<p>
+     */
+    protected class MoreItemsCommand implements RepeatingCommand {
+
+        /** The number of items left to add. */
+        private int m_numItems;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param numItems the maximal number of items to add  
+         */
+        public MoreItemsCommand(int numItems) {
+
+            m_numItems = numItems;
+        }
+
+        /**
+         * @see com.google.gwt.core.client.Scheduler.RepeatingCommand#execute()
+         */
+        public boolean execute() {
+
+            if (m_numItems == 0) {
+                finishLoading();
+                return false;
+            }
+            boolean hasMore = CmsPublishSelectPanel.this.addNextItem();
+            if (!hasMore) {
+                finishLoading();
+                return false;
+            }
+            m_numItems -= 1;
+            return true;
+        }
+
     }
 
     /** The CSS bundle used for this widget. */
@@ -200,6 +240,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
+
+    /** Flag to indicate whether new items are currently being added to the list. */
+    protected boolean m_loading;
 
     /**
      * Creates a new instance.<p>
@@ -529,12 +572,54 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     protected void addMoreListItems() {
 
-        for (int i = 0; i < MIN_BATCH_SIZE; i++) {
-            boolean hasMore = addNextItem();
-            if (!hasMore) {
-                return;
+        MoreItemsCommand cmd = new MoreItemsCommand(MIN_BATCH_SIZE);
+        // we use a repeating command instead of a loop because a loop locks up the browser for too long in IE7.
+        Scheduler.get().scheduleFixedDelay(cmd, 0);
+    }
+
+    /**
+     * Tries to add a new publish list item to the panel, and returns false if there aren't any items left.<p>
+     * 
+     * @return true if an item could be added, false if no items are left 
+     */
+    protected boolean addNextItem() {
+
+        // this method is so complicated because to add the next item, 
+        // you may need to skip to another group and create the corresponding widget
+
+        if (m_model.isEmpty()) {
+            return false;
+        }
+        // now we know there is at least one group
+        if (m_currentGroupPanel == null) {
+            // this case happens if the method is called for the first time  
+            m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(0), 0);
+        }
+        while (true) {
+            if (m_currentGroupPanel.hasMoreItems()) {
+                // found next item in the current group 
+                boolean found = m_currentGroupPanel.addNextItem();
+                if (found) {
+                    return true;
+                }
+            } else if (m_currentGroupIndex < m_model.getGroups().size() - 1) {
+                // didn't find item in the current group, so skip to next group if available  
+                // and create the group widget 
+                m_currentGroupIndex += 1;
+                m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
+            } else {
+                // all groups exhausted 
+                return false;
             }
         }
+    }
+
+    /**
+     * The method to call when the items have finished being loaded into the list.<p>
+     */
+    protected void finishLoading() {
+
+        m_loading = false;
     }
 
     /**
@@ -573,6 +658,14 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * The method which should be called when new items start being inserted into the list.<p>
+     */
+    protected void startLoading() {
+
+        m_loading = true;
+    }
+
+    /**
      * Adds a new group panel.<p>
      * 
      * @param group the publish group for which a panel should be added   
@@ -596,43 +689,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
-     * Tries to add a new publish list item to the panel, and returns false if there aren't any items left.<p>
-     * 
-     * @return true if an item could be added, false if no items are left 
-     */
-    private boolean addNextItem() {
-
-        // this method is so complicated because to add the next item, 
-        // you may need to skip to another group and create the corresponding widget
-
-        if (m_model.isEmpty()) {
-            return false;
-        }
-        // now we know there is at least one group
-        if (m_currentGroupPanel == null) {
-            // this case happens if the method is called for the first time  
-            m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(0), 0);
-        }
-        while (true) {
-            if (m_currentGroupPanel.hasMoreItems()) {
-                // found next item in the current group 
-                boolean found = m_currentGroupPanel.addNextItem();
-                if (found) {
-                    return true;
-                }
-            } else if (m_currentGroupIndex < m_model.getGroups().size() - 1) {
-                // didn't find item in the current group, so skip to next group if available  
-                // and create the group widget 
-                m_currentGroupIndex += 1;
-                m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
-            } else {
-                // all groups exhausted 
-                return false;
-            }
-        }
-    }
-
-    /**
      * Adds the scroll handler to the scroll panel which makes more groups visible when the user 
      * scrolls to the bottom.<p>
      */
@@ -645,7 +701,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
              */
             public void run() {
 
-                addMoreListItems();
+                if (!m_loading) {
+                    startLoading();
+                    addMoreListItems();
+                }
             }
         }, SCROLL_THRESHOLD));
 
