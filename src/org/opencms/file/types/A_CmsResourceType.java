@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/20 07:01:38 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockType;
@@ -58,20 +57,12 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -81,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,10 +129,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The list of configured default properties. */
     protected List<CmsProperty> m_defaultProperties;
 
-    /** Content formatters. */
-    @Deprecated
-    protected Map<String, CmsResource> m_formatters;
-
     /** Indicates that the configuration of the resource type has been frozen. */
     protected boolean m_frozen;
 
@@ -156,9 +143,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The configured name of this resource type. */
     protected String m_typeName;
-
-    /** The path to an additional java-script file to be used in the advanced galleries. */
-    private String m_galleryJavascriptPath;
 
     /** The gallery preview provider. */
     private String m_galleryPreviewProvider;
@@ -182,7 +166,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
         m_configuration = new TreeMap<String, String>();
-        m_formatters = new HashMap<String, CmsResource>();
     }
 
     /**
@@ -500,66 +483,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getFormattedContent(CmsObject, HttpServletRequest, HttpServletResponse, Formatter, java.util.Map)
-     */
-    @Deprecated
-    public String getFormattedContent(
-        CmsObject cms,
-        HttpServletRequest req,
-        HttpServletResponse res,
-        Formatter formatter,
-        Map<String, Object> requestAttributes)
-    throws UnsupportedEncodingException, CmsException, IOException, ServletException {
-
-        CmsResource formatterRes = m_formatters.get(formatter.getName());
-        if (formatterRes == null) {
-            // get the formatter from the resource type configuration
-            String formatterPath = getConfiguration().get(formatter.getName());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterPath)) {
-                try {
-                    formatterRes = cms.readResource(formatterPath);
-                    m_formatters.put(formatter.getName(), formatterRes);
-                } catch (CmsException e) {
-                    if (!LOG.isDebugEnabled()) {
-                        LOG.warn(e.getLocalizedMessage());
-                    }
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-            }
-            if (formatterRes == null) {
-                // trying to read the default-formatter
-                formatterPath = formatter.getDefaultPath();
-                formatterRes = cms.readResource(formatterPath);
-                m_formatters.put(formatter.getName(), formatterRes);
-            }
-        }
-        Map<String, Object> attributeStore = new HashMap<String, Object>();
-        Iterator<Entry<String, Object>> attrIt = requestAttributes.entrySet().iterator();
-        while (attrIt.hasNext()) {
-            Entry<String, Object> ent = attrIt.next();
-            attributeStore.put(ent.getKey(), req.getAttribute(ent.getKey()));
-            req.setAttribute(ent.getKey(), ent.getValue());
-        }
-        try {
-            String content = new String(OpenCms.getResourceManager().getLoader(formatterRes).dump(
-                cms,
-                formatterRes,
-                null,
-                cms.getRequestContext().getLocale(),
-                req,
-                res), CmsLocaleManager.getResourceEncoding(cms, formatterRes));
-            return content.trim();
-        } finally {
-            Iterator<Entry<String, Object>> storeIt = attributeStore.entrySet().iterator();
-            while (storeIt.hasNext()) {
-                Entry<String, Object> ent = storeIt.next();
-                req.setAttribute(ent.getKey(), ent.getValue());
-            }
-        }
-
-    }
-
-    /**
      * 
      * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
@@ -569,20 +492,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
         }
         return null;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getGalleryJavascriptPath()
-     */
-    public String getGalleryJavascriptPath() {
-
-        if (m_galleryJavascriptPath == null) {
-            m_galleryJavascriptPath = getConfiguration().get(CONFIGURATION_GALLERY_JAVASCRIPT_PATH);
-            if (m_galleryJavascriptPath == null) {
-                m_galleryJavascriptPath = "";
-            }
-        }
-        return m_galleryJavascriptPath;
     }
 
     /**
@@ -1147,11 +1056,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // log the error and continue with the other copy resources
                 if (LOG.isDebugEnabled()) {
                     // log stack trace in debug level only
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_PROCESS_COPY_RESOURCES_3,
-                        resourcename,
-                        copyResource,
-                        target), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_PROCESS_COPY_RESOURCES_3,
+                            resourcename,
+                            copyResource,
+                            target),
+                        e);
                 } else {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,
@@ -1188,7 +1099,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         while (i.hasNext()) {
             // create a clone of the next property
-            CmsProperty property = (CmsProperty)(i.next()).clone();
+            CmsProperty property = (i.next()).clone();
 
             // resolve possible macros in the property values
             if (property.getResourceValue() != null) {

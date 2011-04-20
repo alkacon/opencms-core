@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/20 07:01:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,14 +43,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Defines resource type descriptors for all resources in the VFS.<p>
@@ -77,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -415,30 +408,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     List<String> getConfiguredMappings();
 
     /**
-     * Returns the formatted content. The specified formatter will render the content given in as request attributes.<p>
-     *  
-     * @param cms the cms-object instance 
-     * @param req the current request
-     * @param res the current response
-     * @param formatter the formatter
-     * @param requestAttributes a map of request attributes
-     * 
-     * @return the rendered content
-     * 
-     * @throws CmsException  if something goes wrong rendering the formatter jsp or reading the resources
-     * @throws IOException if something goes wrong rendering the formatter jsp
-     * @throws ServletException if something goes wrong rendering the formatter jsp
-     * @throws UnsupportedEncodingException if something goes wrong rendering the formatter jsp
-     */
-    String getFormattedContent(
-        CmsObject cms,
-        HttpServletRequest req,
-        HttpServletResponse res,
-        Formatter formatter,
-        Map<String, Object> requestAttributes)
-    throws UnsupportedEncodingException, ServletException, IOException, CmsException;
-
-    /**
      * Returns the formatter uri for the given container type.<p>
      * 
      * @param cms the current cms context
@@ -449,14 +418,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return the formatter uri
      */
     String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource resource, String containerType, int width);
-
-    /**
-     * Returns the path to an optional, additional java-script file to be used in the advanced galleries.<p> 
-     * 
-     * @return the resource path
-     */
-    //TODO: remove
-    String getGalleryJavascriptPath();
 
     /**
      * Returns the gallery preview provider class name.<p>
