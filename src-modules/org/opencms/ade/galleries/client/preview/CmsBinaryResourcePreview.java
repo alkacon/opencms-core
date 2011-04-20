@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryResourcePreview.java,v $
- * Date   : $Date: 2011/03/22 16:18:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/20 15:30:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,20 +32,21 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewDialog;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.I_CmsHasInit;
 
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The binary resource preview.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -106,7 +107,7 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      */
     public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
 
-        RootPanel parentPanel = RootPanel.get(parentElementId);
+        FlowPanel parentPanel = CmsGalleryDialog.getPreviewParent(parentElementId);
 
         // inserting the preview into the DOM
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);

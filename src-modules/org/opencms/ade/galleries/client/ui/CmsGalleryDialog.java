@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/04/20 15:30:04 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,8 +48,10 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -75,7 +77,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.
  */
@@ -87,6 +89,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
+
+    /** The dialog instances. */
+    private static Map<String, CmsGalleryDialog> m_instances = new HashMap<String, CmsGalleryDialog>();
 
     /** The parent panel for the gallery dialog. */
     protected FlowPanel m_parentPanel;
@@ -134,6 +139,19 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     private CmsVfsTab m_vfsTab;
 
     /**
+     * The constructor.<p> 
+     * 
+     * @param dndHandler the reference to the dnd manager
+     * @param autoHideParent the auto-hide parent to this dialog if present
+     */
+    public CmsGalleryDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
+
+        this(CmsTabbedPanelStyle.buttonTabs);
+        m_dndHandler = dndHandler;
+        m_autoHideParent = autoHideParent;
+    }
+
+    /**
      * The default constructor for the gallery dialog.<p>
      *  
      * @param style the style for the panel
@@ -148,6 +166,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
+        m_instances.put(m_dialogElementId, this);
         // set the default height of the dialog
         m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
         // tabs
@@ -172,16 +191,18 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
-     * The constructor.<p> 
+     * Returns the preview dialog parent panel.<p>
      * 
-     * @param dndHandler the reference to the dnd manager
-     * @param autoHideParent the auto-hide parent to this dialog if present
+     * @param dialogId the dialog id
+     * 
+     * @return the preview parent panel
      */
-    public CmsGalleryDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
+    public static FlowPanel getPreviewParent(String dialogId) {
 
-        this(CmsTabbedPanelStyle.buttonTabs);
-        m_dndHandler = dndHandler;
-        m_autoHideParent = autoHideParent;
+        if (m_instances.get(dialogId) != null) {
+            return m_instances.get(dialogId).getParentPanel();
+        }
+        return null;
     }
 
     /**

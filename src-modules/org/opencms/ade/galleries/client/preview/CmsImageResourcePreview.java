@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageResourcePreview.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/20 15:30:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,20 +32,21 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The image resource preview.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -106,7 +107,7 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
      */
     public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
 
-        RootPanel parentPanel = RootPanel.get(parentElementId);
+        FlowPanel parentPanel = CmsGalleryDialog.getPreviewParent(parentElementId);
 
         // inserting the preview into the DOM
         GalleryMode mode = GalleryMode.valueOf(galleryMode);
