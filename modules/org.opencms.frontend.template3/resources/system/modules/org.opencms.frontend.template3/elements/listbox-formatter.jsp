@@ -20,16 +20,16 @@
 	// /system/modules/org.opencms.frontend.template3/java_src/CmsListBoxEntry.java
 	// /system/modules/org.opencms.frontend.template3/java_src/CmsListBoxContentMapping.java
 
-	CmsListBox cms = new CmsListBox(pageContext, request, response);
-	pageContext.setAttribute("cms", cms);
+	CmsListBox listboxAction = new CmsListBox(pageContext, request, response);
+	pageContext.setAttribute("listboxAction", listboxAction);
 %>
 
-<c:set var="locale" value="${cms.requestContext.locale}" />
+<c:set var="locale" value="${listbox.requestContext.locale}" />
 <fmt:setLocale value="${locale}" />
 
 <div class="box box_schema1">
 
-	<cms:contentload collector="singleFile" param="%(opencms.element)">
+	<cms:contentload collector="singleFile" param="${cms.element.sitePath}">
 
 		<cms:contentaccess var="listbox" />
 
@@ -54,13 +54,13 @@
 		
 		<%-- Entries of the list box --%>
 		<c:if test="${!listbox.value['Collector'].isEmptyOrWhitespaceOnly}">
-			<cms:contentload collector="${listbox.value['Collector']}" param="${cms.parameter}" preload="true" >
+			<cms:contentload collector="${listbox.value['Collector']}" param="${listboxAction.parameter}" preload="true" >
 			
 				<cms:contentinfo var="info" />			
 				<c:if test="${info.resultSize > 0}">
 					<cms:contentload editable="true">
 						<cms:contentaccess var="resource" />
-						<c:set var="entry" value="${cms.mappedEntry[resource.rawContent]}" />
+						<c:set var="entry" value="${listboxAction.mappedEntry[resource.rawContent]}" />
 						
 						<div class="boxbody_listentry">
 							<h5><a href="${entry.link}">${entry.title}</a></h5>

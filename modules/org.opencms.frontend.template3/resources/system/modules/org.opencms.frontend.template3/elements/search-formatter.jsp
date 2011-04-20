@@ -3,24 +3,24 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
-	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-	pageContext.setAttribute("cms", cms);
+	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+	pageContext.setAttribute("jsp", jsp);
 %>
 <div>
-<c:set var="locale" value="${cms.requestContext.locale}"/>
+<c:set var="locale" value="${jsp.requestContext.locale}"/>
 <fmt:setLocale value="${locale}" />
 <fmt:bundle basename="org.opencms.frontend.template3.frontend">
 
-<cms:contentload collector="singleFile" param="%(opencms.element)" >
+<cms:contentload collector="singleFile" param="${cms.element.sitePath}" >
 <cms:contentaccess var="content" />
 
 <jsp:useBean id="search" class="org.opencms.search.CmsSearch" scope="request">
 	<jsp:setProperty name="search" property="*"/>
 	<% 
-		search.init(cms.getCmsObject());
-		search.setIndex(cms.property("search.index"));
+		search.init(jsp.getCmsObject());
+		search.setIndex(jsp.property("search.index"));
 		search.setMatchesPerPage(5);
-		String[] search_root=new String[]{cms.property("search.root", null, "/")};
+		String[] search_root=new String[]{jsp.property("search.root", null, "/")};
 		search.setSearchRoots(search_root);
 	%>
 </jsp:useBean>
@@ -38,7 +38,7 @@
 </c:if>
 
 <c:if test="${empty searchError}">
-	<form id="searchForm" name="searchForm" action="<cms:link>${cms.cmsObject.requestContext.uri}</cms:link>" method="post">
+	<form id="searchForm" name="searchForm" action="<cms:link>${jsp.cmsObject.requestContext.uri}</cms:link>" method="post">
 		    <input type="hidden" name="searchaction" value="search" />
 			<input type="hidden" name="searchPage" value="1" />
 		    <input type="text" name="query" value="${search.query}" />
@@ -69,7 +69,7 @@
 	<c:forEach var="item" items="${result}">
 		<div class="search_result">
 <%
-String itemPath = cms.getCmsObject().getRequestContext().removeSiteRoot(((org.opencms.search.CmsSearchResult)pageContext.getAttribute("item")).getPath());
+String itemPath = jsp.getCmsObject().getRequestContext().removeSiteRoot(((org.opencms.search.CmsSearchResult)pageContext.getAttribute("item")).getPath());
 pageContext.setAttribute("itemPath", itemPath);
 %>		
 			<a href="<cms:link>${itemPath}</cms:link>"><strong><c:out value="${item.title}"/> (<c:out value="${item.score}"/>%)</strong></a><br/>
