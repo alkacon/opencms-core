@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/20 17:54:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -131,7 +131,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_dialogWidth = dialogWidth;
 
         int previewHeight = m_minPreviewHeight;
-        int detailsHeight = m_dialogHeight - previewHeight - 6;
+        int detailsHeight = m_dialogHeight - previewHeight - 7;
 
         m_previewHolder.getElement().getStyle().setHeight(previewHeight, Unit.PX);
 

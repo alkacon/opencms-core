@@ -14,8 +14,6 @@
 } 
 /* The height is set as inline style. */
 .parentPanel {
-	min-height:483px;
-	min-width:648px;
 	position:relative;
 }
 

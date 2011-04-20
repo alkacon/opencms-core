@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/dialog-helper.js,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/20 17:54:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -113,14 +113,14 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
          _iframeBox.css({
             'width': '100%',
             'height': height+'px',
-            'background-color': 'white',
+            'background-color': 'transparent',
             'padding': '0px'
          });
          
          // new code
          _iframeBox.attr('id', _dialogElementId);
          _iframeBox.dialog({
-            title: title,
+            dialogClass: 'galleryDialog hideCaption',
             modal: true,
             zIndex: 99999,
             close: function() {
@@ -133,7 +133,8 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
             resizable: false,
             autoOpen: true,
             width: width + 4 + ($.browser.msie ? 6 : 0),
-            height: height+ 27 + ($.browser.msie ? 11 : 0)
+            // height: height+ 27 + ($.browser.msie ? 11 : 0)
+            height: height -2
          });
 	}
 }
@@ -182,12 +183,17 @@ function cmsOpenImagePreview(title, context, fieldId){
 		var _imageBox=$('<div />', {'css':{
 		    'width': _boxWidth,
 	            'background-color': 'white',
-	            'padding': '0px',
-	            'text-align': 'center'
+	            'padding': '6px',
+	            'text-align': 'center',
+	            '-moz-border-radius': '8px',
+	            '-webkit-border-radius': '8px',
+	            'border-radius': '8px',
+	            'border-radius': '8px'
 	        }
 		}).append(_previewImage).appendTo(document.body);
 		_imageBox.dialog({
             title: title,
+	    dialogClass: 'galleryDialog',
             modal: true,
             zIndex: 99999,
             open: function(){
@@ -208,6 +214,10 @@ function cmsOpenImagePreview(title, context, fieldId){
             maxWidth: 900,
             maxHeight: 700
          });
+	 
+	     _previewImage.load(function() {
+	         _imageBox.dialog( "option", "position", 'center' );
+	     });
 	}
 }
 
