@@ -2,7 +2,7 @@
  taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
 %><!DOCTYPE HTML>
-<html>
+<html style="height:100%;">
   <head>
     <title><%= jsp.getTitle() %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
