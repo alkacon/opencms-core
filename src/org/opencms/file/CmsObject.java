@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/04/18 12:24:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/04/20 15:26:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  */
@@ -940,7 +940,7 @@ public final class CmsObject {
 
     /**
      * Checks the availability of a resource in the VFS,
-     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     * using the provided filter.<p> 
      *
      * A resource may be of type <code>{@link CmsFile}</code> or 
      * <code>{@link CmsFolder}</code>.<p>  

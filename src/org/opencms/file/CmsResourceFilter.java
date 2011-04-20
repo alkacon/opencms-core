@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/20 15:26:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.db.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,18 @@ public final class CmsResourceFilter {
      * Default filter to display folders for the online project.<p>
      */
     public static final CmsResourceFilter DEFAULT_FOLDERS = DEFAULT.addRequireFolder();
+
+    /** 
+     * Default filter to display resources for the online project.<p>
+     * 
+     * This filter uses the following rules:
+     * <ul>
+     * <li>Excludes: Resources marked as deleted.</li>
+     * <li>Excludes: Resources outside the 'time window' set with release and expiration date.</li>
+     * <li>Excludes: Resources marked as 'invisible' using permissions.</li>
+     * </ul> 
+     */
+    public static final CmsResourceFilter DEFAULT_ONLY_VISIBLE = DEFAULT.addRequireVisible();
 
     /** 
      * Filter to display resources ignoring the release and expiration dates.<p>

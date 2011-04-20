@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2011/04/19 15:29:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 15:26:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -97,7 +98,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +200,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_30;
+    public static final Version LUCENE_VERSION = Version.LUCENE_31;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
@@ -258,6 +259,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
+
+    /** Controls if a resource requires view permission to be displayed in the result list. */
+    protected boolean m_requireViewPermission;
 
     /** The list of configured index sources. */
     protected List<CmsSearchIndexSource> m_sources;
@@ -1153,6 +1157,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns <code>true</code> if a resource requires read permission to be incuded in the result list.<p>
+     * 
+     * @return <code>true</code> if a resource requires read permission to be incuded in the result list
+     */
+    public boolean isRequireViewPermission() {
+
+        return m_requireViewPermission;
+    }
+
+    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -1534,6 +1548,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setRebuildMode(String rebuildMode) {
 
         m_rebuild = rebuildMode;
+    }
+
+    /**
+     * Controls if a resource requires view permission to be displayed in the result list.<p>
+     * 
+     * By default this is <code>false</code>.<p>
+     * 
+     * @param requireViewPermission controls if a resource requires view permission to be displayed in the result list
+     */
+    public void setRequireViewPermission(boolean requireViewPermission) {
+
+        m_requireViewPermission = requireViewPermission;
     }
 
     /**
@@ -1935,14 +1961,19 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         String type = typeField.stringValue();
         if (!CmsSearchFieldConfiguration.VFS_DOCUMENT_KEY_PREFIX.equals(type)
             && !OpenCms.getResourceManager().hasResourceType(type)) {
-            // this is not a known VFS resource type (also not the generic "VFS" type of OpenCms before 7.0)
+            // this is an unknown VFS resource type (also not the generic "VFS" type of OpenCms before 7.0)
             return true;
         }
 
         // check if the resource exits in the VFS, 
         // this will implicitly check read permission and if the resource was deleted
         String contextPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
-        return cms.existsResource(contextPath);
+
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
+        if (m_requireViewPermission) {
+            filter = CmsResourceFilter.DEFAULT_ONLY_VISIBLE;
+        }
+        return cms.existsResource(contextPath, filter);
     }
 
     /**

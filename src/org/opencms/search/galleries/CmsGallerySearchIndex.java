@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2011/01/19 13:44:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 15:26:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,14 +61,13 @@ import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.util.Version;
 
 /**
  * Implements the search within a the gallery index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0 
  */
@@ -96,6 +95,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     public CmsGallerySearchIndex() {
 
         super();
+        setRequireViewPermission(true);
     }
 
     /**
@@ -111,6 +111,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         super();
         setName(name);
+        setRequireViewPermission(true);
     }
 
     /**
@@ -232,7 +233,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 fields = getLocaleExtendedFields(params.getFields(), locale);
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
                 for (String field : fields) {
-                    QueryParser p = new QueryParser(Version.LUCENE_CURRENT, field, getAnalyzer());
+                    QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
