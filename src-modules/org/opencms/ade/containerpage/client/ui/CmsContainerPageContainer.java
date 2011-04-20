@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,20 +46,23 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Container page container.<p>
  * 
+ * 
+ * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets {
+public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDropContainer {
 
     /** Container element id. */
     private String m_containerId;
@@ -69,6 +72,9 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
+
+    /** True if this is a detail view container. */
+    private boolean m_isDetailView;
 
     /** The maximum number of elements in this container. */
     private int m_maxElements;
@@ -82,11 +88,8 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     /** The drag and drop placeholder position index. */
     private int m_placeholderIndex = -1;
 
-    /** This container wrapped in a {@link com.google.gwt.user.client.ui.RootPanel}. */
-    private RootPanel m_root;
-
-    /** True if this is a detail view container. */
-    private boolean m_isDetailView;
+    /** The wrapped widget. This will be a @link com.google.gwt.user.client.RootPanel. */
+    private Widget m_widget;
 
     /**
      * Constructor.<p>
@@ -95,21 +98,31 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
      */
     public CmsContainerPageContainer(I_CmsContainer containerData) {
 
-        m_root = RootPanel.get(containerData.getName());
+        initWidget(RootPanel.get(containerData.getName()));
         m_containerId = containerData.getName();
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
         m_isDetailView = containerData.isDetailView();
-        m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
+     * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
      */
+    @Override
     public void add(Widget w) {
 
-        m_root.add(w);
+        add(w, getElement());
+    }
 
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    public void adoptElement(CmsContainerPageElement containerElement) {
+
+        assert getElement().equals(containerElement.getElement().getParentElement());
+        getChildren().add(containerElement);
+        adopt(containerElement);
     }
 
     /**
@@ -118,7 +131,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     public void checkMaxElementsOnEnter() {
 
         if (getWidgetCount() >= m_maxElements) {
-            m_overflowingElement = m_root.getWidget(getWidgetCount() - 1);
+            m_overflowingElement = getWidget(getWidgetCount() - 1);
             m_overflowingElement.getElement().getStyle().setDisplay(Display.NONE);
         }
     }
@@ -151,15 +164,6 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#clear()
-     */
-    public void clear() {
-
-        m_root.clear();
-
-    }
-
-    /**
      * Returns all contained drag elements.<p>
      * 
      * @return the drag elements
@@ -167,7 +171,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     public List<CmsContainerPageElement> getAllDragElements() {
 
         List<CmsContainerPageElement> elements = new ArrayList<CmsContainerPageElement>();
-        Iterator<Widget> it = m_root.iterator();
+        Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {
@@ -207,35 +211,11 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getElement()
-     */
-    public Element getElement() {
-
-        return m_root.getElement();
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
     public int getPlaceholderIndex() {
 
         return m_placeholderIndex;
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#getWidgetCount()
-     */
-    public int getWidgetCount() {
-
-        return m_root.getWidgetCount();
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
-     */
-    public int getWidgetIndex(Widget w) {
-
-        return m_root.getWidgetIndex(w);
     }
 
     /**
@@ -262,8 +242,8 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
         // adding the 'clearFix' style to all targets containing floated elements
         // in some layouts this may lead to inappropriate clearing after the target, 
         // but it is still necessary as it forces the target to enclose it's floated content 
-        if ((m_root.getWidgetCount() > 0)
-            && !CmsDomUtil.getCurrentStyle(m_root.getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
+        if ((getWidgetCount() > 0)
+            && !CmsDomUtil.getCurrentStyle(getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
                 CmsDomUtil.StyleValue.none.toString())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
@@ -278,7 +258,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
      */
     public void insert(Widget w, int beforeIndex) {
 
-        m_root.insert(w, beforeIndex);
+        insert(w, getElement(), beforeIndex, true);
     }
 
     /**
@@ -288,6 +268,18 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
         m_placeholder = placeholder;
         repositionPlaceholder(x, y, orientation);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#isAttached()
+     */
+    @Override
+    public boolean isAttached() {
+
+        if (m_widget != null) {
+            return m_widget.isAttached();
+        }
+        return false;
     }
 
     /**
@@ -301,11 +293,16 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#iterator()
+     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
      */
-    public Iterator<Widget> iterator() {
+    @Override
+    public void onBrowserEvent(Event event) {
 
-        return m_root.iterator();
+        // Fire any handler added to the composite itself.
+        super.onBrowserEvent(event);
+
+        // Delegate events to the widget.
+        m_widget.onBrowserEvent(event);
     }
 
     /**
@@ -323,14 +320,6 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     public void refreshHighlighting() {
 
         m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#remove(com.google.gwt.user.client.ui.Widget)
-     */
-    public boolean remove(Widget w) {
-
-        return m_root.remove(w);
     }
 
     /**
@@ -404,5 +393,40 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
                 ((CmsContainerPageElement)child).showEditableListButtons();
             }
         }
+    }
+
+    /**
+     * Provides subclasses access to the topmost widget that defines this
+     * composite.
+     * 
+     * @return the widget
+     */
+    protected Widget getWidget() {
+
+        return m_widget;
+    }
+
+    /**
+     * Sets the widget to be wrapped by the composite. The wrapped widget must be
+     * set before calling any {@link Widget} methods on this object, or adding it
+     * to a panel. This method may only be called once for a given composite.
+     * 
+     * @param widget the widget to be wrapped
+     */
+    protected void initWidget(Widget widget) {
+
+        // Validate. Make sure the widget is not being set twice.
+        if (m_widget != null) {
+            throw new IllegalStateException("Composite.initWidget() may only be " + "called once.");
+        }
+
+        // Use the contained widget's element as the composite's element,
+        // effectively merging them within the DOM.
+        setElement(widget.getElement());
+
+        adopt(widget);
+
+        // Logical attach.
+        m_widget = widget;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsFormatterConfigBean.java,v $
- * Date   : $Date: 2011/04/05 06:41:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,13 @@
 
 package org.opencms.xml.containerpage;
 
+
 /**
  * A bean containing formatter configuration data as strings.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,7 +62,6 @@ public class CmsFormatterConfigBean {
      * @param type the formatter container type 
      * @param width the formatter width
      * @param maxWidth the formatter max width 
-     *  
      */
     public CmsFormatterConfigBean(String jsp, String type, String width, String maxWidth) {
 

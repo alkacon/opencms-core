@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/04/20 07:07:49 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -277,7 +276,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cms.getSitePath(cntPage),
                 getNoEditReason(cms, cntPage),
                 CmsRequestUtil.encodeParams(request),
-                CmsSitemapManager.PATH_SITEMAP_EDITOR_JSP,
+                CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
                 cntPageUri,
                 getNewTypes(cms, request),
                 getSessionCache().isToolbarVisible());

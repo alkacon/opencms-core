@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagFormatter.java,v $
- * Date   : $Date: 2011/04/07 10:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/20 07:07:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -70,6 +70,9 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
     /** Reference to the last loaded resource element. */
     protected transient CmsResource m_resource;
+
+    /** The current container element. */
+    private CmsContainerElementBean m_element;
 
     /** Reference to the currently selected locale. */
     private Locale m_locale;
@@ -184,16 +187,15 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
         try {
             // get the resource name from the selected container
-            CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(pageContext.getRequest());
-            CmsResource resource = m_cms.readResource(element.getSitePath());
-
+            m_element = OpenCms.getADEManager().getCurrentElement(pageContext.getRequest());
+            m_element.initResource(m_cms);
             if (m_locale == null) {
                 // no locale set, use locale from users request context
                 m_locale = m_cms.getRequestContext().getLocale();
             }
 
             // load content and store it
-            CmsJspContentAccessBean bean = new CmsJspContentAccessBean(m_cms, m_locale, resource);
+            CmsJspContentAccessBean bean = new CmsJspContentAccessBean(m_cms, m_locale, m_element.getResource());
             storeAttribute(getVar(), bean);
 
             if (m_value != null) {

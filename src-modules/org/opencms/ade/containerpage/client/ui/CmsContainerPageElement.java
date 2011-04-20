@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/04/07 15:08:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -267,7 +267,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void onDragCancel() {
 
-        removeAttach();
+        resetOptionbar();
         clearDrag();
     }
 
@@ -452,17 +452,14 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
-     * This method removes the widget from DOM and re-attaches it at it's original position.<p>
+     * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
      * Use to avoid mouse-over and mouse-down malfunction.<p> 
      */
-    private void removeAttach() {
+    private void resetOptionbar() {
 
-        int index = m_parent.getWidgetIndex(this);
-        this.removeFromParent();
-        if (m_parent.getWidgetCount() > index) {
-            m_parent.insert(this, index);
-        } else {
-            m_parent.add(this);
+        if (m_elementOptionBar != null) {
+            m_elementOptionBar.removeFromParent();
+            add(m_elementOptionBar);
         }
     }
 }

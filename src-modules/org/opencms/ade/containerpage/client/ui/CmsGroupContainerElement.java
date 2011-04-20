@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupContainerElement.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +89,16 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
 
         super(element, parent, clientId, sitePath, noEditReason, hasProps);
 
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    public void adoptElement(CmsContainerPageElement containerElement) {
+
+        assert getElement().equals(containerElement.getElement().getParentElement());
+        getChildren().add(containerElement);
+        adopt(containerElement);
     }
 
     /**

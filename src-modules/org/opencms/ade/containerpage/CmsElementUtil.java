@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/20 07:07:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -140,9 +140,9 @@ public class CmsElementUtil {
     private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
     throws CmsException, ServletException, IOException {
 
-        CmsResource elementRes = m_cms.readResource(element.getId());
+        element.initResource(m_cms);
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), elementRes, formatter);
+            formatter), element.getResource(), formatter);
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
 
@@ -163,12 +163,11 @@ public class CmsElementUtil {
                 containerBean.setWidth(String.valueOf(container.getWidth()));
             }
             m_standardContext.setContainer(containerBean);
-            element.initResource(elementRes, m_cms.getSitePath(elementRes));
             m_standardContext.setElement(element);
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(elementRes));
+            eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
             String encoding = m_res.getCharacterEncoding();
             return (new String(loaderFacade.getLoader().dump(
@@ -296,6 +295,7 @@ public class CmsElementUtil {
                 try {
                     content = getElementContent(element, m_cms.readResource(fmtUri), container);
                 } catch (Exception e) {
+                    // TODO: Log error
                     //                    LOG.error(Messages.get().getBundle().key(
                     //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
                     //                        m_cms.getSitePath(resource),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsDropContainer.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,14 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
      */
     void add(Widget w);
+
+    /**
+     * Adopts a container-page element registering it as a child of this container. 
+     * Used for elements that are already child nodes of the container-element node in DOM.<p>
+     * 
+     * @param containerElement the element to adopt
+     */
+    void adoptElement(CmsContainerPageElement containerElement);
 
     /**
      * Checks the maximum number of allowed elements and hides overflowing elements.<p> 

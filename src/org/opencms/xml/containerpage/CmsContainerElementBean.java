@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/04/15 09:33:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0
  */
@@ -146,11 +146,11 @@ public class CmsContainerElementBean {
     /**
      * Returns the resource of this element.<p>
      * 
-     * If is required to call {@link #initResource(CmsResource, String)} before this method can be used.<p>
+     * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
      * 
      * @return the resource of this element
      * 
-     * @see #initResource(CmsResource, String)
+     * @see #initResource(CmsObject)
      */
     public CmsResource getResource() {
 
@@ -170,11 +170,11 @@ public class CmsContainerElementBean {
     /**
      * Returns the site path of the resource of this element.<p>
      * 
-     * If is required to call {@link #initResource(CmsResource, String)} before this method can be used.<p>
+     * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
      * 
      * @return the site path of the resource of this element
      * 
-     * @see #initResource(CmsResource, String)
+     * @see #initResource(CmsObject)
      */
     public String getSitePath() {
 
@@ -191,15 +191,18 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Sets the resource and the site path of this element.<p>
+     * Initializes the resource and the site path of this element.<p>
      * 
-     * @param resource the resource of this element
-     * @param sitePath the site path of this element
+     * @param cms the CMS context 
+     * 
+     * @throws CmsException if something goes wrong reading the element resource
      */
-    public void initResource(CmsResource resource, String sitePath) {
+    public void initResource(CmsObject cms) throws CmsException {
 
-        m_resource = resource;
-        m_sitePath = sitePath;
+        if (m_resource == null) {
+            m_resource = cms.readResource(getId());
+            m_sitePath = cms.getSitePath(m_resource);
+        }
     }
 
     /**

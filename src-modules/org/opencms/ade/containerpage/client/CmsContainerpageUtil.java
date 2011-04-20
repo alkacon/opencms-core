@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/04/15 08:10:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/20 07:07:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
@@ -56,17 +57,20 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
 
-    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENTS}. */
-    public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
+    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENT_END_MARKER}. */
+    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
 
-    /** HTML class used to identify group container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_GROUP_CONTAINER_ELEMENTS}. */
-    public static final String CLASS_GROUP_CONTAINER_ELEMENTS = "cms_ade_groupcontainer";
+    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENT_START_MARKER}. */
+    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "cms_ade_element_start";
+
+    /** HTML class used to identify group container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_GROUP_CONTAINER_ELEMENT_MARKER}. */
+    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
 
     /** The container page controller. */
     private CmsContainerpageController m_controller;
@@ -93,13 +97,11 @@ public class CmsContainerpageUtil {
      */
     public void consumeContainerElements(I_CmsDropContainer container) {
 
-        List<CmsContainerPageElement> elements = new ArrayList<CmsContainerPageElement>();
         // the drag element widgets are created from the existing DOM elements,
-        // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
         Element child = (Element)container.getElement().getFirstChildElement();
         while (child != null) {
-            boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child);
-            boolean isGroupcontainerElement = CmsDomUtil.hasClass(CLASS_GROUP_CONTAINER_ELEMENTS, child);
+            boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, child);
+            boolean isGroupcontainerElement = CmsDomUtil.hasClass(CLASS_GROUP_CONTAINER_ELEMENT_MARKER, child);
             if (isContainerElement || isGroupcontainerElement) {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
@@ -108,21 +110,72 @@ public class CmsContainerpageUtil {
                 boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
 
                 if (isContainerElement) {
-                    Element elementRoot = (Element)child.getFirstChildElement();
-                    CmsDomUtil.removeScriptTags(elementRoot);
-                    DOM.removeChild(child, elementRoot);
-                    CmsContainerPageElement containerElement = createElement(
-                        elementRoot,
-                        container,
-                        clientId,
-                        sitePath,
-                        noEditReason,
-                        hasProps);
-                    if ((newType != null) && (newType.length() > 0)) {
-                        containerElement.setNewType(newType);
+                    // searching for content element root
+                    Element elementRoot = (Element)child.getNextSibling();
+                    while ((elementRoot != null) && (elementRoot.getNodeType() != Node.ELEMENT_NODE)) {
+                        Element temp = elementRoot;
+                        elementRoot = (Element)elementRoot.getNextSibling();
+                        temp.removeFromParent();
                     }
-                    elements.add(containerElement);
-                    DOM.removeChild((Element)container.getElement(), child);
+                    if (elementRoot == null) {
+                        child.removeFromParent();
+                        child = null;
+                        continue;
+                    }
+                    if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, elementRoot)) {
+                        // broken element, already at next start marker
+                        child.removeFromParent();
+                        child = elementRoot;
+                        continue;
+                    }
+                    if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_END_MARKER, elementRoot)) {
+                        // broken element, no content element root
+                        child.removeFromParent();
+                        child = (Element)elementRoot.getNextSiblingElement();
+                        elementRoot.removeFromParent();
+                        continue;
+                    } else {
+                        // looking for the next marker that wraps the current element
+                        Element endMarker = (Element)elementRoot.getNextSibling();
+                        // only if the end marker node is not null and has neither the end-marker class or start-marker class
+                        // remove the current node and check the next sibling 
+                        while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
+                            CLASS_CONTAINER_ELEMENT_END_MARKER,
+                            endMarker) || CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker))))) {
+                            Element temp = endMarker;
+                            endMarker = (Element)endMarker.getNextSibling();
+                            temp.removeFromParent();
+                        }
+                        if (endMarker == null) {
+                            // broken element, end marker missing
+                            elementRoot.removeFromParent();
+                            child.removeFromParent();
+                            child = null;
+                            continue;
+                        }
+                        if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker)) {
+                            // broken element, end marker missing
+                            elementRoot.removeFromParent();
+                            child.removeFromParent();
+                            child = endMarker;
+                        }
+                        CmsDomUtil.removeScriptTags(elementRoot);
+                        CmsContainerPageElement containerElement = createElement(
+                            elementRoot,
+                            container,
+                            clientId,
+                            sitePath,
+                            noEditReason,
+                            hasProps);
+                        if ((newType != null) && (newType.length() > 0)) {
+                            containerElement.setNewType(newType);
+                        }
+                        container.adoptElement(containerElement);
+                        child.removeFromParent();
+                        child = (Element)endMarker.getNextSiblingElement(); //   (Element)container.getElement().getFirstChildElement();
+                        endMarker.removeFromParent();
+
+                    }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     CmsDomUtil.removeScriptTags(child);
                     CmsGroupContainerElement groupContainer = createGroupcontainer(
@@ -133,24 +186,19 @@ public class CmsContainerpageUtil {
                         noEditReason,
                         hasProps);
                     groupContainer.setContainerId(container.getContainerId());
-                    elements.add(groupContainer);
-                    DOM.removeChild((Element)container.getElement(), child);
+                    container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
 
                     // important: adding the option-bar only after the group-containers have been consumed 
                     addOptionBar(groupContainer);
+                    child = (Element)child.getNextSiblingElement();
                 }
             } else {
+                Element sibling = (Element)child.getNextSiblingElement();
                 DOM.removeChild((Element)container.getElement(), child);
+                child = sibling;
+                continue;
             }
-
-            child = (Element)container.getElement().getFirstChildElement();
-        }
-
-        // re-append the element widgets by adding them to the root panel
-        Iterator<CmsContainerPageElement> it = elements.iterator();
-        while (it.hasNext()) {
-            container.add(it.next());
         }
     }
 
@@ -242,7 +290,7 @@ public class CmsContainerpageUtil {
         I_CmsDropContainer container) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
-        element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENTS);
+        element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
         boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
 
         CmsGroupContainerElement groupContainer = createGroupcontainer(
