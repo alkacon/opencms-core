@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/15 08:10:09 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/04/20 07:05:21 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 8.0.0
  */
@@ -334,6 +334,9 @@ public final class CmsDomUtil {
 
         /** CSS Property value. */
         hidden,
+
+        /** CSS Property value. */
+        inherit,
 
         /** CSS Property value. */
         none,
@@ -935,6 +938,43 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Utility method to determine if the given element has a set background image.<p>
+     * 
+     * @param element the element
+     * 
+     * @return <code>true</code> if the element has a background image set
+     */
+    public static boolean hasBackgroundImage(Element element) {
+
+        String backgroundImage = CmsDomUtil.getCurrentStyle(element, Style.backgroundImage);
+        if ((backgroundImage == null)
+            || (backgroundImage.trim().length() == 0)
+            || backgroundImage.equals(StyleValue.none.toString())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Utility method to determine the effective background color.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the background color
+     */
+    public static String getEffectiveBackgroundColor(Element element) {
+
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
+        if ((Document.get().getBody() != element)
+            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
+                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
+            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
+        }
+
+        return backgroundColor;
+    }
+
+    /**
      * Utility method to determine if the given element has a set border.<p>
      * 
      * @param element the element
@@ -1050,7 +1090,7 @@ public final class CmsDomUtil {
         int previousTop = 0;
         for (int index = 0; index < parent.getChildCount(); index++) {
             Node node = parent.getChild(index);
-            if (!(node instanceof Element)) {
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element child = (Element)node;
@@ -1058,7 +1098,7 @@ public final class CmsDomUtil {
                 indexCorrection = 1;
             }
             String positioning = child.getStyle().getPosition();
-            if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
+            if (Position.ABSOLUTE.getCssName().equals(positioning) || Position.FIXED.getCssName().equals(positioning)) {
                 // only not 'position:absolute' elements into account, 
                 // not visible children will be excluded in the next condition
                 continue;
