@@ -6,7 +6,7 @@
 /** General styling for the html-face class and it's inner span, if an image is present. */
 div.html-face {
 	color:inherit;
-	font-family:inherit;
+	font-family:value("constants.css.fontFamily");
 	font-weight:inherit;
 	text-align:center;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/04/14 14:41:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -364,7 +364,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
-        setWidth(DIALOG_WIDTH + "px");
+        setWidth(DIALOG_WIDTH);
 
         // create a map that stores all files (upload, existing, invalid)
         m_allFiles = new HashMap<String, CmsFileInfo>();

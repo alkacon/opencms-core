@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/04/18 17:07:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -269,7 +269,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         addDomHandler(mouseHandler, MouseUpEvent.getType());
         addDomHandler(mouseHandler, MouseMoveEvent.getType());
 
-        setWidth(width + Unit.PX.toString());
+        setWidth(width);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
     }
 
@@ -632,6 +632,39 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Sets the height for the popup content.<p>
+     * 
+     * @param height the height in pixels
+     */
+    public void setHeight(int height) {
+
+        if (height <= 0) {
+            m_containerElement.getStyle().clearWidth();
+        } else {
+            int contentHeight = height;
+            if (hasCaption()) {
+                contentHeight = contentHeight - 36;
+            }
+            if (hasButtons()) {
+                contentHeight = contentHeight - 34;
+            }
+            contentHeight = contentHeight - 6;
+            m_containerElement.getStyle().setProperty("height", height + Unit.PX.toString());
+            m_main.getStyle().setProperty("height", contentHeight + Unit.PX.toString());
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setHeight(java.lang.String)
+     */
+    @Override
+    @Deprecated
+    public void setHeight(String height) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Replaces the content from the main widget.<p>
      * 
      * @param w the widget that should replace the main content
@@ -643,37 +676,57 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
-     * Sets the object's size.<p>
-     * 
-     * @param width the width
-     * @param height the height
-     * @param unit the unit to use
+     * @see com.google.gwt.user.client.ui.UIObject#setSize(java.lang.String, java.lang.String)
      */
-    public void setSize(int width, int height, Unit unit) {
+    @Override
+    @Deprecated
+    public void setPixelSize(int width, int height) {
 
-        setSize(width + unit.toString(), height + unit.toString());
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.UIObject#setSize(java.lang.String, java.lang.String)
+     */
+    @Override
+    @Deprecated
+    public void setSize(String width, String height) {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
      */
     @Override
+    @Deprecated
     public void setWidget(Widget w) {
 
         throw new UnsupportedOperationException();
     }
 
     /**
+     * Sets the width for the popup content.<p>
+     * 
+     * @param width the width in pixels
+     */
+    public void setWidth(int width) {
+
+        if (width <= 0) {
+            m_containerElement.getStyle().clearWidth();
+        } else {
+            m_containerElement.getStyle().setProperty("width", width + Unit.PX.toString());
+        }
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidth(java.lang.String)
      */
     @Override
+    @Deprecated
     public void setWidth(String width) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(width)) {
-            m_containerElement.getStyle().clearWidth();
-        } else {
-            m_containerElement.getStyle().setProperty("width", width);
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -981,6 +1034,26 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     protected void showArrow(Element arrow) {
 
         getElement().appendChild(arrow);
+    }
+
+    /**
+     * Returns <code>true</code> if this popup has buttons <code>false</code> otherwise.<p>
+     * 
+     * @return <code>true</code> if this popup has buttons <code>false</code> otherwise
+     */
+    private boolean hasButtons() {
+
+        return m_buttonPanel.getWidgetCount() != 0;
+    }
+
+    /**
+     * Returns <code>true</code> if a caption is set for this popup <code>false</code> otherwise.<p>
+     * 
+     * @return <code>true</code> if a caption is set for this popup <code>false</code> otherwise
+     */
+    private boolean hasCaption() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_caption.getText());
     }
 
     /**

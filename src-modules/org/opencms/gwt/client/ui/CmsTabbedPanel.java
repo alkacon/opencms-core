@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/04/11 15:30:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  * 
@@ -71,49 +71,68 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsTabbedPanel<E extends Widget> extends Composite {
 
     /** Enumeration with layout keys. */
-    public enum CmsTabLayout {
-        /** black layout. */
-        black(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black());
+    public enum CmsTabbedPanelStyle {
+
+        /** Button style. */
+        buttonTabs(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
+        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
+
+        /** Classic style. */
+        classicTabs(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().classicTabs(), null);
 
         /** The default tabbar height. */
-        public static final CmsTabLayout DEFAULT = black;
+        public static final CmsTabbedPanelStyle DEFAULT = buttonTabs;
 
         /** Property name. */
         private int m_barHeight;
 
-        private String m_tabColor;
+        /** The general panel style name. */
+        private String m_styleClass;
+
+        /** The tab color style name. */
+        private String m_tabColorClass;
 
         /** 
          * Constructor.<p>
          * 
          * @param barHeight the height of the bar
          */
-        private CmsTabLayout(int barHeight, String tabColor) {
+        private CmsTabbedPanelStyle(int barHeight, String styleClass, String tabColorClass) {
 
             m_barHeight = barHeight;
-            m_tabColor = tabColor;
+            m_styleClass = styleClass;
+            m_tabColorClass = tabColorClass;
         }
 
-        /** 
-         * Returns the tab bar height.<p>
-         * 
-         * @return the tab bar height
+        /**
+         * Returns the barHeight.<p>
+         *
+         * @return the barHeight
          */
         public int getBarHeight() {
 
             return m_barHeight;
         }
 
-        /** 
-         * Returns the tab bar color.<p>
-         * 
-         * @return the tab bar color
+        /**
+         * Returns the styleClass.<p>
+         *
+         * @return the styleClass
          */
-        public String getColorClass() {
+        public String getStyleClass() {
 
-            return m_tabColor;
+            return m_styleClass;
         }
 
+        /**
+         * Returns the tabColorClass.<p>
+         *
+         * @return the tabColorClass
+         */
+        public String getTabColorClass() {
+
+            return m_tabColorClass;
+        }
     }
 
     /** Stores the indexes and the title of disabled tabs. */
@@ -130,17 +149,20 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
      */
     public CmsTabbedPanel() {
 
-        this(CmsTabLayout.DEFAULT);
+        this(CmsTabbedPanelStyle.DEFAULT);
     }
+
+    private CmsTabbedPanelStyle m_panelStyle;
 
     /**
      * The constructor for an empty tabbed panel. <p>
      * 
-     * @param tabbarHeight the pre-defined height of the tabbar, can be "small" or "standard"      
+     * @param tabbedPanelStyle the pre-defined height of the tabbar, can be "small" or "standard"      
      */
-    public CmsTabbedPanel(CmsTabLayout tabbarHeight) {
+    public CmsTabbedPanel(CmsTabbedPanelStyle tabbedPanelStyle) {
 
-        m_tabPanel = new TabLayoutPanel(tabbarHeight.getBarHeight(), Unit.PX);
+        m_tabPanel = new TabLayoutPanel(tabbedPanelStyle.getBarHeight(), Unit.PX);
+        m_panelStyle = tabbedPanelStyle;
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabPanel);
@@ -154,10 +176,13 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         if (tabBarDivs.size() == 1) {
             tabBarDivs.get(0).getParentElement().setClassName(
                 I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
-            tabBarDivs.get(0).getParentElement().addClassName(tabbarHeight.getColorClass());
+            if (m_panelStyle.getTabColorClass() != null) {
+                tabBarDivs.get(0).getParentElement().addClassName(m_panelStyle.getTabColorClass());
+            }
         }
 
-        m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
+        m_tabPanel.setStyleName(m_panelStyle.getStyleClass());
+        m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
         m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
             + " "
             + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
@@ -173,20 +198,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
             }
         });
-    }
-
-    /**
-     * The constructor for an empty tabbed panel. <p>
-     * 
-     * @param tabbarHeight the pre-defined height of the tabbar, can be "small" or "standard" 
-     * @param isInside if true an additional padding will be added, so that the tabbed panel can be inside a widget with border
-     */
-    public CmsTabbedPanel(CmsTabLayout tabbarHeight, boolean isInside) {
-
-        this(tabbarHeight);
-        if (isInside) {
-            m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsInternalTab());
-        }
     }
 
     /**
@@ -279,11 +290,11 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         int tabIndex = m_tabPanel.getWidgetIndex(tabContent);
         Element tabElement = getTabElement(tabIndex);
         if (tabElement != null) {
-            tabElement.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().borderAll());
+            tabElement.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());
+            if (!m_panelStyle.equals(CmsTabbedPanelStyle.classicTabs)) {
+                tabElement.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+                tabElement.addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().borderAll());
+            }
         }
     }
 

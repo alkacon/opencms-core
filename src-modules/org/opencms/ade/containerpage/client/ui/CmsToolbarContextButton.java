@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2011/04/06 17:48:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -91,7 +91,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
         setMenuWidget(m_menuPanel);
 
         // clear the width of the popup content
-        getPopupContent().setWidth(null);
+        getPopup().setWidth(0);
     }
 
     /**
@@ -129,14 +129,14 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
 
         if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
             // if there were entries found for the menu, create the menu
-            m_menu = new CmsContextMenu(menuEntries, true, getPopupContent());
+            m_menu = new CmsContextMenu(menuEntries, true, getPopup());
             // add the resize handler for the menu
             m_resizeRegistration = Window.addResizeHandler(m_menu);
             // set the menu as widget for the panel 
             m_menuPanel.setWidget(0, 0, m_menu);
             // add the close handler for the menu
-            getPopupContent().addCloseHandler(new CmsContextMenuHandler(m_menu));
-            getPopupContent().addCloseHandler(new CloseHandler<PopupPanel>() {
+            getPopup().addCloseHandler(new CmsContextMenuHandler(m_menu));
+            getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
 
@@ -149,7 +149,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
             CmsLabel label = new CmsLabel("No entries found!");
             label.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
             label.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-            getPopupContent().add(label);
+            getPopup().add(label);
             positionPopup();
         }
     }

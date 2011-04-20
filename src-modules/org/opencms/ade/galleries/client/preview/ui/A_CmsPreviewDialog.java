@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2011/03/31 17:51:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -137,7 +137,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
 
-        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.black, false);
+        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabbedPanelStyle.classicTabs);
         m_tabsHolder.add(m_tabbedPanel);
 
         // close button        

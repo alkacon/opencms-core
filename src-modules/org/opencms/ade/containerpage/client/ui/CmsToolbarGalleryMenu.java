@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2011/03/31 17:52:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -55,10 +54,10 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     /** The main content widget. */
     private FlowPanel m_contentPanel;
 
+    /** The drag and drop handler for the gallery menu. */
     private CmsDNDHandler m_dragHandler;
 
-    private CmsGalleryDialog m_gallery;
-
+    /** Signals if the gallery was already opened. */
     private boolean m_initialized;
 
     /**
@@ -81,10 +80,9 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            m_gallery = CmsGalleryFactory.createDialog(m_dragHandler, m_popup);
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
-            tabsContainer.add(m_gallery);
+            tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup));
             m_contentPanel.add(tabsContainer);
             m_initialized = true;
         }

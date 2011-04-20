@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/04/14 14:41:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public class CmsErrorDialog extends CmsPopup {
         setAutoHideEnabled(false);
         setModal(true);
         setGlassEnabled(true);
-        setWidth("512px");
+        setWidth(512);
         m_closeButton = new CmsPushButton();
         m_closeButton.setText(Messages.get().key(Messages.GUI_OK_0));
         m_closeButton.setUseMinWidth(true);

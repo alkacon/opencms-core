@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/04/13 08:24:33 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.
  */
@@ -134,9 +134,11 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     private CmsVfsTab m_vfsTab;
 
     /**
-     * The default constructor for the gallery dialog.<p> 
+     * The default constructor for the gallery dialog.<p>
+     *  
+     * @param style the style for the panel
      */
-    public CmsGalleryDialog() {
+    public CmsGalleryDialog(CmsTabbedPanelStyle style) {
 
         initCss();
 
@@ -149,8 +151,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         // set the default height of the dialog
         m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
         // tabs
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.black, false);
-        // add tabs to parent widget        
+        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(style);
+        // add tabs to parent widget
         m_parentPanel.add(m_tabbedPanel);
         m_showPreview = new CmsPushButton();
         m_showPreview.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
@@ -177,7 +179,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public CmsGalleryDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
 
-        this();
+        this(CmsTabbedPanelStyle.buttonTabs);
         m_dndHandler = dndHandler;
         m_autoHideParent = autoHideParent;
     }
@@ -240,6 +242,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         List<CmsSearchParamPanel> paramPanels = null;
         if (!searchObj.isEmpty()) {
+            enableSearchTab();
             paramPanels = new ArrayList<CmsSearchParamPanel>();
             Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
             while (it.hasNext()) {

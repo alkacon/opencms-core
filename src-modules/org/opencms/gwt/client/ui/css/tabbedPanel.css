@@ -1,26 +1,29 @@
 @external gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanelTabs, gwt-TabLayoutPanelContent, gwt-TabLayoutPanelTab-selected, gwt-TabLayoutPanelTabInner; 
 
-.gwt-TabLayoutPanel {	
+/*TODO: remove if not used within gallery preview*/
+.gwt-TabLayoutPanel .internal-tabbed {
+}
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
+}
+.gwt-TabLayoutPanel .tabPanel {
+}
+.gwt-TabLayoutPanel .tabLeftMargin {
+	margin-left:30px !important;
+}
+
+.buttonTabs.gwt-TabLayoutPanel {	
 	display:block;
 	height: 100%;
 	margin:0;
 	padding:0;
 }
 
-/*TODO: remove if not used within gallery preview*/
-.internal-tabbed {
-	/*margin:1px;*/
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
 	height: auto;
 	display: block;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
-}
-
-@sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+@sprite .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
 	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorMenu");
 	background-position: top;
@@ -32,15 +35,7 @@
 	margin-top: 6px;
 }
 
-.tabPanel {
-	/* margin:10px 8px 8px; */
-}
-
-.tabLeftMargin {
-	margin-left:30px !important;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
 	border-width: 1px 1px 1px 0px;
 	border-color: value("constants.css.borderColor");
 	border-style: solid;
@@ -48,7 +43,7 @@
 	cursor:pointer;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
 	padding: 4px 5px;
 	font-weight: bold;
 	color: value("constants.css.textColorDarkButton");
@@ -59,123 +54,224 @@
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 		-moz-border-radius-topright: value("constants.css.borderRadiusButton");
 		-moz-border-radius-bottomright: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
 		-moz-border-radius-topleft: value("constants.css.borderRadiusButton");
 		-moz-border-radius-bottomleft: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		-moz-border-radius: 8px;
 	}
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 		-webkit-border-top-right-radius: value("constants.css.borderRadiusButton");
 		-webkit-border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
 		-webkit-border-top-left-radius: value("constants.css.borderRadiusButton");
 		-webkit-border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		-webkit-border-radius: 8px;
 	}
 } @elif user.agent opera {
 	/** opera */
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 		border-top-right-radius: value("constants.css.borderRadiusButton");
 		border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
 		border-top-left-radius: value("constants.css.borderRadiusButton");
 		border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		border-radius: 8px;
 	}
 } @elif user.agent ie8 {
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 		border-top-right-radius: value("constants.css.borderRadiusButton");
 		border-bottom-right-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
 		border-top-left-radius: value("constants.css.borderRadiusButton");
 		border-bottom-left-radius: value("constants.css.borderRadiusButton");
 	}
-	.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		border-radius: 8px;
 	}
 }
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 	border-color: value("constants.css.borderColor");
 	border-width: 1px 1px 1px 0px;
 	border-style: solid;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.borderAll, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
-	border-color: value("constants.css.borderColor");
-	border-width: 1px;
-	border-style: solid;
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.borderAll, .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
+	border: 1px solid value("constants.css.borderColor");
 }
 
-.black{}
+.buttonTabs.gwt-TabLayoutPanel .black{}
 
-@sprite .black .gwt-TabLayoutPanelTab {
+@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab {
 	gwt-image: "inputImages.buttonBlackUpBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .black .gwt-TabLayoutPanelTab:hover {  	
+@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "inputImages.buttonBlackHoverBackground"; 
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .black .gwt-TabLayoutPanelTab-selected:hover {
+@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover {
 	gwt-image: "inputImages.buttonBlueUpBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .black .gwt-TabLayoutPanelTab-selected{    
+@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected{    
 	gwt-image: "inputImages.buttonBlueDownBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
 
 
-@sprite .tabLeftMargin.gwt-TabLayoutPanelTab {
+@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab {
 	gwt-image: "inputImages.buttonRedUpBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .tabLeftMargin.gwt-TabLayoutPanelTab:hover {  	
+@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "inputImages.buttonRedHoverBackground"; 
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover {
+@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover {
 	gwt-image: "inputImages.buttonRedHoverBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
-@sprite .tabLeftMargin.gwt-TabLayoutPanelTab-selected{    
+@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected{    
 	gwt-image: "inputImages.buttonRedDownBackground";
 	background-position: 50% 50%;
 	height: auto;
 }
 
 
-@sprite .gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab {
+@sprite .buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab {
 	gwt-image: "inputImages.buttonDisabledBackground";
 	background-position: 50% 50%;
 	height: auto;
 	cursor: default;
 }
-.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+.buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+	color:value("constants.css.textColorDisabledButton") !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.classicTabs.gwt-TabLayoutPanel {
+	display:block;
+    background:value("constants.css.backgroundColorMenu") none repeat scroll 0 0;   
+    border:1px solid value("constants.css.borderColor");
+	height: 100%;
+	margin:0;
+	padding:0;
+}
+
+@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
+	gwt-image: "backgrounds.softBackground";
+	background-position: 50% 50%;
+	height: auto;
+	display: block;
+	background-color: value("constants.css.backgroundColorSoft");
+}
+
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+    background-color: value("constants.css.backgroundColorMenu");
+    overflow: visible;
+	display:block;
+	color:value("constants.css.textColor");
+	padding:value("constants.css.defaultSpace");
+	margin-top: 6px;
+}
+
+@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
+	gwt-image: "backgrounds.stateBackground";
+	background-position: 50% 50%;
+	height: auto;
+	margin:0 0 -1px 2px;
+	padding:0;		
+	border:1px solid value("constants.css.borderColor");	
+	color:value("constants.css.textColor");
+	position:relative;
+	cursor:pointer;
+	background-color: value("constants.css.backgroundColorStateStandard");
+}
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		-moz-border-radius-topleft: value("constants.css.borderRadius");
+		-moz-border-radius-topright: value("constants.css.borderRadius");
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		-webkit-border-top-left-radius: value("constants.css.borderRadius");
+		-webkit-border-top-right-radius: value("constants.css.borderRadius");
+	}
+} @else {
+	/** ie7, ie8, opera and the rest, add new @elif block if necessary **/
+	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		border-top-left-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadius");
+	}
+}
+
+@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
+	gwt-image: "backgrounds.stateBackground";
+	background-position: 50% 50%;
+	height: auto;
+	background-color: value("constants.css.backgroundColorStateHover");
+}
+
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
+    background: value("constants.css.backgroundColorMenu") none repeat scroll 0 0;
+	cursor: default;
+	font-size:value("constants.css.fontSize");
+	font-family: value("constants.css.fontFamily");
+}
+
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab .gwt-TabLayoutPanelTabInner {
+	padding: 3px 5px 4px;
+	font-size:value("constants.css.fontSize");
+	font-family: value("constants.css.fontFamily");
+}
+
+@sprite .classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab {
+	gwt-image: "inputImages.buttonDisabledBackground";
+	background-position: 50% 50%;
+	height: auto;
+	cursor: default;
+}
+.classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
 	color:value("constants.css.textColorDisabledButton") !important;
 }

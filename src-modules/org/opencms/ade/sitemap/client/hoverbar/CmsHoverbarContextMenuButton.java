@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2011/03/31 17:49:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -84,8 +84,8 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         // set the widget
         setMenuWidget(m_menuPanel);
         //    getPopupContent().removeAutoHidePartner(getElement());
-        getPopupContent().addAutoHidePartner(getElement());
-        getPopupContent().setWidth("auto");
+        getPopup().addAutoHidePartner(getElement());
+        getPopup().setWidth(0);
         //getPopupContent().setModal(true);
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
@@ -129,11 +129,11 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
         // lock the hoverbar visibility to avoid hide on mouse out
         hoverbar.setLocked(true);
-        CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopupContent());
+        CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
         m_menuPanel.setWidget(0, 0, menu);
         // add the close handler for the menu
-        getPopupContent().addCloseHandler(new CmsContextMenuHandler(menu));
-        getPopupContent().addCloseHandler(new CloseHandler<PopupPanel>() {
+        getPopup().addCloseHandler(new CmsContextMenuHandler(menu));
+        getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> closeEvent) {
 

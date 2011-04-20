@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/04/18 17:07:08 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -118,7 +118,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /** The default pop-up width. */
-    private static final String DEFAULT_WIDTH = "650px";
+    private static final int DEFAULT_WIDTH = 650;
 
     /** Stores the toolbar width. */
     private static int m_toolbarWidth;
@@ -371,7 +371,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      * 
      * @return the popup content
      */
-    protected CmsPopup getPopupContent() {
+    protected CmsPopup getPopup() {
 
         return m_popup;
     }

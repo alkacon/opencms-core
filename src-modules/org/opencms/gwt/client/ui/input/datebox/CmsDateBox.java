@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/04/12 15:14:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @author Ruediger Kurz
  */
@@ -92,7 +92,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.23 $
+     * @version $Revision: 1.24 $
      * 
      * @author Ruediger Kurz
      */
@@ -276,7 +276,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         m_time.addFocusHandler(dateBoxHandler);
 
         m_popup.add(m_dateTimePanel);
-        m_popup.setWidth(null);
+        m_popup.setWidth(0);
         m_popup.setModal(true);
         m_popup.removePadding();
         m_popup.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());

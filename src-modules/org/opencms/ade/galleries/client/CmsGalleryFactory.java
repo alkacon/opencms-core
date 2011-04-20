@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryFactory.java,v $
- * Date   : $Date: 2010/10/29 12:18:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 /**
@@ -40,7 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -61,7 +62,7 @@ public final class CmsGalleryFactory {
      */
     public static CmsGalleryDialog createDialog() {
 
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog();
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(CmsTabbedPanelStyle.buttonTabs);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }

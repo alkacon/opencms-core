@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2011/04/14 14:41:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since version 8.0.0
  */
@@ -84,7 +84,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         m_isFixed = isFixed;
         m_popup = new CmsPopup();
         // clear the width and the padding of the popup content (needed for sub menus)
-        m_popup.setWidth(null);
+        m_popup.setWidth(0);
         m_popup.removePadding();
         createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());

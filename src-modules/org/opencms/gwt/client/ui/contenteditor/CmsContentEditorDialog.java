@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/03/02 08:16:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/20 09:03:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -125,14 +124,14 @@ public final class CmsContentEditorDialog {
         int height = Window.getClientHeight() - 50;
         int width = Window.getClientWidth();
         width = (width < 1350) ? width - 50 : 1300;
-        m_dialog.setSize(width, height, Unit.PX);
+        m_dialog.setWidth(width);
+        m_dialog.setHeight(height);
         m_dialog.setGlassEnabled(true);
         CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_sitePath));
 
         m_dialog.add(editorFrame);
         m_dialog.center();
         m_dialog.show();
-
     }
 
     /**
@@ -152,9 +151,9 @@ public final class CmsContentEditorDialog {
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
      */
     private native void exportClosingMethod() /*-{
-	$wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
-	    @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
-	};
+        $wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
+            @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
+        };
     }-*/;
 
     /**
