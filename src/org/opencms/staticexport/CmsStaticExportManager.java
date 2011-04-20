@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/04/20 07:01:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -1218,12 +1218,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsResource vfsRes = null;
             try {
                 vfsRes = cms.readResource(vfsName);
-                I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
+                I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
                 String detailPage = finder.getDetailPage(cms, vfsRes, cms.getRequestContext().getUri());
                 if (detailPage != null) {
-                    vfsName = CmsStringUtil.joinPaths(detailPage, CmsDetailPageUtil.getBestUrlName(
-                        cms,
-                        vfsRes.getStructureId()), "/");
+                    vfsName = CmsStringUtil.joinPaths(
+                        detailPage,
+                        CmsDetailPageUtil.getBestUrlName(cms, vfsRes.getStructureId()),
+                        "/");
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // ignore
@@ -2596,11 +2597,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 count++;
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                        new Integer(count),
-                        size,
-                        exportFolderName), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                            new Integer(count),
+                            size,
+                            exportFolderName),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
@@ -2626,11 +2629,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                     count++;
                     if (report != null) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                            new Integer(count),
-                            size,
-                            exportFolderName), I_CmsReport.FORMAT_NOTE);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                                new Integer(count),
+                                size,
+                                exportFolderName),
+                            I_CmsReport.FORMAT_NOTE);
                     } else {
                         // write log message
                         if (LOG.isInfoEnabled()) {

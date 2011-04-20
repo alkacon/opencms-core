@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageUtil.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/20 07:01:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +79,7 @@ public final class CmsDetailPageUtil {
     public static List<String> getAllDetailPagesWithUrlName(CmsObject cms, CmsResource res) throws CmsException {
 
         List<String> result = new ArrayList<String>();
-        Collection<String> detailPages = OpenCms.getSitemapManager().getDetailPageFinder().getAllDetailPages(cms, res);
+        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(cms, res);
         if (detailPages.isEmpty()) {
             return Collections.<String> emptyList();
         }
@@ -124,7 +124,7 @@ public final class CmsDetailPageUtil {
     public static String getDetailPageWithUrlName(CmsObject cms, CmsResource res, String linkSource)
     throws CmsException {
 
-        String detailPage = OpenCms.getSitemapManager().getDetailPageFinder().getDetailPage(cms, res, linkSource);
+        String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(cms, res, linkSource);
         if (detailPage == null) {
             return null;
         }

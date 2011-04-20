@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/20 07:01:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.sitemap.Messages;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -129,7 +128,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             throw e;
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();
-            CmsMessageContainer msg = Messages.get().container(Messages.ERR_SITEMAP_1, uri);
+            CmsMessageContainer msg = Messages.get().container(Messages.ERR_RESCOURCE_NOT_FOUND_1, uri);
             LOG.error(msg.key(), e);
             throw new CmsResourceInitException(msg, e);
         }

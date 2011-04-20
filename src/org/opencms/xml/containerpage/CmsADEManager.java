@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/04/20 07:01:16 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.config.CmsSitemapConfigurationData;
+import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
+import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -45,6 +48,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -75,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 7.6
  */
@@ -103,6 +107,9 @@ public class CmsADEManager {
     /** The name of the module parameter which may contain the name of the ADE configuration file. */
     public static final String MODULE_CONFIG_KEY = "ade.config";
 
+    /** The path to the sitemap editor jsp. */
+    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
+
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
 
@@ -117,6 +124,9 @@ public class CmsADEManager {
 
     /** The configuration instance. */
     private I_CmsADEConfiguration m_configuration;
+
+    /** The detail page finder. */
+    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
 
     /**
      * Creates a new ADE manager.<p>
@@ -200,6 +210,24 @@ public class CmsADEManager {
     }
 
     /**
+     * Finds the entry point to a sitemap.<p>
+     * 
+     * @param cms the CMS context
+     * @param openPath the resource path to find the sitemap to
+     * 
+     * @return the sitemap entry point
+     * 
+     * @throws CmsException
+     */
+    public String findEntryPoint(CmsObject cms, String openPath) throws CmsException {
+
+        String openRootPath = cms.getRequestContext().addSiteRoot(openPath);
+        CmsResource entryPoint = OpenCms.getADEConfigurationManager().getEntryPoint(cms, openRootPath);
+        String result = cms.getSitePath(entryPoint);
+        return result;
+    }
+
+    /**
      * Returns the list of creatable elements.<p>
      * 
      * @param cms the current opencms context
@@ -234,6 +262,16 @@ public class CmsADEManager {
             throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
         }
         return element;
+    }
+
+    /**
+     * Gets the detail page finder.
+     *
+     * @return the detail page finder
+     */
+    public I_CmsDetailPageFinder getDetailPageFinder() {
+
+        return m_detailPageFinder;
     }
 
     /**
@@ -276,9 +314,7 @@ public class CmsADEManager {
             }
         } catch (Exception e) {
             LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                    element.getId()),
+                Messages.get().getBundle().key(Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1, element.getId()),
                 e);
         }
         return properties;
@@ -303,6 +339,25 @@ public class CmsADEManager {
             resource).getProperties();
         result.putAll(propertiesFromSchema);
         return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
+    }
+
+    /**
+     * Returns the property configuration for a given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param entryPoint the the sitemap entry point
+     * 
+     * @return the property configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsObject cms, String entryPoint)
+    throws CmsException {
+
+        CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(entryPoint));
+        return sitemapConfig.getPropertyConfiguration();
     }
 
     /**
