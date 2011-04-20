@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchSimilarity.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2011/04/20 15:27:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,11 @@ package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchField;
 
+import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.search.DefaultSimilarity;
 
 /**
- * Reduces the importance of the <code>{@link #lengthNorm(String, int)}</code> factor 
+ * Reduces the importance of the <code>{@link #computeNorm(String, FieldInvertState)}</code> factor 
  * for the <code>{@link CmsSearchField#FIELD_CONTENT}</code> field, while 
  * keeping the Lucene default for all other fields.<p>
  * 
@@ -49,7 +50,7 @@ import org.apache.lucene.search.DefaultSimilarity;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,20 +71,21 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
     }
 
     /**
-     * Special implementation for "length norm" to reduce the significance of this factor 
+     * Special implementation for "compute norm" to reduce the significance of this factor 
      * for the <code>{@link CmsSearchField#FIELD_CONTENT}</code> field, while 
      * keeping the Lucene default for all other fields.<p>
      * 
-     * @see org.apache.lucene.search.Similarity#lengthNorm(java.lang.String, int)
+     * @see org.apache.lucene.search.DefaultSimilarity#computeNorm(java.lang.String, org.apache.lucene.index.FieldInvertState)
      */
     @Override
-    public float lengthNorm(String fieldName, int numTerms) {
+    public float computeNorm(String fieldName, FieldInvertState state) {
 
         if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {
+            final int numTerms = state.getLength() - state.getNumOverlap();
             // special length norm for content
             return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));
         }
         // all other fields use the default Lucene implementation
-        return (float)(1.0 / Math.sqrt(numTerms));
+        return super.computeNorm(fieldName, state);
     }
 }
