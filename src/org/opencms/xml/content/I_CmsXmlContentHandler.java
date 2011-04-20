@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/05 06:41:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/20 08:32:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.dom4j.Element;
 
@@ -57,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +106,13 @@ public interface I_CmsXmlContentHandler {
     String getConfiguration(I_CmsXmlSchemaType type);
 
     /**
+     * Returns the CSS resources to include into the html-page head.<p>
+     * 
+     * @return the CSS resources to include into the html-page head
+     */
+    Set<String> getCSSHeadIncludes();
+
+    /**
      * Returns the default String value for the given XML content schema type object in the given XML content.<p> 
      * 
      * If a schema type does not have a default value, this method must return <code>null</code>.
@@ -125,6 +133,13 @@ public interface I_CmsXmlContentHandler {
      * @return the element formatters, as &lt;name,uri&gt;
      */
     Map<String, String> getFormatters();
+
+    /**
+     * Returns the java-script resources to include into the html-page head.<p>
+     * 
+     * @return the java-script resources to include into the html-page head
+     */
+    Set<String> getJSHeadIncludes();
 
     /**
      * Returns the all mappings defined for the given element xpath.<p>
