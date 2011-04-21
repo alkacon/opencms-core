@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsAdeGalleryWidget.java,v $
- * Date   : $Date: 2011/02/01 14:49:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 14:14:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */
@@ -231,6 +231,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
         // the gallery parameters
         sb.append("?dialogmode=").append(A_CmsAjaxGallery.MODE_WIDGET).append("&types=").append(getGalleryTypes());
+
+        // sb.append("?gwt.codesvr=127.0.0.1:9997");
 
         // the current field value
         sb.append("&currentelement='+document.getElementById('").append(param.getId());
