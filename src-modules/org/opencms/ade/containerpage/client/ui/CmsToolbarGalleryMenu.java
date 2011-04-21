@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2011/04/21 11:50:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/21 13:16:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
+public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
 
     /** The main content widget. */
     private FlowPanel m_contentPanel;

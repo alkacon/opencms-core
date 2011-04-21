@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsDirectEditCss.java,v $
- * Date   : $Date: 2011/04/21 11:50:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/21 13:16:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsStateCss;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss;
 
 import com.google.gwt.resources.client.CssResource.Shared;
 
@@ -40,13 +40,12 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 @Shared
-public interface I_CmsDirectEditCss
-extends I_CmsStateCss, org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss {
+public interface I_CmsDirectEditCss extends I_CmsToolbarButtonCss {
 
     /**
      * CSS class accessor.<p>
