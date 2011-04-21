@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,32 +32,13 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
-import org.opencms.ade.containerpage.client.CmsEditableDataJSO;
-import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
-import org.opencms.gwt.client.ui.CmsHighlightingBorder;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasMouseOutHandlers;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Class to provide direct edit buttons within list collector elements.<p>
@@ -65,238 +46,22 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
-public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHandlers, HasMouseOutHandlers {
+public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
-     * Button handler for this class.<p>
-     */
-    private class MouseHandler implements MouseOverHandler, MouseOutHandler, ClickHandler {
-
-        /**
-         * Constructor.<p>
-         */
-        protected MouseHandler() {
-
-            // nothing to do
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            Object source = event.getSource();
-            if (source == m_delete) {
-                removeHighlighting();
-                openWarningDialog();
-                CmsDomUtil.ensureMouseOut(m_delete.getElement());
-                CmsDomUtil.ensureMouseOut(getElement());
-            }
-            if (source == m_edit) {
-                openEditDialog(false);
-                removeHighlighting();
-            }
-            if (source == m_new) {
-                openEditDialog(true);
-                removeHighlighting();
-            }
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
-         */
-        public void onMouseOut(MouseOutEvent event) {
-
-            getElement().removeClassName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            removeHighlighting();
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
-         */
-        public void onMouseOver(MouseOverEvent event) {
-
-            getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            highlightElement();
-        }
-
-    }
-
-    /** The delete button. */
-    protected CmsPushButton m_delete;
-
-    /** The edit button. */
-    protected CmsPushButton m_edit;
-
-    /** Highlighting border for this element. */
-    protected CmsHighlightingBorder m_highlighting;
-
-    /** The new button. */
-    protected CmsPushButton m_new;
-
-    /** The editable data. */
-    private CmsEditableDataJSO m_editableData;
-
-    /** The editable marker tag. */
-    private Element m_markerTag;
-
-    /** The parent element id. */
-    private String m_parentResourceId;
-
-    /** The editable element position. */
-    private CmsPositionBean m_position;
-
-    /**
-     * Constructor.<p>
+     * Creates a new instance.<p>
      * 
-     * @param editable the editable marker tag
-     * @param parentId the parent element id
+     * @param editable the editable element 
+     * @param parentId the parent id 
      */
     public CmsListCollectorEditor(Element editable, String parentId) {
 
-        try {
-            setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().listCollectorEditor());
-            addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar());
-            addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            m_markerTag = editable;
-            m_parentResourceId = parentId;
+        super(editable, parentId);
 
-            String jsonText = editable.getAttribute("rel");
-            m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
-
-            MouseHandler handler = new MouseHandler();
-            addMouseOutHandler(handler);
-            addMouseOverHandler(handler);
-
-            if (m_editableData.hasDelete()) {
-                m_delete = new CmsPushButton();
-                m_delete.setImageClass(I_CmsButton.ButtonData.DELETE.getIconClass());
-                m_delete.addStyleName(I_CmsButton.ButtonData.DELETE.getIconClass());
-                m_delete.setTitle(I_CmsButton.ButtonData.DELETE.getTitle());
-                m_delete.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                add(m_delete);
-                m_delete.addClickHandler(handler);
-            }
-            if (m_editableData.hasEdit()) {
-                m_edit = new CmsPushButton();
-                m_edit.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-                m_edit.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                add(m_edit);
-                m_edit.addClickHandler(handler);
-            }
-            if (m_editableData.hasNew()) {
-                m_new = new CmsPushButton();
-                m_new.setImageClass(I_CmsButton.ButtonData.NEW.getIconClass());
-                m_new.addStyleName(I_CmsButton.ButtonData.NEW.getIconClass());
-                m_new.setTitle(I_CmsButton.ButtonData.NEW.getTitle());
-                m_new.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                add(m_new);
-                m_new.addClickHandler(handler);
-            }
-            if (this.getWidgetCount() > 0) {
-                CmsPushButton selection = new CmsPushButton();
-                selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.setTitle(I_CmsButton.ButtonData.SELECTION.getTitle());
-                selection.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                add(selection);
-            }
-        } catch (Exception e) {
-            throw new UnsupportedOperationException("Error while parsing editable tag information: " + e.getMessage());
-        }
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
-     */
-    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-
-        return addDomHandler(handler, MouseOutEvent.getType());
-
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
-     */
-    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
-
-        return addDomHandler(handler, MouseOverEvent.getType());
-    }
-
-    /**
-     * Returns the marker tag.<p>
-     *
-     * @return the marker tag
-     */
-    public Element getMarkerTag() {
-
-        return m_markerTag;
-    }
-
-    /**
-     * Puts a highlighting border around the element.<p>
-     */
-    public void highlightElement() {
-
-        if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
-            RootPanel.get().add(m_highlighting);
-        } else {
-            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
-        }
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#removeFromParent()
-     */
-    @Override
-    public void removeFromParent() {
-
-        removeHighlighting();
-        super.removeFromParent();
-    }
-
-    /**
-     * Removes the highlighting border.<p>
-     */
-    public void removeHighlighting() {
-
-        if (m_highlighting != null) {
-            m_highlighting.removeFromParent();
-            m_highlighting = null;
-        }
-    }
-
-    /**
-     * Sets the position. Make sure the widget is attached to the DOM.<p>
-     * 
-     * @param position the absolute position
-     * @param containerElement the parent container element
-     */
-    public void setPosition(CmsPositionBean position, CmsContainerPageElement containerElement) {
-
-        m_position = position;
-        Element parent = CmsDomUtil.getPositioningParent(getElement());
-        if ((parent == null) || !containerElement.getElement().isOrHasChild(parent)) {
-            parent = containerElement.getElement();
-        }
-        Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth() - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()),
-            Unit.PX);
-        int top = m_position.getTop() - parent.getAbsoluteTop();
-        if (top < 25) {
-            // if top is <25 the buttons might overlap with the option bar, so increase to 25
-            top = 25;
-        }
-        style.setTop(top, Unit.PX);
     }
 
     /**
@@ -305,6 +70,38 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
     protected void deleteElement() {
 
         CmsContainerpageController.get().deleteElement(m_editableData.getStructureId(), m_parentResourceId);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickDelete()
+     */
+    @Override
+    protected void onClickDelete() {
+
+        removeHighlighting();
+        openWarningDialog();
+        CmsDomUtil.ensureMouseOut(m_delete.getElement());
+        CmsDomUtil.ensureMouseOut(getElement());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickEdit()
+     */
+    @Override
+    protected void onClickEdit() {
+
+        openEditDialog(false);
+        removeHighlighting();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew()
+     */
+    @Override
+    protected void onClickNew() {
+
+        openEditDialog(true);
+        removeHighlighting();
     }
 
     /**
@@ -346,4 +143,5 @@ public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHan
         };
         dialog.loadAndShow(callback);
     }
+
 }

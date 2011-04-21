@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2010/10/25 10:23:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 
+import java.util.Random;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -47,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.9.1
  */
@@ -55,6 +57,12 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /** Indicates the permissions for the last element the was opened. */
     protected int m_lastPermissionMode;
+
+    /** The random number generator used for element ids. */
+    private Random m_random = new Random();
+
+    /** True if the elements should be assigned randomly generated ids. */
+    protected boolean m_useIds;
 
     /**
      * Returns the end HTML for a disabled direct edit button.<p>
@@ -83,11 +91,21 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      *  
      * @return the direct edit include HTML to insert in the page beginning
      */
-    public String getDirectEditIncludes(CmsDirectEditParams params) {
+    public String getDirectEditIncludes(CmsDirectEditParams params) throws JspException {
 
         // For Advanced Direct Edit all necessary js and css-code is included by the enableADE tag. Further includes in the head are not needed. 
 
         return "";
+    }
+
+    /**
+     * Generates a random element id.<p>
+     * 
+     * @return a random  element id 
+     */
+    public synchronized String getRandomId() {
+
+        return "editable_" + Math.abs(m_random.nextLong());
     }
 
     /**
@@ -112,9 +130,10 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
+     * @throws JspException 
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
-    public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) {
+    public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException {
 
         // For Advanced Direct Edit all necessary js and css-code is included by the enableADE tag. Further includes in the head are not needed.
 
@@ -222,7 +241,12 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put("hasNew", params.getButtonSelection().isShowNew());
 
         StringBuffer result = new StringBuffer(512);
-        result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>");
+        if (m_useIds) {
+            result.append("<div id=\"" + getRandomId() + "\" class='cms-editable' rel='").append(
+                editableData.toString()).append("'></div>");
+        } else {
+            result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>");
+        }
 
         return result.toString();
     }

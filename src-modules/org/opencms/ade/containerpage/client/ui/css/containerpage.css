@@ -28,28 +28,21 @@ ul.clipboardList{
 	background: value("constants.css.backgroundColorDialog");
 }
 
+.showButtons {}
+
+.hideButtons {}
+
+.classicDirectEdit {}
+
 /** hiding buttons in clip-board menu while dragging **/
 .dragStarted .clipboardList .cmsState {
 	display: none;
 }
 
-.dragStarted div.listCollectorEditor{
+.dragStarted div.directEditButtons{
 	display: none;
 }
 
-/**.toolbarSelection .listCollectorEditor, .toolbarEdit .listCollectorEditor{
-	display: block;
-}**/
-
-.listCollectorEditor{
-	position: absolute;
-	text-align: right;
-/**	display: none;  **/
-}
-
-.listCollectorEditor .cmsState{
-	display: inline-block;
-}
 
 /*.menuContent.showDropzone{
 	padding: 5px 0px;	
@@ -182,7 +175,7 @@ div.toolbarToggle{
 @if user.agent ie6 {
 	.toolbarRemove .optionBar .toolbarRemove, 
 	.toolbarEdit .optionBar .toolbarEdit, 
-	.toolbarEdit .listCollectorEditor .toolbarNew,
+	.toolbarEdit .directEditButtons .toolbarNew,
 	.toolbarMove .optionBar .toolbarMove, 
 	.toolbarNew .optionBar .toolbarNew, 
 	.toolbarProperties .optionBar .toolbarProperties, 
@@ -193,7 +186,7 @@ div.toolbarToggle{
 } @else {
 	.toolbarRemove .optionBar .toolbarRemove, 
 	.toolbarEdit .optionBar .toolbarEdit, 
-	.toolbarEdit .listCollectorEditor .toolbarNew,
+	.toolbarEdit .directEditButtons .toolbarNew,
 	.toolbarMove .optionBar .toolbarMove, 
 	.toolbarNew .optionBar .toolbarNew, 
 	.toolbarProperties .optionBar .toolbarProperties, 

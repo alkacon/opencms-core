@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,9 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -179,6 +179,15 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if the RPC call goes wrong 
      */
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean) throws CmsRpcException;
+
+    /**
+     * Writes the tool-bar visibility into the session cache.<p>
+     * 
+     * @param visible <code>true</code> if the tool-bar is visible
+     * 
+     * @throws CmsRpcException
+     */
+    void setToolbarVisible(boolean visible) throws CmsRpcException;
 
     /**
      * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>

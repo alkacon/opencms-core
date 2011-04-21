@@ -25,20 +25,21 @@ li div.itemContainer{
 }
 
 
+@external navMode;
 
-@sprite .itemIcon div.export {
+@sprite .itemIcon .export, .navMode .itemIcon .export {
 	gwt-image: "gwtImages.bigIcons.stateExportBigIcon"; 
 }
-@sprite .itemIcon div.hidden {
+@sprite .itemIcon .hidden, .navMode .itemIcon .hidden {
 	gwt-image: "gwtImages.bigIcons.stateHiddenBigIcon"; 
 }
-@sprite .itemIcon div.normal {
+@sprite .itemIcon .normal, .navMode .itemIcon .normal {
 	gwt-image: "gwtImages.bigIcons.stateNormalBigIcon";
 }
-@sprite .itemIcon div.secure {
+@sprite .itemIcon .secure, .navMode .itemIcon .secure {
 	gwt-image: "gwtImages.bigIcons.stateSecureBigIcon";
 }
-@sprite .itemIcon div.redirect { 
+@sprite .itemIcon .redirect, .navMode .itemIcon .redirect { 
 	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
 }
 

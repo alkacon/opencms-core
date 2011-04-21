@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -190,14 +190,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void saveRecentList(List<String> clientIds, AsyncCallback<Void> callback);
-
-    /**
-     * Writes the tool-bar visibility into the session cache.<p>
-     * 
-     * @param visible <code>true</code> if the tool-bar is visible
-     * @param callback the call-back executed on response
-     */
-    void setToolbarVisible(boolean visible, AsyncCallback<Void> callback);
 
     /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>

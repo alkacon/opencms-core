@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSitemapButton.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -40,11 +41,11 @@ import org.opencms.gwt.client.util.CmsDomUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarSitemapButton extends A_CmsToolbarButton {
+public class CmsToolbarSitemapButton extends A_CmsToolbarButton<CmsContainerpageHandler> {
 
     /**
      * Constructor.<p>
@@ -57,7 +58,7 @@ public class CmsToolbarSitemapButton extends A_CmsToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
@@ -66,7 +67,7 @@ public class CmsToolbarSitemapButton extends A_CmsToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 

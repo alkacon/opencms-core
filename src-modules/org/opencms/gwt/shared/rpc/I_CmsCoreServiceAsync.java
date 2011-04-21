@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -156,6 +156,14 @@ public interface I_CmsCoreServiceAsync {
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
 
     /**
+     * Writes the tool-bar visibility into the session cache.<p>
+     * 
+     * @param visible <code>true</code> if the tool-bar is visible
+     * @param callback the call-back executed on response
+     */
+    void setToolbarVisible(boolean visible, AsyncCallback<Void> callback);
+
+    /**
      * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
      * 
      * @param urlName the url name to be translated
@@ -197,4 +205,5 @@ public interface I_CmsCoreServiceAsync {
         Map<String, String> values,
         String config,
         AsyncCallback<Map<String, CmsValidationResult>> callback);
+
 }

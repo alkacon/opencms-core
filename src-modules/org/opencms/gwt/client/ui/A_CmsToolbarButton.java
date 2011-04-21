@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarButton.java,v $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.ui;
+package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.gwt.client.ui.CmsToggleButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
@@ -41,22 +38,27 @@ import com.google.gwt.dom.client.Document;
 
 /**
  * Abstract button class implementing common methods 
- * of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
+ * of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton} 
  * for container-page tool-bar buttons.<p>
+ * 
+ * @param <HANDLER> the handler class to use for the button type 
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_CmsToolbarButton {
+public abstract class A_CmsToolbarButton<HANDLER extends I_CmsToolbarHandler> extends CmsToggleButton
+implements I_CmsToolbarButton {
 
-    private CmsContainerpageHandler m_handler;
+    /** The handler instance. */
+    protected HANDLER m_handler;
 
     /** The CSS class responsible for displaying the proper icon. */
     private String m_iconClass;
 
+    /** True if this button is active. */
     private boolean m_isActive;
 
     /**
@@ -65,7 +67,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
      * @param buttonData the button data to use
      * @param handler the container-page handler
      */
-    protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
+    protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
         super(buttonData);
         setButtonStyle(ButtonStyle.IMAGE, null);
@@ -75,7 +77,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#getIconClass()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#getIconClass()
      */
     public String getIconClass() {
 
@@ -83,7 +85,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#isActive()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#isActive()
      */
     public boolean isActive() {
 
@@ -92,7 +94,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarClick()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarClick()
      */
     public void onToolbarClick() {
 
@@ -109,7 +111,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#setActive(boolean)
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -145,7 +147,7 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
      * 
      * @return the container-page handler
      */
-    protected CmsContainerpageHandler getHandler() {
+    protected HANDLER getHandler() {
 
         return m_handler;
     }

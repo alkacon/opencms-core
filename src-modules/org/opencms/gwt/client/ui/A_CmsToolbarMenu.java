@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2011/03/31 17:52:15 $
- * Version: $Revision: 1.14 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarMenu.java,v $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,25 +29,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.ui;
-
-import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
+package org.opencms.gwt.client.ui;
 
 /**
- * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
+ * Abstract button class implementing common methods of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton} 
  * for all container-page tool-bar menu buttons.<p>
+ * 
+ * @param <HANDLER> the handler class for the menu button 
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToolbarButton {
+public abstract class A_CmsToolbarMenu<HANDLER extends I_CmsToolbarHandler> extends CmsMenuButton
+implements I_CmsToolbarButton {
 
-    private CmsContainerpageHandler m_handler;
+    /** The handler instance. */
+    private HANDLER m_handler;
 
     /** The CSS class responsible for displaying the proper icon. */
     private String m_iconClass;
@@ -58,7 +58,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
      * @param buttonData the tool-bar button data
      * @param handler the container-page handler
      */
-    public A_CmsToolbarMenu(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
+    public A_CmsToolbarMenu(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
         super(null, buttonData.getIconClass());
         setToolbarMode(true);
@@ -69,7 +69,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#getIconClass()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#getIconClass()
      */
     public String getIconClass() {
 
@@ -86,7 +86,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#isActive()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#isActive()
      */
     public boolean isActive() {
 
@@ -94,7 +94,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarClick()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarClick()
      */
     public void onToolbarClick() {
 
@@ -105,7 +105,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#setActive(boolean)
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -140,7 +140,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
      * 
      * @return the container-page handler
      */
-    protected CmsContainerpageHandler getHandler() {
+    protected HANDLER getHandler() {
 
         return m_handler;
     }

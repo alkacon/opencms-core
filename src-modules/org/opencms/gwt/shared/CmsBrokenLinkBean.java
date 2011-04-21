@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsBrokenLinkBean.java,v $
- * Date   : $Date: 2011/03/10 07:48:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,15 +56,31 @@ public class CmsBrokenLinkBean implements IsSerializable {
     /** The subtitle. */
     private String m_title;
 
+    /** The resource type. */
+    private String m_type;
+
     /**
-     * Constructor.<p>
+     * Constructor without a type parameter.<p>
+     * 
      * @param title the title 
      * @param subtitle the subtitle 
      */
     public CmsBrokenLinkBean(String title, String subtitle) {
 
+        this(title, subtitle, null);
+    }
+
+    /**
+     * Constructor.<p>
+     * @param title the title 
+     * @param subtitle the subtitle
+     * @param type the resource type  
+     */
+    public CmsBrokenLinkBean(String title, String subtitle, String type) {
+
         m_title = title;
         m_subtitle = subtitle;
+        m_type = type;
     }
 
     /**
@@ -116,6 +132,16 @@ public class CmsBrokenLinkBean implements IsSerializable {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns the resource type.<p>
+     * 
+     * @return the resource type 
+     */
+    public String getType() {
+
+        return m_type;
     }
 
 }

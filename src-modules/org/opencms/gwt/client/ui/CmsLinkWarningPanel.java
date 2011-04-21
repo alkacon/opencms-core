@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLinkWarningPanel.java,v $
- * Date   : $Date: 2011/04/11 07:46:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -109,10 +109,14 @@ public class CmsLinkWarningPanel extends Composite {
         String title = brokenLinkBean.getTitle();
         if ((title == null) || title.equals("")) {
             title = Messages.get().key(Messages.GUI_BROKEN_LINK_NO_TITLE_0);
-
         }
         info.setTitle(brokenLinkBean.getTitle());
         info.setSubTitle(brokenLinkBean.getSubTitle());
+        String type = brokenLinkBean.getType();
+        if (type != null) {
+            info.setResourceType(type);
+        }
+
         CmsListItemWidget widget = new CmsListItemWidget(info);
         return widget;
     }
@@ -127,7 +131,7 @@ public class CmsLinkWarningPanel extends Composite {
     protected CmsTreeItem createTreeItem(CmsBrokenLinkBean brokenLinkBean) {
 
         CmsListItemWidget itemWidget = createListItemWidget(brokenLinkBean);
-        CmsTreeItem item = new CmsTreeItem(false, itemWidget);
+        CmsTreeItem item = new CmsTreeItem(true, itemWidget);
         itemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
         itemWidget.addSubtitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
         for (CmsBrokenLinkBean child : brokenLinkBean.getChildren()) {

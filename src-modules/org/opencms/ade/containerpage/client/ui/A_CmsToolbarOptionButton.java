@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarOptionButton.java,v $
- * Date   : $Date: 2011/02/24 08:06:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,22 +32,23 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
- * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
+ * Abstract button class implementing common methods of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton} 
  * for container-page tool-bar buttons with element functions.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
+public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsContainerpageHandler> {
 
     /** The click handler for all tool-bar buttons. */
     private static ClickHandler m_elementClickHandler = new ClickHandler() {
@@ -113,7 +114,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
     public abstract void onElementClick(ClickEvent event, CmsContainerPageElement element);
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
@@ -122,7 +123,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 

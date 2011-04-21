@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +89,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** A flag which indicates whether the toolbar should be shown initially. */
+    private boolean m_toolbarVisible;
+
     /**
      * Constructor.<p>
      */
@@ -114,7 +117,8 @@ public class CmsCoreData implements IsSerializable {
             clone.getUri(),
             clone.getNavigationUri(),
             clone.getExtensionMapping(),
-            clone.getServerTime());
+            clone.getServerTime(),
+            clone.isToolbarVisible());
     }
 
     /**
@@ -130,6 +134,7 @@ public class CmsCoreData implements IsSerializable {
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
      * @param serverTime the current time  
+     * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially 
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -141,7 +146,8 @@ public class CmsCoreData implements IsSerializable {
         String uri,
         String navigationUri,
         Map<String, String> extensionMapping,
-        long serverTime) {
+        long serverTime,
+        boolean toolbarVisible) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -153,6 +159,7 @@ public class CmsCoreData implements IsSerializable {
         m_navigationUri = navigationUri;
         m_extensionMapping = extensionMapping;
         m_serverTime = serverTime;
+        m_toolbarVisible = toolbarVisible;
     }
 
     /**
@@ -253,6 +260,16 @@ public class CmsCoreData implements IsSerializable {
     public String getWpLocale() {
 
         return m_wpLocale;
+    }
+
+    /**
+     * Returns true if the toolbar should be visible initially.<p>
+     * 
+     * @return true if the toolbar should be visible initially 
+     */
+    public boolean isToolbarVisible() {
+
+        return m_toolbarVisible;
     }
 
 }

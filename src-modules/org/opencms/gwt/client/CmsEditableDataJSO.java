@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsEditableDataJSO.java,v $
- * Date   : $Date: 2010/10/25 10:23:04 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsEditableDataJSO.java,v $
+ * Date   : $Date: 2011/04/21 11:50:17 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client;
+package org.opencms.gwt.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

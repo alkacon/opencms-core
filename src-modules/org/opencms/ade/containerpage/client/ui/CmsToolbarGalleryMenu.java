@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +76,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
@@ -89,7 +90,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 

@@ -1,0 +1,180 @@
+
+
+.directEditButtons{
+	position: absolute;
+	text-align: right;
+}
+
+@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+
+.directEditButtons .cmsState{
+	display: inline-block;
+}
+
+.cmsState-down-hovering{}
+.cmsState-down{}
+.cmsState-down-disabled{}
+.cmsState-up-disabled{}
+.cmsState-up{}
+.cmsState-up-hovering{}
+.cmsHovering{}
+.optionBar{}
+
+.classicDirectEdit {} 
+
+
+div.optionBar{
+	border: 1px solid transparent;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	z-index: value("constants.css.zIndexInline");
+	margin: 0;
+	padding: 0;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: right;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+}
+
+
+div.optionBar div, div.optionBar span {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+}
+
+.toolbarSave{}
+.toolbarProperties{}
+.toolbarContext{}
+.toolbarClipboard{}
+.toolbarReset{}
+.toolbarMove{}
+.toolbarSelection{}
+.toolbarAdd{}
+.toolbarEdit{}
+.toolbarSitemap{}
+.toolbarDelete{}
+.toolbarRemove{}
+.toolbarNew{}
+.toolbarPublish{}
+
+@sprite .toolbarSelection .optionBar.cmsHovering{
+	gwt-image: "backgrounds.softBackground";
+	height: auto;
+	-moz-border-radius: 2px;
+	border: 1px solid value("constants.css.borderColor");
+	background-color: value("constants.css.backgroundColorSoft");
+}
+
+.optionBar div.cmsState {
+	display: none;
+}
+
+.hideButtons .optionBar { 
+	display: none !important;
+}
+
+.showButtons {
+} 
+
+
+
+@if user.agent ie6 {
+	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarEdit .optionBar .toolbarEdit, 
+	.toolbarEdit .directEditButtons .toolbarNew,
+	.toolbarMove .optionBar .toolbarMove, 
+	.toolbarNew .optionBar .toolbarNew, 
+	.toolbarProperties .optionBar .toolbarProperties, 
+	.toolbarSelection .optionBar .toolbarSelection,
+	.toolbarSelection .optionBar.cmsHovering .cmsState{
+		display: inline;
+	}
+} @else {
+	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarEdit .optionBar .toolbarEdit, 
+	.toolbarEdit .directEditButtons .toolbarNew,
+	.toolbarMove .optionBar .toolbarMove, 
+	.toolbarNew .optionBar .toolbarNew, 
+	.toolbarProperties .optionBar .toolbarProperties, 
+	.toolbarSelection .optionBar .toolbarSelection,
+	.toolbarSelection .optionBar.cmsHovering .cmsState{
+		display: inline-block;
+	}
+}
+
+
+@sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard {
+    gwt-image: "coreImages.icons.favoriteIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarClipboard, .optionBar .cmsState-up-disabled .toolbarClipboard, .optionBar .cmsState-down-disabled .toolbarClipboard {
+    gwt-image: "coreImages.icons.favoriteIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove {
+    gwt-image: "coreImages.icons.removeIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarRemove, .optionBar .cmsState-up-disabled .toolbarRemove, .optionBar .cmsState-down-disabled .toolbarRemove {
+    gwt-image: "coreImages.icons.removeIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarDelete, .optionBar .cmsState-down-hovering .toolbarDelete, .optionBar .cmsState-down .toolbarDelete {
+    gwt-image: "coreImages.icons.deleteIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarDelete, .optionBar .cmsState-up-disabled .toolbarDelete, .optionBar .cmsState-down-disabled .toolbarDelete {
+    gwt-image: "coreImages.icons.deleteIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit {
+    gwt-image: "coreImages.icons.editIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarEdit, .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
+    gwt-image: "coreImages.icons.editIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove {
+    gwt-image: "coreImages.icons.moveIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarMove, .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove {
+    gwt-image: "coreImages.icons.moveIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew {
+    gwt-image: "coreImages.icons.addIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarNew, .optionBar .cmsState-up-disabled .toolbarNew, .optionBar .cmsState-down-disabled .toolbarNew {
+    gwt-image: "coreImages.icons.addIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarProperties, .optionBar .cmsState-down-hovering .toolbarProperties, .optionBar .cmsState-down .toolbarProperties {
+    gwt-image: "coreImages.icons.propertyIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarProperties, .optionBar .cmsState-up-disabled .toolbarProperties, .optionBar .cmsState-down-disabled .toolbarProperties {
+    gwt-image: "coreImages.icons.propertyIconDeactivated";
+}
+@sprite .optionBar .cmsState-up-hovering .toolbarSelection, .optionBar .cmsState-down-hovering .toolbarSelection, .optionBar .cmsState-down .toolbarSelection {
+    gwt-image: "coreImages.icons.selectionIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
+    gwt-image: "coreImages.icons.selectionIconDeactivated";
+}
+
+
+
+
+

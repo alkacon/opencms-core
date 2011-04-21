@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/23 11:37:55 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,9 +54,9 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 8.0.0
  */
@@ -115,6 +115,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The current sitemap editor mode. */
     private EditorMode m_editorMode;
 
+    /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
 
     /** The sitemap toolbar. */
@@ -397,7 +398,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         super.onModuleLoad();
         m_instance = this;
         RootPanel rootPanel = RootPanel.get();
-        m_inNavigationStyle = new CmsStyleVariable(rootPanel);
         m_editorMode = EditorMode.navigation;
         // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
@@ -466,6 +466,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 load(target);
             }
         });
+
+        m_inNavigationStyle = new CmsStyleVariable(m_tree);
+        setEditorMode(EditorMode.navigation);
         if (m_controller.isEditable()) {
             // enable drag'n drop 
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));

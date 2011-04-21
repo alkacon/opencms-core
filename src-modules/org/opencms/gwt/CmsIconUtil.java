@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2011/04/07 15:10:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -58,19 +58,6 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
 
         /** The buffer into which the CSS is written. */
         private StringBuffer m_buffer = new StringBuffer();
-
-        /** The selector prefix. */
-        private String m_prefix;
-
-        /**
-         * Creates a new CSS builder with a given selector prefix.<p>
-         * 
-         * @param prefix the selector prefix 
-         */
-        public CssBuilder(String prefix) {
-
-            m_prefix = prefix;
-        }
 
         /**
          * Builds the CSS for all resource types.<p>
@@ -95,8 +82,9 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
 
             String unknown = getIconUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
-            String template = "%1$s div.%2$s {\n  background: transparent scroll 50%% 50%% no-repeat url(\"%3$s\");\n}\n\n";
-            return String.format(template, m_prefix == null ? "" : m_prefix, TYPE_ICON_CLASS, unknown);
+            String template = " div.%1$s {\n  background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");\n}\n\n";
+
+            return String.format(template, TYPE_ICON_CLASS, unknown);
         }
 
         /**
@@ -109,18 +97,18 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
 
             String extension = rule.getExtension();
             if (rule.getBigIcon() != null) {
-                CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
                 cssBig.addSelectorForSubType(typeName, extension, false);
                 cssBig.setImageUri(getIconUri(rule.getBigIcon()));
                 cssBig.writeCss(m_buffer);
 
-                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
                 cssSmall.addSelectorForSubType(typeName, extension, true);
                 cssSmall.setImageUri(getIconUri(rule.getIcon()));
                 cssSmall.writeCss(m_buffer);
 
             } else {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
                 css.addSelectorForSubType(typeName, extension, false);
                 css.addSelectorForSubType(typeName, extension, true);
                 css.setImageUri(getIconUri(rule.getIcon()));
@@ -142,17 +130,17 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
                 return;
             }
             if (settings.getBigIcon() != null) {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
                 css.setImageUri(getIconUri(settings.getBigIcon()));
                 css.addSelectorForType(typeName, false);
                 css.writeCss(m_buffer);
 
-                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
                 cssSmall.setImageUri(getIconUri(settings.getIcon()));
                 cssSmall.addSelectorForType(typeName, true);
                 cssSmall.writeCss(m_buffer);
             } else {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder(m_prefix);
+                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
                 css.setImageUri(getIconUri(settings.getIcon()));
                 css.addSelectorForType(typeName, true);
                 css.addSelectorForType(typeName, false);
@@ -183,13 +171,11 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
     /**
      * Builds the CSS for all resource types.<p>
      * 
-     * @param prefix the prefix to prepend to each selector 
-     * 
      * @return a string containing the CSS rules for all resource types 
      */
-    public static String buildResourceIconCss(String prefix) {
+    public static String buildResourceIconCss() {
 
-        CssBuilder builder = new CssBuilder(prefix);
+        CssBuilder builder = new CssBuilder();
         return builder.buildResourceIconCss();
     }
 

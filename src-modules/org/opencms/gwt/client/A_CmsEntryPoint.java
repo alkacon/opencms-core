@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2011/04/01 10:27:00 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.shared.UmbrellaException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,6 +102,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.singleLineItemCss().ensureInjected();
         bundle.menuButtonCss().ensureInjected();
         bundle.progressBarCss().ensureInjected();
+        bundle.directEditCss().ensureInjected();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,14 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.ui.A_CmsToolbarMenu;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsGroupcontainerEditor;
-import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
+import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
@@ -51,6 +50,8 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -90,11 +91,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerpageHandler {
+public class CmsContainerpageHandler implements I_CmsToolbarHandler {
 
     /** The container-page controller. */
     protected CmsContainerpageController m_controller;

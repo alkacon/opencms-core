@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/20 07:05:21 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,15 +51,15 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.0
  */
@@ -768,6 +768,71 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Determines the position of the list collector editable content.<p> 
+     * 
+     * @param editable the editable marker tag
+     * 
+     * @return the position
+     */
+    public static CmsPositionBean getEditablePosition(Element editable) {
+
+        CmsPositionBean result = new CmsPositionBean();
+        int dummy = -999;
+        // setting minimum height
+        result.setHeight(20);
+        result.setWidth(60);
+        result.setLeft(dummy);
+        result.setTop(dummy);
+        Element sibling = editable.getNextSiblingElement();
+        while ((sibling != null)
+            && !CmsDomUtil.hasClass("cms-editable", sibling)
+            && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
+            CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
+            result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+            ? siblingPos.getLeft()
+            : result.getLeft());
+            result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+            ? siblingPos.getTop()
+            : result.getTop());
+            result.setHeight((result.getTop() + result.getHeight() > siblingPos.getTop() + siblingPos.getHeight())
+            ? result.getHeight()
+            : siblingPos.getTop() + siblingPos.getHeight() - result.getTop());
+            result.setWidth((result.getLeft() + result.getWidth() > siblingPos.getLeft() + siblingPos.getWidth())
+            ? result.getWidth()
+            : siblingPos.getLeft() + siblingPos.getWidth() - result.getLeft());
+            sibling = sibling.getNextSiblingElement();
+        }
+
+        if (result.getHeight() == -1) {
+            // in case no height was set
+            result = CmsPositionBean.generatePositionInfo(editable);
+            result.setHeight(20);
+            result.setWidth((result.getWidth() < 60) ? 60 : result.getWidth());
+        }
+
+        return result;
+    }
+
+    /**
+     * Utility method to determine the effective background color.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the background color
+     */
+    public static String getEffectiveBackgroundColor(Element element) {
+
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
+        if ((Document.get().getBody() != element)
+            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
+                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
+            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
+        }
+
+        return backgroundColor;
+    }
+
+    /**
      * Returns all elements from the DOM with the given CSS class.<p>
      * 
      * @param className the class name to look for
@@ -916,7 +981,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-        return "" + style.zIndex;
+      return "" + style.zIndex;
     }-*/;
 
     /**
@@ -953,25 +1018,6 @@ public final class CmsDomUtil {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Utility method to determine the effective background color.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the background color
-     */
-    public static String getEffectiveBackgroundColor(Element element) {
-
-        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
-        if ((Document.get().getBody() != element)
-            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
-                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
-            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
-        }
-
-        return backgroundColor;
     }
 
     /**
@@ -1210,6 +1256,35 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Removes all script tags from the given element.<p>
+     * 
+     * @param element the element to remove the script tags from
+     * 
+     * @return the resulting element
+     */
+    public static Element removeScriptTags(Element element) {
+
+        NodeList<Element> scriptTags = element.getElementsByTagName(Tag.script.name());
+        for (int i = 0; i < scriptTags.getLength(); i++) {
+            scriptTags.getItem(i).removeFromParent();
+        }
+        return element;
+    }
+
+    /**
+     * Removes all script tags from the given string.<p>
+     * 
+     * @param source the source string
+     * 
+     * @return the resulting string
+     */
+    public static native String removeScriptTags(String source)/*-{
+
+      var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+      return source.replace(matchTag, "");
+    }-*/;
+
+    /**
      * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
      * 
      * @param element the parent element of the overlay
@@ -1238,6 +1313,19 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns the document style implementation.<p>
+     * 
+     * @return the document style implementation
+     */
+    private static DocumentStyleImpl getStyleImpl() {
+
+        if (styleImpl == null) {
+            styleImpl = GWT.create(DocumentStyleImpl.class);
+        }
+        return styleImpl;
+    }
+
+    /**
      * Internal method to indicate if the given element has a CSS class.<p>
      * 
      * @param className the class name to look for
@@ -1256,45 +1344,4 @@ public final class CmsDomUtil {
         return hasClass;
     }
 
-    /**
-     * Returns the document style implementation.<p>
-     * 
-     * @return the document style implementation
-     */
-    private static DocumentStyleImpl getStyleImpl() {
-
-        if (styleImpl == null) {
-            styleImpl = GWT.create(DocumentStyleImpl.class);
-        }
-        return styleImpl;
-    }
-
-    /**
-     * Removes all script tags from the given string.<p>
-     * 
-     * @param source the source string
-     * 
-     * @return the resulting string
-     */
-    public static native String removeScriptTags(String source)/*-{
-
-        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
-        return source.replace(matchTag, "");
-    }-*/;
-
-    /**
-     * Removes all script tags from the given element.<p>
-     * 
-     * @param element the element to remove the script tags from
-     * 
-     * @return the resulting element
-     */
-    public static Element removeScriptTags(Element element) {
-
-        NodeList<Element> scriptTags = element.getElementsByTagName(Tag.script.name());
-        for (int i = 0; i < scriptTags.getLength(); i++) {
-            scriptTags.getItem(i).removeFromParent();
-        }
-        return element;
-    }
 }

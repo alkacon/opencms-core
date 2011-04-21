@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -161,20 +161,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             try {
                 ensureSession();
 
-                List<CmsResource> descendands = new ArrayList<CmsResource>();
+                List<CmsResource> descendants = new ArrayList<CmsResource>();
                 HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
 
-                descendands.add(entryResource);
+                descendants.add(entryResource);
                 if (entryResource.isFolder()) {
-                    descendands.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+                    descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
                 }
-                for (CmsResource deleteRes : descendands) {
+                for (CmsResource deleteRes : descendants) {
                     deleteIds.add(deleteRes.getStructureId());
                 }
                 MultiValueMap linkMap = MultiValueMap.decorate(
                     new HashMap<Object, Object>(),
                     FactoryUtils.instantiateFactory(HashSet.class));
-                for (CmsResource resource : descendands) {
+                for (CmsResource resource : descendants) {
                     List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
                     for (CmsResource source : linkSources) {
                         linkMap.put(resource, source);
@@ -270,11 +270,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
+        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         String defaultTitle = "";
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsBrokenLinkBean(title, subtitle);
+        return new CmsBrokenLinkBean(title, subtitle, typeName);
     }
 
     /**

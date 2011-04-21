@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2011/04/05 18:04:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.CmsFavoritesDNDController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
@@ -57,11 +58,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
+public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
 
     /** The favorite list widget. */
     protected CmsFavoriteTab m_favorites;
@@ -173,9 +174,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.setMoveIconStyle(
-                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
-                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
+            element.setMoveIconStyle(I_CmsImageBundle.INSTANCE.style().changeOrderIcon(), Messages.get().key(
+                Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
             element.showRemoveButton();
         }
     }
@@ -191,7 +191,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
@@ -200,7 +200,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 

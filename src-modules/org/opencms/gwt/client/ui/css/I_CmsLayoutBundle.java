@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  * 
  * @since 8.0.0
  */
@@ -561,6 +561,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** General CSS, used for general re-occurring styles. */
+    @Shared
     interface I_CmsGeneralCss extends CssResource {
 
         /** 
@@ -1517,6 +1518,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** Toolbar CSS. */
+    @Shared
     interface I_CmsToolbarCss extends CssResource {
 
         /** 
@@ -1525,6 +1527,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String notification();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String simpleToolbarShow();
 
         /** 
          * Access method.<p>
@@ -1581,6 +1590,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarShow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarToggle();
     }
 
     /** The bundle instance. */
@@ -1640,6 +1656,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("contextmenu.css")
     I_CmsContextmenuCss contextmenuCss();
 
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    I_CmsImageBundle coreImages();
+
     /**
      * Access method.<p>
      * 
@@ -1655,6 +1678,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("dialog.css")
     I_CmsDialogCss dialogCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the dialog CSS
+     */
+    @Source("directedit.css")
+    I_CmsDirectEditCss directEditCss();
 
     /**
      * Access method.<p>

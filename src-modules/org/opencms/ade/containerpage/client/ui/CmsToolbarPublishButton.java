@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/11/18 07:42:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/21 11:50:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -40,11 +41,11 @@ import org.opencms.gwt.client.util.CmsDomUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarPublishButton extends A_CmsToolbarButton {
+public class CmsToolbarPublishButton extends A_CmsToolbarButton<CmsContainerpageHandler> {
 
     /**
      * Constructor.<p>
@@ -57,7 +58,7 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
@@ -68,7 +69,7 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 

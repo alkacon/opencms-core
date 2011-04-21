@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -73,9 +73,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
-    /** Flag to indicate if the toolbar is visible. */
-    private boolean m_toolbarVisible;
-
     /**
      * Constructor.<p>
      * 
@@ -85,7 +82,6 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapUri the current sitemap URI
      * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
      * @param newTypes the map of available types and their new resource id's
-     * @param toolbarVisible if the toolbar is visible
      */
     public CmsCntPageData(
         String cntPageUri,
@@ -93,8 +89,7 @@ public final class CmsCntPageData implements IsSerializable {
         String requestParams,
         String sitemapUri,
         String sitePath,
-        Map<String, String> newTypes,
-        boolean toolbarVisible) {
+        Map<String, String> newTypes) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
@@ -102,7 +97,6 @@ public final class CmsCntPageData implements IsSerializable {
         m_sitemapUri = sitemapUri;
         m_sitePath = sitePath;
         m_newTypes = newTypes;
-        m_toolbarVisible = toolbarVisible;
     }
 
     /**
@@ -191,15 +185,5 @@ public final class CmsCntPageData implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
-    }
-
-    /**
-     * Returns the tool-bar visibility.<p>
-     * 
-     * @return <code>true</code> if the tool-bar is visible
-     */
-    public boolean isToolbarVisible() {
-
-        return m_toolbarVisible;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.util.CmsFadeAnimation;
+import org.opencms.gwt.client.util.CmsStyleVariable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +41,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -77,6 +81,66 @@ public class CmsToolbar extends Composite {
     public CmsToolbar() {
 
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    /**
+     * Helper method for setting toolbar visibility.<p>
+     * 
+     * @param toolbar the toolbar 
+     * @param show true if the toolbar should be shown 
+     * @param toolbarVisibility the style variable controlling the toolbar visibility 
+     */
+    public static void showToolbar(
+        final CmsToolbar toolbar,
+        final boolean show,
+        final CmsStyleVariable toolbarVisibility) {
+
+        if (show) {
+            toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
+            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
+        } else {
+            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
+
+                public void execute() {
+
+                    toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+                }
+            },
+                300);
+            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
+        }
+    }
+
+    /**
+     * Helper method for setting toolbar visibility.<p>
+     * 
+     * @param toolbar the toolbar 
+     * @param show true if the toolbar should be shown 
+     * @param toolbarVisibility the style variable controlling the toolbar visibility
+     * @param showClass the class which should be used for showing the toolbar  
+     */
+    public static void showToolbar(
+        final CmsToolbar toolbar,
+        final boolean show,
+        final CmsStyleVariable toolbarVisibility,
+        String showClass) {
+
+        if (show) {
+            toolbarVisibility.setValue(showClass);
+            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
+            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
+        } else {
+            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
+
+                public void execute() {
+
+                    toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+                }
+            },
+                300);
+            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
+        }
     }
 
     /**

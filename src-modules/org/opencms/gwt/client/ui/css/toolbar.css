@@ -11,6 +11,8 @@
 	display: none;
 }
 
+.simpleToolbarShow {} 
+
 .toolbar, .toolbar * {
 	margin: 0;
 	padding: 0;
@@ -82,4 +84,34 @@
 	top: 35px;
 	width:100%;
 }
+
+
+div.toolbarToggle{
+	position: fixed;
+	left: 97%;
+	top: -3px;
+	padding: 3px 3px 1px 3px;
+	z-index: value("constants.css.zIndexInline");
+}
+
+.toolbarToggle, .toolbarToggle * {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+}
+
+
+
 

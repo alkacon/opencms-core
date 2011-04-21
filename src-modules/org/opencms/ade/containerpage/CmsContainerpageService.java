@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/20 07:07:49 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/04/21 11:50:17 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -278,8 +278,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsRequestUtil.encodeParams(request),
                 CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
                 cntPageUri,
-                getNewTypes(cms, request),
-                getSessionCache().isToolbarVisible());
+                getNewTypes(cms, request));
         } catch (Throwable e) {
             error(e);
         }
@@ -374,19 +373,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setToolbarVisible(boolean)
-     */
-    public void setToolbarVisible(boolean visible) throws CmsRpcException {
-
-        try {
-            ensureSession();
-            getSessionCache().setToolbarVisible(visible);
-        } catch (Throwable e) {
-            error(e);
-        }
-    }
-
-    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(java.lang.String, java.util.List)
      */
     public void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
@@ -417,9 +403,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String propName = entry.getKey();
                 String propType = propertiesConf.get(propName).getPropertyType();
-                changedProps.put(
-                    propName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
+                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    propType,
+                    properties.get(propName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedProps, false);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/04/07 15:07:35 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarContextButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
@@ -44,22 +43,22 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
-import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.CmsToolbarContextButton;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -67,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.0
  */
@@ -215,6 +214,17 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
+     * Returns if the tool-bar is visible.<p>
+     * 
+     * @return <code>true</code> if the tool-bar is visible
+     */
+    public boolean isToolbarVisible() {
+
+        return !org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide().equals(
+            m_toolbarVisibility.getValue());
+    }
+
+    /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
     @Override
@@ -317,7 +327,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(root);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-        if (controller.getData().isToolbarVisible()) {
+        if (CmsCoreProvider.get().isToolbarVisible()) {
             showToolbar(true);
             containerpageHandler.activateSelection();
         }
@@ -341,32 +351,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void showToolbar(boolean show) {
 
-        if (show) {
-            m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
-            CmsFadeAnimation.fadeIn(m_toolbar.getElement(), null, 300);
-            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
-        } else {
-            CmsFadeAnimation.fadeOut(m_toolbar.getElement(), new Command() {
-
-                public void execute() {
-
-                    m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-                }
-            },
-                300);
-
-            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
-        }
-    }
-
-    /**
-     * Returns if the tool-bar is visible.<p>
-     * 
-     * @return <code>true</code> if the tool-bar is visible
-     */
-    public boolean isToolbarVisible() {
-
-        return !org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide().equals(
-            m_toolbarVisibility.getValue());
+        CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,9 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -73,6 +73,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,6 +113,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
 
     /**
      * Internal helper method for getting a validation service.<p>
@@ -381,6 +385,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
+        boolean toolbarVisible = getSessionCache().isToolbarVisible();
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             BACKLINK_URI,
@@ -391,7 +396,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             cms.getRequestContext().getUri(),
             navigationUri,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
-            System.currentTimeMillis());
+            System.currentTimeMillis(),
+            toolbarVisible);
         return data;
     }
 
@@ -426,6 +432,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 bean.isNotificationEnabled(),
                 bean.isModifySiblings());
         } catch (CmsException e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setToolbarVisible(boolean)
+     */
+    public void setToolbarVisible(boolean visible) throws CmsRpcException {
+
+        try {
+            ensureSession();
+            getSessionCache().setToolbarVisible(visible);
+        } catch (Throwable e) {
             error(e);
         }
     }
@@ -623,6 +642,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         // get current lock
         lock = getCmsObject().getLock(resource);
         return lock;
+    }
+
+    /**
+     * Returns the session cache.<p>
+     * 
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache() {
+
+        if (m_sessionCache == null) {
+            m_sessionCache = (CmsADESessionCache)getRequest().getSession().getAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+            if (m_sessionCache == null) {
+                m_sessionCache = new CmsADESessionCache(getCmsObject());
+                getRequest().getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
+            }
+        }
+        return m_sessionCache;
     }
 
     /**
@@ -1025,4 +1062,5 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             getCmsObject().writePropertyObject(resourcePath, newProp);
         }
     }
+
 }

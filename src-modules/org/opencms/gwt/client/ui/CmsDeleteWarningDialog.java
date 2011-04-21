@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDeleteWarningDialog.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 11:50:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -82,6 +82,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /** The site path of the resource to delete. */
     private String m_sitePath;
+
+    private static final String TM_DIALOG_LIST = "dialogList";
 
     /**
      * Constructor.<p>
@@ -144,13 +146,19 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
             @Override
             protected void onResponse(Void result) {
 
-                // noop
+                onAfterDeletion();
             }
         };
         action.execute();
     }
 
-    private static final String TM_DIALOG_LIST = "dialogList";
+    /**
+     * Method which should be called after the deletion has been performed.<p>
+     */
+    protected void onAfterDeletion() {
+
+        // do nothing by default 
+    }
 
     /**
      * Checks for broken links, ask for confirmation and finally deletes the given resource.<p>
@@ -192,4 +200,5 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
         };
         action.execute();
     }
+
 }
