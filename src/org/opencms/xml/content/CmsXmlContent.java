@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2010/02/15 08:53:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 10:31:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -494,6 +494,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * 
      * @return the list of sub-value for the given xpath in the selected locale
      */
+    @Override
     public List<I_CmsXmlContentValue> getSubValues(String path, Locale locale) {
 
         List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
@@ -692,9 +693,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         CmsXmlContentDefinition parentDef) {
 
         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
-        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
-            element.getName(),
-            elemIndex));
+        String elemPath = CmsXmlUtils.concatXpath(
+            parentPath,
+            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);

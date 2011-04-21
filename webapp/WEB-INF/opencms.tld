@@ -741,6 +741,22 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>      
     </tag>        
+    
+    <tag>
+        <description>
+            This tag includes required css or javascript resources, place in html/head.
+            Required resources can be configured in the resource type schema.
+            Set attribute type to 'css' to include css resources or to 'javascript' to include java-script resources.
+        </description> 
+        <name>headincludes</name>
+        <tag-class>org.opencms.jsp.CmsJspTagHeadIncludes</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>type</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>     
+    </tag>
         
     <tag>
         <description>

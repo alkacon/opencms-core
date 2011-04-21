@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2011/04/15 08:09:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/21 10:31:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -104,6 +104,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROCESS_TAG_1 = "ERR_PROCESS_TAG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_REQUIRED_RESOURCE_1 = "ERR_READING_REQUIRED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RUNTIME_1 = "ERR_RUNTIME_1";

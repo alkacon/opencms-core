@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/20 08:32:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/04/21 10:31:39 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,8 +208,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "formatter" appinfo element name. */
     public static final String APPINFO_FORMATTER = "formatter";
 
-    /** Constant for the "resource" appinfo element name. */
-    public static final String APPINFO_FORMATTER_RESOURCE = "resource";
+    /** Constant for the "headincludes" appinfo element name. */
+    public static final String APPINFO_HEAD_INCLUDES = "headincludes";
+
+    /** Constant for the "headinclude" appinfo element name. */
+    public static final String APPINFO_HEAD_INCLUDE = "headinclude";
 
     /** Constant for the "formatters" appinfo element name. */
     public static final String APPINFO_FORMATTERS = "formatters";
@@ -281,6 +284,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
+
+    /** Constant for head include type attribute: CSS. */
+    public static final String ATTRIBUTE_INCLUDE_TYPE_CSS = "css";
+
+    /** Constant for head include type attribute: java-script. */
+    public static final String ATTRIBUTE_INCLUDE_TYPE_JAVASCRIPT = "javascript";
 
     /** Default formatter path. */
     public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
@@ -670,6 +679,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initTabs(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_FORMATTERS)) {
                     initFormatters(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_HEAD_INCLUDES)) {
+                    initHeadIncludes(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_PROPERTIES)) {
                     initProperties(element, contentDefinition);
                 }
@@ -1589,7 +1600,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Initializes the formatters for this content handler.<p>
      * 
      * @param root the "formatters" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the tabs belong to
+     * @param contentDefinition the content definition the formatters belong to
      */
     protected void initFormatters(Element root, CmsXmlContentDefinition contentDefinition) {
 
@@ -1606,7 +1617,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
             Element element = itFormatter.next();
-            // this is a tab node
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String widthStr = element.attributeValue(APPINFO_ATTR_WIDTH);
@@ -1618,6 +1628,29 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             schemaLocation);
         m_formatters.putAll(formatterMaps.getFirst());
         m_widthFormatters.putAll(formatterMaps.getSecond());
+    }
+
+    /**
+     * Initializes the head includes for this content handler.<p>
+     * 
+     * @param root the "headincludes" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the head-includes belong to
+     */
+    protected void initHeadIncludes(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        Iterator<Element> itInclude = CmsXmlGenericWrapper.elementIterator(root, APPINFO_HEAD_INCLUDE);
+        while (itInclude.hasNext()) {
+            Element element = itInclude.next();
+            String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            String uri = element.attributeValue(APPINFO_ATTR_URI);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(uri)) {
+                if (ATTRIBUTE_INCLUDE_TYPE_CSS.equals(type)) {
+                    m_cssHeadIncludes.add(uri);
+                } else if (ATTRIBUTE_INCLUDE_TYPE_JAVASCRIPT.equals(type)) {
+                    m_jsHeadIncludes.add(uri);
+                }
+            }
+        }
     }
 
     /**
