@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/04/21 10:29:34 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -330,7 +330,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             I_CmsDropContainer container = (I_CmsDropContainer)target;
             int count = container.getWidgetCount();
-            CmsDebugLog.getInstance().printLine("Count: " + count + ", position: " + container.getPlaceholderIndex());
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
             if (container.getPlaceholderIndex() >= count) {
                 container.add((CmsContainerPageElement)draggable);
@@ -474,8 +473,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     prepareDragInfo(helper, placeholder, container, handler);
                     container.highlightContainer();
                 }
-            } else {
-                CmsDebugLog.getInstance().printLine("No content for container: " + container.getContainerId());
             }
         }
     }
