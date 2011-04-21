@@ -112,6 +112,7 @@
     text-align: center;
 }
 .loadingText {
+	text-align: center;
 }
 .loadingAnimation {
 	margin-top: 20px;
