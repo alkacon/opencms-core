@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2011/04/21 09:57:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/21 10:41:26 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1582,14 +1582,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * Shuts down the search index.<p>
      * 
      * This will close the local Lucene index searcher instance.<p>
-     * 
-     * @throws IOException in case the index could not be closed
      */
-    public void shutDown() throws IOException {
+    public void shutDown() {
 
-        if (m_searcher != null) {
-            m_searcher.close();
-        }
+        indexSearcherClose();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_INDEX_1, getName()));
         }
@@ -2009,6 +2005,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if ((m_searcher != null) && (m_searcher.getIndexReader() != null)) {
             try {
                 m_searcher.getIndexReader().close();
+                m_searcher.close();
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, getName()), e);
             }

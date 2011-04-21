@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2010/11/25 13:17:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/21 10:41:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1607,11 +1607,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         Iterator<CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
             CmsSearchIndex index = i.next();
-            try {
-                index.shutDown();
-            } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, index.getName()), e);
-            }
+            index.shutDown();
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
