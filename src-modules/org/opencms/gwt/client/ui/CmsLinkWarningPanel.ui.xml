@@ -4,9 +4,6 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
-		.scrollPanel {
-			padding: 0;
-		}
 		.list{
 			overflow: auto;
 			max-height: 250px;
@@ -17,12 +14,10 @@
 		}
 		.label {
 			padding: 6px;
-		} 
+		}
 	</ui:style>
 	<g:FlowPanel styleName="{style.root}" addStyleNames="{resources.generalCss.border} {resources.generalCss.cornerAll}" >
 		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}"  addStyleNames="{style.label}" />
-		<g:ScrollPanel styleName="{style.scrollPanel}" >
 		<cms:CmsList ui:field="m_linkPanel" addStyleNames="{style.list}" />
-		</g:ScrollPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 
