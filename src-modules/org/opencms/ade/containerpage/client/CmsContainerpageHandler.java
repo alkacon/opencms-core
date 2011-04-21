@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/04/21 11:50:16 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/04/21 13:18:55 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 8.0.0
  */
@@ -177,8 +177,8 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
      */
     public void deactivateMenuButton() {
 
-        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu)) {
-            ((A_CmsToolbarMenu)m_activeButton).setActive(false);
+        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu<?>)) {
+            ((A_CmsToolbarMenu<?>)m_activeButton).setActive(false);
         }
     }
 
@@ -299,8 +299,8 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
      */
     public void hideMenu() {
 
-        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu)) {
-            ((A_CmsToolbarMenu)m_activeButton).hideMenu();
+        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu<?>)) {
+            ((A_CmsToolbarMenu<?>)m_activeButton).hideMenu();
         }
     }
 
