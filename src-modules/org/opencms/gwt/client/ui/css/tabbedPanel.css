@@ -253,7 +253,7 @@
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected, .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
     background: value("constants.css.backgroundColorMenu") none repeat scroll 0 0;
 	cursor: default;
 	font-size:value("constants.css.fontSize");
