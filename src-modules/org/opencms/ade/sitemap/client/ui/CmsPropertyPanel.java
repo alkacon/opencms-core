@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/04/14 14:41:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/21 08:43:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,11 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_RESOURCE_0;
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_SIMPLE_0;
-import static org.opencms.ade.sitemap.client.Messages.GUI_PROPERTY_TAB_STRUCTURE_0;
-
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -55,13 +49,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -71,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -94,9 +85,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /** Tab id for the "simple" tab. */
     public static final String TAB_SIMPLE = "simple";
-
-    /** The list of form fields. */
-    protected List<I_CmsFormField> m_fields = Lists.newArrayList();
 
     /** Multimap of fields by field group. */
     private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
@@ -122,7 +110,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     /** The "simple" tab. */
     private FlowPanel m_simpleTab = new FlowPanel();
 
-    /** The tab panel . */
+    /** The tab panel. */
     private CmsTabbedPanel<Widget> m_tabPanel = new CmsTabbedPanel<Widget>();
 
     /**
@@ -134,7 +122,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         // TODO: replace with dynamic calculation
         m_tabPanel.getElement().getStyle().setHeight(400, Unit.PX);
-        m_tabPanel.add(CmsPopup.wrapWithBorderPadding(m_simpleTab), Messages.get().key(GUI_PROPERTY_TAB_SIMPLE_0));
         CmsDomUtil.makeScrollable(m_simpleTab);
         CmsDomUtil.makeScrollable(m_sharedTab);
         CmsDomUtil.makeScrollable(m_individualTab);
@@ -143,25 +130,15 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
 
-        m_tabPanel.add(m_individualTab, Messages.get().key(GUI_PROPERTY_TAB_STRUCTURE_0));
+        m_tabPanel.add(
+            CmsPopup.wrapWithBorderPadding(m_simpleTab),
+            Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
+        m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
         m_showShared = showShared;
         if (m_showShared) {
-            m_tabPanel.add(m_sharedTab, Messages.get().key(GUI_PROPERTY_TAB_RESOURCE_0));
+            m_tabPanel.add(m_sharedTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
         }
         initWidget(m_tabPanel);
-
-        m_tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
-
-            public void onSelection(SelectionEvent<Integer> event) {
-
-                for (I_CmsFormField field : m_fields) {
-                    I_CmsFormWidget w = field.getWidget();
-                    if (w instanceof CmsTextBox) {
-                        ((CmsTextBox)w).updateLayout();
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -334,7 +311,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         Set<String> displaySet = Sets.newHashSet();
         for (I_CmsFormField field : fields) {
             boolean hasValue = !CmsStringUtil.isEmpty(field.getWidget().getApparentValue());
-            if (hasValue || "true".equals(field.getLayoutData().get(LD_DISPLAY_VALUE))) {
+            if (hasValue || Boolean.TRUE.toString().equals(field.getLayoutData().get(LD_DISPLAY_VALUE))) {
                 String propName = field.getLayoutData().get(LD_PROPERTY);
                 displaySet.add(propName);
             }
@@ -343,7 +320,9 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     }
 
     /**
-     * @param fields
+     * Renders the simple tab.<p>
+     * 
+     * @param fields the fields to render
      */
     private void renderSimpleTab(Collection<I_CmsFormField> fields) {
 
