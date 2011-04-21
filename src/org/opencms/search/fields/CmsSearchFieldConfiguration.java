@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/21 08:15:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -596,7 +596,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         if (extractionResult != null) {
             byte[] data = extractionResult.getBytes();
             if (data != null) {
-                Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data, Field.Store.YES);
+                Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data);
                 document.add(field);
             }
         }
@@ -838,7 +838,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         : new PerFieldAnalyzerWrapper(analyzer);
 
         // parent folder and last modified lookup fields must use whitespace analyzer
-        WhitespaceAnalyzer ws = new WhitespaceAnalyzer();
+        WhitespaceAnalyzer ws = new WhitespaceAnalyzer(CmsSearchIndex.LUCENE_VERSION);
         result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, ws);
         result.addAnalyzer(CmsSearchField.FIELD_CATEGORY, ws);
         result.addAnalyzer(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);

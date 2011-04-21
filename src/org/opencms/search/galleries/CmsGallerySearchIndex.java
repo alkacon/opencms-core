@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2011/04/20 15:26:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 08:15:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -67,7 +69,7 @@ import org.apache.lucene.search.TopDocs;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0 
  */
@@ -377,6 +379,36 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Checks if the provided resource should be excluded from this search index.<p> 
+     *
+     * With the introduction of the ADE search index in OpenCms 8, the meaning 
+     * of the VFS property <code>search.exclude</code> that controls
+     * if a resource is included in a search index has been extended.<p>
+     *
+     * The following uses cases can be covered with the property:<p>
+     *
+     * <dl>
+     * <dt>Case A: Exclude from all index</dt>
+     *      <dd>Applies at least to ADE resource type copy templates.<br>
+     *      Set <code>search.exclude=all</code>
+     *      </dd>
+     *      
+     * <dt>Case B: Include in all index</dt>
+     *      <dd>Applies to most resources e.g. news articles etc.<br>
+     *      Set <code>search.exclude=false</code> - or anything else but <code>all|true|ade</code>.
+     *      This is also the default in case the property is not set at all.
+     *      </dd>
+     *      
+     * <dt>Case D: Include in ADE, but exclude in standard index</dt>
+     *      <dd>Applies to content like articles that are displayed only in container pages,
+     *          also applies to "list generating" resource types like those that contain settings for a collector.<br>
+     *      Set <code>search.exclude=true</code> - This is the behavior before OpenCms v8.
+     *      </dd>
+     *       
+     * <dt>Case C: Exclude from ADE, but include in standard index</dt>
+     *      <dd>Use case so far unknown, but implemented anyway.<br>
+     *      Set <code>search.exclude=ade</code>.
+     *      </dd> 
+     * </dl>
      * 
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource to index
@@ -390,7 +422,22 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // don't index  folders or temporary files for galleries, but pretty much everything else
             return true;
         }
-        return false;
+        boolean excludeFromIndex = false;
+        try {
+            // do property lookup with folder search
+            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
+            if (propValue != null) {
+                propValue = propValue.trim();
+                // property value was neither "true" nor null, must check for "all"
+                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_ADE.equalsIgnoreCase(propValue);
+            }
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
+            }
+        }
+        return excludeFromIndex;
     }
 
     /**

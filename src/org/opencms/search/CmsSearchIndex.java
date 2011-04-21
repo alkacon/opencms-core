@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2011/04/20 15:26:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 08:15:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,8 +73,10 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.FilterIndexReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.LogByteSizeMergePolicy;
+import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
@@ -98,7 +100,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,6 +218,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter to set the thread priority during search. */
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
+
+    /** Special value for the search.eclude property. */
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ADE = "ade";
+
+    /** Special value for the search.eclude property. */
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
 
     /** Automatic ("auto") index rebuild mode. */
     public static final String REBUILD_MODE_AUTO = "auto";
@@ -807,23 +815,25 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // open file directory for Lucene
             FSDirectory dir = FSDirectory.open(new File(m_path));
-            // index already exists
-            indexWriter = new IndexWriter(dir, getAnalyzer(), create, MaxFieldLength.UNLIMITED);
-
-            // set the index writer parameter if required 
+            // create Lucene merge policy
+            LogMergePolicy mergePolicy = new LogByteSizeMergePolicy();
             if (m_luceneMaxMergeDocs != null) {
-                indexWriter.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
+                mergePolicy.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
             }
             if (m_luceneMergeFactor != null) {
-                indexWriter.setMergeFactor(m_luceneMergeFactor.intValue());
-            }
-            if (m_luceneRAMBufferSizeMB != null) {
-                indexWriter.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
+                mergePolicy.setMergeFactor(m_luceneMergeFactor.intValue());
             }
             if (m_luceneUseCompoundFile != null) {
-                indexWriter.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
+                mergePolicy.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
             }
-
+            // create a new Lucene index configuration
+            IndexWriterConfig indexConfig = new IndexWriterConfig(LUCENE_VERSION, getAnalyzer());
+            // set the index configuration parameters if required 
+            if (m_luceneRAMBufferSizeMB != null) {
+                indexConfig.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
+            }
+            // create the index
+            indexWriter = new IndexWriter(dir, indexConfig);
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
@@ -1797,7 +1807,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // open file directory for Lucene
             FSDirectory oldDir = FSDirectory.open(file);
             FSDirectory newDir = FSDirectory.open(new File(backupPath));
-            Directory.copy(oldDir, newDir, true);
+            for (String fileName : oldDir.listAll()) {
+                oldDir.copy(newDir, fileName, fileName);
+            }
         } catch (Exception e) {
             // TODO: logging etc. 
             backupPath = null;
@@ -1828,8 +1840,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         try {
             // do property lookup with folder search
-            excludeFromIndex = Boolean.valueOf(
-                cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue()).booleanValue();
+            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
+            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
+            if (!excludeFromIndex && (propValue != null)) {
+                // property value was neither "true" nor null, must check for "all"
+                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim());
+            }
         } catch (CmsException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
