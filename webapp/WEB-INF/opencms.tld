@@ -611,6 +611,10 @@
         <attribute>
             <name>border</name>
             <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>cssclass</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>                            
         <attribute>
             <name>hspace</name>
@@ -741,7 +745,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>      
     </tag>        
-    
+        
     <tag>
         <description>
             This tag includes required css or javascript resources, place in html/head.

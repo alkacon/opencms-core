@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2011/04/19 15:28:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 13:04:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.2.0 
  */
@@ -70,6 +70,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private static final String ATTR_ALIGN = "align";
     private static final String ATTR_ALT = "alt";
     private static final String ATTR_BORDER = "border";
+    private static final String ATTR_CLASS = "class";
     private static final String ATTR_HSPACE = "hspace";
     private static final String ATTR_ID = "id";
     private static final String ATTR_LONGDESC = "longdesc";
@@ -352,6 +353,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_BORDER);
     }
 
+    /** 
+     * Returns the value of the HTML "class" attribute.<p>
+     * 
+     * @return the value of the HTML "class" attribute
+     */
+    public String getCssclass() {
+
+        return getAttribute(ATTR_CLASS);
+    }
+
     /**
      * Returns the scaling height for the image.<p>
      * 
@@ -576,6 +587,17 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public void setBorder(String value) {
 
         setAttribute(ATTR_BORDER, value);
+
+    }
+
+    /** 
+     * Sets the value of the HTML "class" attribute.<p>
+     * 
+     * @param value the value of the HTML "class" attribute to set
+     */
+    public void setCssclass(String value) {
+
+        setAttribute(ATTR_CLASS, value);
 
     }
 
