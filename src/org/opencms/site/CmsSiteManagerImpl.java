@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2011/04/13 11:34:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 10:46:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  */
@@ -790,6 +790,9 @@ public final class CmsSiteManagerImpl {
      */
     public void setSharedFolder(String sharedFolder) {
 
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
         m_sharedFolder = CmsStringUtil.joinPaths("/", sharedFolder, "/");
     }
 
