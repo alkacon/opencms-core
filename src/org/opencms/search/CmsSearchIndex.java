@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2011/04/21 08:15:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/21 09:57:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,6 +77,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LogByteSizeMergePolicy;
 import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
@@ -100,7 +101,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -831,6 +832,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // set the index configuration parameters if required 
             if (m_luceneRAMBufferSizeMB != null) {
                 indexConfig.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
+            }
+            if (create) {
+                indexConfig.setOpenMode(OpenMode.CREATE);
+            } else {
+                indexConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
             }
             // create the index
             indexWriter = new IndexWriter(dir, indexConfig);
