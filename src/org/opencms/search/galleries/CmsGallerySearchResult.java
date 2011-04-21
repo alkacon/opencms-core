@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResult.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 
 /**
- * Contains a single search result from the ADE gallery search.<p>
+ * Contains a single search result from the gallery search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */
@@ -59,7 +59,7 @@ import org.apache.lucene.document.Fieldable;
  */
 public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult> {
 
-    /** The additional information for the ADE galleries. */
+    /** The additional information for the gallery search index. */
     protected String m_additonalInfo;
 
     /** The supported container types of this search result. */
@@ -303,9 +303,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     }
 
     /**
-     * Returns the additional information stored for this search result for the ADE galleries.<p>
+     * Returns the additional information stored for this search result in the gallery search index.<p>
      * 
-     * @return the additional information stored for this search result for the ADE galleries
+     * @return the additional information stored for this search result in the gallery search index
      */
     public String getAdditonalInfo() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchFieldMapping.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,16 +48,16 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
 
-    /** Name of the field that contains the ADE additional information. */
+    /** Name of the field that contains the gallery index additional information. */
     public static final String FIELD_ADDITIONAL_INFO = "additional_info";
 
-    /** Name of the field that contains the ADE container information. */
+    /** Name of the field that contains the gallery index container information. */
     public static final String FIELD_CONTAINER_TYPES = "container_types";
 
     /** Name of the field that contains the date the resource has expired. */

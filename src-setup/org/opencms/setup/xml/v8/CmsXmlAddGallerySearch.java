@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddGallerySearch.java,v $
- * Date   : $Date: 2011/01/19 13:45:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -110,7 +110,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
                     document,
                     xpath,
                     CmsGallerySearchIndex.class,
-                    CmsGallerySearchIndex.ADVANCED_GALLERY_INDEX,
+                    CmsGallerySearchIndex.GALLERY_INDEX_NAME,
                     "offline",
                     "Offline",
                     "all",
@@ -394,7 +394,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(CmsSearchConfiguration.N_INDEX);
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='").append(CmsGallerySearchIndex.ADVANCED_GALLERY_INDEX).append("']");
+            xp.append("='").append(CmsGallerySearchIndex.GALLERY_INDEX_NAME).append("']");
             m_xpaths.add(xp.toString());
             // /opencms/search/indexsources/indexsource[name='ADE_gallery_source']
             xp = new StringBuffer(256);

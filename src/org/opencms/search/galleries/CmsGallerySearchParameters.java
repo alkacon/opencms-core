@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchParameters.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,11 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 
 /**
- * Parameters used for the ADE gallery search.<p>
+ * Parameters used for the gallery search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */

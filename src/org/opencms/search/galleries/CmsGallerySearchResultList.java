@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResultList.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,11 @@ package org.opencms.search.galleries;
 import java.util.ArrayList;
 
 /**
- * The search result list for the ADE gallery search.<p>
+ * The search result list for the gallery search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */

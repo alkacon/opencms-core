@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchAnalyzer.java,v $
- * Date   : $Date: 2011/04/20 15:27:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
 
 /**
- * Special analyzer for multiple languages, used in the OpenCms ADE gallery search.<p>
+ * Special analyzer for multiple languages, used in the OpenCms gallery search index.<p>
  * 
  * The gallery search is done in one single index that may contain multiple languages.<p>
  * 
@@ -70,7 +70,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */

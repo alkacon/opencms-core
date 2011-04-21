@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2011/04/21 10:41:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -323,6 +323,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         if (offlineUpdateFrequency != OpenCms.getSearchManager().getOfflineUpdateFrequency()) {
                             // offline update frequency change - clear interrupt status
                             frequencyChange = interrupted();
+                            offlineUpdateFrequency = OpenCms.getSearchManager().getOfflineUpdateFrequency();
                         }
                     }
                     if (m_isAlive && !frequencyChange) {

@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
-
-<opencms>	
+<opencms>
 	<vfs>
 		<resources>
 			<resourceloaders>
-				<loader class="org.opencms.loader.CmsDumpLoader" />
+        <loader class="org.opencms.loader.CmsDumpLoader" />
 				<loader class="org.opencms.loader.CmsImageLoader">
-					<param name="image.scaling.enabled">true</param>		
-				</loader>		
+					<param name="image.scaling.enabled">true</param>
+				</loader>
 				<loader class="org.opencms.loader.CmsPointerLoader" />
-				<loader class="org.opencms.loader.CmsJspLoader" />
+				<loader class="org.opencms.loader.CmsJspLoader" >
+					  <param name="taglib.cms">http://www.opencms.org/taglib/cms</param>
+				  	  <param name="taglib.c">http://java.sun.com/jsp/jstl/core</param>
+				  	  <param name="taglib.fn">http://java.sun.com/jsp/jstl/functions</param>
+				  	  <param name="taglib.fmt">http://java.sun.com/jsp/jstl/fmt</param>
+				  	  <param name="taglib.x">http://java.sun.com/jsp/jstl/xml</param>
+				  	  <param name="taglib.sql">http://java.sun.com/jsp/jstl/sql</param>
+     			 </loader>
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
-				<loader class="org.opencms.flex.CmsFlexDummyLoader"/>
+				<loader class="org.opencms.loader.CmsXmlContainerPageLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFile" name="unknown_file" id="-1" />
-				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
+					<param name="restypes.indexpage">none|xmlpage|layoutpage</param>
+				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
 					<mappings>
 						<mapping suffix=".txt" />
 						<mapping suffix=".html" />
 						<mapping suffix=".htm" />
 					</mappings>
+                    <param name="gallery.type.names">downloadgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
 					<mappings>
@@ -34,7 +43,12 @@
 						<mapping suffix=".ppt" />
 						<mapping suffix=".doc" />
 						<mapping suffix=".xls" />
+						<mapping suffix=".jar" />
+						<mapping suffix=".flv" />
+						<mapping suffix=".swf" />
 					</mappings>
+                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/binary-preview-formatter.jsp</param>
+                    <param name="gallery.type.names">downloadgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
 					<mappings>
@@ -45,6 +59,10 @@
 						<mapping suffix=".tif" />
 						<mapping suffix=".tiff" />
 					</mappings>
+                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/image-preview-formatter.jsp</param>
+                    <param name="formatter_gallery_list">/system/workplace/editors/ade/image-list-formatter.jsp</param>
+                    <param name="gallery.javascript.path">editors/ade/js/cms.imagepreviewhandler.js</param>
+                    <param name="gallery.type.names">imagegallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
 					<mappings>
@@ -55,15 +73,17 @@
 							<name>export</name>
 							<value type="shared"><![CDATA[false]]></value>
 						</property>		
-						<property>
-							<name>content-encoding</name>
-							<value type="shared"><![CDATA[${opencms.default.encoding}]]></value>
-						</property>			
 					</properties>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6"/>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
+				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5">
+				    <param name="gallery.type.names">linkgallery</param>
+                </type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6">
+				    <param name="gallery.type.names">downloadgallery</param>
+                </type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7">
+				    <param name="gallery.type.names">downloadgallery</param>
+                </type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
 					<param name="folder.class.params">w:120,h:90,c:D4D0C8,t:1,r:2</param>
@@ -85,15 +105,24 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="entrypoint" id="23" />
+				
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
                     <param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
 				    <param name="gallery.type.names">cntpagegallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
-                    <param name="gallery.type.names">downloadgallery</param>
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
                 </type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlredirect" id="15">
+                	<properties>
+                  		<property>
+                    		<name>template-elements</name>
+                    		<value type="shared">/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp</value>
+                  		</property>
+                	</properties>
+					<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
+            	</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
                 </type>
@@ -103,17 +132,20 @@
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21" />
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
-				    <param name="gallery.type.names">downloadgallery</param>
-                    <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</param>
+				    <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</param>
                 </type>
                 
-			</resourcetypes>
+            </resourcetypes>
+            
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
 				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
 				<collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
 				<collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
-			</collectors>	
+				<collector class="org.opencms.file.collectors.CmsCategoryResourceCollector" order="140" />
+				<collector class="org.opencms.file.collectors.CmsSubscriptionCollector" order="150" />
+				<collector class="org.opencms.file.collectors.CmsChangedResourceCollector" order="160" />
+			</collectors>		
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
 			    <mimetype extension=".mme" type="application/base64" />
@@ -179,6 +211,7 @@
 			    <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
 			    <mimetype extension=".mif" type="application/vnd.mif" />
 			    <mimetype extension=".xls" type="application/vnd.ms-excel" />
+                <mimetype extension=".msg" type="application/vnd.ms-outlook"/>
 			    <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
 			    <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
 			    <mimetype extension=".mpp" type="application/vnd.ms-project" />
@@ -606,11 +639,46 @@
 			    <mimetype extension=".vrt" type="x-world/x-vrt" />
 			    <mimetype extension=".xgz" type="xgl/drawing" />
 			    <mimetype extension=".xmz" type="xgl/movie" />
+				<mimetype extension=".rss" type="application/rss+xml" />
+ 		        <mimetype extension=".jar" type="application/java-archive"/>
+				<mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor"/>
+				<mimetype extension=".docx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+		        <mimetype extension=".docm" type="application/vnd.ms-word.document.macroEnabled.12"/>
+		        <mimetype extension=".dotx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.template"/>
+		        <mimetype extension=".dotm" type="application/vnd.ms-word.template.macroEnabled.12"/>
+		        <mimetype extension=".xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+		        <mimetype extension=".xlsm" type="application/vnd.ms-excel.sheet.macroEnabled.12"/>
+		        <mimetype extension=".xltx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.template"/>
+		        <mimetype extension=".xltm" type="application/vnd.ms-excel.template.macroEnabled.12"/>
+		        <mimetype extension=".xlsb" type="application/vnd.ms-excel.sheet.binary.macroEnabled.12"/>
+		        <mimetype extension=".xlam" type="application/vnd.ms-excel.addin.macroEnabled.12"/>
+		        <mimetype extension=".pptx" type="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+		        <mimetype extension=".pptm" type="application/vnd.ms-powerpoint.presentation.macroEnabled.12"/>
+		        <mimetype extension=".ppsx" type="application/vnd.openxmlformats-officedocument.presentationml.slideshow"/>
+		        <mimetype extension=".ppsm" type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12"/>
+		        <mimetype extension=".potx" type="application/vnd.openxmlformats-officedocument.presentationml.template"/>
+		        <mimetype extension=".potm" type="application/vnd.ms-powerpoint.template.macroEnabled.12"/>
+		        <mimetype extension=".ppam" type="application/vnd.ms-powerpoint.addin.macroEnabled.12"/>
+		        <mimetype extension=".sldx" type="application/vnd.openxmlformats-officedocument.presentationml.slide"/>
+		        <mimetype extension=".sldm" type="application/vnd.ms-powerpoint.slide.macroEnabled.12"/>
+		        <mimetype extension=".thmx" type="application/vnd.ms-officetheme"/>
+		        <mimetype extension=".onetoc" type="application/onenote"/>
+		        <mimetype extension=".onetoc2" type="application/onenote"/>
+		        <mimetype extension=".onetmp" type="application/onenote"/>
+		        <mimetype extension=".onepkg" type="application/onenote"/>
+		        <mimetype extension=".rar" type="application/x-rar-compressed"/>
+		        <mimetype extension=".flv" type="video/x-flv"/>
 			</mimetypes>
 			<relationtypes>
 			   <relationtype name="TESTRELATION1" type="WEAK" />
 			   <relationtype name="TESTRELATION2" type="STRONG" />
-			</relationtypes>
+			</relationtypes>			
+			<html-converters>
+  		  		<html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="xhtml" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="cleanup" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="replace-paragraphs" class="org.opencms.util.CmsHtmlConverterJTidy" />
+			</html-converters>
 		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />
@@ -634,28 +702,35 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget" />				
-				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget" />
-				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget" />
-				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
+				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsCategoryWidget" alias="CategoryWidget"/>
+				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
+				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				
 				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
-				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
-				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget" />
-				<widget class="org.opencms.widgets.CmsInputWidgetPlaintext" alias="StringWidgetPlaintext" />
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget" />			
-				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget" /> 
-				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />				
-				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
-				<widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />
-				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
-				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
+				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
+                <widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
+				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
+                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext" alias="StringWidgetPlaintext" />                
+				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
+				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
+				<widget class="org.opencms.widgets.CmsOrgUnitWidget" alias="OrgUnitWidget" />
+				<widget class="org.opencms.widgets.CmsPrincipalWidget" alias="PrincipalWidget" />
+				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="RadioSelectWidget" />
+				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />				
+				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
+				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
+				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
+                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />                
+				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
+                <widget class="org.opencms.widgets.CmsAdeDownloadGalleryWidget" alias="AdvancedDownloadGalleryWidget"/>
+                <widget class="org.opencms.widgets.CmsAdeImageGalleryWidget" alias="AdvancedImageGalleryWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -663,11 +738,12 @@
 				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlPlainTextStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
 			</schematypes>
-		</xmlcontent>			
+		</xmlcontent>
 	</vfs>
 </opencms>

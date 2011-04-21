@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGalleryDocumentXmlContent.java,v $
- * Date   : $Date: 2010/01/28 14:48:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -160,7 +160,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     }
 
     /**
-     * Gallery content is stored in multiple languages, so the result is not lovale dependend.<p>
+     * Gallery index content is stored in multiple languages, so the result is NOT locale dependent.<p>
      * 
      * @see org.opencms.search.documents.CmsDocumentXmlContent#isLocaleDependend()
      */

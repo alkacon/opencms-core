@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/gallery/TestCmsGallerySearchBasic.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,12 +60,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
-
-    /** Name of the index used for testing. */
-    public static final String INDEX_GALLERIES = "ADE Gallery Index";
 
     /**
      * Default JUnit constructor.<p>
@@ -189,7 +186,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // make sure the ADE index actually exists
-        CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(INDEX_GALLERIES);
+        CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         assertNotNull("Index for galleries not initialized", adeIndex);
         assertEquals("Index for galleries not of required class", CmsGallerySearchIndex.class, adeIndex.getClass());
     }
@@ -211,7 +208,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         String query = "OpenCms";
 
         searchBean.init(cms);
-        searchBean.setIndex(INDEX_GALLERIES);
+        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         searchParams.setSearchWords(query);
         searchParams.setMatchesPerPage(50);
 

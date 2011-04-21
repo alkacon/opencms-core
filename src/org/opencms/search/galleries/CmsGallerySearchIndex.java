@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2011/04/21 08:15:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,14 +69,14 @@ import org.apache.lucene.search.TopDocs;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /** The advanced gallery index name. */
-    public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
+    public static final String GALLERY_INDEX_NAME = "Gallery Index";
 
     /** The gallery document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_GALLERIES = "xmlcontent-galleries";
@@ -380,33 +380,33 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     /**
      * Checks if the provided resource should be excluded from this search index.<p> 
      *
-     * With the introduction of the ADE search index in OpenCms 8, the meaning 
+     * With the introduction of the gallery search index in OpenCms 8, the meaning 
      * of the VFS property <code>search.exclude</code> that controls
      * if a resource is included in a search index has been extended.<p>
      *
      * The following uses cases can be covered with the property:<p>
      *
      * <dl>
-     * <dt>Case A: Exclude from all index</dt>
+     * <dt>Case A: Exclude from all indexes</dt>
      *      <dd>Applies at least to ADE resource type copy templates.<br>
      *      Set <code>search.exclude=all</code>
      *      </dd>
      *      
-     * <dt>Case B: Include in all index</dt>
+     * <dt>Case B: Include in all indexes</dt>
      *      <dd>Applies to most resources e.g. news articles etc.<br>
-     *      Set <code>search.exclude=false</code> - or anything else but <code>all|true|ade</code>.
+     *      Set <code>search.exclude=false</code> - or anything else but <code>all|true|gallery</code>.
      *      This is also the default in case the property is not set at all.
      *      </dd>
      *      
-     * <dt>Case D: Include in ADE, but exclude in standard index</dt>
+     * <dt>Case D: Include in gallery index, but exclude in standard index</dt>
      *      <dd>Applies to content like articles that are displayed only in container pages,
      *          also applies to "list generating" resource types like those that contain settings for a collector.<br>
      *      Set <code>search.exclude=true</code> - This is the behavior before OpenCms v8.
      *      </dd>
      *       
-     * <dt>Case C: Exclude from ADE, but include in standard index</dt>
+     * <dt>Case C: Exclude from gallery index, but include in standard index</dt>
      *      <dd>Use case so far unknown, but implemented anyway.<br>
-     *      Set <code>search.exclude=ade</code>.
+     *      Set <code>search.exclude=gallery</code>.
      *      </dd> 
      * </dl>
      * 
@@ -430,7 +430,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 propValue = propValue.trim();
                 // property value was neither "true" nor null, must check for "all"
                 excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
-                    || PROPERTY_SEARCH_EXCLUDE_VALUE_ADE.equalsIgnoreCase(propValue);
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY.equalsIgnoreCase(propValue);
             }
         } catch (CmsException e) {
             if (LOG.isDebugEnabled()) {

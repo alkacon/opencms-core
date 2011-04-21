@@ -24,9 +24,10 @@
 		<scheduler />
 	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
-			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
-			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
-			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
+			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler" />
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
+            <resourceinithandler class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler"/>
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
@@ -34,6 +35,7 @@
 			<digest-type>MD5</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
 		</passwordhandler>
+		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
@@ -87,8 +89,8 @@
 			<size-projectresources>64</size-projectresources>
 			<size-resources>8192</size-resources>
 			<size-resourcelists>256</size-resourcelists>
-			<size-properties>128</size-properties>
-			<size-propertylists>128</size-propertylists>
+			<size-properties>1024</size-properties>
+			<size-propertylists>1024</size-propertylists>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
 		</resultcache>
@@ -112,11 +114,5 @@
                 <groupcontainers offline="64" online="64" />
             </ade-cache>
         </ade>
-        <sitemap>
-            <sitemap-cache>
-                <documents offline="32" online="32" />
-            </sitemap-cache>
-        </sitemap>
-        <subscriptionmanager enabled="true" poolname="default" maxvisited="5" />
 	</system>
 </opencms>

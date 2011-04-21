@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2011/04/21 10:41:26 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,7 +221,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
     /** Special value for the search.eclude property. */
-    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ADE = "ade";
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
 
     /** Special value for the search.eclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";

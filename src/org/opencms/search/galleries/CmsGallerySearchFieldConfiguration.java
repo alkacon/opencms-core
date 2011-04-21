@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchFieldConfiguration.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/21 14:20:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 
 /**
- * Describes the search field configuration that is used by the ADE galleries.<p>
+ * Describes the search field configuration that is used by the gallery index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -154,7 +154,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
     }
 
     /**
-     * Extends the given document by the ADE gallery special multiple language filed mappings for the given field.<p>
+     * Extends the given document by the gallery index special multiple language filed mappings for the given field.<p>
      * 
      * @param document the document to extend
      * @param fieldConfig the field to create the mappings for
@@ -164,7 +164,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
      * @param properties the list of all properties directly attached to the resource (not searched)
      * @param propertiesSearched the list of all searched properties of the resource  
      * 
-     * @return the document extended by the ADE gallery special multiple language filed mappings for the given field
+     * @return the document extended by the gallery index special multiple language filed mappings for the given field
      */
     protected Document appendMultipleFieldMapping(
         Document document,

@@ -5,11 +5,12 @@
 	<search>
 		<directory>index</directory>
 		<timeout>60000</timeout>
+		<offlineUpdateFrequency>30000</offlineUpdateFrequency>
 		<forceunlock>onlyfull</forceunlock>		
-		<excerpt>1024</excerpt>	
+		<excerpt>1024</excerpt>
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
-		<maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>			
-		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
+		<maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>	
+		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>		
 		<documenttypes>		
 			<documenttype>
 				<name>generic</name>
@@ -121,13 +122,15 @@
 				</resourcetypes>
 			</documenttype>
 			<documenttype>
-				<name>xmlcontent-galleries</name>
-				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
-				<mimetypes/>
+				<name>containerpage</name>
+				<class>org.opencms.search.documents.CmsDocumentContainerPage</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
 				<resourcetypes>
-					<resourcetype>*</resourcetype>
+					<resourcetype>containerpage</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>					
 			<documenttype>
 				<name>xmlpage</name>
 				<class>org.opencms.search.documents.CmsDocumentXmlPage</class>
@@ -137,17 +140,23 @@
 				<resourcetypes>
 					<resourcetype>xmlpage</resourcetype>
 				</resourcetypes>
-			</documenttype>	
+			</documenttype>
 			<documenttype>
+				<name>xmlcontent-galleries</name>
+				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
+				<mimetypes/>
+				<resourcetypes>
+					<resourcetype>xmlcontent-galleries</resourcetype>
+				</resourcetypes>
+			</documenttype>	
+            <documenttype>
 				<name>xmlpage-galleries</name>
 				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
-				<mimetypes>
-					<mimetype>text/html</mimetype>
-				</mimetypes>
+				<mimetypes />
 				<resourcetypes>
-					<resourcetype>xmlpage</resourcetype>
+					<resourcetype>xmlpage-galleries</resourcetype>
 				</resourcetypes>
-			</documenttype>				
+			</documenttype>		
 			<documenttype>
 				<name>openoffice</name>
 				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
@@ -179,10 +188,10 @@
 				<stemmer>Italian</stemmer>
 				<locale>it</locale>
 			</analyzer>
-			<analyzer>
+            <analyzer>
 				<class>org.opencms.search.galleries.CmsGallerySearchAnalyzer</class>
 				<locale>all</locale>
-			</analyzer>			
+			</analyzer>	
 		</analyzers>
 		<indexes>
 			<index>
@@ -204,14 +213,14 @@
 					<source>source1</source>
 				</sources>		
 			</index>
-			<index class="org.opencms.search.galleries.CmsGallerySearchIndex">
-				<name>ADE Gallery Index</name>
+            <index class="org.opencms.search.galleries.CmsGallerySearchIndex">
+				<name>Gallery Index</name>
 				<rebuild>offline</rebuild>
 				<project>Offline</project>
 				<locale>all</locale>			
-				<configuration>ADE_gallery_fields</configuration>	
+				<configuration>gallery_fields</configuration>	
 				<sources>
-					<source>ADE_gallery_source</source>
+					<source>gallery_source</source>
 				</sources>			
 			</index>
 		</indexes>
@@ -225,7 +234,7 @@
 				<documenttypes-indexed>
 	                <name>xmlpage</name>
 					<name>xmlcontent</name>
-	                <name>page</name>
+					<name>containerpage</name>
 	                <name>text</name>
 	                <name>pdf</name>
 	                <name>rtf</name>
@@ -234,15 +243,25 @@
 	                <name>msexcel</name>
 	                <name>mspowerpoint</name>
 	                <name>image</name>
-	                <name>generic</name>
-	                <name>openoffice</name>
+	                <name>generic</name>			
 				</documenttypes-indexed>				
 			</indexsource>
 			<indexsource>
-				<name>ADE_gallery_source</name>
+				<name>source2</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/system/workplace/locales/</resource>
+				</resources>		
+				<documenttypes-indexed>
+	                <name>xmlpage</name>
+				</documenttypes-indexed>
+			</indexsource>	
+            <indexsource>
+				<name>gallery_source</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
 					<resource>/sites/</resource>
+					<resource>/shared/</resource>
 				</resources>
 				<documenttypes-indexed>
 	                <name>xmlpage-galleries</name>
@@ -259,9 +278,9 @@
 	                <name>generic</name>
 	                <name>openoffice</name>
 				</documenttypes-indexed>				
-			</indexsource>            
-		</indexsources>	
-		<fieldconfigurations>
+			</indexsource>     
+		</indexsources>		
+		<fieldconfigurations>		
 			<fieldconfiguration>
 				<name>standard</name>
 				<description>The standard OpenCms search index field configuration.</description>
@@ -295,10 +314,10 @@
 						<mapping type="property-search">search.special</mapping>
 					</field>	
 				</fields>
-			</fieldconfiguration>	
+			</fieldconfiguration>
 			<fieldconfiguration class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
-				<name>ADE_gallery_fields</name>
-				<description>The standard OpenCms search index field configuration.</description>
+				<name>gallery_fields</name>
+				<description>The OpenCms gallery search index field configuration.</description>
 				<fields>
 					<field name="content" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
@@ -327,7 +346,10 @@
 					</field>										
 					<field name="res_state" store="true" index="untokenized">
 						<mapping type="attribute">state</mapping>
-					</field>										
+					</field>
+                    <field name="res_structureId" store="true" index="false">
+						<mapping type="attribute">structureId</mapping>
+					</field>									
 					<field name="res_userCreated" store="true" index="untokenized">
 						<mapping type="attribute">userCreated</mapping>
 					</field>			
@@ -344,7 +366,7 @@
 						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
 					</field>
 				</fields>
-			</fieldconfiguration>	            		
-		</fieldconfigurations>			
+			</fieldconfiguration>	
+		</fieldconfigurations>				
 	</search>
 </opencms>
