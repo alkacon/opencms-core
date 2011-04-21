@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -88,6 +88,12 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     /** The element resource site-path. */
     private String m_sitePath;
 
+    /** 
+     * Indicates if the current user has view permissions on the element resource. 
+     * Without view permissions, the element can neither be edited, nor moved. 
+     **/
+    private boolean m_viewPermission;
+
     /**
      * Constructor.<p>
      * 
@@ -97,6 +103,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasProps should be true if the element has properties which can be edited 
+     * @param hasViewPermission indicates if the current user has view permissions on the element resource
      */
     public CmsContainerPageElement(
         Element element,
@@ -104,7 +111,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps) {
+        boolean hasProps,
+        boolean hasViewPermission) {
 
         super((com.google.gwt.user.client.Element)element);
         m_clientId = clientId;
@@ -112,6 +120,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         m_noEditReason = noEditReason;
         m_hasProperties = hasProps;
         m_parent = parent;
+        setViewPermission(hasViewPermission);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
     }
 
@@ -461,5 +470,25 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
             m_elementOptionBar.removeFromParent();
             add(m_elementOptionBar);
         }
+    }
+
+    /**
+     * Sets if the current user has view permissions for the element resource.<p>
+     *
+     * @param viewPermission the view permission to set
+     */
+    public void setViewPermission(boolean viewPermission) {
+
+        m_viewPermission = viewPermission;
+    }
+
+    /**
+     * Returns if the current user has view permissions for the element resource.<p>
+     *
+     * @return <code>true</code> if the current user has view permissions for the element resource
+     */
+    public boolean hasViewPermission() {
+
+        return m_viewPermission;
     }
 }

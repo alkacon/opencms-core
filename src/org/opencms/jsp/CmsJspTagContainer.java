@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/20 07:07:49 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.jsp;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
@@ -46,6 +47,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -83,9 +85,9 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
- * @since 7.6 
+ * @since 8.0
  */
 public class CmsJspTagContainer extends TagSupport {
 
@@ -621,6 +623,12 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         result.append(" hasprops='").append(hasProperties(cms, elementBean.getResource())).append("'");
+        result.append(" hasviewpermission='").append(
+            cms.hasPermissions(
+                elementBean.getResource(),
+                CmsPermissionSet.ACCESS_VIEW,
+                false,
+                CmsResourceFilter.DEFAULT_ONLY_VISIBLE)).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
         if (isGroupcontainer) {
             result.append("'>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -108,7 +108,7 @@ public class CmsContainerpageUtil {
                 String noEditReason = child.getAttribute("rel");
                 String newType = child.getAttribute("newType");
                 boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
-
+                boolean hasViewPermission = Boolean.parseBoolean(child.getAttribute("hasviewpermission"));
                 if (isContainerElement) {
                     // searching for content element root
                     Element elementRoot = (Element)child.getNextSibling();
@@ -166,7 +166,8 @@ public class CmsContainerpageUtil {
                             clientId,
                             sitePath,
                             noEditReason,
-                            hasProps);
+                            hasProps,
+                            hasViewPermission);
                         if ((newType != null) && (newType.length() > 0)) {
                             containerElement.setNewType(newType);
                         }
@@ -184,7 +185,8 @@ public class CmsContainerpageUtil {
                         clientId,
                         sitePath,
                         noEditReason,
-                        hasProps);
+                        hasProps,
+                        hasViewPermission);
                     groupContainer.setContainerId(container.getContainerId());
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
@@ -256,7 +258,8 @@ public class CmsContainerpageUtil {
             containerElement.getClientId(),
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
-            hasProps);
+            hasProps,
+            containerElement.hasViewPermission());
     }
 
     /**
@@ -299,7 +302,8 @@ public class CmsContainerpageUtil {
             containerElement.getClientId(),
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
-            hasProps);
+            hasProps,
+            containerElement.hasViewPermission());
         groupContainer.setContainerId(container.getContainerId());
         //adding sub-elements
         Iterator<CmsContainerElementData> it = subElements.iterator();
@@ -324,11 +328,14 @@ public class CmsContainerpageUtil {
      */
     private void addOptionBar(CmsContainerPageElement element) {
 
-        CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
-            element,
-            m_controller.getDndHandler(),
-            m_optionButtons);
-        element.setElementOptionBar(optionBar);
+        // the view permission is required for any actions regarding this element
+        if (element.hasViewPermission()) {
+            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
+                element,
+                m_controller.getDndHandler(),
+                m_optionButtons);
+            element.setElementOptionBar(optionBar);
+        }
     }
 
     /**
@@ -340,6 +347,7 @@ public class CmsContainerpageUtil {
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason
      * @param hasProps if true, the container element has properties which can be edited 
+     * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * 
      * @return the draggable element
      */
@@ -349,7 +357,8 @@ public class CmsContainerpageUtil {
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps) {
+        boolean hasProps,
+        boolean hasViewPermission) {
 
         CmsContainerPageElement dragElement = new CmsContainerPageElement(
             element,
@@ -357,7 +366,8 @@ public class CmsContainerpageUtil {
             clientId,
             sitePath,
             noEditReason,
-            hasProps);
+            hasProps,
+            hasViewPermission);
         //        enableDragHandler(dragElement);
         addOptionBar(dragElement);
         return dragElement;
@@ -372,6 +382,7 @@ public class CmsContainerpageUtil {
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason
      * @param hasProps true if the group-container has properties to edit 
+     * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * 
      * @return the draggable element
      */
@@ -381,7 +392,8 @@ public class CmsContainerpageUtil {
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps) {
+        boolean hasProps,
+        boolean hasViewPermission) {
 
         CmsGroupContainerElement groupContainer = new CmsGroupContainerElement(
             element,
@@ -389,7 +401,8 @@ public class CmsContainerpageUtil {
             clientId,
             sitePath,
             noEditReason,
-            hasProps);
+            hasProps,
+            hasViewPermission);
         return groupContainer;
     }
 

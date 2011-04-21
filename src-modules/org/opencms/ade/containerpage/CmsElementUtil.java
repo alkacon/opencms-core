@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/20 07:07:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,14 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
@@ -77,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -197,7 +199,6 @@ public class CmsElementUtil {
 
         CmsResource resource = m_cms.readResource(element.getId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
-        //      resElement.put(JsonElement.objtype.name(), TYPE_ELEMENT);
         CmsContainerElementData elementBean = new CmsContainerElementData();
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
@@ -212,7 +213,11 @@ public class CmsElementUtil {
             element.getSettings(),
             propertyConfig));
         elementBean.setPropertyConfig(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
-
+        elementBean.setViewPermission(m_cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
         elementBean.setNoEditReason(CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
             m_cms))));
         elementBean.setStatus(resUtil.getStateAbbreviation());
@@ -234,7 +239,6 @@ public class CmsElementUtil {
             elementBean.setDescription(groupContainer.getDescription());
             if (groupContainer.getTypes().isEmpty()) {
                 if (groupContainer.getElements().isEmpty()) {
-                    //TODO: use formatter to generate the 'empty'-content
                     String emptySub = "<div>NEW AND EMPTY</div>";
                     for (String name : containersByName.keySet()) {
                         contents.put(name, emptySub);

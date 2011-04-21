@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupContainerElement.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -78,6 +78,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasProps should be true if the element has properties which can be edited 
+     * @param hasViewPermission indicates if the current user has view permissions on the element resource
      */
     public CmsGroupContainerElement(
         Element element,
@@ -85,9 +86,10 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps) {
+        boolean hasProps,
+        boolean hasViewPermission) {
 
-        super(element, parent, clientId, sitePath, noEditReason, hasProps);
+        super(element, parent, clientId, sitePath, noEditReason, hasProps, hasViewPermission);
 
     }
 

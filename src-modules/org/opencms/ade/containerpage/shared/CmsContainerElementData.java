@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/04/08 12:16:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/21 10:30:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -97,6 +97,12 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
+
+    /** 
+     * Indicates if the current user has view permissions on the element resource. 
+     * Without view permissions, the element can neither be edited, nor moved. 
+     **/
+    private boolean m_viewPermission;
 
     /**
      * Returns the contents.<p>
@@ -242,6 +248,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
+     * Returns if the current user has view permissions for the element resource.<p>
+     *
+     * @return <code>true</code> if the current user has view permissions for the element resource
+     */
+    public boolean hasViewPermission() {
+
+        return m_viewPermission;
+    }
+
+    /**
      * Returns if the element is a group-container.<p>
      *
      * @return <code>true</code> if the element is a group-container
@@ -382,6 +398,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setTypes(Set<String> types) {
 
         m_types = types;
+    }
+
+    /**
+     * Sets if the current user has view permissions for the element resource.<p>
+     *
+     * @param viewPermission the view permission to set
+     */
+    public void setViewPermission(boolean viewPermission) {
+
+        m_viewPermission = viewPermission;
     }
 
     /**
