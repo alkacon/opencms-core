@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/dialog-helper.js,v $
- * Date   : $Date: 2011/04/20 17:54:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/21 12:53:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -114,7 +114,8 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
             'width': '100%',
             'height': height+'px',
             'background-color': 'transparent',
-            'padding': '0px'
+            'padding': '0px',
+            'overflow': 'visible'
          });
          
          // new code
@@ -129,6 +130,7 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
             },
             open: function() {
                _iframeBox.append(_iframe);
+               _iframeBox.closest('.galleryDialog').css('overflow', 'visible');
             },
             resizable: false,
             autoOpen: true,
@@ -201,6 +203,8 @@ function cmsOpenImagePreview(title, context, fieldId){
             		_imageBox.css('width', _boxWidth);
             		_imageBox.parent().css('padding','2px');
             	}
+            	_imageBox.closest('.galleryDialog').css('overflow', 'visible');
+            	_imageBox.closest('.galleryDialog').css('margin-top', '20px');
             },
             close: function() {
 				_imageBox.dialog('destroy').remove();

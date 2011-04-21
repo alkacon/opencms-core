@@ -1738,6 +1738,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/dialogCloseImage.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/dialogCloseImage.png</destination>
+			<type>image</type>
+			<uuidstructure>0ef21fa8-6c05-11e0-927f-4f74e4b251be</uuidstructure>
+			<uuidresource>0ef21fa9-6c05-11e0-927f-4f74e4b251be</uuidresource>
+			<datelastmodified>Thu, 21 Apr 2011 10:49:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 21 Apr 2011 10:49:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialogCloseImage]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_0_aaaaaa_40x100.png</source>
 			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_0_aaaaaa_40x100.png</destination>
 			<type>image</type>

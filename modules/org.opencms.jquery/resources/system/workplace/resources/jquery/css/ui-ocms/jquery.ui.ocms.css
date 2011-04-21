@@ -69,12 +69,32 @@ div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-title{
 }
 
 div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close{
-    background-color: #EEEEEE;
-    border: 1px solid #999999;
-    margin: -12px 0 0;
+	background-image: url(images/dialogCloseImage.png);
+    background-color: transparent;
+	cursor: pointer;
+    height: 32px;
+    overflow: hidden;
+    position: absolute;
+    right: -22px;
+    top: -19px;
+    width: 32px;
+    border: 0;
+    margin: 0;
     padding: 0;
 }
 
+div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close *{
+	display: none;
+}
+
+div.galleryDialog.hideCaption > div.ui-dialog-titlebar .ui-dialog-title {
+	display: none;
+}
+
 div.galleryDialog.hideCaption > div.ui-dialog-titlebar {
- display: none;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
 }

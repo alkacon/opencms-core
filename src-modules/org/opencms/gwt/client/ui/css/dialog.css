@@ -19,6 +19,13 @@
 	min-width: 0;
 	max-width: none;
 }
+@sprite .popup .closePopup{
+	gwt-image: "gwtImages.dialogCloseImage";
+    position: absolute;
+    right: -13px;
+    top: -13px;
+    cursor: pointer;
+}
 .dragOverlay{
 	display: none;
 }

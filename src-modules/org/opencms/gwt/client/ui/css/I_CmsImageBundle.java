@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/04/12 10:48:37 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/04/21 12:53:59 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -316,6 +316,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/cropRemoveImage.png")
     ImageResource cropRemoveImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/dialogCloseImage.png")
+    ImageResource dialogCloseImage();
 
     /**
      * Image resource accessor.<p>

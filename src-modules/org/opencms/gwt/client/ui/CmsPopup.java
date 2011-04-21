@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/21 12:53:59 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,9 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -53,6 +56,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -72,7 +76,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -151,6 +155,50 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * The dialog close panel.<p>
+     */
+    private class ClosePanel extends SimplePanel implements HasClickHandlers {
+
+        /**
+         * Default constructor.<p>
+         */
+        protected ClosePanel() {
+
+            // nothing to do
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+         */
+        public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+            return addDomHandler(handler, ClickEvent.getType());
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onAttach()
+         */
+        @Override
+        protected void onAttach() {
+
+            super.onAttach();
+        }
+
+        /**
+         * Making function visible.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+        }
+    }
+
+    /**
      * The dialog mouse handler.<p>
      */
     private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
@@ -198,6 +246,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /** Body offset top. */
     private int m_clientTop;
+
+    /** The panel for the close button. */
+    private ClosePanel m_close;
 
     /** The popup container element. */
     private com.google.gwt.user.client.Element m_containerElement;
@@ -355,6 +406,33 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         m_buttonPanel.insert(button, position);
         m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
+    }
+
+    /**
+     * Adds a close "button" to the top of the popup.<p>
+     * 
+     * @param cmd the command that should be executed when the close button is clicked
+     */
+    public void addDialogClose(final Command cmd) {
+
+        if (m_close == null) {
+            m_close = new ClosePanel();
+            m_close.setTitle("Close");
+            m_close.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
+            ClickHandler handler = new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    if (cmd != null) {
+                        cmd.execute();
+                    }
+                    hide();
+                }
+            };
+            m_close.addClickHandler(handler);
+            DOM.appendChild(m_containerElement, m_close.getElement());
+            adopt(m_close);
+        }
     }
 
     /**
@@ -880,6 +958,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             // See comment in doDetachChildren for an explanation of this call
             m_caption.onAttach();
             m_buttonPanel.onAttach();
+            if (m_close != null) {
+                m_close.onAttach();
+            }
         }
     }
 
@@ -898,6 +979,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             // the caption widget, as its just an internal implementation.
             m_caption.onDetach();
             m_buttonPanel.onDetach();
+            if (m_close != null) {
+                m_close.onDetach();
+            }
         }
     }
 
