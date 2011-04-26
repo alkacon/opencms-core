@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2009/09/11 15:29:14 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2011/04/26 15:46:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsFileUtil;
 
@@ -60,7 +59,7 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.29.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,11 +98,10 @@ public final class CmsLog {
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
                 String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(path));
                 // check for the OpenCms configuration file
-                String configFilePath = webInfPath
-                    + CmsSystemInfo.FOLDER_CONFIG
-                    + CmsConfigurationManager.DEFAULT_XML_FILE_NAME;
-                File configFile = new File(configFilePath);
-                if (configFile.exists()) {
+                // check for the OpenCms tld file
+                String tldFilePath = webInfPath + CmsSystemInfo.FILE_TLD;
+                File tldFile = new File(tldFilePath);
+                if (tldFile.exists()) {
                     // assume this is a default OpenCms log configuration                
                     ExtendedProperties configuration = new ExtendedProperties(path);
                     // check if OpenCms should set the log file environment variable

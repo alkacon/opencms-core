@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/26 15:46:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -674,7 +674,7 @@ public class OpenCmsTestCase extends TestCase {
         String path;
 
         // remove the copied configuration files
-        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG);
+        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -691,7 +691,7 @@ public class OpenCmsTestCase extends TestCase {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG + "backup/");
+        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT + "backup/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -833,7 +833,10 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create the OpenCms "config" folder
-        File configFile = new File(m_testDataPath.get(0) + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
+        File configFile = new File(m_testDataPath.get(0)
+            + "WEB-INF"
+            + File.separator
+            + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         if (!configFile.exists()) {
             configFile.mkdir();
         }
@@ -1256,7 +1259,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     private static void copyConfiguration(String newConfig) {
 
-        File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG));
+        File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG_DEFAULT));
         File configOriDir = new File(newConfig);
 
         FileFilter filter = FileFilterUtils.orFileFilter(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2010/11/30 09:33:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/26 15:46:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.util.Properties;
@@ -51,17 +52,23 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSystemInfo {
 
+    /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
+    public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
+
     /** The name of the opencms.properties file. */
     public static final String FILE_PROPERTIES = "opencms.properties";
 
-    /** Path to the "config" folder relative to the "WEB-INF" directory of the application. */
-    public static final String FOLDER_CONFIG = "config" + File.separatorChar;
+    /** The name of the opencms.tld file. */
+    public static final String FILE_TLD = "opencms.tld";
+
+    /** Path to the default "config" folder relative to the "WEB-INF" directory of the application. */
+    public static final String FOLDER_CONFIG_DEFAULT = "config" + File.separatorChar;
 
     /** The name of the module folder in the package path. */
     public static final String FOLDER_MODULES = "modules" + File.separatorChar;
@@ -149,6 +156,23 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Gets the path of the opencms config folder.<p>
+     * Per default this is the "/WEB-INF/config/ folder. 
+     * If configured with the "-Dopencms.config=..." java startup parameter, OpenCms can access an external config
+     * folder outside its webapplication.
+     * @return complete rfs path to the config folder.
+     */
+    public String getConfigFolder() {
+
+        // check if the system property is set and return its value
+        if (CmsStringUtil.isNotEmpty(System.getProperty(CONFIG_FOLDER_PROPERTY))) {
+            return System.getProperty(CONFIG_FOLDER_PROPERTY);
+        } else {
+            return getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG_DEFAULT);
+        }
+    }
+
+    /**
      * Returns an absolute path (to a directory or a file in the "real" file system) from a path relative to 
      * the web application folder of OpenCms.<p> 
      * 
@@ -208,7 +232,7 @@ public class CmsSystemInfo {
     public String getConfigurationFileRfsPath() {
 
         if (m_configurationFileRfsPath == null) {
-            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG + FILE_PROPERTIES);
+            m_configurationFileRfsPath = getConfigFolder() + FILE_PROPERTIES;
         }
         return m_configurationFileRfsPath;
     }

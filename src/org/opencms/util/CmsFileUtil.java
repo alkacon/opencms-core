@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/26 15:46:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -65,7 +64,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -783,7 +782,7 @@ public final class CmsFileUtil {
             return null;
         }
 
-        File configFile = new File(f, CmsSystemInfo.FOLDER_CONFIG + CmsConfigurationManager.DEFAULT_XML_FILE_NAME);
+        File configFile = new File(f, CmsSystemInfo.FILE_TLD);
         if (configFile.exists() && configFile.isFile()) {
             return f.getAbsolutePath();
         }

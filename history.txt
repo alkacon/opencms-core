@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/04/19 10:09:59 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2011/04/26 15:47:41 $
+ * Version: $Revision: 1.84 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -81,6 +81,8 @@ OpenCms x.x.x - Month Day, Year
 ! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
 - Content tool "Convert XML contents": Give out the transformed xml content when problems to write the transformed content
 ! Added new admin tool to show the permission overview for user or group
+! Configurable OpenCms config folder with Java VM property -Dopencms.config=/path/to/config/folder/
+
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

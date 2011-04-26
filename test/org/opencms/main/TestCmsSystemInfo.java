@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsSystemInfo.java,v $
- * Date   : $Date: 2009/09/07 12:41:51 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/04/26 15:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -178,7 +178,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG);
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);
@@ -186,7 +186,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(path + " does not exist.", true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG_DEFAULT
             + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
         assertNotNull(path);
         path = path.trim();

@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestWarFileUnpacked.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2011/04/26 15:47:13 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -69,10 +69,7 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
         if (!basePath.endsWith(File.separator)) {
             basePath += File.separator;
         }
-        File file = new File(basePath
-            + CmsSystemInfo.FOLDER_WEBINF
-            + CmsSystemInfo.FOLDER_CONFIG
-            + CmsSystemInfo.FILE_PROPERTIES);
+        File file = new File(basePath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FILE_TLD);
         if (file.exists() && file.canRead() && file.canWrite()) {
             testResult.setGreen();
             testResult.setResult(RESULT_PASSED);

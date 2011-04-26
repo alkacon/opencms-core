@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/26 15:47:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -242,7 +242,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
             null,
             key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0)));
         // config xml 
-        String configPath = sysInfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG);
+        String configPath = sysInfo.getConfigFolder();
         if (configPath != null) {
             File configFolder = new File(configPath);
             File[] configFiles = configFolder.listFiles();
