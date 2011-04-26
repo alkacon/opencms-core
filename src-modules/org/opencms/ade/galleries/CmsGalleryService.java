@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/04/26 08:12:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/04/26 08:25:11 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
@@ -91,7 +92,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  * 
@@ -203,9 +204,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_resourceType = resourceType;
         }
     }
-
-    /** The advanced gallery index name. */
-    public static final String GALLERY_SEARCH_INDEX = "Gallery Index";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
@@ -726,7 +724,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
-        searchBean.setIndex(GALLERY_SEARCH_INDEX);
+        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
 
         CmsGallerySearchResultList searchResults = null;
         while (!found) {
@@ -1142,7 +1140,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
-        searchBean.setIndex(GALLERY_SEARCH_INDEX);
+        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         CmsGallerySearchResultList searchResults = searchBean.getResult(params);
         // set only the result dependent search params for this search
         // the user dependent params(galleries, types etc.) remain unchanged
