@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGallery.java,v $
- * Date   : $Date: 2011/04/20 09:03:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/26 14:30:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -56,6 +57,6 @@ public class CmsGallery extends A_CmsEntryPoint {
         super.onModuleLoad();
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryBody());
         // add the gallery dialog to dom
-        RootPanel.get().add(CmsGalleryFactory.createDialog());
+        RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID).add(CmsGalleryFactory.createDialog());
     }
 }

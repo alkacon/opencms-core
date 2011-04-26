@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/04/11 15:30:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/04/26 14:30:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,15 +37,24 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Gallery dialog controller handler.<p>
@@ -54,7 +63,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
 
@@ -180,6 +189,26 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         final CmsGallerySearchBean searchObj,
         final CmsGalleryDataBean dialogBean,
         final CmsGalleryController controller) {
+
+        if (dialogBean.getMode().equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
+            RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
+            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+            CmsPushButton closeButton = new CmsPushButton();
+            closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            closeButton.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
+            closeButton.setImageClass(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopupImage());
+            closeButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    String closeLink = getCloseLink() + "?resource=";
+                    Window.Location.assign(CmsCoreProvider.get().link(closeLink));
+                }
+            });
+            panel.add(closeButton);
+            panel.setWidth("660px");
+            panel.getElement().getStyle().setProperty("margin", "20px auto");
+        }
 
         m_galleryDialog.fillTabs(dialogBean.getMode().getTabs(), controller);
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
@@ -332,5 +361,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         m_galleryDialog.getResultsTab().showNoParamsMessage();
 
     }
+
+    /**
+     * Retrieves the close link global variable as a string.<p>
+     * 
+     * @return the close link
+     */
+    protected native String getCloseLink() /*-{
+
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+
+    }-*/;
 
 }

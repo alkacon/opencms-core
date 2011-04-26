@@ -19,12 +19,14 @@
 	min-width: 0;
 	max-width: none;
 }
-@sprite .popup .closePopup{
-	gwt-image: "gwtImages.dialogCloseImage";
+.closePopup{
     position: absolute;
     right: -13px;
     top: -13px;
     cursor: pointer;
+}
+@sprite .closePopupImage{
+	gwt-image: "gwtImages.dialogCloseImage";
 }
 .dragOverlay{
 	display: none;
@@ -38,7 +40,7 @@
 	width: 100%;
 	z-index: value("constants.css.zIndexInline");
 }
-@sprite .popup .popupContent{
+@sprite .popupContent{
 	gwt-image: "backgrounds.dialogBackground";
 	background-position: top;
     height: auto;
@@ -59,7 +61,7 @@
 
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
-	.popup .popupContent{
+	.popupContent{
 		-moz-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
 		-moz-border-radius: 12px;
 	}
@@ -67,7 +69,7 @@
 		-moz-border-radius: 8px;
 	}
 } @elif user.agent safari {
-	.popup .popupContent{
+	.popupContent{
 		-webkit-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
 		-webkit-border-radius: 12px;
 	}
@@ -75,7 +77,7 @@
 		-webkit-border-radius: 8px;
 	}
 } @elif user.agent opera {
-	.popup .popupContent{
+	.popupContent{
 		box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
 		border-radius: 12px;
 	}
@@ -83,12 +85,12 @@
 		border-radius: 8px;
 	}
 } @elif user.agent ie6 {
-	.popup .popupContent{
+	.popupContent{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		/** filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"); */
 	}
 } @elif user.agent ie8 {
-	.popup .popupContent{
+	.popupContent{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)";
 		border-radius: 12px; 

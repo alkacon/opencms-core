@@ -23,5 +23,6 @@
     <% } %>
   </head>
   <body>
+  	<div id="<%= I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID %>"></div>
   </body>
 </html>

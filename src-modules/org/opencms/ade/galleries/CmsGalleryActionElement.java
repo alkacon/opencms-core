@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/26 14:30:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,15 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -96,6 +99,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(export());
+        sb.append(exportCloseLink());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         return sb.toString();
     }
@@ -187,4 +191,26 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         return sb.toString();
     }
 
+    /**
+     * Returns a javascript tag that contains a variable deceleration that has the close link as value.<p>
+     * 
+     * @return a javascript tag that contains a variable deceleration that has the close link as value
+     */
+    private String exportCloseLink() {
+
+        String closeLink = null;
+        if (getRequest().getAttribute(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK) != null) {
+            closeLink = (String)getRequest().getAttribute(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(closeLink)) {
+            closeLink = CmsWorkplace.FILE_EXPLORER_FILELIST;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
+        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(closeLink).append(
+            "\';");
+        wrapScript(sb);
+        return sb.toString();
+    }
 }

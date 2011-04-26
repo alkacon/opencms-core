@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2011/01/19 14:18:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/04/26 14:30:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
@@ -156,14 +156,14 @@ public interface I_CmsGalleryProviderConstants {
         /** The dialog mode. */
         dialogmode,
 
+        /** The widget field id. */
+        fieldid,
+
         /** The gallery path. */
         gallerypath,
 
         /** The gallery tab id. */
         gallerytabid,
-
-        /** The widget field id. */
-        fieldid,
 
         /** The widget field id hash. */
         hashid,
@@ -209,9 +209,18 @@ public interface I_CmsGalleryProviderConstants {
         type_desc;
     }
 
+    /** The request attribute name for the close link. */
+    String ATTR_CLOSE_LINK = "closeLink";
+
+    /** The id for the HTML div containing the gallery dialog. */
+    String GALLERY_DIALOG_ID = "galleryDialog";
+
     /** The widget field id. */
     String KEY_FIELD_ID = "fieldId";
 
     /** The widget field id hash. */
     String KEY_HASH_ID = "hashId";
+
+    /** Path to the host page. */
+    String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
 }
