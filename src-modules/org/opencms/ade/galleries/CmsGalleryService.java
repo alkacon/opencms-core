@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/03/11 09:12:05 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/04/26 08:12:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -205,7 +205,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /** The advanced gallery index name. */
-    public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
+    public static final String GALLERY_SEARCH_INDEX = "Gallery Index";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
@@ -726,7 +726,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
-        searchBean.setIndex(ADVANCED_GALLERY_INDEX);
+        searchBean.setIndex(GALLERY_SEARCH_INDEX);
 
         CmsGallerySearchResultList searchResults = null;
         while (!found) {
@@ -1142,7 +1142,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
-        searchBean.setIndex(ADVANCED_GALLERY_INDEX);
+        searchBean.setIndex(GALLERY_SEARCH_INDEX);
         CmsGallerySearchResultList searchResults = searchBean.getResult(params);
         // set only the result dependent search params for this search
         // the user dependent params(galleries, types etc.) remain unchanged
