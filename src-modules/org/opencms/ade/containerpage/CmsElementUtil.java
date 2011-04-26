@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/26 08:12:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -92,6 +93,9 @@ public class CmsElementUtil {
 
     /** The actual container page uri. */
     private String m_cntPageUri;
+
+    /** The content locale. */
+    private Locale m_locale;
 
     /** The http request. */
     private HttpServletRequest m_req;
@@ -108,16 +112,23 @@ public class CmsElementUtil {
      * @param cntPageUri the container page uri
      * @param req the http request
      * @param res the http response
+     * @param locale the content locale
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsElementUtil(CmsObject cms, String cntPageUri, HttpServletRequest req, HttpServletResponse res)
+    public CmsElementUtil(
+        CmsObject cms,
+        String cntPageUri,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        Locale locale)
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
+        m_locale = locale;
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
@@ -125,65 +136,8 @@ public class CmsElementUtil {
             cms,
             m_cms.readResource(cntPageUri),
             req);
-        CmsContainerPageBean containerPage = xmlContainerPage.getCntPage(cms, cms.getRequestContext().getLocale());
+        CmsContainerPageBean containerPage = xmlContainerPage.getCntPage(cms, m_locale);
         m_standardContext.setPage(containerPage);
-    }
-
-    /**
-     * Returns the content of an element when rendered with the given formatter.<p> 
-     * 
-     * @param element the element bean
-     * @param formatter the formatter uri
-     * 
-     * @return generated html code
-     * 
-     * @throws CmsException if an cms related error occurs
-     * @throws ServletException if a jsp related error occurs
-     * @throws IOException if a jsp related error occurs
-     */
-    private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
-    throws CmsException, ServletException, IOException {
-
-        element.initResource(m_cms);
-        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), element.getResource(), formatter);
-
-        CmsResource loaderRes = loaderFacade.getLoaderStartResource();
-
-        String oldUri = m_cms.getRequestContext().getUri();
-        try {
-            m_cms.getRequestContext().setUri(m_cntPageUri);
-            CmsContainerBean containerBean = null;
-            if (m_standardContext.getPage().getContainers().containsKey(container.getName())) {
-                containerBean = m_standardContext.getPage().getContainers().get(container.getName());
-            } else {
-                containerBean = new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getMaxElements(),
-                    Collections.<CmsContainerElementBean> emptyList());
-            }
-            if (containerBean.getWidth() == null) {
-                containerBean.setWidth(String.valueOf(container.getWidth()));
-            }
-            m_standardContext.setContainer(containerBean);
-            m_standardContext.setElement(element);
-            // to enable 'old' direct edit features for content-collector-elements, 
-            // set the direct-edit-provider-attribute in the request
-            I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
-            m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-            String encoding = m_res.getCharacterEncoding();
-            return (new String(loaderFacade.getLoader().dump(
-                m_cms,
-                loaderRes,
-                null,
-                m_cms.getRequestContext().getLocale(),
-                m_req,
-                m_res), encoding)).trim();
-        } finally {
-            m_cms.getRequestContext().setUri(oldUri);
-        }
     }
 
     /**
@@ -199,6 +153,8 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
+        Locale requestLocale = m_cms.getRequestContext().getLocale();
+        m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
@@ -244,9 +200,7 @@ public class CmsElementUtil {
                 m_cms,
                 element.getResource(),
                 m_req);
-            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-                m_cms,
-                m_cms.getRequestContext().getLocale());
+            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms, m_locale);
             elementBean.setGroupContainer(true);
             elementBean.setTypes(groupContainer.getTypes());
             elementBean.setDescription(groupContainer.getDescription());
@@ -284,6 +238,7 @@ public class CmsElementUtil {
             contents = contentsByName;
         }
         elementBean.setContents(contents);
+        m_cms.getRequestContext().setLocale(requestLocale);
         return elementBean;
     }
 
@@ -325,6 +280,58 @@ public class CmsElementUtil {
             }
         }
         return contentsByName;
+    }
+
+    /**
+     * Returns the content of an element when rendered with the given formatter.<p> 
+     * 
+     * @param element the element bean
+     * @param formatter the formatter uri
+     * 
+     * @return generated html code
+     * 
+     * @throws CmsException if an cms related error occurs
+     * @throws ServletException if a jsp related error occurs
+     * @throws IOException if a jsp related error occurs
+     */
+    private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
+    throws CmsException, ServletException, IOException {
+
+        element.initResource(m_cms);
+        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
+            formatter), element.getResource(), formatter);
+
+        CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+
+        String oldUri = m_cms.getRequestContext().getUri();
+        try {
+            m_cms.getRequestContext().setUri(m_cntPageUri);
+            CmsContainerBean containerBean = null;
+            if ((m_standardContext.getPage() != null)
+                && m_standardContext.getPage().getContainers().containsKey(container.getName())) {
+                containerBean = m_standardContext.getPage().getContainers().get(container.getName());
+            } else {
+                containerBean = new CmsContainerBean(
+                    container.getName(),
+                    container.getType(),
+                    container.getMaxElements(),
+                    Collections.<CmsContainerElementBean> emptyList());
+            }
+            if (containerBean.getWidth() == null) {
+                containerBean.setWidth(String.valueOf(container.getWidth()));
+            }
+            m_standardContext.setContainer(containerBean);
+            m_standardContext.setElement(element);
+            // to enable 'old' direct edit features for content-collector-elements, 
+            // set the direct-edit-provider-attribute in the request
+            I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
+            eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
+            m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
+            String encoding = m_res.getCharacterEncoding();
+            return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();
+        } finally {
+            m_cms.getRequestContext().setUri(oldUri);
+        }
     }
 
     /**

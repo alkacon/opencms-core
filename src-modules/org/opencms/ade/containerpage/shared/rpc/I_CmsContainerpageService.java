@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -96,6 +96,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
+     * @param locale the content locale
      * 
      * @return the element data
      * 
@@ -105,7 +106,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String containerpageUri,
         String reqParams,
         Collection<String> clientIds,
-        Collection<CmsContainer> containers) throws CmsRpcException;
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of properties.<p>
@@ -115,6 +117,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientId the requested element ids 
      * @param properties the properties for which the element data should be loaded 
      * @param containers the containers of the current page 
+     * @param locale the content locale
      * 
      * @return the element data 
      * 
@@ -125,33 +128,40 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         String clientId,
         Map<String, String> properties,
-        Collection<CmsContainer> containers) throws CmsRpcException;
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the container element data of the favorite list.<p>
      * 
      * @param containerpageUri the current URI
      * @param containers the containers of the current page
+     * @param locale the content locale
      * 
      * @return the favorite list element data
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElementData> getFavoriteList(String containerpageUri, Collection<CmsContainer> containers)
-    throws CmsRpcException;
+    List<CmsContainerElementData> getFavoriteList(
+        String containerpageUri,
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the container element data of the recent list.<p>
      * 
      * @param containerpageUri the current URI
      * @param containers the containers of the current page
+     * @param locale the content locale
      * 
      * @return the recent list element data
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElementData> getRecentList(String containerpageUri, Collection<CmsContainer> containers)
-    throws CmsRpcException;
+    List<CmsContainerElementData> getRecentList(
+        String containerpageUri,
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the initialization data.<p>
@@ -167,10 +177,12 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @param containerpageUri the current URI
      * @param containers the container-page's containers
+     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException;
+    void saveContainerpage(String containerpageUri, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>
@@ -188,6 +200,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
      * @param containers the containers of the current page
+     * @param locale the content locale
      * 
      * @return the data of the saved group container 
      * 
@@ -197,7 +210,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String containerpageUri,
         String reqParams,
         CmsGroupContainer groupContainer,
-        Collection<CmsContainer> containers) throws CmsRpcException;
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
 
     /**
      * Saves the recent list.<p>
@@ -213,8 +227,10 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @param containerpageUri the current URI
      * @param containers the container-page's containers
+     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException;
+    void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
 }

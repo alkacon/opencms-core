@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2011/01/19 14:18:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,29 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
+
+    /** The content locale. */
+    private String m_locale;
+
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
+    }
+
+    /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
+    }
 
     /**
      * Returns the categories.<p>

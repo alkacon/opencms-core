@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The current container page URI. */
     private String m_cntPageUri;
+
+    /** The content locale. */
+    private String m_locale;
 
     /** The map of available types and their new resource id's. */
     private Map<String, String> m_newTypes;
@@ -82,6 +85,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapUri the current sitemap URI
      * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
      * @param newTypes the map of available types and their new resource id's
+     * @param locale the content locale
      */
     public CmsCntPageData(
         String cntPageUri,
@@ -89,7 +93,8 @@ public final class CmsCntPageData implements IsSerializable {
         String requestParams,
         String sitemapUri,
         String sitePath,
-        Map<String, String> newTypes) {
+        Map<String, String> newTypes,
+        String locale) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
@@ -97,6 +102,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_sitemapUri = sitemapUri;
         m_sitePath = sitePath;
         m_newTypes = newTypes;
+        m_locale = locale;
     }
 
     /**
@@ -135,6 +141,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getEditorUri() {
 
         return EDITOR_URI;
+    }
+
+    /**
+     * Returns the content locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
     }
 
     /**

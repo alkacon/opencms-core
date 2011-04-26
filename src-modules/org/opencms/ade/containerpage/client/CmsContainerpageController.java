@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/26 08:12:03 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -75,9 +75,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -144,6 +144,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     m_clientIds,
                     m_containerBeans,
+                    getLocale(),
                     this);
             }
 
@@ -199,6 +200,7 @@ public final class CmsContainerpageController {
                 getRequestParams(),
                 m_clientIds,
                 m_containerBeans,
+                getLocale(),
                 this);
 
         }
@@ -271,6 +273,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     clientIds,
                     m_containerBeans,
+                    getLocale(),
                     this);
             }
 
@@ -886,7 +889,7 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, true);
-                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerBeans, this);
+                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerBeans, getLocale(), this);
             }
 
             /**
@@ -919,7 +922,7 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, true);
-                getContainerpageService().getRecentList(getCurrentUri(), m_containerBeans, this);
+                getContainerpageService().getRecentList(getCurrentUri(), m_containerBeans, getLocale(), this);
             }
 
             /**
@@ -1068,7 +1071,7 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
+                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), getLocale(), this);
                 }
 
                 /**
@@ -1103,7 +1106,7 @@ public final class CmsContainerpageController {
                     setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_SAVING_0));
                     start(0, true);
-                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
+                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), getLocale(), this);
                 }
 
                 /**
@@ -1175,6 +1178,7 @@ public final class CmsContainerpageController {
                         getRequestParams(),
                         groupContainer,
                         m_containerBeans,
+                        getLocale(),
                         this);
                 }
 
@@ -1318,6 +1322,16 @@ public final class CmsContainerpageController {
             m_coreSvc = GWT.create(I_CmsCoreService.class);
         }
         return m_coreSvc;
+    }
+
+    /**
+     * Returns the content locale.<p>
+     * 
+     * @return the content locale
+     */
+    protected String getLocale() {
+
+        return m_data.getLocale();
     }
 
     /**
@@ -1483,7 +1497,11 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().syncSaveContainerpage(getCurrentUri(), getPageContent(), this);
+                    getContainerpageService().syncSaveContainerpage(
+                        getCurrentUri(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
                 }
 
                 /**
@@ -1560,6 +1578,7 @@ public final class CmsContainerpageController {
                     clientId,
                     properties,
                     m_containerBeans,
+                    getLocale(),
                     this);
 
             }

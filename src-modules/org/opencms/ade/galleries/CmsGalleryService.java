@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/04/26 08:25:11 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/04/26 16:36:03 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  * 
@@ -303,7 +303,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(m_galleryMode);
         data.setLocales(buildLocalesMap());
-
+        data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
         List<I_CmsResourceType> types = getResourceTypes();
         List<CmsResourceTypeBean> typeList = buildTypesList(types);
@@ -415,19 +415,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         result.setGalleries(galleries);
                     }
                     result.setTypes(types);
+                    result.setLocale(data.getLocale());
                     result = search(result);
                 }
                 // remove all types
                 result.setTypes(null);
                 break;
             case ade:
-            case sitemap:
-                result = new CmsGallerySearchBean();
-                result.setTypes(types);
-                result = search(result);
-                // remove all types
-                result.setTypes(null);
-                break;
             default:
                 break;
         }
@@ -681,7 +675,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private CmsGallerySearchBean findResourceInGallery(String resourceName, CmsGalleryDataBean data) {
 
         CmsResource resource = null;
-        CmsProperty locale = CmsProperty.getNullProperty();
         int pos = resourceName.indexOf("?");
         String resName = resourceName;
         if (pos > -1) {
@@ -690,7 +683,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             log("reading resource: " + resName);
             resource = getCmsObject().readResource(resName);
-            locale = getCmsObject().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true);
         } catch (CmsException e) {
             logError(e);
             return null;
@@ -713,11 +705,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             vfsFolders.add(CmsResource.getFolderPath(resName));
             initialSearchObj.setFolders(vfsFolders);
         }
+        initialSearchObj.setLocale(data.getLocale());
         CmsGallerySearchBean searchObj = new CmsGallerySearchBean(initialSearchObj);
         searchObj.setSortOrder(CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT.toString());
-        if (!locale.isNullProperty()) {
-            searchObj.setLocale(locale.getValue());
-        }
         int currentPage = 1;
         boolean found = false;
         searchObj.setPage(currentPage);
