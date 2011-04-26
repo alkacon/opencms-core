@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/20 08:32:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/26 13:18:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,11 +128,18 @@ public interface I_CmsXmlContentHandler {
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
-     * Returns the element formatters.<p>
+     * Returns the container page element formatters that have been defined for type based containers.<p>
      * 
      * @return the element formatters, as &lt;name,uri&gt;
      */
-    Map<String, String> getFormatters();
+    Map<String, String> getFormattersByType();
+
+    /**
+     * Returns the container page element formatters that have been defined by container width.<p>
+     * 
+     * @return a map from maximal container widths to formatter jsp uris
+     */
+    Map<Integer, CmsPair<String, Integer>> getFormattersByWidth();
 
     /**
      * Returns the java-script resources to include into the html-page head.<p>
@@ -188,13 +195,6 @@ public interface I_CmsXmlContentHandler {
     String getPreview(CmsObject cms, CmsXmlContent content, String resourcename);
 
     /**
-     * Returns the element properties.<p>
-     * 
-     * @return the element properties, as &lt;name,CmsXmlContentProperty&gt;
-     */
-    Map<String, CmsXmlContentProperty> getProperties();
-
-    /**
      * Returns the relation type for the given value.<p>
      * 
      * @param value the value to get the relation type for
@@ -216,6 +216,13 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String path);
 
     /**
+     * Returns the element settings defined for the container page formatters.<p>
+     * 
+     * @return the element settings defined for the container page formatters
+     */
+    Map<String, CmsXmlContentProperty> getSettings();
+
+    /**
      * Returns the tabs to be displayed in the editor.<p>
      * 
      * @return the tabs to be displayed in the editor
@@ -235,13 +242,6 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
-
-    /**
-     * Returns the formatter mapping based on container widths.<p>
-     * 
-     * @return a map from maximal container widths to formatter jsp uris
-     */
-    Map<Integer, CmsPair<String, Integer>> getWidthFormatters();
 
     /**
      * Initializes this content handler for the given XML content definition by

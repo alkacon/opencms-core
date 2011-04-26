@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/04/26 08:11:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
         }
         CmsXmlContentDefinition contentDef = searchContentDefinition(cms, resource);
-        Map<String, String> formatters = contentDef.getContentHandler().getFormatters();
+        Map<String, String> formatters = contentDef.getContentHandler().getFormattersByType();
 
         if (formatters.isEmpty()) {
             LOG.warn(Messages.get().getBundle().key(
@@ -243,8 +243,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         I_CmsXmlContentHandler handler = contentDef.getContentHandler();
         return CmsFormatterUtil.selectFormatter(
-            handler.getFormatters(),
-            handler.getWidthFormatters(),
+            handler.getFormattersByType(),
+            handler.getFormattersByWidth(),
             containerType,
             maxWidth);
     }

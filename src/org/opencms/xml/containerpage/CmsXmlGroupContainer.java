@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainer.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.1
  */
@@ -447,7 +447,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
             // the properties
             Map<String, String> properties = element.getSettings();
-            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                 cms,
                 uriRes);
 

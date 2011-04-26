@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/20 07:01:16 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 7.6
  */
@@ -293,9 +293,7 @@ public class CmsADEManager {
             properties.put(propertyName, property);
         }
         try {
-            Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(
-                cms,
-                cms.readResource(element.getId()));
+            Map<String, CmsXmlContentProperty> propertyDefs = getElementSettings(cms, cms.readResource(element.getId()));
             Iterator<Map.Entry<String, CmsXmlContentProperty>> itPropertyDefs = propertyDefs.entrySet().iterator();
             while (itPropertyDefs.hasNext()) {
                 Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
@@ -304,41 +302,18 @@ public class CmsADEManager {
                 if (properties.containsKey(propertyName)) {
                     properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    properties.put(
+                    properties.put(propertyName, new CmsProperty(
                         propertyName,
-                        new CmsProperty(propertyName, null, CmsXmlContentPropertyHelper.getPropValueIds(
-                            cms,
-                            prop.getPropertyType(),
-                            prop.getDefault())));
+                        null,
+                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getType(), prop.getDefault())));
                 }
             }
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1, element.getId()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
+                element.getId()), e);
         }
         return properties;
-    }
-
-    /**
-     * Returns the property configuration for a given resource.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource
-     * 
-     * @return the property configuration
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsObject cms, CmsResource resource)
-    throws CmsException {
-
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
-        Map<String, CmsXmlContentProperty> propertiesFromSchema = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            resource).getProperties();
-        result.putAll(propertiesFromSchema);
-        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
     }
 
     /**
@@ -358,6 +333,27 @@ public class CmsADEManager {
             cms,
             cms.getRequestContext().addSiteRoot(entryPoint));
         return sitemapConfig.getPropertyConfiguration();
+    }
+
+    /**
+     * Returns the element settings for a given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the element settings for a given resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Map<String, CmsXmlContentProperty> getElementSettings(CmsObject cms, CmsResource resource)
+    throws CmsException {
+
+        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> settings = CmsXmlContentDefinition.getContentHandlerForResource(
+            cms,
+            resource).getSettings();
+        result.putAll(settings);
+        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
     }
 
     /**
@@ -568,7 +564,7 @@ public class CmsADEManager {
         }
 
         // iterate the formatters
-        Map<String, String> formatters = contentDef.getContentHandler().getFormatters();
+        Map<String, String> formatters = contentDef.getContentHandler().getFormattersByType();
         if (formatters.isEmpty()) {
             LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,

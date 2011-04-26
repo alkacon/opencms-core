@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/21 10:30:33 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0
  */
@@ -786,7 +786,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
-            resource).getProperties();
+            resource).getSettings();
         return !propConfig.isEmpty();
     }
 

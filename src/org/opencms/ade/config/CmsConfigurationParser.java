@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -247,7 +247,7 @@ public class CmsConfigurationParser {
 
         Map<String, CmsXmlContentProperty> props = new HashMap<String, CmsXmlContentProperty>();
         for (CmsXmlContentProperty propDef : m_props) {
-            props.put(propDef.getPropertyName(), propDef);
+            props.put(propDef.getName(), propDef);
         }
         return props;
     }

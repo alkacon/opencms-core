@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2011/03/02 08:25:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0 
  */
@@ -134,7 +134,7 @@ public class CmsBasicFormField implements I_CmsFormField {
 
         return createField(
             propertyConfig,
-            propertyConfig.getPropertyName(),
+            propertyConfig.getName(),
             CmsWidgetFactoryRegistry.instance(),
             additionalParams,
             false);
@@ -165,7 +165,7 @@ public class CmsBasicFormField implements I_CmsFormField {
 
         String label = propertyConfig.getNiceName();
         if (label == null) {
-            label = propertyConfig.getPropertyName();
+            label = propertyConfig.getName();
         }
 
         String description = propertyConfig.getDescription();
@@ -203,7 +203,7 @@ public class CmsBasicFormField implements I_CmsFormField {
         Map<String, I_CmsFormField> result = new LinkedHashMap<String, I_CmsFormField>();
         for (CmsXmlContentProperty propConfig : propertyConfigurations) {
             CmsBasicFormField field = createField(propConfig);
-            result.put(propConfig.getPropertyName(), field);
+            result.put(propConfig.getName(), field);
         }
         return result;
 

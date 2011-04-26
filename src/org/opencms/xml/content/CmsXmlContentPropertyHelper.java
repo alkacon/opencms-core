@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/26 13:18:32 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.9.2
  */
@@ -220,7 +220,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     throws CmsException {
 
         I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-        Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getProperties();
+        Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings();
 
         CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
         return resolveMacrosInProperties(propertiesConf, resolver);
@@ -347,10 +347,10 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         try {
             Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                resource).getProperties();
+                resource).getSettings();
             for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
                 CmsXmlContentProperty prop = entry.getValue();
-                result.put(entry.getKey(), getPropValueIds(cms, prop.getPropertyType(), prop.getDefault()));
+                result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
             }
         } catch (CmsException e) {
             // should never happen
@@ -506,10 +506,10 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsXmlContentProperty property,
         CmsMacroResolver resolver) {
 
-        String propName = property.getPropertyName();
+        String propName = property.getName();
         CmsXmlContentProperty result = new CmsXmlContentProperty(
             propName,
-            property.getPropertyType(),
+            property.getType(),
             property.getWidget(),
             resolver.resolveMacros(property.getWidgetConfiguration()),
             property.getRuleRegex(),
@@ -561,7 +561,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             boolean isVfs = false;
             CmsXmlContentProperty propDef = propertiesConf.get(baseName);
             if (propDef != null) {
-                isVfs = CmsXmlContentProperty.PropType.isVfsList(propDef.getPropertyType());
+                isVfs = CmsXmlContentProperty.PropType.isVfsList(propDef.getType());
             }
             if (!isVfs) {
                 // string value
@@ -681,7 +681,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             if (configEntry == null) {
                 continue; // ignore properties which are not configured anymore 
             }
-            type = configEntry.getPropertyType();
+            type = configEntry.getType();
 
             String newValue = convertStringPropertyValue(cms, propValue, type, toClient);
             result.put(propName, newValue);

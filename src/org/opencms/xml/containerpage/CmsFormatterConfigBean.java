@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsFormatterConfigBean.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,43 +31,42 @@
 
 package org.opencms.xml.containerpage;
 
-
 /**
  * A bean containing formatter configuration data as strings.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterConfigBean {
 
-    /** The formatter jsp. */
+    /** The formatter JSP. */
     private String m_jsp;
 
     /** The formatter max width. */
     private String m_maxWidth;
 
+    /** The formatter min width. */
+    private String m_minWidth;
+
     /** The formatter container type. */
     private String m_type;
-
-    /** The formatter width. */
-    private String m_width;
 
     /**
      * Constructor.<p>
      * 
      * @param jsp the formatter jsp 
      * @param type the formatter container type 
-     * @param width the formatter width
+     * @param minWidth the formatter min width
      * @param maxWidth the formatter max width 
      */
-    public CmsFormatterConfigBean(String jsp, String type, String width, String maxWidth) {
+    public CmsFormatterConfigBean(String jsp, String type, String minWidth, String maxWidth) {
 
         m_jsp = jsp;
         m_type = type;
-        m_width = width;
+        m_minWidth = minWidth;
         m_maxWidth = maxWidth;
     }
 
@@ -82,13 +81,23 @@ public class CmsFormatterConfigBean {
     }
 
     /**
-     * Gets the maximum width as a string.<p>
+     * Returns the maximum formatter width as a string.<p>
      * 
-     * @return the maximum width as a string 
+     * @return the maximum formatter width as a string 
      */
     public String getMaxWidth() {
 
         return m_maxWidth;
+    }
+
+    /**
+     * Returns the minimum formatter width as a string.<p>
+     * 
+     * @return the minimum formatter width as a string
+     */
+    public String getMinWidth() {
+
+        return m_minWidth;
     }
 
     /**
@@ -99,16 +108,6 @@ public class CmsFormatterConfigBean {
     public String getType() {
 
         return m_type;
-    }
-
-    /**
-     * Returns the formatter width.<p>
-     * 
-     * @return the formatter width 
-     */
-    public String getWidth() {
-
-        return m_width;
     }
 
 }

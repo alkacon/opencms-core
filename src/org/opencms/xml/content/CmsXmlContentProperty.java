@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2011/02/21 11:21:48 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/04/26 13:18:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.xml.content;
 import java.io.Serializable;
 
 /**
- * XML property configuration.<p>
+ * Describes both VFS properties and Container Page Element settings, used by the GWT client.<p>  
  * 
  * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
  * classes used by GWT client-side code). If you change this class, either make sure that 
@@ -43,17 +43,17 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.9.2
  */
 public class CmsXmlContentProperty implements Serializable {
 
-    /** Property type constants. */
+    /** Type constants. */
     public enum PropType {
-        /** Property type constant string. */
+        /** Type constant string. */
         string,
-        /** Property type constant VFS list. */
+        /** Type constant VFS list. */
         vfslist;
 
         /**
@@ -85,7 +85,7 @@ public class CmsXmlContentProperty implements Serializable {
         String,
         /** File list URI node name. */
         Uri,
-        /** Property value node name. */
+        /** Value node name. */
         Value;
     }
 
@@ -93,7 +93,7 @@ public class CmsXmlContentProperty implements Serializable {
     public static final String PROP_SEPARATOR = ",";
 
     /** The serialization uid. */
-    private static final long serialVersionUID = -4588082362096864995L;
+    private static final long serialVersionUID = -7718747702874213381L;
 
     /** Default value. */
     private String m_default;
@@ -111,10 +111,10 @@ public class CmsXmlContentProperty implements Serializable {
     private String m_preferFolder;
 
     /** The name of the property. */
-    private String m_propertyName;
+    private String m_name;
 
     /** The property type. */
-    private String m_propertyType;
+    private String m_type;
 
     /** The validation rule regex. */
     private String m_ruleRegex;
@@ -134,8 +134,8 @@ public class CmsXmlContentProperty implements Serializable {
     /**
      * Public constructor.<p>
      * 
-     * @param propertyName the property name
-     * @param propertyType the property type (string|uri)
+     * @param name the property name
+     * @param type the property type (string|uri)
      * @param widget the widget
      * @param widgetConfiguration the widget configuration
      * @param ruleRegex the validation rule regex
@@ -147,8 +147,8 @@ public class CmsXmlContentProperty implements Serializable {
      * @param preferFolder the "prefer folder" option
      */
     public CmsXmlContentProperty(
-        String propertyName,
-        String propertyType,
+        String name,
+        String type,
         String widget,
         String widgetConfiguration,
         String ruleRegex,
@@ -162,8 +162,8 @@ public class CmsXmlContentProperty implements Serializable {
     ) {
 
         super();
-        m_propertyName = propertyName;
-        m_propertyType = propertyType;
+        m_name = name;
+        m_type = type;
         m_widget = widget;
         m_widgetConfiguration = widgetConfiguration;
         m_ruleRegex = ruleRegex;
@@ -191,8 +191,8 @@ public class CmsXmlContentProperty implements Serializable {
     public CmsXmlContentProperty copy() {
 
         return new CmsXmlContentProperty(
-            m_propertyName,
-            m_propertyType,
+            m_name,
+            m_type,
             m_widget,
             m_widgetConfiguration,
             m_ruleRegex,
@@ -245,23 +245,23 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
-     * Returns the propertyName.<p>
+     * Returns the property name.<p>
      *
-     * @return the propertyName
+     * @return the property name
      */
-    public String getPropertyName() {
+    public String getName() {
 
-        return m_propertyName;
+        return m_name;
     }
 
     /**
-     * Returns the propertyType.<p>
+     * Returns the property type.<p>
      *
-     * @return the propertyType
+     * @return the property type
      */
-    public String getPropertyType() {
+    public String getType() {
 
-        return m_propertyType;
+        return m_type;
     }
 
     /**
@@ -275,9 +275,9 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
-     * Returns the ruleType.<p>
+     * Returns the rule type.<p>
      *
-     * @return the ruleType
+     * @return the rule type
      */
     public String getRuleType() {
 
@@ -325,7 +325,7 @@ public class CmsXmlContentProperty implements Serializable {
      */
     public boolean isPreferFolder() {
 
-        return (m_preferFolder == null) || ("true".equalsIgnoreCase(m_preferFolder));
+        return (m_preferFolder == null) || Boolean.valueOf(m_preferFolder).booleanValue();
 
     }
 
@@ -339,8 +339,8 @@ public class CmsXmlContentProperty implements Serializable {
     public CmsXmlContentProperty withNiceName(String niceName) {
 
         return new CmsXmlContentProperty(
-            m_propertyName,
-            m_propertyType,
+            m_name,
+            m_type,
             m_widget,
             m_widgetConfiguration,
             m_ruleRegex,

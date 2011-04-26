@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsFormatterUtil.java,v $
- * Date   : $Date: 2011/04/05 06:41:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/26 13:18:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -67,7 +67,7 @@ public final class CmsFormatterUtil {
 
     /**
      * Converts a list of formatter configuration beans into two maps, one containing 
-     * type based formatters, and the other containing width-based formatters.<p>
+     * type based formatters, and the other containing width based formatters.<p>
      * 
      * @param beans the list of formatter configuration beans 
      * @param location the location of the file containing the formatter configuration (used for error messages)
@@ -83,7 +83,7 @@ public final class CmsFormatterUtil {
         for (CmsFormatterConfigBean configBean : beans) {
             String type = configBean.getType();
             String uri = configBean.getJsp();
-            String widthStr = configBean.getWidth();
+            String minWidthStr = configBean.getMinWidth();
             String maxWidthStr = configBean.getMaxWidth();
             String oldUri = null;
             Object key = null;
@@ -93,7 +93,7 @@ public final class CmsFormatterUtil {
                 int width = -1;
                 int maxWidth = Integer.MAX_VALUE;
                 try {
-                    width = Integer.parseInt(widthStr);
+                    width = Integer.parseInt(minWidthStr);
                 } catch (NumberFormatException e) {
                     //ignore; width will be -1 
                 }
@@ -122,7 +122,7 @@ public final class CmsFormatterUtil {
     }
 
     /**
-     * Selects the correct formatter from maps of type-based and width-based formatters
+     * Selects the correct formatter from maps of type based and width based formatters
      * based on a container type and width.<p>
      * 
      * This method first tries to find the formatter for the container type. 
