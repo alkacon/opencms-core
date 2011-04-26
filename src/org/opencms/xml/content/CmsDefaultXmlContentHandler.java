@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/26 13:48:12 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/04/26 14:29:53 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -1634,6 +1634,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // iterate all "formatter" elements in the "formatters" node
             Element element = itFormatter.next();
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
+                // if not set use "*" as default for type
+                type = "*";
+            }
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String minWidthStr = element.attributeValue(APPINFO_ATTR_MINWIDTH);
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);

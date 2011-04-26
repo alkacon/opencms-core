@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsFormatterUtil.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/26 14:29:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -78,8 +78,8 @@ public final class CmsFormatterUtil {
         List<CmsFormatterConfigBean> beans,
         String location) {
 
-        Map<String, String> formatters = new HashMap<String, String>();
-        Map<Integer, CmsPair<String, Integer>> widthFormatters = new HashMap<Integer, CmsPair<String, Integer>>();
+        Map<String, String> formattersByType = new HashMap<String, String>();
+        Map<Integer, CmsPair<String, Integer>> formattersByWidth = new HashMap<Integer, CmsPair<String, Integer>>();
         for (CmsFormatterConfigBean configBean : beans) {
             String type = configBean.getType();
             String uri = configBean.getJsp();
@@ -104,13 +104,13 @@ public final class CmsFormatterUtil {
                 }
 
                 key = new Integer(width);
-                CmsPair<String, Integer> fmt = widthFormatters.get(key);
+                CmsPair<String, Integer> fmt = formattersByWidth.get(key);
                 oldUri = fmt != null ? fmt.getFirst() : null;
-                widthFormatters.put((Integer)key, CmsPair.create(uri, new Integer(maxWidth)));
+                formattersByWidth.put((Integer)key, CmsPair.create(uri, new Integer(maxWidth)));
             } else {
                 key = type;
-                oldUri = formatters.get(key);
-                formatters.put((String)key, uri);
+                oldUri = formattersByType.get(key);
+                formattersByType.put((String)key, uri);
             }
             if (oldUri != null) {
                 LOG.warn(Messages.get().getBundle().key(
@@ -118,7 +118,7 @@ public final class CmsFormatterUtil {
                     new Object[] {key, oldUri, uri, location}));
             }
         }
-        return CmsPair.create(formatters, widthFormatters);
+        return CmsPair.create(formattersByType, formattersByWidth);
     }
 
     /**
