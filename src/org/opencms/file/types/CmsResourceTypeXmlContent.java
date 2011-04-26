@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/03/21 12:49:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/04/26 08:11:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,6 +338,45 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * Helper method for finding the content definition of an XML content resource.<p>
+     * 
+     * @param cms the CMS context 
+     * @param resource the XML content resource
+     *  
+     * @return the content definition for the resource 
+     */
+    public CmsXmlContentDefinition searchContentDefinition(CmsObject cms, CmsResource resource) {
+
+        try {
+            CmsXmlContentDefinition contentDef = null;
+            String xsd = m_schema;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(xsd)) {
+                List<CmsRelation> relations = cms.getRelationsForResource(
+                    resource,
+                    CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+                if ((relations != null) && !relations.isEmpty()) {
+                    xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+                }
+            }
+            contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
+            if (contentDef == null) {
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+                contentDef = content.getContentDefinition();
+            }
+            return contentDef;
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
+                        cms.getSitePath(resource)),
+                    e);
+            }
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
     @Override
@@ -401,44 +440,4 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         }
         return null;
     }
-
-    /**
-     * Helper method for finding the content definition of an XML content resource.<p>
-     * 
-     * @param cms the CMS context 
-     * @param resource the XML content resource
-     *  
-     * @return the content definition for the resource 
-     */
-    private CmsXmlContentDefinition searchContentDefinition(CmsObject cms, CmsResource resource) {
-
-        try {
-            CmsXmlContentDefinition contentDef = null;
-            String xsd = m_schema;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(xsd)) {
-                List<CmsRelation> relations = cms.getRelationsForResource(
-                    resource,
-                    CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
-                if ((relations != null) && !relations.isEmpty()) {
-                    xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
-                }
-            }
-            contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
-            if (contentDef == null) {
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-                contentDef = content.getContentDefinition();
-            }
-            return contentDef;
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
-                        cms.getSitePath(resource)),
-                    e);
-            }
-            return null;
-        }
-    }
-
 }

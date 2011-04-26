@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/04/21 10:31:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/26 08:11:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,20 +34,24 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -67,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -121,6 +125,50 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             String[] values = new String[] {value};
             parameters.put(name, values);
         }
+    }
+
+    /**
+     * Returns the configured CSS head include resources.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the configured CSS head include resources
+     * 
+     * @throws CmsLoaderException if something goes wrong reading the resource type
+     */
+    public static Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
+
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        if (resType instanceof CmsResourceTypeXmlContent) {
+            CmsXmlContentDefinition contentDefinition = ((CmsResourceTypeXmlContent)resType).searchContentDefinition(
+                cms,
+                resource);
+            return contentDefinition.getContentHandler().getCSSHeadIncludes();
+        }
+        return Collections.<String> emptySet();
+    }
+
+    /**
+     * Returns the configured java-script head include resources.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the configured java-script head include resources
+     * 
+     * @throws CmsLoaderException if something goes wrong reading the resource type
+     */
+    public static Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
+
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        if (resType instanceof CmsResourceTypeXmlContent) {
+            CmsXmlContentDefinition contentDefinition = ((CmsResourceTypeXmlContent)resType).searchContentDefinition(
+                cms,
+                resource);
+            return contentDefinition.getContentHandler().getJSHeadIncludes();
+        }
+        return Collections.<String> emptySet();
     }
 
     /**
@@ -221,10 +269,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (CmsContainerElementBean element : containerPage.getElements()) {
             try {
                 element.initResource(cms);
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    element.getResource());
-                cssIncludes.addAll(handler.getCSSHeadIncludes());
+                cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
             } catch (CmsException e) {
                 LOG.error(
                     Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
@@ -234,10 +279,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    detailContent);
-                cssIncludes.addAll(handler.getCSSHeadIncludes());
+                cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
                 LOG.error(
@@ -250,7 +292,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (String cssUri : cssIncludes) {
             pageContext.getOut().print(
                 "<link href=\""
-                    + CmsJspTagLink.linkTagAction(cssUri, req)
+                    + OpenCms.getLinkManager().getOnlineLink(cms, cssUri)
                     + generateReqParams()
                     + "\" rel=\"stylesheet\" type=\"text/css\">");
         }
@@ -273,10 +315,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (CmsContainerElementBean element : containerPage.getElements()) {
             try {
                 element.initResource(cms);
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    element.getResource());
-                jsIncludes.addAll(handler.getJSHeadIncludes());
+                jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
             } catch (CmsException e) {
                 LOG.error(
                     Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
@@ -286,10 +325,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    detailContent);
-                jsIncludes.addAll(handler.getJSHeadIncludes());
+                jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
                 LOG.error(
@@ -308,6 +344,13 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         }
     }
 
+    /**
+     * Generates the request parameter string.<p>
+     * 
+     * @return the request parameter string
+     * 
+     * @throws UnsupportedEncodingException if something goes wrong encoding the request parameters
+     */
     private String generateReqParams() throws UnsupportedEncodingException {
 
         String params = "";
@@ -327,6 +370,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         return params;
     }
 
+    /**
+     * Returns the standard context bean.<p>
+     * 
+     * @param cms the current cms context
+     * @param req the current request
+     * 
+     * @return the standard context bean
+     * 
+     * @throws CmsException if something goes wrong
+     */
     private CmsJspStandardContextBean getStandardContext(CmsObject cms, ServletRequest req) throws CmsException {
 
         String requestUri = cms.getRequestContext().getUri();

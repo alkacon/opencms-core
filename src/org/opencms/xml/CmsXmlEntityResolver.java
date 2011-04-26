@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2011/02/14 11:46:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/26 08:11:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
             // opencms:// VFS reference
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
-            String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+            String cacheKey = getCacheKey(
+                cacheSystemId,
+                m_cms.getRequestContext().getCurrentProject().isOnlineProject());
             // look up temporary cache
             content = m_cacheTemporary.get(cacheKey);
             if (content != null) {
