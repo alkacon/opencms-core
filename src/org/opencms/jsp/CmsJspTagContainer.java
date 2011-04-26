@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/26 13:48:12 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/26 16:35:29 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0
  */
@@ -242,153 +242,154 @@ public class CmsJspTagContainer extends TagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
-                boolean detailView = m_detailView;
+        boolean detailView = m_detailView;
 
-                CmsFlexController controller = CmsFlexController.getController(req);
-                CmsObject cms = controller.getCmsObject();
-                String requestUri = cms.getRequestContext().getUri();
-                CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
-                CmsContainerPageBean containerPage = standardContext.getPage();
-                if (containerPage == null) {
-                    // get the container page itself, checking the history first
-                    CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
-                    if (pageResource == null) {
-                        pageResource = cms.readResource(requestUri);
-                    }
-                    CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-                    containerPage = xmlContainerPage.getCntPage(cms, cms.getRequestContext().getLocale());
-                    standardContext.setPage(containerPage);
-                }
-                // create tag for container if necessary
-                boolean createTag = false;
+        CmsFlexController controller = CmsFlexController.getController(req);
+        CmsObject cms = controller.getCmsObject();
+        String requestUri = cms.getRequestContext().getUri();
+        Locale locale = cms.getRequestContext().getLocale();
+        CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
+        CmsContainerPageBean containerPage = standardContext.getPage();
+        if (containerPage == null) {
+            // get the container page itself, checking the history first
+            CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
+            if (pageResource == null) {
+                pageResource = cms.readResource(requestUri);
+            }
+            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
+            containerPage = xmlContainerPage.getCntPage(cms, locale);
+            standardContext.setPage(containerPage);
+        }
+        // create tag for container if necessary
+        boolean createTag = false;
                 String tagName = CmsStringUtil.isEmptyOrWhitespaceOnly(getTag()) ? DEFAULT_TAG_NAME : getTag();
                 if (!CREATE_NO_TAG.equals(getTag())) {
-                    createTag = true;
+            createTag = true;
                     pageContext.getOut().print(getTagOpen(tagName, getName(), getTagClass()));
-                }
+        }
 
-                Locale locale = containerPage.getLocale();
+        // get the maximal number of elements
+        int maxElements = getMaxElements(requestUri);
 
-                // get the maximal number of elements
-                int maxElements = getMaxElements(requestUri, locale);
+        // get the container
+        CmsContainerBean container = null;
+        if (containerPage != null) {
+            container = containerPage.getContainers().get(getName());
+        }
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
-                // get the container
-                CmsContainerBean container = containerPage.getContainers().get(getName());
-                boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-
-                boolean isUsedAsDetailView = false;
-                CmsUUID detailContentId = standardContext.getDetailContentId();
-                if (m_detailView && (detailContentId != null)) {
-                    isUsedAsDetailView = true;
-                }
-
-                if (container == null) {
-                    if (!isUsedAsDetailView) {
-                        // container not found
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_CONTAINER_NOT_FOUND_3,
-                                requestUri,
-                                locale,
+        boolean isUsedAsDetailView = false;
+        CmsUUID detailContentId = standardContext.getDetailContentId();
+        if (m_detailView && (detailContentId != null)) {
+            isUsedAsDetailView = true;
+        }
+        if (container == null) {
+            if (!isUsedAsDetailView) {
+                // container not found
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_CONTAINER_NOT_FOUND_3,
+                        requestUri,
+                        locale,
                                 getName()));
-                        }
-                        if (!isOnline) {
-                            // add container data for the editor
-                            try {
-                                pageContext.getOut().print(
-                                    getContainerDataTag(
+                }
+                if (!isOnline) {
+                    // add container data for the editor
+                    try {
+                        pageContext.getOut().print(
+                            getContainerDataTag(
                                         new CmsContainerBean(getName(), getType(), maxElements, null),
                                         getWidth(),
-                                        isUsedAsDetailView));
-                            } catch (JSONException e) {
-                                // should never happen
-                                throw new JspException(e);
-                            }
-                        }
-
-                        // close tag for the empty container
-                        if (createTag) {
-                            pageContext.getOut().print(getTagClose(tagName));
-                        }
-                    } else {
-                        container = new CmsContainerBean(
-                            getName(),
-                            getType(),
-                            maxElements,
-                            Collections.<CmsContainerElementBean> emptyList());
+                                isUsedAsDetailView));
+                    } catch (JSONException e) {
+                        // should never happen
+                        throw new JspException(e);
                     }
                 }
+
+                // close tag for the empty container
+                if (createTag) {
+                    pageContext.getOut().print(getTagClose(tagName));
+                }
+            } else {
+                container = new CmsContainerBean(
+                            getName(),
+                    getType(),
+                    maxElements,
+                    Collections.<CmsContainerElementBean> emptyList());
+            }
+        }
                 if (container != null) {
-                    standardContext.setContainer(container);
-                    // validate the type
+        standardContext.setContainer(container);
+        // validate the type
                     if (!getType().equals(container.getType())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.LOG_WRONG_CONTAINER_TYPE_4,
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.LOG_WRONG_CONTAINER_TYPE_4,
                             new Object[] {requestUri, locale, getName(), getType()}));
-                    }
+        }
 
                     // update the cache
-                    container.setMaxElements(maxElements);
-                    container.setWidth(getWidth());
-                    List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
-                    allElems.addAll(container.getElements());
+        container.setMaxElements(maxElements);
+        container.setWidth(getWidth());
+        List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
+        allElems.addAll(container.getElements());
 
-                    if (detailView) {
-                        addDetailViewToElements(cms, allElems);
-                    }
+        if (detailView) {
+            addDetailViewToElements(cms, allElems);
+        }
 
-                    if (!isOnline) {
-                        // add container data for the editor
-                        try {
-                            pageContext.getOut().print(
-                                getContainerDataTag(
+        if (!isOnline) {
+            // add container data for the editor
+            try {
+                pageContext.getOut().print(
+                    getContainerDataTag(
                                     new CmsContainerBean(getName(), getType(), maxElements, allElems),
                                     getWidth(),
-                                    isUsedAsDetailView));
-                        } catch (JSONException e) {
-                            // should never happen
-                            throw new JspException(e);
-                        }
+                        isUsedAsDetailView));
+            } catch (JSONException e) {
+                // should never happen
+                throw new JspException(e);
+            }
 
-                        // writing elements to the session cache to improve performance of the container-page editor
-                        CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)req).getSession().getAttribute(
-                            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-                        if (sessionCache == null) {
-                            sessionCache = new CmsADESessionCache(cms);
-                            ((HttpServletRequest)req).getSession().setAttribute(
-                                CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
-                                sessionCache);
-                        }
-                        for (CmsContainerElementBean element : allElems) {
-                            sessionCache.setCacheContainerElement(element.editorHash(), element);
-                        }
-                    }
+            // writing elements to the session cache to improve performance of the container-page editor
+            CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)req).getSession().getAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+            if (sessionCache == null) {
+                sessionCache = new CmsADESessionCache(cms);
+                ((HttpServletRequest)req).getSession().setAttribute(
+                    CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
+                    sessionCache);
+            }
+            for (CmsContainerElementBean element : allElems) {
+                sessionCache.setCacheContainerElement(element.editorHash(), element);
+            }
+        }
 
-                    // get the actual number of elements to render
-                    int renderElems = allElems.size();
-                    if ((maxElements > 0) && (renderElems > maxElements)) {
-                        renderElems = maxElements;
-                    }
+        // get the actual number of elements to render
+        int renderElems = allElems.size();
+        if ((maxElements > 0) && (renderElems > maxElements)) {
+            renderElems = maxElements;
+        }
 
-                    // iterate the elements
-                    for (CmsContainerElementBean element : allElems) {
-                        if (renderElems < 1) {
-                            break;
-                        }
-                        renderElems--;
-                        try {
-                            renderContainerElement(cms, standardContext, element, locale);
-                        } catch (Exception e) {
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error(e);
-                            }
-                        }
-                    }
-                    // close tag for container
-                    if (createTag) {
-                        pageContext.getOut().print(getTagClose(tagName));
-                    }
+        // iterate the elements
+        for (CmsContainerElementBean element : allElems) {
+            if (renderElems < 1) {
+                break;
+            }
+            renderElems--;
+            try {
+                renderContainerElement(cms, standardContext, element, locale);
+            } catch (Exception e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
                 }
+            }
+        }
+        // close tag for container
+        if (createTag) {
+            pageContext.getOut().print(getTagClose(tagName));
+        }
+    }
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "container"), ex);
@@ -738,7 +739,7 @@ public class CmsJspTagContainer extends TagSupport {
      *  
      * @return the maximum number of elements of the container 
      */
-    private int getMaxElements(String requestUri, Locale locale) {
+    private int getMaxElements(String requestUri) {
 
         String containerName = getName();
         String containerMaxElements = getMaxElements();
@@ -749,14 +750,14 @@ public class CmsJspTagContainer extends TagSupport {
                 maxElements = Integer.parseInt(containerMaxElements);
             } catch (NumberFormatException e) {
                 throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_4,
-                    new Object[] {requestUri, locale, containerName, containerMaxElements}), e);
+                    Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
+                    new Object[] {requestUri, containerName, containerMaxElements}), e);
             }
         } else {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_MAXELEMENTS_NOT_SET_3,
-                    new Object[] {containerName, locale, requestUri}));
+                    Messages.LOG_MAXELEMENTS_NOT_SET_2,
+                    new Object[] {containerName, requestUri}));
             }
         }
         return maxElements;
@@ -881,8 +882,8 @@ public class CmsJspTagContainer extends TagSupport {
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
                                 subelementFormatter), e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter);
@@ -918,8 +919,8 @@ public class CmsJspTagContainer extends TagSupport {
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
                         elementFormatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);

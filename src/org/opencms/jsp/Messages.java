@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2011/04/21 10:31:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/26 16:35:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -220,10 +220,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_LOGOUT_SUCCESFUL_3 = "LOG_LOGOUT_SUCCESFUL_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_MAXELEMENTS_NOT_SET_3 = "LOG_MAXELEMENTS_NOT_SET_3";
+    public static final String LOG_MAXELEMENTS_NOT_SET_2 = "LOG_MAXELEMENTS_NOT_SET_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_WRONG_CONTAINER_MAXELEMENTS_4 = "LOG_WRONG_CONTAINER_MAXELEMENTS_4";
+    public static final String LOG_WRONG_CONTAINER_MAXELEMENTS_3 = "LOG_WRONG_CONTAINER_MAXELEMENTS_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_CONTAINER_TYPE_4 = "LOG_WRONG_CONTAINER_TYPE_4";

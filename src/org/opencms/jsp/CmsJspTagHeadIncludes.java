@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/04/26 08:11:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/26 16:35:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  */
@@ -266,14 +266,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsContainerPageBean containerPage = standardContext.getPage();
 
         Set<String> cssIncludes = new LinkedHashSet<String>();
-        for (CmsContainerElementBean element : containerPage.getElements()) {
-            try {
-                element.initResource(cms);
-                cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
-            } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                    e);
+        if ((containerPage != null) && (containerPage.getElements() != null)) {
+            for (CmsContainerElementBean element : containerPage.getElements()) {
+                try {
+                    element.initResource(cms);
+                    cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
+                } catch (CmsException e) {
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
+                }
             }
         }
         if (standardContext.getDetailContentId() != null) {
@@ -312,14 +314,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
         Set<String> jsIncludes = new LinkedHashSet<String>();
-        for (CmsContainerElementBean element : containerPage.getElements()) {
-            try {
-                element.initResource(cms);
-                jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
-            } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                    e);
+        if ((containerPage != null) && (containerPage.getElements() != null)) {
+            for (CmsContainerElementBean element : containerPage.getElements()) {
+                try {
+                    element.initResource(cms);
+                    jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
+                } catch (CmsException e) {
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
+                }
             }
         }
         if (standardContext.getDetailContentId() != null) {

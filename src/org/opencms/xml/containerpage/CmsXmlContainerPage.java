@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/04/26 16:35:29 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.5.2
  * 
@@ -222,15 +222,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
                 cms.getSitePath(getFile()),
                 theLocale.toString()).key());
-            theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
-            if (!m_cntPages.containsKey(theLocale)) {
-                // locale not found!!
-                LOG.error(Messages.get().container(
-                    Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                    cms.getSitePath(getFile()),
-                    theLocale).key());
-                return null;
-            }
+            return null;
         }
         return m_cntPages.get(theLocale);
     }
@@ -248,11 +240,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
      * 
      * @param cms the current cms context
+     * @param locale the content locale
      * @param cntPage the container page to save
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
+    public void save(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) throws CmsException {
 
         CmsFile file = getFile();
 
@@ -260,10 +253,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         cms.lockResourceTemporary(cms.getSitePath(file));
 
         // keep unused containers
-        CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
+        CmsContainerPageBean savePage = addUnusedContainers(cms, locale, cntPage);
 
         // wipe the locale
-        Locale locale = cms.getRequestContext().getLocale();
         if (hasLocale(locale)) {
             removeLocale(locale);
         }
@@ -285,13 +277,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Merges the containers of the current document that are not used in the given container page with it.<p>
      * 
      * @param cms the current CMS context
+     * @param locale the content locale
      * @param cntPage the container page to merge
      * 
      * @return a new container page with the additional unused containers
      */
-    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, CmsContainerPageBean cntPage) {
-
-        Locale locale = cms.getRequestContext().getLocale();
+    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) {
 
         // get the used containers first
         Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
@@ -301,10 +292,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         }
 
         // now get the unused containers 
-        CmsContainerPageBean currentCntPage = getCntPage(cms, locale);
-        for (String cntName : currentCntPage.getNames()) {
-            if (!currentContainers.containsKey(cntName)) {
-                containers.add(currentCntPage.getContainers().get(cntName));
+        CmsContainerPageBean currentContainerPage = getCntPage(cms, locale);
+        if (currentContainerPage != null) {
+            for (String cntName : currentContainerPage.getNames()) {
+                if (!currentContainers.containsKey(cntName)) {
+                    containers.add(currentContainerPage.getContainers().get(cntName));
+                }
             }
         }
 
