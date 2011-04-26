@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/21 10:30:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/04/26 08:12:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
@@ -66,6 +67,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +81,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -197,24 +199,32 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
-        CmsResource resource = m_cms.readResource(element.getId());
-        CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        element.initResource(m_cms);
+
+        CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsContainerElementData elementBean = new CmsContainerElementData();
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
-        elementBean.setLastModifiedDate(resource.getDateLastModified());
-        elementBean.setLastModifiedByUser(m_cms.readUser(resource.getUserLastModified()).getName());
+        elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
+        elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
         elementBean.setTitle(resUtil.getTitle());
-        elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
-        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource);
+        elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName());
+        Set<String> cssResources = new LinkedHashSet<String>();
+        for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
+            cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
+        }
+        elementBean.setCssResources(cssResources);
+        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
+            m_cms,
+            element.getResource());
         elementBean.setProperties(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
             element.getSettings(),
             propertyConfig));
         elementBean.setPropertyConfig(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
         elementBean.setViewPermission(m_cms.hasPermissions(
-            resource,
+            element.getResource(),
             CmsPermissionSet.ACCESS_VIEW,
             false,
             CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
@@ -223,14 +233,17 @@ public class CmsElementUtil {
         elementBean.setStatus(resUtil.getStateAbbreviation());
 
         Map<String, String> contents = new HashMap<String, String>();
-        if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+        if (element.getResource().getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
             Set<String> types = new HashSet<String>();
             Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
             for (CmsContainer container : containers) {
                 types.add(container.getType());
                 containersByName.put(container.getName(), container);
             }
-            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(m_cms, resource, m_req);
+            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
+                m_cms,
+                element.getResource(),
+                m_req);
             CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
@@ -266,7 +279,7 @@ public class CmsElementUtil {
             elementBean.setSubItems(subItems);
         } else {
             // get map from type/width combination to formatter uri 
-            Map<CmsPair<String, Integer>, String> formatters = getFormatterMap(resource, containers);
+            Map<CmsPair<String, Integer>, String> formatters = getFormatterMap(element.getResource(), containers);
             Map<String, String> contentsByName = getContentsByContainerName(element, containers, formatters);
             contents = contentsByName;
         }

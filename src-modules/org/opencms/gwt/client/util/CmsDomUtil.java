@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/26 08:12:13 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,15 +51,15 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.0
  */
@@ -622,6 +622,29 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Checks the window.document for given style-sheet and includes it if required.<p>
+     * 
+     * @param styleSheetLink the style-sheet link
+     */
+    public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
+        var styles = $wnd.document.styleSheets;
+        for ( var i = 0; i < styles.length; i++) {
+            if (styles[i].href != null
+                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
+                // style-sheet is present
+                return;
+            }
+        }
+        // include style-sheet into head
+        var headID = $wnd.document.getElementsByTagName("head")[0];
+        var cssNode = $wnd.document.createElement('link');
+        cssNode.type = 'text/css';
+        cssNode.rel = 'stylesheet';
+        cssNode.href = styleSheetLink;
+        headID.appendChild(cssNode);
+    }-*/;
+
+    /**
      * Ensures that the given element is visible.<p>
      * 
      * Assuming the scrollbars are on the container element, and that the element is a child of the container element.<p>
@@ -768,6 +791,25 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Utility method to determine the effective background color.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the background color
+     */
+    public static String getEffectiveBackgroundColor(Element element) {
+
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
+        if ((Document.get().getBody() != element)
+            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
+                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
+            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
+        }
+
+        return backgroundColor;
+    }
+
+    /**
      * Determines the position of the list collector editable content.<p> 
      * 
      * @param editable the editable marker tag
@@ -811,25 +853,6 @@ public final class CmsDomUtil {
         }
 
         return result;
-    }
-
-    /**
-     * Utility method to determine the effective background color.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the background color
-     */
-    public static String getEffectiveBackgroundColor(Element element) {
-
-        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
-        if ((Document.get().getBody() != element)
-            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
-                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
-            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
-        }
-
-        return backgroundColor;
     }
 
     /**
@@ -981,7 +1004,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-      return "" + style.zIndex;
+        return "" + style.zIndex;
     }-*/;
 
     /**
@@ -1280,8 +1303,8 @@ public final class CmsDomUtil {
      */
     public static native String removeScriptTags(String source)/*-{
 
-      var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
-      return source.replace(matchTag, "");
+        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+        return source.replace(matchTag, "");
     }-*/;
 
     /**
@@ -1343,5 +1366,4 @@ public final class CmsDomUtil {
 
         return hasClass;
     }
-
 }

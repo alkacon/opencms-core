@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/04/26 08:12:04 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -211,7 +211,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParams, getRequest(), getResponse());
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, getRequest(), getResponse());
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
             CmsContainerElementBean elementBean = createElement(serverId, properties);
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);

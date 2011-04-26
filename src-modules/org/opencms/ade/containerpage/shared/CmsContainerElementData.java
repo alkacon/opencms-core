@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/04/21 10:30:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/26 08:12:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,9 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The contents by container type. */
     private Map<String, String> m_contents;
+
+    /** The required css resources. */
+    private Set<String> m_cssResources;
 
     /** The group-container description. */
     private String m_description;
@@ -112,6 +115,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public Map<String, String> getContents() {
 
         return m_contents;
+    }
+
+    /**
+     * Returns the required css resources.<p>
+     *
+     * @return the required css resources
+     */
+    public Set<String> getCssResources() {
+
+        return m_cssResources;
     }
 
     /**
@@ -278,6 +291,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setContents(Map<String, String> contents) {
 
         m_contents = contents;
+    }
+
+    /**
+     * Sets the required css resources.<p>
+     *
+     * @param cssResources the required css resources to set
+     */
+    public void setCssResources(Set<String> cssResources) {
+
+        m_cssResources = cssResources;
     }
 
     /**

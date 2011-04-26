@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/04/21 10:29:34 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/26 08:12:03 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -414,6 +414,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             handler.cancel();
             return;
         }
+        if (!(handler.getDraggable() instanceof CmsContainerPageElement)) {
+            // inserting element from menu
+            if ((elementData.getCssResources() != null) && !elementData.getCssResources().isEmpty()) {
+                // the element requires certain CSS resources, check if present and include if necessary
+                for (String cssResourceLink : elementData.getCssResources()) {
+                    CmsDomUtil.ensureStyleSheetIncluded(cssResourceLink);
+                }
+            }
+        }
+
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElement groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)
