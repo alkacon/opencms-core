@@ -9,13 +9,13 @@ div.html-face {
 	font-family:value("constants.css.fontFamily");
 	font-weight:inherit;
 	text-align:center;
+	white-space:nowrap;
 }
 div.cmsMinWidth div.html-face {
 	min-width:5em;
 }
 div.html-face span {
 	display:inline-block;
-    white-space:nowrap;
     vertical-align:middle;
 }
 div.html-face span.spacerRight {

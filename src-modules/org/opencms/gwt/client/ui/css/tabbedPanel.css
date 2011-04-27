@@ -208,8 +208,8 @@
     overflow: visible;
 	display:block;
 	color:value("constants.css.textColor");
-	padding:value("constants.css.defaultSpace");
-	margin-top: 6px;
+	padding: 0;
+	margin-top: 0;
 }
 
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
