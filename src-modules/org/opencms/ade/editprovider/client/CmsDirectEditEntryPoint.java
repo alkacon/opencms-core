@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditEntryPoint.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 13:05:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
@@ -51,10 +51,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -62,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -71,17 +77,20 @@ public class CmsDirectEditEntryPoint implements EntryPoint {
     /** The class name for data elements which precede the direct editable elements. */
     public static final String CLASS_NAME = "cms-editable";
 
+    /** The map of button bar positions. */
+    protected Map<String, CmsPositionBean> m_buttonPositions = new HashMap<String, CmsPositionBean>();
+
+    /** The map of editable element positions. */
+    protected Map<String, CmsPositionBean> m_positions = new HashMap<String, CmsPositionBean>();
+
     /** The toolbar. */
     protected CmsToolbar m_toolbar;
 
     /** A style variable to control toolbar visibility. */
     protected CmsStyleVariable m_toolbarVisibility;
 
-    /** The map of editable element positions. */
-    protected Map<String, CmsPositionBean> m_positions = new HashMap<String, CmsPositionBean>();
-
-    /** The map of button bar positions. */
-    protected Map<String, CmsPositionBean> m_buttonPositions = new HashMap<String, CmsPositionBean>();
+    /** The dierect edit buttons. */
+    private Map<String, CmsDirectEditButtons> m_directEditButtons = Maps.newHashMap();
 
     /** The selection button.<p>*/
     private CmsToolbarSelectionButton m_selection;
@@ -104,8 +113,16 @@ public class CmsDirectEditEntryPoint implements EntryPoint {
 
         for (Element elem : editableElements) {
             CmsDirectEditButtons directEdit = processEditableElement(elem);
+            m_directEditButtons.put(elem.getId(), directEdit);
             editables.add(directEdit);
         }
+        Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                repositionButtons();
+            }
+        });
     }
 
     /**
@@ -117,7 +134,15 @@ public class CmsDirectEditEntryPoint implements EntryPoint {
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().classicDirectEdit());
         installToolbar();
-        initializeButtons();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                initializeButtons();
+
+            }
+        });
+
     }
 
     /**
@@ -243,6 +268,29 @@ public class CmsDirectEditEntryPoint implements EntryPoint {
             m_buttonPositions.get(elem.getId()),
             (com.google.gwt.user.client.Element)elem.getParentElement());
         return result;
+    }
+
+    /**
+     * Repositions the direct edit buttons.<p>
+     */
+    protected void repositionButtons() {
+
+        for (Map.Entry<String, CmsDirectEditButtons> entry : m_directEditButtons.entrySet()) {
+            CmsDirectEditButtons buttons = entry.getValue();
+            Element tag = buttons.getMarkerTag();
+            CmsPositionBean newPos = CmsDomUtil.getEditablePosition(tag);
+            m_positions.put(tag.getId(), newPos);
+        }
+        CmsEditablePositionCalculator posCalc = new CmsEditablePositionCalculator(m_positions);
+        m_buttonPositions = posCalc.calculatePositions();
+        for (CmsDirectEditButtons buttons : m_directEditButtons.values()) {
+            String id = buttons.getMarkerTag().getId();
+            buttons.setPosition(
+                m_positions.get(id),
+                m_buttonPositions.get(id),
+                (com.google.gwt.user.client.Element)buttons.getMarkerTag().getParentElement());
+        }
+
     }
 
     /**

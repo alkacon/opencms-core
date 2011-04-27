@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/26 08:12:13 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/04/27 13:05:51 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.0
  */
@@ -829,19 +830,23 @@ public final class CmsDomUtil {
         while ((sibling != null)
             && !CmsDomUtil.hasClass("cms-editable", sibling)
             && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
-            CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
-            result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
-            ? siblingPos.getLeft()
-            : result.getLeft());
-            result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
-            ? siblingPos.getTop()
-            : result.getTop());
-            result.setHeight((result.getTop() + result.getHeight() > siblingPos.getTop() + siblingPos.getHeight())
-            ? result.getHeight()
-            : siblingPos.getTop() + siblingPos.getHeight() - result.getTop());
-            result.setWidth((result.getLeft() + result.getWidth() > siblingPos.getLeft() + siblingPos.getWidth())
-            ? result.getWidth()
-            : siblingPos.getLeft() + siblingPos.getWidth() - result.getLeft());
+            // only consider element nodes
+            if ((sibling.getNodeType() == Node.ELEMENT_NODE)
+                && !sibling.getTagName().equalsIgnoreCase(Tag.script.name())) {
+                CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
+                result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+                ? siblingPos.getLeft()
+                : result.getLeft());
+                result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+                ? siblingPos.getTop()
+                : result.getTop());
+                result.setHeight((result.getTop() + result.getHeight() > siblingPos.getTop() + siblingPos.getHeight())
+                ? result.getHeight()
+                : siblingPos.getTop() + siblingPos.getHeight() - result.getTop());
+                result.setWidth((result.getLeft() + result.getWidth() > siblingPos.getLeft() + siblingPos.getWidth())
+                ? result.getWidth()
+                : siblingPos.getLeft() + siblingPos.getWidth() - result.getLeft());
+            }
             sibling = sibling.getNextSiblingElement();
         }
 
@@ -959,7 +964,7 @@ public final class CmsDomUtil {
             }
             parent = parent.getParentElement();
         }
-        return null;
+        return RootPanel.getBodyElement();
     }
 
     /**

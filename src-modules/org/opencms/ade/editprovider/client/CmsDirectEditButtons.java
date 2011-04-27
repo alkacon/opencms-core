@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditButtons.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 13:05:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,12 +90,11 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
-        if (parent == null) {
-            parent = containerElement;
-        }
         Style style = getElement().getStyle();
-        style.setRight(parent.getOffsetWidth()
-            - (buttonsPosition.getLeft() + buttonsPosition.getWidth() - parent.getAbsoluteLeft()), Unit.PX);
+        style.setRight(
+            parent.getOffsetWidth()
+                - (buttonsPosition.getLeft() + buttonsPosition.getWidth() - parent.getAbsoluteLeft()),
+            Unit.PX);
         int top = buttonsPosition.getTop() - parent.getAbsoluteTop();
         if (top < 0) {
             top = 0;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsDirectEditButtons.java,v $
- * Date   : $Date: 2011/04/21 11:50:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 13:05:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -268,12 +268,11 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
-        if ((parent == null) || !containerElement.isOrHasChild(parent)) {
-            parent = containerElement;
-        }
+
         Style style = getElement().getStyle();
-        style.setRight(parent.getOffsetWidth()
-            - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()), Unit.PX);
+        style.setRight(
+            parent.getOffsetWidth() - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()),
+            Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25
