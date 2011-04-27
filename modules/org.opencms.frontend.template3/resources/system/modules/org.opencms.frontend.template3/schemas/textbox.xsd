@@ -39,9 +39,9 @@
 				<formatter type="center" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp" />
 				<formatter type="footer" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/footer.jsp" />
 			</formatters>
-			<properties>
-				<property name="color" nice-name="Color Schema" type="string" widget="select" widget-config="1:${key.box.schema.schema1}|2:${key.box.schema.schema2}|3:${key.box.schema.schema3}" />
-			</properties>
+			<settings>
+				<setting name="color" nice-name="Color Schema" type="string" widget="select" widget-config="1:${key.box.schema.schema1}|2:${key.box.schema.schema2}|3:${key.box.schema.schema3}" />
+			</settings>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
