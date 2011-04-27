@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/27 07:03:43 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -72,25 +72,16 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_CATEGORY_0 = "GUI_PARAMS_LABEL_CATEGORY_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_GALLERIES_0 = "GUI_PARAMS_LABEL_GALLERIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_GALLERY_0 = "GUI_PARAMS_LABEL_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_SEARCH_0 = "GUI_PARAMS_LABEL_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_TYPE_0 = "GUI_PARAMS_LABEL_TYPE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_TYPES_0 = "GUI_PARAMS_LABEL_TYPES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_VFS_0 = "GUI_PARAMS_LABEL_VFS_0";
+    public static final String GUI_PARAMS_LABEL_FOLDERS_0 = "GUI_PARAMS_LABEL_FOLDERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";

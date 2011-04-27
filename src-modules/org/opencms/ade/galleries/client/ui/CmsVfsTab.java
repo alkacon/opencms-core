@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/27 07:03:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -119,7 +119,7 @@ public class CmsVfsTab extends A_CmsListTab {
     public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
 
         if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_VFS_0), this);
+            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_FOLDERS_0), this);
         }
         String content = getVfsParams(searchObj.getFolders());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
