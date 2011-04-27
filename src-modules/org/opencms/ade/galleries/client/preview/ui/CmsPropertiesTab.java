@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2011/03/10 08:47:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,15 +35,12 @@ import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.ui.CmsPushButton;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -54,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -63,13 +60,11 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     /** Text metrics key. */
     private static final String TM_PREVIEW_TAB_PROPERTIES = "PropertiesTab";
 
-    private FlowPanel m_content;
+    /** The panel for the properties. */
+    private FlowPanel m_propertiesPanel;
 
     /** The tab handler. */
     private I_CmsPreviewHandler<?> m_handler;
-
-    /** The save button. */
-    private CmsPushButton m_saveButton;
 
     /**
      * The constructor.<p>
@@ -77,33 +72,16 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
      * @param dialogMode the dialog mode
      * @param height the properties tab height
      * @param width the properties tab width
-     * @param handler tha tab handler to set
+     * @param handler the tab handler to set
      */
     public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, I_CmsPreviewHandler<?> handler) {
 
         super(dialogMode, height, width);
         m_handler = handler;
-        m_content = new FlowPanel();
-        m_content.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
-        m_content.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
-        m_main.insert(m_content, 0);
-        // buttons
-        m_saveButton = new CmsPushButton();
-        m_saveButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().savePropertiesButton());
-        m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
-        m_saveButton.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_DISABLED_0));
-        m_saveButton.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                onSaveClick(event);
-            }
-        });
-
-        m_main.add(m_saveButton);
+        m_propertiesPanel = new FlowPanel();
+        m_propertiesPanel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
+        m_propertiesPanel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
+        m_main.insert(m_propertiesPanel, 0);
     }
 
     /**
@@ -115,7 +93,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
         // width of a property form
         int pannelWidth = calculateWidth(m_tabWidth);
-        m_content.clear();
+        m_propertiesPanel.clear();
         if (properties != null) {
             Iterator<Entry<String, String>> it = properties.entrySet().iterator();
             boolean isLeft = true;
@@ -135,13 +113,12 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
                     isLeft = true;
                 }
                 property.addValueChangeHandler(this);
-                m_content.add(property);
+                m_propertiesPanel.add(property);
 
                 // TODO: set the calculated height of the scrolled panel with properties
             }
         }
         setChanged(false);
-        m_saveButton.disable("nothing changed");
     }
 
     /**
@@ -156,13 +133,11 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
     /**
      * Will be triggered, when the save button is clicked.<p>
-     * 
-     * @param event the click event
      */
-    public void onSaveClick(ClickEvent event) {
+    public void saveProperties() {
 
         Map<String, String> properties = new HashMap<String, String>();
-        for (Widget property : m_content) {
+        for (Widget property : m_propertiesPanel) {
             CmsPropertyForm form = ((CmsPropertyForm)property);
             if (form.isChanged()) {
                 properties.put(form.getId(), form.getValue());
@@ -177,7 +152,6 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     public void onValueChange(ValueChangeEvent<String> event) {
 
         setChanged(true);
-        m_saveButton.enable();
     }
 
     /**

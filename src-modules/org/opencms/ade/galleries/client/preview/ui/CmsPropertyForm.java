@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2011/03/10 11:27:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -132,8 +132,12 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
                         public void execute() {
 
-                            if (!isChanged() && !getValue().equals(m_originalValue)) {
-                                ValueChangeEvent.fire(m_textBox, getValue());
+                            if (!isChanged()) {
+
+                                if (((getValue() == null) && (m_originalValue != null))
+                                    || (!getValue().equals(m_originalValue))) {
+                                    ValueChangeEvent.fire(m_textBox, getValue());
+                                }
                             }
                         }
                     });

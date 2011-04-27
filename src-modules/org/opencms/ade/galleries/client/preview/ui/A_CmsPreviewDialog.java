@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2011/04/20 17:54:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,9 +44,9 @@ import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -80,8 +80,13 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     /** The ui-binder instance for this class. */
     private static I_CmsPreviewDialogUiBinder uiBinder = GWT.create(I_CmsPreviewDialogUiBinder.class);
 
-    /** The close button of the preview dialog. */
-    protected CmsPushButton m_closeButton;
+    /** The button panel. */
+    @UiField
+    protected FlowPanel m_buttonBar;
+
+    /** The select button. */
+    @UiField
+    protected CmsPushButton m_closePreview;
 
     /** The dialog height. */
     protected int m_dialogHeight;
@@ -103,6 +108,10 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     /** The preview panel of preview dialog. */
     @UiField
     protected SimplePanel m_previewPanel;
+
+    /** The select button. */
+    @UiField
+    protected CmsPushButton m_selectButton;
 
     /** The tabbed panel of the preview dialog. */
     protected CmsTabbedPanel<Widget> m_tabbedPanel;
@@ -140,20 +149,27 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabbedPanelStyle.classicTabs);
         m_tabsHolder.add(m_tabbedPanel);
 
-        // close button        
-        m_closeButton = new CmsPushButton();
-        m_closeButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        m_closeButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewCloseButton());
-        m_closeButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_HIDE_0));
-        m_closeButton.addClickHandler(new ClickHandler() {
+        m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        m_selectButton.setVisible(false);
+        m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_BUTTON_0));
 
-            public void onClick(ClickEvent event) {
-
-                getHandler().closePreview();
-            }
-        });
-        m_tabsHolder.add(m_closeButton);
-
+        // buttons        
+        switch (m_galleryMode) {
+            case editor:
+                m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
+                m_buttonBar.getElement().getStyle().setBottom(94, Unit.PX);
+                m_buttonBar.getElement().getStyle().setRight(1, Unit.PX);
+                break;
+            case widget:
+                m_selectButton.setVisible(true);
+                m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
+                break;
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                break;
+        }
     }
 
     /**
@@ -217,12 +233,41 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     public abstract boolean hasChanges();
 
     /**
+     * Will be triggered, when the select button is clicked.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_closePreview")
+    public void onCloseClick(ClickEvent event) {
+
+        saveChanges();
+        getHandler().closePreview();
+    }
+
+    /**
+     * Will be triggered, when the select button is clicked.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_selectButton")
+    public void onSelectClick(ClickEvent event) {
+
+        saveChanges();
+        getHandler().selectResource();
+    }
+
+    /**
      * Removes the preview.<p>
      */
     public void removePreview() {
 
         removeFromParent();
     }
+
+    /**
+     * Saves the changes for this dialog.<p>
+     */
+    public abstract void saveChanges();
 
     /**
      * Returns the preview handler.<p>

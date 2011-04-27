@@ -8,7 +8,10 @@
 		<g:FlowPanel ui:field="m_previewHolder" addStyleNames="{galleryResources.previewDialogCss.previewHolder} {resources.generalCss.cornerAll}">
 			<g:SimplePanel ui:field="m_previewPanel" addStyleNames="{galleryResources.previewDialogCss.previewPanel}" />
 		</g:FlowPanel>
-		<g:FlowPanel ui:field="m_tabsHolder" addStyleNames="{galleryResources.previewDialogCss.detailsHolder}">
+		<g:FlowPanel ui:field="m_tabsHolder" addStyleNames="{galleryResources.previewDialogCss.detailsHolder}"></g:FlowPanel>
+		<g:FlowPanel ui:field="m_buttonBar" styleName="{galleryResources.previewDialogCss.previewButtonBar}">
+			<cms:CmsPushButton ui:field="m_selectButton" addStyleNames="{galleryResources.previewDialogCss.previewButton}"></cms:CmsPushButton>
+			<cms:CmsPushButton ui:field="m_closePreview" addStyleNames="{galleryResources.previewDialogCss.previewButton}"></cms:CmsPushButton>
 		</g:FlowPanel>		
 	</g:FlowPanel> 
 </ui:UiBinder>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/27 07:03:43 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,9 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARAMS_LABEL_FOLDERS_0 = "GUI_PARAMS_LABEL_FOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_GALLERIES_0 = "GUI_PARAMS_LABEL_GALLERIES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -81,13 +84,7 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_TYPES_0 = "GUI_PARAMS_LABEL_TYPES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_FOLDERS_0 = "GUI_PARAMS_LABEL_FOLDERS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_BUTTON_HIDE_0 = "GUI_PREVIEW_BUTTON_HIDE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
@@ -103,6 +100,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_SHOW_0 = "GUI_PREVIEW_BUTTON_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CLOSE_BUTTON_0 = "GUI_PREVIEW_CLOSE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0 = "GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0 = "GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0";

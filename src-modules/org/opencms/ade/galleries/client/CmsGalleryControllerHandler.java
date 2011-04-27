@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/04/27 07:22:41 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
 
@@ -100,7 +100,18 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     public void hideShowPreviewButton(boolean hide) {
 
-        m_galleryDialog.hideShowPreviewButton(hide);
+        // buttons        
+        switch (m_mode) {
+            case editor:
+            case widget:
+                m_galleryDialog.hideShowPreviewButton(hide);
+                break;
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                break;
+        }
     }
 
     /**
@@ -178,6 +189,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         // do nothing
     }
 
+    private I_CmsGalleryProviderConstants.GalleryMode m_mode;
+
     /**
      * Will be triggered when the initial search is performed.<p>
      *  
@@ -189,6 +202,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         final CmsGallerySearchBean searchObj,
         final CmsGalleryDataBean dialogBean,
         final CmsGalleryController controller) {
+
+        m_mode = dialogBean.getMode();
 
         if (dialogBean.getMode().equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
             RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);

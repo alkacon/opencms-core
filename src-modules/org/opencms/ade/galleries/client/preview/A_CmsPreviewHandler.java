@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2011/04/01 10:31:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
@@ -40,7 +41,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import java.util.Map;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Preview dialog handler.<p>
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -64,6 +64,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     /** The resource preview instance. */
     protected I_CmsResourcePreview m_resourcePreview;
 
+    /** The id of the preview parent. */
     private String m_previewParentId;
 
     /**
@@ -83,29 +84,8 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void closePreview() {
 
-        if (getDialog().hasChanges()) {
-            getDialog().confirmSaveChanges(
-                Messages.get().key(Messages.GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0),
-                new Command() {
-
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
-
-                        if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
-                            CmsPreviewUtil.enableEditorOk(false);
-                        }
-                        hidePreview();
-                    }
-                },
-                null);
-            return;
-        }
-        if (getDialog().getGalleryMode() == GalleryMode.editor) {
-            CmsPreviewUtil.enableEditorOk(false);
-        }
-        hidePreview();
+        CmsGalleryDialog.getPreviewParent(m_previewParentId).addStyleName(
+            I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
     }
 
     /**
@@ -189,13 +169,5 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
             CmsPreviewUtil.enableEditorOk(true);
         }
         getDialog().fillContent(resourceInfo);
-    }
-
-    /**
-     * Hides the preview, so it may be shown again.<p>
-     */
-    protected void hidePreview() {
-
-        RootPanel.get(m_previewParentId).addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
     }
 }

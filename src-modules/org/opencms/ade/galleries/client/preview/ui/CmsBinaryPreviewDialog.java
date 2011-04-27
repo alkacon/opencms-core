@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsBinaryPreviewDialog.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,16 @@ import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+
 /**
  * Provides a widget for the binary preview dialog .<p>
  *  
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -88,16 +91,6 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     }
 
     /**
-     * Returns if the properties tab has unsaved changes.<p>
-     * 
-     * @return <code>true</code> if the properties tab has unsaved changes
-     */
-    public boolean hasChangedProperties() {
-
-        return m_propertiesTab.isChanged();
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#hasChanges()
      */
     @Override
@@ -114,8 +107,28 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     public void init(CmsBinaryPreviewHandler handler) {
 
         m_handler = handler;
-        m_propertiesTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        final CmsPropertiesTab propTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        m_selectButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                saveChanges();
+
+            }
+        });
+        m_propertiesTab = propTab;
         m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges()
+     */
+    @Override
+    public void saveChanges() {
+
+        if (hasChanges()) {
+            m_propertiesTab.saveProperties();
+        }
     }
 
     /**

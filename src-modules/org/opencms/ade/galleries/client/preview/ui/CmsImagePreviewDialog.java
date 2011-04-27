@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2011/03/11 09:10:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,8 @@ import org.opencms.gwt.client.CmsCoreProvider;
 
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -49,7 +51,7 @@ import com.google.gwt.user.client.ui.Image;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -64,20 +66,22 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
 
+    /** The advanced image tab. */
+    private CmsImageAdvancedTab m_imageAdvancedTab;
+
+    /** The formats tab. */
+    private CmsImageEditorTab m_imageEditorFormatsTab;
+
     /** The format tab. */
     private CmsImageFormatsTab m_imageFormatTab;
 
     /** The infos tab. */
     private CmsImageInfoTab m_imageInfosTab;
 
-    private CmsImageAdvancedTab m_imageAdvancedTab;
-
-    /** The formats tab. */
-    private CmsImageEditorTab m_imageEditorFormatsTab;
-
     /** The initial fill flag. */
     private boolean m_initialFill = true;
 
+    /** The preview image. */
     private Image m_previewImage;
 
     /** The properties tab. */
@@ -139,12 +143,27 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     }
 
     /**
+     * Adds necessary attributes to the map.<p>
+     * 
+     * @param attributes the attribute map
+     * @return the attribute map
+     */
+    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
+
+        if (getGalleryMode() == GalleryMode.editor) {
+            m_imageEditorFormatsTab.getImageAttributes(attributes);
+            m_imageAdvancedTab.getImageAttributes(attributes);
+        }
+        return attributes;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#hasChanges()
      */
     @Override
     public boolean hasChanges() {
 
-        return false;
+        return m_propertiesTab.isChanged();
     }
 
     /**
@@ -155,14 +174,19 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public void init(CmsImagePreviewHandler handler) {
 
         m_handler = handler;
-        m_propertiesTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        final CmsPropertiesTab propTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        m_selectButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                saveChanges();
+            }
+        });
+        m_propertiesTab = propTab;
         m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
 
         m_imageFormatTab = new CmsImageFormatsTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler, null);
         m_tabbedPanel.add(m_imageFormatTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
-
-        m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-        m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));
 
         if (getGalleryMode() == GalleryMode.editor) {
             m_imageEditorFormatsTab = new CmsImageEditorTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
@@ -171,6 +195,8 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
             m_imageAdvancedTab = new CmsImageAdvancedTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
             m_tabbedPanel.add(m_imageAdvancedTab, "Advanced");
         }
+        m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
+        m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));
     }
 
     /**
@@ -184,26 +210,22 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges()
+     */
+    @Override
+    public void saveChanges() {
+
+        if (hasChanges()) {
+            m_propertiesTab.saveProperties();
+        }
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#getHandler()
      */
     @Override
     protected I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
 
         return m_handler;
-    }
-
-    /**
-     * Adds necessary attributes to the map.<p>
-     * 
-     * @param attributes the attribute map
-     * @return the attribute map
-     */
-    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
-
-        if (getGalleryMode() == GalleryMode.editor) {
-            m_imageEditorFormatsTab.getImageAttributes(attributes);
-            m_imageAdvancedTab.getImageAttributes(attributes);
-        }
-        return attributes;
     }
 }

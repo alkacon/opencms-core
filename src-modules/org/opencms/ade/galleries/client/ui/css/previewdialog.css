@@ -7,14 +7,25 @@
 	left:0px;
 	right: 0px;
 	bottom: 0px;
-/*	min-height:483px;
-	min-width:648px;
-	border:1px solid value("constants.css.borderColor");  */	
 	display: block;
 	background-color: value("constants.css.backgroundColorDialog");
-	
 }
-
+.previewDialog * {
+	margin: 0;
+	padding: 0;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+}
 .hidePreview .previewDialog{
 	display: none;
 }
@@ -93,10 +104,6 @@
 	padding: 3px;
 }
 
-.infoTable td{
-	padding: 1px;
-}
-
 .infoTable tr, .infoTable td{
 	border: none;
 }
@@ -140,6 +147,7 @@
 }
 
 .formatsLineSize .formatButton{
+	padding-top:1px;
 	padding-bottom:1px;
 	line-height: 12px;
 }
@@ -184,10 +192,8 @@
 		display: inline-block;
 	}	
 }
-	
-	
-		
- 
 
-
-
+div.buttonPadding {
+	padding-top: 2px !important;
+	padding-bottom: 2px !important;
+}

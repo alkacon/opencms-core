@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDetailTab.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/27 19:11:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,10 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.ui.CmsPushButton;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -49,7 +44,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -65,16 +60,8 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
     /** The ui-binder instance for this class. */
     private static I_CmsPreviewDetailTabUiBinder uiBinder = GWT.create(I_CmsPreviewDetailTabUiBinder.class);
 
-    /** The button panel. */
-    @UiField
-    protected FlowPanel m_buttonBar;
-
     /** The main panel. */
     protected FlowPanel m_main;
-
-    /** The select button. */
-    @UiField
-    protected CmsPushButton m_selectButton;
 
     /** The tab height. */
     protected int m_tabHeight;
@@ -103,20 +90,6 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
         m_dialogMode = dialogMode;
         m_tabHeight = height;
         m_tabWidth = width;
-        // buttons        
-        switch (m_dialogMode) {
-            case widget:
-                m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
-                break;
-            case editor:
-            case sitemap:
-            case ade:
-            case view:
-            default:
-                m_selectButton.setVisible(false);
-                break;
-        }
-
     }
 
     /**
@@ -127,17 +100,6 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
     public boolean isChanged() {
 
         return m_changed;
-    }
-
-    /**
-     * Will be triggered, when the select button is clicked.<p>
-     * 
-     * @param event the click event
-     */
-    @UiHandler("m_selectButton")
-    public void onSelectClick(ClickEvent event) {
-
-        getHandler().selectResource();
     }
 
     /**
