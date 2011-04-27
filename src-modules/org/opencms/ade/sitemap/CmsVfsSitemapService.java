@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/04/20 07:04:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/04/27 15:27:10 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  * 
@@ -693,9 +693,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms.writePropertyObjects(newRes, generateInheritProperties(change, newRes));
             } else {
                 String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
-                CmsUUID entryId = change.getEntryId() != null ? change.getEntryId() : new CmsUUID();
+                if (change.getEntryId() == null) {
+                    change.setEntryId(new CmsUUID());
+                }
                 entryFolder = new CmsResource(
-                    entryId,
+                    change.getEntryId(),
                     new CmsUUID(),
                     entryFolderPath,
                     CmsResourceTypeFolder.getStaticTypeId(),

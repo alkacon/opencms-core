@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/04/13 07:49:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/27 15:27:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,8 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
     /** The change types. */
     public enum ChangeType {
+        /** Making a detail page the default. */
+        bump,
         /** The clip-board only change. */
         clipboardOnly,
         /** The create/new change. */
@@ -66,9 +68,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         /** The remove from navigation change. */
         remove,
         /** The undelete resource change. */
-        undelete,
-        /** Making a detail page the default. */
-        bump
+        undelete
     }
 
     /** The change type. */
@@ -411,16 +411,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    //    public String getTitle() {
-    //
-    //        return m_title;
-    //    }
-
-    /**
      * Returns if the position has changed.<p>
      * 
      * @return <code>true</code> if the position has changed
@@ -429,6 +419,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return m_position >= 0;
     }
+
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    //    public String getTitle() {
+    //
+    //        return m_title;
+    //    }
 
     /**
      * Returns if there are changed properties.<p>
@@ -460,16 +460,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns if the entry title has changed.<p>
-     * 
-     * @return <code>true</code> if the entry title has changed
-     */
-    //    public boolean hasChangedTitle() {
-    //
-    //        return m_title != null;
-    //    }
-
-    /**
      * Returns if this change sets a new parent.<p>
      * 
      * @return <code>true</code> if the entry gets a new parent
@@ -478,6 +468,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return m_parentId != null;
     }
+
+    /**
+     * Returns if the entry title has changed.<p>
+     * 
+     * @return <code>true</code> if the entry title has changed
+     */
+    //    public boolean hasChangedTitle() {
+    //
+    //        return m_title != null;
+    //    }
 
     /**
      * Returns if this is a deleting change.<p>
@@ -557,6 +557,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setDetailPageInfos(List<CmsDetailPageInfo> detailPageInfos) {
 
         m_detailPageInfos = detailPageInfos;
+    }
+
+    /**
+     * Sets the entry id.<p>
+     * 
+     * @param entryId the entry id to set
+     */
+    public void setEntryId(CmsUUID entryId) {
+
+        m_entryId = entryId;
     }
 
     /**
