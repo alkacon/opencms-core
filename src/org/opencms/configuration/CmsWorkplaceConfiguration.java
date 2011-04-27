@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/04/11 15:37:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/27 06:07:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -516,7 +516,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
     /** The name of the attribute containing the name of the big icon. */
-    private static final String A_BIGICON = "bigicon";
+    public static final String A_BIGICON = "bigicon";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
