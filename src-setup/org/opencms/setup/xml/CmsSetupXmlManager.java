@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/27 17:15:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.8 
  */
@@ -218,6 +218,7 @@ public class CmsSetupXmlManager {
 
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddIconRules());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateMenuRules());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlChangeDefaultDirectEditProvider());
 
         setup();
     }
