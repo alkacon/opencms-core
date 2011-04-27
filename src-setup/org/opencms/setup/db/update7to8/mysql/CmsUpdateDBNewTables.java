@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update7to8/mysql/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2010/02/24 12:44:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 06:04:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.setup.CmsSetupDb;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -80,8 +80,13 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
 
         System.out.println(new Exception().getStackTrace()[0].toString());
 
-        List<String> elements = new ArrayList<String>();
-        elements.add("CMS_LOG");
+        List<String> elements = Arrays.asList(new String[] {
+            "CMS_LOG",
+            "CMS_COUNTERS",
+            "CMS_OFFLINE_URLNAME_MAPPINGS",
+            "CMS_ONLINE_URLNAME_MAPPINGS",
+            "CMS_SUBSCRIPTION",
+            "CMS_SUBSCRIPTION_VISIT"});
 
         Map<String, String> replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
         for (Iterator<String> it = elements.iterator(); it.hasNext();) {
