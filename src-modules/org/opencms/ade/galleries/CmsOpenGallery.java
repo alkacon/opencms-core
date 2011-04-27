@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenGallery.java,v $
- * Date   : $Date: 2011/04/26 14:30:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/27 07:03:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,9 @@ package org.opencms.ade.galleries;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.galleries.Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  */
@@ -84,29 +79,19 @@ public class CmsOpenGallery extends CmsDialog {
     public void openGallery() {
 
         String galleryPath = getParamResource();
-        String galleryType = null;
-        try {
-            CmsResource res = getCms().readResource(galleryPath);
-            if (res != null) {
-                if (!galleryPath.endsWith("/")) {
-                    galleryPath += "/";
-                }
-                // get the matching gallery type name
-                galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        if ((galleryPath != null) && !galleryPath.endsWith("/")) {
+            galleryPath += "/";
+        }
 
-                Map<String, Object> params = new HashMap<String, Object>();
-                params.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), GalleryMode.view.name());
-                params.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), galleryPath);
-                params.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), "");
-                sendForward(
-                    I_CmsGalleryProviderConstants.VFS_OPEN_GALLERY_PATH,
-                    CmsRequestUtil.createParameterMap(params));
-            }
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), GalleryMode.view.name());
+        params.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), galleryPath);
+        params.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), "");
+
+        try {
+            sendForward(I_CmsGalleryProviderConstants.VFS_OPEN_GALLERY_PATH, CmsRequestUtil.createParameterMap(params));
         } catch (Exception e) {
-            // requested type is not configured
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_OPEN_GALLERY_1, galleryType);
-            LOG.error(message.key(), e);
-            throw new CmsRuntimeException(message, e);
+            LOG.error(e);
         }
     }
 }
