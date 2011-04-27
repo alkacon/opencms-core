@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/04/19 08:56:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/04/27 16:57:57 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationPublishValidator;
 import org.opencms.relations.CmsRelationValidatorInfoEntry;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
@@ -80,7 +81,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -355,10 +356,7 @@ public class CmsPublish {
 
         List<CmsResource> pubList = new ArrayList<CmsResource>();
         try {
-            long t1 = System.currentTimeMillis();
             pubList = OpenCms.getPublishManager().getUsersPubList(m_cms);
-            long t2 = System.currentTimeMillis();
-            System.out.println("time for reading publish list: " + (t2 - t1));
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -437,7 +435,10 @@ public class CmsPublish {
      */
     public void publishResources(List<CmsResource> resources) throws CmsException {
 
-        I_CmsReport report = null;
+        CmsObject cms = m_cms;
+        I_CmsReport report = new CmsHtmlReport(
+            cms.getRequestContext().getLocale(),
+            cms.getRequestContext().getSiteRoot());
         CmsPublishList publishList = OpenCms.getPublishManager().getPublishListAll(
             m_cms,
             resources,
