@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/27 06:22:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -181,9 +181,15 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
      */
     public String getPreviewScaleParam() {
 
-        return m_croppingParam != null ? m_croppingParam.getRestrictedSizeScaleParam(
-            CmsImagePreviewDialog.IMAGE_HEIGHT_MAX,
-            CmsImagePreviewDialog.IMAGE_WIDTH_MAX) : "";
+        if (m_croppingParam != null) {
+            return m_croppingParam.getRestrictedSizeScaleParam(
+                CmsImagePreviewDialog.IMAGE_HEIGHT_MAX,
+                CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
+        }
+        CmsCroppingParamBean restricted = new CmsCroppingParamBean();
+        restricted.setTargetHeight(CmsImagePreviewDialog.IMAGE_HEIGHT_MAX);
+        restricted.setTargetWidth(CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
+        return restricted.toString();
     }
 
     /**
