@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/04/26 14:30:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/04/27 07:22:41 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
 
@@ -192,6 +192,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         if (dialogBean.getMode().equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
             RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
+            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
             panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
             CmsPushButton closeButton = new CmsPushButton();
             closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
