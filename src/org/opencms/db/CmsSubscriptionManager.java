@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSubscriptionManager.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 12:56:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -164,7 +164,7 @@ public class CmsSubscriptionManager {
      */
     public boolean isEnabled() {
 
-        return m_enabled;
+        return m_enabled && m_securityManager.isSubscriptionDriverAvailable();
     }
 
     /**

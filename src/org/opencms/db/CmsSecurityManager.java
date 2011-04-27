@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2011/04/18 12:24:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/27 12:56:57 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3189,6 +3189,16 @@ public final class CmsSecurityManager {
             }
             return false;
         }
+    }
+
+    /**
+     * Checks whether the subscription driver is available.<p>
+     * 
+     * @return true if the subscription driver is available 
+     */
+    public boolean isSubscriptionDriverAvailable() {
+
+        return m_driverManager.isSubscriptionDriverAvailable();
     }
 
     /**

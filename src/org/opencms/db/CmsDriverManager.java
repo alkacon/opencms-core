@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/04/19 10:09:59 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/27 12:56:57 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -480,12 +480,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
         dbc.clear();
 
         dbc = runtimeInfoFactory.getDbContext();
-        driverManager.m_subscriptionDriver = (I_CmsSubscriptionDriver)driverManager.createDriver(
-            dbc,
-            configurationManager,
-            config,
-            CONFIGURATION_SUBSCRIPTION,
-            ".subscription.driver");
+        try {
+            // we wrap this in a try-catch because otherwise it would fail during the update 
+            // process, since the subscription driver configuration does not exist at that point. 
+            driverManager.m_subscriptionDriver = (I_CmsSubscriptionDriver)driverManager.createDriver(
+                dbc,
+                configurationManager,
+                config,
+                CONFIGURATION_SUBSCRIPTION,
+                ".subscription.driver");
+        } catch (ArrayIndexOutOfBoundsException npe) {
+            LOG.warn("Could not instantiate subscription driver!");
+            LOG.warn(npe.getLocalizedMessage(), npe);
+        }
         dbc.clear();
 
         // register the driver manager for required events
@@ -5048,6 +5055,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return false;
         }
         return CmsProject.isInsideProject(projectResources, resourcename);
+    }
+
+    /**
+     * Checks whether the subscription driver is available.<p>
+     * 
+     * @return true if the subscription driver is available 
+     */
+    public boolean isSubscriptionDriverAvailable() {
+
+        return m_subscriptionDriver != null;
     }
 
     /**
