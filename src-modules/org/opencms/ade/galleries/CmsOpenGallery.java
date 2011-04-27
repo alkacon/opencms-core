@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenGallery.java,v $
- * Date   : $Date: 2011/04/27 07:03:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/27 08:10:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsDialog;
 
 import java.util.HashMap;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */
@@ -83,13 +82,13 @@ public class CmsOpenGallery extends CmsDialog {
             galleryPath += "/";
         }
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), GalleryMode.view.name());
         params.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), galleryPath);
         params.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), "");
 
         try {
-            sendForward(I_CmsGalleryProviderConstants.VFS_OPEN_GALLERY_PATH, CmsRequestUtil.createParameterMap(params));
+            sendForward(I_CmsGalleryProviderConstants.VFS_OPEN_GALLERY_PATH, params);
         } catch (Exception e) {
             LOG.error(e);
         }
