@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/04/27 16:30:53 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 7.6
  */
@@ -95,12 +95,6 @@ public class CmsADEManager {
         /** properties property. */
         PROPERTIES;
     }
-
-    /** The request attribute name for the current element-bean. */
-    public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
-
-    /** The request attribute name for the formatter-info-bean. */
-    public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
 
     /** The client side id/property-hash seperator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
@@ -259,7 +253,7 @@ public class CmsADEManager {
      * 
      * @return the element bean
      * 
-     * @throws CmsException if attribute {@value #ATTR_CURRENT_ELEMENT} not set, or if a type cast exception occurs
+     * @throws CmsException if no current element is set
      */
     public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
 

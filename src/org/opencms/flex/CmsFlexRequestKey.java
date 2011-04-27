@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2011/04/12 14:08:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/27 16:30:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,11 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
-import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.util.Map;
 
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,10 +108,7 @@ public class CmsFlexRequestKey {
         m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
 
         // get the current container element
-        Object obj = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
-        if (obj != null) {
-            m_containerElement = obj.toString();
-        }
+        m_containerElement = CmsJspStandardContextBean.getInstance(req).elementCachingHash();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));

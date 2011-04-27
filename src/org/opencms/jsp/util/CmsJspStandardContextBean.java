@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/15 10:19:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/27 16:42:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0
  */
@@ -129,6 +129,19 @@ public final class CmsJspStandardContextBean {
             req.setAttribute(ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN, result);
         }
         return result;
+    }
+
+    /**
+     * Returns a caching hash specific to the element, it's properties and the current container width.<p>
+     * 
+     * @return the caching hash
+     */
+    public String elementCachingHash() {
+
+        if ((m_element != null) && (m_container != null)) {
+            return m_element.editorHash() + "w:" + m_container.getWidth();
+        }
+        return "";
     }
 
     /**
