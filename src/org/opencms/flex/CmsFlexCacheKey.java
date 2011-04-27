@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2009/12/21 10:33:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/27 16:42:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,9 +124,6 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: device. */
     private static final String CACHE_20_DEVICE = "device";
 
-    /** Flex cache keyword: sitemap-entry. */
-    private static final String CACHE_21_SITEMAP_ENTRY = "sitemap-entry";
-
     /** Flex cache keyword: container-element. */
     private static final String CACHE_22_CONTAINER_ELEMENT = "container-element";
 
@@ -153,7 +150,6 @@ public class CmsFlexCacheKey {
         CACHE_18_ATTRS,
         CACHE_19_NO_ATTRS,
         CACHE_20_DEVICE,
-        CACHE_21_SITEMAP_ENTRY,
         CACHE_22_CONTAINER_ELEMENT});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
@@ -167,9 +163,6 @@ public class CmsFlexCacheKey {
 
     /** Cache key variable: The current device. */
     private String m_device;
-
-    /** Cache key variable: The current sitemap entry. */
-    private String m_sitemapEntry;
 
     /** Cache key variable: The current container element. */
     private String m_containerElement;
@@ -382,10 +375,6 @@ public class CmsFlexCacheKey {
 
         if (m_device != null) {
             appendKeyValue(str, CACHE_20_DEVICE, key.getDevice());
-        }
-
-        if (m_sitemapEntry != null) {
-            appendKeyValue(str, CACHE_21_SITEMAP_ENTRY, key.getSitemapEntry());
         }
 
         if (m_containerElement != null) {
@@ -624,9 +613,6 @@ public class CmsFlexCacheKey {
         }
         if (m_device != null) {
             appendKeyValue(str, CACHE_20_DEVICE, m_device);
-        }
-        if (m_sitemapEntry != null) {
-            appendKeyValue(str, CACHE_21_SITEMAP_ENTRY, m_sitemapEntry);
         }
         if (m_containerElement != null) {
             appendKeyValue(str, CACHE_22_CONTAINER_ELEMENT, m_containerElement);
@@ -918,10 +904,7 @@ public class CmsFlexCacheKey {
                     case 20: // device
                         m_device = IS_USED; // marks m_device as being used
                         break;
-                    case 21: // sitemap entry
-                        m_sitemapEntry = IS_USED;
-                        break;
-                    case 22: // container element
+                    case 21: // container element
                         m_containerElement = IS_USED;
                         break;
                     default: // unknown directive, throw error
