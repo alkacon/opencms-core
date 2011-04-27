@@ -34,7 +34,7 @@
 			<c:if test="${!content.value['EventDates/DateRemark'].isEmpty}">
 				<br />
 				<label><fmt:message key="t3.event.remarks" /></label>
-				<cms:contentshow element="EventDates/DateRemark" />
+				${content.value.EventDates.value.DateRemark}
 			</c:if>
 		</p>
 	
