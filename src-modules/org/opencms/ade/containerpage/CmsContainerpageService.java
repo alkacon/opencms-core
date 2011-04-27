@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.0
  */
@@ -148,10 +148,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createNewElement(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createNewElement(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType)
-    throws CmsRpcException {
+    public CmsContainerElement createNewElement(
+        String containerpageUri,
+        String clientId,
+        String resourceType,
+        String locale) throws CmsRpcException {
 
         CmsContainerElement element = null;
         try {
@@ -160,7 +163,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getCmsObject(),
                 containerpageUri,
                 getRequest(),
-                resourceType);
+                resourceType,
+                new Locale(locale));
             CmsContainerElementBean bean = getCachedElement(clientId);
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
@@ -309,15 +313,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
+            Locale contentLocale = new Locale(locale);
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
             for (CmsContainer container : containers) {
-                CmsContainerBean containerBean = getContainerBean(container, containerpageUri);
+                CmsContainerBean containerBean = getContainerBean(container, containerpageUri, locale);
                 containerBeans.add(containerBean);
             }
-            CmsContainerPageBean page = new CmsContainerPageBean(new Locale(locale), containerBeans);
+            CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
             cms.lockResourceTemporary(containerpageUri);
             CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
-            xmlCnt.save(cms, new Locale(locale), page);
+            xmlCnt.save(cms, contentLocale, page);
             cms.unlockResource(containerpageUri);
         } catch (Throwable e) {
             error(e);
@@ -356,12 +361,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     getCmsObject(),
                     containerpageUri,
                     getRequest(),
-                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
+                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
+                    new Locale(locale));
                 resourceName = cms.getSitePath(groupContainerResource);
                 groupContainer.setSitePath(resourceName);
                 groupContainer.setClientId(groupContainerResource.getStructureId().toString());
             }
-            CmsGroupContainerBean groupContainerBean = getGroupContainerBean(groupContainer, containerpageUri);
+            CmsGroupContainerBean groupContainerBean = getGroupContainerBean(groupContainer, containerpageUri, locale);
             cms.lockResourceTemporary(resourceName);
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                 cms,
@@ -485,7 +491,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      *  
      * @return a container bean
      */
-    private CmsContainerBean getContainerBean(CmsContainer container, String containerpageUri) {
+    private CmsContainerBean getContainerBean(CmsContainer container, String containerpageUri, String locale) {
 
         CmsObject cms = getCmsObject();
         CmsADESessionCache cache = getSessionCache();
@@ -496,7 +502,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementData = createNewElement(
                         containerpageUri,
                         elementData.getClientId(),
-                        elementData.getResourceType());
+                        elementData.getResourceType(),
+                        locale);
                 }
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 
@@ -625,7 +632,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @return the group-container bean
      */
-    private CmsGroupContainerBean getGroupContainerBean(CmsGroupContainer groupContainer, String containerpageUri) {
+    private CmsGroupContainerBean getGroupContainerBean(
+        CmsGroupContainer groupContainer,
+        String containerpageUri,
+        String locale) {
 
         CmsObject cms = getCmsObject();
         CmsADESessionCache cache = getSessionCache();
@@ -636,7 +646,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementData = createNewElement(
                         containerpageUri,
                         elementData.getClientId(),
-                        elementData.getResourceType());
+                        elementData.getResourceType(),
+                        locale);
                 }
                 CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
 

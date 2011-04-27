@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2011/04/05 09:35:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,6 +304,33 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             m_file.setContents(marshal());
         }
         return m_file;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getBestMatchingLocale(java.util.Locale)
+     */
+    public Locale getBestMatchingLocale(Locale locale) {
+
+        // the requested locale is the match we want to find most
+        if (hasLocale(locale)) {
+            // check if the requested locale is directly available
+            return locale;
+        }
+        if (locale.getVariant().length() > 0) {
+            // locale has a variant like "en_EN_whatever", try only with language and country 
+            Locale check = new Locale(locale.getLanguage(), locale.getCountry(), "");
+            if (hasLocale(check)) {
+                return check;
+            }
+        }
+        if (locale.getCountry().length() > 0) {
+            // locale has a country like "en_EN", try only with language
+            Locale check = new Locale(locale.getLanguage(), "", "");
+            if (hasLocale(check)) {
+                return check;
+            }
+        }
+        return null;
     }
 
     /**

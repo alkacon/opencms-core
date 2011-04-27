@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2011/04/05 09:35:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,17 @@ public interface I_CmsXmlDocument {
      *      or the destination locale already exists in the document, or if something else goes wrong
      */
     void copyLocale(Locale source, Locale destination) throws CmsXmlException;
+
+    /**
+     * Returns the first matching locale (eventually simplified) from the available locales.<p>
+     * 
+     * In case no match is found, code <code>null</code> is returned.<p>
+     * 
+     * @param locale the requested locale
+     * 
+     * @return the matching locale available within the document
+     */
+    Locale getBestMatchingLocale(Locale locale);
 
     /**
      * Returns the content definition object used for this XML document.<p>

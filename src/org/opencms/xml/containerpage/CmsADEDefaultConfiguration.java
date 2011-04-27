@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/04/12 14:08:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,11 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.config.CmsContainerPageConfigurationData;
 import org.opencms.ade.config.CmsSitemapConfigurationData;
 import org.opencms.ade.config.CmsTypeFormatterConfiguration;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,10 +47,13 @@ import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 7.6 
  */
@@ -113,10 +118,14 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(CmsObject, String, ServletRequest, String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(CmsObject, String, ServletRequest, String, java.util.Locale)
      */
-    public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
-    throws CmsException {
+    public CmsResource createNewElement(
+        CmsObject cms,
+        String cntPageUri,
+        ServletRequest request,
+        String type,
+        Locale locale) throws CmsException {
 
         CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
@@ -125,7 +134,31 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         item.getLazyFolder().getOrCreateFolder(cms);
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(cms.getSitePath(item.getSourceFile()), newFileName);
-        return cms.readResource(newFileName);
+        CmsResource resource = cms.readResource(newFileName);
+
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, request);
+            if (!xmlContent.hasLocale(locale)) {
+
+                Locale copyLocale = xmlContent.getBestMatchingLocale(locale);
+                if (copyLocale == null) {
+                    copyLocale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
+                }
+                cms.lockResourceTemporary(newFileName);
+                if (xmlContent.hasLocale(copyLocale)) {
+                    xmlContent.copyLocale(copyLocale, locale);
+                } else {
+                    xmlContent.addLocale(cms, locale);
+                }
+                CmsFile file = xmlContent.getFile();
+                file.setContents(xmlContent.marshal());
+                cms.writeFile(file);
+                cms.unlockResource(newFileName);
+                resource = cms.readResource(newFileName);
+            }
+        }
+
+        return resource;
     }
 
     /**

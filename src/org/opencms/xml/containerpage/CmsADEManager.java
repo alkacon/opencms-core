@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,6 +66,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -79,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 7.6
  */
@@ -196,17 +197,22 @@ public class CmsADEManager {
      * @param cntPageUri the container page uri
      * @param request the current request
      * @param type the type of the element to be created
+     * @param locale the content locale
      * 
      * @return the CmsResource representing the newly created element
      * 
      * @throws CmsException if something goes wrong
      *
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest, java.lang.String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest, java.lang.String, java.util.Locale)
      */
-    public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
-    throws CmsException {
+    public CmsResource createNewElement(
+        CmsObject cms,
+        String cntPageUri,
+        ServletRequest request,
+        String type,
+        Locale locale) throws CmsException {
 
-        return m_configuration.createNewElement(cms, cntPageUri, request, type);
+        return m_configuration.createNewElement(cms, cntPageUri, request, type, locale);
     }
 
     /**
@@ -302,16 +308,18 @@ public class CmsADEManager {
                 if (properties.containsKey(propertyName)) {
                     properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    properties.put(propertyName, new CmsProperty(
+                    properties.put(
                         propertyName,
-                        null,
-                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getType(), prop.getDefault())));
+                        new CmsProperty(propertyName, null, CmsXmlContentPropertyHelper.getPropValueIds(
+                            cms,
+                            prop.getType(),
+                            prop.getDefault())));
                 }
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                element.getId()), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1, element.getId()),
+                e);
         }
         return properties;
     }

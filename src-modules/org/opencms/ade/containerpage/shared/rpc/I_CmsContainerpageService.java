@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -81,12 +81,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param containerpageUri the current URI
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
+     * @param locale the content locale
      * 
      * @return the new element data containing structure id and site path
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType)
+    CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType, String locale)
     throws CmsRpcException;
 
     /**

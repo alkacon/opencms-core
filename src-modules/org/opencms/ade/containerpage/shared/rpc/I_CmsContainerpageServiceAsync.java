@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -77,12 +77,14 @@ public interface I_CmsContainerpageServiceAsync {
      * @param containerpageUri the current URI
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
+     * @param locale the content locale
      * @param callback the call-back executed on response
      */
     void createNewElement(
         String containerpageUri,
         String clientId,
         String resourceType,
+        String locale,
         AsyncCallback<CmsContainerElement> callback);
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2011/02/24 08:04:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/27 13:05:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 
@@ -44,7 +45,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -57,12 +58,13 @@ public interface I_CmsADEConfiguration {
      * @param cntPageUri the container page uri
      * @param request the current request
      * @param type the type of the element to be created
+     * @param locale the content locale
      * 
      * @return the CmsResource representing the newly created element
      * 
      * @throws CmsException if something goes wrong
      */
-    CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type, Locale locale)
     throws CmsException;
 
     /**
