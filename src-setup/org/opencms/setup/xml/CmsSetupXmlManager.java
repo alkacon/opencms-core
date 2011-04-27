@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2010/02/24 12:44:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -68,88 +68,6 @@ public class CmsSetupXmlManager {
     public CmsSetupXmlManager() {
 
         // empty
-    }
-
-    /**
-     * Initializes the plug-ins.<p>
-     * 
-     * @param detectedVersion detected mayor version
-     */
-    public void initialize(int detectedVersion) {
-
-        m_selectedPlugins = new ArrayList<String>();
-        m_plugins = new ArrayList<I_CmsSetupXmlUpdate>();
-        // put the plugins here in chronological order (or first remove then add)
-
-        if (detectedVersion < 7) {
-            // importexport
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourcesToRender());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourcesToRender());
-
-            // workplace
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDefaultProperties());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddAvailabilityContextMenu());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddMultiContextMenu());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateHistoryContextMenu());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImgGalleryContextMenues());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddPublishButtonAppearance());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDefaultPermissions());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddAutoSetFeatures());
-            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateLocalizationKeys());
-        }
-
-        // importexport
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImmutables());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImportVersions());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImportHandlers());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImportVersions());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImmutables());
-
-        // search
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemovePageSearchIndexSource1());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveSysSearchIndex());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddDEHelpSearchIndex());
-
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddGallerySearch());
-
-        // system
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceHandlers());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddContentNotification());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourceHandlers());
-
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceHandlers());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddAdeConfig());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSitemapConfig());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddTimezone());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateFlexcache());
-
-        // vfs
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceLoaders());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceTypes());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlReplaceHtmlAreaWidgets());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImageLoader());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImgGalleryParam());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlChangeGalleryClasses());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddXmlContentWidgets());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddXmlSchemaTypes());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddMimeTypes());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourceTypes());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddHtmlConverters());
-
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddLoaders());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypeParams());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypes());
-
-        // workplace
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDirectEditProvider());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddContextMenuItems());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlFixContextMenuItems());
-
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWizardETypeDesc());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateOpenGallery());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddExplorerTypes());
-
-        setup();
     }
 
     /**
@@ -215,6 +133,93 @@ public class CmsSetupXmlManager {
             }
         }
         return html.toString();
+    }
+
+    /**
+     * Initializes the plug-ins.<p>
+     * 
+     * @param detectedVersion detected mayor version
+     */
+    public void initialize(int detectedVersion) {
+
+        m_selectedPlugins = new ArrayList<String>();
+        m_plugins = new ArrayList<I_CmsSetupXmlUpdate>();
+        // put the plugins here in chronological order (or first remove then add)
+
+        if (detectedVersion < 7) {
+            // importexport
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourcesToRender());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourcesToRender());
+
+            // workplace
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDefaultProperties());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddAvailabilityContextMenu());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddMultiContextMenu());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateHistoryContextMenu());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImgGalleryContextMenues());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddPublishButtonAppearance());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDefaultPermissions());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddAutoSetFeatures());
+            m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateLocalizationKeys());
+        }
+
+        // importexport
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImmutables());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImportVersions());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImportHandlers());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImportVersions());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImmutables());
+
+        // search
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemovePageSearchIndexSource1());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveSysSearchIndex());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddDEHelpSearchIndex());
+
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddADESearch());
+
+        // system
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceHandlers());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddContentNotification());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourceHandlers());
+
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceHandlers());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddAdeConfig());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddTimezone());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateFlexcache());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSubscriptionManager());
+
+        // vfs
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceLoaders());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceTypes());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlReplaceHtmlAreaWidgets());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImageLoader());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImgGalleryParam());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlChangeGalleryClasses());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddXmlContentWidgets());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddXmlSchemaTypes());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddMimeTypes());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddResourceTypes());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddHtmlConverters());
+
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddLoaders());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddJspLoaderParams());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypeParams());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypes());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWidgets());
+
+        // workplace
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDirectEditProvider());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddContextMenuItems());
+        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlFixContextMenuItems());
+
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWizardETypeDesc());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateOpenGallery());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddExplorerTypes());
+
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddIconRules());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateMenuRules());
+
+        setup();
     }
 
     /**

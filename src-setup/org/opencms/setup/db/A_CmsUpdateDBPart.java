@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2010/11/04 12:28:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2 
  */
@@ -101,15 +101,6 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
     }
 
     /**
-     * Does the hard work.<p>
-     * 
-     * @param setupDb the db connection interface
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    protected abstract void internalExecute(CmsSetupDb setupDb) throws SQLException;
-
-    /**
      * Searches for the SQL query with the specified key.<p>
      * 
      * @param queryKey the SQL query key
@@ -117,7 +108,13 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
      */
     public String readQuery(String queryKey) {
 
-        return m_queries.get(queryKey);
+        String result = m_queries.get(queryKey);
+        if (result != null) {
+            result = result.replace('\t', ' ');
+            result = result.replace('\n', ' ');
+            result = result.replace('\r', ' ');
+        }
+        return result;
     }
 
     /**
@@ -129,6 +126,15 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
         return getClass().getPackage().getName().replace('.', '/') + '/';
     }
+
+    /**
+     * Does the hard work.<p>
+     * 
+     * @param setupDb the db connection interface
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected abstract void internalExecute(CmsSetupDb setupDb) throws SQLException;
 
     /**
      * Returns the keep History parameter value.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddResourceTypes.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.setup.xml.A_CmsXmlVfs;
+import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
 
@@ -54,7 +55,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -144,6 +145,36 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     CmsResourceTypeJsp.getContainerPageTemplateTypeName(),
                     CmsResourceTypeJsp.class,
                     CmsResourceTypeJsp.getContainerPageTemplateTypeId());
+            } else if (xpath.equals(getXPathsToUpdate().get(5))) {
+                createResourceType(document, xpath, "sitemap_config", CmsResourceTypeXmlContent.class, 22);
+                // parameters
+                createRtParameter(
+                    document,
+                    xpath,
+                    A_CmsResourceType.CONFIGURATION_GALLERY_TYPE_NAMES,
+                    CmsAjaxDownloadGallery.GALLERYTYPE_NAME);
+                createRtParameter(
+                    document,
+                    xpath,
+                    CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
+                    "/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd");
+            } else if (xpath.equals(getXPathsToUpdate().get(6))) {
+                createResourceType(document, xpath, "xmlredirect", CmsResourceTypeXmlContent.class, 15);
+                //NOTE: this only works because it's a single property. If we wanted to write multiple properties, we
+                //would need to do it differently.
+                CmsSetupXmlHelper.setValue(document, xpath + "/properties/property/name", "template-elements");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/properties/property/value[@type='shared']",
+                    "/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp");
+                createRtParameter(
+                    document,
+                    xpath,
+                    CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
+                    "/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd");
+
+            } else if (xpath.equals(getXPathsToUpdate().get(7))) {
+                createResourceType(document, xpath, "entrypoint", CmsResourceTypeFolderExtended.class, 23);
             }
             return true;
         }
@@ -182,11 +213,15 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
             xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
             xp.append("='");
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.getStaticTypeName() + "']");
-            m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME + "']");
-            m_xpaths.add(xp.toString() + "cntpagegallery" + "']");
-            m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME + "']");
-            m_xpaths.add(xp.toString() + CmsResourceTypeJsp.getContainerPageTemplateTypeName() + "']");
+            /*0*/m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.getStaticTypeName() + "']");
+            /*1*/m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME + "']");
+            /*2*/m_xpaths.add(xp.toString() + "cntpagegallery" + "']");
+            /*3*/m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME + "']");
+            /*4*/m_xpaths.add(xp.toString() + CmsResourceTypeJsp.getContainerPageTemplateTypeName() + "']");
+            /*5*/m_xpaths.add(xp.toString() + "sitemap_config" + "']");
+            /*6*/m_xpaths.add(xp.toString() + "xmlredirect" + "']");
+            /*7*/m_xpaths.add(xp.toString() + "entrypoint" + "']");
+
         }
         return m_xpaths;
     }

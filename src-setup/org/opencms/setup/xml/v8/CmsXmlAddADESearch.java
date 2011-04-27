@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddGallerySearch.java,v $
- * Date   : $Date: 2011/04/21 14:20:12 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddADESearch.java,v $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,8 @@ package org.opencms.setup.xml.v8;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.search.CmsVfsIndexer;
+import org.opencms.search.documents.CmsDocumentContainerPage;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -58,11 +58,11 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
+public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -72,7 +72,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
      */
     public String getName() {
 
-        return "Add the gallery search nodes";
+        return "Add the ADE containerpage and gallery search nodes";
     }
 
     /**
@@ -91,7 +91,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
                     "xmlcontent-galleries",
                     CmsGalleryDocumentXmlContent.class,
                     new String[] {},
-                    new String[] {"*"});
+                    new String[] {"xmlcontent-galleries"});
             } else if (xpath.equals(getXPathsToUpdate().get(1))) {
                 // create doc type
                 createDocType(
@@ -100,7 +100,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
                     "xmlpage-galleries",
                     CmsGalleryDocumentXmlPage.class,
                     new String[] {"text/html"},
-                    new String[] {CmsResourceTypeXmlPage.getStaticTypeName()});
+                    new String[] {"xmlpage-galleries"});
             } else if (xpath.equals(getXPathsToUpdate().get(2))) {
                 // create analyzer
                 createAnalyzer(document, xpath, CmsGallerySearchAnalyzer.class, "all");
@@ -327,6 +327,15 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 createFieldConfig(document, xpath, fieldConf, CmsGallerySearchFieldConfiguration.class);
+            } else if (xpath.equals(getXPathsToUpdate().get(6))) {
+                // create doc type
+                createDocType(
+                    document,
+                    xpath,
+                    "containerpage",
+                    CmsDocumentContainerPage.class,
+                    new String[] {"text/html"},
+                    new String[] {"containerpage"});
             }
             return true;
         }
@@ -352,7 +361,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
 
         if (m_xpaths == null) {
             m_xpaths = new ArrayList<String>();
-            // /opencms/search/documenttypes/documenttype[name='xmlcontent-galleries']
+            // /opencms/search/documenttypes/documenttype[name='xmlcontent-galleries']    (0)
             StringBuffer xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -363,7 +372,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='xmlcontent-galleries']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/documenttypes/documenttype[name='xmlpage-galleries']
+            // /opencms/search/documenttypes/documenttype[name='xmlpage-galleries']       (1)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -374,7 +383,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='xmlpage-galleries']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/analyzers/analyzer[class='org.opencms.search.galleries.CmsGallerySearchAnalyzer']
+            // /opencms/search/analyzers/analyzer[class='org.opencms.search.galleries.CmsGallerySearchAnalyzer']  (2)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -385,7 +394,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(CmsSearchConfiguration.N_CLASS);
             xp.append("='").append(CmsGallerySearchAnalyzer.class.getName()).append("']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/indexes/index[name='ADE Gallery Index']
+            // /opencms/search/indexes/index[name='ADE Gallery Index']   (3)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -396,7 +405,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='").append(CmsGallerySearchIndex.GALLERY_INDEX_NAME).append("']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/indexsources/indexsource[name='ADE_gallery_source']
+            // /opencms/search/indexsources/indexsource[name='ADE_gallery_source']    (4)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -407,7 +416,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='ADE_gallery_source']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/fieldconfigurations/fieldconfiguration[name='ADE_gallery_fields']
+            // /opencms/search/fieldconfigurations/fieldconfiguration[name='ADE_gallery_fields']  (5)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -418,6 +427,19 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='ADE_gallery_fields']");
             m_xpaths.add(xp.toString());
+
+            // /opencms/search/documenttypes/documenttype[name='xmlpage-galleries']   (6)
+            xp = new StringBuffer(256);
+            xp.append(getCommonPath());
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES);
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_DOCUMENTTYPE);
+            xp.append("[");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='containerpage']");
+            m_xpaths.add(xp.toString());
+
         }
         return m_xpaths;
     }

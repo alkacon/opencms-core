@@ -1,24 +1,24 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddResourceHandlers.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddSubscriptionManager.java,v $
  * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,     
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -31,12 +31,12 @@
 
 package org.opencms.setup.xml.v8;
 
-import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +45,15 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new init resource handler classes, from 7.5.x to 8.0.0.<p>
+ * Adds the new loader classes.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
+public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -63,7 +63,7 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add new init resource handler classes";
+        return "Add subscription manager to opencms-system.xml";
     }
 
     /**
@@ -75,6 +75,15 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
     }
 
     /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#validate(org.opencms.setup.CmsSetupBean)
+     */
+    @Override
+    public boolean validate(CmsSetupBean setupBean) throws Exception {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCodeToChange(setupBean));
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
@@ -82,14 +91,9 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsDetailPageResourceHandler.class.getName());
-            } else {
-                return false;
-            }
+            CmsSetupXmlHelper.setValue(document, xpath + "/@enabled", "true");
+            CmsSetupXmlHelper.setValue(document, xpath + "/@poolname", "default");
+            CmsSetupXmlHelper.setValue(document, xpath + "/@maxvisited", "5");
             return true;
         }
         return false;
@@ -101,12 +105,7 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
     @Override
     protected String getCommonPath() {
 
-        // /opencms/system/resourceinit
-        StringBuffer xp = new StringBuffer(256);
-        xp.append("/").append(CmsConfigurationManager.N_ROOT);
-        xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-        xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
-        return xp.toString();
+        return "/" + CmsConfigurationManager.N_ROOT + "/" + CmsSystemConfiguration.N_SYSTEM;
     }
 
     /**
@@ -116,16 +115,13 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // "/opencms/system/resourceinit/resourceinithandler[@class='...']";
-            StringBuffer xp = new StringBuffer(256);
-            xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINITHANDLER);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='");
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + CmsDetailPageResourceHandler.class.getName() + "']");
+            m_xpaths.add("/"
+                + CmsConfigurationManager.N_ROOT
+                + "/"
+                + CmsSystemConfiguration.N_SYSTEM
+                + "/"
+                + CmsSystemConfiguration.N_SUBSCRIPTIONMANAGER);
         }
         return m_xpaths;
     }

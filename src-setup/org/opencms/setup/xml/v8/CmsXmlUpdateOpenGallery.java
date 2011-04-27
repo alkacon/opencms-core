@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlUpdateOpenGallery.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,7 @@ public class CmsXmlUpdateOpenGallery extends A_CmsXmlWorkplace {
             CmsSetupXmlHelper.setValue(
                 document,
                 xpath + "/@" + I_CmsXmlConfiguration.A_URI,
-                "commons/openadvancedgallery.jsp");
+                "commons/open_ade_gallery.jsp");
             modified = true;
         }
         return modified;

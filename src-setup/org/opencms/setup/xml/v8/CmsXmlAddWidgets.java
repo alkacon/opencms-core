@@ -1,0 +1,176 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddWidgets.java,v $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.setup.xml.v8;
+
+import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsVfsConfiguration;
+import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.setup.CmsSetupBean;
+import org.opencms.setup.xml.A_CmsXmlVfs;
+import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.dom4j.Document;
+import org.dom4j.Node;
+
+/**
+ * Adds the new loader parameters.<p>
+ * 
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.0
+ */
+public class CmsXmlAddWidgets extends A_CmsXmlVfs {
+
+    /** List of xpaths to update. */
+    private List<String> m_xpaths;
+
+    /** 
+     * The new widget definition data.<p>
+     */
+    private String[][] m_widgets = {
+        {"org.opencms.widgets.CmsAdeDownloadGalleryWidget", "AdvancedDownloadGalleryWidget"},
+        {"org.opencms.widgets.CmsAdeImageGalleryWidget", "AdvancedImageGalleryWidget"}};
+
+    /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
+     */
+    public String getName() {
+
+        return "Add new widget definitions for ADE galleries";
+    }
+
+    /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#validate(org.opencms.setup.CmsSetupBean)
+     */
+    @Override
+    public boolean validate(CmsSetupBean setupBean) throws Exception {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCodeToChange(setupBean));
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+     */
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
+
+        Node node = document.selectSingleNode(xpath);
+        if (node == null) {
+            for (int i = 0; i < m_widgets.length; i++) {
+                if (xpath.equals(getXPathsToUpdate().get(i))) {
+                    CmsSetupXmlHelper.setValue(document, xpathForWidgetAlias(m_widgets[i][0]), m_widgets[i][1]);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    @Override
+    protected String getCommonPath() {
+
+        return xpathForWidgets();
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     */
+    @Override
+    protected List<String> getXPathsToUpdate() {
+
+        if (m_xpaths == null) {
+            m_xpaths = new ArrayList<String>();
+            m_xpaths.add(xpathForWidgetByClass(m_widgets[0][0]));
+            m_xpaths.add(xpathForWidgetByClass(m_widgets[1][0]));
+        }
+        return m_xpaths;
+    }
+
+    /**
+     * Returns the xpath for the alias attribute of a widget node with a given class name.<p>
+     * 
+     * @param className the class name 
+     * 
+     * @return the xpath of the widget node's alias attribute 
+     */
+    protected String xpathForWidgetAlias(String className) {
+
+        return xpathForWidgetByClass(className) + "/@" + I_CmsXmlConfiguration.A_ALIAS;
+    }
+
+    /**
+     * Returns the xpath for a widget node with a given class attribute.<p>
+     * 
+     * @param className the class name 
+     * 
+     * @return the xpath for the widget with the given class name attribute 
+     */
+    protected String xpathForWidgetByClass(String className) {
+
+        return xpathForWidgets()
+            + "/"
+            + CmsVfsConfiguration.N_WIDGET
+            + "[@"
+            + I_CmsXmlConfiguration.A_CLASS
+            + "='"
+            + className
+            + "']";
+    }
+
+    /**
+     * Returns the xpath for the widgets node.<p>
+     * 
+     * @return the xpath for the widgets node 
+     */
+    protected String xpathForWidgets() {
+
+        return "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsVfsConfiguration.N_VFS
+            + "/"
+            + CmsVfsConfiguration.N_XMLCONTENT
+            + "/"
+            + CmsVfsConfiguration.N_WIDGETS;
+    }
+
+}

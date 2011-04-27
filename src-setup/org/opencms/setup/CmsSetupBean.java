@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2011/04/26 15:47:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -121,7 +121,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1807,7 +1807,43 @@ public class CmsSetupBean implements I_CmsShellCommands {
             copyFile(file, tempFile);
 
             // save properties
-            save(properties, tempFile, file);
+            save(properties, tempFile, file, null);
+
+            // delete temp file
+            File temp = new File(m_configRfsPath + tempFile);
+            temp.delete();
+        } else {
+            m_errors.add("No valid file: " + file + "\n");
+        }
+
+    }
+
+    /**
+     *  Saves properties to specified file.<p>
+     * 
+     *  @param properties the properties to be saved
+     *  @param file the file to save the properties to
+     *  @param backup if true, create a backupfile
+     *  @param forceWrite the keys for the properties which should always be written, even if they don't exist in the configuration file 
+     */
+    public void saveProperties(ExtendedProperties properties, String file, boolean backup, Set<String> forceWrite) {
+
+        if (new File(m_configRfsPath + file).isFile()) {
+            String backupFile = file + CmsConfigurationManager.POSTFIX_ORI;
+            String tempFile = file + ".tmp";
+
+            m_errors.clear();
+
+            if (backup) {
+                // make a backup copy
+                copyFile(file, FOLDER_BACKUP + backupFile);
+            }
+
+            //save to temporary file
+            copyFile(file, tempFile);
+
+            // save properties
+            save(properties, tempFile, file, forceWrite);
 
             // delete temp file
             File temp = new File(m_configRfsPath + tempFile);
@@ -2796,13 +2832,41 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Returns the text which should be written to the configuration file for a given property value.<p>
+     * 
+     * @param obj the property value 
+     * 
+     * @return the text to write for that property value 
+     */
+    private String getPropertyValueToWrite(Object obj) {
+
+        String value;
+        String valueToWrite = null;
+        if (obj instanceof List<?>) {
+            String[] values = {};
+            values = CmsCollectionsGenericWrapper.list(obj).toArray(values);
+            // write it
+            valueToWrite = "\\\n" + createValueString(values);
+        } else {
+            value = String.valueOf(obj).trim();
+            // escape commas and equals in value
+            value = CmsStringUtil.substitute(value, ",", "\\,");
+            value = CmsStringUtil.substitute(value, "=", "\\=");
+            // write it
+            valueToWrite = value;
+        }
+        return valueToWrite;
+    }
+
+    /**
      * Saves the properties to a file.<p>
      * 
      * @param properties the properties to be saved
      * @param source the source file to get the keys from
      * @param target the target file to save the properties to
+     * @param forceWrite the keys of the properties which should always be written, even if they don't exist in the configuration file 
      */
-    private void save(ExtendedProperties properties, String source, String target) {
+    private void save(ExtendedProperties properties, String source, String target, Set<String> forceWrite) {
 
         try {
             Set<String> alreadyWritten = new HashSet<String>();
@@ -2839,22 +2903,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                         fw.write((key + "="));
                         try {
                             Object obj = properties.get(key);
-                            String value = "";
-
                             if (obj != null) {
-                                if (obj instanceof List<?>) {
-                                    String[] values = {};
-                                    values = CmsCollectionsGenericWrapper.list(obj).toArray(values);
-                                    // write it
-                                    fw.write("\\\n" + createValueString(values));
-                                } else {
-                                    value = String.valueOf(obj).trim();
-                                    // escape commas and equals in value
-                                    value = CmsStringUtil.substitute(value, ",", "\\,");
-                                    value = CmsStringUtil.substitute(value, "=", "\\=");
-                                    // write it
-                                    fw.write(value);
-                                }
+                                String valueToWrite = getPropertyValueToWrite(obj);
+                                fw.write(valueToWrite);
                             }
 
                         } catch (NullPointerException e) {
@@ -2865,6 +2916,26 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                         // remember that this properties is already written (multi values)
                         alreadyWritten.add(key);
+                    }
+                }
+            }
+            if (forceWrite != null) {
+                for (String forced : forceWrite) {
+                    if (!alreadyWritten.contains(forced) && properties.containsKey(forced)) {
+                        fw.write("\n\n");
+                        fw.write(forced + "=");
+                        try {
+                            Object obj = properties.get(forced);
+
+                            if (obj != null) {
+                                String valueToWrite = getPropertyValueToWrite(obj);
+                                fw.write(valueToWrite);
+                            }
+                        } catch (NullPointerException e) {
+                            // no value found - do nothing
+                        }
+                        fw.write("\n");
+
                     }
                 }
             }
@@ -2913,7 +2984,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         m_webAppRfsPath = webInfRfsPath;
         if ("".equals(webInfRfsPath)) {
             // required for test cases
-            m_configRfsPath = "";
+            m_configRfsPath = ""; 
             return;
         }
         if (!m_webAppRfsPath.endsWith(File.separator)) {

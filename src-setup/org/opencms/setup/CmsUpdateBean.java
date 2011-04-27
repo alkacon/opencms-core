@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2011/03/24 10:00:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,13 +156,26 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Adds the subscription driver to the properties.<p>
+     */
+    public void addSubscriptionDriver() {
+
+        setExtProperty("driver.subscription", "db");
+        String dbName = getExtProperty("db.name");
+        String packageName = getDbPackage(dbName);
+        setExtProperty("db.subscription.driver", "org.opencms.db." + packageName + ".CmsSubscriptionDriver");
+        setExtProperty("db.subscription.pool", "opencms:default");
+        setExtProperty("db.subscription.sqlmanager", "org.opencms.db." + packageName + ".CmsSqlManager");
+    }
+
+    /**
      * Compatibility check for OCEE modules.<p>
      * 
      * @param version the opencms version
      * 
      * @return <code>false</code> if OCEE is present but not compatible with opencms version
      */
-    @SuppressWarnings({"unchecked", "boxing", "rawtypes"})
+    @SuppressWarnings( {"unchecked", "boxing", "rawtypes"})
     public boolean checkOceeVersion(String version) {
 
         try {
@@ -231,6 +244,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     public String getAdminUser() {
 
         return m_adminUser;
+    }
+
+    /**
+     * Returns the detected mayor version, based on DB structure.<p>
+     * 
+     * @return the detected mayor version
+     */
+    public int getDetectedVersion() {
+
+        return m_detectedVersion;
     }
 
     /**
@@ -448,16 +471,6 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Returns the detected mayor version, based on DB structure.<p>
-     * 
-     * @return the detected mayor version
-     */
-    public int getDetectedVersion() {
-
-        return m_detectedVersion;
-    }
-
-    /**
      * Prepares step 1 of the update wizard.<p>
      */
     public void prepareUpdateStep1() {
@@ -570,6 +583,8 @@ public class CmsUpdateBean extends CmsSetupBean {
             return;
         }
 
+        addSubscriptionDriver();
+
         if ((m_workplaceUpdateThread != null) && (m_workplaceUpdateThread.isFinished())) {
             // update is already finished, just wait for client to collect final data
             return;
@@ -632,11 +647,17 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void prepareUpdateStep6() {
 
+        Set<String> forced = new HashSet<String>();
+        forced.add("driver.subscription");
+        forced.add("db.subscription.driver");
+        forced.add("db.subscription.pool");
+        forced.add("db.subscription.sqlmanager");
+        addSubscriptionDriver();
         if (isInitialized()) {
             // lock the wizard for further use 
             lockWizard();
             // save Properties to file "opencms.properties" 
-            saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false);
+            saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false, forced);
         }
     }
 
@@ -661,16 +682,6 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Sets the keep History parameter value.<p>
-     *
-     * @param keepHistory the keep History parameter value to set
-     */
-    public void setKeepHistory(boolean keepHistory) {
-
-        m_keepHistory = keepHistory;
-    }
-
-    /**
      * Sets the detected mayor version.<p>
      *
      * @param detectedVersion the value to set
@@ -678,6 +689,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     public void setDetectedVersion(int detectedVersion) {
 
         m_detectedVersion = detectedVersion;
+    }
+
+    /**
+     * Sets the keep History parameter value.<p>
+     *
+     * @param keepHistory the keep History parameter value to set
+     */
+    public void setKeepHistory(boolean keepHistory) {
+
+        m_keepHistory = keepHistory;
     }
 
     /**
@@ -812,12 +833,10 @@ public class CmsUpdateBean extends CmsSetupBean {
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = itTypes.next();
                 m++;
-                report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        String.valueOf(m),
-                        String.valueOf(n)),
-                    I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     type.getTypeName()));
@@ -841,17 +860,15 @@ public class CmsUpdateBean extends CmsSetupBean {
                             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                             I_CmsReport.FORMAT_OK);
                     } catch (Exception e) {
-                        report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ERROR_0),
-                            I_CmsReport.FORMAT_ERROR);
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
                         report.addError(e);
                         // log the error
                         e.printStackTrace(System.err);
                     }
                 } else {
-                    report.println(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
-                        I_CmsReport.FORMAT_WARNING);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_WARNING);
                 }
             }
         } finally {
@@ -931,4 +948,21 @@ public class CmsUpdateBean extends CmsSetupBean {
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
+    /**
+     * Gets the database package name part.<p>
+     * 
+     * @param dbName the db name from the opencms.properties file
+     *  
+     * @return the db package name part 
+     */
+    private String getDbPackage(String dbName) {
+
+        if (dbName.contains("mysql")) {
+            return "mysql";
+        } else if (dbName.contains("oracle")) {
+            return "oracle";
+        } else {
+            return dbName;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2010/02/24 12:44:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/27 14:44:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -127,34 +127,6 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
     }
 
     /**
-     * Updates the given doc inserting the given node corresponding to the given xpath.<p>
-     * 
-     * @param document the original document to update
-     * @param newDoc the document to update
-     * @param xpath the corresponding xpath
-     */
-    protected void updateDoc(Document document, Document newDoc, String xpath) {
-
-        Node node = document.selectSingleNode(xpath);
-        if (node != null) {
-            CmsSetupXmlHelper.setValue(newDoc, CmsXmlUtils.removeLastComplexXpathElement(xpath), " ");
-            node = (Node)node.clone();
-            node.setParent(null);
-            ((Branch)newDoc.selectSingleNode(CmsXmlUtils.removeLastComplexXpathElement(xpath))).add(node);
-        }
-    }
-
-    /**
-     * Returns a parent path that is common for all nodes to modify.<p> 
-     * 
-     * @return common parent path
-     */
-    protected String getCommonPath() {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#validate(org.opencms.setup.CmsSetupBean)
      */
     public boolean validate(CmsSetupBean setupBean) throws Exception {
@@ -176,6 +148,16 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         return false;
+    }
+
+    /**
+     * Returns a parent path that is common for all nodes to modify.<p> 
+     * 
+     * @return common parent path
+     */
+    protected String getCommonPath() {
+
+        return null;
     }
 
     /**
@@ -211,5 +193,23 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         newDoc.addElement(CmsConfigurationManager.N_ROOT);
         newDoc.setName(doc.getName());
         return newDoc;
+    }
+
+    /**
+     * Updates the given doc inserting the given node corresponding to the given xpath.<p>
+     * 
+     * @param document the original document to update
+     * @param newDoc the document to update
+     * @param xpath the corresponding xpath
+     */
+    protected void updateDoc(Document document, Document newDoc, String xpath) {
+
+        Node node = document.selectSingleNode(xpath);
+        if (node != null) {
+            CmsSetupXmlHelper.setValue(newDoc, CmsXmlUtils.removeLastComplexXpathElement(xpath), " ");
+            node = (Node)node.clone();
+            node.setParent(null);
+            ((Branch)newDoc.selectSingleNode(CmsXmlUtils.removeLastComplexXpathElement(xpath))).add(node);
+        }
     }
 }
