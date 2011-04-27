@@ -21,8 +21,8 @@
 }
 .closePopup{
     position: absolute;
-    right: -13px;
-    top: -13px;
+    right: -12px;
+    top: -12px;
     cursor: pointer;
 }
 @sprite .closePopupImage{

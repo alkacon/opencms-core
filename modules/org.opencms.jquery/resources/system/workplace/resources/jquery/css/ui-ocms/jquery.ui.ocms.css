@@ -72,12 +72,12 @@ div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close{
 	background-image: url(images/dialogCloseImage.png);
     background-color: transparent;
 	cursor: pointer;
-    height: 22px;
+    height: 23px;
     overflow: hidden;
     position: absolute;
-    right: -18px;
+    right: -17px;
     top: -18px;
-    width: 22px;
+    width: 23px;
     border: 0;
     margin: 0;
     padding: 0;

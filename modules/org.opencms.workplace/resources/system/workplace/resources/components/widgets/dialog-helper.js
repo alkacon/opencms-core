@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/dialog-helper.js,v $
- * Date   : $Date: 2011/04/21 12:53:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/27 19:03:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -179,8 +179,8 @@ function cmsOpenImagePreview(title, context, fieldId){
 		}
 		var _previewImage=$('<img />', {
 			'src': context + sitePath,
-			'title': title,
-			'alt': title
+			'title': sitePath,
+			'alt': sitePath
 		});
 		var _imageBox=$('<div />', {'css':{
 		    'width': _boxWidth,
@@ -194,8 +194,8 @@ function cmsOpenImagePreview(title, context, fieldId){
 	        }
 		}).append(_previewImage).appendTo(document.body);
 		_imageBox.dialog({
-            title: title,
-	    dialogClass: 'galleryDialog',
+            /** title: title, */
+	    dialogClass: 'galleryDialog hideCaption',
             modal: true,
             zIndex: 99999,
             open: function(){
