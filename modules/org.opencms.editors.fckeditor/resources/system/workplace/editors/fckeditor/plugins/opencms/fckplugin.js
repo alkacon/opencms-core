@@ -213,13 +213,17 @@ function createLink(linkInformation) {
 
 	}
 } 
- 
+var exitTarget='_top';
+//the editors exit frame target, may be !='_top' if in advanced direct edit!
+if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
+    exitTarget='cmsAdvancedDirectEditor';
+}
 // OpenCms exit button
 var exitCommand = function() { this.Name = 'Exit'; }
 exitCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 exitCommand.prototype.Execute = function() {
 	if (!FCK.IsDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
-		execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_EXIT %>','_top');
+		execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_EXIT %>',exitTarget);
 	}
 }
 FCKCommands.RegisterCommand('oc-exit', new exitCommand());
@@ -229,7 +233,7 @@ FCKToolbarItems.RegisterItem('oc-exit', new FCKToolbarButton('oc-exit','<%= CmsE
 var saveActionCommand = function() { this.Name = 'SaveAction'; }
 saveActionCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveActionCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEACTION %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEACTION %>',exitTarget);
 }
 FCKCommands.RegisterCommand('oc-publish', new saveActionCommand());
 FCKToolbarItems.RegisterItem('oc-publish', new FCKToolbarButton('oc-publish','<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>', null, null, true));
@@ -247,7 +251,7 @@ FCKToolbarItems.RegisterItem('oc-save', new FCKToolbarButton('oc-save','<%= CmsE
 var saveExitCommand = function() { this.Name = 'SaveExit'; }
 saveExitCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveExitCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEEXIT %>',exitTarget);
 }
 FCKCommands.RegisterCommand('oc-save_exit', new saveExitCommand());
 FCKToolbarItems.RegisterItem('oc-save_exit', new FCKToolbarButton('oc-save_exit','<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>', null, null, true));
