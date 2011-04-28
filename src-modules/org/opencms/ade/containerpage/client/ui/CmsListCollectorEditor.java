@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2011/04/21 11:50:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/28 07:18:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,11 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 
@@ -46,7 +49,7 @@ import com.google.gwt.user.client.Command;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -61,7 +64,31 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     public CmsListCollectorEditor(Element editable, String parentId) {
 
         super(editable, parentId);
+    }
 
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#setPosition(org.opencms.gwt.client.util.CmsPositionBean, com.google.gwt.user.client.Element)
+     */
+    @Override
+    public void setPosition(CmsPositionBean position, com.google.gwt.user.client.Element containerElement) {
+
+        m_position = position;
+        Element parent = CmsDomUtil.getPositioningParent(getElement());
+        if (!containerElement.isOrHasChild(parent)) {
+            // the container element should have position relative,
+            // so don't use any positioning parent that is not a child of the container-element
+            parent = containerElement;
+        }
+        Style style = getElement().getStyle();
+        style.setRight(
+            parent.getOffsetWidth() - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()),
+            Unit.PX);
+        int top = m_position.getTop() - parent.getAbsoluteTop();
+        if (top < 25) {
+            // if top is <25 the buttons might overlap with the option bar, so increase to 25
+            top = 25;
+        }
+        style.setTop(top, Unit.PX);
     }
 
     /**
