@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,25 +37,18 @@ import org.opencms.ade.config.CmsTypeFormatterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.PrintfFormat;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -72,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 7.6 
  */
@@ -247,7 +240,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         CmsConfigurationItem item = typeConfig.get(type);
         CmsResource folderRes = item.getLazyFolder().getFolder(cms);
         String destination = cms.getSitePath(folderRes) + item.getPattern();
-        return getNewFileName(cms, destination);
+        return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, destination);
     }
 
     /**
@@ -293,48 +286,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         if (m_adminCms == null) {
             m_adminCms = adminCms;
         }
-    }
-
-    /**
-     * Returns a new file name for an element to be created based on a pattern.<p>
-     * 
-     * The pattern consists of a path which may contain the macro %(number), which 
-     * will be replaced by the first 5-digit sequence for which the resulting file name is not already
-     * used.<p>
-     * 
-     * @param cms the CmsObject used for checking the existence of file names
-     * @param pattern the pattern for new files
-     * 
-     * @return the new file name
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public static String getNewFileName(CmsObject cms, String pattern) throws CmsException {
-
-        // this method was adapted from A_CmsResourceCollector#getCreateInFolder
-        pattern = cms.getRequestContext().removeSiteRoot(pattern);
-        PrintfFormat format = new PrintfFormat(FILE_NUMBER_FORMAT);
-        String folderName = CmsResource.getFolderPath(pattern);
-        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
-        // now create a list of all resources that just contains the file names
-        Set<String> result = new HashSet<String>();
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = resources.get(i);
-            result.add(cms.getSitePath(resource));
-        }
-
-        String checkFileName, checkTempFileName, number;
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-        int j = 0;
-        do {
-            number = format.sprintf(++j);
-            resolver.addMacro(MACRO_NUMBER, number);
-            // resolve macros in file name
-            checkFileName = resolver.resolveMacros(pattern);
-            // get name of the resolved temp file
-            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
-        } while (result.contains(checkFileName) || result.contains(checkTempFileName));
-        return checkFileName;
     }
 
     /**

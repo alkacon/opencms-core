@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsDefaultUrlNameSequenceGenerator.java,v $
- * Date   : $Date: 2010/11/11 13:08:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,24 +33,34 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.loader.I_CmsFileNameGenerator;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The default class used for generating sequences of URL name candidates from an XML content.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsDefaultUrlNameSequenceGenerator implements I_CmsUrlNameSequenceGenerator {
+public class CmsDefaultUrlNameSequenceGenerator implements I_CmsFileNameGenerator {
 
     /**
-     * @see org.opencms.xml.content.I_CmsUrlNameSequenceGenerator#getUrlNameSequence(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.file.CmsResource)
+     * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case 
+     * of a collision of names.<p>
+     * 
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getUrlNameSequence(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.file.CmsResource)
      */
     public Iterator<String> getUrlNameSequence(
         CmsObject cms,
@@ -63,4 +73,40 @@ public class CmsDefaultUrlNameSequenceGenerator implements I_CmsUrlNameSequenceG
         return new CmsNumberSuffixNameSequence(translatedTitle);
     }
 
+    /**
+     * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
+     * This will be replaced by the first 5 digit sequence for which the resulting file name is not already
+     * used.<p>
+     * 
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getNewFileName(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getNewFileName(CmsObject cms, String namePattern) throws CmsException {
+
+        String checkPattern = cms.getRequestContext().removeSiteRoot(namePattern);
+        String folderName = CmsResource.getFolderPath(checkPattern);
+
+        // must check ALL resources in folder because name doesn't care for type
+        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
+
+        // now create a list of all the file names
+        List<String> fileNames = new ArrayList<String>(resources.size());
+        for (CmsResource res : resources) {
+            fileNames.add(cms.getSitePath(res));
+        }
+
+        String checkFileName, checkTempFileName, number;
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+
+        int j = 0;
+        do {
+            number = I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(++j);
+            resolver.addMacro(I_CmsFileNameGenerator.MACRO_NUMBER, number);
+            // resolve macros in file name
+            checkFileName = resolver.resolveMacros(checkPattern);
+            // get name of the resolved temp file
+            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
+        } while (fileNames.contains(checkFileName) || fileNames.contains(checkTempFileName));
+
+        return checkFileName;
+    }
 }

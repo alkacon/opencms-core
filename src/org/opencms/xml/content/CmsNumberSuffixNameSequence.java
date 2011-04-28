@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsNumberSuffixNameSequence.java,v $
- * Date   : $Date: 2010/11/11 13:08:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.xml.content;
 
-import org.opencms.util.PrintfFormat;
+import org.opencms.loader.I_CmsFileNameGenerator;
 
 import java.util.Iterator;
 
@@ -40,7 +40,7 @@ import java.util.Iterator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0 
  */
@@ -77,10 +77,8 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
 
         String result = m_baseName;
         if (m_counter > 0) {
-            PrintfFormat fmt = new PrintfFormat("%0.6d");
-            String numberSuffix = fmt.sprintf(m_counter);
+            String numberSuffix = I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(m_counter);
             result = m_baseName + "_" + numberSuffix;
-
         }
         m_counter += 1;
         return result;
@@ -93,5 +91,4 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
 
         throw new UnsupportedOperationException();
     }
-
 }

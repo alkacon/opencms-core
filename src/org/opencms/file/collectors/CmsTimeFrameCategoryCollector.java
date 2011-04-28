@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2009/09/14 11:45:32 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -150,7 +150,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.3
  *
@@ -479,7 +479,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
      */
     public CmsTimeFrameCategoryCollector() {
 
-        super();
+        // NOOP
     }
 
     /**
@@ -488,15 +488,6 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     public List<String> getCollectorNames() {
 
         return new ArrayList<String>(COLLECTORS_LIST);
-    }
-
-    /**
-     * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateInFolder(org.opencms.file.CmsObject, org.opencms.file.collectors.CmsCollectorData)
-     */
-    @Override
-    protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
-
-        return super.getCreateInFolder(cms, data);
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/I_CmsUrlNameSequenceGenerator.java,v $
- * Date   : $Date: 2010/11/11 13:08:17 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsFileNameGenerator.java,v $
+ * Date   : $Date: 2011/04/28 13:51:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,31 +29,44 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.content;
+package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.PrintfFormat;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Iterator;
 
 /**
- * Interface for generating a sequence of URL names from an XML content value.<p>
- * 
- * Generally, the first URL name from this sequence which does not already exist for a different resource will be used
- * for the URL name mapping.<p>
+ * Provides methods to generate file names wither for the <code>urlName</code> mapping 
+ * or when using a "new" operation in the context of the direct edit interface.<p>
  * 
  * @author Georg Westenberger
+ * @author Alexander Kandzior
  * 
  * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsUrlNameSequenceGenerator {
+public interface I_CmsFileNameGenerator {
+
+    /** The "number" macro. */
+    public static final String MACRO_NUMBER = "number";
+
+    /** Format for file create parameter. */
+    public static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.5d");
 
     /**
      * Returns a sequence of URL name candidates for the given XML content value as an iterator.<p>
+     * 
+     * This is used by the <code>urlName</code> mapping of XML contents which enable SEO friendly URLs 
+     * automatically generated for example from the resource title.<p>
+     * 
+     * Usually the first URL name from this sequence which does not already exist for a different 
+     * resource will be used for the URL name mapping.<p>
      * 
      * @param cms the CMS context 
      * @param content the XML content 
@@ -69,4 +82,18 @@ public interface I_CmsUrlNameSequenceGenerator {
         CmsXmlContent content,
         I_CmsXmlContentValue value,
         CmsResource sibling) throws CmsException;
+
+    /**
+     * Generates a new file name based on the provided OpenCms user context and name pattern.<p>
+     * 
+     * Used by the collector API as well as the galleries introduced with OpenCms 8 (ADE).
+     * 
+     * @param cms the current OpenCms user context
+     * @param namePattern the  pattern to be used when generating the new resource name
+     * 
+     * @return a new resource name based on the provided OpenCms user context and name pattern
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    public abstract String getNewFileName(CmsObject cms, String namePattern) throws CmsException;
 }

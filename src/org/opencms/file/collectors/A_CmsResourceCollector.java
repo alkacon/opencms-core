@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/09/14 11:45:32 $
- * Version: $Revision: 1.16.2.2 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,14 +34,10 @@ package org.opencms.file.collectors;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.PrintfFormat;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.main.OpenCms;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +45,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -58,12 +54,6 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /** The template file separator string for creating a new resource in direct edit mode,
      *  can be used to append an explicit template file name in {@link #getCreateParam(CmsObject, String, String)}. */
     public static final String SEPARATOR_TEMPLATEFILE = "::";
-
-    /** The "number" macro. */
-    private static final String MACRO_NUMBER = "number";
-
-    /** Format for file create parameter. */
-    private static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.4d");
 
     /** The collector order of this collector. */
     protected int m_order;
@@ -228,33 +218,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      */
     protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
 
-        String foldername = CmsResource.getFolderPath(data.getFileName());
-
-        // must check ALL resources in folder because name doesn't care for type
-        List<CmsResource> resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
-
-        // now create a list of all resources that just contains the file names
-        List<String> result = new ArrayList<String>(resources.size());
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = resources.get(i);
-            result.add(resource.getRootPath());
-        }
-
-        String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
-        String checkFileName, checkTempFileName, number;
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-
-        int j = 0;
-        do {
-            number = NUMBER_FORMAT.sprintf(++j);
-            resolver.addMacro(MACRO_NUMBER, number);
-            // resolve macros in file name
-            checkFileName = resolver.resolveMacros(fileName);
-            // get name of the resolved temp file
-            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
-        } while (result.contains(checkFileName) || result.contains(checkTempFileName));
-
-        return cms.getRequestContext().removeSiteRoot(checkFileName);
+        return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, data.getFileName());
     }
 
     /**

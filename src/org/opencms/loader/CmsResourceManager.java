@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsDefaultUrlNameSequenceGenerator;
-import org.opencms.xml.content.I_CmsUrlNameSequenceGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,6 +237,9 @@ public class CmsResourceManager {
     /** The OpenCms map of configured MIME types. */
     private Map<String, String> m_mimeTypes;
 
+    /** The URL name generator for XML contents. */
+    private I_CmsFileNameGenerator m_nameGenerator;
+
     /** A list that contains all resource types added from the XML configuration. */
     private List<I_CmsResourceType> m_resourceTypesFromXml;
 
@@ -246,9 +248,6 @@ public class CmsResourceManager {
 
     /** The configured default type for folders when the resource type is missing. */
     private I_CmsResourceType m_restypeUnknownFolder;
-
-    /** The URL name generator for XML contents. */
-    private I_CmsUrlNameSequenceGenerator m_nameGenerator = new CmsDefaultUrlNameSequenceGenerator();
 
     /**
      * Creates a new instance for the resource manager, 
@@ -260,6 +259,7 @@ public class CmsResourceManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
+        m_nameGenerator = new CmsDefaultUrlNameSequenceGenerator();
         m_resourceTypesFromXml = new ArrayList<I_CmsResourceType>();
         m_loaders = new I_CmsResourceLoader[16];
         m_loaderList = new ArrayList<I_CmsResourceLoader>();
@@ -762,11 +762,11 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the URL name generator for XML contents.<p>
+     * Returns the name generator for XML content file names.<p>
      * 
-     * @return the URL name generator XML contents.
+     * @return the name generator for XML content file names.
      */
-    public I_CmsUrlNameSequenceGenerator getNameGenerator() {
+    public I_CmsFileNameGenerator getNameGenerator() {
 
         return m_nameGenerator;
     }
@@ -1070,7 +1070,7 @@ public class CmsResourceManager {
         }
         try {
             Class<?> cls = Class.forName(nameGeneratorClass);
-            m_nameGenerator = (I_CmsUrlNameSequenceGenerator)cls.newInstance();
+            m_nameGenerator = (I_CmsFileNameGenerator)cls.newInstance();
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

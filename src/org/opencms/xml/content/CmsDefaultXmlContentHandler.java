@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/26 14:29:53 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/04/28 13:51:19 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -103,7 +104,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -2505,7 +2506,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         CmsResource resource) throws CmsException {
 
         if (!CmsResource.isTemporaryFileName(resource.getRootPath())) {
-            I_CmsUrlNameSequenceGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
+            I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
             Iterator<String> nameSeq = nameGen.getUrlNameSequence(cms, content, value, resource);
             cms.writeUrlNameMapping(nameSeq, resource.getStructureId());
         }
