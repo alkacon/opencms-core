@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2011/03/02 14:24:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,11 +49,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageActionElement extends CmsGwtActionElement {
+
+    /** The module name. */
+    public static final String MODULE_NAME = "containerpage";
 
     /** The current container page data. */
     private CmsCntPageData m_cntPageData;
@@ -96,6 +99,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForContainerpage());
         sb.append(export());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/shared/rpc/Attic/I_CmsUploadService.java,v $
- * Date   : $Date: 2011/03/07 09:35:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,13 @@ import org.opencms.gwt.CmsRpcException;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * Handles all RPC services related to the upload dialog.<p>
  * 
  * @author Rudiger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,7 +53,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService
  * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.ade.upload.CmsUploadService.gwt")
 public interface I_CmsUploadService extends RemoteService {
 
     /**

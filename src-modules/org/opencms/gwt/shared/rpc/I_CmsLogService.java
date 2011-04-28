@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsLogService.java,v $
- * Date   : $Date: 2010/03/09 10:32:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,13 @@
 package org.opencms.gwt.shared.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * Handles client side logging.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -47,7 +46,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @see org.opencms.gwt.shared.rpc.I_CmsLogService
  * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.gwt.CmsLogService.gwt")
 public interface I_CmsLogService extends RemoteService {
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadActionElement.java,v $
- * Date   : $Date: 2011/03/02 14:24:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 19:41:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -80,6 +80,9 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
             return super.computeCurrentFolder();
         }
     }
+
+    /** The module name. */
+    public static final String MODULE_NAME = "upload";
 
     private CmsUploadData m_uploadData;
 
@@ -120,7 +123,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(exportTargetFolder());
         sb.append(exportCloseLink());
-
+        sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
 

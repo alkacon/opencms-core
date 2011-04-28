@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2011/04/21 12:53:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,11 @@ import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -60,7 +63,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  * 
@@ -255,6 +258,10 @@ public class CmsPublishDialog extends CmsPopup {
 
         if (SERVICE == null) {
             SERVICE = GWT.create(I_CmsPublishService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.publish.CmsPublishService.gwt");
+            ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;
     }

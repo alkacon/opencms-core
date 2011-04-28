@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2011/02/22 09:22:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,11 +49,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsSitemapActionElement extends CmsGwtActionElement {
+
+    /** The module name. */
+    public static final String MODULE_NAME = "sitemap";
 
     /** The current sitemap data. */
     private CmsSitemapData m_sitemapData;
@@ -96,6 +99,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForSitemap());
+        sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
 

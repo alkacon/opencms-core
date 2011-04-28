@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/Attic/CmsToolbarDirectEditProvider.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 19:42:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.ade.editprovider;
 
 import org.opencms.ade.publish.CmsPublishActionElement;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -49,11 +47,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider {
+
+    /** The module name. */
+    public static final String MODULE_NAME = "editprovider";
 
     /**
      * Creates a new instance of this direct edit provider.<p>
@@ -76,16 +77,12 @@ public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider 
      */
     public String getIncludes(PageContext context, CmsDirectEditParams params) throws Exception {
 
-        String contextPath = OpenCms.getSystemInfo().getOpenCmsContext();
-        String vfsPath = "/system/modules/org.opencms.ade.editprovider/resources/resources.nocache.js";
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(String.format("<script type=\"text/javascript\" src=\"%1$s\"></script>", CmsStringUtil.joinPaths(
-            contextPath,
-            vfsPath)));
         CmsPublishActionElement actionElement = new CmsPublishActionElement(
             context,
             (HttpServletRequest)context.getRequest(),
             (HttpServletResponse)context.getResponse());
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(actionElement.createNoCacheScript(MODULE_NAME));
         String exportedData = actionElement.exportAll();
         buffer.append(exportedData);
         return buffer.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsService.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.util.CmsUUID;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * A service interface for retrieving information about the VFS tree.<p>
@@ -49,11 +48,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-@RemoteServiceRelativePath("org.opencms.gwt.CmsVfsService.gwt")
 public interface I_CmsVfsService extends RemoteService {
 
     /**

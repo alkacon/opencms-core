@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewController.java,v $
- * Date   : $Date: 2011/03/10 08:47:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,13 @@ package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.util.CmsStringUtil;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Preview dialog controller.<p>
@@ -43,7 +50,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -51,6 +58,9 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
+
+    /** The preview service. */
+    private I_CmsPreviewServiceAsync m_previewService;
 
     /**
      * Selects the resource.<p>
@@ -111,6 +121,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         getHandler().removePreview();
         m_infoBean = null;
+        m_previewService = null;
     }
 
     /**
@@ -132,5 +143,22 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         m_infoBean = resourceInfo;
         getHandler().showData(resourceInfo);
+    }
+
+    /**
+     * Returns the preview service.<p>
+     * 
+     * @return the preview service
+     */
+    protected I_CmsPreviewServiceAsync getService() {
+
+        if (m_previewService == null) {
+            m_previewService = GWT.create(I_CmsPreviewService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.galleries.CmsPreviewService.gwt");
+            ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
+        }
+        return m_previewService;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,13 +42,13 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
@@ -69,6 +69,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Gallery dialog controller.<p>
@@ -79,7 +80,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  */
@@ -730,6 +731,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_gallerySvc == null) {
             m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.galleries.CmsGalleryService.gwt");
+            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
         }
         return m_gallerySvc;
     }
@@ -742,7 +747,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     protected I_CmsVfsServiceAsync getVfsService() {
 
         if (m_vfsService == null) {
-            m_vfsService = GWT.create(I_CmsVfsService.class);
+            m_vfsService = CmsCoreProvider.getVfsService();
         }
         return m_vfsService;
     }

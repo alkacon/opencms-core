@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2011/04/26 14:30:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,12 +55,16 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
 public class CmsGalleryActionElement extends CmsGwtActionElement {
 
+    /** The module name. */
+    public static final String MODULE_NAME = "galleries";
+
+    /** The gallery mode. */
     private GalleryMode m_galleryMode;
 
     /**
@@ -101,6 +105,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(exportCloseLink());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
 

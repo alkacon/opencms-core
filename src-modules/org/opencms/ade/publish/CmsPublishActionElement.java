@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishActionElement.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,14 @@ import javax.servlet.jsp.PageContext;
 /**
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsPublishActionElement extends CmsGwtActionElement {
+
+    /** The module name. */
+    public static final String MODULE_NAME = "publish";
 
     /**
      * Constructor.<p>
@@ -78,6 +81,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(export());
+        sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
 

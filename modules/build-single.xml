@@ -246,7 +246,7 @@
 						<property name="module.gwt.bootstrap" value="${module.gwt.rename}" />
 					</else>
 				</if>
-				<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.bootstrap}" />
+				<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/resources/${module.gwt.bootstrap}" />
 			</then>
 		</if>
 
@@ -396,7 +396,7 @@
 									<arg value="-extra" />
 									<arg file="${opencms.output}/gwt/extra/" />
 									<arg value="-war" />
-									<arg file="${module.input.res}/system/modules/${module.name}" />
+						  			<arg file="${module.input.res}/system/modules/${module.name}/resources" />
 									<arg value="${module.gwt}" />
 									<classpath>
 										<fileset dir="${opencms.input.libs.runtime}">

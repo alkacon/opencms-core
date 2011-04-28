@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/04/21 12:53:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,6 +85,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -96,7 +97,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -350,7 +351,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     private CmsUploadButton m_uploadButton;
 
     /** The upload service instance. */
-    private I_CmsUploadServiceAsync m_uploadService = GWT.create(I_CmsUploadService.class);
+    private I_CmsUploadServiceAsync m_uploadService;
 
     /**
      * Default constructor.<p>
@@ -761,6 +762,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      */
     protected I_CmsUploadServiceAsync getUploadService() {
 
+        if (m_uploadService == null) {
+            m_uploadService = GWT.create(I_CmsUploadService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.upload.CmsUploadService.gwt");
+            ((ServiceDefTarget)m_uploadService).setServiceEntryPoint(serviceUrl);
+        }
         return m_uploadService;
     }
 

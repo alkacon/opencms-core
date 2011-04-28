@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/04/28 19:42:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,16 +37,15 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * Provides general core services.<p>
@@ -54,7 +53,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,7 +61,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreService
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.gwt.CmsCoreService.gwt")
 public interface I_CmsCoreService extends RemoteService {
 
     /** A constant that signals that we are in the container page context. */

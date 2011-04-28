@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/04/28 19:42:43 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 
@@ -80,6 +79,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.0
  */
@@ -1312,6 +1312,10 @@ public final class CmsContainerpageController {
 
         if (m_containerpageService == null) {
             m_containerpageService = GWT.create(I_CmsContainerpageService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.containerpage.CmsContainerpageService.gwt");
+            ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
         }
         return m_containerpageService;
     }
@@ -1324,7 +1328,7 @@ public final class CmsContainerpageController {
     protected I_CmsCoreServiceAsync getCoreService() {
 
         if (m_coreSvc == null) {
-            m_coreSvc = GWT.create(I_CmsCoreService.class);
+            m_coreSvc = CmsCoreProvider.getService();
         }
         return m_coreSvc;
     }

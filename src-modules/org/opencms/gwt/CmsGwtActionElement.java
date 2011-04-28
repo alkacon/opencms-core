@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2011/03/21 09:44:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -56,7 +57,7 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +85,20 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public CmsGwtActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+    }
+
+    /**
+     * Returns the script tag for the "*.nocache.js".<p>
+     * 
+     * @param moduleName the module name to get the script tag for
+     * 
+     * @return the <code>"&lt;script&gt;"</code> tag for the "*.nocache.js".<p>
+     */
+    public String createNoCacheScript(String moduleName) {
+
+        return "<script type=\"text/javascript\" src=\""
+            + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js")
+            + "\"></script>";
     }
 
     /**

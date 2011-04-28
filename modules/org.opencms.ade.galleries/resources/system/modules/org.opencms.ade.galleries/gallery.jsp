@@ -12,7 +12,6 @@
     	zoom: 1; 
     }
     </style>
-    <script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.galleries/resources/resources.nocache.js</cms:link>"></script>
     <% if (gallery.isEditorMode()){ /* opened from rich text editor (FCKEditor, CKEditor...) include necessary scripts */ %>
     <script type="text/javascript" src="<cms:link>/system/workplace/editors/fckeditor/plugins/galleries/integrator.js</cms:link>"></script>
     <% } else if (gallery.isWidgetMode()){ /* opened as widget include necessary scripts */ %>

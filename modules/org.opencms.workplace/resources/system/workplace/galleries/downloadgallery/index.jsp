@@ -75,7 +75,6 @@ var uploadVariant = '<%=uploadVariant %>';
 	if (uploadVariant.equals("gwt")) {
 	    CmsUploadActionElement upload = new CmsUploadActionElement(pageContext, request, response);
 	    %>
-	    	<script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.upload/resources/resources.nocache.js</cms:link>"></script>
 	    	<%= upload.exportButton() %>
 	    <%
 	}

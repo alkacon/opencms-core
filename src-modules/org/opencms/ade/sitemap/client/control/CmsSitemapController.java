@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -84,13 +83,14 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Sitemap editor controller.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 8.0.0
  */
@@ -834,6 +834,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         if (m_service == null) {
             m_service = GWT.create(I_CmsSitemapService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.sitemap.CmsVfsSitemapService.gwt");
+            ((ServiceDefTarget)m_service).setServiceEntryPoint(serviceUrl);
         }
         return m_service;
     }
@@ -1225,7 +1229,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
     protected I_CmsVfsServiceAsync getVfsService() {
 
         if (m_vfsService == null) {
-            m_vfsService = GWT.create(I_CmsVfsService.class);
+            m_vfsService = CmsCoreProvider.getVfsService();
         }
         return m_vfsService;
     }

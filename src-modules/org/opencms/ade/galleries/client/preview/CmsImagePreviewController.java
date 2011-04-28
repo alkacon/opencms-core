@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2011/04/01 10:31:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/28 19:42:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,15 +33,11 @@ package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
-import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * Image preview dialog controller.<p>
@@ -50,15 +46,13 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
 public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageInfoBean> {
 
-    /** The preview service. */
-    private I_CmsPreviewServiceAsync m_previewService;
-
+    /** The image preview handler. */
     private CmsImagePreviewHandler m_handler;
 
     /**
@@ -101,27 +95,12 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#setResource(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode)
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
      */
     @Override
-    public void setResource(GalleryMode galleryMode) {
+    public I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
 
-        switch (galleryMode) {
-            case widget:
-                CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath() + m_handler.getScaleParam());
-                break;
-            case editor:
-                CmsPreviewUtil.setImage(
-                    CmsCoreProvider.get().link(m_infoBean.getResourcePath() + m_handler.getScaleParam()),
-                    m_handler.getImageAttributes());
-                break;
-            case sitemap:
-            case ade:
-            case view:
-            default:
-                //nothing to do here, should not be called
-                break;
-        }
+        return m_handler;
     }
 
     /**
@@ -155,6 +134,16 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#removePreview()
+     */
+    @Override
+    public void removePreview() {
+
+        super.removePreview();
+        m_handler = null;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#saveProperties(java.util.Map)
      */
     public void saveProperties(final Map<String, String> properties) {
@@ -184,24 +173,26 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     }
 
     /**
-     * Returns the preview service.<p>
-     * 
-     * @return the preview service
-     */
-    protected I_CmsPreviewServiceAsync getService() {
-
-        if (m_previewService == null) {
-            m_previewService = GWT.create(I_CmsPreviewService.class);
-        }
-        return m_previewService;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#setResource(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode)
      */
     @Override
-    public I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
+    public void setResource(GalleryMode galleryMode) {
 
-        return m_handler;
+        switch (galleryMode) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath() + m_handler.getScaleParam());
+                break;
+            case editor:
+                CmsPreviewUtil.setImage(
+                    CmsCoreProvider.get().link(m_infoBean.getResourcePath() + m_handler.getScaleParam()),
+                    m_handler.getImageAttributes());
+                break;
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
     }
 }

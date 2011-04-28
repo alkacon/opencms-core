@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsPreviewService.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/28 19:42:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,14 +38,13 @@ import org.opencms.gwt.CmsRpcException;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * Handles the common RPC services related to the gallery preview dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -53,7 +52,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.ade.galleries.CmsPreviewService.gwt")
 public interface I_CmsPreviewService extends RemoteService {
 
     /**

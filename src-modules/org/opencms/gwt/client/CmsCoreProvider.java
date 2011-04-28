@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2011/04/01 10:27:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/28 19:42:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,17 +40,19 @@ import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Client side core data provider.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -107,6 +109,8 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         if (SERVICE == null) {
             SERVICE = GWT.create(I_CmsCoreService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(get().getContext(), "org.opencms.gwt.CmsCoreService.gwt");
+            ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;
     }
@@ -120,6 +124,8 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         if (VFS_SERVICE == null) {
             VFS_SERVICE = GWT.create(I_CmsVfsService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(get().getContext(), "org.opencms.gwt.CmsVfsService.gwt");
+            ((ServiceDefTarget)VFS_SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return VFS_SERVICE;
     }
