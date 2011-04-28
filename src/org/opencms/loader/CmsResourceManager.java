@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2011/04/28 13:51:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/28 14:27:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,6 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.CmsDefaultUrlNameSequenceGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,7 +258,6 @@ public class CmsResourceManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
-        m_nameGenerator = new CmsDefaultUrlNameSequenceGenerator();
         m_resourceTypesFromXml = new ArrayList<I_CmsResourceType>();
         m_loaders = new I_CmsResourceLoader[16];
         m_loaderList = new ArrayList<I_CmsResourceLoader>();
@@ -1059,21 +1057,16 @@ public class CmsResourceManager {
     /**
      * Configures the URL name generator for XML contents.<p>
      * 
-     * @param nameGeneratorClass the class name for the URL name generator 
+     * @param nameGenerator the configured name generator class
      *
      * @throws CmsConfigurationException if something goes wrong
      */
-    public void setNameGeneratorClass(String nameGeneratorClass) throws CmsConfigurationException {
+    public void setNameGenerator(I_CmsFileNameGenerator nameGenerator) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
-        try {
-            Class<?> cls = Class.forName(nameGeneratorClass);
-            m_nameGenerator = (I_CmsFileNameGenerator)cls.newInstance();
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
+        m_nameGenerator = nameGenerator;
     }
 
     /**

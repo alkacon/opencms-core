@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/28 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.content.CmsDefaultFileNameGenerator;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -488,8 +489,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
 
         // add the name generator 
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, "setNameGeneratorClass", 1);
-        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, 0, A_CLASS);
+        digester.addObjectCreate(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR,
+            CmsDefaultFileNameGenerator.class);
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, "setNameGenerator");
 
         // add MIME type rules
         digester.addCallMethod(

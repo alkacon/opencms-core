@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsFileNameGenerator.java,v $
- * Date   : $Date: 2011/04/28 13:51:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/28 14:27:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,13 +41,13 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.Iterator;
 
 /**
- * Provides methods to generate file names wither for the <code>urlName</code> mapping 
+ * Provides methods to generate file names either for the <code>urlName</code> mapping 
  * or when using a "new" operation in the context of the direct edit interface.<p>
  * 
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

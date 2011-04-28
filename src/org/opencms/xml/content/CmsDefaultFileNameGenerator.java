@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsDefaultUrlNameSequenceGenerator.java,v $
- * Date   : $Date: 2011/04/28 13:51:19 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsDefaultFileNameGenerator.java,v $
+ * Date   : $Date: 2011/04/28 14:27:27 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,15 +46,16 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The default class used for generating sequences of URL name candidates from an XML content.<p>
+ * The default class used for generating file names either for the <code>urlName</code> mapping 
+ * or when using a "new" operation in the context of the direct edit interface.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsDefaultUrlNameSequenceGenerator implements I_CmsFileNameGenerator {
+public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case 
