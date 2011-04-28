@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/04/28 10:15:36 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -322,6 +322,7 @@ public class CmsElementUtil {
             }
             m_standardContext.setContainer(containerBean);
             m_standardContext.setElement(element);
+            m_standardContext.setDndMode(true);
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();

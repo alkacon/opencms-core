@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/27 16:42:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/28 10:15:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0
  */
@@ -75,6 +75,9 @@ public final class CmsJspStandardContextBean {
 
     /** The current detail content id if available. */
     private CmsUUID m_detailContentId;
+
+    /** Flag to indicate if in drag and drop mode. */
+    private boolean m_dndMode;
 
     /** The currently rendered element. */
     private CmsContainerElementBean m_element;
@@ -218,6 +221,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the flag to indicate if in drag and drop mode.<p>
+     *
+     * @return <code>true</code> if in drag and drop mode
+     */
+    public boolean isDndMode() {
+
+        return m_dndMode;
+    }
+
+    /**
      * Sets the container the currently rendered element is part of.<p>
      *
      * @param container the container the currently rendered element is part of
@@ -225,6 +238,16 @@ public final class CmsJspStandardContextBean {
     public void setContainer(CmsContainerBean container) {
 
         m_container = container;
+    }
+
+    /**
+     * Sets the flag to indicate if in drag and drop mode.<p>
+     *
+     * @param dndMode <code>true</code> if in drag and drop mode
+     */
+    public void setDndMode(boolean dndMode) {
+
+        m_dndMode = dndMode;
     }
 
     /**
