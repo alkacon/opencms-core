@@ -36,7 +36,7 @@
 
 .toolTip{
 	position: absolute;
-	z-index: value("constants.css.zIndexInline");
+	z-index: value("constants.css.zIndexDND");
 	border: 1px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorMenu");
 	padding: 4px;
