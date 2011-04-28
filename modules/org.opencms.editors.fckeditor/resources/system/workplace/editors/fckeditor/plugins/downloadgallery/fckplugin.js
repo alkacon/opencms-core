@@ -38,8 +38,8 @@ dialogCommand.prototype.Execute = function() {
 			"OcmsDownloadGallery",
 			"<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />",
 			downloadGalleryDialogUrl(),
-	        685,
-			566
+			685,
+			573
 		);
 	command.Execute();
 }
