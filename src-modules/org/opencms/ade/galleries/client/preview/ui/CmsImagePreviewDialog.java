@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,8 +50,9 @@ import com.google.gwt.user.client.ui.Image;
  * Provides a widget for the image preview dialog .<p>
  *  
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -183,17 +184,17 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
             }
         });
         m_propertiesTab = propTab;
-        m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
-
-        m_imageFormatTab = new CmsImageFormatsTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler, null);
-        m_tabbedPanel.add(m_imageFormatTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
-
+        m_tabbedPanel.add(m_propertiesTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
+        if ((m_galleryMode == GalleryMode.editor) || (m_galleryMode == GalleryMode.widget)) {
+            m_imageFormatTab = new CmsImageFormatsTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler, null);
+            m_tabbedPanel.add(m_imageFormatTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
+        }
         if (getGalleryMode() == GalleryMode.editor) {
             m_imageEditorFormatsTab = new CmsImageEditorTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-            m_tabbedPanel.add(m_imageEditorFormatsTab, "Editor Formats");
+            m_tabbedPanel.add(m_imageEditorFormatsTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEOPTIONS_0));
 
             m_imageAdvancedTab = new CmsImageAdvancedTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-            m_tabbedPanel.add(m_imageAdvancedTab, "Advanced");
+            m_tabbedPanel.add(m_imageAdvancedTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEADVANCED_0));
         }
         m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
         m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));

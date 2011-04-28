@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,8 +62,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Delegates the actions of the gallery controller to the gallery dialog.
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
 
@@ -205,7 +206,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         m_mode = dialogBean.getMode();
 
-        if (dialogBean.getMode().equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
+        if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
             RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
             panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
             panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
@@ -224,9 +225,14 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             panel.add(closeButton);
             panel.setWidth("660px");
             panel.getElement().getStyle().setProperty("margin", "20px auto");
+        } else if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
+            RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
+            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+            panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
         }
 
-        m_galleryDialog.fillTabs(dialogBean.getMode().getTabs(), controller);
+        m_galleryDialog.fillTabs(m_mode.getTabs(), controller);
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
         }

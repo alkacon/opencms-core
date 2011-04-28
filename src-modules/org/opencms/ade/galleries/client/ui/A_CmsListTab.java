@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -69,7 +69,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsListTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
+    interface I_CmsListTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
         // GWT interface, nothing to do here
     }
 
@@ -80,7 +80,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     private static final String TM_GALLERY_SORT = "gallerySort";
 
     /** The ui-binder instance for this class. */
-
     private static I_CmsListTabUiBinder uiBinder = GWT.create(I_CmsListTabUiBinder.class);
 
     /** A label for displaying additional information about the tab. */
@@ -143,11 +142,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         m_list.add(m_scrollList);
     }
 
-    // TODO: add the search parameter display button
-    //    /** The full text search parameter panel. */
-    //    @UiField
-    //    protected Panel m_text;
-
     /**
      * Returns the list.<p>
      *
@@ -208,7 +202,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
         return new CmsList<I_CmsListItem>();
-
     }
 
     /**
@@ -235,5 +228,4 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * @return list of sort order value/text pairs
      */
     protected abstract List<CmsPair<String, String>> getSortList();
-
 }

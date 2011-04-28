@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
@@ -50,8 +49,9 @@ import com.google.gwt.user.client.ui.Widget;
  * The widget to display the properties of the selected resource.<p>
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -119,16 +119,6 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
             }
         }
         setChanged(false);
-    }
-
-    /**
-     * Returns the tab name.<p>
-     * 
-     * @return the tab name
-     */
-    public String getTabName() {
-
-        return Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0);
     }
 
     /**

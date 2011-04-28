@@ -1,3 +1,28 @@
+div.editorGallery {}
+@if user.agent gecko1_8 gecko{
+	div.editorGallery{
+		-moz-box-shadow: none;
+		-moz-border-radius: 0;
+	}
+} @elif user.agent safari {
+	div.editorGallery{
+		-webkit-box-shadow: none;
+		-webkit-border-radius: 0;
+	}
+} @elif user.agent opera {
+	div.editorGallery{
+		box-shadow: none;
+		border-radius: 0;
+	}
+} @elif user.agent ie8 {
+	div.editorGallery{
+		-ms-filter: none;
+		border-radius: 0; 
+	}
+} @elif user.agent ie6 {
+	div.editorGallery{
+	}
+}
 .galleryBody {
 	margin:0px;
 	padding:0px;

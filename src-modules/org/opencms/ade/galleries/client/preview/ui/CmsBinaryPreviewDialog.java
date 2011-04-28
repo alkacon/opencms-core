@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsBinaryPreviewDialog.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsBinaryPreviewHandler;
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
+import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
@@ -44,8 +45,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
  *  
  * @author Polina Smagina
  * @author Tobias Herrmann
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -117,7 +119,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
             }
         });
         m_propertiesTab = propTab;
-        m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
+        m_tabbedPanel.add(m_propertiesTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
     }
 
     /**

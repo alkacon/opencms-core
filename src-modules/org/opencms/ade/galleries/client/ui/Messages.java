@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/04/28 10:44:02 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -129,10 +129,16 @@ public final class Messages {
     public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEADVANCED_0 = "GUI_PREVIEW_TAB_IMAGEADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TAB_IMAGEFORMAT_0 = "GUI_PREVIEW_TAB_IMAGEFORMAT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TAB_IMAGEINFOS_0 = "GUI_PREVIEW_TAB_IMAGEINFOS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEOPTIONS_0 = "GUI_PREVIEW_TAB_IMAGEOPTIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
