@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2011/04/11 12:42:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/04/28 14:56:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -297,6 +297,9 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The registered drop targets. */
     private List<I_CmsDropTarget> m_targets;
 
+    /** The current animation. */
+    private CmsMoveAnimation m_currentAnimation;
+
     /** 
      * Constructor.<p> 
      * 
@@ -463,8 +466,9 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public void onMouseDown(MouseDownEvent event) {
 
-        if ((event.getNativeButton() != NativeEvent.BUTTON_LEFT) || m_dragging) {
+        if ((event.getNativeButton() != NativeEvent.BUTTON_LEFT) || m_dragging || (m_currentAnimation != null)) {
             // only act on left button down, ignore right click
+            // also ignore if the dragging flag is still true or an animation is still running
             return;
         }
         Object source = event.getSource();
@@ -632,8 +636,8 @@ public class CmsDNDHandler implements MouseDownHandler {
         int endLeft = m_startLeft - parentElement.getAbsoluteLeft();
         int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
         int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
-        CmsMoveAnimation ani = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
-        ani.run(300);
+        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
+        m_currentAnimation.run(300);
     }
 
     /**
@@ -673,8 +677,9 @@ public class CmsDNDHandler implements MouseDownHandler {
         int endLeft = m_placeholder.getAbsoluteLeft() - parentElement.getAbsoluteLeft();
         int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
         int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
-        CmsMoveAnimation ani = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
-        ani.run(300);
+        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
+        m_currentAnimation.run(300);
+
     }
 
     /**
@@ -694,6 +699,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_draggable = null;
         Document.get().getBody().removeClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        m_currentAnimation = null;
     }
 
     /**
