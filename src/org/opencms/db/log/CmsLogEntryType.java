@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntryType.java,v $
- * Date   : $Date: 2010/08/11 06:47:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/28 06:06:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,8 @@ package org.opencms.db.log;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
 
 import java.util.Locale;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Wrapper class for the different types of log entries.<p>
@@ -64,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -119,11 +116,7 @@ public enum CmsLogEntryType {
     /** Resource set type entry. */
     RESOURCE_TYPE(34, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
     /** Resource undeleted entry. */
-    RESOURCE_UNDELETED(52, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
-    /** User login failed entry. */
-    USER_LOGIN_FAILED(2, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2),
-    /** User login successful entry. */
-    USER_LOGIN_SUCCESSFUL(1, LogLevel.TRACE, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2);
+    RESOURCE_UNDELETED(52, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1);
 
     /**
      * Log level.<p>
@@ -144,17 +137,11 @@ public enum CmsLogEntryType {
         WARN;
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLogEntryType.class);
-
     /** Localization key for detail formatting. */
     private String m_detailKey;
 
     /** Internal representation. */
     private final int m_id;
-
-    /** The activation level. */
-    private final LogLevel m_logLevel;
 
     /** Flag to indicate if this type generates an entry in the user's publish list. */
     private boolean m_toPubList;
@@ -170,7 +157,6 @@ public enum CmsLogEntryType {
     private CmsLogEntryType(int id, LogLevel logLevel, boolean toPubList, String detailKey) {
 
         m_id = id;
-        m_logLevel = logLevel;
         m_toPubList = toPubList;
         m_detailKey = detailKey;
     }
@@ -250,22 +236,7 @@ public enum CmsLogEntryType {
      */
     public boolean isActive() {
 
-        switch (m_logLevel) {
-            case TRACE:
-                return LOG.isTraceEnabled();
-            case DEBUG:
-                return LOG.isDebugEnabled();
-            case INFO:
-                return LOG.isInfoEnabled();
-            case WARN:
-                return LOG.isWarnEnabled();
-            case ERROR:
-                return LOG.isErrorEnabled();
-            case FATAL:
-                return true;
-            default:
-                return false;
-        }
+        return true;
     }
 
     /**

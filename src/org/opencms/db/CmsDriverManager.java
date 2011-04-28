@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/04/27 12:56:57 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/28 06:06:57 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5328,15 +5328,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // add an invalid login attempt for this user to the storage
                     OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
                 }
-                // log it
-                log(dbc, new CmsLogEntry(
-                    user.getId(),
-                    System.currentTimeMillis(),
-                    null,
-                    CmsLogEntryType.USER_LOGIN_FAILED,
-                    new String[] {user.getName(), remoteAddress}), false);
-                // check if this account is temporarily disabled because of too many invalid login attempts
-                // this will throw an exception if the test fails
                 OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_2,
@@ -5352,13 +5343,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         return loginUser(dbc, parentOu + uName, password, remoteAddress);
                     }
                 }
-                // log it
-                log(dbc, new CmsLogEntry(
-                    CmsUUID.getNullUUID(),
-                    System.currentTimeMillis(),
-                    null,
-                    CmsLogEntryType.USER_LOGIN_FAILED,
-                    new String[] {userName, remoteAddress}), false);
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2,
                     userName,
@@ -5367,13 +5351,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // check if the "enabled" flag is set for the user
         if (!newUser.isEnabled()) {
-            // log it
-            log(dbc, new CmsLogEntry(
-                newUser.getId(),
-                System.currentTimeMillis(),
-                null,
-                CmsLogEntryType.USER_LOGIN_FAILED,
-                new String[] {newUser.getName(), remoteAddress}), false);
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2,
@@ -5402,14 +5379,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // write the changed user object back to the user driver
         getUserDriver(dbc).writeUser(dbc, newUser);
-
-        // log it
-        log(dbc, new CmsLogEntry(
-            newUser.getId(),
-            System.currentTimeMillis(),
-            null,
-            CmsLogEntryType.USER_LOGIN_SUCCESSFUL,
-            new String[] {newUser.getName(), remoteAddress}), false);
 
         // update cache
         m_monitor.cacheUser(newUser);
