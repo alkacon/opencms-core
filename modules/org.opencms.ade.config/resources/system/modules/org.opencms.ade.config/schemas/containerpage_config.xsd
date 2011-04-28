@@ -1,7 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
     
     <xsd:element name="ADETypeConfigurations" type="OpenCmsADETypeConfigurations" />
 
@@ -21,6 +21,9 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<relations>
+				<relation element="ADEType/Source" type="strong" invalidate="parent" />
+			</relations>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

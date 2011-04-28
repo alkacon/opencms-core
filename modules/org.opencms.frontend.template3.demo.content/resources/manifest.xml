@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.9.2</opencms_version>
+		<opencms_version>8.0.0</opencms_version>
 		<createdate>Mon, 17 Jan 2011 07:53:22 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -14,16 +14,16 @@
 		<group>Template 3</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template 3 Demo Site.]]></description>
-		<version>7.5.14</version>
+		<version>8.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.template3.demo" version="7.6"/>
-			<dependency name="org.opencms.frontend.template3" version="7.6"/>
-			<dependency name="org.opencms.ade.sitemap" version="7.6"/>
+			<dependency name="org.opencms.frontend.template3.demo" version="8.0.0"/>
+			<dependency name="org.opencms.frontend.template3" version="8.0.0"/>
+			<dependency name="org.opencms.ade.sitemap" version="8.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>

@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.9.2</opencms_version>
+		<opencms_version>8.0.0</opencms_version>
 		<createdate>Tue, 20 Oct 2009 12:50:52 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -14,14 +14,14 @@
 		<group>Template 3</group>
 		<class/>
 		<description/>
-		<version>7.9.2</version>
+		<version>8.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.template3" version="7.9"/>
+			<dependency name="org.opencms.frontend.template3" version="8.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.template3.demo/classes/" destination="WEB-INF/classes/"/>

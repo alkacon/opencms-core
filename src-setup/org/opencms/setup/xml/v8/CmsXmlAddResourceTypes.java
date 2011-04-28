@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddResourceTypes.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/28 15:02:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -111,7 +111,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     document,
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
-                    "/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd");
+                    "/system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(2))) {
                 createResourceType(document, xpath, "cntpagegallery", CmsResourceTypeFolderExtended.class, 16);
                 // parameters
@@ -157,7 +157,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     document,
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
-                    "/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd");
+                    "/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(6))) {
                 createResourceType(document, xpath, "xmlredirect", CmsResourceTypeXmlContent.class, 15);
                 //NOTE: this only works because it's a single property. If we wanted to write multiple properties, we

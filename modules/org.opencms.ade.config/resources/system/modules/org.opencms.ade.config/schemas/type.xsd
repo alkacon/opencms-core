@@ -1,7 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type_destination.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type_formatter.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_destination.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_formatter.xsd" />
  
     <xsd:element name="ADETypes" type="OpenCmsADETypes" />
     
