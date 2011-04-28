@@ -28,7 +28,7 @@
 			<resourcebundle name="org.opencms.frontend.template3.demo.workplace"/>
 			<layouts>
 				<layout element="Text" widget="HtmlWidget" configuration="height:500px,link,formatselect,source,imagegallery,downloadgallery"/>
-				<layout element="DownloadGallery" widget="AdvancedDownloadGalleryWidget" configuration="{downloadgallery:{type:'gallery',startup:'/demo_t3/documents/'}}"/>
+				<layout element="DownloadGallery" widget="DownloadGalleryWidget" configuration="{downloadgallery:{type:'gallery',startup:'/demo_t3/documents/'}}"/>
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
