@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2011/04/28 14:27:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/04/29 14:46:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -766,6 +766,9 @@ public class CmsResourceManager {
      */
     public I_CmsFileNameGenerator getNameGenerator() {
 
+        if (m_nameGenerator == null) {
+            m_nameGenerator = new CmsDefaultFileNameGenerator();
+        }
         return m_nameGenerator;
     }
 
