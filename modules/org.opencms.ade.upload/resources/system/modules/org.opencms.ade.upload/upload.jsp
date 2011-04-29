@@ -1,5 +1,4 @@
-<%@page import="org.opencms.ade.upload.CmsUploadActionElement"%><%--
---%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+<%@page import="org.opencms.ade.upload.CmsUploadActionElement"%><%
   CmsUploadActionElement upload = new CmsUploadActionElement(pageContext, request, response);
 %><!DOCTYPE html>
 <html>

@@ -1,5 +1,4 @@
-<%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/plain" %><%@
- taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+<%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/plain" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
 %><!DOCTYPE HTML>
 <html style="height:100%;">
