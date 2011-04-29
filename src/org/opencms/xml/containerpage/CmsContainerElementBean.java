@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/04/20 07:07:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/04/29 16:16:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0
  */
@@ -201,8 +201,9 @@ public class CmsContainerElementBean {
 
         if (m_resource == null) {
             m_resource = cms.readResource(getId());
-            m_sitePath = cms.getSitePath(m_resource);
         }
+        // redo on every init call to ensure sitepath is calculated for current site
+        m_sitePath = cms.getSitePath(m_resource);
     }
 
     /**
