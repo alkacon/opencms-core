@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/29 15:36:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/29 15:49:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0
  */
@@ -155,10 +155,10 @@ public final class CmsJspStandardContextBean {
     public CmsJspStandardContextBean createCopy() {
 
         CmsJspStandardContextBean result = new CmsJspStandardContextBean();
-        result.m_container = m_container;
-        result.m_detailContentResource = m_detailContentResource;
-        result.m_element = m_element;
-        result.m_page = m_page;
+        result.m_container = getContainer();
+        result.m_detailContentResource = new CmsResource(m_detailContentResource);
+        result.m_element = getElement();
+        result.m_page = getPage();
         return result;
     }
 

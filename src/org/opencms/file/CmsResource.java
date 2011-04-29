@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2011/02/22 15:25:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/29 15:49:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -399,6 +399,38 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
 
     /** The version number of this resource. */
     private int m_version;
+
+    /**
+     * Creates a new CmsRecource object based on an existing resource.<p>
+     * 
+     * This is useful in case you want to create a copy of a resource and 
+     * really make sure won't get a {@link CmsFile} or {@link CmsFolder}, which may happen 
+     * if you just call {@link #clone()}.<p>
+     * 
+     * @param original the original resource to use as template
+     */
+    public CmsResource(CmsResource original) {
+
+        this(
+            original.m_structureId,
+            original.m_resourceId,
+            original.m_rootPath,
+            original.m_typeId,
+            original.m_isFolder,
+            original.m_flags,
+            original.m_projectLastModified,
+            original.m_state,
+            original.m_dateCreated,
+            original.m_userCreated,
+            original.m_dateLastModified,
+            original.m_userLastModified,
+            original.m_dateReleased,
+            original.m_dateExpired,
+            original.m_siblingCount,
+            original.m_length,
+            original.m_dateContent,
+            original.m_version);
+    }
 
     /**
      * Creates a new CmsRecource object.<p>
