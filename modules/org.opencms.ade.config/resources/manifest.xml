@@ -30,6 +30,12 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
+		<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
+                    <param name="schema">/system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd</param>
+                </type>
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
+				    <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
+                </type>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="ade_config" id="24">
 				<properties>
 					<property>
@@ -42,13 +48,28 @@
 					</property>
 				</properties>
 				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/restype.config" target="${resource.folder.path}/restype.config" type="new"/>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap_restype.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
+					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/containerpage.config" target="${resource.folder.path}/restype.config" type="new"/>
+					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
 					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
 				</copy-resources>
 			</type>
 		</resourcetypes>
 		<explorertypes>
+		<explorertype name="ade" key="fileicon.ade" icon="ade_menu.gif" reference="xmlcontent">
+        <newresource uri="newresource.jsp?page=ade" order="13" autosetnavigation="false" autosettitle="false" info="desc.ade"/>
+      </explorertype>
+		<explorertype name="containerpage_config" key="fileicon.containerpage_config" icon="containerpage_config.png" reference="xmlcontent">
+        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage_config" order="20" autosetnavigation="false" autosettitle="false" info="desc.containerpage_config"/>
+        <accesscontrol>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+      </explorertype>
+		<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="containerpage_config.png" reference="xmlcontent">
+      	<newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21"  autosetnavigation="false"  autosettitle="false" info="desc.sitemap_config" />
+        <accesscontrol>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+      </explorertype>
 			<explorertype name="ade_config" key="fileicon.ade_config" icon="ade_config.png" reference="folder">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=ade_config" order="500" autosetnavigation="false" autosettitle="false" info="desc.ade_config"/>
 				<accesscontrol>
@@ -234,8 +255,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/restype.config</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/restype.config</destination>
+			<source>system/modules/org.opencms.ade.config/copyresources/containerpage.config</source>
+			<destination>system/modules/org.opencms.ade.config/copyresources/containerpage.config</destination>
 			<type>containerpage_config</type>
 			<uuidstructure>c97f4137-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<uuidresource>c97f4138-70d5-11e0-9709-91706a02fba1</uuidresource>
@@ -254,8 +275,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/sitemap_restype.config</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap_restype.config</destination>
+			<source>system/modules/org.opencms.ade.config/copyresources/sitemap.config</source>
+			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap.config</destination>
 			<type>sitemap_config</type>
 			<uuidstructure>c9949dfa-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<uuidresource>c9949dfb-70d5-11e0-9709-91706a02fba1</uuidresource>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2011/03/21 15:10:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/04/29 16:17:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -94,12 +94,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);
 
-    /** Indicates that the static configuration of the resource type has been frozen. */
-    private static boolean m_staticFrozen;
-
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 13;
-
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "containerpage";
 
@@ -113,7 +107,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         super();
         m_typeName = RESOURCE_TYPE_NAME;
-        m_typeId = CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_ID;
         addConfigurationParameter(CONFIGURATION_SCHEMA, SCHEMA);
     }
 
@@ -142,19 +135,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         try {
             return getContainerPageTypeId();
         } catch (CmsLoaderException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            LOG.error(e.getLocalizedMessage(), e);
             return -1;
         }
-    }
-
-    /**
-     * Returns the static type id of this (default) resource type.<p>
-     * 
-     * @return the static type id of this (default) resource type
-     */
-    public static int getStaticTypeId() {
-
-        return RESOURCE_TYPE_ID;
     }
 
     /**
@@ -261,15 +244,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
-            // configuration already frozen
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
-                getStaticTypeName(),
-                new Integer(getStaticTypeId())));
-        }
-
         if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
@@ -278,10 +252,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
                 RESOURCE_TYPE_NAME,
                 name));
         }
-
-        // freeze the configuration
-        m_staticFrozen = true;
-
         super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
     }
 

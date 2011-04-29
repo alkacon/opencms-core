@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2010/02/24 07:18:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/29 16:17:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,9 +83,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
     /** The registered JSP resource type id's.    */
     private static List<Integer> m_jspResourceTypeIds = new ArrayList<Integer>();
-
-    /** Indicates that the static configuration of the resource type has been frozen. */
-    private static boolean m_staticFrozen;
 
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "jsp";
@@ -228,18 +225,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
      */
     @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
-
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
-            // configuration already frozen
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
-                name,
-                id));
-        }
-
-        // freeze the configuration
-        m_staticFrozen = true;
 
         super.initConfiguration(name, id, className);
         // set static members with values from the configuration      

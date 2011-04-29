@@ -4125,7 +4125,7 @@
 		</file>
 		<file>
 			<destination>demo_t3/pages</destination>
-			<type>cntpagegallery</type>
+			<type>folder</type>
 			<uuidstructure>68abb478-e347-11de-93a5-2fbc40eca8be</uuidstructure>
 			<datelastmodified>Fri, 14 Jan 2011 15:04:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
