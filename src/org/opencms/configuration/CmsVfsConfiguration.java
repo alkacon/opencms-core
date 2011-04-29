@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2011/04/28 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/29 11:51:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsDefaultFileNameGenerator;
 import org.opencms.loader.CmsMimeType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -47,7 +48,6 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.content.CmsDefaultFileNameGenerator;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */

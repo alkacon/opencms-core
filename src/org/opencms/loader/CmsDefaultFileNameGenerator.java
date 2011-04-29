@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsDefaultFileNameGenerator.java,v $
- * Date   : $Date: 2011/04/28 14:27:27 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDefaultFileNameGenerator.java,v $
+ * Date   : $Date: 2011/04/29 11:51:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,16 +29,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.content;
+package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsNumberSuffixNameSequence;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;

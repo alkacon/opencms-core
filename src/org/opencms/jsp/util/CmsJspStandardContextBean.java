@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/28 10:15:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/04/29 11:51:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.jsp.util;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
@@ -55,7 +56,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0
  */
@@ -73,8 +74,8 @@ public final class CmsJspStandardContextBean {
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
 
-    /** The current detail content id if available. */
-    private CmsUUID m_detailContentId;
+    /** The current detail content resource if available. */
+    private CmsResource m_detailContentResource;
 
     /** Flag to indicate if in drag and drop mode. */
     private boolean m_dndMode;
@@ -108,7 +109,7 @@ public final class CmsJspStandardContextBean {
                 CmsJspBean.class.getName()));
         }
 
-        m_detailContentId = CmsDetailPageResourceHandler.getDetailId(req);
+        m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
     }
 
     /**
@@ -158,13 +159,23 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the current detail content id if available.<p>
+     * Returns the current detail content, or <code>null</code> if no detail content is requested.<p>
      * 
-     * @return the current detail content id if available
+     * @return the current detail content, or <code>null</code> if no detail content is requested.<p>
+     */
+    public CmsResource getDetailContent() {
+
+        return m_detailContentResource;
+    }
+
+    /**
+     * Returns the structure id of the current detail content, or <code>null</code> if no detail content is requested.<p>
+     * 
+     * @return the structure id of the current detail content, or <code>null</code> if no detail content is requested.<p>
      */
     public CmsUUID getDetailContentId() {
 
-        return m_detailContentId;
+        return m_detailContentResource == null ? null : m_detailContentResource.getStructureId();
     }
 
     /**    
@@ -218,6 +229,18 @@ public final class CmsJspStandardContextBean {
             m_vfsBean = CmsJspVfsAccessBean.create(m_cms);
         }
         return m_vfsBean;
+    }
+
+    /**
+     * Returns <code>true</code> if this is a request to a detail resource, <code>false</code> otherwise.<p>
+     * 
+     * Same as to check if {@link #getDetailContent()} is <code>null</code>.<p>
+     * 
+     * @return <code>true</code> if this is a request to a detail resource, <code>false</code> otherwise
+     */
+    public boolean isDetailRequest() {
+
+        return m_detailContentResource != null;
     }
 
     /**

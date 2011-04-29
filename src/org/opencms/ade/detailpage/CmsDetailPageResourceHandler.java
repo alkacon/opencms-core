@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/04/20 07:01:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/29 11:51:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -54,14 +55,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
-    /** The attribute containing the detail view content id. */
-    public static final String ATTR_DETAIL_CONTENT_ID = "__detail_content_id";
+    /** The attribute containing the detail content resource. */
+    private static final String ATTR_DETAIL_CONTENT_RESOURCE = "__opencms_detail_content_resource";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailPageResourceHandler.class);
@@ -75,15 +76,28 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns the current detail content id if available.<p>
+     * Returns the current detail content UID, or <code>null</code> if this is not a request to a content detail page.<p>
      * 
      * @param req the current request
      * 
-     * @return the content id or <code>null</code> if not available
+     * @return the current detail content UID, or <code>null</code> if this is not a request to a content detail page
      */
     public static CmsUUID getDetailId(ServletRequest req) {
 
-        return (CmsUUID)req.getAttribute(ATTR_DETAIL_CONTENT_ID);
+        CmsResource res = getDetailResource(req);
+        return res == null ? null : res.getStructureId();
+    }
+
+    /**
+     * Returns the current detail content resource, or <code>null</code> if this is not a request to a content detail page
+     * 
+     * @param req the current request
+     * 
+     * @return the current detail content resource, or <code>null</code> if this is not a request to a content detail page
+     */
+    public static CmsResource getDetailResource(ServletRequest req) {
+
+        return (CmsResource)req.getAttribute(ATTR_DETAIL_CONTENT_RESOURCE);
     }
 
     /**
@@ -104,19 +118,17 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         }
 
         String path = cms.getRequestContext().getUri();
-        if (path.endsWith("/") && (path.length() > 1)) {
-            path = path.substring(0, path.length() - 1);
-        }
+        path = CmsFileUtil.removeTrailingSeparator(path);
         String detailName = CmsResource.getName(path);
         try {
             CmsUUID detailId = cms.readIdForUrlName(detailName);
 
             if (detailId != null) {
                 // check existence / permissions
-                cms.readResource(detailId);
-
+                CmsResource detailRes = cms.readResource(detailId);
+                // change OpenCms request URI to detail page
                 CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
-                req.setAttribute(ATTR_DETAIL_CONTENT_ID, detailId);
+                req.setAttribute(ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
                 // set the resource path
                 cms.getRequestContext().setUri(cms.getSitePath(detailPage));
                 return detailPage;
