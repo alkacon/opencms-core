@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2009/10/20 13:43:07 $
- * Version: $Revision: 1.49.2.2 $
+ * Date   : $Date: 2011/04/29 16:15:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.flex;
 
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -482,6 +483,13 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             m_includeList = new ArrayList<String>(10);
             m_includeListParameters = new ArrayList<Map<String, String[]>>(10);
             m_includeListAttributes = new ArrayList<Map<String, Object>>(10);
+        }
+        // never cache the Flex controller
+        attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
+        // only cache a copy of the JSP standard context bean
+        CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attributeMap.get(CmsJspStandardContextBean.ATTRIBUTE_NAME);
+        if (bean != null) {
+            attributeMap.put(CmsJspStandardContextBean.ATTRIBUTE_NAME, bean.createCopy());
         }
         m_includeListAttributes.add(attributeMap);
         m_includeListParameters.add(parameterMap);
