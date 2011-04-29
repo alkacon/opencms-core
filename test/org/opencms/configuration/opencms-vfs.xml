@@ -117,7 +117,6 @@
                     <param name="gallery.type.names">downloadgallery</param>
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
                 </type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
                 </type>
@@ -138,7 +137,7 @@
 				<collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
 				<collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
 			</collectors>
-			<namegenerator class="org.opencms.xml.content.CmsDefaultUrlNameSequenceGenerator" />
+			<namegenerator class="org.opencms.xml.content.CmsDefaultFileNameGenerator" />
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
 			    <mimetype extension=".mme" type="application/base64" />
