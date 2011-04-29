@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/26 16:35:29 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/29 15:36:09 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 8.0
  */
@@ -875,7 +875,7 @@ public class CmsJspTagContainer extends TagSupport {
                             isOnline,
                             null,
                             Collections.<String, Object> singletonMap(
-                                CmsJspStandardContextBean.ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN,
+                                CmsJspStandardContextBean.ATTRIBUTE_NAME,
                                 standardContext),
                             req,
                             res);
@@ -912,7 +912,7 @@ public class CmsJspTagContainer extends TagSupport {
                     isOnline,
                     null,
                     Collections.<String, Object> singletonMap(
-                        CmsJspStandardContextBean.ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN,
+                        CmsJspStandardContextBean.ATTRIBUTE_NAME,
                         standardContext),
                     req,
                     res);

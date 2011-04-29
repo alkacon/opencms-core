@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/29 15:36:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -253,6 +254,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 // prevent flexcache controller to be overwritten
                 if (CmsFlexController.ATTRIBUTE_NAME.equals(key)) {
                     continue;
+                } else if (CmsJspStandardContextBean.ATTRIBUTE_NAME.equals(key)) {
+                    CmsJspStandardContextBean bean = (CmsJspStandardContextBean)entry.getValue();
+                    bean.updateCmsObject(m_controller.getCmsObject());
                 }
                 attributes.put(key, entry.getValue());
             }

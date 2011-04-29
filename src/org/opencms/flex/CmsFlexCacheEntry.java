@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2009/10/20 13:43:06 $
- * Version: $Revision: 1.35.2.2 $
+ * Date   : $Date: 2011/04/29 15:36:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.flex;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -178,6 +179,13 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             m_byteSize += CmsMemoryMonitor.getValueSize(parameters);
             if (attrs == null) {
                 attrs = Collections.emptyMap();
+            }
+            // never cache the Flex controller
+            attrs.remove(CmsFlexController.ATTRIBUTE_NAME);
+            // only cache a copy of the JSP standard context bean
+            CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attrs.get(CmsJspStandardContextBean.ATTRIBUTE_NAME);
+            if (bean != null) {
+                attrs.put(CmsJspStandardContextBean.ATTRIBUTE_NAME, bean.createCopy());
             }
             m_elements.add(attrs);
             m_byteSize += CmsMemoryMonitor.getValueSize(attrs);

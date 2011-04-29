@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/04/29 11:51:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/04/29 15:36:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -56,7 +58,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0
  */
@@ -66,7 +68,7 @@ public final class CmsJspStandardContextBean {
     public static final String ATTRIBUTE_CMS_OBJECT = "__cmsObject";
 
     /** The attribute name of the standard JSP context bean. */
-    public static final String ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN = "cms";
+    public static final String ATTRIBUTE_NAME = "cms";
 
     /** OpenCms user context. */
     private CmsObject m_cms;
@@ -90,6 +92,14 @@ public final class CmsJspStandardContextBean {
     private CmsJspVfsAccessBean m_vfsBean;
 
     /**
+     * Creates an empty instance.<p>
+     */
+    private CmsJspStandardContextBean() {
+
+        // NOOP
+    }
+
+    /**
      * Creates a new standard JSP context bean.
      * 
      * @param req the current servlet request
@@ -97,17 +107,19 @@ public final class CmsJspStandardContextBean {
     private CmsJspStandardContextBean(ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
+        CmsObject cms;
         if (controller != null) {
-            m_cms = controller.getCmsObject();
+            cms = controller.getCmsObject();
         } else {
-            m_cms = (CmsObject)req.getAttribute(ATTRIBUTE_CMS_OBJECT);
+            cms = (CmsObject)req.getAttribute(ATTRIBUTE_CMS_OBJECT);
         }
-        if (m_cms == null) {
+        if (cms == null) {
             // cms object unavailable - this request was not initialized properly
             throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_MISSING_CMS_CONTROLLER_1,
                 CmsJspBean.class.getName()));
         }
+        updateCmsObject(cms);
 
         m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
     }
@@ -124,14 +136,29 @@ public final class CmsJspStandardContextBean {
      */
     public static CmsJspStandardContextBean getInstance(ServletRequest req) {
 
-        Object attribute = req.getAttribute(ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN);
+        Object attribute = req.getAttribute(ATTRIBUTE_NAME);
         CmsJspStandardContextBean result;
         if ((attribute != null) && (attribute instanceof CmsJspStandardContextBean)) {
             result = (CmsJspStandardContextBean)attribute;
         } else {
             result = new CmsJspStandardContextBean(req);
-            req.setAttribute(ATTRIBUTE_JSP_STANDARD_CONTEXT_BEAN, result);
+            req.setAttribute(ATTRIBUTE_NAME, result);
         }
+        return result;
+    }
+
+    /**
+     * Returns a copy of this JSP context bean.<p>
+     * 
+     * @return a copy of this JSP context bean
+     */
+    public CmsJspStandardContextBean createCopy() {
+
+        CmsJspStandardContextBean result = new CmsJspStandardContextBean();
+        result.m_container = m_container;
+        result.m_detailContentResource = m_detailContentResource;
+        result.m_element = m_element;
+        result.m_page = m_page;
         return result;
     }
 
@@ -210,6 +237,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the request context.<p>
+     * 
      * @return the request context
      */
     public CmsRequestContext getRequestContext() {
@@ -291,5 +319,20 @@ public final class CmsJspStandardContextBean {
     public void setPage(CmsContainerPageBean page) {
 
         m_page = page;
+    }
+
+    /** 
+     * Updates the internally stored OpenCms user context.<p>
+     * 
+     * @param cms the new OpenCms user context
+     */
+    public void updateCmsObject(CmsObject cms) {
+
+        try {
+            m_cms = OpenCms.initCmsObject(cms);
+        } catch (CmsException e) {
+            // should not happen
+            m_cms = cms;
+        }
     }
 }
