@@ -109,27 +109,6 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
-                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
-				    <param name="gallery.type.names">cntpagegallery</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
-                    <param name="gallery.type.names">downloadgallery</param>
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
-                </type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
-                    <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="groupcontainer" id="17">
-				    <param name="gallery.type.names">downloadgallery</param>
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21" />
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
-				    <param name="gallery.type.names">downloadgallery</param>
-                    <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</param>
-                </type>
-                
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
