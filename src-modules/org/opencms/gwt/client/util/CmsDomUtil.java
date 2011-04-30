@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/04/27 13:05:51 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/04/30 15:29:39 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -792,25 +792,6 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Utility method to determine the effective background color.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the background color
-     */
-    public static String getEffectiveBackgroundColor(Element element) {
-
-        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
-        if ((Document.get().getBody() != element)
-            && (CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
-                || backgroundColor.equals(StyleValue.transparent.toString()) || backgroundColor.equals(StyleValue.inherit.toString()))) {
-            backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
-        }
-
-        return backgroundColor;
-    }
-
-    /**
      * Determines the position of the list collector editable content.<p> 
      * 
      * @param editable the editable marker tag
@@ -858,6 +839,28 @@ public final class CmsDomUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Utility method to determine the effective background color.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the background color
+     */
+    public static String getEffectiveBackgroundColor(Element element) {
+
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
+        if ((CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor) || isTransparent(backgroundColor) || backgroundColor.equals(StyleValue.inherit.toString()))) {
+            if (Document.get().getBody() != element) {
+                backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
+            } else {
+                // if body element has still no background color set default to white
+                backgroundColor = "#FFFFFF";
+            }
+        }
+
+        return backgroundColor;
     }
 
     /**
@@ -1023,7 +1026,7 @@ public final class CmsDomUtil {
 
         String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
         String backgroundImage = CmsDomUtil.getCurrentStyle(element, Style.backgroundImage);
-        if ((backgroundColor.equals(StyleValue.transparent.toString()))
+        if ((isTransparent(backgroundColor))
             && ((backgroundImage == null) || (backgroundImage.trim().length() == 0) || backgroundImage.equals(StyleValue.none.toString()))) {
             return false;
         }
@@ -1370,5 +1373,19 @@ public final class CmsDomUtil {
         hasClass |= elementClass.endsWith(" " + className);
 
         return hasClass;
+    }
+
+    /**
+     * Checks if the given color value is transparent.<p>
+     * 
+     * @param backgroundColor the color value
+     * 
+     * @return <code>true</code> if transparent
+     */
+    private static boolean isTransparent(String backgroundColor) {
+
+        // not only check 'transparent' but also 'rgba(0, 0, 0, 0)' as returned by chrome
+        return StyleValue.transparent.toString().equalsIgnoreCase(backgroundColor)
+            || "rgba(0, 0, 0, 0)".equalsIgnoreCase(backgroundColor);
     }
 }
