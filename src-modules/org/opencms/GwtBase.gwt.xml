@@ -5,8 +5,8 @@
 	<inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
-
-	<extend-property name="locale" values="en,de"/>
+		
+ 	<extend-property name="locale" values="en,de"/>
 	<set-property-fallback name="locale" value="en"/>
 	<set-property name="locale" value="en,de"/>
 	<collapse-property name="locale" values="*" />
@@ -110,12 +110,12 @@
         <when-type-assignable class="org.opencms.gwt.client.I_CmsClassInitializer"/>
     </generate-with>
 
-	<!-- down here only debugging stuff, should be commented out for release building -->
+	<!-- down here only debugging stuff, should be commented out for release building 
 	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
 
 	<set-property name="compiler.emulatedStack" value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />   -->
 
 </module>
