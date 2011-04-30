@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2011/04/28 10:44:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/04/30 15:28:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Image;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -175,7 +175,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public void init(CmsImagePreviewHandler handler) {
 
         m_handler = handler;
-        final CmsPropertiesTab propTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        m_propertiesTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
         m_selectButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -183,7 +183,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
                 saveChanges();
             }
         });
-        m_propertiesTab = propTab;
         m_tabbedPanel.add(m_propertiesTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
         if ((m_galleryMode == GalleryMode.editor) || (m_galleryMode == GalleryMode.widget)) {
             m_imageFormatTab = new CmsImageFormatsTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler, null);

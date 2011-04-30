@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageResourcePreview.java,v $
- * Date   : $Date: 2011/04/20 15:30:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/30 15:28:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -120,6 +120,7 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
         // initialize the controller and controller handler
         m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId));
         exportRemovePreview(parentElementId);
+        CmsPreviewUtil.exportFunctions(getPreviewName(), this);
         parentPanel.add(preview);
         parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         //load preview data
