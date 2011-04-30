@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2011/04/21 11:50:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/30 15:24:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.9.1
  */
@@ -85,20 +85,6 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * Returns the direct edit include HTML to insert in the page beginning.<p> t
-     * 
-     * @param params the parameters for the direct edit includes
-     *  
-     * @return the direct edit include HTML to insert in the page beginning
-     */
-    public String getDirectEditIncludes(CmsDirectEditParams params) throws JspException {
-
-        // For Advanced Direct Edit all necessary js and css-code is included by the enableADE tag. Further includes in the head are not needed. 
-
-        return "";
-    }
-
-    /**
      * Generates a random element id.<p>
      * 
      * @return a random  element id 
@@ -130,9 +116,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @throws JspException 
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
+    @SuppressWarnings("unused")
     public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException {
 
         // For Advanced Direct Edit all necessary js and css-code is included by the enableADE tag. Further includes in the head are not needed.
