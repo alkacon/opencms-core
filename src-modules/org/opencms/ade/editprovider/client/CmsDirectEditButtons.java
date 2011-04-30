@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditButtons.java,v $
- * Date   : $Date: 2011/04/27 13:05:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -158,7 +159,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         if (isNew) {
             sitePath = sitePath + "&amp;newlink=" + URL.encodeQueryString(m_editableData.getNewLink());
         }
-        CmsContentEditorDialog.get().openEditDialog(sitePath, isNew, this);
+        CmsContentEditorDialog.get().openEditDialog(new CmsUUID(m_editableData.getStructureId()), sitePath, isNew, this);
     }
 
 }

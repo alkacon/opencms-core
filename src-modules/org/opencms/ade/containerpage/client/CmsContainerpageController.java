@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/28 19:42:43 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.0
  */
@@ -380,6 +380,22 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the server id for a given client element id.<p>
+     * 
+     * @param clientId the client id including an optional element settings hash
+     * 
+     * @return the server id
+     */
+    public static String getServerId(String clientId) {
+
+        String serverId = clientId;
+        if (clientId.contains(CLIENT_ID_SEPERATOR)) {
+            serverId = clientId.substring(0, clientId.indexOf(CLIENT_ID_SEPERATOR));
+        }
+        return serverId;
+    }
+
+    /**
      * Adds an element specified by it's id to the favorite list.<p>
      * 
      * @param clientId the element id
@@ -493,9 +509,7 @@ public final class CmsContainerpageController {
      */
     public void deleteElement(String elementId, final String relatedElementId) {
 
-        if (elementId.contains(CLIENT_ID_SEPERATOR)) {
-            elementId = elementId.substring(0, elementId.indexOf(CLIENT_ID_SEPERATOR));
-        }
+        elementId = getServerId(elementId);
         removeContainerElements(elementId);
         reloadElements(new String[] {relatedElementId});
     }
@@ -1028,10 +1042,7 @@ public final class CmsContainerpageController {
             if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing properties of a new element that has not been created in the VFS yet
-                String id = containerElement.getId();
-                if (id.contains(CLIENT_ID_SEPERATOR)) {
-                    id = id.substring(0, id.indexOf(CLIENT_ID_SEPERATOR));
-                }
+                String id = getServerId(containerElement.getId());
                 if (elementData.getClientId().startsWith(id)) {
                     replacer.setNewType(containerElement.getNewType());
                 }
@@ -1616,10 +1627,8 @@ public final class CmsContainerpageController {
 
         Set<String> result = new HashSet<String>();
         result.add(id);
-        String serverId = id;
-        if (id.contains(CLIENT_ID_SEPERATOR)) {
-            serverId = id.substring(0, id.indexOf(CLIENT_ID_SEPERATOR));
-        }
+        String serverId = getServerId(id);
+
         Iterator<String> it = m_elements.keySet().iterator();
         while (it.hasNext()) {
             String elId = it.next();

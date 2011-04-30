@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContentEditorHandler.java,v $
- * Date   : $Date: 2011/02/22 09:42:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,14 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.util.CmsUUID;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -102,7 +103,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
         m_currentElementId = elementId;
         m_dependingElementId = dependingElementId;
-        CmsContentEditorDialog.get().openEditDialog(sitePath, isNew, this);
+        CmsUUID structureId = new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId));
+        CmsContentEditorDialog.get().openEditDialog(structureId, sitePath, isNew, this);
     }
 
 }

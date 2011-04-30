@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2011/04/28 19:42:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,17 +57,17 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
 public class CmsGwtActionElement extends CmsJspActionElement {
 
     /** The closing script tag. */
-    protected static final String SCRIPT_TAG_CLOSE = "</script>";
+    protected static final String SCRIPT_TAG_CLOSE = "\n//-->\n</script>";
 
     /** The opening script tag. */
-    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
+    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">\n<!--\n";
 
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
@@ -130,10 +130,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             // if no locale was found, take English as locale
             wpLocale = Locale.ENGLISH.getLanguage();
         }
-        StringBuffer localeMetaTag = new StringBuffer();
-        String metaLocale = "<meta name=\"gwt:property\" content=\"locale=" + wpLocale + "\">";
-        localeMetaTag.append(metaLocale);
-
         StringBuffer sb = new StringBuffer();
         String prefetchedData = serialize(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
         sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
@@ -141,8 +137,8 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         wrapScript(sb);
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
             "\");\n</style>\n");
-
-        return localeMetaTag.append(sb).toString();
+        sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\">\n");
+        return sb.toString();
     }
 
     /**

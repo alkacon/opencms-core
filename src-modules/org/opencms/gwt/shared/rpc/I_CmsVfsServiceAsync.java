@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2011/04/07 16:35:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -114,5 +114,13 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback
      */
     void getRootEntries(AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Returns the site-path for the resource with the given id.<p>
+     * 
+     * @param structureId the structure id
+     * @param callback the asynchronous callback
+     */
+    void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
 
 }

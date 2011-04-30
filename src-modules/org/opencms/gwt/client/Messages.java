@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/11 07:46:00 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,17 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TITLE_ERROR_0 = "ERR_TITLE_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_UNAVAILABLE_1 = "ERR_RESOURCE_UNAVAILABLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";

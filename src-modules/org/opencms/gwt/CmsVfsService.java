@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/04/21 11:50:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -253,6 +253,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             return makeEntryBeans(roots, true);
         } catch (CmsException e) {
             error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getSitePath(org.opencms.util.CmsUUID)
+     */
+    public String getSitePath(CmsUUID structureId) {
+
+        try {
+            CmsResource resource = getCmsObject().readResource(structureId);
+            return getCmsObject().getSitePath(resource);
+        } catch (CmsException e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e.getMessageContainer(), e);
+            }
         }
         return null;
     }

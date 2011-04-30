@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditRedirectMenuEntry.java,v $
- * Date   : $Date: 2011/02/25 15:50:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,14 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
+
+    /** The sitemap entry. */
+    private CmsClientSitemapEntry m_entry;
 
     /**
      * Constructor.<p>
@@ -71,6 +74,7 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
             public void execute() {
 
                 CmsContentEditorDialog.get().openEditDialog(
+                    getEntry().getId(),
                     getHoverbar().getSitePath(),
                     false,
                     new I_CmsContentEditorHandler() {
@@ -96,8 +100,18 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
 
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = (entry != null) && (entry.getEntryType() == EntryType.redirect);
+        m_entry = controller.getEntry(sitePath);
+        boolean show = (m_entry != null) && (m_entry.getEntryType() == EntryType.redirect);
         setVisible(show);
+    }
+
+    /**
+     * Returns the entry to edit.<p>
+     * 
+     * @return the entry
+     */
+    protected CmsClientSitemapEntry getEntry() {
+
+        return m_entry;
     }
 }

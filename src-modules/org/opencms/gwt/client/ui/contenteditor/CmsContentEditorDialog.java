@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/04/28 10:38:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,14 @@ package org.opencms.gwt.client.ui.contenteditor;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
 
@@ -45,7 +49,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -103,19 +107,62 @@ public final class CmsContentEditorDialog {
     /**
      * Opens the content editor dialog for the given element.<p>
      * 
+     * @param structureId the structure id of the resource to edit
      * @param sitePath the element site-path
      * @param isNew <code>true</code> when creating a new resource
      * @param editorHandler the editor handler
      */
-    public void openEditDialog(String sitePath, boolean isNew, I_CmsContentEditorHandler editorHandler) {
+    public void openEditDialog(
+        final CmsUUID structureId,
+        final String sitePath,
+        boolean isNew,
+        I_CmsContentEditorHandler editorHandler) {
 
         if ((m_dialog != null) && m_dialog.isShowing()) {
             CmsDebugLog.getInstance().printLine("Dialog is already open, cannot open another one.");
             return;
         }
         m_isNew = isNew;
-        m_sitePath = sitePath;
         m_editorHandler = editorHandler;
+        if (m_isNew || (structureId == null)) {
+            openDialog(sitePath);
+        } else {
+            CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+                @Override
+                public void execute() {
+
+                    show(true);
+                    CmsCoreProvider.getVfsService().getSitePath(structureId, this);
+                }
+
+                @Override
+                protected void onResponse(String result) {
+
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+                        openDialog(result);
+                    } else {
+                        CmsAlertDialog alert = new CmsAlertDialog(
+                            Messages.get().key(Messages.ERR_TITLE_ERROR_0),
+                            Messages.get().key(Messages.ERR_RESOURCE_UNAVAILABLE_1, sitePath));
+                        alert.center();
+                    }
+                    stop(false);
+                }
+            };
+            action.execute();
+        }
+
+    }
+
+    /**
+     * Opens the dialog for the given sitepath.<p>
+     * 
+     * @param sitePath the sitepath of the resource to edit
+     */
+    protected void openDialog(String sitePath) {
+
+        m_sitePath = sitePath;
         m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
             + " - "
             + (m_isNew ? "Editing new resource" : m_sitePath));

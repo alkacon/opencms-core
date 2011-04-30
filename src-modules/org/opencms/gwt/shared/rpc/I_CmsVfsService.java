@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsService.java,v $
- * Date   : $Date: 2011/04/28 19:42:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/04/30 15:28:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -61,7 +61,7 @@ public interface I_CmsVfsService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    public void deleteResource(String sitePath) throws CmsRpcException;
+    void deleteResource(String sitePath) throws CmsRpcException;
 
     /**
      * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
@@ -137,4 +137,15 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException;
+
+    /**
+     * Returns the site-path for the resource with the given id.<p>
+     * 
+     * @param structureId the structure id
+     * 
+     * @return the site-path or <code>null</code> if not available
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getSitePath(CmsUUID structureId) throws CmsRpcException;
 }
