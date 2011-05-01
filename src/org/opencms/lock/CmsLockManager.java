@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2011/04/18 12:24:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 15:10:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -314,7 +314,7 @@ public final class CmsLockManager {
                     CmsResource dummy = new CmsResource(
                         null,
                         null,
-                        null,
+                        "",
                         0,
                         false,
                         0,
