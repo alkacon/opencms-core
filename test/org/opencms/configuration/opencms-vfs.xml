@@ -109,6 +109,9 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
+        			<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
+     			</type>
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
