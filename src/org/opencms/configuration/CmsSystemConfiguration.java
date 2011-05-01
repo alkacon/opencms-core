@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2011/04/08 16:15:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/01 10:56:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
@@ -495,7 +495,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
     /** Shared folder node name. */
-    private static final String N_SHARED_FOLDER = "shared-folder";
+    public static final String N_SHARED_FOLDER = "shared-folder";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
