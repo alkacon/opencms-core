@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +184,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (hasModelUri) {
             CmsFile file = cms.readFile(resource);
             newContent = CmsXmlContentFactory.unmarshal(cms, file);
-            resource = newContent.getContentDefinition().getContentHandler().prepareForWrite(cms, newContent, file);
+            resource = newContent.getHandler().prepareForWrite(cms, newContent, file);
         }
 
         return resource;
@@ -274,11 +274,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    org.opencms.db.Messages.get().getBundle().key(
-                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                        cms.getSitePath(file)),
-                    e);
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(file)), e);
             }
             return Collections.emptyList();
         } finally {
@@ -366,11 +364,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             return contentDef;
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
-                        cms.getSitePath(resource)),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
+                    cms.getSitePath(resource)), e);
             }
             return null;
         }
@@ -393,7 +389,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         // read the XML content, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
-        resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
+        resource = xmlContent.getHandler().prepareForWrite(cms, xmlContent, resource);
 
         // now write the file
         return super.writeFile(cms, securityManager, resource);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2011/04/29 16:17:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
@@ -220,10 +220,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         // a model file was used, call the content handler for post-processing
         if (hasModelUri) {
             newContent = CmsXmlContainerPageFactory.unmarshal(cms, resource);
-            resource = newContent.getContentDefinition().getContentHandler().prepareForWrite(
-                cms,
-                newContent,
-                newContent.getFile());
+            resource = newContent.getHandler().prepareForWrite(cms, newContent, newContent.getFile());
         }
 
         return resource;
@@ -272,11 +269,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    org.opencms.db.Messages.get().getBundle().key(
-                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                        cms.getSitePath(file)),
-                    e);
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(file)), e);
             }
             return Collections.emptyList();
         } finally {
@@ -334,7 +329,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         // read the XML content, use the encoding set in the property       
         CmsXmlContainerPage xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, resource, false, true);
         // call the content handler for post-processing
-        resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
+        resource = xmlContent.getHandler().prepareForWrite(cms, xmlContent, resource);
 
         // now write the file
         CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);

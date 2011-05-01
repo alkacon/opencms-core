@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/04/26 16:35:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */
@@ -396,7 +396,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 pageResource = cms.readResource(requestUri);
             }
             CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-            containerPage = xmlContainerPage.getCntPage(cms, cms.getRequestContext().getLocale());
+            containerPage = xmlContainerPage.getContainerPage(cms, cms.getRequestContext().getLocale());
             standardContext.setPage(containerPage);
         }
         return standardContext;

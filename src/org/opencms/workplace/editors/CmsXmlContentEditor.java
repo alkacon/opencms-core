@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -578,10 +578,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
 
         // get preview uri from content handler
-        String previewUri = m_content.getContentDefinition().getContentHandler().getPreview(
-            getCms(),
-            m_content,
-            getParamTempfile());
+        String previewUri = m_content.getHandler().getPreview(getCms(), m_content, getParamTempfile());
 
         // create locale request parameter
         StringBuffer param = new StringBuffer(8);
@@ -972,7 +969,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
 
         // add customized message bundle eventually specified in XSD of XML content
-        addMessages(m_content.getContentDefinition().getContentHandler().getMessages(getLocale()));
+        addMessages(m_content.getHandler().getMessages(getLocale()));
 
         // initialize tab lists for error handling before generating the editor form
         m_errorTabs = new ArrayList<CmsXmlContentTab>();
@@ -1105,7 +1102,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // first create JS for eventual tabs
         StringBuffer tabs = new StringBuffer(512);
-        if (m_content.getContentDefinition().getContentHandler().getTabs().size() > 0) {
+        if (m_content.getHandler().getTabs().size() > 0) {
             // we have some tabs defined, initialize them using JQuery
             result.append("var xmlSelectedTab = 0;\n");
             result.append("var xmlErrorTabs = new Array();\n");
@@ -1188,10 +1185,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // read the original file because temporary file is not created when opening button frame
             CmsFile file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCloneCms(), file);
-            return content.getContentDefinition().getContentHandler().getPreview(
-                getCms(),
-                m_content,
-                getParamResource()) != null;
+            return content.getHandler().getPreview(getCms(), m_content, getParamResource()) != null;
         } catch (Exception e) {
             // error reading or unmarshalling, no preview available
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2011/03/21 15:10:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.5.2
  */
@@ -97,7 +97,7 @@ public final class CmsXmlContainerPageFactory {
         // create the XML content
         CmsXmlContainerPage content = new CmsXmlContainerPage(cms, locale, modelUri);
         // call prepare for use content handler and return the result 
-        return (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -122,7 +122,7 @@ public final class CmsXmlContainerPageFactory {
         // create the XML content
         CmsXmlContainerPage content = new CmsXmlContainerPage(cms, locale, encoding, contentDefinition);
         // call prepare for use content handler and return the result 
-        return (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -252,9 +252,7 @@ public final class CmsXmlContainerPageFactory {
         // set the file
         content.setFile(file);
         // call prepare for use content handler and return the result 
-        CmsXmlContainerPage xmlCntPage = (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(
-            cms,
-            content);
+        CmsXmlContainerPage xmlCntPage = (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
 
         // set the cache
         setCache(cms, xmlCntPage, keepEncoding);
@@ -388,7 +386,7 @@ public final class CmsXmlContainerPageFactory {
 
         CmsXmlContainerPage content = new CmsXmlContainerPage(cms, document, encoding, resolver);
         // call prepare for use content handler and return the result 
-        return (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
     }
 
     /**

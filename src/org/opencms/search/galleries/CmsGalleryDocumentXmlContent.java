@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGalleryDocumentXmlContent.java,v $
- * Date   : $Date: 2011/04/21 14:20:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -109,9 +110,8 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                             content.append('\n');
                         }
                     }
-                    String[] mappings = xmlContent.getContentDefinition().getContentHandler().getMappings(
-                        value.getPath());
-                    if ((mappings != null) && (mappings.length > 0)) {
+                    List<String> mappings = xmlContent.getHandler().getMappings(value.getPath());
+                    if ((mappings != null) && (mappings.size() > 0)) {
                         // mappings are defined, lets check if we have mappings that interest us
                         for (String mapping : mappings) {
                             if (mapping.startsWith(I_CmsXmlContentHandler.MAPTO_PROPERTY)) {

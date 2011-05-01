@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2009/09/04 15:01:19 $
- * Version: $Revision: 1.39.2.1 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -83,7 +84,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -265,6 +266,14 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             }
         }
         return m_xmlPageContentDefinition;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getHandler()
+     */
+    public I_CmsXmlContentHandler getHandler() {
+
+        return getContentDefinition().getContentHandler();
     }
 
     /**

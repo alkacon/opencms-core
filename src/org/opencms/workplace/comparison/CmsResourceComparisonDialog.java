@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -709,8 +709,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     result.append(value.getElement().attribute(0).getValue());
                     result.append("]\n\n");
                     try {
-                        I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(
-                            value);
+                        I_CmsWidget widget = value.getDocument().getHandler().getWidget(value);
                         result.append(widget.getWidgetStringValue(
                             getCms(),
                             new CmsResourceInfoDialog(getJsp()),

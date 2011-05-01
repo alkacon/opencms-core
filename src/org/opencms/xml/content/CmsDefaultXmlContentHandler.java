@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/28 13:51:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -104,7 +105,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,20 +323,29 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
+    /** The CSS resources to include into the html-page head. */
+    protected Set<String> m_cssHeadIncludes;
+
     /** The default values for the elements (as defined in the annotations). */
     protected Map<String, String> m_defaultValues;
 
     /** The element mappings (as defined in the annotations). */
-    protected Map<String, String[]> m_elementMappings;
+    protected Map<String, List<String>> m_elementMappings;
 
     /** The widgets used for the elements (as defined in the annotations). */
     protected Map<String, I_CmsWidget> m_elementWidgets;
+
+    /** The formatter configuration beans. */
+    protected List<CmsFormatterConfigBean> m_formatterConfigs;
 
     /** The configured formatters by type. */
     protected Map<String, String> m_formattersByType;
 
     /** The map of width-based formatters. */
     protected Map<Integer, CmsPair<String, Integer>> m_formattersByWidth;
+
+    /** The java-script resources to include into the html-page head. */
+    protected Set<String> m_jsHeadIncludes;
 
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
@@ -361,6 +371,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The configured tabs. */
     protected List<CmsXmlContentTab> m_tabs;
 
+    /** The list of mappings to the "Title" property. */
+    protected List<String> m_titleMappings;
+
     /** The messages for the error validation rules. */
     protected Map<String, String> m_validationErrorMessages;
 
@@ -372,15 +385,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
-
-    /** The CSS resources to include into the html-page head. */
-    private Set<String> m_cssHeadIncludes;
-
-    /** The formatter configuration beans. */
-    private List<CmsFormatterConfigBean> m_formatterConfigs;
-
-    /** The java-script resources to include into the html-page head. */
-    private Set<String> m_jsHeadIncludes;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -525,7 +529,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @return the mapping defined for the given element xpath
      */
-    public String[] getMappings(String elementName) {
+    public List<String> getMappings(String elementName) {
 
         return m_elementMappings.get(elementName);
     }
@@ -630,6 +634,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public List<CmsXmlContentTab> getTabs() {
 
         return Collections.unmodifiableList(m_tabs);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getTitleMapping(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.util.Locale)
+     */
+    public String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale) {
+
+        String result = null;
+        if (m_titleMappings.size() > 0) {
+            // a title mapping is available
+            String xpath = m_titleMappings.get(0);
+            // currently just use the first mapping found, unsure if multiple "Title" mappings would make sense anyway
+            result = document.getStringValue(cms, xpath, locale);
+        }
+        return result;
     }
 
     /**
@@ -862,7 +881,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         // get the mappings for the element name        
-        String[] mappings = getMappings(value.getPath());
+        List<String> mappings = getMappings(value.getPath());
         if (mappings == null) {
             // nothing to do if we have no mappings at all
             return;
@@ -880,12 +899,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             CmsResourceFilter.IGNORE_EXPIRATION);
 
         // since 7.0.2 multiple mappings are possible
-        for (int m = mappings.length - 1; m >= 0; m--) {
+        for (String mapping : mappings) {
 
             // for multiple language mappings, we need to ensure 
             // a) all siblings are handled
             // b) only the "right" locale is mapped to a sibling
-            String mapping = mappings[m];
             if (CmsStringUtil.isNotEmpty(mapping)) {
                 for (int i = (siblings.size() - 1); i >= 0; i--) {
                     // get filename
@@ -1070,7 +1088,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             i = 0;
                         }
                     } else if (mapping.startsWith(MAPTO_URLNAME)) {
-                        handleUrlNameMapping(cms, content, value, siblings.get(i));
+
+                        // this is a mapping to the URL name
+                        if (!CmsResource.isTemporaryFileName(siblings.get(i).getRootPath())) {
+                            I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
+                            Iterator<String> nameSeq = nameGen.getUrlNameSequence(cms, content, value, siblings.get(i));
+                            cms.writeUrlNameMapping(nameSeq, siblings.get(i).getStructureId());
+                        }
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
                         // this is an attribute mapping                        
@@ -1335,16 +1359,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         // since 7.0.2 multiple mappings are possible, so the mappings are stored in an array
-        String[] values = m_elementMappings.get(xpath);
+        List<String> values = m_elementMappings.get(xpath);
         if (values == null) {
-            values = new String[] {mapping};
-        } else {
-            String[] newValues = new String[values.length + 1];
-            System.arraycopy(values, 0, newValues, 0, values.length);
-            newValues[values.length] = mapping;
-            values = newValues;
+            // there should not really be THAT much multiple mappings per value...
+            values = new ArrayList<String>(4);
+            m_elementMappings.put(xpath, values);
         }
-        m_elementMappings.put(xpath, values);
+        values.add(mapping);
+        if (mapping.startsWith(MAPTO_PROPERTY) && mapping.endsWith(":" + CmsPropertyDefinition.PROPERTY_TITLE)) {
+            // this is a title mapping
+            m_titleMappings.add(xpath);
+        }
     }
 
     /**
@@ -1565,7 +1590,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void init() {
 
-        m_elementMappings = new HashMap<String, String[]>();
+        m_elementMappings = new HashMap<String, List<String>>();
         m_elementWidgets = new HashMap<String, I_CmsWidget>();
         m_validationErrorRules = new HashMap<String, String>();
         m_validationErrorMessages = new HashMap<String, String>();
@@ -1585,6 +1610,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_cssHeadIncludes = new LinkedHashSet<String>();
         m_jsHeadIncludes = new LinkedHashSet<String>();
         m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
+        m_titleMappings = new ArrayList<String>(2);
     }
 
     /**
@@ -1873,7 +1899,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * Initializes the element settings for this content handler.<p>
      * 
-     * @param root the "formatters" element from the appinfo node of the XML content definition
+     * @param root the "settings" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the element settings belong to
      */
     protected void initSettings(Element root, CmsXmlContentDefinition contentDefinition) {
@@ -2044,12 +2070,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         List<CmsResource> siblings = null;
         CmsObject rootCms = null;
 
-        Iterator<Map.Entry<String, String[]>> mappings = m_elementMappings.entrySet().iterator();
-        while (mappings.hasNext()) {
-            Map.Entry<String, String[]> e = mappings.next();
+        Iterator<Map.Entry<String, List<String>>> allMappings = m_elementMappings.entrySet().iterator();
+        while (allMappings.hasNext()) {
+            Map.Entry<String, List<String>> e = allMappings.next();
             String path = e.getKey();
-            String[] values = e.getValue();
-            if (values == null) {
+            List<String> mappings = e.getValue();
+            if (mappings == null) {
                 // nothing to do if we have no mappings at all
                 continue;
             }
@@ -2059,8 +2085,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 rootCms.getRequestContext().setSiteRoot("/");
                 siblings = rootCms.readSiblings(content.getFile().getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
             }
-            for (int v = values.length - 1; v >= 0; v--) {
-                String mapping = values[v];
+            for (int v = mappings.size() - 1; v >= 0; v--) {
+                String mapping = mappings.get(v);
                 if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
                     for (int i = 0; i < siblings.size(); i++) {
@@ -2487,28 +2513,5 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             content.setFile(file);
         }
         return file;
-    }
-
-    /**
-     * Helper method for handling an URL name mapping.<p>
-     * 
-     * @param cms the CMS context 
-     * @param content the XML content 
-     * @param value the mapped value 
-     * @param resource the resource for which the URL name mapping should take place
-     *   
-     * @throws CmsException if something goes wrong  
-     */
-    private void handleUrlNameMapping(
-        CmsObject cms,
-        CmsXmlContent content,
-        I_CmsXmlContentValue value,
-        CmsResource resource) throws CmsException {
-
-        if (!CmsResource.isTemporaryFileName(resource.getRootPath())) {
-            I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
-            Iterator<String> nameSeq = nameGen.getUrlNameSequence(cms, content, value, resource);
-            cms.writeUrlNameMapping(nameSeq, resource.getStructureId());
-        }
     }
 }

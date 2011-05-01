@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2011/04/21 10:31:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -474,6 +474,14 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getHandler()
+     */
+    public I_CmsXmlContentHandler getHandler() {
+
+        return getContentDefinition().getContentHandler();
+    }
+
+    /**
      * @see org.opencms.xml.A_CmsXmlDocument#getLinkProcessor(org.opencms.file.CmsObject, org.opencms.staticexport.CmsLinkTable)
      */
     public CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable) {
@@ -693,9 +701,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         CmsXmlContentDefinition parentDef) {
 
         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
-        String elemPath = CmsXmlUtils.concatXpath(
-            parentPath,
-            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
+        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
+            element.getName(),
+            elemIndex));
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);
@@ -847,7 +855,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         // check invalid links
         if (cms != null) {
             // this will remove all invalid links
-            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+            getHandler().invalidateBrokenLinks(cms, this);
         }
     }
 

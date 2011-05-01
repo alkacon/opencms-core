@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainer.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.1
  */
@@ -295,7 +295,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
         if (pos > 0) {
             xpath = xpath.substring(pos + 1);
         }
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
+        CmsRelationType type = getHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
         return res;
@@ -365,9 +365,9 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
                     // element itself
                     int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(groupContainer));
-                    String elemPath = CmsXmlUtils.concatXpath(
-                        cntPath,
-                        CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
+                    String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
+                        element.getName(),
+                        elemIndex));
                     I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                     I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                     addBookmark(elemPath, locale, true, elemValue);
@@ -407,10 +407,8 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
                     elements,
                     types));
             } catch (NullPointerException e) {
-                LOG.error(
-                    org.opencms.xml.content.Messages.get().getBundle().key(
-                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
-                    e);
+                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
     }
@@ -447,9 +445,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
             // the properties
             Map<String, String> properties = element.getSettings();
-            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
-                cms,
-                uriRes);
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(cms, uriRes);
 
             CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes, propertiesConf);
         }

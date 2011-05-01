@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentContainerPage.java,v $
- * Date   : $Date: 2011/04/21 14:20:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.lucene.document.Document;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0 
  */
@@ -128,7 +128,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
             StringBuffer content = new StringBuffer();
             Map<String, String> items = new HashMap<String, String>();
 
-            CmsContainerPageBean containerBean = containerPage.getCntPage(cms, locale);
+            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms, locale);
             for (CmsContainerElementBean element : containerBean.getElements()) {
                 // check all elements in this container
 

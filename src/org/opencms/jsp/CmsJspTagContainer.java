@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/04/30 15:23:18 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0
  */
@@ -254,7 +254,7 @@ public class CmsJspTagContainer extends TagSupport {
                         pageResource = cms.readResource(requestUri);
                     }
                     CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-                    containerPage = xmlContainerPage.getCntPage(cms, locale);
+                    containerPage = xmlContainerPage.getContainerPage(cms, locale);
                     standardContext.setPage(containerPage);
                 }
                 // create tag for container if necessary

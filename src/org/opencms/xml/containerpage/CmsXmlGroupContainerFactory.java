@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainerFactory.java,v $
- * Date   : $Date: 2011/03/21 12:49:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.1
  */
@@ -97,7 +97,7 @@ public final class CmsXmlGroupContainerFactory {
         // create the XML content
         CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, locale, modelUri);
         // call prepare for use content handler and return the result 
-        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -122,7 +122,7 @@ public final class CmsXmlGroupContainerFactory {
         // create the XML content
         CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, locale, encoding, contentDefinition);
         // call prepare for use content handler and return the result 
-        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -251,9 +251,7 @@ public final class CmsXmlGroupContainerFactory {
         // set the file
         content.setFile(file);
         // call prepare for use content handler and return the result 
-        CmsXmlGroupContainer xmlGroupContainer = (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(
-            cms,
-            content);
+        CmsXmlGroupContainer xmlGroupContainer = (CmsXmlGroupContainer)content.getHandler().prepareForUse(cms, content);
 
         // set the cache
         setCache(cms, xmlGroupContainer, keepEncoding);
@@ -361,7 +359,7 @@ public final class CmsXmlGroupContainerFactory {
 
         CmsXmlGroupContainer content = new CmsXmlGroupContainer(cms, document, encoding, resolver);
         // call prepare for use content handler and return the result 
-        return (CmsXmlGroupContainer)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return (CmsXmlGroupContainer)content.getHandler().prepareForUse(cms, content);
     }
 
     /**

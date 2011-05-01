@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2010/01/26 11:00:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -996,7 +996,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Element typeElement = type.generateXml(cms, document, root, locale);
                 // need to check for default value again because the of appinfo "mappings" node
                 I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
-                String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
+                String defaultValue = document.getHandler().getDefault(cms, value, locale);
                 if (defaultValue != null) {
                     // only if there is a default value available use it to overwrite the initial default
                     value.setStringValue(cms, defaultValue);
@@ -1090,7 +1090,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Element typeElement = type.generateXml(cms, document, root, locale);
                 // need to check for default value again because of the appinfo "mappings" node
                 I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
-                String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
+                String defaultValue = document.getHandler().getDefault(cms, value, locale);
                 if (defaultValue != null) {
                     // only if there is a default value available use it to overwrite the initial default
                     value.setStringValue(cms, defaultValue);

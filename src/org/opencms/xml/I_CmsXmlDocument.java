@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.List;
@@ -46,7 +47,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,6 +131,15 @@ public interface I_CmsXmlDocument {
      * @return the file this document was generated from
      */
     CmsFile getFile();
+
+    /**
+     * Returns the content handler associated with the content definition of this XML document.<p>
+     * 
+     * This is a shortcut for <code>getContentDefinition().getContentHandler()</code>.<p>
+     * 
+     * @return the content handler associated with the content definition of this XML document
+     */
+    I_CmsXmlContentHandler getHandler();
 
     /**
      * Returns the index count of existing values for the given path,

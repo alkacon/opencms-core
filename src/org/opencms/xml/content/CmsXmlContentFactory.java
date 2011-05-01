@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2009/11/03 13:30:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public final class CmsXmlContentFactory {
         // create the XML content
         CmsXmlContent content = new CmsXmlContent(cms, locale, encoding, contentDefinition);
         // call prepare for use content handler and return the result 
-        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -235,7 +235,7 @@ public final class CmsXmlContentFactory {
         // set the file
         content.setFile(file);
         // call prepare for use content handler and return the result 
-        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return content.getHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -300,7 +300,7 @@ public final class CmsXmlContentFactory {
 
         CmsXmlContent content = new CmsXmlContent(cms, document, encoding, resolver);
         // call prepare for use content handler and return the result 
-        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        return content.getHandler().prepareForUse(cms, content);
     }
 
     /**

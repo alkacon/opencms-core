@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.0.0 
  */
@@ -148,7 +148,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         Element element = root.addElement(getName());
 
         // get the default value from the content handler
-        String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, this, locale);
+        String defaultValue = document.getHandler().getDefault(cms, this, locale);
         if (defaultValue != null) {
             I_CmsXmlContentValue value = createValue(document, element, locale);
             value.setStringValue(cms, defaultValue);

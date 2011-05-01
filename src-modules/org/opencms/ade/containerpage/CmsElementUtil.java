@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/04/28 10:15:36 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -136,7 +136,7 @@ public class CmsElementUtil {
             cms,
             m_cms.readResource(cntPageUri),
             req);
-        CmsContainerPageBean containerPage = xmlContainerPage.getCntPage(cms, m_locale);
+        CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms, m_locale);
         m_standardContext.setPage(containerPage);
     }
 

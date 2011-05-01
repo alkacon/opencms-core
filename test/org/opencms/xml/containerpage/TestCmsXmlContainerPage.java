@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/04/15 08:44:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -163,7 +163,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
         // check beans
         for (Locale locale : locales) {
-            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, locale);
+            CmsContainerPageBean cntPage = xmlCntPage.getContainerPage(cms, locale);
             assertEquals(cntPage.getLocale(), locale);
             types = typesMap.get(locale);
             assertEquals(new HashSet<String>(types), cntPage.getTypes());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2011/04/26 13:18:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,18 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return the mapping defined for the given element xpath
      */
-    String[] getMappings(String elementName);
+    List<String> getMappings(String elementName);
+
+    /**
+     * Returns the "Title" mapping set for the given XML content document in the given Locale.<p> 
+     * 
+     * @param cms the current OpenCms user context
+     * @param document the XML content to get the title mapping for (this must be of a type that uses this handler)
+     * @param locale the locale to get the title mapping for
+     * 
+     * @return the "Title" mapping set for the given XML content document in the given Locale
+     */
+    String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 

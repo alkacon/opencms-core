@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/04/26 16:35:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,11 +80,11 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 7.5.2
  * 
- * @see #getCntPage(CmsObject, Locale)
+ * @see #getContainerPage(CmsObject, Locale)
  */
 public class CmsXmlContainerPage extends CmsXmlContent {
 
@@ -214,7 +214,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      *
      * @return the container page bean
      */
-    public CmsContainerPageBean getCntPage(CmsObject cms, Locale locale) {
+    public CmsContainerPageBean getContainerPage(CmsObject cms, Locale locale) {
 
         Locale theLocale = locale;
         if (!m_cntPages.containsKey(theLocale)) {
@@ -292,7 +292,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         }
 
         // now get the unused containers 
-        CmsContainerPageBean currentContainerPage = getCntPage(cms, locale);
+        CmsContainerPageBean currentContainerPage = getContainerPage(cms, locale);
         if (currentContainerPage != null) {
             for (String cntName : currentContainerPage.getNames()) {
                 if (!currentContainers.containsKey(cntName)) {
@@ -322,7 +322,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         if (pos > 0) {
             xpath = xpath.substring(pos + 1);
         }
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
+        CmsRelationType type = getHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
         return res;
@@ -382,9 +382,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.concatXpath(
-                            cntPath,
-                            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
+                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
+                            element.getName(),
+                            elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -435,10 +435,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
             } catch (NullPointerException e) {
-                LOG.error(
-                    org.opencms.xml.content.Messages.get().getBundle().key(
-                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
-                    e);
+                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 12:49:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1231,6 +1231,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsProperty titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertSame(titleProperty, CmsProperty.getNullProperty());
 
+        // check mapping for cms:info tag
+        String titleInfo = xmlcontent.getHandler().getTitleMapping(cms, xmlcontent, Locale.ENGLISH);
+        assertNull(titleInfo);
+
         CmsProperty localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
         assertSame(localeProperty, CmsProperty.getNullProperty());
 
@@ -1273,6 +1277,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStr, titleProperty.getValue());
         assertEquals(titleStr, titleProperty.getStructureValue());
         assertNull(titleProperty.getResourceValue());
+
+        // check mapping for cms:info tag
+        titleInfo = xmlcontent.getContentDefinition().getContentHandler().getTitleMapping(
+            cms,
+            xmlcontent,
+            Locale.ENGLISH);
+        assertNotNull(titleInfo);
+        assertEquals(titleInfo, titleStr);
 
         // check multiple mappings
         CmsProperty myTitleProperty = cms.readPropertyObject(resourcename, "MyTitle", false);

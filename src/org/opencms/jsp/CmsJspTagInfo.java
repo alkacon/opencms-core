@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2010/01/27 13:10:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 12:49:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,18 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,24 +59,27 @@ import org.apache.commons.logging.Log;
  * 
  * This tag supports the following special "property" values:
  * <ul>
- * <li><code>opencms.version</code> returns the current OpenCms version, e.g. <i>5.0 Kaitain</i>
+ * <li><code>opencms.version</code> returns the current OpenCms version, e.g. <i>8.0.0</i>.
  * <li><code>opencms.url</code> returns the current request URL, e.g. 
- * <i>http://localhost:8080/opencms/opencms/index.jsp</i>
+ * <i>http://localhost:8080/opencms/opencms/index.jsp</i>.
  * <li><code>opencms.uri</code> returns the current request URI, e.g. 
- * <i>/opencms/opencms/index.jsp</i>
+ * <i>/opencms/opencms/index.jsp</i>.
  * <li><code>opencms.webapp</code> returns the name of the OpenCms web application, e.g. 
- * <i>opencms</i>
+ * <i>opencms</i>.
  * <li><code>opencms.webbasepath</code> returns the name of system path to the OpenCms web 
- * application, e.g. <i>C:\Java\Tomcat\webapps\opencms\</i> 
+ * application, e.g. <i>C:\Java\Tomcat\webapps\opencms\</i>. 
  * <li><code>opencms.request.uri</code> returns the name of the currently requested URI in 
- * the OpenCms VFS, e.g. <i>/index.jsp</i>
+ * the OpenCms VFS, e.g. <i>/index.jsp</i>.
  * <li><code>opencms.request.element.uri</code> returns the name of the currently processed element, 
  * which might be a sub-element like a template part, 
- * in the OpenCms VFS, e.g. <i>/system/modules/org.opencms.welcome/jsptemplates/welcome.jsp</i>
+ * in the OpenCms VFS, e.g. <i>/system/modules/org.opencms.welcome/jsptemplates/welcome.jsp</i>.
  * <li><code>opencms.request.folder</code> returns the name of the parent folder of the currently
- * requested URI in the OpenCms VFS, e.g. <i>/</i>
+ * requested URI in the OpenCms VFS, e.g. <i>/</i>.
  * <li><code>opencms.request.encoding</code> returns the content encoding that has been set
- * for the currently requested resource, e.g. <i>ISO-8859-1</i>
+ * for the currently requested resource, e.g. <i>ISO-8859-1</i>.
+ * <li><code>opencms.title</code> (since 8.0.0) returns the title of the document that should be used for the 
+ * HTML title tag. This is useful for container detail pages, in which case it will return the Title 
+ * of the detail, not the container page. Otherwise it just returns the value of the Title property.
  * </ul>
  * 
  * All other property values that are passes to the tag as routed to a standard 
@@ -83,17 +93,17 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagInfo extends TagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -3881095296148023924L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagInfo.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -3881095296148023924L;
 
     /** Static array with allowed info property values. */
     private static final String[] SYSTEM_PROPERTIES = {"opencms.version", // 0
@@ -105,7 +115,8 @@ public class CmsJspTagInfo extends TagSupport {
         "opencms.request.element.uri", // 6
         "opencms.request.folder", // 7      
         "opencms.request.encoding", // 8
-        "opencms.request.locale" // 9   
+        "opencms.request.locale", // 9
+        "opencms.title" // 10   
     };
 
     /** Array list of allowed property values for more convenient lookup. */
@@ -113,6 +124,53 @@ public class CmsJspTagInfo extends TagSupport {
 
     /** The value of the <code>property</code> attribute. */
     private String m_property;
+
+    /**
+     * Returns the title of a page delivered from OpenCms, usually used for the <code>&lt;title&gt;</code> tag of
+     * a HTML page.<p>
+     * 
+     * If no title information has been found, the empty String "" is returned.<p>
+     * 
+     * @param controller the current OpenCms request controller
+     * @param req the current request
+     * 
+     * @return the title of a page delivered from OpenCms
+     */
+    public static String getTitleInfo(CmsFlexController controller, HttpServletRequest req) {
+
+        String result = null;
+        CmsObject cms = controller.getCmsObject();
+
+        try {
+
+            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
+            if (contextBean.isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = contextBean.getDetailContent();
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, res, req);
+                result = content.getHandler().getTitleMapping(cms, content, cms.getRequestContext().getLocale());
+                if (result == null) {
+                    // title no found, maybe no mapping OR not available in the current locale
+                    // read the title of the detail resource as fall back (may contain mapping from another locale)
+                    result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
+                }
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = cms.readPropertyObject(
+                    cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue("");
+            }
+        } catch (CmsException e) {
+            // NOOP, result will be null
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
+    }
 
     /**
      * Returns the selected info property value based on the provided 
@@ -161,6 +219,9 @@ public class CmsJspTagInfo extends TagSupport {
                 break;
             case 9: // opencms.request.locale
                 result = controller.getCmsObject().getRequestContext().getLocale().toString();
+                break;
+            case 10: // opencms.title
+                result = getTitleInfo(controller, req);
                 break;
             default:
                 result = System.getProperty(property);
