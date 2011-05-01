@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAreaSelectPanel.java,v $
- * Date   : $Date: 2010/12/22 10:34:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 10:24:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -257,6 +257,16 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     }
 
     /**
+     * Removes the current selection.<p>
+     */
+    public void clearSelection() {
+
+        m_state = State.EMPTY;
+        showSelect(false);
+        m_currentSelection = null;
+    }
+
+    /**
      * Returns the position of the selected area, or <code>null</code> if nothing is selected.<p>
      * 
      * @param relative if <code>true</code> the relative position is returned, otherwise the absolute position 
@@ -370,9 +380,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
                 m_firstY = event.getRelativeY(getElement());
                 if (m_mouseOverArea == null) {
                     // mouse not over selection, remove selection
-                    m_state = State.EMPTY;
-                    showSelect(false);
-                    m_currentSelection = null;
+                    clearSelection();
                     fireChangeEvent(true);
                     break;
                 }
@@ -454,8 +462,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
                     fireChangeEvent(true);
                 } else {
                     // this should never happen
-                    m_state = State.EMPTY;
-                    showSelect(false);
+                    clearSelection();
                 }
         }
 
