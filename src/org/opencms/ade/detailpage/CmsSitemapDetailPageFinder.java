@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/04/12 15:16:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.config.CmsADEConfigurationManager;
 import org.opencms.ade.config.CmsSitemapConfigurationData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
@@ -51,7 +50,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -81,22 +80,27 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
     }
 
     /**
-     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getDetailPage(CmsObject cms, CmsResource res, String linkSource) throws CmsException {
+    public String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException {
 
-        if (!CmsResourceTypeXmlContent.isXmlContent(res)) {
+        String folder = CmsResource.getFolderPath(rootPath);
+        if (folder == null) {
+            return null;
+        }
+        Map<String, String> folderTypes = OpenCms.getADEConfigurationManager().getFolderTypes(cms);
+        String folderType = folderTypes.get(folder);
+        if (folderType == null) {
             return null;
         }
         CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
         String rootLinkSource = cms.getRequestContext().addSiteRoot(linkSource);
         CmsSitemapConfigurationData sitemapConf = confManager.getSitemapConfiguration(cms, rootLinkSource);
-        String typeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        String typeName = folderType;
         List<CmsDetailPageInfo> pageInfos = sitemapConf.getDetailPageInfo().get(typeName);
         if ((pageInfos == null) || pageInfos.isEmpty()) {
-            return (new CmsPropertyDetailPageFinder()).getDetailPage(cms, res, linkSource);
+            return null;
         }
-
         CmsDetailPageInfo info = pageInfos.get(0);
         String detailPageUri = info.getUri();
         if (!CmsResource.isFolder(detailPageUri)) {

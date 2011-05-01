@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/A_CmsModuleConfigProvider.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -106,16 +107,18 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
      * 
      * @throws CmsException if something goes wrong 
      */
-    public synchronized Config getConfiguration(CmsObject cms) throws CmsException {
+    public Config getConfiguration(CmsObject cms) throws CmsException {
 
-        CmsObject acms = initCmsObject(cms);
-        boolean online = acms.getRequestContext().getCurrentProject().isOnlineProject();
-        Config result = internalGetConfiguration(online);
-        if (result == null) {
-            result = readConfiguration(acms);
-            internalSetConfiguration(online, result);
+        synchronized (OpenCms.getADEConfigurationManager()) {
+            CmsObject acms = initCmsObject(cms);
+            boolean online = acms.getRequestContext().getCurrentProject().isOnlineProject();
+            Config result = internalGetConfiguration(online);
+            if (result == null) {
+                result = readConfiguration(acms);
+                internalSetConfiguration(online, result);
+            }
+            return result;
         }
-        return result;
     }
 
     /**
@@ -129,9 +132,12 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
     @Override
-    protected synchronized void flush(boolean online) {
+    protected void flush(boolean online) {
 
-        internalSetConfiguration(online, null);
+        synchronized (OpenCms.getADEConfigurationManager()) {
+            internalSetConfiguration(online, null);
+            fireFlush(online);
+        }
     }
 
     /**
@@ -203,10 +209,13 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
      * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
      */
     @Override
-    protected synchronized void uncacheResource(CmsResource res) {
+    protected void uncacheResource(CmsResource res) {
 
-        if (m_files.contains(res.getRootPath())) {
-            m_offlineConfig = null;
+        synchronized (OpenCms.getADEConfigurationManager()) {
+            if (m_files.contains(res.getRootPath())) {
+                m_offlineConfig = null;
+                fireFlush(false);
+            }
         }
     }
 
@@ -226,4 +235,28 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
         return result;
     }
 
+    /** The list of cache flush handlers. */
+    private List<I_CmsCacheFlushHandler> m_flushHandlers = new ArrayList<I_CmsCacheFlushHandler>();
+
+    /**
+     * Adds another cache flush handler.<p>
+     * 
+     * @param handler the cache flush handler 
+     */
+    public void addFlushHandler(I_CmsCacheFlushHandler handler) {
+
+        m_flushHandlers.add(handler);
+    }
+
+    /**
+     * Notifies all the flush handlers of a cache flush.<p>
+     * 
+     * @param online true if the online cache was flushed 
+     */
+    public void fireFlush(boolean online) {
+
+        for (I_CmsCacheFlushHandler handler : m_flushHandlers) {
+            handler.onFlushCache(online);
+        }
+    }
 }

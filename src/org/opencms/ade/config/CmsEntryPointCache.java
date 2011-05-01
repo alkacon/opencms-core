@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsEntryPointCache.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -148,21 +148,26 @@ public class CmsEntryPointCache {
      * is a possible sitemap entry point.<p>
      * 
      * @param res a resource which has changed 
+     * @return true if the cache was flushed 
      */
-    public void checkFlush(CmsResource res) {
+    public boolean checkFlush(CmsResource res) {
 
         if (isPotentialEntryPoint(res) || containsEntryPoint(res.getRootPath())) {
             flush();
+            return true;
         }
+        return false;
     }
 
     /**
      * Flushes the entry point cache.<p>
      */
-    public synchronized void flush() {
+    public void flush() {
 
-        LOG.debug("flushing entry point cache (online=" + m_online + ")");
-        m_entryPoints = null;
+        synchronized (OpenCms.getADEConfigurationManager()) {
+            LOG.debug("flushing entry point cache (online=" + m_online + ")");
+            m_entryPoints = null;
+        }
     }
 
     /**
@@ -174,15 +179,18 @@ public class CmsEntryPointCache {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public synchronized List<EntryPointFolder> getEntryPoints(CmsObject cms) throws CmsException {
+    public List<EntryPointFolder> getEntryPoints(CmsObject cms) throws CmsException {
 
-        readEntryPointsIfNecessary(cms);
-        List<EntryPointFolder> result = new ArrayList<EntryPointFolder>();
-        for (Map.Entry<String, EntryPointFolder> entry : m_entryPoints.entrySet()) {
-            EntryPointFolder entryPoint = entry.getValue();
-            result.add(entryPoint);
+        synchronized (OpenCms.getADEConfigurationManager()) {
+
+            readEntryPointsIfNecessary(cms);
+            List<EntryPointFolder> result = new ArrayList<EntryPointFolder>();
+            for (Map.Entry<String, EntryPointFolder> entry : m_entryPoints.entrySet()) {
+                EntryPointFolder entryPoint = entry.getValue();
+                result.add(entryPoint);
+            }
+            return result;
         }
-        return result;
     }
 
     /**
@@ -195,11 +203,13 @@ public class CmsEntryPointCache {
      *  
      * @throws CmsException if something goes wrong 
      */
-    public synchronized List<EntryPointFolder> lookup(CmsObject cms, String path) throws CmsException {
+    public List<EntryPointFolder> lookup(CmsObject cms, String path) throws CmsException {
 
-        readEntryPointsIfNecessary(cms);
-        List<EntryPointFolder> result = lookup(path);
-        return result;
+        synchronized (OpenCms.getADEConfigurationManager()) {
+            readEntryPointsIfNecessary(cms);
+            List<EntryPointFolder> result = lookup(path);
+            return result;
+        }
     }
 
     /**

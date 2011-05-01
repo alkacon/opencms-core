@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsEntryPointCacheManager.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -78,14 +79,18 @@ public class CmsEntryPointCacheManager {
                     // a resource has been modified in a way that it *IS NOT* necessary also to clear 
                     // lists of cached sub-resources where the specified resource might be contained inside.
                     resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                    m_offlineCache.checkFlush(resource);
+                    if (m_offlineCache.checkFlush(resource)) {
+                        fireFlush(false);
+                    }
                     break;
 
                 case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
                     // a list of resources and all of their properties have been modified
                     resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                     for (CmsResource res : resources) {
-                        m_offlineCache.checkFlush(res);
+                        if (m_offlineCache.checkFlush(res)) {
+                            fireFlush(false);
+                        }
                     }
                     break;
 
@@ -95,22 +100,29 @@ public class CmsEntryPointCacheManager {
                     // a list of resources has been modified
                     resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                     for (CmsResource res : resources) {
-                        m_offlineCache.checkFlush(res);
+                        if (m_offlineCache.checkFlush(res)) {
+                            fireFlush(false);
+                        }
                     }
+                    fireFlush(false);
                     break;
 
                 case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
                 case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                     m_onlineCache.flush();
+                    fireFlush(true);
                     break;
 
                 case I_CmsEventListener.EVENT_CLEAR_CACHES:
                     m_offlineCache.flush();
+                    fireFlush(false);
                     m_onlineCache.flush();
+                    fireFlush(true);
                     break;
 
                 case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
                     m_offlineCache.flush();
+                    fireFlush(false);
                     break;
 
                 default:
@@ -127,6 +139,9 @@ public class CmsEntryPointCacheManager {
 
     /** The online entry point cache. */
     protected CmsEntryPointCache m_onlineCache;
+
+    /** The cache flush handlers for this cache. */
+    private List<I_CmsCacheFlushHandler> m_flushHandlers = new ArrayList<I_CmsCacheFlushHandler>();
 
     /**
      * Creates a new entry point cache manager.<p>
@@ -199,4 +214,27 @@ public class CmsEntryPointCacheManager {
 
         return getCache(cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
+
+    /**
+     * Adds a cache flush handler.<p>
+     * 
+     * @param flushHandler the cache flush handler
+     */
+    public void addFlushHandler(I_CmsCacheFlushHandler flushHandler) {
+
+        m_flushHandlers.add(flushHandler);
+    }
+
+    /**
+     * Notifies the cache flush handlers of a cache flush.<p>
+     * 
+     * @param online true if the online cache is being flushed 
+     */
+    protected void fireFlush(boolean online) {
+
+        for (I_CmsCacheFlushHandler handler : m_flushHandlers) {
+            handler.onFlushCache(online);
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsLazyFolder.java,v $
- * Date   : $Date: 2011/01/19 10:39:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.main.OpenCms;
  *    
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -156,6 +156,23 @@ public class CmsLazyFolder {
         String parentPath = CmsResource.getParentFolder(m_path);
         CmsResource parent = cms.readResource(parentPath);
         return parent;
+    }
+
+    /**
+     * Computes the site path of the folder, which is either the original path constructor argument, or the site
+     * path of the original resource constructor argument.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the site path of the lazy folder 
+     */
+    public String getSitePath(CmsObject cms) {
+
+        if (m_path != null) {
+            return m_path;
+        } else if (m_folder != null) {
+            return cms.getRequestContext().removeSiteRoot(m_folder.getRootPath());
+        }
+        return null;
     }
 
 }

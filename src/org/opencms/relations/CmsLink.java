@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2011/04/20 07:01:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/01 13:15:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.relations;
 
-import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -61,7 +60,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -364,7 +363,8 @@ public class CmsLink {
             }
 
             checkConsistency(cms);
-            String target = replaceTargetWithDetailPageIfNecessary(cms, m_resource, m_target);
+            //String target = replaceTargetWithDetailPageIfNecessary(cms, m_resource, m_target);
+            String target = m_target;
             String uri = computeUri(target, m_query, m_anchor);
 
             CmsObjectWrapper wrapper = (CmsObjectWrapper)cms.getRequestContext().getAttribute(
@@ -702,34 +702,6 @@ public class CmsLink {
         }
         return uri.toString();
 
-    }
-
-    /**
-     * Replaces a link target with a detail page uri if necessary.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource for which the detail pages should be checked 
-     * @param target the link target which should be replaced with a detail page uri 
-     * 
-     * @return the detail page uri (if the target was replaced), or the original target.
-     */
-    private String replaceTargetWithDetailPageIfNecessary(CmsObject cms, CmsResource res, String target) {
-
-        if (res == null) {
-            return target;
-        }
-        try {
-            I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getUri());
-            if (detailPage == null) {
-                return target;
-            }
-            String urlName = cms.readNewestUrlNameForId(res.getStructureId());
-            return CmsStringUtil.joinPaths(detailPage, urlName, "/");
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return target;
-        }
     }
 
     /**

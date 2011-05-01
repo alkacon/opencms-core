@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2011/04/20 07:01:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/01 13:15:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,11 @@
 
 package org.opencms.jsp;
 
-import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUriSplitter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -56,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,42 +88,9 @@ public class CmsJspTagLink extends BodyTagSupport {
         // be sure the link is absolute
         String uri = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
         CmsObject cms = controller.getCmsObject();
-        uri = subsituteSitemapUri(uri, cms);
+        //uri = subsituteSitemapUri(uri, cms);
         // generate the link
         return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
-    }
-
-    /**
-     * Returns the detail page link for a given uri, if the resource must be displayed with a detail page.<p>
-     * 
-     * @param uri the uri to resolve the detail page link for
-     * @param cms the current OpenCms context
-     * 
-     * @return the detail page link for a given uri, if the resource must be displayed with a detail page
-     */
-    public static String subsituteSitemapUri(String uri, CmsObject cms) {
-
-        // TODO: This method must be more public, muve up to manager level
-        // TODO: check if the uri may require detail page (ie. XMl content) before doing all the stuff with the managers
-
-        // split to include only the uri without parameters and anchors
-        CmsUriSplitter splitter = new CmsUriSplitter(uri);
-        String result = splitter.getPrefix();
-
-        try {
-            // check for detail view
-            CmsResource res = cms.readResource(result);
-            I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getUri());
-            if (detailPage != null) {
-                result = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
-            }
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-        }
-        // append parameters and anchors that where cut from the uri
-        result += splitter.getSuffix();
-        return result;
     }
 
     /**

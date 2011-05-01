@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/I_CmsDetailPageFinder.java,v $
- * Date   : $Date: 2011/04/12 14:41:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Collection;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,12 +63,12 @@ public interface I_CmsDetailPageFinder {
      * Returns the detail page link for the given resource, or null if there is no detail page for the resource.<p>
      * 
      * @param cms the CMS context 
-     * @param res the resource  
-     * @param linkSource the uri in the context of which the detail page link is being generated
+     * @param rootPath the root path of the resource for which the detail page should be looked up   
+     * @param linkSource the uri in the context of which the detail page link is being generated (relative to the site) 
      * @return the detail page link, or null
      *   
      * @throws CmsException if something goes wrong 
      */
-    String getDetailPage(CmsObject cms, CmsResource res, String linkSource) throws CmsException;
+    String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException;
 
 }

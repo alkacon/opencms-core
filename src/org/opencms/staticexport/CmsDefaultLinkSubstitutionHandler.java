@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2011/04/12 14:08:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,11 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -51,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.0.2
  * 
@@ -138,6 +142,39 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             targetSite = currentSite;
         }
 
+        String targetSiteRoot = targetSite.getSiteRoot();
+        String originalVfsName = vfsName;
+        try {
+            String rootVfsName;
+            if (!vfsName.startsWith(targetSiteRoot)
+                && !vfsName.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
+                && !OpenCms.getSiteManager().startsWithShared(vfsName)) {
+                rootVfsName = CmsStringUtil.joinPaths(targetSiteRoot, vfsName);
+            } else {
+                rootVfsName = vfsName;
+            }
+            I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
+            String detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+            if (detailPage != null) {
+                if (detailPage.startsWith(targetSiteRoot)) {
+                    detailPage = detailPage.substring(targetSiteRoot.length());
+                    if (!detailPage.startsWith("/")) {
+                        detailPage = "/" + detailPage;
+                    }
+                }
+                try {
+                    CmsResource element = cms.readResource(vfsName);
+                    vfsName = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(element), "/");
+                } catch (CmsVfsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         // if the link points to another site, there needs to be a server prefix
         String serverPrefix;
         if (targetSite != currentSite) {
@@ -211,7 +248,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     int linkType = -1;
                     try {
                         // read the linked resource 
-                        linkType = cms.readResource(vfsName).getTypeId();
+                        linkType = cms.readResource(originalVfsName).getTypeId();
                     } catch (CmsException e) {
                         // the resource could not be read
                         if (LOG.isInfoEnabled()) {

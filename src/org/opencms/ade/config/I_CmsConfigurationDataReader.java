@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/I_CmsConfigurationDataReader.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 13:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,21 @@ import org.opencms.main.CmsException;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsConfigurationDataReader<Config> {
+
+    /**
+     * Gets the cached combined configuration data for a given root path, or null if the combined data hasn't been set.<p>
+     * 
+     * @param rootPath the root path 
+     * @param online true if the configuration data for the online project should be retrieved
+     *  
+     * @return the combined configuration data 
+     */
+    Config getCombinedConfiguration(String rootPath, boolean online);
 
     /**
      * Reads the configuration data from the given path.<p>
@@ -58,5 +68,14 @@ public interface I_CmsConfigurationDataReader<Config> {
      * @throws CmsException if something goes wrong 
      */
     Config getConfiguration(CmsObject cms, String path) throws CmsException;
+
+    /** 
+     * Sets the combined configuration data for the given root path.<p>
+     * 
+     * @param rootPath the root path 
+     * @param online true if it's for the online project 
+     * @param config the configuration object 
+     */
+    void setCombinedConfiguration(String rootPath, boolean online, Config config);
 
 }
