@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlUpdateOpenGallery.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/01 11:29:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
+import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -96,36 +97,47 @@ public class CmsXmlUpdateOpenGallery extends A_CmsXmlWorkplace {
     }
 
     /**
+     * Returns the xpath for a specific gallery type.<p>
+     * 
+     * @param type the gallery type
+     * @return the xpath for that gallery type 
+     */
+    protected String xpathForGalleryType(String type) {
+
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/");
+        xp.append(CmsConfigurationManager.N_ROOT);
+        xp.append("/");
+        xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
+        xp.append("/");
+        xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+        xp.append("/");
+        xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+        xp.append("[@");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("='").append(type).append("']/");
+        xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
+        xp.append("/");
+        xp.append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
+        xp.append("/");
+        xp.append(CmsWorkplaceConfiguration.N_ENTRY);
+        xp.append("[@");
+        xp.append(I_CmsXmlConfiguration.A_URI);
+        xp.append("='").append("commons/opengallery.jsp").append("']");
+        return xp.toString();
+
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     @Override
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // /opencms/workplace/explorertypes/explorertype[@name='downloadgallery']/editoptions/contextmenu/entry[@uri='commons/opengallery.jsp']
-            StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='").append(CmsAjaxDownloadGallery.GALLERYTYPE_NAME).append("']/");
-            xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_ENTRY);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.A_URI);
-            xp.append("='").append("commons/opengallery.jsp").append("']");
-
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString());
+            m_xpaths.add(xpathForGalleryType(CmsAjaxDownloadGallery.GALLERYTYPE_NAME));
+            m_xpaths.add(xpathForGalleryType(CmsAjaxImageGallery.GALLERYTYPE_NAME));
         }
         return m_xpaths;
     }

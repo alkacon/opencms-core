@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 11:29:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,21 +38,24 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Branch;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 
 /**
  * Skeleton for xml update plugins.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.8 
  */
@@ -212,4 +215,20 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
             ((Branch)newDoc.selectSingleNode(CmsXmlUtils.removeLastComplexXpathElement(xpath))).add(node);
         }
     }
+
+    /**
+     * Creates a dom4j element from an XML string.<p>
+     * 
+     * @param xml the xml string 
+     * @return the dom4j element 
+     * 
+     * @throws DocumentException if the XML parsing fails
+     */
+    public static org.dom4j.Element createElementFromXml(String xml) throws DocumentException {
+
+        SAXReader reader = new SAXReader();
+        Document newNodeDocument = reader.read(new StringReader(xml));
+        return newNodeDocument.getRootElement();
+    }
+
 }

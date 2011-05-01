@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/01 11:29:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
 import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.relations.I_CmsLinkParseable;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.setup.db.CmsUpdateDBThread;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,7 +176,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return <code>false</code> if OCEE is present but not compatible with opencms version
      */
-    @SuppressWarnings( {"unchecked", "boxing", "rawtypes"})
+    @SuppressWarnings( {"unchecked", "boxing"})
     public boolean checkOceeVersion(String version) {
 
         try {
@@ -789,6 +790,35 @@ public class CmsUpdateBean extends CmsSetupBean {
                 }
             }
         }
+    }
+
+    /** 
+     * Creates the shared folder if possible.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void createSharedFolder() throws Exception {
+
+        String originalSiteRoot = m_cms.getRequestContext().getSiteRoot();
+        CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
+        try {
+            m_cms.getRequestContext().setSiteRoot("");
+            m_cms.getRequestContext().setCurrentProject(m_cms.createTempfileProject());
+            if (!m_cms.existsResource("/shared")) {
+                m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder").getTypeId());
+                CmsResource shared = m_cms.readResource("/shared");
+                OpenCms.getPublishManager().publishProject(
+                    m_cms,
+                    new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),
+                    shared,
+                    false);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
+        } finally {
+            m_cms.getRequestContext().setSiteRoot(originalSiteRoot);
+            m_cms.getRequestContext().setCurrentProject(originalProject);
+        }
+
     }
 
     /**

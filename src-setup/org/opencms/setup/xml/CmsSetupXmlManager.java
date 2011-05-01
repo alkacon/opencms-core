@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2011/04/29 16:17:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/01 11:29:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.8 
  */
@@ -186,7 +186,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddAdeConfig());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddTimezone());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateFlexcache());
-        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSubscriptionManager());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSharedFolderConfiguration());
 
         // vfs
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceLoaders());
@@ -205,6 +205,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddJspLoaderParams());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypeParams());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWidgets());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddCollectors());
 
         // workplace
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDirectEditProvider());
@@ -217,6 +218,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddIconRules());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateMenuRules());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlChangeDefaultDirectEditProvider());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateContextMenuEntries());
 
         setup();
     }

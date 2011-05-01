@@ -19,6 +19,9 @@ updateRelations
 # Import the modules that have been selected in the update wizard
 updateModulesFromUpdateBean
 
+# Create the shared folder
+createSharedFolder
+
 # purge the jsp repository
 purgeJspRepository
 

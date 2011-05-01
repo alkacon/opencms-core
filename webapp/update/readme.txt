@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.5.0
+            Instructions for updating OpenCms 7.x to OpenCms 8
 
 
                                     WARNING:
@@ -16,15 +16,12 @@ existing OpenCms installation when using this upgrade wizard.
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup 
 of your OpenCms installation and database.
 
-IMPORTANT: If you are using the Alkacon OCEE modules with your OpenCms installation,
-you MUST make sure the Alkacon OCEE version is compatible with OpenCms 7.5.3 BEFORE 
-you run this upgrade wizard! Alkacon OCEE version 2.1.3 or newer is required for 
-OpenCms 7.5.3. If you have an older version of Alkacon OCEE installed, you need to 
-update the Alkacon OCEE modules first.
+IMPORTANT: Alkacon OCEE versions less than 3 will not work with OpenCms 8.   
 
+IMPORTANT: The updater is only compatible with the database engines MySQL, 
+           Oracle and PostgreSQL.
 
-
-Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.5.3:
+Follow the following steps to update from OpenCms 7 to OpenCms 8:
 
 
 1. Shutdown your OpenCms servlet container
@@ -34,7 +31,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.5.0.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.0.0.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -86,7 +83,7 @@ You will need the Admin password to continue with the upgrade.
 When asked to select the modules to update you should definitely select all
 org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
 the org.opencms.frontend.* modules if you have installed them before on your 
-OpenCms server.
+OpenCms server. 
 
 Here the site selection is only important for the org.opencms.frontend.* modules,
 so it should be the site where you have installed these modules. This is by default:
@@ -114,15 +111,6 @@ OpenCms' jsp repository (ie. ${OPENCMS_HOME}/WEB-INF/jsp/)
 You should now be able to log into the OpenCms workplace as before.
 
 
-7. After restarting
-
-You might need to uninstall no longer supported legacy (OpenCms version 5 and 6)
-modules, like:
-- org.opencms.legacy (which includes the old workflow engine)
-- org.opencms.editors.htmlarea (discontinued HtmlArea WYSIWYG editor)
-- org.opencms.editors.ledit (discontinued text editor for Internet Explorer)
-- org.opencms.editor.msdhtml (discontinued Microsoft ActiveX WYSIWYG editor)
-
 
 IMPORTANT: PLEASE READ THIS
 
@@ -132,39 +120,6 @@ IMPORTANT: PLEASE READ THIS
 * Hint: You can use the "Resource changed since" feature in the the Database 
   Administration to export all the changes you have done after installing 
   OpenCms
+  
+ 
 
---------------------------------------
-Important Notes for 6.x Updates only: 
-
-The first step is a database update, please notice that until now this is working
-and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
-9i and 10g. And it should also work for PostgreSQL, but it is not implemented for
-MsSQL.
-
-This process is very time and space consuming, for instance, for a system with 
-3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
-resources takes about 2 hours (without historical data).
-
-By default, this process deletes all historical data. But you can decide to keep
-them, but this is not recommended since it is not really possible to convert the
-data to the new schema, so that the converted data might be unusable any how, 
-and second, the process might be more than 10 times slower if this option is 
-activated.
-
-The database update process writes report which is very technical, it is just to
-give you an idea of what is going on and if there is a problem, logging almost 
-any SQL statement send to the database, this report is also written to a log file 
-under /WEB-INF/logs/db-update.log.
-
-You should expect some exceptions while converting user data, so some user 
-settings may get lost, but this is unfortunately inevitable.
-
-Additionally the automatic configuration files update from OpenCms 6.x to OpenCms 
-7.0.x is working, for all configuration files, except the opencms-workplace.xml file, 
-since it has been completely restructured.
-Before continuing you need to get an OpenCms 7.x.x opencms-workplace.xml configuration 
-file. One is provided under update/config, but you will need to manually copy it to 
-your WEB-INF/config/ folder. This procedure is to prevent that your changes get lost,
-but you are the responsible for customizing this configuration file again.
-
-If you decide not to update this configuration file, the update will NOT work.

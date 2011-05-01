@@ -1,24 +1,24 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddWidgets.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddTypeMappings.java,v $
  * Date   : $Date: 2011/05/01 11:29:46 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -45,16 +45,15 @@ import java.util.List;
 import org.dom4j.Document;
 
 /**
- * Adds the new loader parameters.<p>
- * 
+ * Adds some binary type mappings.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsXmlAddWidgets extends A_CmsXmlVfs {
+public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -62,19 +61,14 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     /** 
      * The new widget definition data.<p>
      */
-    private String[][] m_widgets = {
-        {"org.opencms.widgets.CmsAdeDownloadGalleryWidget", "DownloadGalleryWidget"},
-        {"org.opencms.widgets.CmsAdeImageGalleryWidget", "ImageGalleryWidget"},
-        {"org.opencms.widgets.CmsDownloadGalleryWidget", "LegacyDownloadGalleryWidget"},
-        {"org.opencms.widgets.CmsImageGalleryWidget", "LegacyImageGalleryWidget"},
-        {"org.opencms.widgets.CmsSelectGroupWidget", "GroupSelectorWidget"}};
+    private String[] m_suffixes = {".flv", ".swf"};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
      */
     public String getName() {
 
-        return "Add new widget definitions for ADE galleries";
+        return "Add new resource type mappings";
     }
 
     /**
@@ -92,9 +86,12 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        for (int i = 0; i < m_widgets.length; i++) {
+        for (int i = 0; i < m_suffixes.length; i++) {
             if (xpath.equals(getXPathsToUpdate().get(i))) {
-                CmsSetupXmlHelper.setValue(document, xpathForWidgetAlias(m_widgets[i][0]), m_widgets[i][1]);
+                if (document.selectSingleNode(xpath) != null) {
+                    return false;
+                }
+                CmsSetupXmlHelper.setValue(document, xpath, "");
                 return true;
             }
         }
@@ -107,7 +104,7 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     @Override
     protected String getCommonPath() {
 
-        return xpathForWidgets();
+        return xpathForType("binary");
     }
 
     /**
@@ -118,59 +115,68 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
         if (m_xpaths == null) {
             m_xpaths = new ArrayList<String>();
-            for (int i = 0; i < m_widgets.length; i++) {
-                m_xpaths.add(xpathForWidgetByClass(m_widgets[i][0]));
+            for (int i = 0; i < m_suffixes.length; i++) {
+                m_xpaths.add(xpathForTypeMapping("binary", m_suffixes[i]));
             }
         }
         return m_xpaths;
     }
 
     /**
-     * Returns the xpath for the alias attribute of a widget node with a given class name.<p>
+     * Returns the xpath for a the resourcetypes node.<p>
      * 
-     * @param className the class name 
-     * 
-     * @return the xpath of the widget node's alias attribute 
+     * @return the xpath for the resourcetypes node 
      */
-    protected String xpathForWidgetAlias(String className) {
-
-        return xpathForWidgetByClass(className) + "/@" + I_CmsXmlConfiguration.A_ALIAS;
-    }
-
-    /**
-     * Returns the xpath for a widget node with a given class attribute.<p>
-     * 
-     * @param className the class name 
-     * 
-     * @return the xpath for the widget with the given class name attribute 
-     */
-    protected String xpathForWidgetByClass(String className) {
-
-        return xpathForWidgets()
-            + "/"
-            + CmsVfsConfiguration.N_WIDGET
-            + "[@"
-            + I_CmsXmlConfiguration.A_CLASS
-            + "='"
-            + className
-            + "']";
-    }
-
-    /**
-     * Returns the xpath for the widgets node.<p>
-     * 
-     * @return the xpath for the widgets node 
-     */
-    protected String xpathForWidgets() {
+    protected String xpathForTypes() {
 
         return "/"
             + CmsConfigurationManager.N_ROOT
             + "/"
             + CmsVfsConfiguration.N_VFS
             + "/"
-            + CmsVfsConfiguration.N_XMLCONTENT
+            + CmsVfsConfiguration.N_RESOURCES
             + "/"
-            + CmsVfsConfiguration.N_WIDGETS;
+            + CmsVfsConfiguration.N_RESOURCETYPES;
+    }
+
+    /**
+     * Returns the xpath for the type node with a given type name.<p>
+     * 
+     * @param type the resource type name 
+     * 
+     * @return the xpath for the type node
+     */
+    protected String xpathForType(String type) {
+
+        return xpathForTypes()
+            + "/"
+            + CmsVfsConfiguration.N_TYPE
+            + "[@"
+            + I_CmsXmlConfiguration.A_NAME
+            + "='"
+            + type
+            + "']";
+    }
+
+    /**
+     * Returns the xpath for a type mapping with a given suffix.<p> 
+     * 
+     * @param type the type name 
+     * @param suffix the suffix 
+     * @return the xpath of the type mapping 
+     */
+    protected String xpathForTypeMapping(String type, String suffix) {
+
+        return xpathForType(type)
+            + "/"
+            + CmsVfsConfiguration.N_MAPPINGS
+            + "/"
+            + CmsVfsConfiguration.N_MAPPING
+            + "[@"
+            + I_CmsXmlConfiguration.A_SUFFIX
+            + "='"
+            + suffix
+            + "']";
     }
 
 }

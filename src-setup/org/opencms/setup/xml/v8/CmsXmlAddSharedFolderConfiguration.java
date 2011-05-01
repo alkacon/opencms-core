@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddSubscriptionManager.java,v $
- * Date   : $Date: 2011/04/27 14:44:33 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddSharedFolderConfiguration.java,v $
+ * Date   : $Date: 2011/05/01 11:29:46 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -13,7 +13,7 @@
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,     
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
@@ -33,10 +33,8 @@ package org.opencms.setup.xml.v8;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +43,15 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new loader classes.<p>
+ * Adds the shared folder configuration.<p>
  * 
- * @author Michael Moossen
+ * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
+public class CmsXmlAddSharedFolderConfiguration extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -63,7 +61,7 @@ public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add subscription manager to opencms-system.xml";
+        return "Adds the configuration for the shared folder";
     }
 
     /**
@@ -75,15 +73,6 @@ public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#validate(org.opencms.setup.CmsSetupBean)
-     */
-    @Override
-    public boolean validate(CmsSetupBean setupBean) throws Exception {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCodeToChange(setupBean));
-    }
-
-    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
@@ -91,9 +80,7 @@ public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            CmsSetupXmlHelper.setValue(document, xpath + "/@enabled", "true");
-            CmsSetupXmlHelper.setValue(document, xpath + "/@poolname", "default");
-            CmsSetupXmlHelper.setValue(document, xpath + "/@maxvisited", "5");
+            CmsSetupXmlHelper.setValue(document, xpath, "/shared/");
             return true;
         }
         return false;
@@ -105,7 +92,11 @@ public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
     @Override
     protected String getCommonPath() {
 
-        return "/" + CmsConfigurationManager.N_ROOT + "/" + CmsSystemConfiguration.N_SYSTEM;
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+        xp.append("/").append(CmsSystemConfiguration.N_SITES);
+        return xp.toString();
     }
 
     /**
@@ -115,13 +106,13 @@ public class CmsXmlAddSubscriptionManager extends A_CmsSetupXmlUpdate {
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
+            StringBuffer xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+            xp.append("/").append(CmsSystemConfiguration.N_SITES);
+            xp.append("/").append(CmsSystemConfiguration.N_SHARED_FOLDER);
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add("/"
-                + CmsConfigurationManager.N_ROOT
-                + "/"
-                + CmsSystemConfiguration.N_SYSTEM
-                + "/"
-                + CmsSystemConfiguration.N_SUBSCRIPTIONMANAGER);
+            m_xpaths.add(xp.toString());
         }
         return m_xpaths;
     }

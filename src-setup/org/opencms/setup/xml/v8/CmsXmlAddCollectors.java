@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddWidgets.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddCollectors.java,v $
  * Date   : $Date: 2011/05/01 11:29:46 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -12,12 +12,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
@@ -45,16 +45,15 @@ import java.util.List;
 import org.dom4j.Document;
 
 /**
- * Adds the new loader parameters.<p>
+ * Add new explorer types.<p>
  * 
+ * @author Michael Moossen
  * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsXmlAddWidgets extends A_CmsXmlVfs {
+public class CmsXmlAddCollectors extends A_CmsXmlVfs {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -62,19 +61,16 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     /** 
      * The new widget definition data.<p>
      */
-    private String[][] m_widgets = {
-        {"org.opencms.widgets.CmsAdeDownloadGalleryWidget", "DownloadGalleryWidget"},
-        {"org.opencms.widgets.CmsAdeImageGalleryWidget", "ImageGalleryWidget"},
-        {"org.opencms.widgets.CmsDownloadGalleryWidget", "LegacyDownloadGalleryWidget"},
-        {"org.opencms.widgets.CmsImageGalleryWidget", "LegacyImageGalleryWidget"},
-        {"org.opencms.widgets.CmsSelectGroupWidget", "GroupSelectorWidget"}};
+    private String[][] m_collectors = {
+        {"org.opencms.file.collectors.CmsSubscriptionCollector", "150"},
+        {"org.opencms.file.collectors.CmsChangedResourceCollector", "160"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
      */
     public String getName() {
 
-        return "Add new widget definitions for ADE galleries";
+        return "Add new content collectors";
     }
 
     /**
@@ -92,9 +88,12 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        for (int i = 0; i < m_widgets.length; i++) {
+        for (int i = 0; i < m_collectors.length; i++) {
             if (xpath.equals(getXPathsToUpdate().get(i))) {
-                CmsSetupXmlHelper.setValue(document, xpathForWidgetAlias(m_widgets[i][0]), m_widgets[i][1]);
+                if (document.selectSingleNode(xpath) != null) {
+                    return false;
+                }
+                CmsSetupXmlHelper.setValue(document, xpathForOrder(m_collectors[i][0]), m_collectors[i][1]);
                 return true;
             }
         }
@@ -107,7 +106,7 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     @Override
     protected String getCommonPath() {
 
-        return xpathForWidgets();
+        return xpathForCollectors();
     }
 
     /**
@@ -118,37 +117,37 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
         if (m_xpaths == null) {
             m_xpaths = new ArrayList<String>();
-            for (int i = 0; i < m_widgets.length; i++) {
-                m_xpaths.add(xpathForWidgetByClass(m_widgets[i][0]));
+            for (int i = 0; i < m_collectors.length; i++) {
+                m_xpaths.add(xpathForCollectorByClass(m_collectors[i][0]));
             }
         }
         return m_xpaths;
     }
 
     /**
-     * Returns the xpath for the alias attribute of a widget node with a given class name.<p>
+     * Returns the xpath for the order of a collector node with a given class name.<p>
      * 
      * @param className the class name 
      * 
-     * @return the xpath of the widget node's alias attribute 
+     * @return the xpath of the collector node's alias attribute 
      */
-    protected String xpathForWidgetAlias(String className) {
+    protected String xpathForOrder(String className) {
 
-        return xpathForWidgetByClass(className) + "/@" + I_CmsXmlConfiguration.A_ALIAS;
+        return xpathForCollectorByClass(className) + "/@" + I_CmsXmlConfiguration.A_ORDER;
     }
 
     /**
-     * Returns the xpath for a widget node with a given class attribute.<p>
+     * Returns the xpath for a collector node with a given class attribute.<p>
      * 
      * @param className the class name 
      * 
-     * @return the xpath for the widget with the given class name attribute 
+     * @return the xpath for the collector with the given class name attribute 
      */
-    protected String xpathForWidgetByClass(String className) {
+    protected String xpathForCollectorByClass(String className) {
 
-        return xpathForWidgets()
+        return xpathForCollectors()
             + "/"
-            + CmsVfsConfiguration.N_WIDGET
+            + CmsVfsConfiguration.N_COLLECTOR
             + "[@"
             + I_CmsXmlConfiguration.A_CLASS
             + "='"
@@ -157,20 +156,19 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     }
 
     /**
-     * Returns the xpath for the widgets node.<p>
+     * Returns the xpath for the collectors node.<p>
      * 
-     * @return the xpath for the widgets node 
+     * @return the xpath for the collectors node 
      */
-    protected String xpathForWidgets() {
+    protected String xpathForCollectors() {
 
         return "/"
             + CmsConfigurationManager.N_ROOT
             + "/"
             + CmsVfsConfiguration.N_VFS
             + "/"
-            + CmsVfsConfiguration.N_XMLCONTENT
+            + CmsVfsConfiguration.N_RESOURCES
             + "/"
-            + CmsVfsConfiguration.N_WIDGETS;
+            + CmsVfsConfiguration.N_COLLECTORS;
     }
-
 }
