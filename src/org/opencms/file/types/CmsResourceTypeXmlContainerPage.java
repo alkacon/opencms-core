@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/01 12:49:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/01 15:11:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.6 
  */
@@ -111,31 +111,36 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     }
 
     /**
-     * Returns the sitemap type id.<p>
+     * Returns the container-page type id.<p>
      * 
-     * @return the sitemap type id
+     * @return the container-page type id
      * 
      * @throws CmsLoaderException if the type is not configured
      */
     public static int getContainerPageTypeId() throws CmsLoaderException {
 
         if (containerPageTypeId == 0) {
-            containerPageTypeId = OpenCms.getResourceManager().getResourceType(getStaticTypeName()).getTypeId();
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getStaticTypeName());
+            if (resType != null) {
+                containerPageTypeId = resType.getTypeId();
+            }
         }
         return containerPageTypeId;
     }
 
     /**
-     * Returns the sitemap type id, but returns -1 instead of throwing an exception when an error happens.<p>
+     * Returns the container-page type id, but returns -1 instead of throwing an exception when an error happens.<p>
      * 
-     * @return the sitemap type id 
+     * @return the container-page type id 
      */
     public static int getContainerPageTypeIdSafely() {
 
         try {
             return getContainerPageTypeId();
         } catch (CmsLoaderException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
             return -1;
         }
     }
@@ -245,6 +250,14 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                this.getClass().getName(),
+                RESOURCE_TYPE_NAME,
+                name));
+        }
+        int typeId = Integer.valueOf(id).intValue();
+        if ((containerPageTypeId > 0) && (containerPageTypeId != typeId)) {
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_RESOURCE_TYPE_ALREADY_CONFIGURED_3,
                 this.getClass().getName(),
                 RESOURCE_TYPE_NAME,
                 name));
