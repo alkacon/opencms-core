@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsForm.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,8 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -59,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -159,7 +161,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
         m_ratioLock.addClickHandler(this);
 
         m_resetSize.setImageClass(I_CmsImageBundle.INSTANCE.style().resetIcon());
-
+        m_resetSize.addClickHandler(this);
         m_selectBox.addValueChangeHandler(this);
         m_heightBox.addValueChangeHandler(this);
         m_heightBox.addKeyPressHandler(this);
@@ -179,8 +181,8 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
     private static native int parseInt(String value) /*-{
         var ret = parseInt(value);
         if (isNaN(ret)) {
-        return -1;
-        } 
+            return -1;
+        }
         return ret;
     }-*/;
 
@@ -255,15 +257,26 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
         //preventing any input but numbers
         char key = event.getCharCode();
-        if (((key >= '0') && (key <= '9'))
-            || (key == KeyCodes.KEY_BACKSPACE)
-            || (key == KeyCodes.KEY_DELETE)
-            || (key == KeyCodes.KEY_TAB)
-            || (key == KeyCodes.KEY_LEFT)
-            || (key == KeyCodes.KEY_RIGHT)
-            || (key == KeyCodes.KEY_ENTER)) {
+        int code = event.getNativeEvent().getKeyCode();
+        if (((key >= '0') && (key <= '9')) || (code == KeyCodes.KEY_BACKSPACE) || (code == KeyCodes.KEY_DELETE)) {
+            // the value of the input box will probably have changed, so fire an event after the input has been processed
+            final CmsTextBox source = (CmsTextBox)event.getSource();
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                public void execute() {
+
+                    ValueChangeEvent.fire(source, source.getText());
+                }
+            });
             return;
         }
+        if ((code == KeyCodes.KEY_TAB)
+            || (code == KeyCodes.KEY_LEFT)
+            || (code == KeyCodes.KEY_RIGHT)
+            || (code == KeyCodes.KEY_ENTER)) {
+            return;
+        }
+        // prevent all others
         event.stopPropagation();
         event.preventDefault();
     }

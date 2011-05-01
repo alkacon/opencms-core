@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsFreeFormatRestriction.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.client.preview;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,11 +56,36 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#adjustCroppingParam(org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
+     */
+    public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
+
+        croppingParam.setTargetHeight(I_CmsFormatRestriction.DIMENSION_NOT_SET);
+        croppingParam.setTargetWidth(I_CmsFormatRestriction.DIMENSION_NOT_SET);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getHeight(int, int)
+     */
+    public int getHeight(int orgHeight, int orgWidth) {
+
+        return orgHeight;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getLabel()
      */
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getWidth(int, int)
+     */
+    public int getWidth(int orgHeight, int orgWidth) {
+
+        return orgWidth;
     }
 
     /**
@@ -88,22 +113,6 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getHeight(int, int)
-     */
-    public int getHeight(int orgHeight, int orgWidth) {
-
-        return orgHeight;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getWidth(int, int)
-     */
-    public int getWidth(int orgHeight, int orgWidth) {
-
-        return orgWidth;
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#isWidthEditable()
      */
     public boolean isWidthEditable() {
@@ -116,7 +125,7 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
      */
     public boolean matchesCroppingParam(CmsCroppingParamBean croppingParam) {
 
-        return ((croppingParam.getCropX() != -1) && (croppingParam.getTargetHeight() == croppingParam.getCropHeight()))
+        return ((croppingParam.getCropX() != I_CmsFormatRestriction.DIMENSION_NOT_SET) && (croppingParam.getTargetHeight() == croppingParam.getCropHeight()))
             && (croppingParam.getTargetWidth() == croppingParam.getCropWidth());
     }
 

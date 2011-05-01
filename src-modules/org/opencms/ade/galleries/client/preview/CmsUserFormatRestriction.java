@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsUserFormatRestriction.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,14 @@ public class CmsUserFormatRestriction implements I_CmsFormatRestriction {
     public CmsUserFormatRestriction(String label) {
 
         m_label = label;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#adjustCroppingParam(org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
+     */
+    public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
+
+        // nothing to adjust
     }
 
     /**
@@ -90,17 +98,17 @@ public class CmsUserFormatRestriction implements I_CmsFormatRestriction {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#isHeightEditable()
-     */
-    public boolean isHeightEditable() {
-
-        return true;
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#isFixedRatio()
      */
     public boolean isFixedRatio() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#isHeightEditable()
+     */
+    public boolean isHeightEditable() {
 
         return true;
     }

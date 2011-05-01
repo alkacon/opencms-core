@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsFormatRestriction.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,22 @@ package org.opencms.ade.galleries.client.preview;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsFormatRestriction {
+
+    /** Value to indicate this dimension is not set. */
+    int DIMENSION_NOT_SET = -1;
+
+    /**
+     * Adjust the given cropping parameter bean to this format restriction.<p>
+     * Execute on selection of this restriction.<p>
+     * 
+     * @param croppingParam the cropping parameter bean to adjust
+     */
+    void adjustCroppingParam(CmsCroppingParamBean croppingParam);
 
     /**
      * Returns the preset height for this format restriction.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatRestriction.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,20 +73,37 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
      * @return <code>true</code> if given configuration string is valid
      */
     public static native boolean isValidConfig(String config)/*-{
-        var regex=/^(\?|\d+)x(\?|\d+)$/;
+        var regex = /^(\?|\d+)x(\?|\d+)$/;
         return regex.test(config);
     }-*/;
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#adjustCroppingParam(org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
+     */
+    public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
+
+        if (!matchesCroppingParam(croppingParam)) {
+            croppingParam.reset();
+        }
+        if (!isHeightEditable()) {
+            croppingParam.setTargetHeight(m_height);
+        }
+        if (!isWidthEditable()) {
+            croppingParam.setTargetWidth(m_width);
+        }
+    }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getHeight(int, int)
      */
     public int getHeight(int orgHeight, int orgWidth) {
 
-        if ((m_height == -1) && (m_width == -1)) {
+        if ((m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET)
+            && (m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET)) {
             return orgHeight;
         }
 
-        return (m_height == -1) ? (orgHeight * m_width / orgWidth) : m_height;
+        return (m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? (orgHeight * m_width / orgWidth) : m_height;
     }
 
     /**
@@ -102,11 +119,12 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
      */
     public int getWidth(int orgHeight, int orgWidth) {
 
-        if ((m_height == -1) && (m_width == -1)) {
+        if ((m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET)
+            && (m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET)) {
             return orgWidth;
         }
 
-        return (m_width == -1) ? (orgWidth * m_height / orgHeight) : m_width;
+        return (m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? (orgWidth * m_height / orgHeight) : m_width;
     }
 
     /**
@@ -122,7 +140,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
     */
     public boolean isFixedRatio() {
 
-        return true;
+        return !isHeightEditable() && !isWidthEditable();
     }
 
     /**
@@ -130,7 +148,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
      */
     public boolean isHeightEditable() {
 
-        return m_height == -1;
+        return m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET;
     }
 
     /**
@@ -138,7 +156,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
      */
     public boolean isWidthEditable() {
 
-        return m_width == -1;
+        return m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET;
     }
 
     /**
@@ -166,16 +184,16 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
         if (isValidConfig(config)) {
             String[] conf = config.split("x");
             if (conf[0].trim().equals("?")) {
-                m_width = -1;
+                m_width = I_CmsFormatRestriction.DIMENSION_NOT_SET;
             } else {
                 m_width = CmsClientStringUtil.parseInt(conf[0]);
-                m_width = (m_width == 0) ? -1 : m_width;
+                m_width = (m_width == 0) ? I_CmsFormatRestriction.DIMENSION_NOT_SET : m_width;
             }
             if (conf[1].trim().equals("?")) {
-                m_height = -1;
+                m_height = I_CmsFormatRestriction.DIMENSION_NOT_SET;
             } else {
                 m_height = CmsClientStringUtil.parseInt(conf[0]);
-                m_height = (m_height == 0) ? -1 : m_height;
+                m_height = (m_height == 0) ? I_CmsFormatRestriction.DIMENSION_NOT_SET : m_height;
             }
         }
     }

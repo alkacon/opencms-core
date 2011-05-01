@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsCroppingParamBean.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -75,26 +75,26 @@ public class CmsCroppingParamBean {
     private static final String SCALE_PARAM_TARGETWIDTH = "w";
 
     /** The cropping height parameter. */
-    private int m_cropHeight = -1;
+    private int m_cropHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The cropping width parameter. */
-    private int m_cropWidth = -1;
+    private int m_cropWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The cropping X parameter. */
-    private int m_cropX = -1;
+    private int m_cropX = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The cropping Y parameter. */
-    private int m_cropY = -1;
+    private int m_cropY = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
-    private int m_orgHeight = -1;
+    private int m_orgHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
-    private int m_orgWidth = -1;
+    private int m_orgWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The target height. */
-    private int m_targetHeight = -1;
+    private int m_targetHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The target width. */
-    private int m_targetWidth = -1;
+    private int m_targetWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /**
      * Constructor.<p>
@@ -201,7 +201,7 @@ public class CmsCroppingParamBean {
     }
 
     /**
-     * Parses a single scale value. Returning <code>-1</code> for invalid parameters.<p>
+     * Parses a single scale value. Returning <code>-1</code> --> {@link I_CmsFormatRestriction.DIMENSION_NOT_SET} invalid parameters.<p>
      * 
      * @param paramName the parameter name
      * @param param the parameter
@@ -209,10 +209,10 @@ public class CmsCroppingParamBean {
      * @return the value
      */
     private static native int parseValue(String paramName, String param)/*-{
-        param=param.substr(paramName.length+1);
-        var result=parseInt(param);
-        if (isNaN(result)){
-        return -1;
+        param = param.substr(paramName.length + 1);
+        var result = parseInt(param);
+        if (isNaN(result)) {
+            return I_CmsFormatRestriction.DIMENSION_NOT_SET;
         }
         return result;
     }-*/;
@@ -289,6 +289,12 @@ public class CmsCroppingParamBean {
 
         CmsCroppingParamBean result = new CmsCroppingParamBean(this);
         if ((getTargetHeight() <= maxHeight) && (getTargetWidth() <= maxWidth)) {
+            if ((getTargetHeight() == I_CmsFormatRestriction.DIMENSION_NOT_SET) && (getOrgHeight() > maxHeight)) {
+                result.setTargetHeight(maxHeight);
+            }
+            if ((getTargetWidth() == I_CmsFormatRestriction.DIMENSION_NOT_SET) && (getOrgWidth() > maxWidth)) {
+                result.setTargetWidth(maxWidth);
+            }
             return result;
         }
 
@@ -352,7 +358,7 @@ public class CmsCroppingParamBean {
      */
     public boolean isCropped() {
 
-        return m_cropX > -1;
+        return m_cropX > I_CmsFormatRestriction.DIMENSION_NOT_SET;
     }
 
     /**
@@ -360,12 +366,12 @@ public class CmsCroppingParamBean {
      */
     public void reset() {
 
-        m_cropHeight = -1;
-        m_cropWidth = -1;
-        m_cropX = -1;
-        m_cropY = -1;
-        m_targetHeight = -1;
-        m_targetWidth = -1;
+        m_cropHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        m_cropWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        m_cropX = I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        m_cropY = I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        m_targetHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        m_targetWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsCroppingDialog.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -233,6 +233,8 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
         if (m_croppingParam.isCropped()) {
             m_croppingPanel.setAreaPosition(true, calculateSelectPosition());
+        } else {
+            m_croppingPanel.clearSelection();
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsOriginalFormatRestriction.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 10:34:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,11 +58,35 @@ public class CmsOriginalFormatRestriction implements I_CmsFormatRestriction {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#adjustCroppingParam(org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
+     */
+    public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
+
+        croppingParam.reset();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getHeight(int, int)
+     */
+    public int getHeight(int orgHeight, int orgWidth) {
+
+        return orgHeight;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getLabel()
      */
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getWidth(int, int)
+     */
+    public int getWidth(int orgHeight, int orgWidth) {
+
+        return orgWidth;
     }
 
     /**
@@ -87,22 +111,6 @@ public class CmsOriginalFormatRestriction implements I_CmsFormatRestriction {
     public boolean isHeightEditable() {
 
         return false;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getHeight(int, int)
-     */
-    public int getHeight(int orgHeight, int orgWidth) {
-
-        return orgHeight;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getWidth(int, int)
-     */
-    public int getWidth(int orgHeight, int orgWidth) {
-
-        return orgWidth;
     }
 
     /**
