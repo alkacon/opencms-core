@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/05/01 13:15:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/01 14:31:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -134,7 +134,7 @@ public class CmsADEConfigurationManager {
      */
     protected synchronized void clearFolderTypeCache(boolean online) {
 
-        System.out.println("Clearing folder type cache");
+        //System.out.println("Clearing folder type cache");
         m_folderTypesMaps.remove(new Boolean(online));
     }
 
@@ -423,7 +423,7 @@ public class CmsADEConfigurationManager {
         Boolean onlineObj = new Boolean(online);
         Map<String, String> folderTypes = m_folderTypesMaps.get(onlineObj);
         if (folderTypes == null) {
-            System.out.println("Reading folder types");
+            //System.out.println("Reading folder types");
             folderTypes = Maps.newHashMap();
             CmsContainerPageConfigurationData moduleConfig = m_containerPageModuleConfig.getConfiguration(cms);
             addFolderTypesFromSingleConfiguration(cms, moduleConfig, folderTypes);
