@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/04/28 10:44:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/01 15:10:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -51,19 +51,67 @@ public final class Messages {
     public static final String GUI_GALLERY_UPLOAD_TITLE_1 = "GUI_GALLERY_UPLOAD_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_ALIGN_0 = "GUI_IMAGE_ALIGN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_ALIGN_LEFT_0 = "GUI_IMAGE_ALIGN_LEFT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_ALIGN_NOT_SET_0 = "GUI_IMAGE_ALIGN_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_ALIGN_RIGHT_0 = "GUI_IMAGE_ALIGN_RIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_BIG_FORMAT_LABEL_0 = "GUI_IMAGE_BIG_FORMAT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_COPYRIGHT_0 = "GUI_IMAGE_COPYRIGHT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_FREE_FORMAT_LABEL_0 = "GUI_IMAGE_FREE_FORMAT_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_HSPACE_0 = "GUI_IMAGE_HSPACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INSERT_COPYRIGHT_0 = "GUI_IMAGE_INSERT_COPYRIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INSERT_LINK_TO_ORG_0 = "GUI_IMAGE_INSERT_LINK_TO_ORG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INSERT_SUBTITLE_0 = "GUI_IMAGE_INSERT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_NO_AREA_SELECTED_0 = "GUI_IMAGE_NO_AREA_SELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0 = "GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_RESET_COPYRIGHT = "GUI_IMAGE_RESET_COPYRIGHT";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_RESET_TITLE_0 = "GUI_IMAGE_RESET_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_SCALE_0 = "GUI_IMAGE_SCALE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_SMALL_FORMAT_LABEL_0 = "GUI_IMAGE_SMALL_FORMAT_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_SPACING_0 = "GUI_IMAGE_SPACING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_TITLE_ALT_0 = "GUI_IMAGE_TITLE_ALT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_USER_FORMAT_LABEL_0 = "GUI_IMAGE_USER_FORMAT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_VSPACE_0 = "GUI_IMAGE_VSPACE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_NUM_RESULTS_2 = "GUI_LABEL_NUM_RESULTS_2";

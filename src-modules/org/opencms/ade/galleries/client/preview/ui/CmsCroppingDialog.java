@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsCroppingDialog.java,v $
- * Date   : $Date: 2011/05/01 10:34:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/01 15:10:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -69,6 +69,9 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     interface I_CmsCroppingDialogUiBinder extends UiBinder<Widget, CmsCroppingDialog> {
         // GWT interface, nothing to do
     }
+
+    /** The empty field string. */
+    private static final String EMPTY_FIELD = "---";
 
     /** The ui-binder interface. */
     private static I_CmsCroppingDialogUiBinder m_uiBinder = GWT.create(I_CmsCroppingDialogUiBinder.class);
@@ -118,11 +121,11 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     /** The cropping parameters of the displayed image. */
     private CmsCroppingParamBean m_displayCropping;
 
-    /** The image path. */
-    private String m_imagePath;
-
     /** The ratio from original image height to display height. */
     private double m_heightRatio;
+
+    /** The image path. */
+    private String m_imagePath;
 
     /** The ratio from original image width to display width. */
     private double m_widthRatio;
@@ -141,17 +144,24 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_croppingPanel.addValueChangeHandler(this);
         m_croppingPanel.setFireAll(true);
 
-        // TODO: add localization
         m_widthLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_WIDTH_0));
-        m_widthDisplay.setText("---");
+        m_widthDisplay.setText(EMPTY_FIELD);
         m_heightLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_HEIGHT_0));
-        m_heightDisplay.setText("---");
-        m_scaleLabel.setText("Scale:");
-        m_scaleDisplay.setText("---");
-        m_okButton.setText("OK");
+        m_heightDisplay.setText(EMPTY_FIELD);
+        m_scaleLabel.setText(Messages.get().key(Messages.GUI_IMAGE_SCALE_0));
+        m_scaleDisplay.setText(EMPTY_FIELD);
+        m_okButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_OK_0));
         m_okButton.setUseMinWidth(true);
-        m_cancelButton.setText("Cancel");
+        m_cancelButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
         m_cancelButton.setUseMinWidth(true);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<CmsCroppingParamBean> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -199,10 +209,10 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
             m_scaleDisplay.setText(scale);
             m_okButton.enable();
         } else {
-            m_okButton.disable("No image area selected");
-            m_heightDisplay.setText("---");
-            m_widthDisplay.setText("---");
-            m_scaleDisplay.setText("---");
+            m_okButton.disable(Messages.get().key(Messages.GUI_IMAGE_NO_AREA_SELECTED_0));
+            m_heightDisplay.setText(EMPTY_FIELD);
+            m_widthDisplay.setText(EMPTY_FIELD);
+            m_scaleDisplay.setText(EMPTY_FIELD);
         }
 
     }
@@ -278,14 +288,6 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     }
 
     /**
-     * Hides the cropping dialog.<p>
-     */
-    private void hide() {
-
-        getElement().getStyle().setDisplay(Display.NONE);
-    }
-
-    /**
      * Calculates the resulting cropping parameter from the supplied selection position.<p>
      * 
      * @param position the selection position
@@ -309,11 +311,11 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     }
 
     /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * Hides the cropping dialog.<p>
      */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<CmsCroppingParamBean> handler) {
+    private void hide() {
 
-        return addHandler(handler, ValueChangeEvent.getType());
+        getElement().getStyle().setDisplay(Display.NONE);
     }
 
 }

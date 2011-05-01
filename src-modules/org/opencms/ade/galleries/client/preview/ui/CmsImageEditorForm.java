@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageEditorForm.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/01 15:10:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
+import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -47,8 +48,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -155,30 +158,32 @@ public class CmsImageEditorForm extends Composite {
     /** The form fields. */
     private Map<Attribute, I_CmsFormWidget> m_fields;
 
+    /** The initial image attribute values. */
+    private CmsJSONMap m_initialImageAttributes;
+
     /**
      * Constructor.<p>
      */
     public CmsImageEditorForm() {
 
-        //TODO: localization
         initWidget(m_uiBinder.createAndBindUi(this));
-        m_labelAltTitle.setText("Title / Alt-Text:");
-        m_labelCopyright.setText("Copyright:");
-        m_labelImageSpacing.setText("Image spacing:");
-        m_labelInsertSubtitle.setText("Insert subtitle:");
-        m_labelInsertCopyright.setText("Insert copyright:");
-        m_labelHSpace.setText("HSpace:");
-        m_labelVSpace.setText("VSpace:");
-        m_labelInsertLinkOrig.setText("Insert link to original image");
+        m_labelAltTitle.setText(Messages.get().key(Messages.GUI_IMAGE_TITLE_ALT_0));
+        m_labelCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_COPYRIGHT_0));
+        m_labelImageSpacing.setText(Messages.get().key(Messages.GUI_IMAGE_SPACING_0));
+        m_labelInsertSubtitle.setText(Messages.get().key(Messages.GUI_IMAGE_INSERT_SUBTITLE_0));
+        m_labelInsertCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_INSERT_COPYRIGHT_0));
+        m_labelHSpace.setText(Messages.get().key(Messages.GUI_IMAGE_HSPACE_0));
+        m_labelVSpace.setText(Messages.get().key(Messages.GUI_IMAGE_VSPACE_0));
+        m_labelInsertLinkOrig.setText(Messages.get().key(Messages.GUI_IMAGE_INSERT_LINK_TO_ORG_0));
         m_buttonResetTitle.setSize(Size.small);
-        m_buttonResetTitle.setText("Reset title");
+        m_buttonResetTitle.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_TITLE_0));
         m_buttonResetCopyright.setSize(Size.small);
-        m_buttonResetCopyright.setText("Reset copyright");
+        m_buttonResetCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_COPYRIGHT));
 
-        m_labelAlign.setText("Align:");
-        m_selectAlign.addOption("", "not set");
-        m_selectAlign.addOption("left", "left");
-        m_selectAlign.addOption("right", "right");
+        m_labelAlign.setText(Messages.get().key(Messages.GUI_IMAGE_ALIGN_0));
+        m_selectAlign.addOption("", Messages.get().key(Messages.GUI_IMAGE_ALIGN_NOT_SET_0));
+        m_selectAlign.addOption("left", Messages.get().key(Messages.GUI_IMAGE_ALIGN_LEFT_0));
+        m_selectAlign.addOption("right", Messages.get().key(Messages.GUI_IMAGE_ALIGN_RIGHT_0));
 
         m_fields = new HashMap<Attribute, I_CmsFormWidget>();
         m_fields.put(Attribute.alt, m_inputAltTitle);
@@ -199,6 +204,7 @@ public class CmsImageEditorForm extends Composite {
      */
     public void fillContent(CmsJSONMap imageAttributes) {
 
+        m_initialImageAttributes = imageAttributes;
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = imageAttributes.getString(entry.getKey().name());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
@@ -221,6 +227,10 @@ public class CmsImageEditorForm extends Composite {
                 val = null;
             }
             attributes.put(entry.getKey().name(), val);
+            // put the same value in 'alt' and 'title' attribute
+            if (entry.getKey() == Attribute.alt) {
+                attributes.put(Attribute.title.name(), val);
+            }
         }
         return attributes;
     }
@@ -236,6 +246,44 @@ public class CmsImageEditorForm extends Composite {
             addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hiding());
         } else {
             removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hiding());
+        }
+    }
+
+    /**
+     * Handles the click on 'reset copyright' button.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_buttonResetCopyright")
+    protected void onResetCopyrightClick(ClickEvent event) {
+
+        resetValue(Attribute.copyright);
+    }
+
+    /**
+     * Handles the click on 'reset title' button.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_buttonResetTitle")
+    protected void onResetTitleClick(ClickEvent event) {
+
+        resetValue(Attribute.alt);
+    }
+
+    /**
+     * Resets the value for the given attribute to it's initial value.<p>
+     * 
+     * @param attribute the attribute to reset
+     */
+    protected void resetValue(Attribute attribute) {
+
+        String initValue = "";
+        if (m_initialImageAttributes.containsKey(attribute.name())) {
+            initValue = m_initialImageAttributes.getString(attribute.name());
+        }
+        if (m_fields.containsKey(attribute)) {
+            m_fields.get(attribute).setFormValueAsString(initValue);
         }
     }
 
