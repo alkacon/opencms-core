@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsEntryPointCache.java,v $
- * Date   : $Date: 2011/05/01 13:15:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/02 13:43:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -378,9 +378,19 @@ public class CmsEntryPointCache {
      */
     private List<CmsResource> readEntryPointResources(CmsObject cms) throws CmsException {
 
-        return cms.readResources(
-            "/",
-            CmsResourceFilter.DEFAULT.addRequireType(getTypeId(CmsResourceTypeFolderExtended.TYPE_ENTRY_POINT)));
+        int typeId = -1;
+        try {
+            typeId = getTypeId(CmsResourceTypeFolderExtended.TYPE_ENTRY_POINT);
+        } catch (CmsException e) {
+            // happens if resource type 'entrypoint' is not configured
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getMessageContainer(), e);
+            }
+        }
+        if (typeId == -1) {
+            return Collections.emptyList();
+        }
+        return cms.readResources("/", CmsResourceFilter.DEFAULT.addRequireType(typeId));
     }
 
     /**
