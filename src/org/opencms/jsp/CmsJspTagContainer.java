@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0
  */
@@ -670,19 +671,16 @@ public class CmsJspTagContainer extends TagSupport {
         CmsContainerElementBean element = null;
         if (detailContent != null) {
             // get the right formatter
-            String elementFormatter = OpenCms.getADEManager().getFormatterForContainer(
+            CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
                 cms,
                 detailContent,
                 getType(),
                 getContainerWidth());
             // check it
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(elementFormatter)) {
+            if (formatter != null) {
                 // create element bean
-                element = new CmsContainerElementBean(
-                    detailContent.getStructureId(),
-                    cms.readResource(elementFormatter).getStructureId(),
-                    null,
-                    false); // when used as template element there are no properties
+                element = new CmsContainerElementBean(detailContent.getStructureId(), cms.readResource(
+                    formatter.getJspRootPath()).getStructureId(), null, false); // when used as template element there are no properties
             }
         }
         return element;
@@ -823,28 +821,30 @@ public class CmsJspTagContainer extends TagSupport {
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 try {
                     subelement.initResource(cms);
-                    String subelementFormatter = OpenCms.getADEManager().getFormatterForContainer(
+                    CmsFormatterBean subelementFormatter = OpenCms.getADEManager().getFormatterForContainer(
                         cms,
                         subelement.getResource(),
                         containerType,
                         containerWidth);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter) && LOG.isErrorEnabled()) {
+                    if (subelementFormatter == null) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(new CmsIllegalStateException(Messages.get().container(
+                                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                                subelement.getSitePath(),
+                                OpenCms.getResourceManager().getResourceType(subelement.getResource()).getTypeName(),
+                                containerType)));
+                        }
                         // skip this element, it has no formatter for this container type defined
-                        LOG.error(new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                            subelement.getSitePath(),
-                            OpenCms.getResourceManager().getResourceType(subelement.getResource()).getTypeName(),
-                            containerType)));
                         continue;
                     }
-                    // execute the formatter jsp for the given element uri
+                    // execute the formatter JSP for the given element URI
                     // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
                     printElementWrapperTagStart(isOnline, cms, subelement, false);
                     standardContext.setElement(subelement);
                     try {
                         CmsJspTagInclude.includeTagAction(
                             pageContext,
-                            subelementFormatter,
+                            subelementFormatter.getJspRootPath(),
                             null,
                             locale,
                             false,
@@ -855,14 +855,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
-                        printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter);
+                        printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
                     }
                     printElementWrapperTagEnd(isOnline, false);
                 } catch (Exception e) {
@@ -892,17 +890,14 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            elementFormatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        elementFormatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             }
             printElementWrapperTagEnd(isOnline, false);
         }
     }
-
 }

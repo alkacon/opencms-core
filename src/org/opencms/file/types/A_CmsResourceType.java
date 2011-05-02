@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -486,10 +486,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
-    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) {
+    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) {
 
-        if (type.equals(CmsFormatterBean.DEFAULT_FORMATTER_TYPE)) {
-            return CmsFormatterBean.DEFAULT_FORMATTER;
+        if (type.equals(CmsFormatterBean.DEFAULT_TYPE)) {
+            return CmsFormatterBean.FORMATTER_DEFAULT;
         }
         return null;
     }
@@ -1056,13 +1056,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // log the error and continue with the other copy resources
                 if (LOG.isDebugEnabled()) {
                     // log stack trace in debug level only
-                    LOG.debug(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_PROCESS_COPY_RESOURCES_3,
-                            resourcename,
-                            copyResource,
-                            target),
-                        e);
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_PROCESS_COPY_RESOURCES_3,
+                        resourcename,
+                        copyResource,
+                        target), e);
                 } else {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,

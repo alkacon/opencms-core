@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/02 15:28:02 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
@@ -104,7 +105,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -658,10 +659,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             init();
 
             // add the default formatter
-            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                CmsFormatterBean.DEFAULT_FORMATTER,
-                CmsFormatterBean.DEFAULT_FORMATTER_TYPE,
-                contentDefinition.getSchemaLocation()));
+            try {
+                m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                    CmsFormatterBean.DEFAULT_JSPURI,
+                    CmsFormatterBean.DEFAULT_TYPE,
+                    contentDefinition.getSchemaLocation()));
+            } catch (CmsConfigurationException e) {
+                // should really not happen since all formatter configurations are new here
+            }
 
             Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(appInfoElement);
             while (i.hasNext()) {
@@ -697,6 +702,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+
+        // freeze the formatter configuration
+        m_formatterConfiguration.freeze();
 
         // at the end, add default check rules for optional file references
         addDefaultCheckRules(contentDefinition, null, null);
@@ -1624,10 +1632,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defFormatter)) {
             // individual default content formatter is configured
-            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                defFormatter,
-                CmsFormatterBean.DEFAULT_FORMATTER_TYPE,
-                contentDefinition.getSchemaLocation()));
+            try {
+                m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                    defFormatter,
+                    CmsFormatterBean.DEFAULT_TYPE,
+                    contentDefinition.getSchemaLocation()));
+            } catch (CmsConfigurationException e) {
+                // should really not happen since all formatter configurations are new here
+            }
         }
 
         // reading the include resources common for all formatters 
@@ -1638,19 +1650,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
                 // if not set use "*" as default for type
-                type = CmsFormatterBean.WILDCARD_FORMATTER;
+                type = CmsFormatterBean.WILDCARD_TYPE;
             }
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String minWidthStr = element.attributeValue(APPINFO_ATTR_MINWIDTH);
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
             String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
-            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                uri,
-                type,
-                minWidthStr,
-                maxWidthStr,
-                searchContent,
-                contentDefinition));
+            try {
+                m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                    uri,
+                    type,
+                    minWidthStr,
+                    maxWidthStr,
+                    searchContent,
+                    contentDefinition));
+            } catch (CmsConfigurationException e) {
+                // should really not happen since all formatter configurations are new here
+            }
         }
     }
 
@@ -2193,9 +2209,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
             if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
                 if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
-                    errorHandler.addError(
-                        value,
-                        Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                    errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                        Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                 }
             }
         } catch (CmsDataAccessException e) {
@@ -2204,9 +2219,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            errorHandler.addError(
-                value,
-                Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
         } catch (CmsException e) {
             // unexpected error
             if (LOG.isErrorEnabled()) {
@@ -2253,19 +2267,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (!res.isReleased(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(
-                            value,
-                            Messages.get().getBundle(value.getLocale()).key(
-                                Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
+                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
                 } else if (res.isExpired(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(
-                            value,
-                            Messages.get().getBundle(value.getLocale()).key(
-                                Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
+                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                     }
                     return true;
                 }
@@ -2273,9 +2283,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(
-                    value,
-                    Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }

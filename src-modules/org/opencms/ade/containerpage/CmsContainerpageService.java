@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -59,6 +58,7 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -427,9 +427,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String propName = entry.getKey();
                 String propType = propertiesConf.get(propName).getType();
-                changedProps.put(
-                    propName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
+                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    propType,
+                    properties.get(propName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedProps, false);
@@ -512,17 +513,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
-                String formatterUri = OpenCms.getADEManager().getFormatterForContainer(
+                CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
                     cms,
                     resource,
                     container.getType(),
                     containerWidth);
-                boolean hasValidFormatter = CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri);
-                if (hasValidFormatter) {
-                    CmsResource formatter = cms.readResource(formatterUri);
+                if (formatter != null) {
+                    CmsResource formatterResource = cms.readResource(formatter.getJspRootPath());
                     elements.add(new CmsContainerElementBean(
                         element.getId(),
-                        formatter.getStructureId(),
+                        formatterResource.getStructureId(),
                         element.getSettings(),
                         false));
                 }
@@ -530,8 +530,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 log(e.getLocalizedMessage(), e);
             }
         }
-        CmsContainerBean containerBean = new CmsContainerBean(container.getName(), container.getType(), -1, elements);
-        return containerBean;
+        CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), -1, elements);
+        return result;
     }
 
     /**

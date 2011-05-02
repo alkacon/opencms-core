@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.9.0 
  */
@@ -132,14 +132,10 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
     @Override
-    public String getFormatterForContainer(
-        CmsObject cms,
-        CmsResource resource,
-        String type,
-        int width) {
+    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (CmsFormatterBean.DEFAULT_FORMATTER_TYPE.equals(type)) {
-            return CmsFormatterBean.DEFAULT_FORMATTER;
+        if (CmsFormatterBean.DEFAULT_TYPE.equals(type)) {
+            return CmsFormatterBean.FORMATTER_DEFAULT;
         }
         try {
             String formatter = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true).getValue();
@@ -168,7 +164,7 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
                     types = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true).getValueList();
                 }
                 if ((types == null) || types.isEmpty() || types.contains(type)) {
-                    return formatter;
+                    return new CmsFormatterBean(formatter, type);
                 }
                 // container type not part of the specified types, formatter is not valid
                 return null;

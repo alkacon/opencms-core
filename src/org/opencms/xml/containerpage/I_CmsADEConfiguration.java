@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -100,11 +100,12 @@ public interface I_CmsADEConfiguration {
      * @param type the container type 
      * @param width the container width
      *  
-     * @return the element's formatter uri for the given container type and width
+     * @return the configured formatter for the given container type and width
      *   
      * @throws CmsException if something goes wrong  
      */
-    String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException;
+    CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width)
+    throws CmsException;
 
     /**
      * Returns the name of the next new file of the given type to be created.<p>

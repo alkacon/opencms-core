@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/02 15:28:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,20 +41,28 @@ import org.opencms.xml.content.CmsXmlContent;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterBean {
 
     /** Default formatter path. */
-    public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
+    public static final String DEFAULT_JSPURI = "/system/workplace/editors/ade/default-list-formatter.jsp";
 
     /** Default formatter type constant. */
-    public static final String DEFAULT_FORMATTER_TYPE = "_DEFAULT_";
+    public static final String DEFAULT_LOCATION = "_location not available_";
+
+    /** Default formatter type constant. */
+    public static final String DEFAULT_TYPE = "_DEFAULT_";
+
+    /** Default formatter bean. */
+    public static final CmsFormatterBean FORMATTER_DEFAULT = new CmsFormatterBean(
+        DEFAULT_JSPURI,
+        DEFAULT_TYPE);
 
     /** Wildcard formatter type for width based formatters. */
-    public static final String WILDCARD_FORMATTER = "*";
+    public static final String WILDCARD_TYPE = "*";
 
     /** Indicates if this formatter was configured in a XML schema XSD or sitemap configuration. */
     private boolean m_isFromSchema;
@@ -79,6 +87,19 @@ public class CmsFormatterBean {
 
     /** The formatter container type. */
     private String m_type;
+
+    /**
+     * Constructor for creating a new formatter.<p>
+     * 
+     * This constructor should be used to create default type based formatters.<p>
+     * 
+     * @param jspUri the formatter JSP URI
+     * @param type the formatter container type 
+     */
+    public CmsFormatterBean(String jspUri, String type) {
+
+        this(jspUri, type, "", "", String.valueOf(false), DEFAULT_LOCATION, true);
+    }
 
     /**
      * Constructor for creating a new formatter.<p>
@@ -167,14 +188,14 @@ public class CmsFormatterBean {
 
         m_type = type;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_type)) {
-            m_type = WILDCARD_FORMATTER;
+            m_type = WILDCARD_TYPE;
         }
 
         m_minWidth = -1;
         m_maxWidth = Integer.MAX_VALUE;
         m_isTypeFormatter = true;
 
-        if (WILDCARD_FORMATTER.equals(m_type)) {
+        if (WILDCARD_TYPE.equals(m_type)) {
             // wildcard formatter; index by width
             m_isTypeFormatter = false;
             // if no width available, use -1

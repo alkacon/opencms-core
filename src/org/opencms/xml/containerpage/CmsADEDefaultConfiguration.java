@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 7.6 
  */
@@ -180,7 +180,8 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     /**
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
-    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException {
+    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width)
+    throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String typeName = resType.getTypeName();
@@ -190,7 +191,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             rootPath);
         CmsFormatterConfiguration formatterConfiguration = config.getFormatterConfiguration().get(typeName);
         if (formatterConfiguration != null) {
-            return formatterConfiguration.selectFormatter(type, width);
+            return formatterConfiguration.getFormatter(type, width);
         } else {
             return resType.getFormatterForContainer(cms, res, type, width);
         }

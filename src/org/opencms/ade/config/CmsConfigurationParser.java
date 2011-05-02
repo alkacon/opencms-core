@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -623,6 +623,7 @@ public class CmsConfigurationParser {
                 m_content));
         }
         if (formatterConfiguration.hasFormatters()) {
+            formatterConfiguration.freeze();
             m_formatterConfiguration.put(type, formatterConfiguration);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/02 18:16:24 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 7.6
  */
@@ -411,11 +411,12 @@ public class CmsADEManager {
      * @param type the container type 
      * @param width the width of the container 
      *  
-     * @return the formatter JSP path
+     * @return the configured formatter
      * 
      * @throws CmsException if something goes wrong 
      */
-    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException {
+    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width)
+    throws CmsException {
 
         return m_configuration.getFormatterForContainer(cms, res, type, width);
     }
