@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2011/04/01 10:27:00 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/05/02 08:09:15 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  */
@@ -189,10 +189,11 @@ public class CmsTreeItem extends CmsListItem {
      * 
      * @param item the tree item
      * @param stopLevel the level to stop at, set -1 to go to the very last opened item
+     * @param requiresDropEnabled <code>true</code> if it is required the returned element to be drop enabled
      * 
      * @return the last visible item of a tree fragment
      */
-    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item, int stopLevel) {
+    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item, int stopLevel, boolean requiresDropEnabled) {
 
         if (stopLevel != -1) {
             // stop level is set
@@ -206,9 +207,20 @@ public class CmsTreeItem extends CmsListItem {
             }
         }
         if (item.getChildCount() > 0) {
-            CmsTreeItem child = item.getChild(item.getChildCount() - 1);
+            int childIndex = item.getChildCount() - 1;
+            CmsTreeItem child = item.getChild(childIndex);
+            if (requiresDropEnabled) {
+                while (!child.isDropEnabled()) {
+                    childIndex--;
+                    if (childIndex < 0) {
+                        return item;
+                    }
+                    child = item.getChild(childIndex);
+                }
+            }
+
             if (child.isOpen()) {
-                return CmsTreeItem.getLastOpenedItem(child, stopLevel);
+                return CmsTreeItem.getLastOpenedItem(child, stopLevel, requiresDropEnabled);
             }
         }
         return item;
@@ -592,7 +604,7 @@ public class CmsTreeItem extends CmsListItem {
                 CmsTreeItem previousSibling = parentItem.getChild(index - 1);
                 if (previousSibling.isOpen()) {
                     // insert as last into the last opened of the siblings tree fragment
-                    return CmsTreeItem.getLastOpenedItem(previousSibling, originalPathLevel).insertPlaceholderAsLastChild(
+                    return CmsTreeItem.getLastOpenedItem(previousSibling, originalPathLevel, true).insertPlaceholderAsLastChild(
                         placeholder);
                 }
             }

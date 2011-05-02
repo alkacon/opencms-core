@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/03/11 09:11:12 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/05/02 08:09:15 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 8.0.0
  * 
@@ -393,7 +393,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public Element getDragHelper(I_CmsDropTarget target) {
 
         m_listItemWidget.setBackground(Background.DEFAULT);
-        return super.getDragHelper(target);
+        Element helper = super.getDragHelper(target);
+        // ensure the proper CSS context for the drag helper
+        m_provisionalParent.addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+        return helper;
     }
 
     /**
@@ -402,7 +405,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public String getPath() {
 
-        return getSitePath();
+        String result = getSitePath();
+        // ensure that the path of a folder ends with a '/'
+        if (m_entry.isFolderType() && !result.endsWith("/")) {
+            result += "/";
+        }
+        return result;
     }
 
     /**
@@ -465,6 +473,15 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 return !finish;
             }
         }, blinkInterval);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#isDropEnabled()
+     */
+    @Override
+    public boolean isDropEnabled() {
+
+        return m_entry.isInNavigation() && super.isDropEnabled();
     }
 
     /**
@@ -567,8 +584,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         m_lockIcon.setStyleName(CSS.lockIcon());
                 }
             }
-            // TODO: localization
-            m_lockIcon.setTitle("Lock owned by " + lock.getLockOwner());
+            m_lockIcon.setTitle(Messages.get().key(Messages.GUI_LOCK_OWNED_BY_1, lock.getLockOwner()));
         }
     }
 
