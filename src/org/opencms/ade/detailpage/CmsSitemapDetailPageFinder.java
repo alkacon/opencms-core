@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/05/01 13:15:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/02 06:05:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -85,6 +85,9 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
     public String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException {
 
         String folder = CmsResource.getFolderPath(rootPath);
+        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
+            return null;
+        }
         if (folder == null) {
             return null;
         }
