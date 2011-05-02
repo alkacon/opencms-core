@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/03/10 07:48:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/05/02 13:45:51 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0
  */
@@ -193,7 +193,7 @@ public class CmsSitemapData implements IsSerializable {
      */
     public boolean canEditDetailPages() {
 
-        return m_canEditDetailPages;
+        return m_canEditDetailPages && (m_resourceTypeInfos != null) && !m_resourceTypeInfos.isEmpty();
     }
 
     /**

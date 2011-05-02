@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/03/31 17:52:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/02 13:45:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -100,8 +100,9 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         m_specialList = new CmsList<I_CmsListItem>();
         m_specialList.add(makeRedirectItem());
-        if (CmsSitemapView.getInstance().getController().getData().canEditDetailPages()) {
-            for (CmsNewResourceInfo typeInfo : CmsSitemapView.getInstance().getController().getData().getResourceTypeInfos()) {
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        if (controller.getData().canEditDetailPages()) {
+            for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
                 CmsCreatableListItem item = makeDetailPageItem(typeInfo);
                 m_specialList.add(item);
             }
