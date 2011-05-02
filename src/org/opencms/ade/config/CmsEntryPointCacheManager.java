@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsEntryPointCacheManager.java,v $
- * Date   : $Date: 2011/05/01 13:15:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/02 05:50:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -104,7 +104,6 @@ public class CmsEntryPointCacheManager {
                             fireFlush(false);
                         }
                     }
-                    fireFlush(false);
                     break;
 
                 case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
