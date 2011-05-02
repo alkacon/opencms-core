@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarShowNonNavigationButton.java,v $
- * Date   : $Date: 2011/03/31 17:39:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/02 08:09:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.CmsSitemapView.EditorMode;
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -45,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -57,7 +58,7 @@ public class CmsToolbarShowNonNavigationButton extends CmsToggleButton {
     public CmsToolbarShowNonNavigationButton() {
 
         setImageClass(I_CmsButton.ButtonData.SITEMAP.getIconClass());
-        setTitle("Show non navigation resources");
+        setTitle(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.IMAGE, null);
 
         addClickHandler(new ClickHandler() {
@@ -91,8 +92,10 @@ public class CmsToolbarShowNonNavigationButton extends CmsToggleButton {
 
         if (show) {
             CmsSitemapView.getInstance().setEditorMode(EditorMode.vfs);
+            setTitle(Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0));
         } else {
             CmsSitemapView.getInstance().setEditorMode(EditorMode.navigation);
+            setTitle(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0));
         }
     }
 
