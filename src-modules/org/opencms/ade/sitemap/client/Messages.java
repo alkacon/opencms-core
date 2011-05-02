@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/03/10 07:48:54 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/02 08:01:25 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  */
@@ -153,6 +153,9 @@ public final class Messages {
     public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_OWNED_BY_1 = "GUI_LOCK_OWNED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MAIN_DETAIL_PAGE_TITLE_1 = "GUI_MAIN_DETAIL_PAGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -163,6 +166,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
