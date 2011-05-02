@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagFormatter.java,v $
- * Date   : $Date: 2011/04/20 07:07:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/02 15:27:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -102,6 +102,16 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
         m_locale = locale;
         setPageContext(context);
         init();
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     */
+    @Override
+    public int doEndTag() throws JspException {
+
+        release();
+        return super.doEndTag();
     }
 
     /**
