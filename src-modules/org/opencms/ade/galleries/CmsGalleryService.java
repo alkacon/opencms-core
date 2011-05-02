@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/05/02 07:48:10 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,8 +81,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -92,7 +92,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  * 
@@ -578,9 +578,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
-                    sResult.getLength() / 1000 + " kb");
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_SIZE_0), sResult.getLength() / 1000 + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -588,14 +587,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(
-                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
-                            temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
-                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
+                    sResult.getDateLastModified(),
+                    DateFormat.SHORT,
+                    getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
@@ -653,11 +653,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.ERROR_BUILD_TYPE_LIST_1,
-                            type.getTypeName()),
-                        e);
+                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.ERROR_BUILD_TYPE_LIST_1,
+                        type.getTypeName()), e);
                 }
             }
         }
@@ -812,6 +810,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             rootFolders.add(new CmsVfsEntryBean("/", title, true, settings.isEditable(
                 getCmsObject(),
                 getCmsObject().readResource("/"))));
+            String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
+            if (sharedFolder != null) {
+                String sharedFolderTitle = org.opencms.workplace.Messages.get().getBundle().key(
+                    org.opencms.workplace.Messages.GUI_SHARED_TITLE_0);
+                CmsVfsEntryBean sharedFolderBean = new CmsVfsEntryBean(
+                    sharedFolder,
+                    sharedFolderTitle,
+                    true,
+                    settings.isEditable(getCmsObject(), getCmsObject().readResource(sharedFolder)));
+                rootFolders.add(sharedFolderBean);
+            }
+
         } catch (CmsException e) {
             error(e);
         }
