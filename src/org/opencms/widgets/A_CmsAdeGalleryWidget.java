@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsAdeGalleryWidget.java,v $
- * Date   : $Date: 2011/04/21 14:14:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/02 13:45:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+import org.opencms.xml.types.I_CmsXmlContentValue;
+
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -47,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0 
  */
@@ -231,8 +234,16 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
         // the gallery parameters
         sb.append("?dialogmode=").append(A_CmsAjaxGallery.MODE_WIDGET).append("&types=").append(getGalleryTypes());
+        Locale contentLocale = widgetDialog.getLocale();
+        try {
+            I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
+            contentLocale = value.getLocale();
+        } catch (Exception e) {
+            // may fail if widget is not opened from xml content editor, ignore
+        }
 
-        // sb.append("?gwt.codesvr=127.0.0.1:9997");
+        // set the content locale
+        sb.append("&__locale=").append(contentLocale.toString());
 
         // the current field value
         sb.append("&currentelement='+document.getElementById('").append(param.getId());

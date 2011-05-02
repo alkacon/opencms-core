@@ -105,7 +105,14 @@ function imageGalleryDialogUrl() {
 	} else {
 		resParam = "&resource=" + editFrame.editform.editedResource;
 	}
-	var searchParam = "&types=<%=itemResType %>&currentelement="+ ( path==null ? "" : path);
+	// set the content locale
+	var elementLanguage="${locale}";
+	try{
+	    elementLanguage=editFrame.editform.document.forms['EDITOR']['elementlanguage'].value;
+	}catch(err){
+	    // nothing to do
+	}
+	var searchParam = "&types=<%=itemResType %>&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
 	return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam;
 }
 </fmt:bundle>

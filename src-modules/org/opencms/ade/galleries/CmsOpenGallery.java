@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenGallery.java,v $
- * Date   : $Date: 2011/04/27 08:28:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/02 13:45:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,11 @@ package org.opencms.ade.galleries;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0
  */
@@ -78,6 +80,8 @@ public class CmsOpenGallery extends CmsDialog {
             galleryPath += "/";
         }
         Map<String, String> params = new HashMap<String, String>();
+        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(getCms(), galleryPath);
+        params.put("__locale", locale.toString());
         params.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), GalleryMode.view.name());
         params.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), galleryPath);
         params.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), "");
