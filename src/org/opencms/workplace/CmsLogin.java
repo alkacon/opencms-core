@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2011/02/14 11:46:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/02 08:10:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1139,7 +1139,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2010 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2011 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 
