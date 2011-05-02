@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2011/05/01 12:49:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/02 15:35:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,9 +150,9 @@ public class CmsJspTagInfo extends TagSupport {
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, res, req);
                 result = content.getHandler().getTitleMapping(cms, content, cms.getRequestContext().getLocale());
                 if (result == null) {
-                    // title no found, maybe no mapping OR not available in the current locale
+                    // title not found, maybe no mapping OR not available in the current locale
                     // read the title of the detail resource as fall back (may contain mapping from another locale)
-                    result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
+                    result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                 }
             }
             if (result == null) {
@@ -160,7 +160,7 @@ public class CmsJspTagInfo extends TagSupport {
                 result = cms.readPropertyObject(
                     cms.getRequestContext().getUri(),
                     CmsPropertyDefinition.PROPERTY_TITLE,
-                    false).getValue("");
+                    true).getValue();
             }
         } catch (CmsException e) {
             // NOOP, result will be null
