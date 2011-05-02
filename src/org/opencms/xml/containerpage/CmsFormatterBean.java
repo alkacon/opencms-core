@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/02 15:28:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.xml.content.CmsXmlContent;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -166,7 +166,7 @@ public class CmsFormatterBean {
         m_jspRootPath = jspUri;
 
         m_type = type;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_type)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_type)) {
             m_type = WILDCARD_FORMATTER;
         }
 
