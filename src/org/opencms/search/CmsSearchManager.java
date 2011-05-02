@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2011/04/21 14:20:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/02 15:47:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -324,6 +324,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             // offline update frequency change - clear interrupt status
                             frequencyChange = interrupted();
                             offlineUpdateFrequency = OpenCms.getSearchManager().getOfflineUpdateFrequency();
+                        }
+                        if (interrupted()) {
+                            // this is just called to clear the interrupt status of the thread
                         }
                     }
                     if (m_isAlive && !frequencyChange) {
@@ -794,6 +797,56 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public String getDirectory() {
 
         return m_path;
+    }
+
+    /**
+     * Returns a lucene document factory for given resource.<p>
+     * 
+     * The type of the document factory is selected by the type of the resource
+     * and the MIME type of the resource content, according to the configuration in <code>opencms-search.xml</code>.<p>
+     * 
+     * @param resource a cms resource
+     * @return a lucene document factory or null
+     */
+    public I_CmsDocumentFactory getDocumentFactory(CmsResource resource) {
+
+        // first get the MIME type of the resource
+        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "unknown");
+        String resourceType = null;
+        try {
+            resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        } catch (CmsLoaderException e) {
+            // ignore, unknown resource type, resource can not be indexed
+        }
+        return getDocumentFactory(resourceType, mimeType);
+    }
+
+    /**
+     * Returns a lucene document factory for given resource type and MIME type.<p>
+     * 
+     * The type of the document factory is selected  according to the configuration 
+     * in <code>opencms-search.xml</code>.<p>
+     * 
+     * @param resourceType the resource type name
+     * @param mimeType the MIME type
+     * 
+     * @return a lucene document factory or null in case no matching factory was found
+     */
+    public I_CmsDocumentFactory getDocumentFactory(String resourceType, String mimeType) {
+
+        I_CmsDocumentFactory result = null;
+        if (resourceType != null) {
+            // create the factory lookup key for the document
+            String documentTypeKey = A_CmsVfsDocument.getDocumentKey(resourceType, mimeType);
+            // check if a setting is available for this specific MIME type
+            result = m_documentTypes.get(documentTypeKey);
+            if (result == null) {
+                // no setting is available, try to use a generic setting without MIME type
+                result = m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(resourceType, null));
+                // please note: the result may still be null
+            }
+        }
+        return result;
     }
 
     /**
@@ -1538,10 +1591,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void setOfflineUpdateFrequency(long offlineUpdateFrequency) {
 
         m_offlineUpdateFrequency = offlineUpdateFrequency;
-        if ((m_offlineIndexThread != null) && m_offlineIndexThread.isAlive()) {
-            // notify existing thread of update frequency change
-            m_offlineIndexThread.interrupt();
-        }
+        updateOfflineIndexes();
     }
 
     /**
@@ -1612,6 +1662,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
+        }
+    }
+
+    /**
+     * Updates all offline indexes.<p>
+     * 
+     * Can be used to force an index update when it's not convenient to wait until the 
+     * offline update interval has eclipsed.<p>
+     */
+    public void updateOfflineIndexes() {
+
+        if ((m_offlineIndexThread != null) && m_offlineIndexThread.isAlive()) {
+            // notify existing thread of update frequency change
+            m_offlineIndexThread.interrupt();
         }
     }
 
@@ -1708,56 +1772,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
         }
-    }
-
-    /**
-     * Returns a lucene document factory for given resource.<p>
-     * 
-     * The type of the document factory is selected by the type of the resource
-     * and the MIME type of the resource content, according to the configuration in <code>opencms-search.xml</code>.<p>
-     * 
-     * @param resource a cms resource
-     * @return a lucene document factory or null
-     */
-    public I_CmsDocumentFactory getDocumentFactory(CmsResource resource) {
-
-        // first get the MIME type of the resource
-        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "unknown");
-        String resourceType = null;
-        try {
-            resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
-        } catch (CmsLoaderException e) {
-            // ignore, unknown resource type, resource can not be indexed
-        }
-        return getDocumentFactory(resourceType, mimeType);
-    }
-
-    /**
-     * Returns a lucene document factory for given resource type and MIME type.<p>
-     * 
-     * The type of the document factory is selected  according to the configuration 
-     * in <code>opencms-search.xml</code>.<p>
-     * 
-     * @param resourceType the resource type name
-     * @param mimeType the MIME type
-     * 
-     * @return a lucene document factory or null in case no matching factory was found
-     */
-    public I_CmsDocumentFactory getDocumentFactory(String resourceType, String mimeType) {
-
-        I_CmsDocumentFactory result = null;
-        if (resourceType != null) {
-            // create the factory lookup key for the document
-            String documentTypeKey = A_CmsVfsDocument.getDocumentKey(resourceType, mimeType);
-            // check if a setting is available for this specific MIME type
-            result = m_documentTypes.get(documentTypeKey);
-            if (result == null) {
-                // no setting is available, try to use a generic setting without MIME type
-                result = m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(resourceType, null));
-                // please note: the result may still be null
-            }
-        }
-        return result;
     }
 
     /**
