@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/01 12:49:45 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0
  */
@@ -670,7 +670,7 @@ public class CmsJspTagContainer extends TagSupport {
         CmsContainerElementBean element = null;
         if (detailContent != null) {
             // get the right formatter
-            String elementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+            String elementFormatter = OpenCms.getADEManager().getFormatterForContainer(
                 cms,
                 detailContent,
                 getType(),
@@ -823,7 +823,7 @@ public class CmsJspTagContainer extends TagSupport {
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 try {
                     subelement.initResource(cms);
-                    String subelementFormatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                    String subelementFormatter = OpenCms.getADEManager().getFormatterForContainer(
                         cms,
                         subelement.getResource(),
                         containerType,

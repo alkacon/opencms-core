@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/01 14:52:18 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -354,7 +354,7 @@ public class CmsElementUtil {
         for (CmsContainer container : containers) {
             CmsPair<String, Integer> key = CmsPair.create(container.getType(), new Integer(container.getWidth()));
             if (!formatters.containsKey(key)) {
-                String formatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                String formatter = OpenCms.getADEManager().getFormatterForContainer(
                     m_cms,
                     resource,
                     container.getType(),

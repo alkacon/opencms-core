@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2011/04/20 07:01:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -408,16 +408,16 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     List<String> getConfiguredMappings();
 
     /**
-     * Returns the formatter uri for the given container type.<p>
+     * Returns the formatter JSP URI for the given container page element.<p>
      * 
      * @param cms the current cms context
-     * @param resource the resource
-     * @param containerType the container type
+     * @param resource the container page element resource to get the formatter for
+     * @param type the container type
      * @param width the container width 
      * 
-     * @return the formatter uri
+     * @return the formatter JSP URI for the given container page element
      */
-    String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource resource, String containerType, int width);
+    String getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width);
 
     /**
      * Returns the gallery preview provider class name.<p>

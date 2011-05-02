@@ -133,6 +133,7 @@
 		<xsd:attribute name="type" type="xsd:string" use="optional" />		
 		<xsd:attribute name="minwidth" type="xsd:string" use="optional" />
 		<xsd:attribute name="maxwidth" type="xsd:string" use="optional" />
+		<xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />		
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoHeadIncludes">

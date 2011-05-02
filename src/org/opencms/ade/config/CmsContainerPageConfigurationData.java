@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationData.java,v $
- * Date   : $Date: 2011/04/12 11:59:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsLazyFolder;
 
 import java.util.Collection;
@@ -52,14 +53,14 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsContainerPageConfigurationData> {
 
     /** The formatter configuration. */
-    private Map<String, CmsTypeFormatterConfiguration> m_formatterConfiguration;
+    private Map<String, CmsFormatterConfiguration> m_formatterConfiguration;
 
     /** A bean which represents the source of the configuration data deepest in the tree. */
     private CmsConfigurationSourceInfo m_lastSource;
@@ -74,7 +75,7 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
 
         this(
             new HashMap<String, CmsConfigurationItem>(),
-            new HashMap<String, CmsTypeFormatterConfiguration>(),
+            new HashMap<String, CmsFormatterConfiguration>(),
             new CmsConfigurationSourceInfo(null, false));
     }
 
@@ -87,7 +88,7 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
      */
     public CmsContainerPageConfigurationData(
         Map<String, CmsConfigurationItem> typeConfiguration,
-        Map<String, CmsTypeFormatterConfiguration> formatterConfiguration,
+        Map<String, CmsFormatterConfiguration> formatterConfiguration,
         CmsConfigurationSourceInfo lastSource) {
 
         m_typeConfiguration = typeConfiguration;
@@ -122,7 +123,7 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
      * 
      * @return the formatter configuration 
      */
-    public Map<String, CmsTypeFormatterConfiguration> getFormatterConfiguration() {
+    public Map<String, CmsFormatterConfiguration> getFormatterConfiguration() {
 
         return Collections.unmodifiableMap(m_formatterConfiguration);
     }
@@ -178,7 +179,7 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
         newTypeConfiguration.putAll(m_typeConfiguration);
         newTypeConfiguration.putAll(data.m_typeConfiguration);
 
-        Map<String, CmsTypeFormatterConfiguration> newFormatterConfiguration = new LinkedHashMap<String, CmsTypeFormatterConfiguration>();
+        Map<String, CmsFormatterConfiguration> newFormatterConfiguration = new LinkedHashMap<String, CmsFormatterConfiguration>();
         newFormatterConfiguration.putAll(m_formatterConfiguration);
         newFormatterConfiguration.putAll(data.m_formatterConfiguration);
 
@@ -186,5 +187,4 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
 
         return new CmsContainerPageConfigurationData(newTypeConfiguration, newFormatterConfiguration, lastSource);
     }
-
 }

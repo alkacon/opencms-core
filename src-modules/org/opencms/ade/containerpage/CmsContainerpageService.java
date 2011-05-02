@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0
  */
@@ -512,7 +512,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
-                String formatterUri = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                String formatterUri = OpenCms.getADEManager().getFormatterForContainer(
                     cms,
                     resource,
                     container.getType(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/04/27 16:30:53 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -50,14 +49,8 @@ import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -80,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 7.6
  */
@@ -302,18 +295,16 @@ public class CmsADEManager {
                 if (properties.containsKey(propertyName)) {
                     properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    properties.put(
+                    properties.put(propertyName, new CmsProperty(
                         propertyName,
-                        new CmsProperty(propertyName, null, CmsXmlContentPropertyHelper.getPropValueIds(
-                            cms,
-                            prop.getType(),
-                            prop.getDefault())));
+                        null,
+                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getType(), prop.getDefault())));
                 }
             }
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1, element.getId()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
+                element.getId()), e);
         }
         return properties;
     }
@@ -413,21 +404,20 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the formatter for a container element (as a resource) and a container type.<p>
+     * Returns the formatter for a given container page element.<p>
      * 
      * @param cms the CMS context 
-     * @param res the resource of the container element 
-     * @param containerType the container type 
+     * @param res the resource of the container page element 
+     * @param type the container type 
      * @param width the width of the container 
      *  
-     * @return the formatter jsp path
+     * @return the formatter JSP path
      * 
      * @throws CmsException if something goes wrong 
      */
-    public String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String containerType, int width)
-    throws CmsException {
+    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException {
 
-        return m_configuration.getFormatterForContainerTypeAndWidth(cms, res, containerType, width);
+        return m_configuration.getFormatterForContainer(cms, res, type, width);
     }
 
     /**
@@ -537,42 +527,6 @@ public class CmsADEManager {
     public int getSearchPageSize(CmsObject cms) throws CmsException {
 
         return m_configuration.getSearchPageSize(cms);
-    }
-
-    /**
-     * Returns all formatters for a given (xml content) resource.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the xml content to get the formatters for
-     * 
-     * @return a map where the keys are the formatter type names and the values the uris
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Map<String, String> getXmlContentFormatters(CmsObject cms, CmsResource resource) throws CmsException {
-
-        // get the content definition
-        List<CmsRelation> relations = cms.getRelationsForResource(
-            resource,
-            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
-        CmsXmlContentDefinition contentDef = null;
-        if ((relations != null) && !relations.isEmpty()) {
-            String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
-            contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
-        }
-        if (contentDef == null) {
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-            contentDef = content.getContentDefinition();
-        }
-
-        // iterate the formatters
-        Map<String, String> formatters = contentDef.getContentHandler().getFormattersByType();
-        if (formatters.isEmpty()) {
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
-                contentDef.getSchemaLocation()));
-        }
-        return formatters;
     }
 
     /**

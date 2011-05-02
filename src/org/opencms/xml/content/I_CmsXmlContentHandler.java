@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/01 12:49:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,10 +37,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.util.CmsPair;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,18 +128,11 @@ public interface I_CmsXmlContentHandler {
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
-     * Returns the container page element formatters that have been defined for type based containers.<p>
+     * Returns the container page element formatter configuration for this handler.<p>
      * 
-     * @return the element formatters, as &lt;name,uri&gt;
+     * @return the container page element formatter configuration for this handler
      */
-    Map<String, String> getFormattersByType();
-
-    /**
-     * Returns the container page element formatters that have been defined by container width.<p>
-     * 
-     * @return a map from maximal container widths to formatter jsp uris
-     */
-    Map<Integer, CmsPair<String, Integer>> getFormattersByWidth();
+    CmsFormatterConfiguration getFormatterConfiguration();
 
     /**
      * Returns the java-script resources to include into the html-page head.<p>

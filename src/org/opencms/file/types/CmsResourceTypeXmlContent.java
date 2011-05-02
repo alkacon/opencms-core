@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/05/01 12:49:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,13 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,36 +216,27 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.A_CmsResourceType#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
     @Override
-    public String getFormatterForContainerTypeAndWidth(
-        CmsObject cms,
-        CmsResource resource,
-        String containerType,
-        int maxWidth) {
+    public String getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
-            return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
+        if (type.equals(CmsFormatterBean.DEFAULT_FORMATTER_TYPE)) {
+            return CmsFormatterBean.DEFAULT_FORMATTER;
         }
         if (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
-            return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
+            return CmsFormatterBean.DEFAULT_FORMATTER;
         }
         CmsXmlContentDefinition contentDef = searchContentDefinition(cms, resource);
-        Map<String, String> formatters = contentDef.getContentHandler().getFormattersByType();
+        CmsFormatterConfiguration formatterConfiguration = contentDef.getContentHandler().getFormatterConfiguration();
 
-        if (formatters.isEmpty()) {
+        if (!formatterConfiguration.hasFormatters()) {
             LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
                 contentDef.getSchemaLocation()));
         }
 
-        I_CmsXmlContentHandler handler = contentDef.getContentHandler();
-        return CmsFormatterUtil.selectFormatter(
-            handler.getFormattersByType(),
-            handler.getFormattersByWidth(),
-            containerType,
-            maxWidth);
+        return formatterConfiguration.selectFormatter(type, width);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/01 12:49:45 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,10 +58,8 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -73,7 +71,8 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.containerpage.CmsFormatterConfigBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -105,7 +104,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -293,12 +292,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for head include type attribute: java-script. */
     public static final String ATTRIBUTE_INCLUDE_TYPE_JAVASCRIPT = "javascript";
 
-    /** Default formatter path. */
-    public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
-
-    /** Default formatter type constant. */
-    public static final String DEFAULT_FORMATTER_TYPE = "_DEFAULT_";
-
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
@@ -335,14 +328,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The widgets used for the elements (as defined in the annotations). */
     protected Map<String, I_CmsWidget> m_elementWidgets;
 
-    /** The formatter configuration beans. */
-    protected List<CmsFormatterConfigBean> m_formatterConfigs;
-
-    /** The configured formatters by type. */
-    protected Map<String, String> m_formattersByType;
-
-    /** The map of width-based formatters. */
-    protected Map<Integer, CmsPair<String, Integer>> m_formattersByWidth;
+    /** The formatter configuration. */
+    protected CmsFormatterConfiguration m_formatterConfiguration;
 
     /** The java-script resources to include into the html-page head. */
     protected Set<String> m_jsHeadIncludes;
@@ -487,29 +474,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Returns the formatter configuration beans.<p>
-     *
-     * @return the formatter configuration beans
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration()
      */
-    public List<CmsFormatterConfigBean> getFormatterConfigs() {
+    public CmsFormatterConfiguration getFormatterConfiguration() {
 
-        return Collections.unmodifiableList(m_formatterConfigs);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormattersByType()
-     */
-    public Map<String, String> getFormattersByType() {
-
-        return Collections.unmodifiableMap(m_formattersByType);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormattersByWidth()
-     */
-    public Map<Integer, CmsPair<String, Integer>> getFormattersByWidth() {
-
-        return Collections.unmodifiableMap(m_formattersByWidth);
+        return m_formatterConfiguration;
     }
 
     /**
@@ -687,6 +656,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
             // re-initialize the local variables
             init();
+
+            // add the default formatter
+            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                CmsFormatterBean.DEFAULT_FORMATTER,
+                CmsFormatterBean.DEFAULT_FORMATTER_TYPE,
+                contentDefinition.getSchemaLocation()));
 
             Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(appInfoElement);
             while (i.hasNext()) {
@@ -1604,13 +1579,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_previewLocation = null;
         m_modelFolder = null;
         m_tabs = new ArrayList<CmsXmlContentTab>();
-        m_formattersByType = new HashMap<String, String>();
-        m_formattersByWidth = new HashMap<Integer, CmsPair<String, Integer>>();
-        m_formattersByType.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
         m_cssHeadIncludes = new LinkedHashSet<String>();
         m_jsHeadIncludes = new LinkedHashSet<String>();
         m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
         m_titleMappings = new ArrayList<String>(2);
+        m_formatterConfiguration = new CmsFormatterConfiguration();
     }
 
     /**
@@ -1650,13 +1623,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // add the default formatter
         String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defFormatter)) {
-            m_formattersByType.put(DEFAULT_FORMATTER_TYPE, defFormatter);
+            // individual default content formatter is configured
+            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                defFormatter,
+                CmsFormatterBean.DEFAULT_FORMATTER_TYPE,
+                contentDefinition.getSchemaLocation()));
         }
 
         // reading the include resources common for all formatters 
         Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
-        String schemaLocation = contentDefinition.getSchemaLocation();
-        m_formatterConfigs = new ArrayList<CmsFormatterConfigBean>();
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
             Element element = itFormatter.next();
@@ -1668,13 +1643,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String minWidthStr = element.attributeValue(APPINFO_ATTR_MINWIDTH);
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
-            m_formatterConfigs.add(new CmsFormatterConfigBean(uri, type, minWidthStr, maxWidthStr));
+            String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
+            m_formatterConfiguration.addFormatter(new CmsFormatterBean(
+                uri,
+                type,
+                minWidthStr,
+                maxWidthStr,
+                searchContent,
+                contentDefinition));
         }
-        CmsPair<Map<String, String>, Map<Integer, CmsPair<String, Integer>>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
-            m_formatterConfigs,
-            schemaLocation);
-        m_formattersByType.putAll(formatterMaps.getFirst());
-        m_formattersByWidth.putAll(formatterMaps.getSecond());
     }
 
     /**

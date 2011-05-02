@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/04/28 13:51:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.ade.config.CmsContainerPageConfigurationData;
 import org.opencms.ade.config.CmsSitemapConfigurationData;
-import org.opencms.ade.config.CmsTypeFormatterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -42,7 +41,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsFormatterUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 7.6 
  */
@@ -180,32 +178,21 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
-    public String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String cntType, int width)
-    throws CmsException {
+    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String typeName = resType.getTypeName();
         String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
-        CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+        CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
             rootPath);
-        Map<String, CmsTypeFormatterConfiguration> formatterConfig = configData.getFormatterConfiguration();
-        CmsTypeFormatterConfiguration typeFmtConfig = formatterConfig.get(typeName);
-        if (typeFmtConfig != null) {
-            String formatter = CmsFormatterUtil.selectFormatter(
-                typeFmtConfig.getContainerTypeFormatters(),
-                typeFmtConfig.getWidthFormatters(),
-                cntType,
-                width);
-            return formatter;
+        CmsFormatterConfiguration formatterConfiguration = config.getFormatterConfiguration().get(typeName);
+        if (formatterConfiguration != null) {
+            return formatterConfiguration.selectFormatter(type, width);
         } else {
-            return OpenCms.getResourceManager().getResourceType(res).getFormatterForContainerTypeAndWidth(
-                cms,
-                res,
-                cntType,
-                width);
+            return resType.getFormatterForContainer(cms, res, type, width);
         }
     }
 

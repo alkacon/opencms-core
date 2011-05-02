@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2011/04/20 07:01:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -484,12 +484,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /**
      * 
-     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
-    public String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String containerType, int width) {
+    public String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) {
 
-        if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
-            return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
+        if (type.equals(CmsFormatterBean.DEFAULT_FORMATTER_TYPE)) {
+            return CmsFormatterBean.DEFAULT_FORMATTER;
         }
         return null;
     }

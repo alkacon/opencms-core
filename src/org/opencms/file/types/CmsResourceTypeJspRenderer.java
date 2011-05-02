@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.9.0 
  */
@@ -129,17 +129,17 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     }
 
     /**
-     * @see org.opencms.file.types.CmsResourceTypeXmlContent#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.CmsResourceTypeXmlContent#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
     @Override
-    public String getFormatterForContainerTypeAndWidth(
+    public String getFormatterForContainer(
         CmsObject cms,
         CmsResource resource,
-        String containerType,
+        String type,
         int width) {
 
-        if (CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE.equals(containerType)) {
-            return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
+        if (CmsFormatterBean.DEFAULT_FORMATTER_TYPE.equals(type)) {
+            return CmsFormatterBean.DEFAULT_FORMATTER;
         }
         try {
             String formatter = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true).getValue();
@@ -161,13 +161,13 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter)) {
                 // found a formatter, now resolve container type macro in formatter path (if present)
                 CmsMacroResolver resolver = CmsMacroResolver.newInstance().setKeepEmptyMacros(true);
-                resolver.addMacro(MACRO_CONTAINERTYPE, containerType);
+                resolver.addMacro(MACRO_CONTAINERTYPE, type);
                 formatter = resolver.resolveMacros(formatter);
                 if (types.isEmpty()) {
                     // still not found types, read them from the property
                     types = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true).getValueList();
                 }
-                if ((types == null) || types.isEmpty() || types.contains(containerType)) {
+                if ((types == null) || types.isEmpty() || types.contains(type)) {
                     return formatter;
                 }
                 // container type not part of the specified types, formatter is not valid
@@ -181,6 +181,6 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
             }
         }
         // try to get formatter out of XSD as fall back
-        return super.getFormatterForContainerTypeAndWidth(cms, resource, containerType, width);
+        return super.getFormatterForContainer(cms, resource, type, width);
     }
 }

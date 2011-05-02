@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2011/04/27 13:05:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -93,19 +93,18 @@ public interface I_CmsADEConfiguration {
     int getFavoriteListMaxSize(CmsObject cms) throws CmsException;
 
     /**
-     * Returns the formatter for a given content element and a container type and width.<p>
+     * Returns the formatter for a given container page element.<p>
      * 
      * @param cms the CMS context 
-     * @param res the content element resource 
-     * @param cntType the container type 
+     * @param res the container page element resource 
+     * @param type the container type 
      * @param width the container width
      *  
      * @return the element's formatter uri for the given container type and width
      *   
      * @throws CmsException if something goes wrong  
      */
-    String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String cntType, int width)
-    throws CmsException;
+    String getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) throws CmsException;
 
     /**
      * Returns the name of the next new file of the given type to be created.<p>

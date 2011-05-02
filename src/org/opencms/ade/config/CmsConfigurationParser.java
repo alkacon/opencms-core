@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/04/26 13:18:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/02 14:21:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,15 +40,15 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsFormatterUtil;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
-import org.opencms.xml.containerpage.CmsFormatterConfigBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsLazyFolder;
 import org.opencms.xml.containerpage.Messages;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -116,6 +116,9 @@ public class CmsConfigurationParser {
     /** The tag name of the formatter maximum width. */
     public static final String N_MAXWIDTH = "MaxWidth";
 
+    /** The tag name of the formatter that indicates if the content should be searched. */
+    public static final String N_SEARCHCONTENT = "SearchContent";
+
     /** The Page node name. */
     public static final String N_PAGE = "Page";
 
@@ -132,7 +135,7 @@ public class CmsConfigurationParser {
     public static final String N_TYPE = "Type";
 
     /** The tag name of the formatter width. */
-    public static final String N_WIDTH = "Width";
+    public static final String N_MINWIDTH = "Width";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
@@ -144,13 +147,13 @@ public class CmsConfigurationParser {
     private Map<String, CmsConfigurationItem> m_configuration = new LinkedHashMap<String, CmsConfigurationItem>();
 
     /** The xml document. */
-    private I_CmsXmlDocument m_content;
+    private CmsXmlContent m_content;
 
     /** The detail pages from the configuration file. */
     private List<CmsDetailPageInfo> m_detailPages;
 
     /** The formatter configurations. */
-    private Map<String, CmsTypeFormatterConfiguration> m_formatterConfiguration = new HashMap<String, CmsTypeFormatterConfiguration>();
+    private Map<String, CmsFormatterConfiguration> m_formatterConfiguration = new HashMap<String, CmsFormatterConfiguration>();
 
     /** The maximum sitemap depth. */
     private int m_maxDepth = DEFAULT_MAX_DEPTH;
@@ -223,7 +226,7 @@ public class CmsConfigurationParser {
      * 
      * @return a pair of maps containing the formatter configuration for the type 
      */
-    public CmsTypeFormatterConfiguration getFormatterConfigurationForType(String type) {
+    public CmsFormatterConfiguration getFormatterConfigurationForType(String type) {
 
         return m_formatterConfiguration.get(type);
     }
@@ -309,7 +312,7 @@ public class CmsConfigurationParser {
     public void processFile(CmsObject cms, CmsResource config) throws CmsException {
 
         CmsFile configFile = cms.readFile(config);
-        I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
         parseConfiguration(cms, content);
     }
 
@@ -444,7 +447,7 @@ public class CmsConfigurationParser {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
+    private void parseConfiguration(CmsObject cms, CmsXmlContent content) throws CmsException {
 
         Locale locale = getLocale(cms, content);
         m_content = content;
@@ -604,22 +607,23 @@ public class CmsConfigurationParser {
 
         CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern, isDefault);
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
-        List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
+        CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
             String jsp = getSubValueString(cms, fmtValue, N_JSP);
-            String width = getSubValueString(cms, fmtValue, N_WIDTH);
             String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
+            String minWidth = getSubValueString(cms, fmtValue, N_MINWIDTH);
             String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
-            formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width, maxwidth));
+            String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
+            formatterConfiguration.addFormatter(new CmsFormatterBean(
+                jsp,
+                fmtType,
+                minWidth,
+                maxwidth,
+                searchContent,
+                m_content));
         }
-        if (!formatterConfigBeans.isEmpty()) {
-            CmsPair<Map<String, String>, Map<Integer, CmsPair<String, Integer>>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
-                formatterConfigBeans,
-                m_content.getFile().getRootPath());
-            CmsTypeFormatterConfiguration fmt = new CmsTypeFormatterConfiguration(
-                formatterMaps.getFirst(),
-                formatterMaps.getSecond());
-            m_formatterConfiguration.put(type, fmt);
+        if (formatterConfiguration.hasFormatters()) {
+            m_formatterConfiguration.put(type, formatterConfiguration);
         }
 
         m_newElements.add(configItem);
