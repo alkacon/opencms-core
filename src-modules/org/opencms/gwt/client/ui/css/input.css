@@ -298,6 +298,7 @@ div.selectBoxOpener {
 div.formRow {
 	margin: 2px 0;
 	position: relative;
+	min-height: 22px;
 }
 
 @sprite .formRowOpenerClosed {
