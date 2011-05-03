@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 14:23:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,13 +65,14 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 
 /**
- * This tag includes required css or javascript resources, place in html/head.
+ * This tag includes required CSS or JavaScript resources that are to be places in the HTML head.<p>
+ * 
  * Required resources can be configured in the resource type schema.
- * Set attribute type to 'css' to include css resources or to 'javascript' to include java-script resources.<p>
+ * Set attribute type to 'css' to include css resources or to 'javascript' to include JavaScript resources.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0
  */
@@ -141,21 +142,25 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         if (resType instanceof CmsResourceTypeXmlContent) {
-            CmsXmlContentDefinition contentDefinition = ((CmsResourceTypeXmlContent)resType).searchContentDefinition(
-                cms,
-                resource);
-            return contentDefinition.getContentHandler().getCSSHeadIncludes();
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
+                    cms,
+                    resource);
+                return contentDefinition.getContentHandler().getCSSHeadIncludes();
+            } catch (CmsException e) {
+                // NOOP, use the empty set
+            }
         }
-        return Collections.<String> emptySet();
+        return Collections.emptySet();
     }
 
     /**
-     * Returns the configured java-script head include resources.<p>
+     * Returns the configured JavaScript head include resources.<p>
      * 
      * @param cms the current cms context
      * @param resource the resource
      * 
-     * @return the configured java-script head include resources
+     * @return the configured JavaScript head include resources
      * 
      * @throws CmsLoaderException if something goes wrong reading the resource type
      */
@@ -163,12 +168,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         if (resType instanceof CmsResourceTypeXmlContent) {
-            CmsXmlContentDefinition contentDefinition = ((CmsResourceTypeXmlContent)resType).searchContentDefinition(
-                cms,
-                resource);
-            return contentDefinition.getContentHandler().getJSHeadIncludes();
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
+                    cms,
+                    resource);
+                return contentDefinition.getContentHandler().getJSHeadIncludes();
+            } catch (CmsException e) {
+                // NOOP, use the empty set
+            }
         }
-        return Collections.<String> emptySet();
+        return Collections.emptySet();
     }
 
     /**
@@ -272,9 +281,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        element.getSitePath()), e);
                 }
             }
         }
@@ -284,11 +293,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        standardContext.getDetailContentId()),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                    standardContext.getDetailContentId()), e);
             }
         }
         for (String cssUri : cssIncludes) {
@@ -320,9 +327,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        element.getSitePath()), e);
                 }
             }
         }
@@ -332,11 +339,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        standardContext.getDetailContentId()),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                    standardContext.getDetailContentId()), e);
             }
         }
         for (String cssUri : jsIncludes) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2011/05/03 10:48:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 14:23:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,7 +261,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Factory method that returns a XML content definition instance for a given resource.<p>
+     * Factory method that returns the XML content definition instance for a given resource.<p>
      * 
      * @param cms the cms-object
      * @param resource the resource
@@ -278,10 +278,10 @@ public class CmsXmlContentDefinition implements Cloneable {
         String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
         if (schema != null) {
             try {
-                // this wont in most cases read the file content
+                // this wont in most cases read the file content because of caching
                 contentDef = unmarshal(cms, schema);
             } catch (CmsException e) {
-                // this should never happen, unless the configured schema is different than the schema in the xml
+                // this should never happen, unless the configured schema is different than the schema in the XML
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e);
                 }
@@ -289,8 +289,8 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
         if (contentDef == null) {
-            // could still be empty since it is not mandatory to configure the resource type
-            // try through the xsd relation 
+            // could still be empty since it is not mandatory to configure the resource type in the XML configuration
+            // try through the XSD relation 
             List<CmsRelation> relations = cms.getRelationsForResource(
                 resource,
                 CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
@@ -301,8 +301,8 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
         if (contentDef == null) {
-            // could still be empty if the xml content has not been saved with a version newer than 7.9.0
-            // so, to unmarshall is the only possibility left
+            // could still be empty if the XML content has been saved with an OpenCms before 8.0.0
+            // so, to unmarshal is the only possibility left
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             contentDef = content.getContentDefinition();
         }
