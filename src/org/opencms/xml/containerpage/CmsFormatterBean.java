@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/03 11:48:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 16:47:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -145,9 +145,7 @@ public class CmsFormatterBean {
             }
         }
 
-        m_isPreviewFormatter = CmsStringUtil.isEmptyOrWhitespaceOnly(preview)
-        ? true
-        : Boolean.valueOf(preview).booleanValue();
+        m_isPreviewFormatter = Boolean.valueOf(preview).booleanValue();
 
         m_search = CmsStringUtil.isEmptyOrWhitespaceOnly(searchContent)
         ? true

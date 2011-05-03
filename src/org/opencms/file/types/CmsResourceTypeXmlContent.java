@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/05/03 14:23:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/03 16:47:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,8 +218,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     @Override
     public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (CmsFormatterBean.isPreviewType(type)
-            || (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID)) {
+        if (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
             return CmsFormatterBean.getDefaultPreviewFormatter();
         }
         CmsFormatterBean result = null;
@@ -267,9 +266,11 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {
