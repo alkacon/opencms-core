@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageModuleConfigProvider.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/03 16:50:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerPageModuleConfigProvider extends A_CmsModuleConfigProvider<CmsContainerPageConfigurationData> {
 
     /** The module configuration key. */
-    public static final String MODULE_KEY = "cntpage.config";
+    public static final String MODULE_KEY = "containerpage.config";
 
     /**
      * Creates a new instance.<p>
