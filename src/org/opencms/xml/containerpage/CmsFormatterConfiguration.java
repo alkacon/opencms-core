@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/03 07:08:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -96,7 +96,9 @@ public class CmsFormatterConfiguration {
 
             String type = formatter.getType();
             key = type;
-            oldUri = m_typeFormatters.get(type).getJspRootPath();
+            if (m_typeFormatters.get(type) != null) {
+                oldUri = m_typeFormatters.get(type).getJspRootPath();
+            }
             m_typeFormatters.put(type, formatter);
         } else {
 
