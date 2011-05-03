@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/05/03 16:47:57 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -239,6 +239,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 prepareTargetContainer((I_CmsDropContainer)target, draggable, handler.getPlaceholder());
             }
         }
+
         m_dragInfos.put(
             target,
             new DragInfo(
@@ -275,6 +276,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
             CmsContainerpageEditor.getZIndexManager().start(id);
+        } else {
+            handler.setStartPosition(-1, 0);
         }
         return true;
     }

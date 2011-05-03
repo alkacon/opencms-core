@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/03 16:47:57 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -249,6 +249,9 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The Drag and drop controller. */
     private I_CmsDNDController m_controller;
 
+    /** The current animation. */
+    private CmsMoveAnimation m_currentAnimation;
+
     /** The current drop target. */
     private I_CmsDropTarget m_currentTarget;
 
@@ -296,9 +299,6 @@ public class CmsDNDHandler implements MouseDownHandler {
 
     /** The registered drop targets. */
     private List<I_CmsDropTarget> m_targets;
-
-    /** The current animation. */
-    private CmsMoveAnimation m_currentAnimation;
 
     /** 
      * Constructor.<p> 
@@ -606,6 +606,25 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Sets the start position.<p>
+     * In case of a canceled drag and drop and enabled animation, 
+     * the draggable helper element will be reverted to the start position.<p>
+     * Values <code>&lt;0</code> will be ignored.<p>
+     * 
+     * @param left the left position
+     * @param top the top position
+     */
+    public void setStartPosition(int left, int top) {
+
+        if (left >= 0) {
+            m_startLeft = left;
+        }
+        if (top >= 0) {
+            m_startTop = top;
+        }
+    }
+
+    /**
      * Clears the drag process with a move animation of the drag element to it's original position.<p>
      * 
      * @param draggable the draggable 
@@ -777,7 +796,6 @@ public class CmsDNDHandler implements MouseDownHandler {
         } else {
             drop();
         }
-
     }
 
     /**
