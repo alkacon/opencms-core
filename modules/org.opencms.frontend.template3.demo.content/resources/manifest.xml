@@ -35,7 +35,7 @@
 	<files>
 		<file>
 			<destination>demo_t3</destination>
-			<type>entrypoint</type>
+			<type>subsitemap</type>
 			<uuidstructure>5ae56cfe-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
