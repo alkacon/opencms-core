@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2011/05/03 13:28:36 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -126,7 +126,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private static final Log LOG = CmsLog.getLog(CmsVfsSitemapService.class);
 
     /** The redirect recource type name. */
-    private static final String RECOURCE_TYPE_NAME_REDIRECT = "xmlredirect";
+    private static final String RECOURCE_TYPE_NAME_REDIRECT = "htmlredirect";
 
     /** The redirect target XPath. */
     private static final String REDIRECT_LINK_TARGET_XPATH = "Link";
