@@ -70,7 +70,7 @@
                     </accesscontrol>
                 </explorertype>
                 <explorertype name="configfolder" key="fileicon.configfolder" icon="configfolder.png" reference="folder">
-                    <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=configfolder" order="6" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
+                    <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=configfolder" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
                     <accesscontrol>
                         <accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
                     </accesscontrol>

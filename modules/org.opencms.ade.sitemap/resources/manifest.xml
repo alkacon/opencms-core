@@ -52,7 +52,7 @@
 	</resourcetypes>
 	<explorertypes>
 		<explorertype name="entrypoint" key="fileicon.entrypoint" icon="entrypoint.png" reference="folder">
-			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=entrypoint" order="5" autosetnavigation="false" autosettitle="false" info="desc.entrypoint"/>
+			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=entrypoint" order="490" autosetnavigation="false" autosettitle="false" info="desc.entrypoint"/>
 		</explorertype>
 		<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" reference="xmlcontent">
 			<newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
