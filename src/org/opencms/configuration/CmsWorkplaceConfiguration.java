@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,21 +73,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
-
-    /** A enum for the different upload variants. */
-    public static enum V_UPLOAD_VARIANT {
-        /** The java applet upload. */
-        applet,
-        /** The default html upload. */
-        basic,
-        /** The gwt upload. */
-        gwt,
-    }
 
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
@@ -95,11 +85,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "autosettitle" attribute. */
     public static final String A_AUTOSETTITLE = "autosettitle";
 
+    /** The name of the attribute containing the name of the big icon. */
+    public static final String A_BIGICON = "bigicon";
+
     /** The name of the attribute for file extensions in icon rules. */
     public static final String A_EXTENSION = "extension";
 
     /** The "info" attribute. */
     public static final String A_INFO = "info";
+
+    /** The name of the mode attribute. */
+    public static final String A_MODE = "mode";
 
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
@@ -166,12 +162,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
-
-    /** The name of the user-lists node. */
-    public static final String N_USER_LISTS = "user-lists";
-
-    /** The name of the mode attribute. */
-    public static final String A_MODE = "mode";
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
@@ -476,6 +466,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the uri node. */
     public static final String N_URI = "uri";
 
+    /** The name of the user-lists node. */
+    public static final String N_USER_LISTS = "user-lists";
+
     /** The node name of the user created node. */
     public static final String N_USERCREATED = "show-usercreated";
 
@@ -514,9 +507,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
-
-    /** The name of the attribute containing the name of the big icon. */
-    public static final String A_BIGICON = "bigicon";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -729,29 +719,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the corresponding enum, or null.<p>
-     *  
-     * @param s the value to get the enum for
-     * 
-     * @return the corresponding enum, or null
-     */
-    public static V_UPLOAD_VARIANT getUploadVariantForString(String s) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(s)) {
-            V_UPLOAD_VARIANT variant = getEnumFromString(V_UPLOAD_VARIANT.class, s);
-            if (variant == null) {
-                if (s.equalsIgnoreCase(Boolean.TRUE.toString())) {
-                    variant = V_UPLOAD_VARIANT.applet;
-                } else if (s.equalsIgnoreCase(Boolean.FALSE.toString())) {
-                    variant = V_UPLOAD_VARIANT.basic;
-                }
-            }
-            return variant;
-        }
-        return null;
-    }
-
-    /**
      * Adds the context menu item rules to the given digester.<p>
      *  
      * @param digester the digester to add the rules to
@@ -802,6 +769,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             itemElement = parentElement.addElement(N_ENTRY);
             itemElement.addAttribute(A_KEY, item.getKey());
             itemElement.addAttribute(A_URI, item.getUri());
+            if (item.getName() != null) {
+                itemElement.addAttribute(A_NAME, item.getName());
+            }
+            if (item.getIcon() != null) {
+                itemElement.addAttribute(A_ICON, item.getIcon());
+            }
             if (item.getTarget() != null) {
                 itemElement.addAttribute(A_TARGET, item.getTarget());
             }
@@ -827,27 +800,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             // create a <separator> node
             parentElement.addElement(N_SEPARATOR);
         }
-    }
-
-    /**
-     * A common method for all enums since they can't have another base class.<p>
-     * 
-     * @param <T> Enum type 
-     * @param c enum type. All enums must be all caps. 
-     * @param string case insensitive
-     *  
-     * @return corresponding enum, or null 
-     */
-    private static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
-
-        if ((c != null) && (string != null)) {
-            try {
-                return Enum.valueOf(c, string.trim().toLowerCase());
-            } catch (IllegalArgumentException ex) {
-                // noop
-            }
-        }
-        return null;
     }
 
     /**

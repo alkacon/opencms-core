@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 17:46:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,10 +103,6 @@ public abstract class CmsWorkplace {
 
     /** Parameter for the default language. */
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
-
-    /** Constant for the JSP explorer filelist file. */
-    public static final String FILE_EXPLORER_FILELIST = CmsWorkplace.VFS_PATH_WORKPLACE
-        + "views/explorer/explorer_files.jsp";
 
     /** Helper variable to deliver the html end part. */
     public static final int HTML_END = 1;
@@ -167,6 +163,12 @@ public abstract class CmsWorkplace {
 
     /** Path to workplace views. */
     public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
+
+    /** Constant for the JSP explorer filelist file. */
+    public static final String FILE_EXPLORER_FILELIST = VFS_PATH_VIEWS + "explorer/explorer_files.jsp";
+
+    /** Constant for the direct edit view JSP. */
+    public static final String DIRECT_EDIT_VIEW = "/system/workplace/views/explorer/directEdit.jsp";
 
     /** Constant for the JSP common files (e.g. error page) path. */
     public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";

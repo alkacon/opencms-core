@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,26 @@ public class CmsExplorer extends CmsWorkplace {
      */
     public static String getWorkplaceExplorerLink(final CmsJspActionElement jsp, final String explorerRootPath) {
 
+        return getWorkplaceExplorerLink(jsp.getCmsObject(), explorerRootPath);
+
+    }
+
+    /**
+     * Creates a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     * site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     * <p>
+     * 
+     * @param cms
+     *            the cms object
+     * 
+     * @param explorerRootPath
+     *            a root relative folder link (has to end with '/').
+     * 
+     * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     */
+    public static String getWorkplaceExplorerLink(final CmsObject cms, final String explorerRootPath) {
+
         // split the root site: 
         StringBuffer siteRoot = new StringBuffer();
         StringBuffer path = new StringBuffer('/');
@@ -156,8 +176,8 @@ public class CmsExplorer extends CmsWorkplace {
             }
             count++;
         }
-        String targetVfsFolder = siteRoot.toString();
-        String targetSiteRoot = path.toString();
+        String targetSiteRoot = siteRoot.toString();
+        String targetVfsFolder = path.toString();
         // build the link
         StringBuilder link2Source = new StringBuilder();
         link2Source.append("/system/workplace/views/workplace.jsp?");
@@ -167,14 +187,16 @@ public class CmsExplorer extends CmsWorkplace {
         link2Source.append("&");
         link2Source.append(CmsFrameset.PARAM_WP_VIEW);
         link2Source.append("=");
-        link2Source.append(jsp.link("/system/workplace/views/explorer/explorer_fs.jsp"));
+        link2Source.append(OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            "/system/workplace/views/explorer/explorer_fs.jsp"));
         link2Source.append("&");
         link2Source.append(CmsWorkplace.PARAM_WP_SITE);
         link2Source.append("=");
         link2Source.append(targetSiteRoot);
 
         String result = link2Source.toString();
-        result = jsp.link(result);
+        result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, result);
         return result;
     }
 
@@ -187,7 +209,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     public String getExplorerBodyUri() {
 
-        String body = "explorer_body_fs.jsp";
+        String body = CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_body_fs.jsp";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uri)) {
             body += "?" + PARAMETER_URI + "=" + m_uri;
         }

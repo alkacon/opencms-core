@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/03 17:46:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,9 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The value of the "logout" action parameter. */
     private String m_actionLogout;
 
+    /** The path to open if direct edit is selected as start view. */
+    private String m_directEditPath;
+
     /** The locale to use for display, this will not be the workplace locale, but the browser locale. */
     private Locale m_locale;
 
@@ -153,7 +156,7 @@ public class CmsLogin extends CmsJspLoginBean {
     private String m_oufqn;
 
     /** The list of all organizational units. */
-    private List m_ous;
+    private List<CmsOrganizationalUnit> m_ous;
 
     /** The value of the password parameter. */
     private String m_password;
@@ -183,8 +186,8 @@ public class CmsLogin extends CmsJspLoginBean {
         CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
             req,
             OpenCms.getWorkplaceManager().getDefaultLocale());
-        List acceptedLocales = parser.getAcceptedLocales();
-        List workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        List<Locale> acceptedLocales = parser.getAcceptedLocales();
+        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
         m_locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
         if (m_locale == null) {
             // no match found - use OpenCms default locale
@@ -203,9 +206,9 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<select style='width: 100%;' size='1' ");
         appendId(html, PARAM_OUFQN);
         html.append(">\n");
-        Iterator itOus = getOus().iterator();
+        Iterator<CmsOrganizationalUnit> itOus = getOus().iterator();
         while (itOus.hasNext()) {
-            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+            CmsOrganizationalUnit ou = itOus.next();
             String selected = "";
             if (ou.getName().equals(m_oufqn)
                 || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn) && ou.getName().equals(m_oufqn.substring(1)))) {
@@ -320,6 +323,10 @@ public class CmsLogin extends CmsJspLoginBean {
 
                     // set the default project of the user
                     CmsUserSettings settings = new CmsUserSettings(cms);
+
+                    // get the direct edit path
+                    m_directEditPath = getDirectEditPath(settings);
+
                     try {
                         CmsProject project = cms.readProject(settings.getStartProject());
                         if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
@@ -329,10 +336,12 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     } catch (CmsException e) {
                         // unable to set the startup project, bad but not critical
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
-                            m_username,
-                            settings.getStartProject()), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
+                                m_username,
+                                settings.getStartProject()),
+                            e);
                     }
                 } else {
                     // there was an error during login
@@ -749,6 +758,28 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
+     * Appends the JavaScript that opens the Direct Edit window after a successful login
+     * to the given HTML buffer.<p>
+     * 
+     * @param html the html buffer to append the script to
+     */
+    protected void appendDirectEditOpenerScript(StringBuffer html) {
+
+        html.append("<script type=\"text/javascript\">\n");
+        html.append("function doOnload() {\n");
+
+        // the window's name must be the same as in:
+        // system/workplace/resources/commons/explorer.js
+        html.append("window.name='preview';");
+        html.append("window.location.replace('");
+        html.append(link(m_directEditPath));
+        html.append("');");
+
+        html.append("}\n");
+        html.append("</script>\n");
+    }
+
+    /**
      * Appends the HTML form name/id code for the given id to the given html.<p>
      * 
      * @param html the html where to append the id to
@@ -940,7 +971,11 @@ public class CmsLogin extends CmsJspLoginBean {
             appendDefaultLoginScript(html, m_message);
         } else if (m_action == ACTION_LOGIN) {
             // append window opener script
-            appendWorkplaceOpenerScript(html, m_requestedResource, m_message);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_directEditPath)) {
+                appendDirectEditOpenerScript(html);
+            } else {
+                appendWorkplaceOpenerScript(html, m_requestedResource, m_message);
+            }
         }
 
         html.append("</head>\n");
@@ -1179,17 +1214,17 @@ public class CmsLogin extends CmsJspLoginBean {
      * 
      * @return a list of {@link CmsOrganizationalUnit} objects
      */
-    protected List getOus() {
+    protected List<CmsOrganizationalUnit> getOus() {
 
         if (m_ous == null) {
-            m_ous = new ArrayList();
+            m_ous = new ArrayList<CmsOrganizationalUnit>();
             try {
                 if (getPreDefOuFqn() == null) {
                     m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
                     m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
-                    Iterator itOus = m_ous.iterator();
+                    Iterator<CmsOrganizationalUnit> itOus = m_ous.iterator();
                     while (itOus.hasNext()) {
-                        CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+                        CmsOrganizationalUnit ou = itOus.next();
                         if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
                             itOus.remove();
                         }
@@ -1243,5 +1278,32 @@ public class CmsLogin extends CmsJspLoginBean {
         cookie.setPath(link("/system/login"));
         // set the cookie
         getResponse().addCookie(cookie);
+    }
+
+    /**
+     * Returns the direct edit path from the user settings, or <code>null</code> if not set.<p>
+     * 
+     * @param userSettings the user settings
+     * 
+     * @return the direct edit path
+     */
+    private String getDirectEditPath(CmsUserSettings userSettings) {
+
+        if (userSettings.getStartView().equals(CmsWorkplace.DIRECT_EDIT_VIEW)) {
+            String folder = userSettings.getStartFolder();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getCmsObject().getRequestContext().getSiteRoot())
+                || getCmsObject().getRequestContext().getSiteRoot().equals("/")) {
+                folder = CmsStringUtil.joinPaths(userSettings.getStartSite(), folder);
+            }
+            try {
+                CmsResource targetRes = getCmsObject().readDefaultFile(folder);
+                if (targetRes != null) {
+                    return targetRes.getRootPath();
+                }
+            } catch (Exception e) {
+                LOG.debug(e);
+            }
+        }
+        return null;
     }
 }

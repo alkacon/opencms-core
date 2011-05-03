@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author  Michael Emmerich
  * @author  Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -136,6 +136,16 @@ public class CmsUserSettings {
 
             return m_key;
         }
+    }
+
+    /** A enum for the different upload variants. */
+    public static enum V_UPLOAD_VARIANT {
+        /** The java applet upload. */
+        applet,
+        /** The default html upload. */
+        basic,
+        /** The gwt upload. */
+        gwt,
     }
 
     /** Key for additional info address. */
@@ -325,7 +335,7 @@ public class CmsUserSettings {
     private String m_uploadAppletClientFolder;
 
     /** Stores the upload variant enum. */
-    private CmsWorkplaceConfiguration.V_UPLOAD_VARIANT m_uploadVariant;
+    private V_UPLOAD_VARIANT m_uploadVariant;
 
     private CmsUser m_user;
 
@@ -356,7 +366,7 @@ public class CmsUserSettings {
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
         m_listAllProjects = false;
-        m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.gwt;
+        m_uploadVariant = V_UPLOAD_VARIANT.gwt;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
@@ -787,9 +797,32 @@ public class CmsUserSettings {
      *
      * @return the uploadVariant
      */
-    public CmsWorkplaceConfiguration.V_UPLOAD_VARIANT getUploadVariant() {
+    public V_UPLOAD_VARIANT getUploadVariant() {
 
         return m_uploadVariant;
+    }
+
+    /**
+     * Returns the corresponding enum, or null.<p>
+     *  
+     * @param s the value to get the enum for
+     * 
+     * @return the corresponding enum, or null
+     */
+    public V_UPLOAD_VARIANT getUploadVariantForString(String s) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(s)) {
+            V_UPLOAD_VARIANT variant = getEnumFromString(V_UPLOAD_VARIANT.class, s);
+            if (variant == null) {
+                if (s.equalsIgnoreCase(Boolean.TRUE.toString())) {
+                    variant = V_UPLOAD_VARIANT.applet;
+                } else if (s.equalsIgnoreCase(Boolean.FALSE.toString())) {
+                    variant = V_UPLOAD_VARIANT.basic;
+                }
+            }
+            return variant;
+        }
+        return null;
     }
 
     /**
@@ -2039,12 +2072,12 @@ public class CmsUserSettings {
      */
     public void setUploadVariant(String uploadVariant) {
 
-        m_uploadVariant = CmsWorkplaceConfiguration.getUploadVariantForString(uploadVariant);
+        m_uploadVariant = getUploadVariantForString(uploadVariant);
         if (m_uploadVariant == null) {
             m_uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant();
         }
         if (m_uploadVariant == null) {
-            m_uploadVariant = CmsWorkplaceConfiguration.V_UPLOAD_VARIANT.gwt;
+            m_uploadVariant = V_UPLOAD_VARIANT.gwt;
         }
     }
 
@@ -2226,6 +2259,27 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserLastModified() {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
+    }
+
+    /**
+     * A common method for all enums since they can't have another base class.<p>
+     * 
+     * @param <T> Enum type 
+     * @param c enum type. All enums must be all caps. 
+     * @param string case insensitive
+     *  
+     * @return corresponding enum, or null 
+     */
+    private <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
+
+        if ((c != null) && (string != null)) {
+            try {
+                return Enum.valueOf(c, string.trim().toLowerCase());
+            } catch (IllegalArgumentException ex) {
+                // noop
+            }
+        }
+        return null;
     }
 
     /**

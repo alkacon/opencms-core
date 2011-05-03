@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,17 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.configuration.CmsWorkplaceConfiguration.V_UPLOAD_VARIANT;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
+import org.opencms.db.CmsUserSettings.V_UPLOAD_VARIANT;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -961,7 +961,12 @@ public class CmsPreferences extends CmsTabDialog {
         int selectedIndex = 0;
 
         // loop through the vectors and fill the result vectors
-        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();
+        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
+        CmsWorkplaceView directEditView = new CmsWorkplaceView(Messages.get().getBundle().key(
+            Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.DIRECT_EDIT_VIEW, Float.valueOf(100));
+        list.add(directEditView);
+
+        Iterator i = list.iterator();
         int count = -1;
         while (i.hasNext()) {
             count++;
@@ -981,13 +986,11 @@ public class CmsPreferences extends CmsTabDialog {
                 String localizedKey = resolveMacros(view.getKey());
                 options.add(localizedKey);
                 values.add(view.getUri());
-
                 if (view.getUri().equals(getParamTabWpView())) {
                     selectedIndex = count;
                 }
             }
         }
-
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
 

@@ -1563,6 +1563,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/views/explorer/directEdit.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>71f77f05-7555-11e0-91f8-0d09f51b8a5a</uuidstructure>
+			<uuidresource>e3bdbb1e-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 23 Apr 2007 12:27:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Frameset Definition]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/views/explorer/tree_files.jsp</source>
 			<destination>system/workplace/views/explorer/tree_files.jsp</destination>
 			<type>jsp</type>

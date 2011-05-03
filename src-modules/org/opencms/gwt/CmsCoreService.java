@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/03 17:46:51 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,6 +66,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -95,7 +96,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  * 
@@ -336,6 +337,21 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(java.lang.String)
+     */
+    public String getWorkplaceLink(String uri) throws CmsRpcException {
+
+        String result = null;
+        try {
+            String resourceRootFolder = CmsResource.getFolderPath(getCmsObject().readResource(uri).getRootPath());
+            result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
      */
     public String lock(String uri) throws CmsRpcException {
@@ -484,13 +500,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Performs a batch of validations and returns the results.<p>
-     * 
-     * @param validationQueries a map from field names to validation queries
-     * 
-     * @return a map from field names to validation results
-     *  
-     * @throws CmsRpcException if something goes wrong 
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#validate(java.util.Map)
      */
     public Map<String, CmsValidationResult> validate(Map<String, CmsValidationQuery> validationQueries)
     throws CmsRpcException {

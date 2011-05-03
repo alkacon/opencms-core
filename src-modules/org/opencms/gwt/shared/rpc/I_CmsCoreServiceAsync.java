@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  * 
@@ -108,6 +108,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the callback which receives the result  
      */
     void getResourceState(String path, AsyncCallback<CmsResourceState> callback);
+
+    /**
+     * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
+     * 
+     * @param uri the uri to get the workplace link for
+     * @param callback the callback which receives the result  
+     */
+    void getWorkplaceLink(String uri, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource.<p>

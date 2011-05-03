@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,11 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
-import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsSimpleToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
@@ -66,7 +65,6 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +75,7 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -91,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 8.0.0
  */
@@ -694,47 +690,6 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
      */
     private List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
 
-        List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
-        for (CmsContextMenuEntryBean bean : menuBeans) {
-            final CmsContextMenuEntry entry = new CmsContextMenuEntry();
-
-            entry.setBean(bean);
-
-            if (bean.hasSubMenu()) {
-                entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
-            }
-
-            Command cmd = null;
-
-            String name = entry.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-
-                if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
-
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
-                        }
-                    };
-                }
-            } else {
-                cmd = new Command() {
-
-                    public void execute() {
-
-                        Window.alert(entry.getJspPath());
-                    }
-                };
-            }
-            entry.setCommand(cmd);
-            menuEntries.add(entry);
-        }
-        return menuEntries;
+        return CmsSimpleToolbarHandler.transformEntries(menuBeans, uri);
     }
 }

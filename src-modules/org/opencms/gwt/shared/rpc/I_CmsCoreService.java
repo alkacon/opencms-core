@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/03 17:46:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -121,9 +121,23 @@ public interface I_CmsCoreService extends RemoteService {
      * @param path the resource path
      *  
      * @return the resource state of the resource 
-     * @throws CmsRpcException
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
     CmsResourceState getResourceState(String path) throws CmsRpcException;
+
+    /**
+     * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
+     * 
+     * @param uri the uri to get the workplace link for
+     * 
+     * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     *         
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getWorkplaceLink(String uri) throws CmsRpcException;
 
     /**
      * Locks the given resource.<p>
