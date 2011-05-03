@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2011/04/28 19:42:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap;
 
-import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -49,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -98,7 +97,6 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(super.export(".vfsMode"));
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForSitemap());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }

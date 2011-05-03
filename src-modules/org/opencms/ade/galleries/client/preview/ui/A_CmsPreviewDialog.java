@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2011/04/27 19:11:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -164,7 +164,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
                 m_selectButton.setVisible(true);
                 m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
                 break;
-            case sitemap:
             case ade:
             case view:
             default:

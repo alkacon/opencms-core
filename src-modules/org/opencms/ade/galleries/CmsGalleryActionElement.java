@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2011/04/28 19:42:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -119,18 +119,6 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     public String exportForContainerpage() throws Exception {
 
         return export(GalleryMode.ade);
-    }
-
-    /**
-     * Returns the serialized initial data for gallery dialog within the sitmap editor.<p>
-     * 
-     * @return the data
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String exportForSitemap() throws Exception {
-
-        return export(GalleryMode.sitemap);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/05/03 06:20:59 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
 
@@ -107,7 +107,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             case widget:
                 m_galleryDialog.hideShowPreviewButton(hide);
                 break;
-            case sitemap:
             case ade:
             case view:
             default:

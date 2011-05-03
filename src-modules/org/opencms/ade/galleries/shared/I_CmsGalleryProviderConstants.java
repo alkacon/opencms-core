@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2011/04/26 14:30:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -53,10 +53,6 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The FCKEditor mode. */
         editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
-
-        /** The sitemap editor mode. */
-        sitemap(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search),
 
         /** The explorer mode. */
         view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
@@ -170,6 +166,9 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The current locale. */
         locale,
+
+        /** The edited resource. */
+        resource,
 
         /** The tabs configuration, which tabs should be displayed. */
         tabs,

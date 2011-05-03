@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewController.java,v $
- * Date   : $Date: 2011/04/28 19:42:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,6 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
             case editor:
                 CmsPreviewUtil.setLink(resourcePath, title, null);
                 break;
-            case sitemap:
             case ade:
             case view:
             default:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2011/04/28 19:42:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -85,7 +85,6 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
                 CmsPreviewUtil.setImage(CmsCoreProvider.get().link(resourcePath), attributes);
                 CmsPreviewUtil.closeDialog();
                 break;
-            case sitemap:
             case ade:
             case view:
             default:
@@ -187,7 +186,6 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
                     CmsCoreProvider.get().link(m_infoBean.getResourcePath() + m_handler.getScaleParam()),
                     m_handler.getImageAttributes());
                 break;
-            case sitemap:
             case ade:
             case view:
             default:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatHandler.java,v $
- * Date   : $Date: 2011/05/01 10:34:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/03 10:16:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -551,7 +551,6 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 }
                 break;
             case ade:
-            case sitemap:
             case view:
                 m_useFormats = false;
                 break;
