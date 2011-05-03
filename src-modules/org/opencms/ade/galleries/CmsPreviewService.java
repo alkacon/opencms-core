@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/03 16:48:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,21 +38,30 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsImageScaler;
+import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.xml.containerpage.CmsContainerBean;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -62,7 +71,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -80,8 +89,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
      * 
      * @throws CmsException if something goes wrong
      */
-    public static void readResourceInfo(CmsObject cms, CmsResource resource, CmsResourceInfoBean resInfo)
-    throws CmsException {
+    public void readResourceInfo(CmsObject cms, CmsResource resource, CmsResourceInfoBean resInfo) throws CmsException {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
 
@@ -118,6 +126,67 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
         }
         resInfo.setProperties(props);
+        resInfo.setPreviewContent(getPreviewContent(cms, resource, cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Renders the preview content for the given resource and locale.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource
+     * @param locale the content locale
+     * 
+     * @return the rendered HTML preview content
+     */
+    private String getPreviewContent(CmsObject cms, CmsResource resource, Locale locale) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
+                    cms,
+                    resource,
+                    CmsFormatterBean.PREVIEW_TYPE,
+                    -1);
+                if (formatter != null) {
+                    CmsResource formatterResource = cms.readResource(formatter.getJspRootPath());
+                    CmsContainerElementBean element = new CmsContainerElementBean(
+                        resource.getStructureId(),
+                        formatterResource.getStructureId(),
+                        null,
+                        false);
+                    element.initResource(cms);
+                    CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
+                        OpenCms.getResourceManager().getLoader(formatterResource),
+                        element.getResource(),
+                        formatterResource);
+                    CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+                    CmsContainerBean containerBean = new CmsContainerBean(
+                        "PREVIEW",
+                        CmsFormatterBean.PREVIEW_TYPE,
+                        -1,
+                        Collections.<CmsContainerElementBean> emptyList());
+                    getRequest().setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, cms);
+                    CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(getRequest());
+                    standardContext.setContainer(containerBean);
+                    standardContext.setElement(element);
+                    standardContext.setDndMode(true);
+                    standardContext.setPage(new CmsContainerPageBean(
+                        locale,
+                        Collections.<CmsContainerBean> singletonList(containerBean)));
+                    String encoding = getResponse().getCharacterEncoding();
+                    return (new String(loaderFacade.getLoader().dump(
+                        cms,
+                        loaderRes,
+                        null,
+                        locale,
+                        getRequest(),
+                        getResponse()), encoding)).trim();
+                }
+            }
+        } catch (Exception e) {
+            //TODO: logging
+        }
+        return null;
     }
 
     /**

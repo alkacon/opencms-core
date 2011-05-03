@@ -78,7 +78,7 @@ li div.itemContainer.cmsHovering{
     background-color: value("constants.css.backgroundColorStateSubSitemap");
 }
 
-.itemIcon{
+div.itemIcon{
 	height: 24px;
 	width: 24px;
 	float: left;

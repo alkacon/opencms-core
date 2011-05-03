@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/03 16:48:39 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -160,6 +160,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_DATEMODIFIED_0 = "GUI_PREVIEW_LABEL_DATEMODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_DESCRIPTION_0 = "GUI_PREVIEW_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
