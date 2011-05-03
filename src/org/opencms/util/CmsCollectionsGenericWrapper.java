@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsCollectionsGenericWrapper.java,v $
- * Date   : $Date: 2009/10/20 13:43:06 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2011/05/03 10:48:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2008 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */

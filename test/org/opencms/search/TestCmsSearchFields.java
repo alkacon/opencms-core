@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2009/09/02 05:54:21 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/05/03 10:49:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
