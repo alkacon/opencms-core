@@ -3,6 +3,9 @@
 @sprite .cmsMenuItem .availability{
     gwt-image: "icons.availabilityIcon";
 }
+@sprite .cmsMenuItem .workplace{
+    gwt-image: "icons.workplaceIcon";
+}
 @sprite .cmsMenuItem .remove{
     gwt-image: "icons.removeIconActive";
 }

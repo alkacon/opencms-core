@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleToolbarHandler.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/03 18:37:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -98,6 +98,7 @@ public class CmsSimpleToolbarHandler implements I_CmsToolbarHandler {
                         }
                     };
                 } else if (name.equals(CmsShowWorkplace.class.getName())) {
+                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace());
 
                     cmd = new Command() {
 
