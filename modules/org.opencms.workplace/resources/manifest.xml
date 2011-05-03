@@ -109,6 +109,7 @@
 			<resource uri="/system/workplace/resources/filetypes/excel.png"/>
 			<resource uri="/system/workplace/resources/filetypes/excel_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/image_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/menu.png"/>
 			<resource uri="/system/workplace/resources/filetypes/msword.png"/>
 			<resource uri="/system/workplace/resources/filetypes/msword_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/pdf.png"/>
@@ -6310,10 +6311,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[archive]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6334,10 +6331,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[archive_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6398,10 +6391,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[excel]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6422,10 +6411,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[html]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6446,10 +6431,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[html_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6470,10 +6451,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[java]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6494,10 +6471,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[java_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6518,10 +6491,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[js]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6542,13 +6511,29 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[js_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/menu.png</source>
+			<destination>system/workplace/resources/filetypes/menu.png</destination>
+			<type>image</type>
+			<uuidstructure>e7b16de3-756b-11e0-bca2-a1b7a1ca2b7f</uuidstructure>
+			<uuidresource>e7b16de4-756b-11e0-bca2-a1b7a1ca2b7f</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 09:58:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 09:58:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -6566,10 +6551,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[text]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6590,10 +6571,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[text_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6614,10 +6591,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[xml]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6638,10 +6611,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[xml_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6662,10 +6631,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[excel_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6766,10 +6731,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[image_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6870,10 +6831,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[msword]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6894,10 +6851,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[msword_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -6958,10 +6911,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[pdf]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -6982,10 +6931,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[pdf_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
@@ -7046,10 +6991,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[powerpoint]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -7070,10 +7011,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[powerpoint_big]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>

@@ -10,13 +10,13 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.database</name>
-		<nicename><![CDATA[OpenCms 7 Database management tools]]></nicename>
+		<nicename><![CDATA[OpenCms 8 Database management tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.</p>
 <p>Install this module if you want to import/export data, it also contains a static export tool.</p>
-<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.1</version>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>8.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -46,7 +46,7 @@
 		<parameters/>
 		<explorertypes>
 			<explorertype name="uploadhtml" key="fileicon.uploadhtml" icon="htmlimport.png">
-				<newresource uri="newresource_uploadHtml.jsp" order="90" autosetnavigation="false" autosettitle="false" info="desc.uploadhtml"/>
+				<newresource page="otheroptions" uri="newresource_uploadHtml.jsp" order="100" autosetnavigation="false" autosettitle="false" info="desc.uploadhtml"/>
 			</explorertype>
 		</explorertypes>
 	</module>

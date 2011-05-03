@@ -14,8 +14,8 @@
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[<p>Photo album frontend module to create views using OpenCms VFS image galleries.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>8.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -43,7 +43,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="photoalbum" key="fileicon.photoalbum" icon="photoalbum.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61" autosetnavigation="false" autosettitle="false" info="desc.photoalbum" />
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="480" autosetnavigation="false" autosettitle="false" info="desc.photoalbum" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
