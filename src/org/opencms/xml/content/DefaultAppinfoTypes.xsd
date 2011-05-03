@@ -143,9 +143,15 @@
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoHeadInclude">
-		<xsd:attribute name="type" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="OpenCmsDefaultAppinfoHeadIncludeType" use="required" />
 		<xsd:attribute name="uri" type="xsd:string" use="required" />
 	</xsd:complexType>
+	
+	<xsd:simpleType name="OpenCmsDefaultAppinfoHeadIncludeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="css|javascript" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoSettings">
 		<xsd:sequence>
