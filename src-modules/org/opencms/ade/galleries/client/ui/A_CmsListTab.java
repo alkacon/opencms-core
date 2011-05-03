@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/04/28 10:44:02 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,17 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.util.CmsPair;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -60,11 +65,63 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.
  */
 public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String> {
+
+    /** Selection handler to handle check box click events and double clicks on the list items. */
+    protected abstract class A_SelectionHandler implements ClickHandler, DoubleClickHandler {
+
+        /** The reference to the checkbox. */
+        private CmsCheckBox m_checkBox;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param checkBox the item check box
+         */
+        protected A_SelectionHandler(CmsCheckBox checkBox) {
+
+            m_checkBox = checkBox;
+        }
+
+        /**
+         * Returns the check box.<p>
+         * 
+         * @return the check box
+         */
+        protected CmsCheckBox getCheckBox() {
+
+            return m_checkBox;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.DoubleClickHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         */
+        public void onDoubleClick(DoubleClickEvent event) {
+
+            m_checkBox.setChecked(true);
+            onSelectionChange();
+            getTabHandler().selectResultTab();
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            onSelectionChange();
+        }
+
+        /**
+         * Executed on selection change. Either when the check box was clicked or on double click on a list item.<p>
+         */
+        protected abstract void onSelectionChange();
+    }
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder

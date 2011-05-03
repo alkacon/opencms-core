@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/04/28 19:42:41 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  */
@@ -505,6 +505,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         // should never be reached
         CmsDebugLog.getInstance().printLine("No provider available");
+    }
+
+    /**
+     * Selects the result tab.<p>
+     */
+    public void selectResultTab() {
+
+        m_handler.selectResultTab();
     }
 
     /**

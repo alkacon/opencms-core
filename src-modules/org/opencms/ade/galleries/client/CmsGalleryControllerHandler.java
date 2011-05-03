@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/04/28 10:44:02 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
 
@@ -341,6 +341,14 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         } else {
             m_galleryDialog.disableSearchTab();
         }
+    }
+
+    /**
+     * Selects the result tab.<p>
+     */
+    public void selectResultTab() {
+
+        m_galleryDialog.selectTab(GalleryTabId.cms_tab_results, true);
     }
 
     /**

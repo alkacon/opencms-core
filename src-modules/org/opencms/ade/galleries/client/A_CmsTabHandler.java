@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/A_CmsTabHandler.java,v $
- * Date   : $Date: 2010/11/12 13:48:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -82,4 +82,12 @@ public abstract class A_CmsTabHandler {
      * @param sortParams the sort parameters
      */
     public abstract void onSort(String sortParams);
+
+    /**
+     * Selects the result tab.<p>
+     */
+    public void selectResultTab() {
+
+        m_controller.selectResultTab();
+    }
 }

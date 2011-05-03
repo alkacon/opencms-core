@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,9 +49,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-
 /**
  * Provides the widget for the categories tab.<p>
  * 
@@ -59,24 +56,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
 public class CmsCategoriesTab extends A_CmsListTab {
 
     /** 
-     * Extended ClickHandler class to use with checkboxes in the category list.<p>
-     *  
-     * The checkbox handler saves the id of category item, which was selected.  
+     * Handles the change of the item selection.<p>
      */
-    private class CheckboxHandler implements ClickHandler {
+    private class SelectionHandler extends A_SelectionHandler {
 
         /** The category path as id for the selected category. */
         private String m_categoryPath;
-
-        /** The reference to the checkbox. */
-        private CmsCheckBox m_checkBox;
 
         /**
          * Constructor.<p>
@@ -84,22 +76,24 @@ public class CmsCategoriesTab extends A_CmsListTab {
          * @param categoryPath as id for the selected category
          * @param checkBox the reference to the checkbox
          */
-        public CheckboxHandler(String categoryPath, CmsCheckBox checkBox) {
+        public SelectionHandler(String categoryPath, CmsCheckBox checkBox) {
 
+            super(checkBox);
             m_categoryPath = categoryPath;
-            m_checkBox = checkBox;
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onSelectionChange()
          */
-        public void onClick(ClickEvent event) {
+        @Override
+        protected void onSelectionChange() {
 
-            if (m_checkBox.isChecked()) {
+            if (getCheckBox().isChecked()) {
                 getTabHandler().onSelectCategory(m_categoryPath);
             } else {
                 getTabHandler().onDeselectCategory(m_categoryPath);
             }
+
         }
     }
 
@@ -302,7 +296,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
             if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
                 checkBox.setChecked(true);
             }
-            checkBox.addClickHandler(new CheckboxHandler(categoryBean.getPath(), checkBox));
+            SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
+            checkBox.addClickHandler(selectionHandler);
+            listItemWidget.addDoubleClickHandler(selectionHandler);
             // set the category list item and add to list 
             CmsCategoryTreeItem listItem = new CmsCategoryTreeItem(false, checkBox, listItemWidget);
             listItem.init(categoryBean.getPath(), categoryBean.getTitle(), categoryBean.getDescription());
@@ -386,8 +382,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
         if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
             checkBox.setChecked(true);
         }
-        checkBox.addClickHandler(new CheckboxHandler(category.getPath(), checkBox));
-
+        SelectionHandler selectionHandler = new SelectionHandler(category.getPath(), checkBox);
+        checkBox.addClickHandler(selectionHandler);
+        listItemWidget.addDoubleClickHandler(selectionHandler);
         // set the category tree item and add to list 
         CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
         treeItem.init(category.getPath(), categoryBean.getTitle(), categoryBean.getSubTitle());

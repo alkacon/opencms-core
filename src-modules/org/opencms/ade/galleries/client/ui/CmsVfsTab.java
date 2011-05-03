@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2011/04/27 07:03:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -55,8 +54,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -64,11 +61,41 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
 public class CmsVfsTab extends A_CmsListTab {
+
+    /** 
+     * Handles the change of the item selection.<p>
+     */
+    private class SelectionHandler extends A_SelectionHandler {
+
+        /** The category path as id for the selected category. */
+        private CmsVfsEntryBean m_vfsEntry;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param vfsEntry the vfs entry represented by the list item
+         * @param checkBox the reference to the checkbox
+         */
+        public SelectionHandler(CmsVfsEntryBean vfsEntry, CmsCheckBox checkBox) {
+
+            super(checkBox);
+            m_vfsEntry = vfsEntry;
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onSelectionChange()
+         */
+        @Override
+        protected void onSelectionChange() {
+
+            getTabHandler().onSelectFolder(m_vfsEntry.getSitePath(), getCheckBox().isChecked());
+        }
+    }
 
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "VfsTab";
@@ -178,17 +205,9 @@ public class CmsVfsTab extends A_CmsListTab {
 
         final CmsCheckBox checkbox = new CmsCheckBox();
         CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, liWidget, true);
-        checkbox.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                m_tabHandler.onSelectFolder(vfsEntry.getSitePath(), checkbox.isChecked());
-
-            }
-        });
+        SelectionHandler selectionHandler = new SelectionHandler(vfsEntry, checkbox);
+        checkbox.addClickHandler(selectionHandler);
+        liWidget.addDoubleClickHandler(selectionHandler);
         m_entryMap.put(result, vfsEntry);
         m_itemsByPath.put(vfsEntry.getSitePath(), result);
         result.setLeafStyle(false);
@@ -255,7 +274,7 @@ public class CmsVfsTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
      */
     @Override
-    protected A_CmsTabHandler getTabHandler() {
+    protected CmsVfsTabHandler getTabHandler() {
 
         return m_tabHandler;
     }

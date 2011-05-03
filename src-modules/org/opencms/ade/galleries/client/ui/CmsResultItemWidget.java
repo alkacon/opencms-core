@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultItemWidget.java,v $
- * Date   : $Date: 2011/04/07 14:51:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +104,18 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        if (m_tooltipHandler != null) {
+            m_tooltipHandler.clearShowing();
+        }
+        super.onDetach();
+    }
+
+    /**
      * Generates the HTML for the item tool-tip.<p>
      * 
      * @param infoBean the item info
@@ -123,17 +135,4 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         }
         return result.toString();
     }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Composite#onDetach()
-     */
-    @Override
-    protected void onDetach() {
-
-        if (m_tooltipHandler != null) {
-            m_tooltipHandler.clearShowing();
-        }
-        super.onDetach();
-    }
-
 }

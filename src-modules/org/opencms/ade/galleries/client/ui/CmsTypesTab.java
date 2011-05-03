@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,9 +48,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-
 /**
  * Provides the widget for the types tab.<p>
  * 
@@ -58,21 +55,16 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.
  */
 public class CmsTypesTab extends A_CmsListTab {
 
     /** 
-     * Extended ClickHandler class to use with checkboxes in the types list.<p>
-     *  
-     * The checkbox handler saves the id(name?) of resource type item, which was selected.  
+     * Handles the change of the item selection.<p>
      */
-    private class CheckboxHandler implements ClickHandler {
-
-        /** The reference to the checkbox. */
-        private CmsCheckBox m_checkBox;
+    private class SelectionHandler extends A_SelectionHandler {
 
         /** The resource type (name/id?) as id for the selected type. */
         private String m_resourceType;
@@ -83,18 +75,19 @@ public class CmsTypesTab extends A_CmsListTab {
          * @param resourceType as id(name) for the selected type
          * @param checkBox the reference to the checkbox
          */
-        public CheckboxHandler(String resourceType, CmsCheckBox checkBox) {
+        public SelectionHandler(String resourceType, CmsCheckBox checkBox) {
 
+            super(checkBox);
             m_resourceType = resourceType;
-            m_checkBox = checkBox;
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onSelectionChange()
          */
-        public void onClick(ClickEvent event) {
+        @Override
+        protected void onSelectionChange() {
 
-            if (m_checkBox.isChecked()) {
+            if (getCheckBox().isChecked()) {
                 getTabHandler().selectType(m_resourceType);
             } else {
                 getTabHandler().deselectType(m_resourceType);
@@ -142,7 +135,9 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget = new CmsListItemWidget(infoBean);
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(typeBean.getType(), checkBox));
+            SelectionHandler selectionHendler = new SelectionHandler(typeBean.getType(), checkBox);
+            checkBox.addClickHandler(selectionHendler);
+            listItemWidget.addDoubleClickHandler(selectionHendler);
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
                 checkBox.setChecked(true);
             }

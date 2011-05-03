@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2011/03/10 08:46:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/03 06:20:59 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,9 +46,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-
 /**
  * Provides the widget for the galleries(folder) tab.<p>
  * 
@@ -56,21 +53,16 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.
  */
 public class CmsGalleriesTab extends A_CmsListTab {
 
     /** 
-     * Extended ClickHandler class to use with checkboxes in the gallery list.<p>
-     *  
-     * The checkbox handler saves the id of gallery item, which was selected.  
+     * Handles the change of the item selection.<p>
      */
-    private class CheckboxHandler implements ClickHandler {
-
-        /** The reference to the checkbox. */
-        private CmsCheckBox m_checkBox;
+    private class SelectionHandler extends A_SelectionHandler {
 
         /** The gallery path as id for the selected gallery. */
         private String m_galleryPath;
@@ -81,23 +73,24 @@ public class CmsGalleriesTab extends A_CmsListTab {
          * @param gallerPath as id for the selected category
          * @param checkBox the reference to the checkbox
          */
-        public CheckboxHandler(String gallerPath, CmsCheckBox checkBox) {
+        public SelectionHandler(String gallerPath, CmsCheckBox checkBox) {
 
+            super(checkBox);
             m_galleryPath = gallerPath;
-            m_checkBox = checkBox;
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onSelectionChange()
          */
-        public void onClick(ClickEvent event) {
+        @Override
+        protected void onSelectionChange() {
 
-            //CmsCheckBox sender = (CmsCheckBox)event.getSource();
-            if (m_checkBox.isChecked()) {
+            if (getCheckBox().isChecked()) {
                 getTabHandler().onSelectGallery(m_galleryPath);
             } else {
                 getTabHandler().onDeselectGallery(m_galleryPath);
             }
+
         }
     }
 
@@ -137,7 +130,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
                 null));
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryItem.getType(), false));
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getPath(), checkBox));
+            SelectionHandler selectionHandler = new SelectionHandler(galleryItem.getPath(), checkBox);
+            checkBox.addClickHandler(selectionHandler);
+            listItemWidget.addDoubleClickHandler(selectionHandler);
             if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getPath())) {
                 checkBox.setChecked(true);
             }
