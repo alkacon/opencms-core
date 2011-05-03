@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/04/21 11:50:16 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,9 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -95,7 +95,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  * 
@@ -227,23 +227,30 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsCategoryTreeEntry result = null;
         try {
-            result = new CmsCategoryTreeEntry(fromPath);
             // get the categories
             List<CmsCategory> categories = catService.readCategoriesForRepositories(
                 cms,
                 fromPath,
                 includeSubCats,
                 repositories);
-            // convert them to a tree structure
-            CmsCategoryTreeEntry parent = result;
-            for (CmsCategory category : categories) {
-                CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
-                String parentPath = CmsResource.getParentFolder(current.getPath());
-                if (!parentPath.equals(parent.getPath())) {
-                    parent = findCategory(result, parentPath);
-                }
-                parent.addChild(current);
-            }
+            result = buildCategoryTree("", categories);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategoriesForSitePath(java.lang.String)
+     */
+    public CmsCategoryTreeEntry getCategoriesForSitePath(String sitePath) throws CmsRpcException {
+
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        CmsCategoryTreeEntry result = null;
+        try {
+            // get the categories
+            List<CmsCategory> categories = catService.readCategories(getCmsObject(), "", true, sitePath);
+            result = buildCategoryTree("", categories);
         } catch (Throwable e) {
             error(e);
         }
@@ -518,6 +525,31 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * Builds the tree structure for the given categories.<p>
+     * 
+     * @param fromPath the category path
+     * @param categories the categories
+     * 
+     * @return the tree root element
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private CmsCategoryTreeEntry buildCategoryTree(String fromPath, List<CmsCategory> categories) throws Exception {
+
+        CmsCategoryTreeEntry result = new CmsCategoryTreeEntry(fromPath);
+        CmsCategoryTreeEntry parent = result;
+        for (CmsCategory category : categories) {
+            CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+            String parentPath = CmsResource.getParentFolder(current.getPath());
+            if (!parentPath.equals(parent.getPath())) {
+                parent = findCategory(result, parentPath);
+            }
+            parent.addChild(current);
+        }
+        return result;
     }
 
     /**

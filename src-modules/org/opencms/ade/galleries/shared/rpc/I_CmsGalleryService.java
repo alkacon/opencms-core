@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2011/04/28 19:42:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,30 +65,6 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     void deleteResource(String resourcePath) throws CmsRpcException;
-
-    /**
-     * Returns all available categories for given galleries.<p>
-     * 
-     * @param galleries the galleries
-     * 
-     * @return the category tree root entry
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    CmsCategoryTreeEntry getCategoryTreeGalleries(List<String> galleries) throws CmsRpcException;
-
-    /**
-     * Returns all available categories for given resource types, by looking up associated galleries first.<p>
-     * 
-     * Only use this if no galleries list is available.<p>
-     * 
-     * @param types the resource types
-     * 
-     * @return the category tree root entry
-     * 
-     * @throws CmsRpcException is something goes wrong
-     */
-    CmsCategoryTreeEntry getCategoryTreeTypes(List<String> types) throws CmsRpcException;
 
     /**
      * Returns the available galleries depending on the given resource types.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/05/03 06:20:59 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  */
@@ -889,19 +889,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
-                if (m_dialogBean.getGalleries() == null) {
-                    List<String> types = new ArrayList<String>();
-                    for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
-                        types.add(type.getType());
-                    }
-                    getGalleryService().getCategoryTreeTypes(types, this);
-                } else {
-                    List<String> galleries = new ArrayList<String>();
-                    for (CmsGalleryFolderBean info : m_dialogBean.getGalleries()) {
-                        galleries.add(info.getPath());
-                    }
-                    getGalleryService().getCategoryTreeGalleries(galleries, this);
-                }
+                CmsCoreProvider.getService().getCategoriesForSitePath(m_dialogBean.getReferenceSitePath(), this);
             }
 
             @Override

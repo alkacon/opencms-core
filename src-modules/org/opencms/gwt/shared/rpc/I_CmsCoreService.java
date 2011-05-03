@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/04/28 19:42:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  * 
@@ -91,6 +91,17 @@ public interface I_CmsCoreService extends RemoteService {
      */
     CmsCategoryTreeEntry getCategories(String fromCatPath, boolean includeSubCats, List<String> refVfsPaths)
     throws CmsRpcException;
+
+    /**
+     * Returns the categories for the given reference site-path.<p>
+     * 
+     * @param sitePath the reference site-path
+     * 
+     * @return the categories for the given reference site-path
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsCategoryTreeEntry getCategoriesForSitePath(String sitePath) throws CmsRpcException;
 
     /**
      * Returns the context menu entries for the given URI.<p>

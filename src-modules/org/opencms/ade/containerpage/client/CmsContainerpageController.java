@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/04/30 15:28:20 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.0
  */
@@ -1240,7 +1240,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().setToolbarVisible(visible, this);
+                getCoreService().setToolbarVisible(visible, this);
             }
 
             /**

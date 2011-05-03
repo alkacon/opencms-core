@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2011/03/10 08:44:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
-import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -63,24 +62,6 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void deleteResource(String resourcePath, AsyncCallback<Void> callback);
-
-    /**
-     * Returns all available categories for given galleries.<p>
-     * 
-     * @param galleries the galleries
-     * @param callback the callback
-     */
-    void getCategoryTreeGalleries(List<String> galleries, AsyncCallback<CmsCategoryTreeEntry> callback);
-
-    /**
-     * Returns all available categories for given resource types, by looking up associated galleries first.<p>
-     * 
-     * Only use this if no galleries list is available.<p>
-     * 
-     * @param types the resource types
-     * @param callback the callback
-     */
-    void getCategoryTreeTypes(List<String> types, AsyncCallback<CmsCategoryTreeEntry> callback);
 
     /**
      * Returns the available galleries depending on the given resource types.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2011/04/26 16:36:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/03 10:17:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -62,6 +62,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
+    /** The content locale. */
+    private String m_locale;
+
     /** The available workplace locales. */
     private Map<String, String> m_locales;
 
@@ -77,28 +80,11 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
-    /** The content locale. */
-    private String m_locale;
-
-    /**
-     * Returns the locale.<p>
-     *
-     * @return the locale
+    /** 
+     * The gallery reference site-path. 
+     * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.
      */
-    public String getLocale() {
-
-        return m_locale;
-    }
-
-    /**
-     * Sets the locale.<p>
-     *
-     * @param locale the locale to set
-     */
-    public void setLocale(String locale) {
-
-        m_locale = locale;
-    }
+    private String m_referenceSitePath;
 
     /**
      * Returns the categories.<p>
@@ -122,6 +108,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
+    }
+
+    /**
      * Returns the locales map.<p>
      *
      * @return the locales
@@ -139,6 +135,17 @@ public class CmsGalleryDataBean implements IsSerializable {
     public GalleryMode getMode() {
 
         return m_mode;
+    }
+
+    /**
+     * Returns the gallery reference site-path.<p>
+     * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.<p>
+     *
+     * @return the gallery reference site-path
+     */
+    public String getReferenceSitePath() {
+
+        return m_referenceSitePath;
     }
 
     /**
@@ -192,6 +199,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
+    }
+
+    /**
      * Sets the locales map.<p>
      *
      * @param locales the locales to set
@@ -209,6 +226,17 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setMode(GalleryMode mode) {
 
         m_mode = mode;
+    }
+
+    /**
+     * Sets the gallery reference site-path.<p>
+     * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.<p>
+     *
+     * @param referenceSitePath the gallery reference site-path to set
+     */
+    public void setReferenceSitePath(String referenceSitePath) {
+
+        this.m_referenceSitePath = referenceSitePath;
     }
 
     /**
