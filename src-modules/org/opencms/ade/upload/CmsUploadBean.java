@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/03/04 15:45:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/03 06:20:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.log4j.spi.ThrowableInformation;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
@@ -193,6 +193,8 @@ public class CmsUploadBean extends CmsJspBean {
             parseRequest(listener);
             // try to create the resources on the VFS
             createResources(listener);
+            // trigger update offline indexes, important for gallery search
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (CmsException e) {
             // an error occurred while creating the resources on the VFS, create a special error message
             LOG.error(e.getMessage(), e);
