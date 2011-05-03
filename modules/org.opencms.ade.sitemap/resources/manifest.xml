@@ -32,7 +32,7 @@
     </exportpoints>
     <resources>
       <resource uri="/system/modules/org.opencms.ade.sitemap/"/>
-      <resource uri="/system/workplace/resources/filetypes/entrypoint.png"/>
+      <resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
 	  <resource uri="/system/workplace/resources/filetypes/htmlredirect.png"/>
     </resources>
     <parameters>
@@ -48,11 +48,11 @@
 			</properties>
 			<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
 		</type>
-		<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="entrypoint" id="23"/>
+		<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="subsitemap" id="23"/>
 	</resourcetypes>
 	<explorertypes>
-		<explorertype name="entrypoint" key="fileicon.entrypoint" icon="entrypoint.png" reference="folder">
-			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=entrypoint" order="490" autosetnavigation="false" autosettitle="false" info="desc.entrypoint"/>
+		<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" reference="folder">
+			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=subsitemap" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
 		</explorertype>
 		<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" reference="xmlcontent">
 			<newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
@@ -1311,12 +1311,12 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/resources/filetypes/entrypoint.png</source>
-		<destination>system/workplace/resources/filetypes/entrypoint.png</destination>
+		<source>system/workplace/resources/filetypes/htmlredirect.png</source>
+		<destination>system/workplace/resources/filetypes/htmlredirect.png</destination>
 		<type>image</type>
-		<uuidstructure>770d2d81-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
-		<uuidresource>770d2d82-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
-		<datelastmodified>Tue, 03 May 2011 13:05:12 GMT</datelastmodified>
+		<uuidstructure>77120f85-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
+		<uuidresource>77120f86-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
+		<datelastmodified>Tue, 03 May 2011 12:54:32 GMT</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>Tue, 03 May 2011 12:54:21 GMT</datecreated>
 		<usercreated>Admin</usercreated>
@@ -1331,12 +1331,12 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/resources/filetypes/htmlredirect.png</source>
-		<destination>system/workplace/resources/filetypes/htmlredirect.png</destination>
+		<source>system/workplace/resources/filetypes/subsitemap.png</source>
+		<destination>system/workplace/resources/filetypes/subsitemap.png</destination>
 		<type>image</type>
-		<uuidstructure>77120f85-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
-		<uuidresource>77120f86-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
-		<datelastmodified>Tue, 03 May 2011 12:54:32 GMT</datelastmodified>
+		<uuidstructure>770d2d81-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
+		<uuidresource>770d2d82-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
+		<datelastmodified>Tue, 03 May 2011 13:05:12 GMT</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>Tue, 03 May 2011 12:54:21 GMT</datecreated>
 		<usercreated>Admin</usercreated>

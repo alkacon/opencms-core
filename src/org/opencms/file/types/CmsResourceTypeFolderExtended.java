@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/03 16:41:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.TreeMap;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,7 +58,7 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     public static final String CONFIGURATION_FOLDER_CLASS_PARAMS = "folder.class.params";
 
     /** The type name for entry points. */
-    public static final String TYPE_ENTRY_POINT = "entrypoint";
+    public static final String TYPE_ENTRY_POINT = "subsitemap";
 
     /** The configured folder class name for this folder type. */
     private String m_folderClassName;
