@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,11 +221,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     @Override
     public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (CmsFormatterBean.isDefaultPreviewType(type)) {
-            return CmsFormatterBean.PREVIEW_FORMATTER;
-        }
-        if (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
-            return CmsFormatterBean.PREVIEW_FORMATTER;
+        if (CmsFormatterBean.isPreviewType(type)
+            || (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID)) {
+            return CmsFormatterBean.getDefaultPreviewFormatter();
         }
         CmsXmlContentDefinition contentDef = searchContentDefinition(cms, resource);
         CmsFormatterConfiguration formatterConfiguration = contentDef.getContentHandler().getFormatterConfiguration();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +62,9 @@ public class CmsFormatterConfiguration {
 
     /** Indicates if this configuration has been frozen. */
     private boolean m_frozen;
+
+    /** The formatter that is to be used for the preview in the ADE gallery GUI. */
+    private CmsFormatterBean m_previewFormatter;
 
     /** The formatters for different container types. */
     private Map<String, CmsFormatterBean> m_typeFormatters;
@@ -94,7 +97,7 @@ public class CmsFormatterConfiguration {
         Object key;
         if (formatter.isTypeFormatter()) {
 
-            String type = formatter.getType();
+            String type = formatter.getContainerType();
             key = type;
             CmsFormatterBean oldFormatter = m_typeFormatters.get(type);
             if (oldFormatter != null) {
@@ -110,6 +113,10 @@ public class CmsFormatterConfiguration {
                 oldUri = m_widthFormatters.remove(old).getJspRootPath();
             }
             m_widthFormatters.add(formatter);
+        }
+        if (formatter.isPreviewFormatter()) {
+            // this is a preview formatter, last one overwrites earlier one
+            m_previewFormatter = formatter;
         }
         if (oldUri != null) {
             LOG.warn(Messages.get().getBundle().key(
@@ -131,38 +138,74 @@ public class CmsFormatterConfiguration {
     }
 
     /**
-     * Selects the correct formatter based the provided type and width from this configuration.<p>
+     * Selects the matching formatter for the provided type and width from this configuration.<p>
      * 
-     * This method first tries to find the formatter for the container type. 
-     * If this fails, it returns the formatter with the largest width less than the 
-     * container width; if the container width is negative, the formatter with the
-     * largest width will be returned.
+     * This method first tries to find the formatter for the provided container type. 
+     * If this fails, it returns the width based formatter that matched the container width.<p>
      * 
      * @param containerType the container type 
      * @param containerWidth the container width
      *  
-     * @return the correct formatter, or null if none was found 
+     * @return the matching formatter, or <code>null</code> if none was found 
      */
     public CmsFormatterBean getFormatter(String containerType, int containerWidth) {
 
+        if (CmsFormatterBean.isPreviewType(containerType)) {
+            // the preview formatter was requested
+            return getPreviewFormatter();
+        }
         CmsFormatterBean result = m_typeFormatters.get(containerType);
         if ((result == null) && (containerWidth > 0)) {
             // in case we don't have found a type and width info is set, check for width formatters
-            CmsFormatterBean candidate = null;
             for (CmsFormatterBean f : m_widthFormatters) {
                 // iterate all width containers and see if we have a fit
                 if ((f.getMinWidth() <= containerWidth) && (containerWidth <= f.getMaxWidth())) {
                     // found a match
-                    if ((candidate == null) || (candidate.getMinWidth() < f.getMinWidth())) {
-                        candidate = f;
+                    if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
+                        result = f;
                     }
                 }
             }
-            if (candidate != null) {
-                result = candidate;
-            }
         }
         return result;
+    }
+
+    /**
+     * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI.<p>
+     * 
+     * @return the formatter from this configuration that is to be used for the preview in the ADE gallery GUI
+     */
+    public CmsFormatterBean getPreviewFormatter() {
+
+        if (m_previewFormatter == null) {
+            // preview formatter has not been calculated yet
+            CmsFormatterBean result = null;
+            // check the width formatter if we have a matching width for the preview window
+            result = getFormatter(CmsFormatterBean.WILDCARD_TYPE, CmsFormatterBean.PREVIEW_WIDTH);
+            if ((result == null) && !m_widthFormatters.isEmpty()) {
+                // no width is matching, see if we have one with a BIGGER width (preview will have scrollbars)
+                for (CmsFormatterBean f : m_widthFormatters) {
+                    // iterate all width containers and see if we have a fit
+                    if ((f.getMinWidth() >= CmsFormatterBean.PREVIEW_WIDTH)
+                        && (CmsFormatterBean.PREVIEW_WIDTH <= f.getMaxWidth())) {
+                        // found a match
+                        if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
+                            result = f;
+                        }
+                    }
+                }
+            }
+            if ((result == null) && !m_typeFormatters.isEmpty()) {
+                // no luck with any width based formatter, let's just get the first type based formatter
+                result = m_typeFormatters.values().iterator().next();
+            }
+            if (result == null) {
+                // there are no usable previews configured at all, so use the stupid default preview formatter
+                m_previewFormatter = CmsFormatterBean.getDefaultPreviewFormatter();
+            }
+            m_previewFormatter = result;
+        }
+        return m_previewFormatter;
     }
 
     /**

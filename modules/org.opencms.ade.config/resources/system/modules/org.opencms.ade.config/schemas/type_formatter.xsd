@@ -15,6 +15,7 @@
             <xsd:element name="Jsp" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
             <xsd:element name="MinWidth" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
             <xsd:element name="MaxWidth" type="OpenCmsString" minOccurs="0"  maxOccurs="1" />
+            <xsd:element name="Preview" type="OpenCmsBoolean" minOccurs="0"  maxOccurs="1" />
             <xsd:element name="SearchContent" type="OpenCmsBoolean" minOccurs="0"  maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />

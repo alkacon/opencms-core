@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.content.CmsXmlContent;
 
 /**
  * A bean containing formatter configuration data as strings.<p>
@@ -41,31 +39,34 @@ import org.opencms.xml.content.CmsXmlContent;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterBean {
 
-    /** Default formatter type constant. */
-    public static final String DEFAULT_LOCATION = "_location not available_";
-
     /** Default formatter path. */
-    public static final String DEFAULT_PREVIEW_JSPURI = "/system/workplace/editors/ade/default-list-formatter.jsp";
+    public static final String DEFAULT_PREVIEW_JSPROOTPATH = "/system/workplace/editors/ade/default-list-formatter.jsp";
 
     /** Default formatter type constant. */
-    public static final String DEFAULT_PREVIEW_TYPE = "_DEFAULT_PREVIEW_";
+    public static final String PREVIEW_TYPE = "_PREVIEW_";
 
-    /** Default formatter bean. */
-    public static final CmsFormatterBean PREVIEW_FORMATTER = new CmsFormatterBean(
-        DEFAULT_PREVIEW_JSPURI,
-        DEFAULT_PREVIEW_TYPE);
+    /** The width of the preview window for the formatters. */
+    public static final int PREVIEW_WIDTH = 640;
 
     /** Wildcard formatter type for width based formatters. */
     public static final String WILDCARD_TYPE = "*";
 
-    /** Indicates if this formatter was configured in a XML schema XSD or sitemap configuration. */
-    private boolean m_isFromSchema;
+    /** Default formatter bean. */
+    private static final CmsFormatterBean PREVIEW_FORMATTER = new CmsFormatterBean(
+        PREVIEW_TYPE,
+        DEFAULT_PREVIEW_JSPROOTPATH);
+
+    /** The formatter container type. */
+    private String m_containerType;
+
+    /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
+    private boolean m_isPreviewFormatter;
 
     /** Indicates if this is a type based or width based formatter. */
     private boolean m_isTypeFormatter;
@@ -85,117 +86,49 @@ public class CmsFormatterBean {
     /** Indicates if the content should be searchable in the online index when this formatter is used. */
     private boolean m_search;
 
-    /** The formatter container type. */
-    private String m_type;
-
     /**
      * Constructor for creating a new formatter.<p>
      * 
-     * This constructor should be used to create default type based formatters.<p>
-     * 
-     * @param jspUri the formatter JSP URI
-     * @param type the formatter container type 
+     * This constructor should be used to create default preview formatters.<p>
+     * @param containerType the formatter container type 
+     * @param jspRootPath the formatter JSP VFS root path
      */
-    public CmsFormatterBean(String jspUri, String type) {
+    public CmsFormatterBean(String containerType, String jspRootPath) {
 
-        this(jspUri, type, "", "", String.valueOf(false), DEFAULT_LOCATION, true);
-    }
-
-    /**
-     * Constructor for creating a new formatter.<p>
-     * 
-     * This constructor should be used to create default type based formatters.<p>
-     * 
-     * @param jspUri the formatter JSP URI
-     * @param type the formatter container type 
-     * @param location the location URI of the configuration
-     */
-    public CmsFormatterBean(String jspUri, String type, String location) {
-
-        this(jspUri, type, "", "", String.valueOf(false), location, true);
+        this(containerType, jspRootPath, "", "", String.valueOf(true), String.valueOf(false), jspRootPath);
     }
 
     /**
      * Constructor for creating a new formatter configuration from a sitemap configuration.<p>
-     * 
-     * @param jspUri the formatter JSP URI
-     * @param type the formatter container type 
+     * @param containerType the formatter container type 
+     * @param jspRootPath the formatter JSP VFS root path
      * @param minWidthStr the formatter min width
      * @param maxWidthStr the formatter max width 
+     * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
-     * @param configurationDocument the sitemap configuration used to configure this formatter
+     * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
      */
     public CmsFormatterBean(
-        String jspUri,
-        String type,
+        String containerType,
+        String jspRootPath,
         String minWidthStr,
         String maxWidthStr,
+        String preview,
         String searchContent,
-        CmsXmlContent configurationDocument) {
+        String location) {
 
-        this(
-            jspUri,
-            type,
-            minWidthStr,
-            maxWidthStr,
-            searchContent,
-            configurationDocument.getFile().getRootPath(),
-            false);
-    }
+        m_jspRootPath = jspRootPath;
 
-    /**
-     * Constructor for creating a new formatter configuration from an XML schema annotation.<p>
-     * 
-     * @param jspUri the formatter JSP URI
-     * @param type the formatter container type 
-     * @param minWidthStr the formatter min width
-     * @param maxWidthStr the formatter max width 
-     * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
-     * @param contentDefinition the content definition the XML schema annotation used to configure this formatter belongs to
-     */
-    public CmsFormatterBean(
-        String jspUri,
-        String type,
-        String minWidthStr,
-        String maxWidthStr,
-        String searchContent,
-        CmsXmlContentDefinition contentDefinition) {
-
-        this(jspUri, type, minWidthStr, maxWidthStr, searchContent, contentDefinition.getSchemaLocation(), true);
-    }
-
-    /**
-     * Constructor for creating a new formatter.<p>
-     * 
-     * @param jspUri the formatter JSP URI
-     * @param type the formatter container type 
-     * @param minWidthStr the formatter min width
-     * @param maxWidthStr the formatter max width 
-     * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
-     * @param location the location URI of the configuration
-     * @param isFromSchema indicates if this formatter was configured in a XML schema XSD or sitemap configuration
-     */
-    public CmsFormatterBean(
-        String jspUri,
-        String type,
-        String minWidthStr,
-        String maxWidthStr,
-        String searchContent,
-        String location,
-        boolean isFromSchema) {
-
-        m_jspRootPath = jspUri;
-
-        m_type = type;
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_type)) {
-            m_type = WILDCARD_TYPE;
+        m_containerType = containerType;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_containerType)) {
+            m_containerType = WILDCARD_TYPE;
         }
 
         m_minWidth = -1;
         m_maxWidth = Integer.MAX_VALUE;
         m_isTypeFormatter = true;
 
-        if (WILDCARD_TYPE.equals(m_type)) {
+        if (WILDCARD_TYPE.equals(m_containerType)) {
             // wildcard formatter; index by width
             m_isTypeFormatter = false;
             // if no width available, use -1
@@ -212,27 +145,38 @@ public class CmsFormatterBean {
             }
         }
 
+        m_isPreviewFormatter = CmsStringUtil.isEmptyOrWhitespaceOnly(preview)
+        ? true
+        : Boolean.valueOf(preview).booleanValue();
+
         m_search = CmsStringUtil.isEmptyOrWhitespaceOnly(searchContent)
         ? true
         : Boolean.valueOf(searchContent).booleanValue();
 
         m_location = location;
-        m_isFromSchema = isFromSchema;
+    }
+
+    /** 
+     * Returns the default preview formatter for the ADE gallery GUI.<p>
+     *  
+     * @return  the default preview formatter for the ADE gallery GUI
+     */
+    public static CmsFormatterBean getDefaultPreviewFormatter() {
+
+        // this is a static method since the sorting of members would fail otherwise
+        return PREVIEW_FORMATTER;
     }
 
     /**
-     * Checks if the given type is the default preview type.<p>
+     * Checks if the given container type matches the ADE gallery preview type.<p>
      * 
-     * This check is required for resources types like images which do not really have different formatters,
-     * in order to render the preview in the ADE gallery GUI.<p>
+     * @param containerType the container type to check
      * 
-     * @param type the formatter type to check
-     * 
-     * @return <code>true</code> if the given type is the default preview type
+     * @return <code>true</code> if the given container type matches the ADE gallery preview type
      */
-    public static boolean isDefaultPreviewType(String type) {
+    public static boolean isPreviewType(String containerType) {
 
-        return DEFAULT_PREVIEW_TYPE.equals(type);
+        return PREVIEW_TYPE.equals(containerType);
     }
 
     /**
@@ -251,7 +195,7 @@ public class CmsFormatterBean {
                 // not same formatter type means not equal
                 if (m_isTypeFormatter) {
                     // this is a type formatter, we use just the type name
-                    return CmsStringUtil.isEqual(m_type, other.m_type);
+                    return CmsStringUtil.isEqual(m_containerType, other.m_containerType);
                 } else {
                     // this is a width formatter, we use both min and max width
                     return (m_minWidth == other.m_minWidth) && (m_maxWidth == other.m_maxWidth);
@@ -259,6 +203,18 @@ public class CmsFormatterBean {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the formatter container type.<p>
+     * 
+     * If this is "*", then the formatter is a width based formatter.<p>
+     * 
+     * @return the formatter container type 
+     */
+    public String getContainerType() {
+
+        return m_containerType;
     }
 
     /**
@@ -309,34 +265,22 @@ public class CmsFormatterBean {
     }
 
     /**
-     * Returns the formatter container type.<p>
-     * 
-     * If this is "*", then the formatter is a width based formatter.<p>
-     * 
-     * @return the formatter container type 
-     */
-    public String getType() {
-
-        return m_type;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
 
-        return m_type.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+        return m_containerType.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
     }
 
     /**
-     * Returns <code>true</code> if this formatter was configured in an XML schema annotation.<p>
+     * Indicates if this formatter is to be used as preview in the ADE gallery GUI.
      * 
-     * @return <code>true</code> if this formatter was configured in an XML schema annotation
+     * @return <true>code</true> if this formatter is to be used as preview in the ADE gallery GUI
      */
-    public boolean isConfiguredInSchema() {
+    public boolean isPreviewFormatter() {
 
-        return m_isFromSchema;
+        return m_isPreviewFormatter;
     }
 
     /**

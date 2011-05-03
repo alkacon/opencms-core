@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +152,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "nice-name" appinfo attribute name. */
     public static final String APPINFO_ATTR_NICE_NAME = "nice-name";
+
+    /** Constant for the "preview" appinfo attribute name. */
+    public static final String APPINFO_ATTR_PREVIEW = "preview";
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
@@ -657,16 +660,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
             // re-initialize the local variables
             init();
-
-            // add the default formatter
-            try {
-                m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                    CmsFormatterBean.DEFAULT_PREVIEW_JSPURI,
-                    CmsFormatterBean.DEFAULT_PREVIEW_TYPE,
-                    contentDefinition.getSchemaLocation()));
-            } catch (CmsConfigurationException e) {
-                // should really not happen since all formatter configurations are new here
-            }
 
             Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(appInfoElement);
             while (i.hasNext()) {
@@ -1628,20 +1621,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void initFormatters(Element root, CmsXmlContentDefinition contentDefinition) {
 
-        // add the default formatter
-        String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defFormatter)) {
-            // individual default content formatter is configured
-            try {
-                m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                    defFormatter,
-                    CmsFormatterBean.DEFAULT_PREVIEW_TYPE,
-                    contentDefinition.getSchemaLocation()));
-            } catch (CmsConfigurationException e) {
-                // should really not happen since all formatter configurations are new here
-            }
-        }
-
         // reading the include resources common for all formatters 
         Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
         while (itFormatter.hasNext()) {
@@ -1655,15 +1634,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String uri = element.attributeValue(APPINFO_ATTR_URI);
             String minWidthStr = element.attributeValue(APPINFO_ATTR_MINWIDTH);
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
+            String preview = element.attributeValue(APPINFO_ATTR_PREVIEW);
             String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
             try {
                 m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                    uri,
                     type,
+                    uri,
                     minWidthStr,
                     maxWidthStr,
+                    preview,
                     searchContent,
-                    contentDefinition));
+                    contentDefinition.getSchemaLocation()));
             } catch (CmsConfigurationException e) {
                 // should really not happen since all formatter configurations are new here
             }

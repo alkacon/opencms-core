@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.9.0 
  */
@@ -134,8 +134,8 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     @Override
     public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (CmsFormatterBean.isDefaultPreviewType(type)) {
-            return CmsFormatterBean.PREVIEW_FORMATTER;
+        if (CmsFormatterBean.isPreviewType(type)) {
+            return CmsFormatterBean.getDefaultPreviewFormatter();
         }
         try {
             String formatter = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true).getValue();
@@ -164,7 +164,7 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
                     types = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true).getValueList();
                 }
                 if ((types == null) || types.isEmpty() || types.contains(type)) {
-                    return new CmsFormatterBean(formatter, type);
+                    return new CmsFormatterBean(type, formatter);
                 }
                 // container type not part of the specified types, formatter is not valid
                 return null;

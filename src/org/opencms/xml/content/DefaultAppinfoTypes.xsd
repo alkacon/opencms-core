@@ -125,7 +125,6 @@
 		<xsd:sequence>
 			<xsd:element name="formatter" type="OpenCmsDefaultAppinfoFormatter" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
-		<xsd:attribute name="default" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoFormatter">
@@ -133,6 +132,7 @@
 		<xsd:attribute name="type" type="xsd:string" use="optional" />		
 		<xsd:attribute name="minwidth" type="xsd:string" use="optional" />
 		<xsd:attribute name="maxwidth" type="xsd:string" use="optional" />
+		<xsd:attribute name="preview"  type="xsd:boolean" use="optional" default="false" />
 		<xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />		
 	</xsd:complexType>
 

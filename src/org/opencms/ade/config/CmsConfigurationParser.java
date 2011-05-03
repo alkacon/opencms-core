@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 11:48:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -116,8 +116,8 @@ public class CmsConfigurationParser {
     /** The tag name of the formatter maximum width. */
     public static final String N_MAXWIDTH = "MaxWidth";
 
-    /** The tag name of the formatter that indicates if the content should be searched. */
-    public static final String N_SEARCHCONTENT = "SearchContent";
+    /** The tag name of the formatter width. */
+    public static final String N_MINWIDTH = "Width";
 
     /** The Page node name. */
     public static final String N_PAGE = "Page";
@@ -128,14 +128,17 @@ public class CmsConfigurationParser {
     /** The tag name of the "prefer folder" option for properties. */
     public static final String N_PREFER_FOLDER = "PreferFolder";
 
+    /** The tag name of the formatter that indicates if this formatter is to be used for the ADE allery preview. */
+    public static final String N_PREVIEW = "Preview";
+
+    /** The tag name of the formatter that indicates if the content should be searched. */
+    public static final String N_SEARCHCONTENT = "SearchContent";
+
     /** The tag name of the source file in the type configuration. */
     public static final String N_SOURCE = "Source";
 
     /** The tag name of the formatter container type. */
     public static final String N_TYPE = "Type";
-
-    /** The tag name of the formatter width. */
-    public static final String N_MINWIDTH = "Width";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
@@ -601,14 +604,16 @@ public class CmsConfigurationParser {
             String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
             String minWidth = getSubValueString(cms, fmtValue, N_MINWIDTH);
             String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
+            String preview = getSubValueString(cms, fmtValue, N_PREVIEW);
             String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
             formatterConfiguration.addFormatter(new CmsFormatterBean(
-                jsp,
                 fmtType,
+                jsp,
                 minWidth,
                 maxwidth,
+                preview,
                 searchContent,
-                m_content));
+                m_content.getFile().getRootPath()));
         }
         if (formatterConfiguration.hasFormatters()) {
             formatterConfiguration.freeze();
