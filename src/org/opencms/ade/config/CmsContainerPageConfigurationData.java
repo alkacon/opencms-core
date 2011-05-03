@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationData.java,v $
- * Date   : $Date: 2011/05/02 14:21:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/03 10:11:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,13 +53,13 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsContainerPageConfigurationData> {
 
-    /** The formatter configuration. */
+    /** The formatter configuration, mapped by resource type. */
     private Map<String, CmsFormatterConfiguration> m_formatterConfiguration;
 
     /** A bean which represents the source of the configuration data deepest in the tree. */
@@ -120,6 +120,8 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
 
     /**
      * Gets the formatter configuration.<p>
+     * 
+     * This is a map from resource type names to formatters.<p>
      * 
      * @return the formatter configuration 
      */

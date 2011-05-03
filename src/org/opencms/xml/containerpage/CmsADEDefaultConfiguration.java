@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/03 10:11:41 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 7.6 
  */
@@ -184,12 +184,12 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
-        String typeName = resType.getTypeName();
+        String resTypeName = resType.getTypeName();
         String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
             rootPath);
-        CmsFormatterConfiguration formatterConfiguration = config.getFormatterConfiguration().get(typeName);
+        CmsFormatterConfiguration formatterConfiguration = config.getFormatterConfiguration().get(resTypeName);
         if (formatterConfiguration != null) {
             return formatterConfiguration.getFormatter(type, width);
         } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/03 09:48:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/03 10:11:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.xml.content.CmsXmlContent;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -54,7 +54,7 @@ public class CmsFormatterBean {
     public static final String DEFAULT_PREVIEW_JSPURI = "/system/workplace/editors/ade/default-list-formatter.jsp";
 
     /** Default formatter type constant. */
-    public static final String DEFAULT_PREVIEW_TYPE = "_DEFAULT_";
+    public static final String DEFAULT_PREVIEW_TYPE = "_DEFAULT_PREVIEW_";
 
     /** Default formatter bean. */
     public static final CmsFormatterBean PREVIEW_FORMATTER = new CmsFormatterBean(

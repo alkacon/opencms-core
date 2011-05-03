@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/03 10:11:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -153,7 +153,7 @@ public class CmsConfigurationParser {
     private List<CmsDetailPageInfo> m_detailPages;
 
     /** The formatter configurations. */
-    private Map<String, CmsFormatterConfiguration> m_formatterConfiguration = new HashMap<String, CmsFormatterConfiguration>();
+    private Map<String, CmsFormatterConfiguration> m_formatterConfigurations = new HashMap<String, CmsFormatterConfiguration>();
 
     /** The maximum sitemap depth. */
     private int m_maxDepth = DEFAULT_MAX_DEPTH;
@@ -196,7 +196,7 @@ public class CmsConfigurationParser {
      */
     public CmsContainerPageConfigurationData getContainerPageConfigurationData(CmsConfigurationSourceInfo sourceInfo) {
 
-        return new CmsContainerPageConfigurationData(m_configuration, m_formatterConfiguration, sourceInfo);
+        return new CmsContainerPageConfigurationData(m_configuration, m_formatterConfigurations, sourceInfo);
     }
 
     /**
@@ -217,18 +217,6 @@ public class CmsConfigurationParser {
     public List<CmsDetailPageInfo> getDetailPages() {
 
         return Collections.unmodifiableList(m_detailPages);
-    }
-
-    /**
-     * Returns the formatter configuration for a given element type.<p>
-     * 
-     * @param type a type name 
-     * 
-     * @return a pair of maps containing the formatter configuration for the type 
-     */
-    public CmsFormatterConfiguration getFormatterConfigurationForType(String type) {
-
-        return m_formatterConfiguration.get(type);
     }
 
     /**
@@ -329,7 +317,7 @@ public class CmsConfigurationParser {
         for (CmsConfigurationItem item : parser.m_newElements) {
             m_newElements.add(item);
         }
-        m_formatterConfiguration.putAll(parser.m_formatterConfiguration);
+        m_formatterConfigurations.putAll(parser.m_formatterConfigurations);
     }
 
     /**
@@ -590,7 +578,7 @@ public class CmsConfigurationParser {
         CmsUUID source = getSubValueID(cms, xmlType, N_SOURCE);
         CmsResource resource = cms.readResource(source);
 
-        String type = getTypeName(resource.getTypeId());
+        String resTypeName = getTypeName(resource.getTypeId());
 
         CmsUUID folder = getSubValueID(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
         String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
@@ -598,7 +586,7 @@ public class CmsConfigurationParser {
         CmsResource folderRes = null;
         CmsLazyFolder lazyFolder = null;
         if (folder == null) {
-            String path = "/" + type;
+            String path = "/" + resTypeName;
             lazyFolder = new CmsLazyFolder(path);
         } else {
             folderRes = cms.readResource(folder);
@@ -624,15 +612,15 @@ public class CmsConfigurationParser {
         }
         if (formatterConfiguration.hasFormatters()) {
             formatterConfiguration.freeze();
-            m_formatterConfiguration.put(type, formatterConfiguration);
+            m_formatterConfigurations.put(resTypeName, formatterConfiguration);
         }
 
         m_newElements.add(configItem);
-        if (!isDefault && m_configuration.containsKey(type)) {
+        if (!isDefault && m_configuration.containsKey(resTypeName)) {
             // this type is not marked as default, so don't override any previous type configuration
             return;
         }
-        m_configuration.put(type, configItem);
+        m_configuration.put(resTypeName, configItem);
     }
 
 }
