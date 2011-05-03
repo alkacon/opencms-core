@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/03 09:48:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,25 +41,25 @@ import org.opencms.xml.content.CmsXmlContent;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterBean {
 
-    /** Default formatter path. */
-    public static final String DEFAULT_JSPURI = "/system/workplace/editors/ade/default-list-formatter.jsp";
-
     /** Default formatter type constant. */
     public static final String DEFAULT_LOCATION = "_location not available_";
 
+    /** Default formatter path. */
+    public static final String DEFAULT_PREVIEW_JSPURI = "/system/workplace/editors/ade/default-list-formatter.jsp";
+
     /** Default formatter type constant. */
-    public static final String DEFAULT_TYPE = "_DEFAULT_";
+    public static final String DEFAULT_PREVIEW_TYPE = "_DEFAULT_";
 
     /** Default formatter bean. */
-    public static final CmsFormatterBean FORMATTER_DEFAULT = new CmsFormatterBean(
-        DEFAULT_JSPURI,
-        DEFAULT_TYPE);
+    public static final CmsFormatterBean PREVIEW_FORMATTER = new CmsFormatterBean(
+        DEFAULT_PREVIEW_JSPURI,
+        DEFAULT_PREVIEW_TYPE);
 
     /** Wildcard formatter type for width based formatters. */
     public static final String WILDCARD_TYPE = "*";
@@ -221,6 +221,21 @@ public class CmsFormatterBean {
     }
 
     /**
+     * Checks if the given type is the default preview type.<p>
+     * 
+     * This check is required for resources types like images which do not really have different formatters,
+     * in order to render the preview in the ADE gallery GUI.<p>
+     * 
+     * @param type the formatter type to check
+     * 
+     * @return <code>true</code> if the given type is the default preview type
+     */
+    public static boolean isDefaultPreviewType(String type) {
+
+        return DEFAULT_PREVIEW_TYPE.equals(type);
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -296,7 +311,7 @@ public class CmsFormatterBean {
     /**
      * Returns the formatter container type.<p>
      * 
-     * If this is "*", then the formatter is a width formatter.<p>
+     * If this is "*", then the formatter is a width based formatter.<p>
      * 
      * @return the formatter container type 
      */

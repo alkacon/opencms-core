@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/03 09:48:24 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -488,8 +488,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width) {
 
-        if (type.equals(CmsFormatterBean.DEFAULT_TYPE)) {
-            return CmsFormatterBean.FORMATTER_DEFAULT;
+        if (CmsFormatterBean.isDefaultPreviewType(type)) {
+            return CmsFormatterBean.PREVIEW_FORMATTER;
         }
         return null;
     }

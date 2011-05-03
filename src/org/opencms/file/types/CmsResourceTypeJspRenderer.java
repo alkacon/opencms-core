@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/03 09:48:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.9.0 
  */
@@ -134,8 +134,8 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     @Override
     public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
 
-        if (CmsFormatterBean.DEFAULT_TYPE.equals(type)) {
-            return CmsFormatterBean.FORMATTER_DEFAULT;
+        if (CmsFormatterBean.isDefaultPreviewType(type)) {
+            return CmsFormatterBean.PREVIEW_FORMATTER;
         }
         try {
             String formatter = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true).getValue();

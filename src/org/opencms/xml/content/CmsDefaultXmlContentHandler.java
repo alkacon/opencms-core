@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/02 18:16:24 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/05/03 09:48:23 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -661,8 +661,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // add the default formatter
             try {
                 m_formatterConfiguration.addFormatter(new CmsFormatterBean(
-                    CmsFormatterBean.DEFAULT_JSPURI,
-                    CmsFormatterBean.DEFAULT_TYPE,
+                    CmsFormatterBean.DEFAULT_PREVIEW_JSPURI,
+                    CmsFormatterBean.DEFAULT_PREVIEW_TYPE,
                     contentDefinition.getSchemaLocation()));
             } catch (CmsConfigurationException e) {
                 // should really not happen since all formatter configurations are new here
@@ -1635,7 +1635,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             try {
                 m_formatterConfiguration.addFormatter(new CmsFormatterBean(
                     defFormatter,
-                    CmsFormatterBean.DEFAULT_TYPE,
+                    CmsFormatterBean.DEFAULT_PREVIEW_TYPE,
                     contentDefinition.getSchemaLocation()));
             } catch (CmsConfigurationException e) {
                 // should really not happen since all formatter configurations are new here
