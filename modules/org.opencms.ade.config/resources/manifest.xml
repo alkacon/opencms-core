@@ -27,56 +27,55 @@
 		<resources>
 			<resource uri="/system/modules/org.opencms.ade.config/"/>
 			<resource uri="/system/workplace/resources/filetypes/containerpage_config.png"/>
+			<resource uri="/system/workplace/resources/filetypes/configfolder.png"/>
+			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
-		<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
-				    <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
+                    <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
                 </type>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="ade_config" id="24">
-				<properties>
-					<property>
-						<name>locale-available</name>
-						<value><![CDATA[en]]></value>
-					</property>
-					<property>
-						<name>search.exclude</name>
-						<value><![CDATA[all]]></value>
-					</property>
-				</properties>
-				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/containerpage.config" target="${resource.folder.path}/restype.config" type="new"/>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
-				</copy-resources>
-			</type>
-		</resourcetypes>
-		<explorertypes>
-		<explorertype name="ade" key="fileicon.ade" icon="ade_menu.gif" reference="xmlcontent">
-        <newresource uri="newresource.jsp?page=ade" order="13" autosetnavigation="false" autosettitle="false" info="desc.ade"/>
-      </explorertype>
-		<explorertype name="containerpage_config" key="fileicon.containerpage_config" icon="containerpage_config.png" reference="xmlcontent">
-        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage_config" order="20" autosetnavigation="false" autosettitle="false" info="desc.containerpage_config"/>
-        <accesscontrol>
-          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-        </accesscontrol>
-      </explorertype>
-		<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="containerpage_config.png" reference="xmlcontent">
-      	<newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21"  autosetnavigation="false"  autosettitle="false" info="desc.sitemap_config" />
-        <accesscontrol>
-          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-        </accesscontrol>
-      </explorertype>
-			<explorertype name="ade_config" key="fileicon.ade_config" icon="ade_config.png" reference="folder">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=ade_config" order="500" autosetnavigation="false" autosettitle="false" info="desc.ade_config"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
-		</explorertypes>
+                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="configfolder" id="24">
+                    <properties>
+                        <property>
+                            <name>locale-available</name>
+                            <value><![CDATA[en]]></value>
+                        </property>
+                        <property>
+                            <name>search.exclude</name>
+                            <value><![CDATA[all]]></value>
+                        </property>
+                    </properties>
+                    <copy-resources>
+                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/containerpage.config" target="${resource.folder.path}/restype.config" type="new"/>
+                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
+                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
+                    </copy-resources>
+                </type>
+            </resourcetypes>
+            <explorertypes>
+                <explorertype name="containerpage_config" key="fileicon.containerpage_config" icon="containerpage_config.png" reference="xmlcontent">
+                    <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage_config" order="20" autosetnavigation="false" autosettitle="false" info="desc.containerpage_config"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
+                </explorertype>
+                <explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" reference="xmlcontent">
+                    <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
+                </explorertype>
+                <explorertype name="configfolder" key="fileicon.configfolder" icon="configfolder.png" reference="folder">
+                    <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=configfolder" order="6" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
+                </explorertype>
+            </explorertypes>
 	</module>
 	<files>
 		<file>
@@ -515,28 +514,64 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/workplace/resources/filetypes/containerpage_config.png</source>
-      <destination>system/workplace/resources/filetypes/containerpage_config.png</destination>
-      <type>image</type>
-      <uuidstructure>44c4ee36-293f-11e0-8ccb-c98e62b28e6c</uuidstructure>
-      <uuidresource>44c4ee37-293f-11e0-8ccb-c98e62b28e6c</uuidresource>
-      <datelastmodified>Wed, 26 Jan 2011 11:27:33 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Wed, 26 Jan 2011 11:27:33 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[containerpage_config]]></value>
-        </property>
-        <property type="shared">
-          <name>image.size</name>
-          <value><![CDATA[w:16,h:16]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-	</files>
+		<source>system/workplace/resources/filetypes/configfolder.png</source>
+		<destination>system/workplace/resources/filetypes/configfolder.png</destination>
+		<type>image</type>
+		<uuidstructure>22e6582d-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
+		<uuidresource>22e6582e-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
+		<datelastmodified>Tue, 03 May 2011 13:42:15 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Tue, 03 May 2011 13:42:06 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:16,h:16]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/resources/filetypes/containerpage_config.png</source>
+		<destination>system/workplace/resources/filetypes/containerpage_config.png</destination>
+		<type>image</type>
+		<uuidstructure>44c4ee36-293f-11e0-8ccb-c98e62b28e6c</uuidstructure>
+		<uuidresource>44c4ee37-293f-11e0-8ccb-c98e62b28e6c</uuidresource>
+		<datelastmodified>Wed, 26 Jan 2011 11:27:33 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 26 Jan 2011 11:27:33 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:16,h:16]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/resources/filetypes/sitemap_config.png</source>
+		<destination>system/workplace/resources/filetypes/sitemap_config.png</destination>
+		<type>image</type>
+		<uuidstructure>231864b1-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
+		<uuidresource>231864b2-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
+		<datelastmodified>Tue, 03 May 2011 13:42:20 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Tue, 03 May 2011 13:42:07 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:16,h:16]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+  </files>
 </export>
