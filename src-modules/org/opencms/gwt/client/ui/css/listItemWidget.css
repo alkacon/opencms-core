@@ -18,6 +18,10 @@ li div.itemContainer{
 	border: 1px solid value("constants.css.borderColorListItem");
 }
 
+li div.itemContainer.cmsHovering{
+	border: 1px solid value("constants.css.borderColor");
+}
+
 .itemContainer div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
