@@ -32,7 +32,7 @@
     </exportpoints>
     <resources>
       <resource uri="/system/modules/org.opencms.ade.containerpage/"/>
-      <resource uri="/system/workplace/resources/filetypes/containerpage.gif"/>
+      <resource uri="/system/workplace/resources/filetypes/containerpage.png"/>
     </resources>
     <parameters/>
     <resourcetypes>
@@ -46,8 +46,8 @@
       <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21"/>
     </resourcetypes>
     <explorertypes>
-      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.gif" reference="xmlcontent">
-        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="10" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
+      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.png" reference="xmlcontent">
+        <newresource uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="25" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
@@ -102,14 +102,14 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="containerpage.gif" reference="xmlcontent">
-        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer" order="10" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
+      <explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="containerpage.png" reference="xmlcontent">
+        <newresource uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer" order="26" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
-      <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage.gif" reference="jsp">
-        <newresource page="ade" uri="newresource.jsp?newresourcetype=containerpage_template" order="21" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
+      <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage.png" reference="jsp">
+        <newresource page="otheroptions" uri="newresource.jsp?newresourcetype=containerpage_template" order="22" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
       </explorertype>
     </explorertypes>
   </module>
@@ -1559,28 +1559,24 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/workplace/resources/filetypes/containerpage.gif</source>
-      <destination>system/workplace/resources/filetypes/containerpage.gif</destination>
-      <type>image</type>
-      <uuidstructure>44a5f482-293f-11e0-8ccb-c98e62b28e6c</uuidstructure>
-      <uuidresource>44a5f483-293f-11e0-8ccb-c98e62b28e6c</uuidresource>
-      <datelastmodified>Wed, 26 Jan 2011 11:27:33 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Wed, 26 Jan 2011 11:27:33 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[containerpage]]></value>
-        </property>
-        <property type="shared">
-          <name>image.size</name>
-          <value><![CDATA[w:16,h:16]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
+		<source>system/workplace/resources/filetypes/containerpage.png</source>
+		<destination>system/workplace/resources/filetypes/containerpage.png</destination>
+		<type>image</type>
+		<uuidstructure>b690907a-7591-11e0-a914-a1b7a1ca2b7f</uuidstructure>
+		<uuidresource>b690907b-7591-11e0-a914-a1b7a1ca2b7f</uuidresource>
+		<datelastmodified>Tue, 03 May 2011 14:29:21 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Tue, 03 May 2011 14:29:11 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:16,h:16]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
   </files>
 </export>
