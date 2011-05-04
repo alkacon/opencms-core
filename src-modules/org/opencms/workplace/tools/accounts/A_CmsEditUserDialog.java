@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,14 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -53,10 +56,12 @@ import org.opencms.widgets.CmsPasswordWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsTextareaWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
@@ -75,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,8 +125,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     /** The starting site for the new user. */
     private String m_site;
 
+    /** The start folder. */
+    private String m_startFolder;
+
     /** The starting project for the new user. */
     private String m_startProject;
+
+    /** The start view. */
+    private String m_startView;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -139,7 +150,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // if new create it first
@@ -184,6 +195,25 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             } else {
                 settings.setStartProject(getStartProject());
             }
+
+            CmsObject tmp = OpenCms.initCmsObject(getCms());
+            tmp.getRequestContext().setSiteRoot(getSite());
+            String folder = tmp.getRequestContext().removeSiteRoot(getStartFolder());
+            try {
+                CmsResource res = tmp.readResource(folder);
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(tmp.getRequestContext().getSiteRoot())
+                    && !tmp.getRequestContext().getSiteRoot().equals("/")) {
+                    folder = res.getRootPath().substring(siteRoot.length());
+                }
+            } catch (CmsException e) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+            }
+            settings.setStartFolder(folder);
+
+            settings.setStartView(getStartView());
             settings.save(getCms());
 
             // refresh the list
@@ -307,6 +337,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the startFolder.<p>
+     *
+     * @return the startFolder
+     */
+    public String getStartFolder() {
+
+        return m_startFolder;
+    }
+
+    /**
      * Returns the project.<p>
      *
      * @return the project
@@ -314,6 +354,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getStartProject() {
 
         return m_startProject;
+    }
+
+    /**
+     * Returns the startView.<p>
+     *
+     * @return the startView
+     */
+    public String getStartView() {
+
+        return m_startView;
     }
 
     /**
@@ -441,13 +491,33 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the start project.<p>
+     * Sets the startFolder.<p>
      *
-     * @param project the start project to set
+     * @param startFolder the startFolder to set
+     */
+    public void setStartFolder(String startFolder) {
+
+        m_startFolder = startFolder;
+    }
+
+    /**
+     * Sets the start project.<p>
+     * 
+     * @param startProject the start project to set
      */
     public void setStartProject(String startProject) {
 
         m_startProject = startProject;
+    }
+
+    /**
+     * Sets the startView.<p>
+     *
+     * @param startView the startView to set
+     */
+    public void setStartView(String startView) {
+
+        m_startView = startView;
     }
 
     /**
@@ -485,7 +555,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(6, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            int row = isNewUser() ? 14 : 13;
+            int row = isNewUser() ? 16 : 15;
             if (!webuserOu) {
                 if (getSites().isEmpty()) {
                     row -= 1;
@@ -496,7 +566,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             } else {
-                row = 10;
+                row = 12;
             }
             row++;
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
@@ -526,7 +596,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException;
+    protected abstract CmsUser createUser(String name, String pwd, String desc, Map<String, Object> info)
+    throws CmsException;
 
     /**
      * Creates the list of widgets for this dialog.<p>
@@ -568,6 +639,11 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 }
                 addWidget(new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsSelectWidget(
                     getProjects())));
+                addWidget(new CmsWidgetDialogParameter(this, "startFolder", PAGES[0], new CmsVfsFileWidget(
+                    true,
+                    null,
+                    false)));
+                addWidget(new CmsWidgetDialogParameter(this, "startView", PAGES[0], new CmsSelectWidget(getViews())));
                 if (isNewUser()) {
                     addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
                         null,
@@ -658,6 +734,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_language = settings.getLocale().toString();
                 m_site = CmsStringUtil.joinPaths(settings.getStartSite(), "/");
                 m_startProject = settings.getStartProject();
+                m_startFolder = settings.getStartFolder();
+                m_startView = settings.getStartView();
                 return;
             } else {
                 // this is not the initial call, get the user object from session            
@@ -669,8 +747,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_language = settings.getLocale().toString();
                 m_site = CmsStringUtil.joinPaths(settings.getStartSite(), "/");
                 m_startProject = settings.getStartProject();
-                // test
-                m_user.getId();
+                m_startFolder = settings.getStartFolder();
+                m_startView = settings.getStartView();
                 return;
             }
         } catch (Exception e) {
@@ -688,6 +766,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         m_language = CmsLocaleManager.getDefaultLocale().toString();
         m_site = CmsStringUtil.joinPaths(OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), "/");
         m_startProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
+        m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
+        m_startView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
     }
 
     /**
@@ -700,7 +780,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         super.initWorkplaceRequestValues(settings, request);
 
         // save the current state of the user and pwd (may be changed because of the widget values)
-        Map dialogObject = new HashMap();
+        Map<String, Object> dialogObject = new HashMap<String, Object>();
         dialogObject.put(USER_OBJECT, m_user);
         dialogObject.put(PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
@@ -766,9 +846,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * 
      * @return a list of options for the locale selector
      */
-    private List getLanguages() {
+    private List<CmsSelectWidgetOption> getLanguages() {
 
-        List locales = new ArrayList();
+        List<CmsSelectWidgetOption> locales = new ArrayList<CmsSelectWidgetOption>();
 
         Locale defLocale = null;
         if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
@@ -778,9 +858,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             defLocale = getCms().getRequestContext().getLocale();
         }
 
-        Iterator itLocales = OpenCms.getLocaleManager().getAvailableLocales().iterator();
+        Iterator<Locale> itLocales = OpenCms.getLocaleManager().getAvailableLocales().iterator();
         while (itLocales.hasNext()) {
-            Locale locale = (Locale)itLocales.next();
+            Locale locale = itLocales.next();
             boolean selected = locale.equals(defLocale);
             locales.add(new CmsSelectWidgetOption(locale.toString(), selected, locale.getDisplayName(getLocale()), null));
         }
@@ -793,30 +873,30 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * @return a list of options for the project selector
      * @throws CmsException 
      */
-    private List getProjects() {
+    private List<CmsSelectWidgetOption> getProjects() {
 
-        List projects = new ArrayList();
+        List<CmsSelectWidgetOption> projects = new ArrayList<CmsSelectWidgetOption>();
 
         try {
             String defProject = null;
             if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
                 defProject = new CmsUserSettings(m_user).getStartProject();
             }
-            if (defProject == null) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(defProject)) {
                 defProject = getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
             }
-            if (defProject == null) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(defProject)) {
                 defProject = getCms().getRequestContext().getCurrentProject().getName();
             }
 
-            List projectsList;
+            List<CmsProject> projectsList;
             projectsList = OpenCms.getOrgUnitManager().getAllAccessibleProjects(getCms(), getParamOufqn(), false);
 
-            Iterator itProjects = projectsList.iterator();
+            Iterator<CmsProject> itProjects = projectsList.iterator();
 
             while (itProjects.hasNext()) {
                 boolean selected = false;
-                CmsProject project = (CmsProject)itProjects.next();
+                CmsProject project = itProjects.next();
 
                 String projectName = project.getName();
                 if (projectName.equals(defProject)) {
@@ -847,10 +927,10 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * 
      * @return a list of options for the site selector
      */
-    private List getSites() {
+    private List<CmsSelectWidgetOption> getSites() {
 
-        List sites = new ArrayList();
-        List sitesList = OpenCms.getSiteManager().getAvailableSites(getCms(), true, false, getParamOufqn());
+        List<CmsSelectWidgetOption> sites = new ArrayList<CmsSelectWidgetOption>();
+        List<CmsSite> sitesList = OpenCms.getSiteManager().getAvailableSites(getCms(), true, false, getParamOufqn());
 
         String defSite = null;
         if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
@@ -863,9 +943,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             defSite += "/";
         }
 
-        Iterator itSites = sitesList.iterator();
+        Iterator<CmsSite> itSites = sitesList.iterator();
         while (itSites.hasNext()) {
-            CmsSite site = (CmsSite)itSites.next();
+            CmsSite site = itSites.next();
             String siteRoot = site.getSiteRoot();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)) {
                 if (sitesList.size() > 1) {
@@ -884,6 +964,51 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             sites.add(new CmsSelectWidgetOption(siteRoot, selected, substituteSiteTitle(site.getTitle()), null));
         }
         return sites;
+    }
+
+    /**
+     * Returns a list of options for the view selector.<p>
+     * 
+     * @return a list of options for the view selector
+     */
+    private List<CmsSelectWidgetOption> getViews() {
+
+        List<CmsSelectWidgetOption> views = new ArrayList<CmsSelectWidgetOption>();
+
+        // determine the default view
+        String defaultView = null;
+        if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
+            defaultView = new CmsUserSettings(m_user).getStartView();
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(defaultView)) {
+            defaultView = VIEW_WORKPLACE;
+        }
+
+        // get the workplace views
+        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
+
+        // add the direct edit view to the list
+        String displayName = getMessages().key(org.opencms.workplace.commons.Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0);
+        list.add(new CmsWorkplaceView(displayName, VIEW_DIRECT_EDIT, Float.valueOf(100)));
+
+        // loop over the views and create a CmsSelectWidgetOption for each readable view
+        for (CmsWorkplaceView view : list) {
+            boolean visible = true;
+            try {
+                getCms().readResource(view.getUri());
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+                visible = false;
+            }
+            if (visible) {
+                boolean selected = view.getUri().equals(defaultView);
+                views.add(new CmsSelectWidgetOption(view.getUri(), selected, resolveMacros(view.getKey()), null));
+            }
+        }
+        return views;
     }
 
 }

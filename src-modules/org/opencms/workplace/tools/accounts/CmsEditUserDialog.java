@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,8 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#createUser(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
-    protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
+    @Override
+    protected CmsUser createUser(String name, String pwd, String desc, Map<String, Object> info) throws CmsException {
 
         return getCms().createUser(name, pwd, desc, info);
     }
@@ -85,6 +86,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getListClass()
      */
+    @Override
     protected String getListClass() {
 
         return CmsUsersList.class.getName();
@@ -93,6 +95,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getListRootPath()
      */
+    @Override
     protected String getListRootPath() {
 
         return "/accounts/orgunit/users";
@@ -101,6 +104,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#isEditable(org.opencms.file.CmsUser)
      */
+    @Override
     protected boolean isEditable(CmsUser user) {
 
         return true;
@@ -109,6 +113,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#writeUser(org.opencms.file.CmsUser)
      */
+    @Override
     protected void writeUser(CmsUser user) throws CmsException {
 
         getCms().writeUser(user);

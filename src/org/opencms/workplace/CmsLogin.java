@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2011/05/03 17:46:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1289,7 +1289,7 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     private String getDirectEditPath(CmsUserSettings userSettings) {
 
-        if (userSettings.getStartView().equals(CmsWorkplace.DIRECT_EDIT_VIEW)) {
+        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
             String folder = userSettings.getStartFolder();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(getCmsObject().getRequestContext().getSiteRoot())
                 || getCmsObject().getRequestContext().getSiteRoot().equals("/")) {

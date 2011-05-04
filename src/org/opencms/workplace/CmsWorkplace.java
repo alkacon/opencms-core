@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2011/05/03 17:46:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,9 +167,6 @@ public abstract class CmsWorkplace {
     /** Constant for the JSP explorer filelist file. */
     public static final String FILE_EXPLORER_FILELIST = VFS_PATH_VIEWS + "explorer/explorer_files.jsp";
 
-    /** Constant for the direct edit view JSP. */
-    public static final String DIRECT_EDIT_VIEW = "/system/workplace/views/explorer/directEdit.jsp";
-
     /** Constant for the JSP common files (e.g. error page) path. */
     public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
 
@@ -190,6 +187,12 @@ public abstract class CmsWorkplace {
 
     /** Constant for the JSP common report page. */
     public static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
+
+    /** Constant for the direct edit view JSP. */
+    public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
+
+    /** Constant for the direct edit view JSP. */
+    public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
 
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";

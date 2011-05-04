@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private CmsWorkplaceUserInfoManager m_userInfoManager;
 
     /** The configured workplace views. */
-    private List m_views;
+    private List<CmsWorkplaceView> m_views;
 
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
@@ -334,9 +334,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -362,9 +362,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -522,9 +522,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     resourceTypeName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
-                preEditorConditionDefinitionClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
+                    preEditorConditionDefinitionClassName),
+                e);
         }
     }
 
@@ -1161,7 +1163,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return the map of configured workplace views
      */
-    public List getViews() {
+    public List<CmsWorkplaceView> getViews() {
 
         return m_views;
     }
@@ -1737,9 +1739,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_defaultAccess.createAccessControlList(CmsExplorerTypeAccess.PRINCIPAL_DEFAULT);
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        CmsExplorerTypeAccess.PRINCIPAL_DEFAULT), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
+                            CmsExplorerTypeAccess.PRINCIPAL_DEFAULT),
+                        e);
                 }
             }
         }
@@ -1759,9 +1763,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 settings.getAccess().createAccessControlList(settings.getName());
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        settings.getName()), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()),
+                        e);
                 }
             }
         }
@@ -1842,20 +1846,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     private List initWorkplaceViews(CmsObject cms) {
 
-        List viewFolders;
+        List<CmsResource> viewFolders;
         try {
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1,
-                    CmsWorkplace.VFS_PATH_VIEWS), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
+                    e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
-            viewFolders = new ArrayList();
+            viewFolders = new ArrayList<CmsResource>();
         }
-        m_views = new ArrayList(viewFolders.size());
+        m_views = new ArrayList<CmsWorkplaceView>(viewFolders.size());
         for (int i = 0; i < viewFolders.size(); i++) {
             // loop through all view folders
             CmsFolder folder = (CmsFolder)viewFolders.get(i);

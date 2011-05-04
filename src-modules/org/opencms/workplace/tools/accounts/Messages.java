@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,6 +153,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REMOVE_SELECTED_ORGUNITUSER_0 = "ERR_REMOVE_SELECTED_ORGUNITUSER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTED_FOLDER_NOT_IN_SITE_0 = "ERR_SELECTED_FOLDER_NOT_IN_SITE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TRANSFER_GROUP_1 = "ERR_TRANSFER_GROUP_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/04 14:18:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -963,7 +963,7 @@ public class CmsPreferences extends CmsTabDialog {
         // loop through the vectors and fill the result vectors
         List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
         CmsWorkplaceView directEditView = new CmsWorkplaceView(Messages.get().getBundle().key(
-            Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.DIRECT_EDIT_VIEW, Float.valueOf(100));
+            Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.VIEW_DIRECT_EDIT, Float.valueOf(100));
         list.add(directEditView);
 
         Iterator i = list.iterator();
