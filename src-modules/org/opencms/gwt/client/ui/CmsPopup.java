@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/04 16:16:22 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,8 +60,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -475,6 +475,18 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             });
         }
         super.center();
+    }
+
+    /**
+     * Shows the dialog and centers it horizontally, but positions it at a fixed vertical position.<p>
+     * 
+     * @param top the top position
+     */
+    public void centerHorizontally(int top) {
+
+        show();
+        int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
+        setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
     }
 
     /**
