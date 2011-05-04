@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestUrlNameMapping.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/04 15:29:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import junit.framework.Test;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -129,17 +129,28 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         delete(res);
         assertEquals(res.getStructureId(), onlineCms.readIdForUrlName(baseName));
-        assertEquals(baseName, onlineCms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(baseName, onlineCms.readBestUrlName(
+            res.getStructureId(),
+            onlineCms.getRequestContext().getLocale(),
+            OpenCms.getLocaleManager().getDefaultLocales()));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(baseName));
-        assertEquals(baseName, cms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(baseName, readBestUrlName(cms, res.getStructureId()));
         publish();
         assertNull(onlineCms.readIdForUrlName(baseName));
         assertNull(onlineCms.readIdForUrlName(changedName));
-        assertNull(onlineCms.readNewestUrlNameForId(res.getStructureId()));
+        assertNull(readBestUrlName(onlineCms, res.getStructureId()));
         assertNull(cms.readIdForUrlName(baseName));
-        assertNull(cms.readNewestUrlNameForId(res.getStructureId()));
-        assertEquals(otherName, onlineCms.readNewestUrlNameForId(res2.getStructureId()));
+        assertNull(readBestUrlName(cms, res.getStructureId()));
+        assertEquals(otherName, readBestUrlName(onlineCms, res2.getStructureId()));
         assertEquals(res2.getStructureId(), onlineCms.readIdForUrlName(otherName));
+    }
+
+    String readBestUrlName(CmsObject cms, CmsUUID structureId) throws CmsException {
+
+        return cms.readBestUrlName(
+            structureId,
+            cms.getRequestContext().getLocale(),
+            OpenCms.getLocaleManager().getDefaultLocales());
     }
 
     /**
@@ -155,7 +166,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         addMapping(baseName, res);
         delete(res);
         assertNull(cms.readIdForUrlName(baseName));
-        assertNull(cms.readNewestUrlNameForId(res.getStructureId()));
+        assertNull(readBestUrlName(cms, res.getStructureId()));
     }
 
     /**
@@ -177,8 +188,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         assertTrue(returnedName2.contains(returnedName1));
         assertFalse(returnedName2.equals(returnedName1));
-        assertEquals(returnedName1, cms.readNewestUrlNameForId(id1));
-        assertEquals(returnedName2, cms.readNewestUrlNameForId(id2));
+        assertEquals(returnedName1, readBestUrlName(cms, id1));
+        assertEquals(returnedName2, readBestUrlName(cms, id2));
     }
 
     /**
@@ -199,7 +210,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         assertEquals(name1, returnedName1);
         assertEquals(name2, returnedName2);
-        assertEquals(name2, cms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(name2, readBestUrlName(cms, res.getStructureId()));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name1));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name2));
     }
@@ -217,7 +228,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         CmsResource res = createFile();
         addMapping(baseName, res);
         addMapping(changedName, res);
-        assertEquals(changedName, cms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(changedName, readBestUrlName(cms, res.getStructureId()));
         assertNull(cms.readIdForUrlName(baseName));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(changedName));
     }
@@ -235,9 +246,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         addMapping(baseName, res);
         assertNull(onlineCms.readIdForUrlName(baseName));
-        assertNull(onlineCms.readNewestUrlNameForId(res.getStructureId()));
+        assertNull(readBestUrlName(onlineCms, res.getStructureId()));
         publish();
-        assertEquals(baseName, onlineCms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(baseName, readBestUrlName(onlineCms, res.getStructureId()));
         assertEquals(res.getStructureId(), onlineCms.readIdForUrlName(baseName));
     }
 
@@ -254,7 +265,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         String returnedName = addMapping(name, res);
         publish();
         assertEquals(name, returnedName);
-        String foundName = cms.readNewestUrlNameForId(res.getStructureId());
+        String foundName = readBestUrlName(cms, res.getStructureId());
         assertEquals(name, foundName);
         CmsUUID foundId = cms.readIdForUrlName(name);
         assertEquals(res.getStructureId(), foundId);
@@ -279,7 +290,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         cms.undoChanges(cms.getSitePath(res), CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT);
         cms.unlockResource(cms.getSitePath(res));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(baseName));
-        assertEquals(baseName, cms.readNewestUrlNameForId(res.getStructureId()));
+        assertEquals(baseName, readBestUrlName(cms, res.getStructureId()));
         assertNull(onlineCms.readIdForUrlName(changedName));
     }
 
@@ -297,7 +308,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         // touch the resource so that we can publish it and its URL name mappings later 
         touch(res);
-        String result = cms.writeUrlNameMapping(name, res.getStructureId());
+        String result = cms.writeUrlNameMapping(name, res.getStructureId(), "en");
         return result;
     }
 
