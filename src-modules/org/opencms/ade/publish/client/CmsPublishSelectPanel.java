@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/04 15:53:46 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,6 +67,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -81,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -236,7 +237,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** The label displaying the resource count. */
     @UiField
-    protected InlineLabel m_resourceCountLabel;
+    protected InlineHTML m_resourceCountLabel;
 
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
@@ -390,7 +391,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public static String formatResourceCount(int resourceCount) {
 
-        return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
+        return "&nbsp;&nbsp;[" + resourceCount + " resources]";
+        //return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
     }
 
     /** 
@@ -509,7 +511,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void setGroups(List<CmsPublishGroup> groups, boolean newData) {
 
         m_model = new CmsPublishDataModel(groups, this);
-        m_resourceCountLabel.setText(formatResourceCount(m_model.getPublishResources().size()));
+        m_resourceCountLabel.setHTML(formatResourceCount(m_model.getPublishResources().size()));
         m_currentGroupIndex = 0;
         m_currentGroupPanel = null;
         m_problemsPanel.clear();

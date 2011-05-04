@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/04 15:53:46 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,15 +57,15 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * A panel representing a single publish group.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -145,7 +145,8 @@ public class CmsPublishGroupPanel extends Composite {
             this.setVisible(false);
         }
 
-        Label label = new Label(title + CmsPublishSelectPanel.formatResourceCount(m_publishResources.size()));
+        HTML label = new HTML();
+        label.setHTML(title + CmsPublishSelectPanel.formatResourceCount(m_publishResources.size()));
         label.addStyleName(CSS.groupHeader());
         m_header.add(label);
 
