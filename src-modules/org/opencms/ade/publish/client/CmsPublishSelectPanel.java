@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/05/04 15:53:46 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/05/04 16:04:08 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -391,8 +391,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public static String formatResourceCount(int resourceCount) {
 
-        return "&nbsp;&nbsp;[" + resourceCount + " resources]";
-        //return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
+        return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
     }
 
     /** 
