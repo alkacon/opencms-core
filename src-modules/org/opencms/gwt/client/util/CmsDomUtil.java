@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/04 15:53:43 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
@@ -619,6 +619,30 @@ public final class CmsDomUtil {
     public static void ensureMouseOut(Element element) {
 
         NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        element.dispatchEvent(nativeEvent);
+    }
+
+    /**
+     * Triggers a mouse-over event for the given element.<p>
+     * 
+     * Useful in case something is capturing all events.<p>
+     * 
+     * @param element the element to use
+     */
+    public static void ensureMouseOver(Element element) {
+
+        NativeEvent nativeEvent = Document.get().createMouseOverEvent(
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            null);
         element.dispatchEvent(nativeEvent);
     }
 
