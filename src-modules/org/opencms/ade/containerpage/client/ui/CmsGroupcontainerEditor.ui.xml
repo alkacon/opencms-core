@@ -6,16 +6,11 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.groupcontainerEditor}">
-		<div class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
-		<div ui:field="m_dialog" class="{resources.dialogCss.popup}">
-			<div class="{resources.dialogCss.popupContent} {containerpage.groupcontainerCss.dialog}">
-				<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Groupcontainer editor</g:Label>
-				<div class="{resources.dialogCss.popupMainContent} {resources.generalCss.cornerAll}">
+		<div ui:field="m_overlayDiv" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
+		<g:HTMLPanel ui:field="m_dialogContent">
 					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelTitle" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputTitle" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
 					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelDescription" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputDescription" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
-					<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div>
-				</div>
-			</div>
-		</div>
+				<!-- 	<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div> -->
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>

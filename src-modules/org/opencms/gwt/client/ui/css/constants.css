@@ -169,11 +169,11 @@
  */
  
  /** Used for popups and overlays. */
-@def zIndexPopup 2000;
+@def zIndexPopup 2000000;
 /** Used during drag and drop. */
-@def zIndexDND 2500;
+@def zIndexDND 2500000;
 /** Used for highlighting. */
-@def zIndexHighlighting 1500;
+@def zIndexHighlighting 1500000;
 /** Used for positioned UI elements. */
-@def zIndexInline 1000;
+@def zIndexInline 1000000;
 

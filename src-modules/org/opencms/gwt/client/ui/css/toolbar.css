@@ -36,7 +36,7 @@
 	top: 0px;
 	right: 0px;
 	position: fixed;
-	z-index: value("constants.css.zIndexInline");
+	z-index: value("constants.css.zIndexPopup");
 }
 
 @sprite .toolbarBackground{

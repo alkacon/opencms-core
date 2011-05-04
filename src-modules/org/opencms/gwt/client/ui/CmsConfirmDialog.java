@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/04 09:11:26 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -102,6 +102,16 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     }
 
     /**
+     * Returns the 'OK' button widget.<p>
+     * 
+     * @return the 'OK' button
+     */
+    public CmsPushButton getOkButton() {
+
+        return m_okButton;
+    }
+
+    /**
      * Sets the dialog handler.<p>
      * 
      * @param handler the handler to set
@@ -149,16 +159,6 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     protected I_CmsConfirmDialogHandler getHandler() {
 
         return m_handler;
-    }
-
-    /**
-     * Returns the 'OK' button widget.<p>
-     * 
-     * @return the 'OK' button
-     */
-    protected CmsPushButton getOkButton() {
-
-        return m_okButton;
     }
 
     /**

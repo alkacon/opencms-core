@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/04 09:11:26 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -201,12 +201,13 @@ public class CmsAlertDialog extends CmsPopup {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsPopup#setAutoHideEnabled(boolean)
+     * Returns the button widget.<p>
+     * 
+     * @return the button
      */
-    @Override
-    public void setAutoHideEnabled(boolean autoHide) {
+    public CmsPushButton getCloseButton() {
 
-        // prevent enabling auto hide
+        return m_closeButton;
     }
 
     /**
@@ -240,15 +241,6 @@ public class CmsAlertDialog extends CmsPopup {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsPopup#setModal(boolean)
-     */
-    @Override
-    public void setModal(boolean modal) {
-
-        // it is always modal
-    }
-
-    /**
      * Sets the warning text (HTML possible).<p>
      * 
      * @param warningText the warning text to set
@@ -266,16 +258,6 @@ public class CmsAlertDialog extends CmsPopup {
 
         super.show();
         getCloseButton().setEnabled(true);
-    }
-
-    /**
-     * Returns the button widget.<p>
-     * 
-     * @return the button
-     */
-    protected CmsPushButton getCloseButton() {
-
-        return m_closeButton;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/04 09:11:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,8 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
-import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -58,10 +59,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -73,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -89,36 +88,34 @@ public final class CmsGroupcontainerEditor extends Composite {
     /** The ui-binder for this widget. */
     private static I_CmsGroupcontainerEditorUiBinder uiBinder = GWT.create(I_CmsGroupcontainerEditorUiBinder.class);
 
-    /** The cancel button. */
-    @UiField
-    protected CmsPushButton m_cancelButton;
-
     /** The dialog element. */
     @UiField
-    protected DivElement m_dialog;
-
-    /** The save button. */
-    @UiField
-    protected CmsPushButton m_saveButton;
-
-    /** The title label. */
-    @UiField
-    protected CmsLabel m_labelTitle;
-
-    /** The descriptionLabel. */
-    @UiField
-    protected CmsLabel m_labelDescription;
-
-    /** The title input. */
-    @UiField
-    protected CmsTextBox m_inputTitle;
+    protected HTMLPanel m_dialogContent;
 
     /** The description input. */
     @UiField
     protected CmsTextBox m_inputDescription;
 
+    /** The title input. */
+    @UiField
+    protected CmsTextBox m_inputTitle;
+
+    /** The descriptionLabel. */
+    @UiField
+    protected CmsLabel m_labelDescription;
+
+    /** The title label. */
+    @UiField
+    protected CmsLabel m_labelTitle;
+
+    /** The overlay div element. */
+    @UiField
+    protected DivElement m_overlayDiv;
+
     /** List of elements when editing started, use to restore on cancel. */
     private List<CmsContainerPageElement> m_backUpElements;
+
+    private CmsConfirmDialog m_confirm;
 
     /** The container-page controller. */
     private CmsContainerpageController m_controller;
@@ -132,16 +129,20 @@ public final class CmsGroupcontainerEditor extends Composite {
     /** The editor widget. */
     private HTMLPanel m_editorWidget;
 
-    /** The index position of the group-container inside it's parent. */
-    private int m_indexPosition;
-
-    /** The parent container. */
-    private CmsContainerPageContainer m_parentContainer;
+    private CmsContainerElementData m_elementData;
 
     /** The group-container. */
     private CmsGroupContainerElement m_groupContainer;
 
     private CmsGroupContainer m_groupContainerBean;
+
+    private CmsPositionBean m_groupContainerPosition;
+
+    /** The index position of the group-container inside it's parent. */
+    private int m_indexPosition;
+
+    /** The parent container. */
+    private CmsContainerPageContainer m_parentContainer;
 
     /**
      * Constructor.<p>
@@ -158,6 +159,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_controller = controller;
         m_editorWidget = uiBinder.createAndBindUi(this);
         initWidget(m_editorWidget);
+        m_overlayDiv.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup() - 1);
         m_labelDescription.setText("Description");
         m_labelTitle.setText("Title");
         m_editorId = HTMLPanel.createUniqueId();
@@ -172,7 +174,7 @@ public final class CmsGroupcontainerEditor extends Composite {
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
-        CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_groupContainer);
+        m_groupContainerPosition = CmsPositionBean.generatePositionInfo(m_groupContainer);
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_indexPosition = m_parentContainer.getWidgetIndex(m_groupContainer);
@@ -181,20 +183,13 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_editorWidget.add(m_groupContainer, m_editorId);
         Style style = m_groupContainer.getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
-        style.setLeft(position.getLeft(), Unit.PX);
-        style.setTop(position.getTop(), Unit.PX);
-        style.setWidth(position.getWidth(), Unit.PX);
-        style.setZIndex(1000);
-        setDialogPosition(position);
+        style.setLeft(m_groupContainerPosition.getLeft(), Unit.PX);
+        style.setTop(m_groupContainerPosition.getTop(), Unit.PX);
+        style.setWidth(m_groupContainerPosition.getWidth(), Unit.PX);
+        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup());
         m_groupContainer.getElementOptionBar().setVisible(false);
         m_groupContainer.getElementOptionBar().removeStyleName(
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-
-        m_saveButton.setTitle("Save");
-        m_saveButton.setText("Save");
-        m_saveButton.disable("loading ...");
-        m_cancelButton.setTitle("Cancel");
-        m_cancelButton.setText("Cancel");
 
         RootPanel.get().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerEditing());
 
@@ -227,17 +222,15 @@ public final class CmsGroupcontainerEditor extends Composite {
             if (controller.startEditingGroupcontainer(groupContainer)) {
                 INSTANCE = new CmsGroupcontainerEditor(groupContainer, controller, handler);
                 RootPanel.get().add(INSTANCE);
+                INSTANCE.openDialog();
             }
         }
     }
 
     /**
      * On click function for cancel button.<p>
-     * 
-     * @param event the click event
      */
-    @UiHandler("m_cancelButton")
-    protected void cancelEdit(ClickEvent event) {
+    protected void cancelEdit() {
 
         Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
@@ -270,11 +263,8 @@ public final class CmsGroupcontainerEditor extends Composite {
 
     /**
      * On click function for save button.<p>
-     * 
-     * @param event the click event
      */
-    @UiHandler("m_saveButton")
-    protected void saveEdit(ClickEvent event) {
+    protected void saveEdit() {
 
         m_groupContainerBean.setTitle(m_inputTitle.getFormValueAsString());
         m_groupContainerBean.setDescription(m_inputDescription.getFormValueAsString());
@@ -290,26 +280,28 @@ public final class CmsGroupcontainerEditor extends Composite {
      */
     protected void setGroupContainerData(Map<String, CmsContainerElementData> elementsData) {
 
-        CmsContainerElementData elementData = elementsData.get(m_groupContainer.getId());
-        if (elementData != null) {
-            m_saveButton.enable();
+        m_elementData = elementsData.get(m_groupContainer.getId());
+        if (m_elementData != null) {
+            if (m_confirm != null) {
+                m_confirm.getOkButton().enable();
+            }
             m_groupContainerBean = new CmsGroupContainer();
-            m_groupContainerBean.setClientId(elementData.getClientId());
+            m_groupContainerBean.setClientId(m_elementData.getClientId());
             m_groupContainerBean.setResourceType(m_groupContainer.getNewType());
             m_groupContainerBean.setNew(m_groupContainer.isNew());
-            m_groupContainerBean.setSitePath(elementData.getSitePath());
-            if (elementData.getTypes().isEmpty()) {
+            m_groupContainerBean.setSitePath(m_elementData.getSitePath());
+            if (m_elementData.getTypes().isEmpty()) {
                 Set<String> types = new HashSet<String>();
                 types.add(((CmsContainerPageContainer)m_groupContainer.getParentTarget()).getContainerType());
-                elementData.setTypes(types);
+                m_elementData.setTypes(types);
                 m_groupContainerBean.setTypes(types);
             } else {
-                m_groupContainerBean.setTypes(elementData.getTypes());
+                m_groupContainerBean.setTypes(m_elementData.getTypes());
             }
-            m_inputDescription.setFormValueAsString(elementData.getDescription());
-            m_inputTitle.setFormValueAsString(elementData.getTitle());
-            m_groupContainerBean.setTitle(elementData.getTitle());
-            m_groupContainerBean.setDescription(elementData.getDescription());
+            m_inputDescription.setFormValueAsString(m_elementData.getDescription());
+            m_inputTitle.setFormValueAsString(m_elementData.getTitle());
+            m_groupContainerBean.setTitle(m_elementData.getTitle());
+            m_groupContainerBean.setDescription(m_elementData.getDescription());
         } else {
             CmsDebugLog.getInstance().printLine("Loading groupcontainer error.");
         }
@@ -377,11 +369,46 @@ public final class CmsGroupcontainerEditor extends Composite {
         return subItems;
     }
 
-    private void setDialogPosition(CmsPositionBean position) {
+    private void openDialog() {
 
-        m_dialog.getStyle().setLeft(position.getLeft() + position.getWidth() + 20, Unit.PX);
-        m_dialog.getStyle().setTop(position.getTop(), Unit.PX);
-        m_dialog.getStyle().setPosition(Position.ABSOLUTE);
+        m_confirm = new CmsConfirmDialog("Group container editor");
+        m_confirm.setMainContent(m_dialogContent);
+        m_confirm.setHandler(new I_CmsConfirmDialogHandler() {
+
+            public void onClose() {
+
+                cancelEdit();
+            }
+
+            public void onOk() {
+
+                saveEdit();
+            }
+        });
+        if (m_elementData == null) {
+            m_confirm.getOkButton().disable("Loading data...");
+        }
+        m_confirm.setGlassEnabled(false);
+        m_confirm.setModal(false);
+        m_confirm.setWidth(500);
+        if (m_groupContainerPosition != null) {
+            if (m_groupContainerPosition.getLeft() > 600) {
+                // place left of the group container if there is enough space
+                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft() - 520, m_groupContainerPosition.getTop());
+            } else if (m_groupContainerPosition.getTop() > 400) {
+                // else place above if there is enough space
+                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop() - 350);
+            } else {
+                // else on the right
+                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft()
+                    + m_groupContainerPosition.getWidth()
+                    + 20, m_groupContainerPosition.getTop());
+            }
+            m_confirm.show();
+        } else {
+            // should never happen
+            m_confirm.center();
+        }
     }
 
 }
