@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/03 11:48:47 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,6 +83,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -105,7 +106,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -874,6 +875,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             content.getFile().getRootPath(),
             CmsResourceFilter.IGNORE_EXPIRATION);
 
+        Set<CmsResource> urlNameMappingResources = new HashSet<CmsResource>();
+        boolean mapToUrlName = false;
+        urlNameMappingResources.add(content.getFile());
         // since 7.0.2 multiple mappings are possible
         for (String mapping : mappings) {
 
@@ -885,7 +889,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     // get filename
                     String filename = (siblings.get(i)).getRootPath();
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
-
+                    if (mapping.startsWith(MAPTO_URLNAME)) {
+                        // should be written regardless of whether there is a sibling with the correct locale 
+                        mapToUrlName = true;
+                    }
                     if (!locale.equals(value.getLocale())) {
                         // only map property if the locale fits
                         continue;
@@ -1064,13 +1071,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             i = 0;
                         }
                     } else if (mapping.startsWith(MAPTO_URLNAME)) {
-
-                        // this is a mapping to the URL name
-                        if (!CmsResource.isTemporaryFileName(siblings.get(i).getRootPath())) {
-                            I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
-                            Iterator<String> nameSeq = nameGen.getUrlNameSequence(cms, content, value, siblings.get(i));
-                            cms.writeUrlNameMapping(nameSeq, siblings.get(i).getStructureId());
-                        }
+                        // we write the actual mappings later 
+                        urlNameMappingResources.add(siblings.get(i));
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
                         // this is an attribute mapping                        
@@ -1117,6 +1119,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+        if (mapToUrlName) {
+            // now actually write the URL name mappings 
+            for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
+                if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
+                    I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
+                    Iterator<String> nameSeq = nameGen.getUrlNameSequence(
+                        cms,
+                        content,
+                        value,
+                        resourceForUrlNameMapping);
+                    cms.writeUrlNameMapping(
+                        nameSeq,
+                        resourceForUrlNameMapping.getStructureId(),
+                        value.getLocale().toString());
+                }
+            }
+        }
+
         // make sure the original is locked
         CmsLock lock = rootCms.getLock(file);
         if (lock.isUnlocked()) {

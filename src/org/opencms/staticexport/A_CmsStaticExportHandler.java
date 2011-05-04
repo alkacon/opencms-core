@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.util.CmsUUID;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Rueidger Kurz
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.1.7 
  * 
@@ -402,6 +403,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 List<File> relFilesToPurge = getRelatedFilesToPurge(rfsExportFileName, vfsName);
                 purgeFiles(relFilesToPurge, vfsName, scrubbedFiles);
 
+                List<File> detailPageFiles = getDetailPageFiles(cms, res, vfsName);
+                purgeFiles(detailPageFiles, vfsName, scrubbedFiles);
                 // purge all sitemap references in case of a container page
                 //                List<File> relSitemapFiles = getRelatedSitemapFiles(cms, res, vfsName);
                 //                purgeFiles(relSitemapFiles, vfsName, scrubbedFiles);
@@ -411,6 +414,44 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 scrubbedFiles.add(rfsName);
             }
         }
+    }
+
+    /**
+     * Gets the exported detail page files which need to be purged.<p>
+     *  
+     * @param cms the current cms context 
+     * @param res the published resource  
+     * @param vfsName the vfs name
+     *  
+     * @return the list of files to be purged 
+     */
+    private List<File> getDetailPageFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
+
+        List<File> files = new ArrayList<File>();
+        try {
+            List<String> urlNames = cms.getAllUrlNames(res.getStructureId());
+            Collection<String> detailpages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
+                cms,
+                res.getType());
+            for (String urlName : urlNames) {
+                for (String detailPage : detailpages) {
+                    String rfsName = CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getRfsName(
+                        cms,
+                        detailPage), urlName, CmsStaticExportManager.DEFAULT_FILE);
+                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                        vfsName)
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
+                    File file = new File(rfsExportFileName);
+                    if (file.exists() && !files.contains(file)) {
+                        files.add(file);
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return files;
+
     }
 
     /**

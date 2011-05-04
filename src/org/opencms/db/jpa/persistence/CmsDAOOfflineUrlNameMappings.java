@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/persistence/CmsDAOOfflineUrlNameMappings.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.persistence.Table;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -318,6 +318,10 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
     @Column(name = "structure_id", length = 36)
     private String m_structureId;
 
+    /** The locale. */
+    @Column(name = "locale", length = 10)
+    private String m_locale;
+
     /**
      * The default constructor.<p>
      */
@@ -351,6 +355,14 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
     }
 
     /**
+     * @see org.opencms.db.jpa.persistence.I_CmsDAOUrlNameMappings#getLocale()
+     */
+    public String getLocale() {
+
+        return m_locale;
+    }
+
+    /**
      * @see org.opencms.db.jpa.persistence.I_CmsDAOUrlNameMappings#getName()
      */
     public String getName() {
@@ -380,6 +392,14 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
     public void setDateChanged(long dateChanged) {
 
         m_dateChanged = dateChanged;
+    }
+
+    /**
+     * @see org.opencms.db.jpa.persistence.I_CmsDAOUrlNameMappings#setLocale(java.lang.String)
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
     }
 
     /**

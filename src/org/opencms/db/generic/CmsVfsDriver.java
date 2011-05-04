@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -99,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */
@@ -164,6 +163,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             parameters.add(new CmsPreparedStatementStringParameter(filter.getRejectStructureId().toString()));
         }
 
+        if (filter.getLocale() != null) {
+            sqlConditions.add(" LOCALE = ? ");
+            parameters.add(new CmsPreparedStatementStringParameter(filter.getLocale()));
+        }
+
         String conditionString = CmsStringUtil.listAsString(sqlConditions, " AND ");
         return CmsPair.create(conditionString, parameters);
     }
@@ -204,6 +208,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(2, entry.getStructureId().toString());
             stmt.setInt(3, entry.getState());
             stmt.setLong(4, entry.getDateChanged());
+            stmt.setString(5, entry.getLocale());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw wrapException(stmt, e);
@@ -1180,9 +1185,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatementForSql(
-                conn,
-                m_sqlManager.readQuery(projectId, "C_READ_RESOURCE_OUS"));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery(
+                projectId,
+                "C_READ_RESOURCE_OUS"));
             stmt.setInt(1, CmsRelationType.OU_RESOURCE.getId());
             stmt.setString(2, resName);
             res = stmt.executeQuery();
@@ -1199,9 +1204,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         for (CmsRelation rel : rels) {
             try {
-                ous.add(m_driverManager.readOrganizationalUnit(
-                    dbc,
-                    rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
+                    CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -1765,37 +1769,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         return folder;
 
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readNewestUrlNameForId(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
-     */
-    public String readNewestUrlNameForId(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
-
-        List<CmsUrlNameMappingEntry> entries = readUrlNameMappingEntries(
-            dbc,
-            dbc.currentProject().isOnlineProject(),
-            CmsUrlNameMappingFilter.ALL.filterStructureId(id));
-        if (entries.isEmpty()) {
-            return null;
-        }
-        Collections.sort(entries, new Comparator<CmsUrlNameMappingEntry>() {
-
-            public int compare(CmsUrlNameMappingEntry o1, CmsUrlNameMappingEntry o2) {
-
-                long date1 = o1.getDateChanged();
-                long date2 = o2.getDateChanged();
-                if (date1 < date2) {
-                    return -1;
-                }
-                if (date1 > date2) {
-                    return +1;
-                }
-                return 0;
-            }
-        });
-        CmsUrlNameMappingEntry lastEntry = entries.get(entries.size() - 1);
-        return lastEntry.getName();
     }
 
     /**
@@ -3488,7 +3461,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID structureId = new CmsUUID(resultSet.getString(2));
         int state = resultSet.getInt(3);
         long dateChanged = resultSet.getLong(4);
-        return new CmsUrlNameMappingEntry(name, structureId, state, dateChanged);
+        String locale = resultSet.getString(5);
+        return new CmsUrlNameMappingEntry(name, structureId, state, dateChanged, locale);
     }
 
     /**

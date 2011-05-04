@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/urlname/CmsUrlNameMappingFilter.java,v $
- * Date   : $Date: 2011/05/03 10:49:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -56,6 +56,9 @@ public class CmsUrlNameMappingFilter {
 
     /** The name pattern which should be matched. */
     private String m_namePattern;
+
+    /** The locale which should be matched. */
+    private String m_locale;
 
     /** The state which should be matched. */
     private Integer m_state;
@@ -86,6 +89,24 @@ public class CmsUrlNameMappingFilter {
         this.m_rejectStructureId = filter.m_rejectStructureId;
         this.m_state = filter.m_state;
         this.m_namePattern = filter.m_namePattern;
+        this.m_locale = filter.m_locale;
+    }
+
+    /**
+     * Returns a new url name mapping filter based on the current one which also has to match a given locale.<p>
+     * 
+     * @param locale the locale to match 
+     * 
+     * @return the new filter 
+     */
+    public CmsUrlNameMappingFilter filterLocale(String locale) {
+
+        if (locale == null) {
+            throw new IllegalArgumentException();
+        }
+        CmsUrlNameMappingFilter result = new CmsUrlNameMappingFilter(this);
+        result.m_locale = locale;
+        return result;
     }
 
     /**
@@ -172,6 +193,16 @@ public class CmsUrlNameMappingFilter {
         CmsUrlNameMappingFilter result = new CmsUrlNameMappingFilter(this);
         result.m_structureId = structureId;
         return result;
+    }
+
+    /**
+     * Returns the locale which should be matched by the filter.<p>
+     * 
+     * @return the locale 
+     */
+    public String getLocale() {
+
+        return m_locale;
     }
 
     /** 

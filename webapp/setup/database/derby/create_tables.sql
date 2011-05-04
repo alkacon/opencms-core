@@ -790,3 +790,41 @@ CREATE UNIQUE INDEX uk_users ON cms_users (user_name, user_ou);
 CREATE INDEX cms_users_01_idx ON cms_users (user_name);
 
 CREATE INDEX cms_users_02_idx ON cms_users (user_ou);
+
+-- ----------------------------------------------------------------------- 
+-- cms_offline_urlname_mappings 
+-- ----------------------------------------------------------------------- 
+
+CREATE TABLE cms_offline_urlname_mappings
+(
+	name VARCHAR(128) NOT NULL,
+	structure_id VARCHAR(36) NOT NULL,
+	state INTEGER NOT NULL,
+	date_changed BIGINT NOT NULL,
+	locale VARCHAR(10)
+);
+
+CREATE INDEX cms_offline_mappings_01_idx ON cms_offline_urlname_mappings (name);
+CREATE INDEX cms_offline_mappings_02_idx ON cms_offline_urlname_mappings (structure_id);
+
+-- ----------------------------------------------------------------------- 
+-- cms_online_urlname_mappings 
+-- ----------------------------------------------------------------------- 
+
+CREATE TABLE cms_online_urlname_mappings
+(
+	name VARCHAR(128) NOT NULL,
+	structure_id VARCHAR(36) NOT NULL,
+	state INTEGER NOT NULL,
+	date_changed BIGINT NOT NULL,
+	locale VARCHAR(10)
+);
+
+CREATE INDEX cms_online_mappings_01_idx ON cms_online_urlname_mappings (name);
+CREATE INDEX cms_online_mappings_02_idx ON cms_online_urlname_mappings (structure_id);
+
+
+
+
+
+

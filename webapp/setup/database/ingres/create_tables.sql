@@ -353,3 +353,28 @@ CREATE TABLE cms_users (
 	PRIMARY KEY (user_id), 
 	CONSTRAINT U_CMS_SRS_USER_NAME UNIQUE (user_name, user_ou)
 );
+
+CREATE TABLE cms_offline_urlname_mappings
+(
+	name VARCHAR(128) NOT NULL,
+	structure_id VARCHAR(36) NOT NULL,
+	state INTEGER NOT NULL,
+	date_changed BIGINT NOT NULL,
+	locale VARCHAR(10)
+);
+
+
+CREATE TABLE cms_online_urlname_mappings
+(
+	name VARCHAR(128) NOT NULL,
+	structure_id VARCHAR(36) NOT NULL,
+	state INTEGER NOT NULL,
+	date_changed BIGINT NOT NULL,
+	locale VARCHAR(10)
+);
+
+
+
+
+
+

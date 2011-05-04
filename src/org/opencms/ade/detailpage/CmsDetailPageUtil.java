@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageUtil.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This is a utility class which provides convenience methods for finding detail page names for resources which include
@@ -52,7 +53,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -73,20 +74,24 @@ public final class CmsDetailPageUtil {
      * @param res the resource for which the detail pages should be retrieved 
      * 
      * @return the list of detail page URIs 
-     * 
+     *  
      * @throws CmsException if something goes wrong 
      */
     public static List<String> getAllDetailPagesWithUrlName(CmsObject cms, CmsResource res) throws CmsException {
 
         List<String> result = new ArrayList<String>();
-        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(cms, res);
+        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
+            cms,
+            res.getTypeId());
         if (detailPages.isEmpty()) {
             return Collections.<String> emptyList();
         }
-        String urlName = cms.getDetailName(res);
-        for (String detailPage : detailPages) {
-            String rootPath = CmsStringUtil.joinPaths(detailPage, urlName, "/");
-            result.add(rootPath);
+        List<String> detailNames = cms.readUrlNamesForAllLocales(res.getStructureId());
+        for (String urlName : detailNames) {
+            for (String detailPage : detailPages) {
+                String rootPath = CmsStringUtil.joinPaths(detailPage, urlName, "/");
+                result.add(rootPath);
+            }
         }
         return result;
     }
@@ -103,7 +108,10 @@ public final class CmsDetailPageUtil {
      */
     public static String getBestUrlName(CmsObject cms, CmsUUID id) throws CmsException {
 
-        String urlName = cms.readNewestUrlNameForId(id);
+        // this is currently only used for static export 
+        Locale locale = cms.getRequestContext().getLocale();
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
+        String urlName = cms.readBestUrlName(id, locale, defaultLocales);
         if (urlName != null) {
             return urlName;
         }

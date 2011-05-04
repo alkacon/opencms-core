@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsVfsDriver.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -121,7 +121,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0 
  */
@@ -466,6 +466,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             parameters.add(new CmsQueryStringParameter(filter.getRejectStructureId().toString()));
         }
 
+        if (filter.getLocale() != null) {
+            sqlConditions.add("I_CmsDAO%(PROJECT)UrlNameMappings.m_locale = ? ");
+            parameters.add(new CmsQueryStringParameter(filter.getLocale()));
+        }
+
         String conditionString = CmsStringUtil.listAsString(sqlConditions, " AND ");
         return CmsPair.create(conditionString, parameters);
     }
@@ -481,6 +486,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         m.setStructureId(entry.getStructureId().toString());
         m.setState(entry.getState());
         m.setDateChanged(entry.getDateChanged());
+        m.setLocale(entry.getLocale());
         m_sqlManager.persist(dbc, m);
 
     }
@@ -3427,7 +3433,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID structureId = new CmsUUID(m.getStructureId());
         int state = m.getState();
         long dateChanged = m.getDateChanged();
-        return new CmsUrlNameMappingEntry(name, structureId, state, dateChanged);
+        String locale = m.getLocale();
+        return new CmsUrlNameMappingEntry(name, structureId, state, dateChanged, locale);
     }
 
     /**

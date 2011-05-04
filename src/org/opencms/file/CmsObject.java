@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,6 +70,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,7 +100,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0 
  */
@@ -1066,13 +1067,15 @@ public final class CmsObject {
      * method.<p>
      * 
      * @param res the resource for which the detail name should be retrieved
+     * @param locale the locale for the detail name 
+     * @param defaultLocales the default locales for the detail name 
      *   
      * @return the detail name 
      * @throws CmsException if something goes wrong 
      */
-    public String getDetailName(CmsResource res) throws CmsException {
+    public String getDetailName(CmsResource res, Locale locale, List<Locale> defaultLocales) throws CmsException {
 
-        String urlName = readNewestUrlNameForId(res.getStructureId());
+        String urlName = readBestUrlName(res.getStructureId(), locale, defaultLocales);
         if (urlName == null) {
             urlName = res.getStructureId().toString();
         }
@@ -2323,12 +2326,33 @@ public final class CmsObject {
      * If the structure id is not mapped to any name, null will be returned.<p>
      * 
      * @param id the structure id for which the newest mapped name should be returned
+     * @param locale the locale for which the URL name should be selected if possible 
+     * @param defaultLocales the default locales which should be used if the locale is not available
      * @return an URL name or null 
      * @throws CmsException if something goes wrong 
      */
-    public String readNewestUrlNameForId(CmsUUID id) throws CmsException {
+    public String readBestUrlName(CmsUUID id, Locale locale, List<Locale> defaultLocales) throws CmsException {
 
-        return m_securityManager.readNewestUrlNameForId(m_context, id);
+        return m_securityManager.readBestUrlName(m_context, id, locale, defaultLocales);
+    }
+
+    /**
+     * Reads the URL names for all locales.<p> 
+     * 
+     * @param structureId the id of resource for which the URL names should be read 
+     * @return returns the URL names for the resource 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> readUrlNamesForAllLocales(CmsUUID structureId) throws CmsException {
+
+        List<String> detailNames = m_securityManager.readUrlNamesForAllLocales(m_context, structureId);
+        if (detailNames.isEmpty()) {
+            List<String> result = new ArrayList<String>();
+            result.add(structureId.toString());
+            return result;
+        }
+        return detailNames;
     }
 
     /**
@@ -3489,14 +3513,15 @@ public final class CmsObject {
      * 
      * @param nameSeq an iterator for generating names for the mapping   
      * @param structureId the structure id to which the name should be mapped
+     * @param locale the locale of the mapping 
      *   
      * @return the name which was actually mapped to the structure id
      *  
      * @throws CmsException if something goes wrong 
      */
-    public String writeUrlNameMapping(Iterator nameSeq, CmsUUID structureId) throws CmsException {
+    public String writeUrlNameMapping(Iterator<String> nameSeq, CmsUUID structureId, String locale) throws CmsException {
 
-        return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId);
+        return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId, locale);
     }
 
     /**
@@ -3507,14 +3532,15 @@ public final class CmsObject {
      * 
      * @param name the base name for the mapping 
      * @param structureId the structure id to which the name should be mapped
+     * @param locale the locale of the mapping 
      *  
      * @return the URL name that was actually used for the mapping
      * 
      * @throws CmsException if something goes wrong 
      */
-    public String writeUrlNameMapping(String name, CmsUUID structureId) throws CmsException {
+    public String writeUrlNameMapping(String name, CmsUUID structureId, String locale) throws CmsException {
 
-        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId);
+        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId, locale);
     }
 
     /**
@@ -3651,9 +3677,34 @@ public final class CmsObject {
                 Messages.ERR_LOCK_RESOURCE_1,
                 resourcename));
         }
-
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);
+    }
+
+    /**
+     * Returns the newest URL names for the given structure id for each locale.<p>
+     * 
+     * @param id the structure id 
+     * @return the list of URL names for each locale 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> getUrlNamesForAllLocales(CmsUUID id) throws CmsException {
+
+        return m_securityManager.readUrlNamesForAllLocales(m_context, id);
+    }
+
+    /**
+     * Gets all URL names for a given structure id.<p>
+     * 
+     * @param id the structure id 
+     * @return the list of all URL names for that structure id 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> getAllUrlNames(CmsUUID id) throws CmsException {
+
+        return m_securityManager.readAllUrlNameMappingEntries(m_context, id);
     }
 
 }

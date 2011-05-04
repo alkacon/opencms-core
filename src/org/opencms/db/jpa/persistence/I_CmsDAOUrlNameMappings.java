@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/persistence/I_CmsDAOUrlNameMappings.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ package org.opencms.db.jpa.persistence;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -78,6 +78,20 @@ public interface I_CmsDAOUrlNameMappings {
      * @return the state
      */
     int getState();
+
+    /**
+     * Sets the locale.<p>
+     * 
+     * @param locale the locale to set 
+     */
+    void setLocale(String locale);
+
+    /**
+     * Returns the locale.<p>
+     * 
+     * @return the locale 
+     */
+    String getLocale();
 
     /**
      * Sets the state.<p>

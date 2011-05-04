@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/05/04 15:21:10 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -125,6 +125,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -135,6 +136,9 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.ArrayListMultimap;
 
 /**
  * The OpenCms driver manager.<p>
@@ -148,6 +152,28 @@ import org.apache.commons.pool.ObjectPool;
  * @since 6.0.0
  */
 public final class CmsDriverManager implements I_CmsEventListener {
+
+    /**
+     * The comparator used for comparing url name mapping entries by date.<p>
+     */
+    class UrlNameMappingComparator implements Comparator<CmsUrlNameMappingEntry> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsUrlNameMappingEntry o1, CmsUrlNameMappingEntry o2) {
+
+            long date1 = o1.getDateChanged();
+            long date2 = o2.getDateChanged();
+            if (date1 < date2) {
+                return -1;
+            }
+            if (date1 > date2) {
+                return +1;
+            }
+            return 0;
+        }
+    }
 
     /**
      * Enumeration class for the mode parameter in the 
@@ -4055,7 +4081,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns all locked resources in a given folder, but uses a cache for resource lookups<p>
+     * Returns all locked resources in a given folder, but uses a cache for resource lookups.<p>
      *
      * @param dbc the current database context
      * @param resource the folder to search in
@@ -6016,19 +6042,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
                     CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
             if (!entries.isEmpty()) {
-                assert entries.size() == 1;
-                CmsUrlNameMappingEntry entry = entries.get(0);
-                CmsUrlNameMappingFilter nameFilter = CmsUrlNameMappingFilter.ALL.filterName(entry.getName());
-                vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
-                vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
                 long now = System.currentTimeMillis();
-                CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
-                    entry.getName(),
-                    entry.getStructureId(),
-                    CmsUrlNameMappingEntry.MAPPING_STATUS_PUBLISHED,
-                    now);
-                vfsDriver.addUrlNameMappingEntry(dbc, true, newEntry);
-                vfsDriver.addUrlNameMappingEntry(dbc, false, newEntry);
+                for (CmsUrlNameMappingEntry entry : entries) {
+                    CmsUrlNameMappingFilter nameFilter = CmsUrlNameMappingFilter.ALL.filterName(entry.getName());
+                    vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
+                    vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
+                    CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
+                        entry.getName(),
+                        entry.getStructureId(),
+                        CmsUrlNameMappingEntry.MAPPING_STATUS_PUBLISHED,
+                        now,
+                        entry.getLocale());
+                    vfsDriver.addUrlNameMappingEntry(dbc, true, newEntry);
+                    vfsDriver.addUrlNameMappingEntry(dbc, false, newEntry);
+                }
             }
         }
     }
@@ -6114,6 +6141,57 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List<CmsResource> result = getSubscriptionDriver().readAllSubscribedResources(dbc, poolName, principal);
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
+    }
+
+    /**
+     * Selects the best url name for a given resource and locale.<p>
+     * 
+     * @param dbc the database context 
+     * @param id the resource's structure id 
+     * @param locale the requested locale 
+     * @param defaultLocales the default locales to use if the locale isn't available 
+     * 
+     * @return the URL name which was found 
+     * 
+     * @throws CmsDataAccessException if the database operation failed 
+     */
+    public String readBestUrlName(CmsDbContext dbc, CmsUUID id, Locale locale, List<Locale> defaultLocales)
+    throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            CmsUrlNameMappingFilter.ALL.filterStructureId(id));
+        if (entries.isEmpty()) {
+            return null;
+        }
+
+        ArrayListMultimap<String, CmsUrlNameMappingEntry> entriesByLocale = ArrayListMultimap.create();
+        for (CmsUrlNameMappingEntry entry : entries) {
+            entriesByLocale.put(entry.getLocale(), entry);
+        }
+        List<CmsUrlNameMappingEntry> lastEntries = new ArrayList<CmsUrlNameMappingEntry>();
+        Comparator<CmsUrlNameMappingEntry> dateChangedComparator = new UrlNameMappingComparator();
+        for (String localeKey : entriesByLocale.keySet()) {
+            // for each locale select the latest mapping entry 
+            CmsUrlNameMappingEntry latestEntryForLocale = Collections.max(
+                entriesByLocale.get(localeKey),
+                dateChangedComparator);
+            lastEntries.add(latestEntryForLocale);
+        }
+        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
+        List<Locale> availableLocales = new ArrayList<Locale>();
+        for (CmsUrlNameMappingEntry entry : lastEntries) {
+            availableLocales.add(new Locale(entry.getLocale()));
+        }
+        Locale bestLocale = localeManager.getBestMatchingLocale(locale, defaultLocales, availableLocales);
+        String bestLocaleStr = bestLocale.getLanguage();
+        for (CmsUrlNameMappingEntry entry : lastEntries) {
+            if (entry.getLocale().equals(bestLocaleStr)) {
+                return entry.getName();
+            }
+        }
+        return null;
     }
 
     /**
@@ -6688,21 +6766,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (entries.isEmpty()) {
             return null;
         }
-        Collections.sort(entries, new Comparator<CmsUrlNameMappingEntry>() {
 
-            public int compare(CmsUrlNameMappingEntry o1, CmsUrlNameMappingEntry o2) {
-
-                long date1 = o1.getDateChanged();
-                long date2 = o2.getDateChanged();
-                if (date1 < date2) {
-                    return -1;
-                }
-                if (date1 > date2) {
-                    return +1;
-                }
-                return 0;
-            }
-        });
+        Collections.sort(entries, new UrlNameMappingComparator());
         CmsUrlNameMappingEntry lastEntry = entries.get(entries.size() - 1);
         return lastEntry.getName();
     }
@@ -7612,6 +7677,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         return vfsDriver.readUrlNameMappingEntries(dbc, online, filter);
+    }
+
+    /**
+     * Reads the newest URL names of a resource for all locales.<p>
+     *  
+     * @param dbc the database context 
+     * @param id the resource's structure id
+     *  
+     * @return the url names for the locales 
+     * 
+     * @throws CmsDataAccessException if the database operation failed 
+     */
+    public List<String> readUrlNamesForAllLocales(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
+
+        List<String> result = new ArrayList<String>();
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            CmsUrlNameMappingFilter.ALL.filterStructureId(id));
+        ArrayListMultimap<String, CmsUrlNameMappingEntry> entriesByLocale = ArrayListMultimap.create();
+        for (CmsUrlNameMappingEntry entry : entries) {
+            String localeKey = entry.getLocale();
+            entriesByLocale.put(localeKey, entry);
+        }
+
+        for (String localeKey : entriesByLocale.keySet()) {
+            List<CmsUrlNameMappingEntry> entrs = entriesByLocale.get(localeKey);
+            CmsUrlNameMappingEntry maxEntryForLocale = Collections.max(entrs, new UrlNameMappingComparator());
+            result.add(maxEntryForLocale.getName());
+        }
+        return result;
     }
 
     /**
@@ -9550,15 +9646,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param nameSeq the sequence of URL name candidates  
      * @param structureId the structure id to which the url name should be mapped 
+     * @param locale the locale for which the mapping should be written 
+     * 
      * @return the actual name which was mapped to the structure id 
      * 
      * @throws CmsDataAccessException if something goes wrong 
      */
-    public String writeUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId)
+    public String writeUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId, String locale)
     throws CmsDataAccessException {
 
-        String bestName = findBestNameForUrlNameMapping(dbc, nameSeq, structureId);
-        addOrReplaceUrlNameMapping(dbc, bestName, structureId);
+        String bestName = findBestNameForUrlNameMapping(dbc, nameSeq, structureId, locale);
+        addOrReplaceUrlNameMapping(dbc, bestName, structureId, locale);
         return bestName;
     }
 
@@ -9598,23 +9696,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Adds or replaces a new url name mapping in the offline project.<p>
      * 
      * @param dbc the current database context 
-     * @param name
-     * @param structureId
-     * @throws CmsDataAccessException
+     * @param name the URL name of the mapping 
+     * @param structureId the structure id of the mapping 
+     * @param locale the locale of the mapping 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
      */
-    protected void addOrReplaceUrlNameMapping(CmsDbContext dbc, String name, CmsUUID structureId)
+    protected void addOrReplaceUrlNameMapping(CmsDbContext dbc, String name, CmsUUID structureId, String locale)
     throws CmsDataAccessException {
 
         getVfsDriver(dbc).deleteUrlNameMappingEntries(
             dbc,
             false,
-            CmsUrlNameMappingFilter.ALL.filterStructureId(structureId).filterState(
+            CmsUrlNameMappingFilter.ALL.filterStructureId(structureId).filterLocale(locale).filterState(
                 CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
         CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
             name,
             structureId,
             CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
-            System.currentTimeMillis());
+            System.currentTimeMillis(),
+            locale);
         getVfsDriver(dbc).addUrlNameMappingEntry(dbc, false, newEntry);
     }
 
@@ -9704,25 +9805,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the database context 
      * @param nameSeq the sequence of name candidates 
      * @param structureId the structure id to which an URL name should be mapped
+     * @param locale the locale for which the URL name should be mapped 
      *  
      * @return the selected URL name candidate 
      * 
      * @throws CmsDataAccessException if something goes wrong 
      */
-    protected String findBestNameForUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId)
-    throws CmsDataAccessException {
+    protected String findBestNameForUrlNameMapping(
+        CmsDbContext dbc,
+        Iterator<String> nameSeq,
+        CmsUUID structureId,
+        String locale) throws CmsDataAccessException {
 
         String newName;
         boolean alreadyInUse;
         do {
             newName = nameSeq.next();
-            CmsUrlNameMappingFilter filter = CmsUrlNameMappingFilter.ALL.filterName(newName).filterRejectStructureId(
-                structureId);
+            alreadyInUse = false;
+            CmsUrlNameMappingFilter filter = CmsUrlNameMappingFilter.ALL.filterName(newName);
             List<CmsUrlNameMappingEntry> entriesWithSameName = getVfsDriver(dbc).readUrlNameMappingEntries(
                 dbc,
                 false,
                 filter);
-            alreadyInUse = !entriesWithSameName.isEmpty();
+            for (CmsUrlNameMappingEntry entry : entriesWithSameName) {
+                boolean sameId = entry.getStructureId().equals(structureId);
+                boolean sameLocale = Objects.equal(entry.getLocale(), locale);
+                if (!sameId || !sameLocale) {
+                    // name already used for other resource, or for different locale of the same resource
+                    alreadyInUse = true;
+                    break;
+                }
+            }
         } while (alreadyInUse);
         return newName;
     }

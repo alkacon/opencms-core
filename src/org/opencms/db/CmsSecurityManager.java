@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/04 15:21:10 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.urlname.CmsUrlNameMappingEntry;
+import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -97,6 +99,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -3599,6 +3602,40 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Reads all URL name mapping entries for a given structure id.<p>
+     * 
+     * @param context the request context 
+     * @param id the structure id
+     * 
+     * @return the list of URL names for the given structure id 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> readAllUrlNameMappingEntries(CmsRequestContext context, CmsUUID id) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            List<CmsUrlNameMappingEntry> entries = m_driverManager.readUrlNameMappingEntries(
+                dbc,
+                context.getCurrentProject().isOnlineProject(),
+                CmsUrlNameMappingFilter.ALL.filterStructureId(id));
+            List<String> result = new ArrayList<String>();
+            for (CmsUrlNameMappingEntry entry : entries) {
+                result.add(entry.getName());
+            }
+            return result;
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_READ_NEWEST_URLNAME_FOR_ID_1,
+                id.toString());
+            dbc.report(null, message, e);
+            return null;
+        } finally {
+            dbc.clear();
+        }
+
+    }
+
+    /**
      * Returns the first ancestor folder matching the filter criteria.<p>
      * 
      * If no folder matching the filter criteria is found, null is returned.<p>
@@ -3631,6 +3668,37 @@ public final class CmsSecurityManager {
                 return null;
             }
         } while (true);
+    }
+
+    /**
+     * Reads the newest URL name which is mapped to the given structure id.<p>
+     * 
+     * If the structure id is not mapped to any name, null will be returned.<p>
+     *
+     * @param context the request context 
+     * @param id the structure id for which the newest mapped name should be returned
+     * @param locale the locale for the mapping 
+     * @param defaultLocales the default locales to use if there is no URL name mapping for the requested locale 
+     * 
+     * @return an URL name or null
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public String readBestUrlName(CmsRequestContext context, CmsUUID id, Locale locale, List<Locale> defaultLocales)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readBestUrlName(dbc, id, locale, defaultLocales);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_READ_NEWEST_URLNAME_FOR_ID_1,
+                id.toString());
+            dbc.report(null, message, e);
+            return null; // will never be reached 
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -4064,34 +4132,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
-    }
-
-    /**
-     * Reads the newest URL name which is mapped to the given structure id.<p>
-     * 
-     * If the structure id is not mapped to any name, null will be returned.<p>
-     *
-     * @param context the request context 
-     * @param id the structure id for which the newest mapped name should be returned
-     * 
-     * @return an URL name or null
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    public String readNewestUrlNameForId(CmsRequestContext context, CmsUUID id) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            return m_driverManager.readNewestUrlNameForId(dbc, id);
-        } catch (Exception e) {
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_READ_NEWEST_URLNAME_FOR_ID_1,
-                id.toString());
-            dbc.report(null, message, e);
-            return null; // will never be reached 
-        } finally {
-            dbc.clear();
-        }
     }
 
     /**
@@ -4880,6 +4920,31 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Reads the newest URL names of a structure id for all locales.<p>
+     * 
+     * @param context the current context 
+     * @param id a structure id 
+     * 
+     * @return the list of URL names for all
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> readUrlNamesForAllLocales(CmsRequestContext context, CmsUUID id) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readUrlNamesForAllLocales(dbc, id);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_READ_NEWEST_URLNAME_FOR_ID_1,
+                id.toString());
+            dbc.report(null, message, e);
+            return null; // will never be reached 
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -6200,17 +6265,22 @@ public final class CmsSecurityManager {
      * 
      * @param context the request context 
      * @param nameSeq the sequence of URL name candidates  
-     * @param structureId the structure id which should be mapped to the name 
+     * @param structureId the structure id which should be mapped to the name
+     * @param locale the locale for the mapping 
+     *  
      * @return the name which was actually mapped to the structure id
      *  
      * @throws CmsException if something goes wrong 
      */
-    public String writeUrlNameMapping(CmsRequestContext context, Iterator<String> nameSeq, CmsUUID structureId)
-    throws CmsException {
+    public String writeUrlNameMapping(
+        CmsRequestContext context,
+        Iterator<String> nameSeq,
+        CmsUUID structureId,
+        String locale) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            return m_driverManager.writeUrlNameMapping(dbc, nameSeq, structureId);
+            return m_driverManager.writeUrlNameMapping(dbc, nameSeq, structureId, locale);
         } catch (Exception e) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_ADD_URLNAME_MAPPING_2,

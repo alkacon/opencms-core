@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,19 +50,19 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
 
     /**
-     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getAllDetailPages(org.opencms.file.CmsObject, int)
      */
-    public Collection<String> getAllDetailPages(CmsObject cms, CmsResource res) throws CmsException {
+    public Collection<String> getAllDetailPages(CmsObject cms, int resType) throws CmsException {
 
         CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
-        String typeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        String typeName = OpenCms.getResourceManager().getResourceType(resType).getTypeName();
         Map<String, List<CmsDetailPageInfo>> bestDetailPagesByType = confManager.getAllDetailPages(cms);
         List<CmsDetailPageInfo> pageInfos = bestDetailPagesByType.get(typeName);
         if (pageInfos == null) {

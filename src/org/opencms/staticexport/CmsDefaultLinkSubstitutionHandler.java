@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/04 15:21:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -55,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.0.2
  * 
@@ -164,7 +166,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 }
                 try {
                     CmsResource element = cms.readResource(vfsName);
-                    vfsName = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(element), "/");
+                    Locale locale = cms.getRequestContext().getLocale();
+                    List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
+                    vfsName = CmsStringUtil.joinPaths(
+                        detailPage,
+                        cms.getDetailName(element, locale, defaultLocales),
+                        "/");
                 } catch (CmsVfsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
