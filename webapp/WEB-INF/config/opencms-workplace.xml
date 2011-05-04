@@ -52,7 +52,7 @@
       <explorertype name="otheroptions" key="fileicon.otheroptions" icon="menu.png" reference="folder">
         <newresource uri="newresource.jsp?page=otheroptions" order="19" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
       </explorertype>
-      <explorertype name="folder" key="fileicon.folder" icon="folder.gif">
+      <explorertype name="folder" key="fileicon.folder" icon="folder.gif" bigicon="folder_big.png">
         <newresource uri="newresource_folder.jsp" order="20" autosetnavigation="false" autosettitle="false" info="desc.folder"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -101,7 +101,7 @@
         </editoptions>
       </explorertype>
       
-      <explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
+      <explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif" bigicon="page_big.png">
         <newresource page="otheroptions" uri="newresource_xmlpage.jsp" order="81" autosetnavigation="false" autosettitle="false" info="desc.xmlpage"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -155,7 +155,7 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="plain" key="fileicon.plain" icon="plain.gif">
+      <explorertype name="plain" key="fileicon.plain" icon="plain.gif" bigicon="plain_big.png">
         <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false" info="desc.plain"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -261,7 +261,7 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
+      <explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif" bigicon="jsp_big.png">
         <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
@@ -317,7 +317,7 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="binary" key="fileicon.binary" icon="binary.gif">
+      <explorertype name="binary" key="fileicon.binary" icon="binary.gif" bigicon="binary_big.png">
         <newresource uri="" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
@@ -373,7 +373,7 @@
           <iconrule extension="pdf" icon="pdf.png" bigicon="pdf_big.png" />
         </iconrules>
       </explorertype>
-      <explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
+      <explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif" bigicon="pointer_big.png">
         <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false" info="desc.pointer" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -426,7 +426,7 @@
       <explorertype name="upload" key="fileicon.upload" icon="upload.png">
         <newresource uri="newresource_upload.jsp" order="100" autosetnavigation="false" autosettitle="false" info="desc.upload" />
       </explorertype>
-      <explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
+      <explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif" bigicon="imagegallery_big.png">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false" info="desc.imagegallery"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -475,7 +475,7 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif">
+      <explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif" bigicon="downloadgallery_big.png">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false" info="desc.downloadgallery" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
@@ -523,16 +523,16 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="downloadgallery">
+      <explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" bigicon="linkgallery_big.png" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
       </explorertype>
-      <explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="downloadgallery">
+      <explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" bigicon="htmlgallery_big.png" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.htmlgallery" />
       </explorertype>
-      <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
+      <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" bigicon="tablegallery_big.png" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
       </explorertype>
-      <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
+      <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif" bigicon="xmlcontent_big.png">
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
