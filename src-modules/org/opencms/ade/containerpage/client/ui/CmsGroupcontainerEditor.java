@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/04 09:11:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/04 09:56:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -72,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -159,9 +160,9 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_controller = controller;
         m_editorWidget = uiBinder.createAndBindUi(this);
         initWidget(m_editorWidget);
-        m_overlayDiv.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup() - 1);
-        m_labelDescription.setText("Description");
-        m_labelTitle.setText("Title");
+        m_overlayDiv.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexHighlighting());
+        m_labelDescription.setText(Messages.get().key(Messages.GUI_GROUPCONTAINER_LABEL_DESCRIPTION_0));
+        m_labelTitle.setText(Messages.get().key(Messages.GUI_GROUPCONTAINER_LABEL_TITLE_0));
         m_editorId = HTMLPanel.createUniqueId();
         m_editorWidget.getElement().setId(m_editorId);
         m_groupContainer = groupContainer;
@@ -371,7 +372,8 @@ public final class CmsGroupcontainerEditor extends Composite {
 
     private void openDialog() {
 
-        m_confirm = new CmsConfirmDialog("Group container editor");
+        m_confirm = new CmsConfirmDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
+        int contentHeight = m_dialogContent.getOffsetHeight();
         m_confirm.setMainContent(m_dialogContent);
         m_confirm.setHandler(new I_CmsConfirmDialogHandler() {
 
@@ -386,7 +388,7 @@ public final class CmsGroupcontainerEditor extends Composite {
             }
         });
         if (m_elementData == null) {
-            m_confirm.getOkButton().disable("Loading data...");
+            m_confirm.getOkButton().disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));
         }
         m_confirm.setGlassEnabled(false);
         m_confirm.setModal(false);
@@ -395,9 +397,10 @@ public final class CmsGroupcontainerEditor extends Composite {
             if (m_groupContainerPosition.getLeft() > 600) {
                 // place left of the group container if there is enough space
                 m_confirm.setPopupPosition(m_groupContainerPosition.getLeft() - 520, m_groupContainerPosition.getTop());
-            } else if (m_groupContainerPosition.getTop() > 400) {
+            } else if (m_groupContainerPosition.getTop() > contentHeight + 103 + 40) {
                 // else place above if there is enough space
-                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop() - 350);
+                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
+                    - (contentHeight + 103));
             } else {
                 // else on the right
                 m_confirm.setPopupPosition(m_groupContainerPosition.getLeft()

@@ -10,7 +10,6 @@
 		<g:HTMLPanel ui:field="m_dialogContent">
 					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelTitle" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputTitle" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
 					<div class="{containerpage.groupcontainerCss.inputRow}"><cmsinput:CmsLabel ui:field="m_labelDescription" addStyleNames="{containerpage.groupcontainerCss.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputDescription" addStyleNames="{containerpage.groupcontainerCss.inputBox}"  /></div>
-				<!-- 	<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div> -->
 		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>
