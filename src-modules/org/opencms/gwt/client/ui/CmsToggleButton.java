@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/04 15:47:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ToggleButton;
 
@@ -44,7 +46,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -64,6 +66,9 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
 
     /** The image class. */
     private String m_imageClass;
+
+    /** Flag to indicate the button was reenalbled. Set until the next mouse up, over or out event. */
+    private boolean m_isReenabled;
 
     /** The button size. */
     private I_CmsButton.Size m_size;
@@ -117,6 +122,7 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
      */
     public void enable() {
 
+        m_isReenabled = true;
         setEnabled(true);
         super.setTitle(m_title);
     }
@@ -191,6 +197,33 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
     public boolean isUseMinWidth() {
 
         return m_useMinWidth;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.CustomButton#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        // if the button is enabled while the mouse-pointer is within the button element,
+        // the mouse-over element will not get triggered again
+        // this may prevent correct handling of the click event
+        if (isEnabled() && m_isReenabled) {
+            int type = DOM.eventGetType(event);
+            switch (type) {
+                case Event.ONMOUSEUP:
+                    m_isReenabled = false;
+                    CmsDomUtil.ensureMouseOver(getElement());
+                    break;
+                case Event.ONMOUSEOVER:
+                case Event.ONMOUSEOUT:
+                    m_isReenabled = false;
+                    break;
+                default:
+            }
+        }
+
+        super.onBrowserEvent(event);
     }
 
     /**
