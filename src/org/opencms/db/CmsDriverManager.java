@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/05/04 15:21:10 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/04 18:33:19 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -8726,6 +8726,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             newState = CmsResource.STATE_CHANGED;
         }
         undoContentChanges(dbc, onlineProject, resource, onlineResource, newState, moved && mode.isUndoMove());
+        // because undoContentChanges deletes the offline resource internally, we have
+        // to write an entry to the log table to prevent the resource from appearing in the
+        // user's publish list. 
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_CHANGES_UNDONE,
+            new String[] {resource.getRootPath()}), true);
+
     }
 
     /**
@@ -10930,7 +10939,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // note that this does NOT apply to folders, since a folder cannot be replaced
                 // like a resource anyway
                 deleteResource(dbc, offlineResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
             }
             CmsResource res = createResource(
                 dbc,

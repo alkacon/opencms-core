@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntryType.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/04 18:33:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.9.2
  */
@@ -105,6 +105,8 @@ public enum CmsLogEntryType {
     RESOURCE_PUBLISHED_MODIFIED(11, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
     /** Resource published new entry. */
     RESOURCE_PUBLISHED_NEW(12, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Undo changes entry. */
+    RESOURCE_CHANGES_UNDONE(14, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
     /** Resource remove relation entry. */
     RESOURCE_REMOVE_RELATION(22, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_AND_RELATION_FILTER_2),
     /** Resource restore deleted entry. */
