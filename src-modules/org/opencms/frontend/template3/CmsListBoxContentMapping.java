@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/04 15:30:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,9 @@ package org.opencms.frontend.template3;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.collectors.CmsDateResourceComparator;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -66,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -427,19 +425,8 @@ public class CmsListBoxContentMapping {
 
         if (hasTitle) {
             // we need at least an entry and an description
-            CmsUUID structureId = content.getFile().getStructureId();
             if (link == null) {
-                String detailName = structureId.toString();
-                try {
-                    String niceDetailName = cms.readNewestUrlNameForId(structureId);
-                    if (niceDetailName != null) {
-                        detailName = niceDetailName;
-                    }
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-                // calculate the link                
-                link = OpenCms.getLinkManager().getServerLink(cms, m_facade + detailName + "/");
+                link = OpenCms.getLinkManager().substituteLink(cms, content.getFile());
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);
