@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/05/04 16:45:36 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0.0
  */
@@ -168,12 +168,6 @@ public final class Messages {
     public static final String GUI_NAME_0 = "GUI_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -187,6 +181,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ORIGIN_INHERITED_1 = "GUI_ORIGIN_INHERITED_1";
@@ -274,6 +274,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_PROPERTY_DESC_0 = "GUI_TITLE_PROPERTY_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";

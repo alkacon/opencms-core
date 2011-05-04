@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/05/04 16:16:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/04 16:45:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,11 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      */
     public CmsToolbarNewButton(CmsSitemapToolbar toolbar, CmsSitemapController controller) {
 
-        super(I_CmsButton.ButtonData.NEW.getTitle(), I_CmsButton.ButtonData.NEW.getIconClass(), toolbar, controller);
+        super(
+            Messages.get().key(Messages.GUI_TOOLBAR_NEW_BUTTON_TITLE_0),
+            I_CmsButton.ButtonData.NEW.getIconClass(),
+            toolbar,
+            controller);
     }
 
     /**
