@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/04 19:03:28 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @author Ruediger Kurz
  */
@@ -92,7 +92,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.25 $
+     * @version $Revision: 1.26 $
      * 
      * @author Ruediger Kurz
      */
@@ -451,7 +451,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         if (!enabled) {
             m_tmpValue = getValue();
-            m_box.setText("not used");
+            m_box.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
         } else {
             setValue(m_tmpValue);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/04 18:39:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/04 19:03:28 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -250,7 +250,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
             m_notificationInterval.setEnabled(true);
         } else {
             m_tmpNotificationInterval = m_notificationInterval.getText();
-            m_notificationInterval.setText(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOT_USED_0));
+            m_notificationInterval.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
             m_notificationInterval.setEnabled(false);
         }
     }
@@ -577,7 +577,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         if (m_availabilityInfo.isNotificationEnabled()) {
             m_notificationInterval.setText(m_tmpNotificationInterval);
         } else {
-            m_notificationInterval.setText(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOT_USED_0));
+            m_notificationInterval.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
         }
         m_notificationInterval.setEnabled(m_availabilityInfo.isNotificationEnabled());
         m_notificationEnabled.setChecked(m_availabilityInfo.isNotificationEnabled());

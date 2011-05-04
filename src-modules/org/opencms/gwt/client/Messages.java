@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/04 18:39:24 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/05/04 19:03:28 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  */
@@ -117,7 +117,7 @@ public final class Messages {
     public static final String GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0 = "GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_AVAILABILITY_NOT_USED_0 = "GUI_DIALOG_AVAILABILITY_NOT_USED_0";
+    public static final String GUI_INPUT_NOT_USED_0 = "GUI_INPUT_NOT_USED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0 = "GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0";
