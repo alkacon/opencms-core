@@ -32,9 +32,12 @@
     </exportpoints>
     <resources>
       <resource uri="/system/modules/org.opencms.ade.containerpage/"/>
-      <resource uri="/system/workplace/resources/filetypes/containerpage.png"/>
-      <resource uri="/system/workplace/resources/filetypes/groupcontainer.png"/>
-      <resource uri="/system/workplace/resources/filetypes/containerpage_template.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/containerpage.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/containerpage_big.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/groupcontainer.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/groupcontainer_big.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/containerpage_template.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/containerpage_template_big.png"/>
     </resources>
     <parameters/>
     <resourcetypes>
@@ -48,7 +51,7 @@
       <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21"/>
     </resourcetypes>
     <explorertypes>
-      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.png" reference="xmlcontent">
+      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
         <newresource uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="25" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -105,13 +108,13 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="groupcontainer.png" reference="xmlcontent">
+      <explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
         <newresource uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer" order="26" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
-      <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage_template.png" reference="jsp">
+      <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage_template.png" bigicon="containerpage_template_big.png" reference="jsp">
         <newresource page="otheroptions" uri="newresource.jsp?newresourcetype=containerpage_template" order="22" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
       </explorertype>
     </explorertypes>
@@ -854,6 +857,26 @@
       <accesscontrol/>
     </file>
     <file>
+		<source>system/workplace/resources/filetypes/containerpage_big.png</source>
+		<destination>system/workplace/resources/filetypes/containerpage_big.png</destination>
+		<type>image</type>
+		<uuidstructure>d06365e2-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+		<uuidresource>d06365e3-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+		<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:24,h:24]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+    <file>
       <source>system/workplace/resources/filetypes/containerpage_template.png</source>
       <destination>system/workplace/resources/filetypes/containerpage_template.png</destination>
       <type>image</type>
@@ -873,6 +896,26 @@
       <relations/>
       <accesscontrol/>
     </file>
+   	<file>
+		<source>system/workplace/resources/filetypes/containerpage_template_big.png</source>
+		<destination>system/workplace/resources/filetypes/containerpage_template_big.png</destination>
+		<type>image</type>
+		<uuidstructure>d06f4cca-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+		<uuidresource>d06f4ccb-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+		<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:24,h:24]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
     <file>
       <source>system/workplace/resources/filetypes/groupcontainer.png</source>
       <destination>system/workplace/resources/filetypes/groupcontainer.png</destination>
@@ -893,5 +936,25 @@
       <relations/>
       <accesscontrol/>
     </file>
+    <file>
+		<source>system/workplace/resources/filetypes/groupcontainer_big.png</source>
+		<destination>system/workplace/resources/filetypes/groupcontainer_big.png</destination>
+		<type>image</type>
+		<uuidstructure>d07d7da6-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+		<uuidresource>d07d7da7-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+		<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:24,h:24]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
   </files>
 </export>

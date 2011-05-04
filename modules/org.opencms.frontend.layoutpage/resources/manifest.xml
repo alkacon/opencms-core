@@ -29,6 +29,7 @@
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.layoutpage/"/>
 			<resource uri="/system/workplace/resources/filetypes/layoutpage.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/layoutpage_big.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
@@ -47,7 +48,7 @@
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="layoutpage" key="fileicon.layoutpage" icon="layoutpage.gif" reference="xmlcontent">
+			<explorertype name="layoutpage" key="fileicon.layoutpage" icon="layoutpage.gif" bigicon="layoutpage_big.png" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=layoutpage" order="80" autosetnavigation="false" autosettitle="false" info="desc.layoutpage"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -666,6 +667,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/layoutpage_big.png</source>
+			<destination>system/workplace/resources/filetypes/layoutpage_big.png</destination>
+			<type>image</type>
+			<uuidstructure>d09a2d7a-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+			<uuidresource>d09a2d7b-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>

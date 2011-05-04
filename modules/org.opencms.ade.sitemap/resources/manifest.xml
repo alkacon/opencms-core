@@ -32,8 +32,10 @@
     </exportpoints>
     <resources>
       <resource uri="/system/modules/org.opencms.ade.sitemap/"/>
-      <resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/subsitemap_big.png"/>
 	  <resource uri="/system/workplace/resources/filetypes/htmlredirect.png"/>
+	  <resource uri="/system/workplace/resources/filetypes/htmlredirect_big.png"/>
     </resources>
     <parameters>
       <param name="sitemap.config">/system/modules/org.opencms.ade.sitemap/config/sitemap.config</param>
@@ -51,10 +53,10 @@
 		<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="subsitemap" id="23"/>
 	</resourcetypes>
 	<explorertypes>
-		<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" reference="folder">
+		<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
 			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=subsitemap" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
 		</explorertype>
-		<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" reference="xmlcontent">
+		<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
 			<newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
 			<accesscontrol>
 				<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -1331,6 +1333,26 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/resources/filetypes/htmlredirect_big.png</source>
+		<destination>system/workplace/resources/filetypes/htmlredirect_big.png</destination>
+		<type>image</type>
+		<uuidstructure>d08bd58e-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+		<uuidresource>d08bd58f-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+		<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:24,h:24]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/resources/filetypes/subsitemap.png</source>
 		<destination>system/workplace/resources/filetypes/subsitemap.png</destination>
 		<type>image</type>
@@ -1345,6 +1367,26 @@
 			<property type="shared">
 				<name>image.size</name>
 				<value><![CDATA[w:16,h:16]]></value>
+			</property>
+		</properties>
+		<relations/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/resources/filetypes/subsitemap_big.png</source>
+		<destination>system/workplace/resources/filetypes/subsitemap_big.png</destination>
+		<type>image</type>
+		<uuidstructure>d0b92742-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+		<uuidresource>d0b92743-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+		<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property type="shared">
+				<name>image.size</name>
+				<value><![CDATA[w:24,h:24]]></value>
 			</property>
 		</properties>
 		<relations/>
