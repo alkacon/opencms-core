@@ -1,0 +1,1 @@
+<div>Group container formatter</div>
