@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/04 12:33:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -101,19 +101,10 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     public static final String PROPERTY_ACTIV = "activemethod";
 
     /** Property for the container page configuration. */
-    public static final String PROPERTY_ADE_CNTPAGE_CONFIG = "ade.cntpage.config";
-
-    /** Property for the sitemap detail view. */
-    public static final String PROPERTY_ADE_SITEMAP = "ade.sitemap";
-
-    /** Property for the sitemap entry point, starting point of a sub-sitemap. */
-    public static final String PROPERTY_ADE_SITEMAP_ENTRYPOINT = "ade.sitemap.entrypoint";
+    public static final String PROPERTY_CONFIG_CONTAINERPAGE = "config.containerpage";
 
     /** Property for the sitemap configuration file path. */
-    public static final String PROPERTY_ADE_SITEMAP_CONFIG = "ade.sitemap.config";
-
-    /** Property for the sitemap detail view. */
-    public static final String PROPERTY_ADE_SITEMAP_DETAILVIEW = "ade.sitemap.detailview";
+    public static final String PROPERTY_CONFIG_SITEMAP = "config.sitemap";
 
     /** Property for the template image. */
     public static final String PROPERTY_ADE_TEMPLATE_IMAGE = "ade.template.image";

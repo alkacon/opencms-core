@@ -33,12 +33,8 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>ade.cntpage.config</name>
+					<name>config.containerpage</name>
 					<value><![CDATA[/_config/restype.config]]></value>
-				</property>
-				<property>
-					<name>ade.sitemap</name>
-					<value><![CDATA[/_config/sitemap]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -129,54 +125,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/_config/sitemap</source>
-			<destination>sites/default/_config/sitemap</destination>
-			<type>sitemap</type>
-			<uuidstructure>dab597a6-d6b6-11df-9af7-edac56888092</uuidstructure>
-			<uuidresource>dab597a7-d6b6-11df-9af7-edac56888092</uuidresource>
-			<datelastmodified>Wed, 13 Oct 2010 11:04:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Oct 2010 10:44:28 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>ade.cntpage.config</name>
-					<value><![CDATA[/_config/sitemap_restype.config]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/_config/sitemap_exportname</source>
-			<destination>sites/default/_config/sitemap_exportname</destination>
-			<type>sitemap</type>
-			<uuidstructure>ce6a13b2-d6bf-11df-9af7-edac56888092</uuidstructure>
-			<uuidresource>ce6a13b3-d6bf-11df-9af7-edac56888092</uuidresource>
-			<datelastmodified>Wed, 13 Oct 2010 11:49:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Oct 2010 11:48:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>ade.cntpage.config</name>
-					<value><![CDATA[/_config/sitemap_restype.config_exportname]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>

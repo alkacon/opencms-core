@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/04 12:33:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -153,7 +153,7 @@ public class CmsADEConfigurationManager {
         List<EntryPointFolder> entryPoints = m_entryPointCacheManager.getEntryPoints(cms);
         for (EntryPointFolder entryPoint : entryPoints) {
             CmsProperty sitemapConfigProp = entryPoint.getProperties().get(
-                CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
+                CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP);
             if ((sitemapConfigProp == null) || sitemapConfigProp.isNullProperty()) {
                 continue;
             }
@@ -218,7 +218,7 @@ public class CmsADEConfigurationManager {
             rootPath,
             m_cntPageConfCache,
             new CmsContainerPageConfigurationData(),
-            CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG);
+            CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE);
         return moduleData.merge(data);
     }
 
@@ -275,7 +275,7 @@ public class CmsADEConfigurationManager {
             rootPath,
             m_sitemapConfCache,
             new CmsSitemapConfigurationData(),
-            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
+            CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP);
         return moduleData.merge(data);
     }
 
@@ -451,7 +451,7 @@ public class CmsADEConfigurationManager {
         Map<String, String> folderTypes) throws CmsException {
 
         CmsResource folder = entryPoint.getResource();
-        CmsProperty configProp = entryPoint.getProperties().get(CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG);
+        CmsProperty configProp = entryPoint.getProperties().get(CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE);
         if ((configProp == null) || configProp.isNullProperty()) {
             return;
         }

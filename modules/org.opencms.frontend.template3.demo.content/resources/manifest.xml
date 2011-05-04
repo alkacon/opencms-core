@@ -52,11 +52,11 @@
 					<value><![CDATA[OpenCms Demo [EN]]]></value>
 				</property>
 				<property>
-					<name>ade.cntpage.config</name>
+					<name>config.containerpage</name>
 					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
 				</property>
 				<property>
-					<name>ade.sitemap.config</name>
+					<name>config.sitemap</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
 				
@@ -522,11 +522,11 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>ade.cntpage.config</name>
+					<name>config.containerpage</name>
 					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
 				</property>
 				<property type="shared">
-					<name>ade.sitemap.config</name>
+					<name>config.sitemap</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
 			</properties>

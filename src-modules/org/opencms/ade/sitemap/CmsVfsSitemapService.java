@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/03 13:28:36 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/04 12:33:51 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  * 
@@ -191,11 +191,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG,
+                CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP,
                 sitemapConfigName,
                 sitemapConfigName));
             propertyObjects.add(new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
+                CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE,
                 containerpageConfigName,
                 containerpageConfigName));
             cms.writePropertyObjects(path, propertyObjects);
@@ -327,8 +327,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource subSitemapFolder = cms.readResource(subSitemapPath);
             ensureLock(subSitemapFolder);
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
-            propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG, "", ""));
-            propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG, "", ""));
+            propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP, "", ""));
+            propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE, "", ""));
             cms.writePropertyObjects(subSitemapPath, propertyObjects);
             subSitemapFolder.setType(OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
