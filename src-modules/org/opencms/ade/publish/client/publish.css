@@ -44,6 +44,12 @@
 	margin-left: 5px;
 }
 
+@external html-face;
+
+.checkboxes .html-face {
+	font-weight: normal;
+}
+
 .label {
 	margin-left:10px;
 	margin-bottom: 10px;
