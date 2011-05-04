@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsBumpDetailPageMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/04 18:53:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -58,7 +59,7 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
         super(hoverbar);
         //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().bump());
-        setLabel("Make default");
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MAKE_DEFAULT_0));
         setActive(true);
         setCommand(new Command() {
 
