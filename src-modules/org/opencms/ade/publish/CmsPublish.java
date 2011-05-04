@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/04 14:41:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -346,8 +346,15 @@ public class CmsPublish {
             return new ArrayList<CmsPublishGroup>();
         }
 
+        List<CmsResource> resourcesWithoutTempfiles = new ArrayList<CmsResource>();
+        for (CmsResource res : getPublishResources().getResources()) {
+            if (!CmsResource.isTemporaryFileName(res.getRootPath())) {
+                resourcesWithoutTempfiles.add(res);
+            }
+        }
+
         // sort the list
-        List<CmsResource> sortedResources = new ArrayList<CmsResource>(getPublishResources().getResources());
+        List<CmsResource> sortedResources = new ArrayList<CmsResource>(resourcesWithoutTempfiles);
         Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
 
         // the resources the user can really publish
