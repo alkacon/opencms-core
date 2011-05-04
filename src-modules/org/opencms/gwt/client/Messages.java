@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/04 18:39:24 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,11 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_TITLE_ERROR_0 = "ERR_TITLE_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_UNAVAILABLE_1 = "ERR_RESOURCE_UNAVAILABLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
@@ -58,6 +52,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_UNAVAILABLE_1 = "ERR_RESOURCE_UNAVAILABLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TITLE_ERROR_0 = "ERR_TITLE_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
@@ -91,6 +91,54 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAILS_0 = "GUI_DETAILS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_AVAILABILITY_0 = "GUI_DIALOG_AVAILABILITY_AVAILABILITY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_DIALOG_ERR_0 = "GUI_DIALOG_AVAILABILITY_DIALOG_ERR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_ERR_BEFORE_0 = "GUI_DIALOG_AVAILABILITY_ERR_BEFORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_ERR_PAST_0 = "GUI_DIALOG_AVAILABILITY_ERR_PAST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_ERR_POS_0 = "GUI_DIALOG_AVAILABILITY_ERR_POS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0 = "GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_INHERITED_FROM_1 = "GUI_DIALOG_AVAILABILITY_INHERITED_FROM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0 = "GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_NOT_USED_0 = "GUI_DIALOG_AVAILABILITY_NOT_USED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0 = "GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_NOTI_SETTINGS_0 = "GUI_DIALOG_AVAILABILITY_NOTI_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_0 = "GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0 = "GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0 = "GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_RES_USERS_0 = "GUI_DIALOG_AVAILABILITY_RES_USERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_AVAILABILITY_TITLE_0 = "GUI_DIALOG_AVAILABILITY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_CHANGES_PUBLISH_TEXT_0 = "GUI_DIALOG_CHANGES_PUBLISH_TEXT_0";

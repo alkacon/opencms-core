@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/04 18:39:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -165,7 +165,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
      */
     private CmsAvailabilityDialog() {
 
-        super("Availability / Publish Scheduled", 439);
+        super(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_TITLE_0), 439);
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
@@ -226,13 +226,14 @@ public class CmsAvailabilityDialog extends CmsPopup {
             try {
                 int noti = Integer.parseInt(m_notificationInterval.getText());
                 if (noti < 1) {
-                    m_notificationInterval.setErrorMessage("Please insert a positive integer value.");
+                    m_notificationInterval.setErrorMessage(Messages.get().key(
+                        Messages.GUI_DIALOG_AVAILABILITY_ERR_POS_0));
                     result = false;
                 } else {
                     m_notificationInterval.setErrorMessage(null);
                 }
             } catch (NumberFormatException e) {
-                m_notificationInterval.setErrorMessage("Please insert a positive integer value.");
+                m_notificationInterval.setErrorMessage(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_ERR_POS_0));
                 result = false;
             }
         }
@@ -249,7 +250,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
             m_notificationInterval.setEnabled(true);
         } else {
             m_tmpNotificationInterval = m_notificationInterval.getText();
-            m_notificationInterval.setText("not used");
+            m_notificationInterval.setText(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOT_USED_0));
             m_notificationInterval.setEnabled(false);
         }
     }
@@ -287,24 +288,30 @@ public class CmsAvailabilityDialog extends CmsPopup {
         // create the publish scheduled field
         CmsFieldSet publishScheduledField = new CmsFieldSet();
         publishScheduledField.getWrapper().addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().fieldsetSpacer());
-        publishScheduledField.setLegend("Publish Scheduled");
+        publishScheduledField.setLegend(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_0));
         m_publishScheduled.setAutoHideParent(this);
         FlowPanel publishScheduled = createInputCombinationPanel(m_publishScheduledCheck, m_publishScheduled);
         addClickHandlerToInputCheckbox(m_publishScheduledCheck, m_publishScheduled);
-        publishScheduledField.addContent(createTwoColumnRow("Publish scheduled date", publishScheduled));
+        publishScheduledField.addContent(createTwoColumnRow(
+            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0),
+            publishScheduled));
         m_panel.add(publishScheduledField);
 
         // create the release and expiration field
         CmsFieldSet availabilityField = new CmsFieldSet();
         availabilityField.getWrapper().addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().fieldsetSpacer());
-        availabilityField.setLegend("Availability");
+        availabilityField.setLegend(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_AVAILABILITY_0));
         m_dateReleased.setAutoHideParent(this);
         FlowPanel dateReleased = createInputCombinationPanel(m_dateReleasedCheck, m_dateReleased);
-        availabilityField.addContent(createTwoColumnRow("Date released", dateReleased));
+        availabilityField.addContent(createTwoColumnRow(
+            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0),
+            dateReleased));
         addClickHandlerToInputCheckbox(m_dateReleasedCheck, m_dateReleased);
         m_dateExpired.setAutoHideParent(this);
         FlowPanel dateExpired = createInputCombinationPanel(m_dateExpiredCheck, m_dateExpired);
-        availabilityField.addContent(createTwoColumnRow("Date expired", dateExpired));
+        availabilityField.addContent(createTwoColumnRow(
+            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0),
+            dateExpired));
         addClickHandlerToInputCheckbox(m_dateExpiredCheck, m_dateExpired);
         m_panel.add(availabilityField);
 
@@ -312,7 +319,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         if (!m_availabilityInfo.getResponsibles().isEmpty()) {
             CmsFieldSet notificationField = new CmsFieldSet();
             notificationField.getWrapper().addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().fieldsetSpacer());
-            notificationField.setLegend("Notification settings");
+            notificationField.setLegend(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOTI_SETTINGS_0));
             m_notificationInterval.addBlurHandler(new BlurHandler() {
 
                 /**
@@ -326,10 +333,14 @@ public class CmsAvailabilityDialog extends CmsPopup {
             });
 
             FlowPanel notificationInterval = createInputCombinationPanel(m_notificationEnabled, m_notificationInterval);
-            notificationField.addContent(createTwoColumnRow("Notification Interval (days)", notificationInterval));
+            notificationField.addContent(createTwoColumnRow(
+                Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0),
+                notificationInterval));
             addClickHandlerToNotificationCheckBox();
             if (m_availabilityInfo.isHasSiblings()) {
-                notificationField.addContent(createTwoColumnRow("Modify Siblings", m_modifySiblings));
+                notificationField.addContent(createTwoColumnRow(
+                    Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0),
+                    m_modifySiblings));
             }
             notificationField.addContent(createResposibles());
             m_panel.add(notificationField);
@@ -342,7 +353,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         insertValuesIntoForm();
 
         // add the main panel and center the popup
-        setMainContent(m_panel);
+        add(m_panel);
         center();
     }
 
@@ -458,14 +469,14 @@ public class CmsAvailabilityDialog extends CmsPopup {
     private Widget createResposibles() {
 
         FlowPanel resposibles = new FlowPanel();
-        CmsLabel resposibleLabel = new CmsLabel("Responsible users");
+        CmsLabel resposibleLabel = new CmsLabel(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_RES_USERS_0));
         resposibleLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().responsabilityLabel());
         resposibles.add(resposibleLabel);
         for (Map.Entry<CmsPrincipalBean, String> entry : m_availabilityInfo.getResponsibles().entrySet()) {
             FlowPanel resEntry = new FlowPanel();
             String prinText = entry.getKey().getName();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getValue())) {
-                prinText += " (Inherited from: " + entry.getValue() + ")";
+                prinText += Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_INHERITED_FROM_1, entry.getValue());
             }
             CmsLabel label = new CmsLabel(prinText);
             label.addStyleName(I_CmsLayoutBundle.INSTANCE.availabilityCss().inlineBlock());
@@ -566,7 +577,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         if (m_availabilityInfo.isNotificationEnabled()) {
             m_notificationInterval.setText(m_tmpNotificationInterval);
         } else {
-            m_notificationInterval.setText("not used");
+            m_notificationInterval.setText(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOT_USED_0));
         }
         m_notificationInterval.setEnabled(m_availabilityInfo.isNotificationEnabled());
         m_notificationEnabled.setChecked(m_availabilityInfo.isNotificationEnabled());
@@ -633,7 +644,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         Date bublishScheduled = m_publishScheduled.getValue();
         if (bublishScheduled != null) {
             if (bublishScheduled.before(new Date(System.currentTimeMillis()))) {
-                m_publishScheduled.setErrorMessage("The publish scheduled date can't be in the past.");
+                m_publishScheduled.setErrorMessage(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_ERR_PAST_0));
                 isValid = false;
             } else {
                 m_publishScheduled.setErrorMessage(null);
@@ -645,7 +656,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
         Date dateExpired = m_dateExpired.getValue();
         if ((dateReleased != null) && (dateExpired != null)) {
             if (dateReleased.after(dateExpired)) {
-                m_dateReleased.setErrorMessage("The date released must be before date expired.");
+                m_dateReleased.setErrorMessage(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_ERR_BEFORE_0));
                 isValid = false;
             } else {
                 m_dateReleased.setErrorMessage(null);
@@ -658,11 +669,8 @@ public class CmsAvailabilityDialog extends CmsPopup {
         }
 
         if (!isValid) {
-            CmsNotification.get().send(
-                Type.WARNING,
-                "Errors occurred in this dialog. Move the mouse over the red marked fields for detailed informations.");
+            CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_DIALOG_ERR_0));
         }
-
         return isValid;
     }
 }
