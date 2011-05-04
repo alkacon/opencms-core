@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/A_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/04 16:16:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,10 @@ import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -76,19 +78,25 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
-        return export(cms.getRequestContext().getLocale().toString());
+        return export(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
     }
 
     /**
-     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(String)
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.lang.String)
      */
-    public String export(String locale) {
+    public String export(String localeName) {
+
+        return export(CmsLocaleManager.getLocale(localeName));
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.util.Locale)
+     */
+    public String export(Locale locale) {
 
         JSONObject keys = new JSONObject();
         try {
-            ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(
-                getBundleName(),
-                CmsLocaleManager.getLocale(locale));
+            ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(getBundleName(), locale);
             Enumeration<String> bundleKeys = resourceBundle.getKeys();
             while (bundleKeys.hasMoreElements()) {
                 String bundleKey = bundleKeys.nextElement();

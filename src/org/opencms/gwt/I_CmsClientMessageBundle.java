@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/I_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/04 16:16:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -38,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,6 +56,15 @@ public interface I_CmsClientMessageBundle {
      * @return the JSON code
      */
     String export(HttpServletRequest request);
+
+    /**
+     * Returns the JSON code for this resource bundle and given locale.<p>
+     * 
+     * @param locale the locale to export 
+     * 
+     * @return the JSON code
+     */
+    String export(Locale locale);
 
     /**
      * Returns the JSON code for this resource bundle and given locale.<p>
