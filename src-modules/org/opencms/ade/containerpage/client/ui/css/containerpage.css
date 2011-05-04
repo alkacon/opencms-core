@@ -94,7 +94,7 @@ div.toolbarToggle{
 	left: 97%;
 	top: -3px;
 	padding: 3px 3px 1px 3px;
-	z-index: value("constants.css.zIndexInline");
+	z-index: value("constants.css.zIndexPopup");
 }
 
 .toolbarToggle, .toolbarToggle *, div.optionBar div, div.optionBar span{
