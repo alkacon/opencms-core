@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/A_CmsToolbarListMenuButton.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/04 16:16:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.gwt.client.ui.I_CmsListItem;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -136,19 +135,14 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     /**
      * Creates a new tab.<p>
      * 
-     * @param description the description 
      * @param list list of items
      * 
      * @return the created tab widget
      */
-    public FlowPanel createTab(String description, CmsList<? extends I_CmsListItem> list) {
+    public FlowPanel createTab(CmsList<? extends I_CmsListItem> list) {
 
         FlowPanel tab = new FlowPanel();
         tab.setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
-        Label descriptionLabel = new Label(description);
-        descriptionLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().description());
-        descriptionLabel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().textBig());
-        tab.add(descriptionLabel);
         list.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().itemList());
         list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
         tab.add(list);

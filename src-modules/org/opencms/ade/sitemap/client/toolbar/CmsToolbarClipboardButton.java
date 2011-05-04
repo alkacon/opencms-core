@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/04 16:16:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -75,9 +75,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
     protected void initContent() {
 
         CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
-        FlowPanel modifiedTab = createTab(
-            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0),
-            view.getModified());
+        FlowPanel modifiedTab = createTab(view.getModified());
         view.getModified().addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         modifiedTab.add(createClearButton(new ClickHandler() {
 
@@ -90,7 +88,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
             }
         }));
         addTab(modifiedTab, Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
-        FlowPanel deletedTab = createTab(Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0), view.getDeleted());
+        FlowPanel deletedTab = createTab(view.getDeleted());
         view.getDeleted().addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         deletedTab.add(createClearButton(new ClickHandler() {
 

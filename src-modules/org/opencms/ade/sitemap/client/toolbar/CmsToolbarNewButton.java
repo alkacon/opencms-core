@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/04 16:16:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -94,9 +94,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         if (m_newElementsList.getWidgetCount() > 0) {
             hasTabs = true;
-            addTab(
-                createTab(Messages.get().key(Messages.GUI_NEW_PAGES_TAB_DESCRIPTION_0), m_newElementsList),
-                Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
+            addTab(createTab(m_newElementsList), Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
         }
         m_specialList = new CmsList<I_CmsListItem>();
         m_specialList.add(makeRedirectItem());
@@ -109,9 +107,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         if (m_specialList.getWidgetCount() > 0) {
             hasTabs = true;
-            addTab(
-                createTab(Messages.get().key(Messages.GUI_SPECIAL_TAB_DESCRIPTION_0), m_specialList),
-                Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
+            addTab(createTab(m_specialList), Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
         }
         if (!hasTabs) {
             // no new elements available, show appropriate message
