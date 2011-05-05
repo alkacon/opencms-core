@@ -10,11 +10,11 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.de</name>
-		<nicename><![CDATA[OpenCms 7 Workplace german online help]]></nicename>
+		<nicename><![CDATA[OpenCms 8 Workplace german online help]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the online help pages for the OpenCms workplace in German language.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>7.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -1526,7 +1526,7 @@
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 7.0.0]]></value>
+					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 8.0.0]]></value>
 				</property>
 				<property>
 					<name>Title</name>

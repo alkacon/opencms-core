@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update7to8/mysql/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 07:38:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class creates the new tables for the database version of OpenCms 7.<p>
+ * This class creates the new tables for the database version of OpenCms 8.<p>
  * 
  * The new tables in OpenCms 8 are:
  * <ul>
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */

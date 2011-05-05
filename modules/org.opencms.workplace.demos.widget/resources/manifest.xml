@@ -10,11 +10,11 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.demos.widget</name>
-		<nicename><![CDATA[OpenCms 7 Widget Demos]]></nicename>
+		<nicename><![CDATA[OpenCms 8 Widget Demos]]></nicename>
 		<group>OpenCms Workplace Demos</group>
 		<class/>
-		<description><![CDATA[<p>This module contains several demos for using widgets in the OpenCms 7 Administration Framework.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<description><![CDATA[<p>This module contains several demos for using widgets in the OpenCms 8 Administration Framework.</p>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>7.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

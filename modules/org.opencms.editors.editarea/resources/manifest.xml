@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.editors.editarea</name>
-		<nicename><![CDATA[OpenCms 7 EditArea editor]]></nicename>
+		<nicename><![CDATA[OpenCms 8 EditArea editor]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module adds the Open Source text editor "EditArea" to the OpenCms Workplace.</p>
 <p>Install this module if you want a source code editor with syntax highlighting. The version of EditArea is 0.8.2</p>
-<p><i>(c) 2010 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>7.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

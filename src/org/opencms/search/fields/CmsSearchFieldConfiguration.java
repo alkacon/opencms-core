@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 07:38:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.0 
  */
@@ -97,7 +97,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public static final String STR_STANDARD = "standard";
 
     /** The description for the standard field configuration. */
-    public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms 7.0 search index field configuration.";
+    public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms 8.0 search index field configuration.";
 
     /** The VFS prefix for document keys. */
     public static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";

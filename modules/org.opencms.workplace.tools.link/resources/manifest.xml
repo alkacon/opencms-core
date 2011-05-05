@@ -10,11 +10,11 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.link</name>
-		<nicename><![CDATA[OpenCms 7 Link checking tools]]></nicename>
+		<nicename><![CDATA[OpenCms 8 Link checking tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for validating links in xml documents and pointer links.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>7.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

@@ -217,7 +217,7 @@
 		<fieldconfigurations>
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>Modified OpenCms 7.0 search index field configuration for test cases.</description>
+				<description>Modified OpenCms 8.0 search index field configuration for test cases.</description>
 				<fields>
 					<field name="content" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
