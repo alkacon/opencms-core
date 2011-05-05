@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/05 06:35:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.
  */
@@ -296,8 +297,14 @@ public class CmsSearchTab extends A_CmsTab {
      * 
      * @param tabHandler the tab handler 
      * @param autoHideParent the auto-hide parent to this dialog if present
+     * @param currentLocale the current content locale
+     * @param availableLocales the available locales
      */
-    public CmsSearchTab(CmsSearchTabHandler tabHandler, I_CmsAutoHider autoHideParent) {
+    public CmsSearchTab(
+        CmsSearchTabHandler tabHandler,
+        I_CmsAutoHider autoHideParent,
+        String currentLocale,
+        Map<String, String> availableLocales) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search.name());

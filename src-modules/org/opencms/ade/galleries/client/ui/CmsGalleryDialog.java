@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/05 06:35:18 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 8.0.
  */
@@ -305,7 +305,11 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
                     break;
                 case cms_tab_search:
-                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller), m_autoHideParent);
+                    m_searchTab = new CmsSearchTab(
+                        new CmsSearchTabHandler(controller),
+                        m_autoHideParent,
+                        m_controller.getStartLocale(),
+                        m_controller.getAvailableLocales());
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;

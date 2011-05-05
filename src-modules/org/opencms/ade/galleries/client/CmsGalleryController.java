@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/05 06:35:18 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -80,7 +81,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  */
@@ -340,6 +341,26 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void fireEvent(GwtEvent<?> event) {
 
         m_eventBus.fireEventFromSource(event, this);
+    }
+
+    /**
+     * Returns the available locales.<p>
+     * 
+     * @return the available locales
+     */
+    public Map<String, String> getAvailableLocales() {
+
+        return m_dialogBean.getLocales();
+    }
+
+    /**
+     * Returns the start locale.<p>
+     * 
+     * @return the start locale
+     */
+    public String getStartLocale() {
+
+        return m_dialogBean.getLocale();
     }
 
     /**
