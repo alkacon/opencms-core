@@ -415,12 +415,7 @@
 			<datecreated>Wed, 13 Oct 2010 08:14:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>ade.sitemap.detailview</name>
-					<value><![CDATA[/item_2/item_1/]]></value>
-				</property>
-			</properties>
+			<properties></properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

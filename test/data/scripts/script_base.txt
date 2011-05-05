@@ -29,4 +29,5 @@ createPropertyDefinition stream
 createPropertyDefinition template
 createPropertyDefinition template-elements
 createPropertyDefinition locale
-createPropertyDefinition ade.sitemap
+createPropertyDefinition config.containerpage
+createPropertyDefinition config.sitemap
