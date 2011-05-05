@@ -32,37 +32,37 @@
     </exportpoints>
     <resources>
       <resource uri="/system/modules/org.opencms.ade.sitemap/"/>
-	  <resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
-	  <resource uri="/system/workplace/resources/filetypes/subsitemap_big.png"/>
-	  <resource uri="/system/workplace/resources/filetypes/htmlredirect.png"/>
-	  <resource uri="/system/workplace/resources/filetypes/htmlredirect_big.png"/>
+   <resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
+   <resource uri="/system/workplace/resources/filetypes/subsitemap_big.png"/>
+   <resource uri="/system/workplace/resources/filetypes/htmlredirect.png"/>
+   <resource uri="/system/workplace/resources/filetypes/htmlredirect_big.png"/>
     </resources>
     <parameters>
       <param name="sitemap.config">/system/modules/org.opencms.ade.sitemap/config/sitemap.config</param>
     </parameters>
     <resourcetypes>
-		<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="htmlredirect" id="15">
-			<properties>
-				<property>
-					<name>template-elements</name>
-					<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
-				</property>
-			</properties>
-			<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
-		</type>
-		<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="subsitemap" id="23"/>
-	</resourcetypes>
-	<explorertypes>
-		<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
-			<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=subsitemap" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
-		</explorertype>
-		<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
-			<newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
-			<accesscontrol>
-				<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-			</accesscontrol>
-		</explorertype>
-	</explorertypes>
+  <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="htmlredirect" id="15">
+   <properties>
+    <property>
+     <name>template-elements</name>
+     <value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
+    </property>
+   </properties>
+   <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
+  </type>
+  <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="subsitemap" id="23"/>
+ </resourcetypes>
+ <explorertypes>
+  <explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
+   <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=subsitemap" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
+  </explorertype>
+  <explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
+   <newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
+   <accesscontrol>
+    <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+   </accesscontrol>
+  </explorertype>
+ </explorertypes>
   </module>
   <files>
     <file>
@@ -261,13 +261,12 @@
       <accesscontrol/>
     </file>
     <file>
-    <file>
       <destination>system/modules/org.opencms.ade.sitemap/lib</destination>
       <type>folder</type>
-      <uuidstructure>49d19077-5f2a-11df-8c60-716c971ea2c7</uuidstructure>
-      <datelastmodified>Fri, 14 May 2010 07:28:27 GMT</datelastmodified>
+      <uuidstructure>ef8a55d0-7734-11e0-89e5-d14bc4448678</uuidstructure>
+      <datelastmodified>Thu, 05 May 2011 16:30:06 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:28:27 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:30:06 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -278,11 +277,11 @@
       <source>system/modules/org.opencms.ade.sitemap/lib/org.opencms.ade.sitemap.jar</source>
       <destination>system/modules/org.opencms.ade.sitemap/lib/org.opencms.ade.sitemap.jar</destination>
       <type>binary</type>
-      <uuidstructure>5a92cf5f-5f2a-11df-8c60-716c971ea2c7</uuidstructure>
-      <uuidresource>5a92cf60-5f2a-11df-8c60-716c971ea2c7</uuidresource>
-      <datelastmodified>Fri, 14 May 2010 07:28:55 GMT</datelastmodified>
+      <uuidstructure>36ef7725-7735-11e0-89e5-d14bc4448678</uuidstructure>
+      <uuidresource>36ef7726-7735-11e0-89e5-d14bc4448678</uuidresource>
+      <datelastmodified>Thu, 05 May 2011 16:32:05 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:28:55 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:32:05 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties>
@@ -297,10 +296,10 @@
     <file>
       <destination>system/modules/org.opencms.ade.sitemap/pages</destination>
       <type>folder</type>
-      <uuidstructure>920b3a71-3467-11e0-8a7f-8bd5191a5bed</uuidstructure>
-      <datelastmodified>Wed, 09 Feb 2011 16:13:45 GMT</datelastmodified>
+      <uuidstructure>e9bf555e-7734-11e0-89e5-d14bc4448678</uuidstructure>
+      <datelastmodified>Thu, 05 May 2011 16:29:56 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Wed, 09 Feb 2011 16:13:45 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:29:56 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -311,14 +310,23 @@
       <source>system/modules/org.opencms.ade.sitemap/pages/notemplate.png</source>
       <destination>system/modules/org.opencms.ade.sitemap/pages/notemplate.png</destination>
       <type>image</type>
-      <uuidstructure>134155e8-26de-49e1-bffa-f1b1fe468fe7</uuidstructure>
-      <uuidresource>134155e9-26de-49e1-bffa-f1b1fe468fe7</uuidresource>
-      <datelastmodified>Thu, 10 Feb 2011 08:21:08 GMT</datelastmodified>
+      <uuidstructure>653b45a9-7735-11e0-89e5-d14bc4448678</uuidstructure>
+      <uuidresource>653b45aa-7735-11e0-89e5-d14bc4448678</uuidresource>
+      <datelastmodified>Thu, 05 May 2011 16:33:23 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 10 Feb 2011 08:21:08 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:33:23 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
-      <properties/>
+      <properties>
+        <property>
+          <name>Title</name>
+          <value><![CDATA[notemplate]]></value>
+        </property>
+        <property type="shared">
+          <name>image.size</name>
+          <value><![CDATA[w:64,h:64]]></value>
+        </property>
+      </properties>
       <relations/>
       <accesscontrol/>
     </file>
@@ -326,11 +334,11 @@
       <source>system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp</source>
       <destination>system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp</destination>
       <type>jsp</type>
-      <uuidstructure>c55c215a-3467-11e0-8a7f-8bd5191a5bed</uuidstructure>
-      <uuidresource>c55c215b-3467-11e0-8a7f-8bd5191a5bed</uuidresource>
-      <datelastmodified>Wed, 09 Feb 2011 16:15:11 GMT</datelastmodified>
+      <uuidstructure>6544bb8d-7735-11e0-89e5-d14bc4448678</uuidstructure>
+      <uuidresource>6544bb8e-7735-11e0-89e5-d14bc4448678</uuidresource>
+      <datelastmodified>Thu, 05 May 2011 16:33:23 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Wed, 09 Feb 2011 16:15:11 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:33:23 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties>
@@ -350,14 +358,18 @@
       <source>system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp</source>
       <destination>system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp</destination>
       <type>jsp</type>
-      <uuidstructure>6d204b3b-301a-11df-b5bd-654568eded92</uuidstructure>
-      <uuidresource>6d204b3c-301a-11df-b5bd-654568eded92</uuidresource>
-      <datelastmodified>Mon, 15 Mar 2010 11:26:39 GMT</datelastmodified>
+      <uuidstructure>654be781-7735-11e0-89e5-d14bc4448678</uuidstructure>
+      <uuidresource>654be782-7735-11e0-89e5-d14bc4448678</uuidresource>
+      <datelastmodified>Thu, 05 May 2011 16:33:23 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Mon, 15 Mar 2010 10:06:30 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:33:23 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties>
+        <property>
+          <name>Title</name>
+          <value><![CDATA[sitemap]]></value>
+        </property>
         <property type="shared">
           <name>export</name>
           <value><![CDATA[false]]></value>
@@ -369,10 +381,10 @@
     <file>
       <destination>system/modules/org.opencms.ade.sitemap/schemas</destination>
       <type>folder</type>
-      <uuidstructure>8eec7c30-301a-11df-b5bd-654568eded92</uuidstructure>
-      <datelastmodified>Mon, 15 Mar 2010 10:07:27 GMT</datelastmodified>
+      <uuidstructure>fa5f2992-7734-11e0-89e5-d14bc4448678</uuidstructure>
+      <datelastmodified>Thu, 05 May 2011 16:30:24 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Mon, 15 Mar 2010 10:07:27 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:30:24 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -383,14 +395,19 @@
       <source>system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</source>
       <destination>system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</destination>
       <type>plain</type>
-      <uuidstructure>9782d1a4-301a-11df-b5bd-654568eded92</uuidstructure>
-      <uuidresource>9782d1a5-301a-11df-b5bd-654568eded92</uuidresource>
-      <datelastmodified>Mon, 15 Mar 2010 10:07:41 GMT</datelastmodified>
+      <uuidstructure>6fb30556-7735-11e0-89e5-d14bc4448678</uuidstructure>
+      <uuidresource>6fb30557-7735-11e0-89e5-d14bc4448678</uuidresource>
+      <datelastmodified>Thu, 05 May 2011 16:33:41 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
+      <datecreated>Thu, 05 May 2011 16:33:41 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
-      <properties/>
+      <properties>
+        <property>
+          <name>Title</name>
+          <value><![CDATA[redirect]]></value>
+        </property>
+      </properties>
       <relations/>
       <accesscontrol/>
     </file>
@@ -450,6 +467,7 @@
       <relations/>
       <accesscontrol/>
     </file>
+    <file>
       <destination>system/workplace/resources/filetypes</destination>
       <type>folder</type>
       <uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
