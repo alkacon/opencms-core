@@ -42,8 +42,7 @@
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="configfolder" id="24">
-                    <copy-resources>
-                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/containerpage.config" target="${resource.folder.path}/restype.config" type="new"/>
+                    <copy-resources>                       
                         <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
                         <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
                     </copy-resources>
@@ -247,34 +246,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/containerpage.config</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/containerpage.config</destination>
-			<type>containerpage_config</type>
-			<uuidstructure>c97f4137-70d5-11e0-9709-91706a02fba1</uuidstructure>
-			<uuidresource>c97f4138-70d5-11e0-9709-91706a02fba1</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 15:09:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 13:53:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
-				</property>
-                <property>
-                     <name>locale-available</name>
-                     <value><![CDATA[en]]></value>
-                </property>
-                <property>
-                      <name>search.exclude</name>
-                      <value><![CDATA[all]]></value>
-                </property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.ade.config/copyresources/sitemap.config</source>
 			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap.config</destination>
 			<type>sitemap_config</type>
@@ -396,21 +367,6 @@
       <datecreated>Wed, 01 Sep 2010 13:34:43 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd</source>
-      <destination>system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd</destination>
-      <type>plain</type>
-      <uuidstructure>f5315b30-914f-11de-9f57-dd9f629b113b</uuidstructure>
-      <uuidresource>f5315b31-914f-11de-9f57-dd9f629b113b</uuidresource>
-      <datelastmodified>Wed, 14 Oct 2009 07:02:06 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>512</flags>
       <properties/>
       <relations/>
       <accesscontrol/>

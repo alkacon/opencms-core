@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationCache.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,10 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
             }
             try {
                 CmsResource configRes = cms.readResource(sitePath);
-                CmsConfigurationParser parser = new CmsConfigurationParser(cms, configRes);
+                CmsConfigurationParser parser = new CmsConfigurationParser(
+                    cms,
+                    configRes,
+                    CmsConfigurationParser.PARSER.CONTAINERPAGE);
                 CmsContainerPageConfigurationData result = parser.getContainerPageConfigurationData(new CmsConfigurationSourceInfo(
                     configRes,
                     false));
@@ -118,7 +121,7 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
         }
     }
 
-    /** 
+    /**
      * @see org.opencms.ade.config.I_CmsConfigurationDataReader#setCombinedConfiguration(java.lang.String, boolean, java.lang.Object)
      */
     public void setCombinedConfiguration(String rootPath, boolean online, CmsContainerPageConfigurationData config) {

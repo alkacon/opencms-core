@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsSitemapConfigurationCache.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -95,7 +95,10 @@ implements I_CmsConfigurationDataReader<CmsSitemapConfigurationData> {
                 return (CmsSitemapConfigurationData)cached;
             }
             CmsResource configRes = cms.readResource(path);
-            CmsConfigurationParser parser = new CmsConfigurationParser(cms, configRes);
+            CmsConfigurationParser parser = new CmsConfigurationParser(
+                cms,
+                configRes,
+                CmsConfigurationParser.PARSER.SITEMAP);
             CmsSitemapConfigurationData result = parser.getSitemapConfigurationData(new CmsConfigurationSourceInfo(
                 configRes,
                 false));

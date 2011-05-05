@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsSitemapModuleConfigProvider.java,v $
- * Date   : $Date: 2011/05/05 14:53:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public class CmsSitemapModuleConfigProvider extends A_CmsModuleConfigProvider<Cm
     protected CmsSitemapConfigurationData readSingleConfiguration(CmsObject cms, CmsResource res) throws CmsException {
 
         CmsConfigurationParser configParser = new CmsConfigurationParser();
-        configParser.processFile(cms, res);
+        configParser.processFile(cms, res, CmsConfigurationParser.PARSER.SITEMAP);
         return configParser.getSitemapConfigurationData(new CmsConfigurationSourceInfo(res, true));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -55,7 +56,6 @@ import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 import org.opencms.xml.types.CmsXmlBooleanValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,11 +80,19 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
 public class CmsConfigurationParser {
+
+    /** Constants for selecting the right parser. */
+    public enum PARSER {
+        /** Configuration parser */
+        CONTAINERPAGE,
+        /** Sitemap parser */
+        SITEMAP;
+    }
 
     /** The default maximum sitemap depth. */
     public static final int DEFAULT_MAX_DEPTH = 15;
@@ -122,6 +130,9 @@ public class CmsConfigurationParser {
     /** The Page node name. */
     public static final String N_PAGE = "Page";
 
+    /** The tag name of the configuration for a template. */
+    public static final String N_PAGE_MODEL = "PageModel";
+
     /** The tag name of the source file in the type configuration. */
     public static final String N_PATTERN = "Pattern";
 
@@ -130,6 +141,9 @@ public class CmsConfigurationParser {
 
     /** The tag name of the formatter that indicates if this formatter is to be used for the ADE allery preview. */
     public static final String N_PREVIEW = "Preview";
+
+    /** The tag name of the configuration for a resource type. */
+    public static final String N_RESOURCE_TYPE = "ResourceType";
 
     /** The tag name of the formatter that indicates if the content should be searched. */
     public static final String N_SEARCHCONTENT = "SearchContent";
@@ -144,7 +158,7 @@ public class CmsConfigurationParser {
     private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
 
     /** The tag name for elements containing field configurations. */
-    private static final String N_ADE_FIELD = "ADEField";
+    private static final String N_PROPERTY = "Property";
 
     /** Configuration data, read from xml content. */
     private Map<String, CmsConfigurationItem> m_configuration = new LinkedHashMap<String, CmsConfigurationItem>();
@@ -181,13 +195,14 @@ public class CmsConfigurationParser {
      * 
      * @param cms the cms context used for reading the configuration
      * @param config the configuration file
+     * @param parser the selected parser
      *  
      * @throws CmsException if something goes wrong
      */
-    public CmsConfigurationParser(CmsObject cms, CmsResource config)
+    public CmsConfigurationParser(CmsObject cms, CmsResource config, PARSER parser)
     throws CmsException {
 
-        processFile(cms, config);
+        processFile(cms, config, parser);
     }
 
     /** 
@@ -265,16 +280,6 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Returns the configuration as an unmodifiable map.<p>
-     * 
-     * @return the configuration as an unmodifiable map
-     */
-    public Map<String, CmsConfigurationItem> getTypeConfiguration() {
-
-        return Collections.unmodifiableMap(m_configuration);
-    }
-
-    /**
      * Gets the detail page configuration, grouped by type.<p>
      * 
      * @return a map from type names to lists of detail page information beans 
@@ -297,14 +302,15 @@ public class CmsConfigurationParser {
      * 
      * @param cms the CMS context 
      * @param config the configuration file 
+     * @param parser the selected parser
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void processFile(CmsObject cms, CmsResource config) throws CmsException {
+    public void processFile(CmsObject cms, CmsResource config, PARSER parser) throws CmsException {
 
         CmsFile configFile = cms.readFile(config);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-        parseConfiguration(cms, content);
+        parseConfiguration(cms, content, parser);
     }
 
     /**
@@ -435,16 +441,32 @@ public class CmsConfigurationParser {
      *
      * @param cms the CmsObject to use for VFS operations
      * @param content the XML content with the type configuration
+     * @param parser the selected parser
      * 
      * @throws CmsException if something goes wrong
      */
-    private void parseConfiguration(CmsObject cms, CmsXmlContent content) throws CmsException {
+    private void parseConfiguration(CmsObject cms, CmsXmlContent content, PARSER parser) throws CmsException {
 
         Locale locale = getLocale(cms, content);
         m_content = content;
         I_CmsXmlContentLocation root = new CmsXmlContentRootLocation(content, locale);
 
-        List<I_CmsXmlContentValueLocation> typeValues = root.getSubValues(N_ADE_TYPE);
+        List<I_CmsXmlContentValueLocation> typeValues = null;
+        if (parser == PARSER.SITEMAP) {
+            List<I_CmsXmlContentValueLocation> fieldValues = root.getSubValues(N_PROPERTY);
+            for (I_CmsXmlContentValueLocation xmlField : fieldValues) {
+                parseField(cms, xmlField, locale);
+            }
+
+            List<I_CmsXmlContentValueLocation> detailPageValues = root.getSubValues(N_DETAIL_PAGE);
+            for (I_CmsXmlContentValueLocation detailPageValue : detailPageValues) {
+                parseDetailPage(cms, detailPageValue);
+            }
+
+            typeValues = root.getSubValues(N_PAGE_MODEL);
+        } else {
+            typeValues = root.getSubValues(N_RESOURCE_TYPE);
+        }
 
         for (I_CmsXmlContentValueLocation xmlType : typeValues) {
             try {
@@ -454,27 +476,7 @@ public class CmsConfigurationParser {
             }
         }
 
-        List<I_CmsXmlContentValueLocation> fieldValues = root.getSubValues(N_ADE_FIELD);
-        for (I_CmsXmlContentValueLocation xmlField : fieldValues) {
-            parseField(cms, xmlField, locale);
-        }
-
-        List<I_CmsXmlContentValueLocation> detailPageValues = root.getSubValues(N_DETAIL_PAGE);
-        for (I_CmsXmlContentValueLocation detailPageValue : detailPageValues) {
-            parseDetailPage(cms, detailPageValue);
-        }
-
         m_detailPages = parseDetailPages(cms, root);
-
-        I_CmsXmlContentValue maxDepthNode = content.getValue(N_MAXDEPTH, locale);
-        if (maxDepthNode != null) {
-            try {
-                m_maxDepth = Integer.parseInt(maxDepthNode.getStringValue(cms));
-            } catch (NumberFormatException e) {
-                // ignore, leave max depth at its default value 
-            }
-        }
-
     }
 
     /**
@@ -581,52 +583,61 @@ public class CmsConfigurationParser {
         CmsUUID source = getSubValueID(cms, xmlType, N_SOURCE);
         CmsResource resource = cms.readResource(source);
 
-        String resTypeName = getTypeName(resource.getTypeId());
+        if (OpenCms.getResourceManager().hasResourceType(resource.getTypeId())
+            && (CmsResourceTypePlain.getStaticTypeId() != resource.getTypeId())) {
+            // only use configured and non plain resources that actually exist
 
-        CmsUUID folder = getSubValueID(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
-        String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
+            String resTypeName = getTypeName(resource.getTypeId());
 
-        CmsResource folderRes = null;
-        CmsLazyFolder lazyFolder = null;
-        if (folder == null) {
-            String path = "/" + resTypeName;
-            lazyFolder = new CmsLazyFolder(path);
-        } else {
-            folderRes = cms.readResource(folder);
-            lazyFolder = new CmsLazyFolder(folderRes);
+            CmsUUID folder = getSubValueID(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
+            String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
+
+            CmsResource folderRes = null;
+            CmsLazyFolder lazyFolder = null;
+            if (folder == null) {
+                String path = "/" + resTypeName;
+                lazyFolder = new CmsLazyFolder(path);
+            } else {
+                folderRes = cms.readResource(folder);
+                lazyFolder = new CmsLazyFolder(folderRes);
+            }
+
+            CmsConfigurationItem configItem = new CmsConfigurationItem(
+                resource,
+                folderRes,
+                lazyFolder,
+                pattern,
+                isDefault);
+            List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
+            List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
+            for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
+                String jspRootPath = getSubValueString(cms, fmtValue, N_JSP);
+                String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
+                String minWidth = getSubValueString(cms, fmtValue, N_MINWIDTH);
+                String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
+                String preview = getSubValueString(cms, fmtValue, N_PREVIEW);
+                String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
+                formatters.add(new CmsFormatterBean(
+                    fmtType,
+                    jspRootPath,
+                    minWidth,
+                    maxwidth,
+                    preview,
+                    searchContent,
+                    m_content.getFile().getRootPath()));
+            }
+            CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration(formatters);
+
+            if (formatterConfiguration.hasFormatters()) {
+                m_formatterConfigurations.put(resTypeName, formatterConfiguration);
+            }
+
+            m_newElements.add(configItem);
+            if (!isDefault && m_configuration.containsKey(resTypeName)) {
+                // this type is not marked as default, so don't override any previous type configuration
+                return;
+            }
+            m_configuration.put(resTypeName, configItem);
         }
-
-        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern, isDefault);
-        List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
-        List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
-        for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
-            String jspRootPath = getSubValueString(cms, fmtValue, N_JSP);
-            String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
-            String minWidth = getSubValueString(cms, fmtValue, N_MINWIDTH);
-            String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
-            String preview = getSubValueString(cms, fmtValue, N_PREVIEW);
-            String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
-            formatters.add(new CmsFormatterBean(
-                fmtType,
-                jspRootPath,
-                minWidth,
-                maxwidth,
-                preview,
-                searchContent,
-                m_content.getFile().getRootPath()));
-        }
-        CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration(formatters);
-
-        if (formatterConfiguration.hasFormatters()) {
-            m_formatterConfigurations.put(resTypeName, formatterConfiguration);
-        }
-
-        m_newElements.add(configItem);
-        if (!isDefault && m_configuration.containsKey(resTypeName)) {
-            // this type is not marked as default, so don't override any previous type configuration
-            return;
-        }
-        m_configuration.put(resTypeName, configItem);
     }
-
 }

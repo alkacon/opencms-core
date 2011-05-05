@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageModuleConfigProvider.java,v $
- * Date   : $Date: 2011/05/04 12:33:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -76,7 +76,7 @@ public class CmsContainerPageModuleConfigProvider extends A_CmsModuleConfigProvi
     throws CmsException {
 
         CmsConfigurationParser configParser = new CmsConfigurationParser();
-        configParser.processFile(cms, res);
+        configParser.processFile(cms, res, CmsConfigurationParser.PARSER.CONTAINERPAGE);
         return configParser.getContainerPageConfigurationData(new CmsConfigurationSourceInfo(res, true));
     }
 }

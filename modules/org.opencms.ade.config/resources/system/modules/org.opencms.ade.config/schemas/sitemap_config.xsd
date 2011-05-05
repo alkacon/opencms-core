@@ -14,9 +14,9 @@
     
     <xsd:complexType name="OpenCmsSitemapConfiguration">
         <xsd:sequence>
-            <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="ADEField" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="MaxDepth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />        
+            <xsd:element name="PageModel" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -25,11 +25,21 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<tabs>
+				<tab element="ResourceType" name="Resource Types" collapse="false" />
+				<tab element="PageModel" name="Page Models" collapse="true" />	
+				<tab element="Property" name="Property Configuration" collapse="true" />	
+				<tab element="DetailPage" name="Detail Pages" collapse="true" />			
+			</tabs>
 			<relations>
 				<relation element="DetailPage/Page" type="strong" invalidate="parent" />
-				<relation element="ADEType/Source" type="strong" invalidate="parent" />
+				<relation element="ResourceType/Source" type="strong" invalidate="parent" />
+				<relation element="PageModel/Source" type="strong" invalidate="parent" />
 			</relations>
-        </xsd:appinfo>
-        
+        </xsd:appinfo>        
     </xsd:annotation>
+    
 </xsd:schema>
+
+
+		

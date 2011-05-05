@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 19:22:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -218,7 +218,7 @@ public class CmsADEConfigurationManager {
             rootPath,
             m_cntPageConfCache,
             new CmsContainerPageConfigurationData(),
-            CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE);
+            CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP);
         return moduleData.merge(data);
     }
 
@@ -451,7 +451,7 @@ public class CmsADEConfigurationManager {
         Map<String, String> folderTypes) throws CmsException {
 
         CmsResource folder = entryPoint.getResource();
-        CmsProperty configProp = entryPoint.getProperties().get(CmsPropertyDefinition.PROPERTY_CONFIG_CONTAINERPAGE);
+        CmsProperty configProp = entryPoint.getProperties().get(CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP);
         if ((configProp == null) || configProp.isNullProperty()) {
             return;
         }
