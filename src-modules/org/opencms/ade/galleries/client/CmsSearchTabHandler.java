@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsSearchTabHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/05 15:51:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -128,6 +128,16 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     public void setDateModifiedStart(long modifiedStart) {
 
         m_controller.addDateModifiedStart(modifiedStart);
+    }
+
+    /**
+     * Delegates the locale value to the controller.<p>
+     * 
+     * @param locale the locale
+     */
+    public void setLocale(String locale) {
+
+        m_controller.addLocale(locale);
     }
 
     /**

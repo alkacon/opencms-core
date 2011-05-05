@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/05 15:51:50 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -243,9 +243,6 @@ public final class Messages {
     public static final String GUI_TAB_SEARCH_BUTTON_CLEAR_0 = "GUI_TAB_SEARCH_BUTTON_CLEAR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_SEARCH_DESCRIPTION_0 = "GUI_TAB_SEARCH_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0 = "GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -265,6 +262,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_TEXT_0 = "GUI_TAB_SEARCH_LABEL_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0 = "GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0 = "GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TITLE_CATEGORIES_0 = "GUI_TAB_TITLE_CATEGORIES_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/05/05 06:35:18 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/05/05 15:51:50 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  */
@@ -219,6 +219,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void addGallery(String galleryPath) {
 
         m_searchObject.addGallery(galleryPath);
+        m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * Sets the locale to the search object.<p>
+     * 
+     * @param locale the locale to set
+     */
+    public void addLocale(String locale) {
+
+        m_searchObject.setLocale(locale);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
     }

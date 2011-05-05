@@ -10,10 +10,15 @@
 	
 	<g:HTMLPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
-			<g:Label ui:field="m_descriptionLabel" addStyleNames="{resources.generalCss.textBig} {galleryResources.galleryDialogCss.searchTabDesMargin}"></g:Label>
+			<g:HTMLPanel ui:field="m_localeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
+				<g:Label ui:field="m_localeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}" style="margin-bottom: 15px; width: 506px;">
+					<input:CmsSelectBox ui:field="m_localeSelection" />
+				</div>
+			</g:HTMLPanel>
 			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_searchLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}" style="margin-bottom: 15px; width: 506px;">
 					<input:CmsTextBox ui:field="m_searchInput" />
 				</div>
 			</div>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/05/05 06:35:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/05 15:51:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +48,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -64,7 +66,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.
  */
@@ -190,6 +192,26 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * The language selection handler.<p>
+     * 
+     * Delegates the methods to the search tab handler.<p>
+     */
+    protected class LanguageChangeHandler implements ValueChangeHandler<String> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            String value = event.getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) && value.equals(NOT_SET_OPTION_VALUE)) {
+                value = null;
+            }
+            m_tabHandler.setLocale(value);
+        }
+    }
+
+    /**
      * Implements the ValueChangeHandler for the query input field.<p>
      */
     protected class QueryChangedHandler implements ValueChangeHandler<String>, KeyPressHandler {
@@ -228,6 +250,9 @@ public class CmsSearchTab extends A_CmsTab {
     interface I_CmsSearchTabUiBinder extends UiBinder<HTMLPanel, CmsSearchTab> {
         // GWT interface, nothing to do here
     }
+
+    /** A constant for the "not set" valueof the language selection. */
+    private static final String NOT_SET_OPTION_VALUE = "notSet";
 
     /** The ui-binder instance. */
     private static I_CmsSearchTabUiBinder uiBinder = GWT.create(I_CmsSearchTabUiBinder.class);
@@ -268,9 +293,17 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected Label m_dateModifiedStartLabel;
 
-    /** The description label for this tab. */
+    /** The label for the language selection. */
     @UiField
-    protected Label m_descriptionLabel;
+    protected Label m_localeLabel;
+
+    /** The row for the language selection. */
+    @UiField
+    protected HTMLPanel m_localeRow;
+
+    /** The select box for the language selection. */
+    @UiField
+    protected CmsSelectBox m_localeSelection;
 
     /** The input field for the search query. */
     @UiField
@@ -285,6 +318,9 @@ public class CmsSearchTab extends A_CmsTab {
 
     /** The parent popup to this dialog if present. */
     private I_CmsAutoHider m_autoHideParent;
+
+    /** The map of available locales. */
+    private Map<String, String> m_availableLocales;
 
     /** The search parameter panel for this tab. */
     private CmsSearchParamPanel m_paramPanel;
@@ -312,8 +348,21 @@ public class CmsSearchTab extends A_CmsTab {
         initWidget(m_tab);
         m_tabHandler = tabHandler;
         m_autoHideParent = autoHideParent;
-        // set the description for the search tab
-        m_descriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_DESCRIPTION_0));
+        m_availableLocales = availableLocales;
+
+        // add the language selection
+        m_localeLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0));
+        m_localeSelection.addOption(
+            NOT_SET_OPTION_VALUE,
+            Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0));
+        for (Map.Entry<String, String> entry : availableLocales.entrySet()) {
+            m_localeSelection.addOption(entry.getKey(), entry.getValue());
+            m_localeSelection.addValueChangeHandler(new LanguageChangeHandler());
+        }
+        // hide language selection if only one locale is available 
+        if (availableLocales.size() <= 1) {
+            m_localeRow.getElement().getStyle().setDisplay(Display.NONE);
+        }
 
         // add the query
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
@@ -362,6 +411,7 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateCreatedEndDateBox.setValue(null, true);
         m_dateModifiedStartDateBox.setValue(null, true);
         m_dateModifiedEndDateBox.setValue(null, true);
+        m_localeSelection.reset();
     }
 
     /**
@@ -400,6 +450,16 @@ public class CmsSearchTab extends A_CmsTab {
         // append the search query to the resulting string
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
             result.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0)).append(" ").append(query);
+        }
+
+        // append the search query to the resulting string
+        String locale = m_localeSelection.getFormValueAsString();
+        String language = m_availableLocales.get(locale);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(language)
+            && !locale.equals(NOT_SET_OPTION_VALUE)) {
+            result.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0)).append(" ").append(
+                language);
         }
 
         // append the date created range to the resulting string
