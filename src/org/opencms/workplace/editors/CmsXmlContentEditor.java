@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/05 16:07:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -498,7 +498,15 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             CmsFile templateFile = getCms().readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
-            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+
+            // set the required content locale
+            Locale locale = null;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamElementlanguage())
+                && !"null".equals(getParamElementlanguage())) {
+                locale = getElementLocale();
+            } else {
+                locale = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+            }
 
             // now create a new XML content based on the templates content definition            
             CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
