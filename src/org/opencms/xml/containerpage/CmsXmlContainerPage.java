@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/05 16:07:01 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 7.5.2
  * 
@@ -263,7 +263,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
-        saveCntPage(cms, parent, savePage);
+        saveContainerPage(cms, parent, savePage);
 
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -450,7 +450,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void saveCntPage(CmsObject cms, Element parent, CmsContainerPageBean cntPage) throws CmsException {
+    protected void saveContainerPage(CmsObject cms, Element parent, CmsContainerPageBean cntPage) throws CmsException {
 
         parent.clearContent();
 
