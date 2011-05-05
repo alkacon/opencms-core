@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/05 06:23:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0
  */
@@ -109,6 +109,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
+    /** The name of the current site. */
+    private String m_siteName;
+
     /** The available templates. */
     private Map<String, CmsSitemapTemplate> m_templates;
 
@@ -135,6 +138,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param defaultNewElementInfo the type of the container page resource
      * @param newElementInfos the new element information
      * @param newRedirectElementInfo the new redirect element info
+     * @param siteName the name of the current site
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
@@ -156,6 +160,7 @@ public class CmsSitemapData implements IsSerializable {
         CmsNewResourceInfo defaultNewElementInfo,
         List<CmsNewResourceInfo> newElementInfos,
         CmsNewResourceInfo newRedirectElementInfo,
+        String siteName,
         String parentSitemap,
         CmsClientSitemapEntry root,
         String openPath,
@@ -170,6 +175,7 @@ public class CmsSitemapData implements IsSerializable {
         m_noEditReason = noEditReason;
         m_displayToolbar = displayToolbar;
         m_defaultNewElementInfo = defaultNewElementInfo;
+        m_siteName = siteName;
         m_parentSitemap = parentSitemap;
         m_parentProperties = parentProperties;
         m_root = root;
@@ -354,6 +360,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsClientSitemapEntry getRoot() {
 
         return m_root;
+    }
+
+    /**
+     * Returns the name of the current site.<p>
+     *
+     * @return the name of the current site
+     */
+    public String getSiteName() {
+
+        return m_siteName;
     }
 
     /**

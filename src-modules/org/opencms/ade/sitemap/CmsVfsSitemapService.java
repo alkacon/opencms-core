@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/05 06:15:10 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/05/05 06:23:20 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  * 
@@ -425,7 +425,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 defaultNewInfo,
                 newResourceInfos,
                 createResourceTypeInfo(OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT), null),
-                cms.getRequestContext().getSiteRoot(),
+                OpenCms.getSiteManager().getCurrentSite(cms).getTitle(),
                 parentSitemap,
                 getRootEntry(entryPoint),
                 openPath,
