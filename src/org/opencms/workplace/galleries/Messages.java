@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/05 10:31:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -422,7 +422,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_TITLE_0 = "GUI_INPUT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_EXCERPT = "GUI_LABEL_EXCERPT";
+    public static final String GUI_LABEL_EXCERPT_0 = "GUI_LABEL_EXCERPT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_KILOBYTES_0 = "GUI_LABEL_KILOBYTES_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 10:31:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
@@ -2393,7 +2393,7 @@ public class CmsWebdavServlet extends HttpServlet {
         sb.append("<html>\r\n");
         sb.append("<head>\r\n");
         sb.append("<title>");
-        sb.append(Messages.get().getBundle().key(Messages.DIRECTORY_TITLE_1, name));
+        sb.append(Messages.get().getBundle().key(Messages.GUI_DIRECTORY_TITLE_1, name));
         sb.append("</title>\r\n");
 
         // TODO: add opencms css style
@@ -2412,7 +2412,7 @@ public class CmsWebdavServlet extends HttpServlet {
         sb.append("</head>\r\n");
         sb.append("<body>");
         sb.append("<h1>");
-        sb.append(Messages.get().getBundle().key(Messages.DIRECTORY_TITLE_1, name));
+        sb.append(Messages.get().getBundle().key(Messages.GUI_DIRECTORY_TITLE_1, name));
 
         sb.append("</h1>");
         sb.append("<HR size=\"1\" noshade=\"noshade\">");
@@ -2422,13 +2422,13 @@ public class CmsWebdavServlet extends HttpServlet {
         // Render the column headings
         sb.append("<tr>\r\n");
         sb.append("<td align=\"left\"><font size=\"+1\"><strong>");
-        sb.append(Messages.get().getBundle().key(Messages.DIRECTORY_FILENAME_0));
+        sb.append(Messages.get().getBundle().key(Messages.GUI_DIRECTORY_FILENAME_0));
         sb.append("</strong></font></td>\r\n");
         sb.append("<td align=\"center\"><font size=\"+1\"><strong>");
-        sb.append(Messages.get().getBundle().key(Messages.DIRECTORY_SIZE_0));
+        sb.append(Messages.get().getBundle().key(Messages.GUI_DIRECTORY_SIZE_0));
         sb.append("</strong></font></td>\r\n");
         sb.append("<td align=\"right\"><font size=\"+1\"><strong>");
-        sb.append(Messages.get().getBundle().key(Messages.DIRECTORY_LASTMODIFIED_0));
+        sb.append(Messages.get().getBundle().key(Messages.GUI_DIRECTORY_LASTMODIFIED_0));
         sb.append("</strong></font></td>\r\n");
         sb.append("</tr>");
 

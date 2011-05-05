@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 10:31:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,26 +39,26 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String DIRECTORY_FILENAME_0 = "DIRECTORY_FILENAME_0";
+    public static final String GUI_DIRECTORY_FILENAME_0 = "GUI_DIRECTORY_FILENAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String DIRECTORY_LASTMODIFIED_0 = "DIRECTORY_LASTMODIFIED_0";
+    public static final String GUI_DIRECTORY_LASTMODIFIED_0 = "GUI_DIRECTORY_LASTMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String DIRECTORY_PARENT_1 = "DIRECTORY_PARENT_1";
+    public static final String GUI_DIRECTORY_PARENT_1 = "GUI_DIRECTORY_PARENT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String DIRECTORY_SIZE_0 = "DIRECTORY_SIZE_0";
+    public static final String GUI_DIRECTORY_SIZE_0 = "GUI_DIRECTORY_SIZE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String DIRECTORY_TITLE_1 = "DIRECTORY_TITLE_1";
+    public static final String GUI_DIRECTORY_TITLE_1 = "GUI_DIRECTORY_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_INPUT_STREAM_0 = "ERR_CLOSE_INPUT_STREAM_0";

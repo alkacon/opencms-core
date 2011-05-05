@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2011/05/04 14:18:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/05 10:31:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -272,6 +272,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_HELP_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -348,6 +360,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0 = "GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0";
