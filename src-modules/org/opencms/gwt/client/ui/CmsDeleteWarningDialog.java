@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDeleteWarningDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 
@@ -43,11 +44,13 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsDeleteWarningDialog extends CmsConfirmDialog {
+
+    private static final String TM_DIALOG_LIST = "dialogList";
 
     /** The callback command. */
     protected Command m_cmd;
@@ -83,8 +86,6 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
     /** The site path of the resource to delete. */
     private String m_sitePath;
 
-    private static final String TM_DIALOG_LIST = "dialogList";
-
     /**
      * Constructor.<p>
      * 
@@ -92,11 +93,11 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
      */
     public CmsDeleteWarningDialog(String sitePath) {
 
-        super("Delete Resource?");
+        super(Messages.get().key(Messages.GUI_DIALOG_DELETE_TITLE_0));
         m_sitePath = sitePath;
-        setWarningMessage("<p>You are about to delete a resource from the file system.</p><p>Are you sure you want to do that?</p>");
-        setOkText("Delete");
-        setCloseText("Cancel");
+        setWarningMessage(Messages.get().key(Messages.GUI_DIALOG_DELETE_TEXT_0));
+        setOkText(Messages.get().key(Messages.GUI_DELETE_0));
+        setCloseText(Messages.get().key(Messages.GUI_CANCEL_0));
         setHandler(m_handler);
     }
 

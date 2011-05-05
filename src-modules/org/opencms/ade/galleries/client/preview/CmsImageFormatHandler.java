@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     /** The current image format restriction. */
     private I_CmsFormatRestriction m_currentFormat;
 
+    /** The event bus. */
+    private SimpleEventBus m_eventBus;
+
     /** The format form. */
     private CmsImageFormatsForm m_formatForm;
 
@@ -102,9 +105,6 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /** The Format configuration. */
     private String[] m_formatValues;
-
-    /** The event bus. */
-    private SimpleEventBus m_eventBus;
 
     /** The image height. */
     private int m_originalHeight = -1;
@@ -183,6 +183,23 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     public Map<String, I_CmsFormatRestriction> getFormats() {
 
         return m_formats;
+    }
+
+    /**
+     * Adds necessary attributes to the map.<p>
+     * 
+     * @param attributes the attribute map
+     * @return the attribute map
+     */
+    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
+
+        if (m_croppingParam.getTargetHeight() > 0) {
+            attributes.put("height", String.valueOf(m_croppingParam.getTargetHeight()));
+        }
+        if (m_croppingParam.getTargetWidth() > 0) {
+            attributes.put("width", String.valueOf(m_croppingParam.getTargetWidth()));
+        }
+        return attributes;
     }
 
     /**
@@ -275,12 +292,15 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         : m_croppingParam.getTargetWidth());
         // enabling/disabling ratio lock button
         if (m_currentFormat.isFixedRatio()) {
-            m_formatForm.setRatioButton(false, false, "Image ratio is fixed for this format.");
+            m_formatForm.setRatioButton(false, false, Messages.get().key(Messages.GUI_PRIVIEW_BUTTON_RATIO_FIXED_0));
             m_ratioLocked = true;
         } else {
             if (!m_currentFormat.isHeightEditable() && !m_currentFormat.isWidthEditable()) {
                 // neither height nor width are editable, disable ratio lock button
-                m_formatForm.setRatioButton(false, false, "Dimensions are not editable");
+                m_formatForm.setRatioButton(
+                    false,
+                    false,
+                    Messages.get().key(Messages.GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0));
             } else {
                 m_formatForm.setRatioButton(false, true, null);
             }
@@ -556,22 +576,5 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 break;
             default:
         }
-    }
-
-    /**
-     * Adds necessary attributes to the map.<p>
-     * 
-     * @param attributes the attribute map
-     * @return the attribute map
-     */
-    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
-
-        if (m_croppingParam.getTargetHeight() > 0) {
-            attributes.put("height", String.valueOf(m_croppingParam.getTargetHeight()));
-        }
-        if (m_croppingParam.getTargetWidth() > 0) {
-            attributes.put("width", String.valueOf(m_croppingParam.getTargetWidth()));
-        }
-        return attributes;
     }
 }

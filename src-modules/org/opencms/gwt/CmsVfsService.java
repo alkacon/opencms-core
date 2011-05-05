@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -470,7 +471,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
                 result.setTitle(title);
             } else {
-                result.setTitle("No title attribute set for this resource");
+                result.setTitle(res.getName());
             }
             result.setSubTitle(resourceSitePath);
             String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
@@ -487,8 +488,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
             Locale currentLocale = getCmsObject().getRequestContext().getLocale();
-            String resTypeNiceName = OpenCms.getWorkplaceManager().getMessages(currentLocale).key(key);
-            result.addAdditionalInfo("Type", resTypeNiceName);
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+            String resTypeNiceName = messages.key(key);
+            result.addAdditionalInfo(
+                messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
+                resTypeNiceName);
             result.setResourceType(resTypeName);
             return result;
         } catch (CmsException e) {

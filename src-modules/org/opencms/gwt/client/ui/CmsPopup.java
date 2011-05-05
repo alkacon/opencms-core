@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/05/04 16:16:22 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsFadeAnimation;
@@ -60,8 +61,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -76,7 +77,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -409,7 +410,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         if (m_close == null) {
             m_close = new CloseButton();
-            m_close.setTitle("Close");
+            m_close.setTitle(Messages.get().key(Messages.GUI_CLOSE_0));
             m_close.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
             m_close.setImageClass(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopupImage());
             m_close.setButtonStyle(ButtonStyle.TRANSPARENT, null);

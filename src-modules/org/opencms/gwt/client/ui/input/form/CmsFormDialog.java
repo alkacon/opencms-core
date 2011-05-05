@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -100,7 +100,7 @@ public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
 
         CmsSimpleFormFieldPanel simplePanel = new CmsSimpleFormFieldPanel();
         CmsForm form = new CmsForm(simplePanel);
-        CmsFormDialog dialog = new CmsFormDialog("Edit Properties", form);
+        CmsFormDialog dialog = new CmsFormDialog(Messages.get().key(Messages.GUI_FORM_PROPERTIES_EDIT_0), form);
         dialog.setFormHandler(formHandler);
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
 

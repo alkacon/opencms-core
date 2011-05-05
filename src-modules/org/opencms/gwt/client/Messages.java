@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/04 19:03:28 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  */
@@ -66,6 +66,12 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROWSE_0 = "GUI_BROWSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROWSING_0 = "GUI_BROWSING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -88,6 +94,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATEBOX_TITLE_0 = "GUI_DATEBOX_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_0 = "GUI_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAILS_0 = "GUI_DETAILS_0";
@@ -115,9 +124,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0 = "GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_NOT_USED_0 = "GUI_INPUT_NOT_USED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0 = "GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0";
@@ -150,7 +156,7 @@ public final class Messages {
     public static final String GUI_DIALOG_CONTENTEDITOR_TITLE_0 = "GUI_DIALOG_CONTENTEDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_DELETE_TEXT_1 = "GUI_DIALOG_DELETE_TEXT_1";
+    public static final String GUI_DIALOG_DELETE_TEXT_0 = "GUI_DIALOG_DELETE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_DELETE_TITLE_0 = "GUI_DIALOG_DELETE_TITLE_0";
@@ -166,6 +172,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORM_PROPERTIES_EDIT_0 = "GUI_FORM_PROPERTIES_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FORM_TAB_ADVANCED_0 = "GUI_FORM_TAB_ADVANCED_0";
@@ -187,6 +196,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_SECURE_0 = "GUI_ICON_TITLE_SECURE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_NOT_USED_0 = "GUI_INPUT_NOT_USED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";

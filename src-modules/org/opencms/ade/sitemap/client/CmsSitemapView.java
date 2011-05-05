@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/05/05 06:15:10 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 8.0.0
  */
@@ -514,7 +514,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         m_editorMode = editorMode;
         if (m_editorMode == EditorMode.vfs) {
-            m_toolbar.setNewEnabled(false, "The NEW function is only available in navigation view.");
+            m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
             m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
         } else {
 

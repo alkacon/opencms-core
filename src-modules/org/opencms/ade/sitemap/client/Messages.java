@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/05 05:59:59 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0.0
  */
@@ -73,6 +73,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLE_CLEAR_LIST_0 = "GUI_DISABLE_CLEAR_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_PARENT_LOCK_0 = "GUI_DISABLED_PARENT_LOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLED_PARENT_SITEMAP_0 = "GUI_DISABLED_PARENT_SITEMAP_0";
@@ -150,6 +153,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_SUBSITEMAP_0 = "GUI_HOVERBAR_SUBSITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_TITLE_0 = "GUI_HOVERBAR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_UNDELETE_0 = "GUI_HOVERBAR_UNDELETE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -219,6 +225,9 @@ public final class Messages {
     public static final String GUI_PROPERTY_ORIGIN_2 = "GUI_PROPERTY_ORIGIN_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_TAB_COMPLETE_0 = "GUI_PROPERTY_TAB_COMPLETE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_TAB_RESOURCE_0 = "GUI_PROPERTY_TAB_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -226,9 +235,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_TAB_STRUCTURE_0 = "GUI_PROPERTY_TAB_STRUCTURE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_COMPLETE_0 = "GUI_PROPERTY_TAB_COMPLETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REDIRECT_SUBTITLE_0 = "GUI_REDIRECT_SUBTITLE_0";
@@ -286,6 +292,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NEW_DISABLE_0 = "GUI_TOOLBAR_NEW_DISABLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";

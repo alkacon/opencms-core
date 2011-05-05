@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/05 06:23:20 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  * 
@@ -389,7 +389,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
             if (sitemapConfig == null) {
-                noEdit = "No sitemap configuration available.";
+                noEdit = Messages.get().getBundle().key(Messages.GUI_SITEMAP_NO_EDIT_0);
             } else {
                 detailPages = new CmsDetailPageTable(sitemapConfig.getDetailPageInfo());
                 if (!isOnlineProject) {
@@ -407,7 +407,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
             }
             if (isOnlineProject) {
-                noEdit = "Can't edit sitemap in online project.";
+                noEdit = Messages.get().getBundle().key(Messages.GUI_SITEMAP_NO_EDIT_ONLINE_0);
             }
             List<String> allPropNames = getPropertyNames(cms);
 

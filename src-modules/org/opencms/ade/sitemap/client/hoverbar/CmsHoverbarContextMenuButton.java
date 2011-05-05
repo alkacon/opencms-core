@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsContextMenu;
 import org.opencms.gwt.client.ui.CmsContextMenuHandler;
@@ -55,17 +56,17 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
-    /** The main content widget. */
-    private FlexTable m_menuPanel;
-
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
+
+    /** The main content widget. */
+    private FlexTable m_menuPanel;
 
     /**
      * Constructor.<p>
@@ -102,7 +103,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsRefreshMenuEntry(hoverbar));
         m_entries.add(new CmsDeleteMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
-        setTitle("Context menu");
+        setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
         addClickHandler(new ClickHandler() {
 
@@ -118,6 +119,21 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
                 }
             }
         });
+    }
+
+    /**
+     * Rests the button state and hides the hoverbar.<p>
+     * 
+     * @param hoverbar the hoverbar
+     */
+    protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
+
+        m_button.setDown(false);
+        if (!hoverbar.isHovered()) {
+            hoverbar.hide();
+        } else {
+            hoverbar.setLocked(false);
+        }
     }
 
     /**
@@ -142,20 +158,5 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
             }
         });
         openMenu();
-    }
-
-    /**
-     * Rests the button state and hides the hoverbar.<p>
-     * 
-     * @param hoverbar the hoverbar
-     */
-    protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
-
-        m_button.setDown(false);
-        if (!hoverbar.isHovered()) {
-            hoverbar.hide();
-        } else {
-            hoverbar.setLocked(false);
-        }
     }
 }

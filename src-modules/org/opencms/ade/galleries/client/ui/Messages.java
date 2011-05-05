@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/03 16:48:39 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_NO_PARAMS_0 = "GUI_GALLERY_NO_PARAMS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0 = "GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0";
@@ -135,6 +138,9 @@ public final class Messages {
     public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_DIS_CROPPED_0 = "GUI_PREVIEW_BUTTON_DIS_CROPPED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -193,6 +199,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0 = "GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PRIVIEW_BUTTON_RATIO_FIXED_0 = "GUI_PRIVIEW_BUTTON_RATIO_FIXED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";

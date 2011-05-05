@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsForm.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -308,12 +308,11 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
     public void setCropped(boolean cropped) {
 
         if (cropped) {
-            //m_cropButton.disable("Image is cropped");
             m_heightBox.setEnabled(false);
             m_widthBox.setEnabled(false);
             m_selectBox.setEnabled(false);
-            m_resetSize.disable("Image is cropped");
-            m_ratioLock.disable("Image is cropped");
+            m_resetSize.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
+            m_ratioLock.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
             m_removeCropButton.enable();
             m_removeCropButton.setVisible(true);
             return;

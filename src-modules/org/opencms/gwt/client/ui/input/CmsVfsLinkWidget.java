@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsVfsLinkWidget.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -86,8 +87,8 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
         m_textbox = new CmsTextBox();
         m_main.add(m_textbox);
         m_browseButton = new CmsPushButton();
-        m_browseButton.setText("Browse");
-        m_browseButton.setTitle("Browse");
+        m_browseButton.setText(Messages.get().key(Messages.GUI_BROWSE_0));
+        m_browseButton.setTitle(Messages.get().key(Messages.GUI_BROWSE_0));
         m_browseButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -268,7 +269,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
      */
     protected void openSelector() {
 
-        m_browseButton.disable("Browsing...");
+        m_browseButton.disable(Messages.get().key(Messages.GUI_BROWSING_0));
         if (m_vfsSelector == null) {
             m_vfsSelector = new CmsVfsSelector();
             m_vfsSelector.setSelectCallback(new I_CmsSimpleCallback<String>() {

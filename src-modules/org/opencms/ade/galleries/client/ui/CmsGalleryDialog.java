@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/05/05 06:35:18 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/05 08:17:05 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.
  */
@@ -243,7 +243,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void disableSearchTab() {
 
-        m_tabbedPanel.disableTab(m_resultsTab, "no search params selected");
+        m_tabbedPanel.disableTab(m_resultsTab, Messages.get().key(Messages.GUI_GALLERY_NO_PARAMS_0));
     }
 
     /**
