@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/05/05 15:51:50 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/05 18:29:50 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.
  */
@@ -204,8 +205,8 @@ public class CmsSearchTab extends A_CmsTab {
         public void onValueChange(ValueChangeEvent<String> event) {
 
             String value = event.getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) && value.equals(NOT_SET_OPTION_VALUE)) {
-                value = null;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || value.equals(NOT_SET_OPTION_VALUE)) {
+                value = m_currentLocale;
             }
             m_tabHandler.setLocale(value);
         }
@@ -328,6 +329,9 @@ public class CmsSearchTab extends A_CmsTab {
     /** The tab panel. */
     private HTMLPanel m_tab;
 
+    /** The current locale. */
+    protected String m_currentLocale;
+
     /**
      * Constructor for the search tab.<p>
      * 
@@ -348,13 +352,15 @@ public class CmsSearchTab extends A_CmsTab {
         initWidget(m_tab);
         m_tabHandler = tabHandler;
         m_autoHideParent = autoHideParent;
+        m_currentLocale = currentLocale;
         m_availableLocales = availableLocales;
 
         // add the language selection
         m_localeLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0));
-        m_localeSelection.addOption(
-            NOT_SET_OPTION_VALUE,
-            Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0));
+        CmsLabelSelectCell notSelectedCell = new CmsLabelSelectCell(NOT_SET_OPTION_VALUE, Messages.get().key(
+            Messages.GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0));
+        notSelectedCell.setVisible(false);
+        m_localeSelection.addOption(notSelectedCell);
         for (Map.Entry<String, String> entry : availableLocales.entrySet()) {
             m_localeSelection.addOption(entry.getKey(), entry.getValue());
             m_localeSelection.addValueChangeHandler(new LanguageChangeHandler());
@@ -447,12 +453,7 @@ public class CmsSearchTab extends A_CmsTab {
         String mStart = m_dateModifiedStartDateBox.getValueAsFormatedString();
         String mEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
 
-        // append the search query to the resulting string
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
-            result.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0)).append(" ").append(query);
-        }
-
-        // append the search query to the resulting string
+        // append the language to the resulting string
         String locale = m_localeSelection.getFormValueAsString();
         String language = m_availableLocales.get(locale);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)
@@ -461,6 +462,16 @@ public class CmsSearchTab extends A_CmsTab {
             result.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0)).append(" ").append(
                 language);
         }
+
+        // append the search query to the resulting string
+        StringBuffer queryResult = new StringBuffer();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
+            queryResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0)).append(" ").append(query);
+        }
+        if ((result.length() > 0) && (queryResult.length() > 0)) {
+            result.append(", ");
+        }
+        result.append(queryResult);
 
         // append the date created range to the resulting string
         StringBuffer createdResult = new StringBuffer();
