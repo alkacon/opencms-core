@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspResourceAccessBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/05 16:58:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0
  * 
@@ -211,6 +211,22 @@ public class CmsJspResourceAccessBean {
             }
         }
         return m_file;
+    }
+
+    /**
+     * Returns the file contents of the raw VFS file object as String.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:resourceload ... &gt;
+     *     &lt;cms:resourceaccess var="res" /&gt;
+     *     String content of the resource: ${res.fileContentAsString}
+     * &lt;/cms:resourceload&gt;</pre>
+     * 
+     * @return the file contents of the raw VFS file object as String
+     */
+    public String getFileContentAsString() {
+
+        return new String(getFile().getContents());
     }
 
     /**
