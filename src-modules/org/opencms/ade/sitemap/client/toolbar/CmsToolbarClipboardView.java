@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/05 05:50:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -112,15 +112,21 @@ public class CmsToolbarClipboardView {
      */
     public CmsToolbarClipboardView(CmsToolbarClipboardButton clipboardButton, final CmsSitemapController controller) {
 
+        m_clipboardButton = clipboardButton;
         m_modified = new CmsList<CmsListItem>();
+        boolean hasElements = false;
         for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getModifications().values()) {
             m_modified.insertItem(createModifiedItem(entry), 0);
+            hasElements = true;
         }
+        m_clipboardButton.enableClearModified(hasElements);
         m_deleted = new CmsList<CmsListItem>();
+        hasElements = false;
         for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getDeletions().values()) {
             m_deleted.insertItem(createDeletedItem(entry), 0);
+            hasElements = true;
         }
-        m_clipboardButton = clipboardButton;
+        m_clipboardButton.enableClearDeleted(hasElements);
         controller.addChangeHandler(new I_CmsSitemapChangeHandler() {
 
             /**
@@ -145,6 +151,7 @@ public class CmsToolbarClipboardView {
             getDeleted().insertItem(createDeletedItem(entry), 0);
         }
         removeModified(entry.getId().toString());
+        m_clipboardButton.enableClearDeleted(true);
     }
 
     /**
@@ -158,6 +165,7 @@ public class CmsToolbarClipboardView {
         removeDeleted(entry.getId().toString());
         removeModified(entry.getId().toString());
         getModified().insertItem(createModifiedItem(entry), 0);
+        m_clipboardButton.enableClearModified(true);
     }
 
     /**
@@ -166,6 +174,7 @@ public class CmsToolbarClipboardView {
     public void clearDeleted() {
 
         m_deleted.clearList();
+        m_clipboardButton.enableClearDeleted(false);
     }
 
     /**
@@ -174,6 +183,7 @@ public class CmsToolbarClipboardView {
     public void clearModified() {
 
         m_modified.clearList();
+        m_clipboardButton.enableClearModified(false);
     }
 
     /**
@@ -294,6 +304,9 @@ public class CmsToolbarClipboardView {
             // remove
             getDeleted().removeItem(item);
         }
+        if (getDeleted().getWidgetCount() == 0) {
+            m_clipboardButton.enableClearDeleted(false);
+        }
     }
 
     /**
@@ -307,6 +320,9 @@ public class CmsToolbarClipboardView {
         if (item != null) {
             // remove
             getModified().removeItem(item);
+        }
+        if (getModified().getWidgetCount() == 0) {
+            m_clipboardButton.enableClearModified(false);
         }
     }
 }

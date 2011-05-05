@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2011/05/04 16:16:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/05 05:50:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
+
+    /** The clear deleted list button. */
+    private CmsPushButton m_clearDeleted;
+
+    /** The clear modified list button. */
+    private CmsPushButton m_clearModified;
 
     /**
      * Constructor.<p>
@@ -66,6 +72,54 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
             I_CmsButton.ButtonData.CLIPBOARD.getIconClass(),
             toolbar,
             controller);
+        m_clearModified = createClearButton(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                getController().clearModifiedList();
+            }
+        });
+        m_clearDeleted = createClearButton(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                getController().clearDeletedList();
+            }
+        });
+    }
+
+    /**
+     * Enables/disables the clear deleted list button.<p>
+     * 
+     * @param enable <code>true</code> to enable
+     */
+    public void enableClearDeleted(boolean enable) {
+
+        if (enable) {
+            m_clearDeleted.enable();
+        } else {
+            m_clearDeleted.disable(Messages.get().key(Messages.GUI_DISABLE_CLEAR_LIST_0));
+        }
+    }
+
+    /**
+     * Enables/disables the clear modified list button.<p>
+     * 
+     * @param enable <code>true</code> to enable
+     */
+    public void enableClearModified(boolean enable) {
+
+        if (enable) {
+            m_clearModified.enable();
+        } else {
+            m_clearModified.disable(Messages.get().key(Messages.GUI_DISABLE_CLEAR_LIST_0));
+        }
     }
 
     /**
@@ -77,29 +131,13 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
         CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
         FlowPanel modifiedTab = createTab(view.getModified());
         view.getModified().addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-        modifiedTab.add(createClearButton(new ClickHandler() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                getController().clearModifiedList();
-            }
-        }));
+        modifiedTab.add(m_clearModified);
         addTab(modifiedTab, Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
         FlowPanel deletedTab = createTab(view.getDeleted());
         view.getDeleted().addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-        deletedTab.add(createClearButton(new ClickHandler() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                getController().clearDeletedList();
-            }
-        }));
+        deletedTab.add(m_clearDeleted);
         addTab(deletedTab, Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
     }
 
