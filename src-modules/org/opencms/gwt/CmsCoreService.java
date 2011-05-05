@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/03 17:46:51 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/05 09:48:24 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,6 +66,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
@@ -96,7 +97,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  * 
@@ -925,8 +926,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         // the resulting list
         List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
 
+        // get the workplace manager
+        CmsWorkplaceManager wpManager = OpenCms.getWorkplaceManager();
+
         // get the workplace message bundle
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getCmsObject().getRequestContext().getLocale());
+        CmsMessages messages = wpManager.getMessages(wpManager.getWorkplaceLocale(getCmsObject()));
 
         for (CmsExplorerContextMenuItem item : items) {
 
@@ -944,7 +948,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                 String itemRuleName = item.getRule();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemRuleName)) {
-                    CmsMenuRule rule = OpenCms.getWorkplaceManager().getMenuRule(itemRuleName);
+                    CmsMenuRule rule = wpManager.getMenuRule(itemRuleName);
                     if (rule != null) {
                         // get the first matching rule to apply for visibility
                         I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCmsObject(), resUtil);
