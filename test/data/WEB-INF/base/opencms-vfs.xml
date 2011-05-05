@@ -116,6 +116,7 @@
 				<collector class="org.opencms.file.collectors.CmsSubscriptionCollector" order="150" />
 				<collector class="org.opencms.file.collectors.CmsChangedResourceCollector" order="160" />
 			</collectors>		
+			<namegenerator class="org.opencms.loader.CmsDefaultFileNameGenerator"/>		
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
 			    <mimetype extension=".mme" type="application/base64" />

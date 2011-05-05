@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 10:32:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -105,6 +105,10 @@ public class TestConfiguration extends OpenCmsTestCase {
             System.out.println("---");
             System.out.println(CmsXmlUtils.marshal(outputDoc, CmsEncoder.ENCODING_UTF_8));
             System.out.println("---");
+
+            System.out.println("+++");
+            System.out.println(CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8));
+            System.out.println("+++");
 
             assertEquals(outputDoc, inputDoc);
         }

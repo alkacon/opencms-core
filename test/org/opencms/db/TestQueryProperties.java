@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestQueryProperties.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 10:32:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestQueryProperties extends OpenCmsTestCase {
 
@@ -101,7 +101,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
         suite.addTest(new TestQueryProperties("testQueryPropertiesMssql"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesMysql"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesOracle"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesOracle8"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesPostgresql"));
 
         return suite;
@@ -153,18 +152,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
         // oracle8
         File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/oracle/query.properties").getPath());
-        parseQueryProperties(queries);
-    }
-
-    /**
-     * Test the oracle8 query.properties file within the workspace for format errors.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void testQueryPropertiesOracle8() throws Exception {
-
-        // oracle8
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/oracle8/query.properties").getPath());
         parseQueryProperties(queries);
     }
 

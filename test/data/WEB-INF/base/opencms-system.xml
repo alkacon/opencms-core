@@ -114,5 +114,6 @@
                 <groupcontainers offline="64" online="64" />
             </ade-cache>
         </ade>
+        <subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
 	</system>
 </opencms>

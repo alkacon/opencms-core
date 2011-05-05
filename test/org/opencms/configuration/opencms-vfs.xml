@@ -116,7 +116,7 @@
 				<collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
 				<collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
 			</collectors>
-			<namegenerator class="org.opencms.xml.content.CmsDefaultFileNameGenerator" />
+			<namegenerator class="org.opencms.loader.CmsDefaultFileNameGenerator" />
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
 			    <mimetype extension=".mme" type="application/base64" />
