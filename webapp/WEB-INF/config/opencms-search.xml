@@ -260,7 +260,8 @@
 	                <name>msexcel</name>
 	                <name>mspowerpoint</name>
 	                <name>image</name>
-	                <name>generic</name>			
+	                <name>generic</name>		
+	            	<name>openoffice</name>	                	
 				</documenttypes-indexed>				
 			</indexsource>
 			<indexsource>
@@ -283,7 +284,7 @@
 				<documenttypes-indexed>
 	                <name>xmlpage-galleries</name>
 					<name>xmlcontent-galleries</name>
-	                <name>page</name>
+					<name>jsp</name>
 	                <name>text</name>
 	                <name>pdf</name>
 	                <name>rtf</name>
