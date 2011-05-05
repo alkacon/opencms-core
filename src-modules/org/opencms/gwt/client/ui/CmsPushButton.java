@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2011/05/04 15:47:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/05 10:23:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -346,6 +346,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     public void setText(String text) {
 
         setUpFace(text, m_imageClass);
+        setTitle(text);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/upload/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 10:23:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -374,6 +374,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public void setText(String text) {
 
         setUpFace(text, m_imageClass);
+        setTitle(text);
     }
 
     /**
