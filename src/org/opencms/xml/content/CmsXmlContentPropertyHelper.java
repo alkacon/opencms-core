@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,9 +71,9 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
- * @since 7.9.2
+ * @since 8.0.0
  */
 public final class CmsXmlContentPropertyHelper implements Cloneable {
 

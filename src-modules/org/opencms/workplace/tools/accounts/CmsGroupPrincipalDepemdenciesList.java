@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupPrincipalDepemdenciesList.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 07:15:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,9 +64,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
- * @since 7.9.* 
+ * @since 8.0.0 
  */
 public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainerFactory.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 07:14:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,9 +60,9 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- * @since 7.9.1
+ * @since 8.0.0
  */
 public final class CmsXmlGroupContainerFactory {
 

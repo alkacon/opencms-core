@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntryType.java,v $
- * Date   : $Date: 2011/05/04 18:33:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,9 +61,9 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- * @since 7.9.2
+ * @since 8.0.0
  */
 public enum CmsLogEntryType {
 

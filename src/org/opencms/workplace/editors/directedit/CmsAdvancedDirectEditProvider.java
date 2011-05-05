@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 07:14:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,15 +43,15 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provider for the OpenCms AdvancedDirectEdit.<p>
  * 
- * Since OpenCms version 7.9.1.<p>
+ * Since OpenCms version 8.0.0.<p>
  * 
  * This provider DOES NOT support {@link CmsDirectEditMode#MANUAL} mode.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
- * @since 7.9.1
+ * @since 8.0.0
  */
 public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 

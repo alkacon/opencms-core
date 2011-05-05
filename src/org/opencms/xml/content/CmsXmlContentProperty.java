@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,9 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
- * @since 7.9.2
+ * @since 8.0.0
  */
 public class CmsXmlContentProperty implements Serializable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogFilter.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,9 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
- * @since 7.9.2
+ * @since 8.0.0
  */
 public final class CmsLogFilter implements Cloneable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsGroupContainerBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/05 07:14:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,9 +39,9 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- * @since 7.9.1
+ * @since 8.0.0
  */
 public class CmsGroupContainerBean {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/I_CmsJspDeviceSelector.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Ruediger Kurz
  * 
- * @since 7.9.3
+ * @since 8.0.0
  * 
  * @version 1.0
  */

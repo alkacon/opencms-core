@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/AllTests.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/05 07:15:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,9 +41,9 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- * @since 7.9.2
+ * @since 8.0.0
  */
 public final class AllTests {
 

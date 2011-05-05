@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2011/05/03 11:48:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/05 07:14:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,9 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
- * @since 7.9.0 
+ * @since 8.0.0 
  */
 public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
 
