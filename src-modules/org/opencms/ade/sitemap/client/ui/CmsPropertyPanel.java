@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 05:59:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -121,7 +121,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     public CmsPropertyPanel(boolean showShared) {
 
         // TODO: replace with dynamic calculation
-        m_tabPanel.getElement().getStyle().setHeight(400, Unit.PX);
+        m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
         CmsDomUtil.makeScrollable(m_simpleTab);
         CmsDomUtil.makeScrollable(m_sharedTab);
         CmsDomUtil.makeScrollable(m_individualTab);
@@ -130,13 +130,19 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
 
-        m_tabPanel.add(
-            CmsPopup.wrapWithBorderPadding(m_simpleTab),
-            Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
+        m_tabPanel.add(CmsPopup.wrapWithBorderPadding(m_simpleTab), Messages.get().key(
+            Messages.GUI_PROPERTY_TAB_SIMPLE_0));
         m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
         m_showShared = showShared;
         if (m_showShared) {
             m_tabPanel.add(m_sharedTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
+        }
+
+        if (m_showShared) {
+            m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
+            m_tabPanel.add(m_sharedTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
+        } else {
+            m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
         }
         initWidget(m_tabPanel);
     }
@@ -189,6 +195,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         String unused = Messages.get().key(Messages.GUI_PROPERTY_BLOCK_UNUSED_0);
         CmsFieldSet unusedFieldSet = new CmsFieldSet();
+        unusedFieldSet.setOpen(false);
         unusedFieldSet.setLegend(unused);
         unusedFieldSet.setAnimationDuration(50);
 
@@ -304,7 +311,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      * @param fields the fields 
      * 
      * @param displaySet the set to which the field property names should be added if the corresponding property should be display at the top.
-     *  
      */
     private Set<String> preprocessFields(Collection<I_CmsFormField> fields) {
 
