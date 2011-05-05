@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/04 09:56:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/05 05:48:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +84,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         // GWT interface, nothing to do here
     }
 
+    /** The current group container instance. */
     private static CmsGroupcontainerEditor INSTANCE;
 
     /** The ui-binder for this widget. */
@@ -116,13 +117,14 @@ public final class CmsGroupcontainerEditor extends Composite {
     /** List of elements when editing started, use to restore on cancel. */
     private List<CmsContainerPageElement> m_backUpElements;
 
-    private CmsConfirmDialog m_confirm;
-
     /** The container-page controller. */
     private CmsContainerpageController m_controller;
 
     /** The group-container place-holder. */
     private Element m_editingPlaceholder;
+
+    /** The editor popup dialog. */
+    private CmsConfirmDialog m_editorDialog;
 
     /** The editor HTML-id. */
     private String m_editorId;
@@ -130,13 +132,16 @@ public final class CmsGroupcontainerEditor extends Composite {
     /** The editor widget. */
     private HTMLPanel m_editorWidget;
 
+    /** The container element data. */
     private CmsContainerElementData m_elementData;
 
     /** The group-container. */
     private CmsGroupContainerElement m_groupContainer;
 
+    /** The group container bean. */
     private CmsGroupContainer m_groupContainerBean;
 
+    /** The group container element position. */
     private CmsPositionBean m_groupContainerPosition;
 
     /** The index position of the group-container inside it's parent. */
@@ -283,8 +288,8 @@ public final class CmsGroupcontainerEditor extends Composite {
 
         m_elementData = elementsData.get(m_groupContainer.getId());
         if (m_elementData != null) {
-            if (m_confirm != null) {
-                m_confirm.getOkButton().enable();
+            if (m_editorDialog != null) {
+                m_editorDialog.getOkButton().enable();
             }
             m_groupContainerBean = new CmsGroupContainer();
             m_groupContainerBean.setClientId(m_elementData.getClientId());
@@ -372,10 +377,10 @@ public final class CmsGroupcontainerEditor extends Composite {
 
     private void openDialog() {
 
-        m_confirm = new CmsConfirmDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
+        m_editorDialog = new CmsConfirmDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
         int contentHeight = m_dialogContent.getOffsetHeight();
-        m_confirm.setMainContent(m_dialogContent);
-        m_confirm.setHandler(new I_CmsConfirmDialogHandler() {
+        m_editorDialog.setMainContent(m_dialogContent);
+        m_editorDialog.setHandler(new I_CmsConfirmDialogHandler() {
 
             public void onClose() {
 
@@ -388,29 +393,31 @@ public final class CmsGroupcontainerEditor extends Composite {
             }
         });
         if (m_elementData == null) {
-            m_confirm.getOkButton().disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));
+            m_editorDialog.getOkButton().disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));
         }
-        m_confirm.setGlassEnabled(false);
-        m_confirm.setModal(false);
-        m_confirm.setWidth(500);
+        m_editorDialog.setGlassEnabled(false);
+        m_editorDialog.setModal(false);
+        m_editorDialog.setWidth(500);
         if (m_groupContainerPosition != null) {
             if (m_groupContainerPosition.getLeft() > 600) {
                 // place left of the group container if there is enough space
-                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft() - 520, m_groupContainerPosition.getTop());
+                m_editorDialog.setPopupPosition(
+                    m_groupContainerPosition.getLeft() - 520,
+                    m_groupContainerPosition.getTop());
             } else if (m_groupContainerPosition.getTop() > contentHeight + 103 + 40) {
                 // else place above if there is enough space
-                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
+                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_confirm.setPopupPosition(m_groupContainerPosition.getLeft()
-                    + m_groupContainerPosition.getWidth()
-                    + 20, m_groupContainerPosition.getTop());
+                m_editorDialog.setPopupPosition(
+                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
+                    m_groupContainerPosition.getTop());
             }
-            m_confirm.show();
+            m_editorDialog.show();
         } else {
             // should never happen
-            m_confirm.center();
+            m_editorDialog.center();
         }
     }
 
