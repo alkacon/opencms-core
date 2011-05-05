@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/05 09:48:24 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/05/05 16:08:21 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  * 
@@ -108,10 +108,12 @@ import javax.servlet.http.HttpServletRequest;
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** The editor back-link URI. */
-    private static final String BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
+    private static final String EDITOR_BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    private static final String EDITOR_DELETE_URI = "/system/workplace/commons/delete.jsp";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -412,7 +414,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean toolbarVisible = getSessionCache().isToolbarVisible();
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
-            BACKLINK_URI,
+            EDITOR_BACKLINK_URI,
+            EDITOR_DELETE_URI,
             OpenCms.getSystemInfo().getOpenCmsContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),

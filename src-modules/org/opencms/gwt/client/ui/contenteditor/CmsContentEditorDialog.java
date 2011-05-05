@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/05/03 10:49:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/05 16:09:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -224,6 +224,8 @@ public final class CmsContentEditorDialog {
             + CmsCoreProvider.get().getLocale()
             + "&amp;backlink="
             + CmsCoreProvider.get().getContentEditorBacklinkUrl()
-            + "&amp;redirect=true";
+            + "&amp;closelink="
+            + CmsCoreProvider.get().getContentEditorBacklinkUrl()
+            + "&amp;elementname&amp;redirect=true";
     }
 }

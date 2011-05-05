@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/05 16:09:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -64,6 +64,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
+
+    /** The XML content editor delete-link URL. */
+    private String m_contentEditorDeleteLinkUrl;
 
     /** The XML content editor URL. */
     private String m_contentEditorUrl;
@@ -110,6 +113,7 @@ public class CmsCoreData implements IsSerializable {
         this(
             clone.getContentEditorUrl(),
             clone.getContentEditorBacklinkUrl(),
+            clone.getContentEditorDeleteLinkUrl(),
             clone.getContext(),
             clone.getSiteRoot(),
             clone.getLocale(),
@@ -126,6 +130,7 @@ public class CmsCoreData implements IsSerializable {
      * 
      * @param contentEditorUrl the XML content editor URL
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
+     * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
      * @param context the OpenCms context
      * @param siteRoot the current site root
      * @param locale the current request locale
@@ -139,6 +144,7 @@ public class CmsCoreData implements IsSerializable {
     public CmsCoreData(
         String contentEditorUrl,
         String contentEditorBacklinkUrl,
+        String contentEditorDeleteLinkUrl,
         String context,
         String siteRoot,
         String locale,
@@ -151,6 +157,7 @@ public class CmsCoreData implements IsSerializable {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
+        m_contentEditorDeleteLinkUrl = contentEditorDeleteLinkUrl;
         m_context = context;
         m_siteRoot = siteRoot;
         m_locale = locale;
@@ -160,6 +167,16 @@ public class CmsCoreData implements IsSerializable {
         m_extensionMapping = extensionMapping;
         m_serverTime = serverTime;
         m_toolbarVisible = toolbarVisible;
+    }
+
+    /**
+     * Returns the XML content editor delete-link URL.<p>
+     * 
+     * @return the XML content editor delete-link URL
+     */
+    public String getContentEditorDeleteLinkUrl() {
+
+        return m_contentEditorDeleteLinkUrl;
     }
 
     /**
