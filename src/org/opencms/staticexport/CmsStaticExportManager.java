@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -1238,7 +1238,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 String suffix = null;
                 try {
                     CmsResource res = cms.readResource(vfsName);
-                    isJsp = (CmsResourceTypeJsp.isJSP(res));
+                    isJsp = (CmsResourceTypeJsp.isJsp(res));
                     // if the resource is a plain resource then no change in suffix is required
                     if (isJsp) {
                         suffix = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, true).getValue(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.0
  */
@@ -519,10 +519,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     container.getType(),
                     containerWidth);
                 if (formatter != null) {
-                    CmsResource formatterResource = cms.readResource(formatter.getJspRootPath());
                     elements.add(new CmsContainerElementBean(
                         element.getId(),
-                        formatterResource.getStructureId(),
+                        formatter.getJspStructureId(),
                         element.getSettings(),
                         false));
                 }

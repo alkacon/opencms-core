@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/03 11:48:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,12 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +64,9 @@ public class CmsFormatterConfiguration {
 
     /** The log instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsFormatterConfiguration.class);
+
+    /** All formatters that have been added to this configuration. */
+    private List<CmsFormatterBean> m_allFormatters;
 
     /** Indicates if this configuration has been frozen. */
     private boolean m_frozen;
@@ -91,49 +99,21 @@ public class CmsFormatterConfiguration {
     public void addFormatter(CmsFormatterBean formatter) throws CmsConfigurationException {
 
         if (m_frozen) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_FORMATTER_CONFIG_FROZEN));
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_FORMATTER_CONFIG_FROZEN_0));
         }
-        String oldUri = null;
-        Object key;
-        if (formatter.isTypeFormatter()) {
-
-            String type = formatter.getContainerType();
-            key = type;
-            CmsFormatterBean oldFormatter = m_typeFormatters.get(type);
-            if (oldFormatter != null) {
-                oldUri = oldFormatter.getJspRootPath();
-            }
-            m_typeFormatters.put(type, formatter);
-        } else {
-
-            Integer minWidth = Integer.valueOf(formatter.getMinWidth());
-            key = minWidth;
-            int old = m_widthFormatters.lastIndexOf(formatter);
-            if (old >= 0) {
-                oldUri = m_widthFormatters.remove(old).getJspRootPath();
-            }
-            m_widthFormatters.add(formatter);
-        }
-        if (formatter.isPreviewFormatter()) {
-            // this is a preview formatter, last one overwrites earlier one
-            m_previewFormatter = formatter;
-        }
-        if (oldUri != null) {
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.LOG_CONTENT_DEFINITION_DUPLICATE_FORMATTER_4,
-                new Object[] {key, oldUri, formatter.getJspRootPath(), formatter.getLocation()}));
-        }
+        m_allFormatters.add(formatter);
     }
 
     /**
      * Freezes this configuration.<p>
+     * 
+     * @param cms an OpenCms user context that is used to validate the JSP root paths entries
      */
-    public void freeze() {
+    public void freeze(CmsObject cms) {
 
         if (!m_frozen) {
             m_frozen = true;
-            m_typeFormatters = Collections.unmodifiableMap(m_typeFormatters);
-            m_widthFormatters = Collections.unmodifiableList(m_widthFormatters);
+            initFormatters(cms);
         }
     }
 
@@ -241,5 +221,77 @@ public class CmsFormatterConfiguration {
     public boolean isFrozen() {
 
         return m_frozen;
+    }
+
+    /**
+     * Initializes all formatters of this configuration.<p>
+     * 
+     * It is also checked if the configured JSP root path exists, if not the formatter is removed 
+     * as it is unusable.<p>
+     * 
+     * @param cms the OpenCms user context to use for validating the JSP resources
+     */
+    private void initFormatters(CmsObject cms) {
+
+        for (CmsFormatterBean formatter : m_allFormatters) {
+
+            // first we make sure that the JSP exists at all (and also we read the UUID that way)
+            CmsResource res = null;
+            try {
+                // first get a cms copy so we can mess up the context without modifying the original
+                CmsObject cmsCopy = OpenCms.initCmsObject(cms);
+                // switch to the root site
+                cmsCopy.getRequestContext().setSiteRoot("");
+                // now read the JSP
+                res = cms.readResource(formatter.getJspRootPath());
+            } catch (CmsException e) {
+                //if this happens the result is null and we write a LOG error
+            }
+            if (!CmsResourceTypeJsp.isJsp(res)) {
+                // the formatter must be a JSP
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_FORMATTER_JSP_DONT_EXIST_1,
+                    formatter.getJspRootPath()));
+            }
+
+            if (res != null) {
+
+                formatter.setJspStructureId(res.getStructureId());
+
+                String oldUri = null;
+                Object key;
+                if (formatter.isTypeFormatter()) {
+
+                    String type = formatter.getContainerType();
+                    key = type;
+                    CmsFormatterBean oldFormatter = m_typeFormatters.get(type);
+                    if (oldFormatter != null) {
+                        oldUri = oldFormatter.getJspRootPath();
+                    }
+                    m_typeFormatters.put(type, formatter);
+                } else {
+
+                    Integer minWidth = Integer.valueOf(formatter.getMinWidth());
+                    key = minWidth;
+                    int old = m_widthFormatters.lastIndexOf(formatter);
+                    if (old >= 0) {
+                        oldUri = m_widthFormatters.remove(old).getJspRootPath();
+                    }
+                    m_widthFormatters.add(formatter);
+                }
+                if (formatter.isPreviewFormatter()) {
+                    // this is a preview formatter, last one overwrites earlier one
+                    m_previewFormatter = formatter;
+                }
+                if (oldUri != null) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_CONTENT_DEFINITION_DUPLICATE_FORMATTER_4,
+                        new Object[] {key, oldUri, formatter.getJspRootPath(), formatter.getLocation()}));
+                }
+            }
+        }
+        m_allFormatters = Collections.unmodifiableList(m_allFormatters);
+        m_typeFormatters = Collections.unmodifiableMap(m_typeFormatters);
+        m_widthFormatters = Collections.unmodifiableList(m_widthFormatters);
     }
 }

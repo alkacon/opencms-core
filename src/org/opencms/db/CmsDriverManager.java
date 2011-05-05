@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/05/04 18:33:19 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -750,7 +750,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource);
         // if the resource type is jsp
         // write is only allowed for developers
-        if (!canIgnorePermissions && (CmsResourceTypeJsp.isJSP(resource))) {
+        if (!canIgnorePermissions && (CmsResourceTypeJsp.isJsp(resource))) {
             if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
             }
@@ -1590,7 +1590,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc.removeSiteRoot(resourcePath)));
                 }
             }
-            if (CmsResourceTypeJsp.isJSP(resource)) {
+            if (CmsResourceTypeJsp.isJsp(resource)) {
                 // security check when trying to create a new jsp file
                 m_securityManager.checkRoleForResource(dbc, CmsRole.DEVELOPER, parentFolder);
             }

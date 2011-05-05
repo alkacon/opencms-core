@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2011/05/05 05:49:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -148,10 +148,10 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     CmsFormatterBean.PREVIEW_TYPE,
                     -1);
                 if (formatter != null) {
-                    CmsResource formatterResource = cms.readResource(formatter.getJspRootPath());
+                    CmsResource formatterResource = cms.readResource(formatter.getJspStructureId());
                     CmsContainerElementBean element = new CmsContainerElementBean(
                         resource.getStructureId(),
-                        formatterResource.getStructureId(),
+                        formatter.getJspStructureId(),
                         null,
                         false);
                     element.initResource(cms);

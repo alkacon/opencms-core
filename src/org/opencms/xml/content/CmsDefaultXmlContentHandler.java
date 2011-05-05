@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -479,10 +479,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration()
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration(org.opencms.file.CmsObject)
      */
-    public CmsFormatterConfiguration getFormatterConfiguration() {
+    public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms) {
 
+        if (!m_formatterConfiguration.isFrozen()) {
+            m_formatterConfiguration.freeze(cms);
+        }
         return m_formatterConfiguration;
     }
 
@@ -696,9 +699,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
-
-        // freeze the formatter configuration
-        m_formatterConfiguration.freeze();
 
         // at the end, add default check rules for optional file references
         addDefaultCheckRules(contentDefinition, null, null);
@@ -1651,7 +1651,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // if not set use "*" as default for type
                 type = CmsFormatterBean.WILDCARD_TYPE;
             }
-            String uri = element.attributeValue(APPINFO_ATTR_URI);
+            String jspRootPath = element.attributeValue(APPINFO_ATTR_URI);
             String minWidthStr = element.attributeValue(APPINFO_ATTR_MINWIDTH);
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
             String preview = element.attributeValue(APPINFO_ATTR_PREVIEW);
@@ -1659,7 +1659,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             try {
                 m_formatterConfiguration.addFormatter(new CmsFormatterBean(
                     type,
-                    uri,
+                    jspRootPath,
                     minWidthStr,
                     maxWidthStr,
                     preview,

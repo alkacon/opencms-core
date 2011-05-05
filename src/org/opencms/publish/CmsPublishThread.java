@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.5 
  */
@@ -247,7 +247,7 @@ import org.apache.commons.logging.Log;
             Iterator<CmsResource> it = m_publishJob.getPublishList().getFileList().iterator();
             while (it.hasNext()) {
                 CmsResource resource = it.next();
-                if ((CmsResourceTypeJsp.isJSP(resource)) || (resource.getTypeId() == plainId)) {
+                if ((CmsResourceTypeJsp.isJsp(resource)) || (resource.getTypeId() == plainId)) {
                     m_report.print(
                         Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_0),
                         I_CmsReport.FORMAT_NOTE);

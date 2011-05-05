@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -162,7 +162,7 @@ public class CmsElementUtil {
             if (formatter != null) {
                 String content = null;
                 try {
-                    content = getElementContent(element, m_cms.readResource(formatter.getJspRootPath()), container);
+                    content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
                 } catch (Exception e) {
                     // TODO: Log error
                     //                    LOG.error(Messages.get().getBundle().key(

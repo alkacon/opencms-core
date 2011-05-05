@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2011/05/05 07:14:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -66,7 +65,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,8 +142,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * Returns <code>true</code> in case the given resource is a JSP.<p>
      * 
-     * Internally this checks if the content loader for the given resource is 
-     * identical to the JSP content loader.<p>
+     * Internally this checks if the given resource type has an id that is registered as a JSP resource type.<p>
      * 
      * @param resource the resource to check
      * 
@@ -152,20 +150,9 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
      * 
      * @since 8.0.0
      */
-    public static boolean isJSP(CmsResource resource) {
+    public static boolean isJsp(CmsResource resource) {
 
-        boolean result = false;
-        if (resource != null) {
-            // avoid array index out of bound exception:
-            if (!resource.isFolder()) {
-                try {
-                    result = OpenCms.getResourceManager().getLoader(resource) instanceof CmsJspLoader;
-                } catch (CmsLoaderException e) {
-                    // result will be false
-                }
-            }
-        }
-        return result;
+        return resource == null ? false : isJspTypeId(resource.getTypeId());
     }
 
     /**

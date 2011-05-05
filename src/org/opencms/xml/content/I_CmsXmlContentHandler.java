@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,9 +130,11 @@ public interface I_CmsXmlContentHandler {
     /**
      * Returns the container page element formatter configuration for this handler.<p>
      * 
+     * @param cms the current users OpenCms context 
+     * 
      * @return the container page element formatter configuration for this handler
      */
-    CmsFormatterConfiguration getFormatterConfiguration();
+    CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms);
 
     /**
      * Returns the java-script resources to include into the html-page head.<p>

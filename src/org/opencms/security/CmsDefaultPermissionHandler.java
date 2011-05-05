@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.2
  */
@@ -125,7 +125,7 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
 
         // if the resource type is jsp
         // write is only allowed for administrators
-        if (writeRequired && !canIgnorePermissions && (CmsResourceTypeJsp.isJSP(resource))) {
+        if (writeRequired && !canIgnorePermissions && (CmsResourceTypeJsp.isJsp(resource))) {
             if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
                 denied |= CmsPermissionSet.PERMISSION_CONTROL;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/03 11:48:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -600,7 +600,7 @@ public class CmsConfigurationParser {
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
         CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
-            String jsp = getSubValueString(cms, fmtValue, N_JSP);
+            String jspRootPath = getSubValueString(cms, fmtValue, N_JSP);
             String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
             String minWidth = getSubValueString(cms, fmtValue, N_MINWIDTH);
             String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
@@ -608,7 +608,7 @@ public class CmsConfigurationParser {
             String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
             formatterConfiguration.addFormatter(new CmsFormatterBean(
                 fmtType,
-                jsp,
+                jspRootPath,
                 minWidth,
                 maxwidth,
                 preview,
@@ -616,7 +616,7 @@ public class CmsConfigurationParser {
                 m_content.getFile().getRootPath()));
         }
         if (formatterConfiguration.hasFormatters()) {
-            formatterConfiguration.freeze();
+            formatterConfiguration.freeze(cms);
             m_formatterConfigurations.put(resTypeName, formatterConfiguration);
         }
 

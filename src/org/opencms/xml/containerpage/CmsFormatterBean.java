@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/03 16:47:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 08:16:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 /**
  * A bean containing formatter configuration data as strings.<p>
@@ -39,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -73,6 +74,9 @@ public class CmsFormatterBean {
 
     /** The formatter JSP. */
     private String m_jspRootPath;
+
+    /** The UUID of the JSP resource for this formatter. */
+    private CmsUUID m_jspStructureId;
 
     /** The location this formatter was configured in. */
     private String m_location;
@@ -226,6 +230,16 @@ public class CmsFormatterBean {
     }
 
     /**
+     * Returns the structure id of the JSP resource for this formatter.<p>
+     * 
+     * @return the structure id of the JSP resource for this formatter
+     */
+    public CmsUUID getJspStructureId() {
+
+        return m_jspStructureId;
+    }
+
+    /**
      * Returns the location this formatter was defined in.<p>
      * 
      * This will be an OpenCms VFS URI, either to the XML schema XSD, or the
@@ -301,5 +315,18 @@ public class CmsFormatterBean {
     public boolean isTypeFormatter() {
 
         return m_isTypeFormatter;
+    }
+
+    /**
+     * Sets the structure id of the JSP for this formatter.<p>
+     *
+     * This is "package visible" as it should be only called from {@link CmsFormatterConfiguration#freeze(org.opencms.file.CmsObject)}.<p>
+     * 
+     * @param jspStructureId the structure id of the JSP for this formatter
+     */
+    void setJspStructureId(CmsUUID jspStructureId) {
+
+        // package visibility is wanted
+        m_jspStructureId = jspStructureId;
     }
 }
