@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/05 06:36:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -339,9 +339,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
-     * Returns the root directory of this site in the OpenCms VFS.<p>
+     * Returns the display title of this site.<p>
      * 
-     * @return the root directory of this site in the OpenCms VFS
+     * @return the display title of this site
      */
     public String getTitle() {
 
@@ -501,9 +501,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
-     * Sets the display title of this site in the OpenCms VFS.<p>
+     * Sets the display title of this site.<p>
      * 
-     * @param name the display title of this site in the OpenCms VFS
+     * @param name the display title of this site
      */
     protected void setTitle(String name) {
 

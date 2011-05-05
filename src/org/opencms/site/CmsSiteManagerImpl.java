@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 06:36:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,14 +66,14 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
 
     /** A placeholder for the title of the shared folder. */
-    public static String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
+    public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
