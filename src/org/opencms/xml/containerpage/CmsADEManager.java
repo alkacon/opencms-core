@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 7.6
  */
@@ -363,15 +363,20 @@ public class CmsADEManager {
     /**
      * Returns the formatter configuration for a given resource.<p>
      * 
-     * @param cms the CMS context 
+     * @param cms the OpenCms user context 
+     * @param containerPageRootPath the root path to the container page that includes the element resource
      * @param res the container page element resource 
+     * 
      * @return the formatter configuration for a given resource
      *   
      * @throws CmsException if something goes wrong  
      */
-    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) throws CmsException {
+    public CmsFormatterConfiguration getFormattersForResource(
+        CmsObject cms,
+        String containerPageRootPath,
+        CmsResource res) throws CmsException {
 
-        return m_configuration.getFormattersForResource(cms, res);
+        return m_configuration.getFormattersForResource(cms, containerPageRootPath, res);
     }
 
     /**

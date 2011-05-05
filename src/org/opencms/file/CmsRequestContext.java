@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -368,6 +368,19 @@ public final class CmsRequestContext {
     public long getRequestTime() {
 
         return m_requestTime;
+    }
+
+    /**
+     * Returns this request contexts uri extended with the current site root path.<p>
+     * 
+     * @return this request contexts uri extended with the current site root path
+     * 
+     * @see #getUri()
+     * @see #addSiteRoot(String)
+     */
+    public String getRootUri() {
+
+        return addSiteRoot(m_siteRoot, m_uri);
     }
 
     /**

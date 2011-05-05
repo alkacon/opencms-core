@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 7.6 
  */
@@ -178,16 +178,18 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormattersForResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormattersForResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResource)
      */
-    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) throws CmsException {
+    public CmsFormatterConfiguration getFormattersForResource(
+        CmsObject cms,
+        String containerPageRootPath,
+        CmsResource res) throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String resTypeName = resType.getTypeName();
-        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
-            rootPath);
+            containerPageRootPath);
         CmsFormatterConfiguration result = config.getFormatterConfiguration().get(resTypeName);
         if (result == null) {
             result = resType.getFormattersForResource(cms, res);

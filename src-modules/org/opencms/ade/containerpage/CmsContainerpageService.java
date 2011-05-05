@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/05 16:07:01 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -428,9 +428,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String propName = entry.getKey();
                 String propType = propertiesConf.get(propName).getType();
-                changedProps.put(
-                    propName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
+                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    propType,
+                    properties.get(propName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedProps, false);
@@ -513,12 +514,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
-                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(cms, resource);
-                String containerType = container.getType();
 
-                // always reference the preview formatter for group containers
+                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(
+                    cms,
+                    cms.getRequestContext().addSiteRoot(containerpageUri),
+                    resource);
+
+                String containerType = null;
                 if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+                    // always reference the preview formatter for group containers
                     containerType = CmsFormatterBean.PREVIEW_TYPE;
+                } else {
+                    containerType = container.getType();
                 }
 
                 CmsFormatterBean formatter = formatters.getFormatter(containerType, containerWidth);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentContainerPage.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,10 @@ package org.opencms.search.documents;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -46,6 +45,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -65,7 +65,7 @@ import org.apache.lucene.document.Document;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0 
  */
@@ -132,21 +132,13 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
             for (CmsContainerElementBean element : containerBean.getElements()) {
                 // check all elements in this container
 
-                CmsResource formatter = cms.readResource(element.getFormatterId());
-                // check the property "search.exclude" on the formatter of the element
-                CmsProperty excludeProp = cms.readPropertyObject(
-                    formatter,
-                    CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-                    false);
-                boolean excludeElement = false;
-                if (!excludeProp.isNullProperty()) {
-                    // exclude property has been set on the formatter
-                    String propValue = excludeProp.getValue();
-                    excludeElement = Boolean.valueOf(propValue).booleanValue()
-                        || CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
-                        || CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY.equalsIgnoreCase(propValue);
-                }
-                if (!excludeElement) {
+                // get the formatter configuration for this element
+                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(
+                    cms,
+                    resource.getRootPath(),
+                    element.getResource());
+
+                if (formatters.isSearchContent(element.getFormatterId())) {
                     // the content of this element must be included for the container page
 
                     element.initResource(cms);

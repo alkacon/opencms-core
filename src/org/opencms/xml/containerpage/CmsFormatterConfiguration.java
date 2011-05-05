@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/05 16:07:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -79,6 +80,9 @@ public class CmsFormatterConfiguration {
 
     /** The formatter that is to be used for the preview in the ADE gallery GUI. */
     private CmsFormatterBean m_previewFormatter;
+
+    /** Simple lookup cache for the search content attribute. */
+    private Map<CmsUUID, Boolean> m_searchContent;
 
     /** The formatters for different container types. */
     private Map<String, CmsFormatterBean> m_typeFormatters;
@@ -229,6 +233,44 @@ public class CmsFormatterConfiguration {
             return true;
         }
         return (m_typeFormatters.size() > 0) || (m_widthFormatters.size() > 0);
+    }
+
+    /**
+     * Returns <code>true</code> in case this configuration contains a formatter with the 
+     * provided structure id that has been configured for including the formatted content in the online search.<p>
+     * 
+     * @param formatterStructureId
+     * 
+     * @return <code>true</code> in case this configuration contains a formatter with the 
+     * provided structure id that has been configured for including the formatted content in the online search
+     */
+    public boolean isSearchContent(CmsUUID formatterStructureId) {
+
+        if (EMPTY_CONFIGURATION == this) {
+            // don't search if this is just the empty configuration
+            return false;
+        }
+        // lookup the cache
+        Boolean result = m_searchContent.get(formatterStructureId);
+        if (result == null) {
+            // result so far unknown
+            for (CmsFormatterBean formatter : m_allFormatters) {
+                if (formatter.getJspStructureId().equals(formatterStructureId)) {
+                    // found the match
+                    result = Boolean.valueOf(formatter.isSearchContent());
+                    // first match rules
+                    break;
+                }
+            }
+            if (result == null) {
+                // no match found, in this case dont search the content
+                result = Boolean.FALSE;
+            }
+            // store result in the cache
+            m_searchContent.put(formatterStructureId, result);
+        }
+
+        return result.booleanValue();
     }
 
     /**

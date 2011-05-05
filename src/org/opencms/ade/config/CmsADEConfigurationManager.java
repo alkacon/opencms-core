@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/05/04 12:33:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 16:14:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -203,7 +203,7 @@ public class CmsADEConfigurationManager {
      * Fetches the container page configuration for the given root path.<p>
      * 
      * @param cms the current CMS context 
-     * @param rootPath the root path
+     * @param rootPath the root path to the container page
      *  
      * @return the configuration data for the root path
      *   
