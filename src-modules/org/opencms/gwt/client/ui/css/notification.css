@@ -6,7 +6,7 @@ div.blocking{
 	width: 100%;
 	top: 0px;
 	left: 0px;
-	z-index: value("constants.css.zIndexInline");
+	z-index: value("constants.css.zIndexPopup");
 }
 
 .popup div.blocking{
@@ -47,8 +47,9 @@ div.notificationOverlay {
 		opacity: 0.5; 
 	}
 }
-.popup .notificationContainer{
+.popup div.notificationContainer{
 	top: 0px;
+	z-index: value("constants.css.zIndexPopup");
 }
 div.notificationContainer {
 	text-align: center;
