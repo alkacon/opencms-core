@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/05/04 16:04:08 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/05/05 06:21:30 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,6 +67,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -82,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -734,8 +735,14 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         m_problemsPanel.clear();
         if (numProblems > 0) {
+            HorizontalPanel errorBox = new HorizontalPanel();
+            Label warnIcon = new Label();
+            String styleName = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().warningSprite();
+            warnIcon.addStyleName(styleName);
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
-            m_problemsPanel.add(new InlineLabel(message));
+            errorBox.add(warnIcon);
+            errorBox.add(new Label(message));
+            m_problemsPanel.add(errorBox);
             m_problemsPanel.setVisible(true);
         }
         m_checkboxProblems.setVisible(numProblems > 0);

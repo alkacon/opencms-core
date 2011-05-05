@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/05 06:21:30 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -147,6 +147,13 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String formWidgetContainer();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String highTextBoxes();
 
     /**
      * Css class reader.<p>

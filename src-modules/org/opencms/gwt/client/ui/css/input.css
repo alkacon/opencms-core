@@ -7,6 +7,10 @@
 	background: transparent;
 }
 
+.highTextBoxes .textBox {
+	height: 20px;
+}
+
 .textboxGhostMode {
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") !important;
@@ -68,8 +72,6 @@
 
 
 
-
-
 .radioButton .gwt-ToggleButton {
 	outline: none;
 }
@@ -120,6 +122,7 @@
 	color: value("constants.css.textColor");
 }
 
+
 .textBoxPanelDisabled {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
@@ -136,7 +139,7 @@
 }
 
 .formLabel {
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .selectBoxRoot *, .selectBoxSelector * {

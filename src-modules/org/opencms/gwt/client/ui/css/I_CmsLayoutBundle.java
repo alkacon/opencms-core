@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2011/05/05 06:21:30 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * 
  * @since 8.0.0
  */
@@ -489,6 +489,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String warningContent();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String warningSprite();
     }
 
     /** The drag and drop CSS used by the base module. */

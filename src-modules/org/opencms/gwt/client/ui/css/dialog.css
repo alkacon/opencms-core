@@ -201,6 +201,10 @@
 	border: 1px solid value("constants.css.borderColor");
 }
 
+@sprite .warningSprite {
+	gwt-image: "gwtImages.warningSmallImage"; 
+}
+
 @sprite .warningContent > tbody > tr > td:first-child {
 	gwt-image: "gwtImages.warningBigImage";
 	background-repeat: no-repeat;

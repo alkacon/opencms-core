@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 06:21:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -90,8 +90,9 @@ public class CmsFormRow extends Composite {
      */
     public CmsFormRow() {
 
-        initWidget(uiBinder.createAndBindUi(this));
-
+        Widget main = uiBinder.createAndBindUi(this);
+        initWidget(main);
+        main.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
     }
 
     /** 
