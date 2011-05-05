@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/05 17:14:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -87,6 +87,58 @@ public class CmsMessages {
     }
 
     /**
+     * Helper method for formatting message parameters.<p>
+     * 
+     * @param result the raw message containing placeholders like {0}
+     * @param args the parameters to insert into the placeholders
+     *  
+     * @return the formatted message
+     */
+    public static String formatMessage(String result, Object... args) {
+
+        // key was found in the bundle - create and apply the formatter
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof Date) {
+                Date date = (Date)args[i];
+                result = result.replace(getRegEx(i), CmsDateTimeUtil.getDateTime(date, CmsDateTimeUtil.Format.MEDIUM));
+                result = result.replace(getRegEx(i, "time"), CmsDateTimeUtil.getTime(
+                    date,
+                    CmsDateTimeUtil.Format.MEDIUM));
+                result = result.replace(getRegEx(i, "time", "short"), CmsDateTimeUtil.getTime(
+                    date,
+                    CmsDateTimeUtil.Format.SHORT));
+                result = result.replace(getRegEx(i, "time", "medium"), CmsDateTimeUtil.getTime(
+                    date,
+                    CmsDateTimeUtil.Format.MEDIUM));
+                result = result.replace(getRegEx(i, "time", "long"), CmsDateTimeUtil.getTime(
+                    date,
+                    CmsDateTimeUtil.Format.LONG));
+                result = result.replace(getRegEx(i, "time", "full"), CmsDateTimeUtil.getTime(
+                    date,
+                    CmsDateTimeUtil.Format.FULL));
+                result = result.replace(getRegEx(i, "date"), CmsDateTimeUtil.getDate(
+                    date,
+                    CmsDateTimeUtil.Format.MEDIUM));
+                result = result.replace(getRegEx(i, "date", "short"), CmsDateTimeUtil.getDate(
+                    date,
+                    CmsDateTimeUtil.Format.SHORT));
+                result = result.replace(getRegEx(i, "date", "medium"), CmsDateTimeUtil.getDate(
+                    date,
+                    CmsDateTimeUtil.Format.MEDIUM));
+                result = result.replace(getRegEx(i, "date", "long"), CmsDateTimeUtil.getDate(
+                    date,
+                    CmsDateTimeUtil.Format.LONG));
+                result = result.replace(getRegEx(i, "date", "full"), CmsDateTimeUtil.getDate(
+                    date,
+                    CmsDateTimeUtil.Format.FULL));
+            } else {
+                result = result.replace(getRegEx(i), String.valueOf(args[i]));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Formats an unknown key.<p>
      * 
      * @param keyName the key to format
@@ -121,6 +173,23 @@ public class CmsMessages {
     public static boolean isUnknownKey(String value) {
 
         return (value == null) || (value.startsWith(UNKNOWN_KEY_EXTENSION));
+    }
+
+    /**
+     * Returns a regular expression for replacement.<p>
+     * 
+     * @param position the parameter number
+     * @param options the optional options
+     * 
+     * @return the regular expression for replacement
+     */
+    private static String getRegEx(int position, String... options) {
+
+        String value = "" + position;
+        for (int i = 0; i < options.length; i++) {
+            value += "," + options[i];
+        }
+        return "{" + value + "}";
     }
 
     /** 
@@ -302,47 +371,7 @@ public class CmsMessages {
             // key was not found
             result = formatUnknownKey(key);
         } else {
-            // key was found in the bundle - create and apply the formatter
-            for (int i = 0; i < args.length; i++) {
-                if (args[i] instanceof Date) {
-                    Date date = (Date)args[i];
-                    result = result.replace(
-                        getRegEx(i),
-                        CmsDateTimeUtil.getDateTime(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(
-                        getRegEx(i, "time"),
-                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(
-                        getRegEx(i, "time", "short"),
-                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.SHORT));
-                    result = result.replace(
-                        getRegEx(i, "time", "medium"),
-                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(
-                        getRegEx(i, "time", "long"),
-                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.LONG));
-                    result = result.replace(
-                        getRegEx(i, "time", "full"),
-                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.FULL));
-                    result = result.replace(
-                        getRegEx(i, "date"),
-                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(
-                        getRegEx(i, "date", "short"),
-                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.SHORT));
-                    result = result.replace(
-                        getRegEx(i, "date", "medium"),
-                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(
-                        getRegEx(i, "date", "long"),
-                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.LONG));
-                    result = result.replace(
-                        getRegEx(i, "date", "full"),
-                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.FULL));
-                } else {
-                    result = result.replace(getRegEx(i), String.valueOf(args[i]));
-                }
-            }
+            result = formatMessage(result, args);
         }
         // return the result
         return result;
@@ -404,22 +433,5 @@ public class CmsMessages {
             System.arraycopy(values, 1, params, 0, params.length);
             return key(cutKeyName, (Object[])params);
         }
-    }
-
-    /**
-     * Returns a regular expression for replacement.<p>
-     * 
-     * @param position the parameter number
-     * @param options the optional options
-     * 
-     * @return the regular expression for replacement
-     */
-    private String getRegEx(int position, String... options) {
-
-        String value = "" + position;
-        for (int i = 0; i < options.length; i++) {
-            value += "," + options[i];
-        }
-        return "{" + value + "}";
     }
 }

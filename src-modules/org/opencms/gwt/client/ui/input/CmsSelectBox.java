@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/05 17:14:57 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,7 +49,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  * 
@@ -61,6 +62,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     /** The widget type identifier. */
     private static final String WIDGET_TYPE = "select";
 
+    /** The key for the text which should be displayed if no option is available. */
+    public static final String NO_SELECTION_TEXT = "%NO_SELECTION_TEXT%";
+
     /** The widget displayed in the opener. */
     protected CmsLabel m_openerWidget;
 
@@ -69,6 +73,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
 
     /** A map from select options to their label texts. */
     private Map<String, String> m_items;
+
+    /** The text which should be displayed if there is no selection. */
+    private String m_noSelectionText;
 
     /**
      * Default constructor.<p>
@@ -115,6 +122,10 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public CmsSelectBox(Map<String, String> items, boolean addNullOption) {
 
         super();
+        if (items.containsKey(NO_SELECTION_TEXT)) {
+            m_noSelectionText = items.get(NO_SELECTION_TEXT);
+            items.remove(NO_SELECTION_TEXT);
+        }
         if (addNullOption) {
             String text = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_0);
             items.put("", text);
@@ -195,7 +206,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
             value = "";
         }
         String otherOptionText = m_items.get(value);
-        String message = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_1, otherOptionText);
+        String message = m_noSelectionText != null ? m_noSelectionText : Messages.get().key(
+            Messages.GUI_SELECTBOX_EMPTY_SELECTION_1);
+        message = CmsMessages.formatMessage(message, otherOptionText);
         setTextForNullSelection(message);
         if (ghostMode) {
             selectValue("");
