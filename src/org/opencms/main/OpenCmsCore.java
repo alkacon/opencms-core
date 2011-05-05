@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,6 +100,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -147,7 +148,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -1209,7 +1210,7 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
 
-        // now initialize the managers
+        // now initialize the other managers
         try {
             // initialize the scheduler
             m_scheduleManager.initialize(initCmsObject(adminCms));
@@ -1254,6 +1255,9 @@ public final class OpenCmsCore {
             // initialize ade manager
             m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeConfigurationManager = new CmsADEConfigurationManager(adminCms);
+
+            // initialize the formatter configuration
+            CmsFormatterConfiguration.initialize(adminCms);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }

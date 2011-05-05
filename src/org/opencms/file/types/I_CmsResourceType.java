@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -409,16 +409,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     List<String> getConfiguredMappings();
 
     /**
-     * Returns the formatter JSP URI for the given container page element.<p>
+     * Returns the formatter configuration for the given resource.<p>
      * 
      * @param cms the current cms context
-     * @param resource the container page element resource to get the formatter for
-     * @param type the container type
-     * @param width the container width 
+     * @param resource the resource to get the formatter configuration for
      * 
-     * @return the formatter for the given container page element
+     * @return the formatter configuration for the given resource
      */
-    CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width);
+    CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource resource);
 
     /**
      * Returns the gallery preview provider class name.<p>

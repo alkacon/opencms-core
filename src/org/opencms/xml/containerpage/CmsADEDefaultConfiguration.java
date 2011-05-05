@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 7.6 
  */
@@ -178,10 +178,9 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFormattersForResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
-    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width)
-    throws CmsException {
+    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String resTypeName = resType.getTypeName();
@@ -189,12 +188,11 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
             rootPath);
-        CmsFormatterConfiguration formatterConfiguration = config.getFormatterConfiguration().get(resTypeName);
-        if (formatterConfiguration != null) {
-            return formatterConfiguration.getFormatter(type, width);
-        } else {
-            return resType.getFormatterForContainer(cms, res, type, width);
+        CmsFormatterConfiguration result = config.getFormatterConfiguration().get(resTypeName);
+        if (result == null) {
+            result = resType.getFormattersForResource(cms, res);
         }
+        return result;
     }
 
     /**

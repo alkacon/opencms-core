@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,9 +47,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +68,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +199,26 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.deleteResource(cms, securityManager, resource, siblingMode);
         removeReferencingFromCache(references);
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#getFormattersForResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @Override
+    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) {
+
+        // currently a JSP fits all containers because of minwidth 1, maybe check for a property later
+        CmsFormatterBean selfFormatter = new CmsFormatterBean(
+            CmsFormatterBean.WILDCARD_TYPE,
+            res.getRootPath(),
+            res.getStructureId(),
+            1,
+            Integer.MAX_VALUE,
+            true,
+            false,
+            res.getRootPath());
+
+        return new CmsFormatterConfiguration(Collections.singletonList(selfFormatter));
     }
 
     /**

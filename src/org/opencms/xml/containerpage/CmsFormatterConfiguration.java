@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,13 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,20 +56,26 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterConfiguration {
 
+    /** The empty formatter configuration. */
+    public static final CmsFormatterConfiguration EMPTY_CONFIGURATION = new CmsFormatterConfiguration(null);
+
     /** The log instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsFormatterConfiguration.class);
+
+    /** CmsObject used to read the JSP resources configured in the XSD schema. */
+    private static CmsObject m_adminCms;
 
     /** All formatters that have been added to this configuration. */
     private List<CmsFormatterBean> m_allFormatters;
 
-    /** Indicates if this configuration has been frozen. */
-    private boolean m_frozen;
+    /** Indicates if the preview formatter has already been calculated. */
+    private boolean m_previewCalculated;
 
     /** The formatter that is to be used for the preview in the ADE gallery GUI. */
     private CmsFormatterBean m_previewFormatter;
@@ -80,40 +86,40 @@ public class CmsFormatterConfiguration {
     /** The formatters for different widths. */
     private List<CmsFormatterBean> m_widthFormatters;
 
-    /** 
-     * Create a new formatter configuration.<p>
-     */
-    public CmsFormatterConfiguration() {
-
-        m_typeFormatters = new HashMap<String, CmsFormatterBean>(4);
-        m_widthFormatters = new ArrayList<CmsFormatterBean>(4);
-    }
-
     /**
-     * Adds a formatter to this configuration.<p>
+     * Creates a new formatter configuration based on the given list of formatters.<p>
      * 
-     * @param formatter the formatter to add
-     * 
-     * @throws CmsConfigurationException in case this formatter configuration is already frozen
+     * @param formatters the list of configured formatters
      */
-    public void addFormatter(CmsFormatterBean formatter) throws CmsConfigurationException {
+    public CmsFormatterConfiguration(List<CmsFormatterBean> formatters) {
 
-        if (m_frozen) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_FORMATTER_CONFIG_FROZEN_0));
+        if (formatters == null) {
+            // this is needed for the empty configuration
+            m_allFormatters = Collections.emptyList();
+        } else {
+            m_allFormatters = new ArrayList<CmsFormatterBean>(formatters);
         }
-        m_allFormatters.add(formatter);
+        m_widthFormatters = new ArrayList<CmsFormatterBean>(m_allFormatters.size());
+        m_typeFormatters = new HashMap<String, CmsFormatterBean>(m_allFormatters.size());
+        init(m_adminCms);
     }
 
     /**
-     * Freezes this configuration.<p>
+     * Initialize the formatter configuration.<p>
      * 
-     * @param cms an OpenCms user context that is used to validate the JSP root paths entries
+     * @param cms an initialized admin OpenCms user context
+     * 
+     * @throws CmsException in case the initialization fails
      */
-    public void freeze(CmsObject cms) {
+    public static void initialize(CmsObject cms) throws CmsException {
 
-        if (!m_frozen) {
-            m_frozen = true;
-            initFormatters(cms);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ADMINISTRATOR);
+        try {
+            // store the Admin cms to index Cms resources
+            m_adminCms = OpenCms.initCmsObject(cms);
+            m_adminCms.getRequestContext().setSiteRoot("");
+        } catch (CmsException e) {
+            // this should never happen
         }
     }
 
@@ -130,6 +136,10 @@ public class CmsFormatterConfiguration {
      */
     public CmsFormatterBean getFormatter(String containerType, int containerWidth) {
 
+        if (this == EMPTY_CONFIGURATION) {
+            // the empty configuration has no formatters
+            return null;
+        }
         if (CmsFormatterBean.isPreviewType(containerType)) {
             // the preview formatter was requested
             return getPreviewFormatter();
@@ -151,38 +161,40 @@ public class CmsFormatterConfiguration {
     }
 
     /**
-     * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI.<p>
+     * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI, 
+     * or <code>null</code> if there is no preview formatter configured.<p>
      * 
-     * @return the formatter from this configuration that is to be used for the preview in the ADE gallery GUI
+     * @return the formatter from this configuration that is to be used for the preview in the ADE gallery GUI, 
+     * or <code>null</code> if there is no preview formatter configured
      */
     public CmsFormatterBean getPreviewFormatter() {
 
-        if (m_previewFormatter == null) {
+        if (!m_previewCalculated) {
             // preview formatter has not been calculated yet
             CmsFormatterBean result = null;
-            // check the width formatter if we have a matching width for the preview window
-            result = getFormatter(CmsFormatterBean.WILDCARD_TYPE, CmsFormatterBean.PREVIEW_WIDTH);
-            if ((result == null) && !m_widthFormatters.isEmpty()) {
-                // no width is matching, see if we have one with a BIGGER width (preview will have scrollbars)
-                for (CmsFormatterBean f : m_widthFormatters) {
-                    // iterate all width containers and see if we have a fit
-                    if ((f.getMinWidth() >= CmsFormatterBean.PREVIEW_WIDTH)
-                        && (CmsFormatterBean.PREVIEW_WIDTH <= f.getMaxWidth())) {
-                        // found a match
-                        if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
-                            result = f;
+            if (this != EMPTY_CONFIGURATION) {
+                // empty configuration will always return null
+                result = getFormatter(CmsFormatterBean.WILDCARD_TYPE, CmsFormatterBean.PREVIEW_WIDTH);
+                // check the width formatter if we have a matching width for the preview window
+                if ((result == null) && !m_widthFormatters.isEmpty()) {
+                    // no width is matching, see if we have one with a BIGGER width (preview will have scrollbars)
+                    for (CmsFormatterBean f : m_widthFormatters) {
+                        // iterate all width containers and see if we have a fit
+                        if ((f.getMinWidth() >= CmsFormatterBean.PREVIEW_WIDTH)
+                            && (CmsFormatterBean.PREVIEW_WIDTH <= f.getMaxWidth())) {
+                            // found a match
+                            if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
+                                result = f;
+                            }
                         }
                     }
                 }
+                if ((result == null) && !m_typeFormatters.isEmpty()) {
+                    // no luck with any width based formatter, let's just get the first type based formatter
+                    result = m_typeFormatters.values().iterator().next();
+                }
             }
-            if ((result == null) && !m_typeFormatters.isEmpty()) {
-                // no luck with any width based formatter, let's just get the first type based formatter
-                result = m_typeFormatters.values().iterator().next();
-            }
-            if (result == null) {
-                // there are no usable previews configured at all, so use the stupid default preview formatter
-                m_previewFormatter = CmsFormatterBean.getDefaultPreviewFormatter();
-            }
+            m_previewCalculated = true;
             m_previewFormatter = result;
         }
         return m_previewFormatter;
@@ -204,23 +216,16 @@ public class CmsFormatterConfiguration {
     }
 
     /**
-     * Returns <code>true</code> in case there is at least one formatter configured in this configuration.<p>
+     * Returns <code>true</code> in case there is at least one usable formatter configured in this configuration.<p>
      * 
-     * @return <code>true</code> in case there is at least one formatter configured in this configuration
+     * @return <code>true</code> in case there is at least one usable formatter configured in this configuration
      */
     public boolean hasFormatters() {
 
+        if (EMPTY_CONFIGURATION == this) {
+            return true;
+        }
         return (m_typeFormatters.size() > 0) || (m_widthFormatters.size() > 0);
-    }
-
-    /**
-     * Indicates if this configuration has been frozen.<p>
-     * 
-     * @return <code>true</code> if this configuration has been frozen
-     */
-    public boolean isFrozen() {
-
-        return m_frozen;
     }
 
     /**
@@ -231,33 +236,37 @@ public class CmsFormatterConfiguration {
      * 
      * @param cms the OpenCms user context to use for validating the JSP resources
      */
-    private void initFormatters(CmsObject cms) {
+    private void init(CmsObject cms) {
 
         for (CmsFormatterBean formatter : m_allFormatters) {
 
-            // first we make sure that the JSP exists at all (and also we read the UUID that way)
-            CmsResource res = null;
-            try {
-                // first get a cms copy so we can mess up the context without modifying the original
-                CmsObject cmsCopy = OpenCms.initCmsObject(cms);
-                // switch to the root site
-                cmsCopy.getRequestContext().setSiteRoot("");
-                // now read the JSP
-                res = cms.readResource(formatter.getJspRootPath());
-            } catch (CmsException e) {
-                //if this happens the result is null and we write a LOG error
+            if (formatter.getJspStructureId() == null) {
+                // a formatter may have been re-used so the structure id is already available
+                CmsResource res = null;
+                // first we make sure that the JSP exists at all (and also we read the UUID that way)
+                try {
+                    // first get a cms copy so we can mess up the context without modifying the original
+                    CmsObject cmsCopy = OpenCms.initCmsObject(cms);
+                    // switch to the root site
+                    cmsCopy.getRequestContext().setSiteRoot("");
+                    // now read the JSP
+                    res = cms.readResource(formatter.getJspRootPath());
+                } catch (CmsException e) {
+                    //if this happens the result is null and we write a LOG error
+                }
+                if ((res == null) || !CmsResourceTypeJsp.isJsp(res)) {
+                    // the formatter must exist and it must be a JSP
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_FORMATTER_JSP_DONT_EXIST_1,
+                        formatter.getJspRootPath()));
+                } else {
+                    formatter.setJspStructureId(res.getStructureId());
+                    // res may still be null in case of failure
+                }
             }
-            if (!CmsResourceTypeJsp.isJsp(res)) {
-                // the formatter must be a JSP
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_FORMATTER_JSP_DONT_EXIST_1,
-                    formatter.getJspRootPath()));
-            }
 
-            if (res != null) {
-
-                formatter.setJspStructureId(res.getStructureId());
-
+            if (formatter.getJspStructureId() != null) {
+                // if no structure id is available then the formatter JSP root path is invalid
                 String oldUri = null;
                 Object key;
                 if (formatter.isTypeFormatter()) {

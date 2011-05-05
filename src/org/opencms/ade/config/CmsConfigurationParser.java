@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -598,7 +598,7 @@ public class CmsConfigurationParser {
 
         CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern, isDefault);
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
-        CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration();
+        List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
             String jspRootPath = getSubValueString(cms, fmtValue, N_JSP);
             String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
@@ -606,7 +606,7 @@ public class CmsConfigurationParser {
             String maxwidth = getSubValueString(cms, fmtValue, N_MAXWIDTH);
             String preview = getSubValueString(cms, fmtValue, N_PREVIEW);
             String searchContent = getSubValueString(cms, fmtValue, N_SEARCHCONTENT);
-            formatterConfiguration.addFormatter(new CmsFormatterBean(
+            formatters.add(new CmsFormatterBean(
                 fmtType,
                 jspRootPath,
                 minWidth,
@@ -615,8 +615,9 @@ public class CmsConfigurationParser {
                 searchContent,
                 m_content.getFile().getRootPath()));
         }
+        CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration(formatters);
+
         if (formatterConfiguration.hasFormatters()) {
-            formatterConfiguration.freeze(cms);
             m_formatterConfigurations.put(resTypeName, formatterConfiguration);
         }
 

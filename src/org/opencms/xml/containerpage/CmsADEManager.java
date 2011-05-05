@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.json.JSONArray;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 7.6
  */
@@ -268,48 +267,6 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns an element properties, taking into account default values.<p>
-     * 
-     * @param cms the current cms context
-     * @param element the element to get the properties for
-     * 
-     * @return the element properties
-     */
-    public Map<String, CmsProperty> getElementProperties(CmsObject cms, CmsContainerElementBean element) {
-
-        Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
-        Iterator<Map.Entry<String, String>> itProperties = element.getSettings().entrySet().iterator();
-        while (itProperties.hasNext()) {
-            Map.Entry<String, String> entry = itProperties.next();
-            String propertyName = entry.getKey();
-            CmsProperty property = new CmsProperty(propertyName, entry.getValue(), null);
-            properties.put(propertyName, property);
-        }
-        try {
-            Map<String, CmsXmlContentProperty> propertyDefs = getElementSettings(cms, cms.readResource(element.getId()));
-            Iterator<Map.Entry<String, CmsXmlContentProperty>> itPropertyDefs = propertyDefs.entrySet().iterator();
-            while (itPropertyDefs.hasNext()) {
-                Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
-                String propertyName = entry.getKey();
-                CmsXmlContentProperty prop = entry.getValue();
-                if (properties.containsKey(propertyName)) {
-                    properties.get(propertyName).setResourceValue(prop.getDefault());
-                } else {
-                    properties.put(propertyName, new CmsProperty(
-                        propertyName,
-                        null,
-                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getType(), prop.getDefault())));
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                element.getId()), e);
-        }
-        return properties;
-    }
-
-    /**
      * Returns the property configuration for a given resource.<p>
      * 
      * @param cms the current cms context
@@ -404,21 +361,17 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the formatter for a given container page element.<p>
+     * Returns the formatter configuration for a given resource.<p>
      * 
      * @param cms the CMS context 
-     * @param res the resource of the container page element 
-     * @param type the container type 
-     * @param width the width of the container 
-     *  
-     * @return the configured formatter
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param res the container page element resource 
+     * @return the formatter configuration for a given resource
+     *   
+     * @throws CmsException if something goes wrong  
      */
-    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource res, String type, int width)
-    throws CmsException {
+    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) throws CmsException {
 
-        return m_configuration.getFormatterForContainer(cms, res, type, width);
+        return m_configuration.getFormattersForResource(cms, res);
     }
 
     /**

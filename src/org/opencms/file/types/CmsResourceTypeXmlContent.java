@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,23 +212,16 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#getFormatterForContainer(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.A_CmsResourceType#getFormattersForResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @Override
-    public CmsFormatterBean getFormatterForContainer(CmsObject cms, CmsResource resource, String type, int width) {
+    public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource resource) {
 
-        if (getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
-            // always return the preview formatter, group container don't need any other
-            type = CmsFormatterBean.PREVIEW_TYPE;
-        }
-        CmsFormatterBean result = null;
+        CmsFormatterConfiguration result = null;
         CmsXmlContentDefinition cd = null;
         try {
             cd = CmsXmlContentDefinition.getContentDefinitionForResource(cms, resource);
-            CmsFormatterConfiguration formatterConfiguration = cd.getContentHandler().getFormatterConfiguration(cms);
-            if (formatterConfiguration.hasFormatters()) {
-                result = formatterConfiguration.getFormatter(type, width);
-            }
+            result = cd.getContentHandler().getFormatterConfiguration();
         } catch (CmsException e) {
             // no content definition found, use the preview formatter
         }
@@ -237,7 +229,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
                 cd == null ? resource.getRootPath() : cd.getSchemaLocation()));
-            result = CmsFormatterBean.getDefaultPreviewFormatter();
+            result = CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
         return result;
     }

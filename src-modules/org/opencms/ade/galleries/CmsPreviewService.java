@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.Collections;
 import java.util.Date;
@@ -71,7 +72,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -142,11 +143,9 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
         try {
             if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
-                    cms,
-                    resource,
-                    CmsFormatterBean.PREVIEW_TYPE,
-                    -1);
+                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(cms, resource);
+                CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
+
                 if (formatter != null) {
                     CmsResource formatterResource = cms.readResource(formatter.getJspStructureId());
                     CmsContainerElementBean element = new CmsContainerElementBean(

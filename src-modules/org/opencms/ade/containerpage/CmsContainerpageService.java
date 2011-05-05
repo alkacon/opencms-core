@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.0
  */
@@ -513,11 +514,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
-                CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
-                    cms,
-                    resource,
-                    container.getType(),
-                    containerWidth);
+                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(cms, resource);
+                CmsFormatterBean formatter = formatters.getFormatter(container.getType(), containerWidth);
                 if (formatter != null) {
                     elements.add(new CmsContainerElementBean(
                         element.getId(),

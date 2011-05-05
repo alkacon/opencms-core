@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -146,19 +146,22 @@ public class CmsElementUtil {
      *  
      * @param element the element to render
      * @param containers the containers the element appears in
-     * @param formatters the formatter configuration to use
      *  
-     * @return a map from container names to rendered page contents 
+     * @return a map from container names to rendered page contents
+     *  
+     * @throws CmsException if something goes wrong
      */
     public Map<String, String> getContentsByContainerName(
         CmsContainerElementBean element,
-        Collection<CmsContainer> containers,
-        CmsFormatterConfiguration formatters) {
+        Collection<CmsContainer> containers) throws CmsException {
 
+        CmsFormatterConfiguration configs = OpenCms.getADEManager().getFormattersForResource(
+            m_cms,
+            element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
             String name = container.getName();
-            CmsFormatterBean formatter = formatters.getFormatter(container.getType(), container.getWidth());
+            CmsFormatterBean formatter = configs.getFormatter(container.getType(), container.getWidth());
             if (formatter != null) {
                 String content = null;
                 try {
@@ -271,9 +274,8 @@ public class CmsElementUtil {
             }
             elementBean.setSubItems(subItems);
         } else {
-            // get map from type/width combination to formatter uri 
-            CmsFormatterConfiguration formatters = getFormatterConfiguration(element.getResource(), containers);
-            Map<String, String> contentsByName = getContentsByContainerName(element, containers, formatters);
+            // get the formatter configuration
+            Map<String, String> contentsByName = getContentsByContainerName(element, containers);
             contents = contentsByName;
         }
         elementBean.setContents(contents);
@@ -332,35 +334,5 @@ public class CmsElementUtil {
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
-    }
-
-    /**
-     * Returns the formatter configuration for the given resource and it's containers.<p>
-     * 
-     * @param resource the resource which should be formatted 
-     * @param containers the list of containers the resource appears in
-     * 
-     * @return the formatter configuration for the given resource and it's containers
-     * 
-     * @throws CmsException if something goes wrong  
-     */
-    private CmsFormatterConfiguration getFormatterConfiguration(
-        CmsResource resource,
-        Collection<CmsContainer> containers) throws CmsException {
-
-        CmsFormatterConfiguration result = new CmsFormatterConfiguration();
-        for (CmsContainer container : containers) {
-            if (!result.hasFormatter(container.getType(), container.getWidth())) {
-                CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
-                    m_cms,
-                    resource,
-                    container.getType(),
-                    container.getWidth());
-                if (formatter != null) {
-                    result.addFormatter(formatter);
-                }
-            }
-        }
-        return result;
     }
 }

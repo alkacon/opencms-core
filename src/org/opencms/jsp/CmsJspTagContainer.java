@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/05/05 14:56:05 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 8.0
  */
@@ -671,11 +672,8 @@ public class CmsJspTagContainer extends TagSupport {
         CmsContainerElementBean element = null;
         if (detailContent != null) {
             // get the right formatter
-            CmsFormatterBean formatter = OpenCms.getADEManager().getFormatterForContainer(
-                cms,
-                detailContent,
-                getType(),
-                getContainerWidth());
+            CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(cms, detailContent);
+            CmsFormatterBean formatter = formatters.getFormatter(getType(), getContainerWidth());
             // check it
             if (formatter != null) {
                 // create element bean
@@ -824,9 +822,10 @@ public class CmsJspTagContainer extends TagSupport {
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 try {
                     subelement.initResource(cms);
-                    CmsFormatterBean subelementFormatter = OpenCms.getADEManager().getFormatterForContainer(
+                    CmsFormatterConfiguration subelementFormatters = OpenCms.getADEManager().getFormattersForResource(
                         cms,
-                        subelement.getResource(),
+                        subelement.getResource());
+                    CmsFormatterBean subelementFormatter = subelementFormatters.getFormatter(
                         containerType,
                         containerWidth);
                     if (subelementFormatter == null) {
