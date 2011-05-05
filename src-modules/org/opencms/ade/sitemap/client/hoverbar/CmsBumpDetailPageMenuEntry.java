@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsBumpDetailPageMenuEntry.java,v $
- * Date   : $Date: 2011/05/04 18:53:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/05 06:14:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -88,7 +88,7 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
         boolean show = (entry != null)
             && entry.isDetailPage()
             && controller.getData().canEditDetailPages()
-            && controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
+            && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
         setVisible(show);
     }
 }
