@@ -25,7 +25,6 @@ createPropertyDefinition cache
 createPropertyDefinition template
 createPropertyDefinition template-elements
 createPropertyDefinition locale
-createPropertyDefinition config.containerpage
 createPropertyDefinition config.sitemap
 
 # Switch to the root context
@@ -54,7 +53,6 @@ publishProjectAndWait
 
 # Create the default "Offline" project
 createDefaultProject "Offline" "The Offline Project"
-setSiteRoot "/sites/default/"
 
 # Import the modules that have been selected in the setup wizard
 importModulesFromSetupBean
