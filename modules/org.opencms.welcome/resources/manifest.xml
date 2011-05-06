@@ -3,44 +3,91 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.5.0</opencms_version>
-		<createdate>Fri, 05 Jun 2009 07:50:44 GMT</createdate>
+		<opencms_version>8.0.0</opencms_version>
+		<createdate>Fri, 06 May 2011 10:15:21 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.welcome</name>
-		<nicename><![CDATA[OpenCms 7 Welcome page and release notes]]></nicename>
+		<nicename><![CDATA[OpenCms 8 Welcome page and release notes]]></nicename>
 		<group>OpenCms Release Notes</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms welcome page and release notes.</p>
-<p>Install this module as a simple demonstration for the template capabilities of OpenCms 7.5.</p>
-<p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
-It will also remove the "default" template.</p>
-<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.1</version>
+<p>Install this module as a simple demonstration for the template capabilities of OpenCms 8.0.</p>
+<p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there.</p>
+<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>8.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
-		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
 		<exportpoints/>
 		<resources>
-			<resource uri="/index.jsp"/>
-			<resource uri="/release/"/>
 			<resource uri="/system/modules/org.opencms.welcome/"/>
+			<resource uri="/sites/default/index.html"/>
+			<resource uri="/sites/default/release/"/>
 		</resources>
 		<parameters/>
 	</module>
 	<files>
 		<file>
-			<destination>release</destination>
+			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>f0d1ccb2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 04 Jun 2009 16:02:48 GMT</datelastmodified>
+			<uuidstructure>fe445f2f-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 08:58:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default</destination>
+			<type>folder</type>
+			<uuidstructure>fe596dd1-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 07:37:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>config.sitemap</name>
+					<value><![CDATA[/_config/sitemap_restype.config]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/_config/style]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>sites/default/release</destination>
+			<type>subsitemap</type>
+			<uuidstructure>3f6dc54d-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 09:57:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:21:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -57,52 +104,1110 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
 				</property>
 				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_7.5.0.html]]></value>
+					<name>config.sitemap</name>
+					<value><![CDATA[/release/_config/sitemap_restype.config]]></value>
 				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>style.config</name>
-					<value><![CDATA[/release/_config_/default]]></value>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>style.columns</name>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>style.layout</name>
-					<value><![CDATA[/release/_config_/style]]></value>
-				</property>
-				<property>
-					<name>style.options</name>
-					<value><![CDATA[/release/_config_/options]]></value>
-				</property>
-				<property>
-					<name>stylesheet</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/resources/css/welcome.css]]></value>
+					<value><![CDATA[/release/_config/style]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo/templates/main.jsp]]></value>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/installation.html</source>
-			<destination>release/installation.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0d416a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 12:30:17 GMT</datelastmodified>
+			<source>sites/default/release/index.html</source>
+			<destination>sites/default/release/index.html</destination>
+			<type>htmlredirect</type>
+			<uuidstructure>30cc41bd-77c5-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>30cc41be-77c5-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 09:46:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 09:42:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Redirect to current release notes]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/welcome.jsp</source>
+			<destination>sites/default/release/welcome.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c8d5c415-77c5-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>c8d5c416-77c5-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 10:14:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 09:46:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome JSP code]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.0_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>07a08a69-772d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:36:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:33:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[51]]></value>
+					<value><![CDATA[59.84375]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.0 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.0 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.0_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.0_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>07a5455d-772d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>07a5455e-772d-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:36:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:33:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.1_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>917f7399-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:36:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:30:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[59.6875]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.1 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.1 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.1_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.1_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>91869f8d-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>91869f8e-772c-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:31:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:30:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.2_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>0dc58707-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:29:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:26:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[59.375]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.2 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.2_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.2_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0dca690b-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>0dca690c-772c-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:29:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:26:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.3_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>846ba1a7-772b-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:29:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:22:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[58.75]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.3 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.3 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.3_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.3_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8477888b-772b-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>8477888c-772b-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:26:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:22:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.4_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>d91c7f7f-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:21:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:17:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[57.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.4 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.4 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.4_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.4_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>d92ab053-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>d92ab054-772a-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:22:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:17:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.0.5_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>5df40657-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 15:14:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:14:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[55.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.5 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.0.5 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.0.5_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.0.5_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>5dfb0b3b-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>5dfb0b3c-772a-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:17:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:14:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.5.0_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>2b79dc0a-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 14:02:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:01:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[50.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.0 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.5.0 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.5.0_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.5.0_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>2b7e96fe-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>2b7e96ff-7720-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:03:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:01:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.5.1_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>bf1cc533-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 14:01:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:58:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.1 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.5.1 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.5.1_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.5.1_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>bf23f127-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>bf23f128-771f-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:59:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:58:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.5.2_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>f3080cb2-771e-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:58:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:52:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[30.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.2 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.5.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.5.2_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.5.2_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>f30cc7a6-771e-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>f30cc7a7-771e-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:55:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:52:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.5.3_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>a52fe06e-771d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:45:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:43:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[20.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.3 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.5.3 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.5.3_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.5.3_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>a5349b62-771d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>a5349b63-771d-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:47:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:43:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/7.5.4_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>eac47979-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:42:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:09:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.4 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[7.5.4 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/7.5.4_Release_Notes/index.html</source>
+			<destination>sites/default/release/7.5.4_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>eac95b7d-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>eac95b7e-7718-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:15:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:09:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/8.0.0_Release_Notes</destination>
+			<type>folder</type>
+			<uuidstructure>0c655475-7724-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 14:30:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:29:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[8.0.0 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[8.0.0 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/8.0.0_Release_Notes/index.html</source>
+			<destination>sites/default/release/8.0.0_Release_Notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0c6c8069-7724-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>0c6c806a-7724-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:40:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:29:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_config</destination>
+			<type>configfolder</type>
+			<uuidstructure>6a6d9d22-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:51:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:22:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Configuration]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_config/sitemap_restype.config</source>
+			<destination>sites/default/release/_config/sitemap_restype.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>6a856ae9-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>6a856aea-7712-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 08:13:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:23:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sitemap resource type configuration]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_config/style</source>
+			<destination>sites/default/release/_config/style</destination>
+			<type>t3style</type>
+			<uuidstructure>3acab155-7717-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>3acab156-7717-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:51:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:57:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Color settings]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_config/models</destination>
+			<type>folder</type>
+			<uuidstructure>6a8c96de-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:51:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:23:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Model folder]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_config/models/article.html</source>
+			<destination>sites/default/release/_config/models/article.html</destination>
+			<type>v8article</type>
+			<uuidstructure>2b833da5-7713-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>2b833da6-7713-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 12:43:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:28:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New article for release notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_config/models/config.html</source>
+			<destination>sites/default/release/_config/models/config.html</destination>
+			<type>t3config</type>
+			<uuidstructure>a1d341c5-7715-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>a1d341c6-7715-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 12:49:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:46:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New configuration for release notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_config/models/pages</destination>
+			<type>folder</type>
+			<uuidstructure>6a9151d1-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 12:23:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:23:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Models for container pages]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_config/models/pages/default.html</source>
+			<destination>sites/default/release/_config/models/pages/default.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>be402473-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>be402474-7718-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:08:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:08:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default page for release notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_contents</destination>
+			<type>folder</type>
+			<uuidstructure>82962765-7712-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 12:23:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:23:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Container contents]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_contents/articles</destination>
+			<type>v8articlegallery</type>
+			<uuidstructure>6a8d2bdf-7715-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 12:44:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:44:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Articles (Release Notes)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00001.html</source>
+			<destination>sites/default/release/_contents/articles/a_00001.html</destination>
+			<type>v8article</type>
+			<uuidstructure>5912d8fe-7719-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>5912d8ff-7719-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:07:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:12:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.5.4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00002.html</source>
+			<destination>sites/default/release/_contents/articles/a_00002.html</destination>
+			<type>v8article</type>
+			<uuidstructure>b77f1254-771d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>b77f1255-771d-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:06:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:43:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.5.3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00003.html</source>
+			<destination>sites/default/release/_contents/articles/a_00003.html</destination>
+			<type>v8article</type>
+			<uuidstructure>06e7f0b8-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>06e7f0b9-771f-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:06:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:53:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.5.2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00004.html</source>
+			<destination>sites/default/release/_contents/articles/a_00004.html</destination>
+			<type>v8article</type>
+			<uuidstructure>d0dcfd89-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>d0dcfd8a-771f-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:05:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:58:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.5.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00005.html</source>
+			<destination>sites/default/release/_contents/articles/a_00005.html</destination>
+			<type>v8article</type>
+			<uuidstructure>51fc6922-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>51fc6923-7720-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:05:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:02:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.5]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00006.html</source>
+			<destination>sites/default/release/_contents/articles/a_00006.html</destination>
+			<type>v8article</type>
+			<uuidstructure>f00ce372-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>f00ce373-7720-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:17:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:06:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 8 server installation]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00007.html</source>
+			<destination>sites/default/release/_contents/articles/a_00007.html</destination>
+			<type>v8article</type>
+			<uuidstructure>a685457b-7722-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>a685457c-7722-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:19:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The OpenCms mailing list]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00008.html</source>
+			<destination>sites/default/release/_contents/articles/a_00008.html</destination>
+			<type>v8article</type>
+			<uuidstructure>1de9e35b-7724-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>1de9e35c-7724-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:07:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:29:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 8.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00009.html</source>
+			<destination>sites/default/release/_contents/articles/a_00009.html</destination>
+			<type>v8article</type>
+			<uuidstructure>97aace1e-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>97aace1f-772a-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:17:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:16:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.5]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00010.html</source>
+			<destination>sites/default/release/_contents/articles/a_00010.html</destination>
+			<type>v8article</type>
+			<uuidstructure>f7c79a55-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>f7c79a56-772a-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:22:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:18:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00011.html</source>
+			<destination>sites/default/release/_contents/articles/a_00011.html</destination>
+			<type>v8article</type>
+			<uuidstructure>d6eab60d-772b-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>d6eab60e-772b-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:26:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:24:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00012.html</source>
+			<destination>sites/default/release/_contents/articles/a_00012.html</destination>
+			<type>v8article</type>
+			<uuidstructure>4036471d-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>4036471e-772c-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:29:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:27:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00013.html</source>
+			<destination>sites/default/release/_contents/articles/a_00013.html</destination>
+			<type>v8article</type>
+			<uuidstructure>a437c78f-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>a437c790-772c-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:31:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:30:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/articles/a_00014.html</source>
+			<destination>sites/default/release/_contents/articles/a_00014.html</destination>
+			<type>v8article</type>
+			<uuidstructure>3239d83f-772d-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>3239d840-772d-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:35:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 15:34:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 7.0.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/_contents/configs</destination>
+			<type>folder</type>
+			<uuidstructure>726e1402-7715-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 12:44:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 12:44:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Configs (Release Notes)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/_contents/configs/c_00001.html</source>
+			<destination>sites/default/release/_contents/configs/c_00001.html</destination>
+			<type>t3config</type>
+			<uuidstructure>0af39279-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>0af3927a-7718-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 13:07:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:03:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default configuration for release notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/Installation</destination>
+			<type>folder</type>
+			<uuidstructure>e19630cc-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 14:17:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:06:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[60.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -117,20 +1222,33 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/mailinglist.html</source>
-			<destination>release/mailinglist.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:47:32 GMT</datelastmodified>
+			<source>sites/default/release/Installation/index.html</source>
+			<destination>sites/default/release/Installation/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>e19b12d0-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>e19b12d1-7720-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:07:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 05 May 2011 14:06:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/release/Mailing_list</destination>
+			<type>folder</type>
+			<uuidstructure>8fe88b64-7722-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 14:18:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 14:18:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[102.0]]></value>
+					<value><![CDATA[70.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -145,236 +1263,14 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_7.0.0.html</source>
-			<destination>release/notes_7.0.0.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>c9fc76f0-2a48-11dc-ac2c-8d625826ae79</uuidstructure>
-			<uuidresource>c9fc76f1-2a48-11dc-ac2c-8d625826ae79</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:27:33 GMT</datelastmodified>
+			<source>sites/default/release/Mailing_list/index.html</source>
+			<destination>sites/default/release/Mailing_list/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8fed4658-7722-11e0-bfd0-1797e684fbbe</uuidstructure>
+			<uuidresource>8fed4659-7722-11e0-bfd0-1797e684fbbe</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:20:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Jul 2007 16:08:22 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[21]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.0 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.0 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.0.1.html</source>
-			<destination>release/notes_7.0.1.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>0e457c06-2fab-11dc-94ea-8d625826ae79</uuidstructure>
-			<uuidresource>0e457c07-2fab-11dc-94ea-8d625826ae79</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:28:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 11 Jul 2007 12:34:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.1 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.1 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.0.2.html</source>
-			<destination>release/notes_7.0.2.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>0485edbe-610c-11dc-9596-990e70098fc7</uuidstructure>
-			<uuidresource>0485edbf-610c-11dc-9596-990e70098fc7</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:28:26 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Sep 2007 08:41:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[19]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.2 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.2 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.0.3.html</source>
-			<destination>release/notes_7.0.3.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>a888e233-8c44-11dc-8613-f5a391e6c891</uuidstructure>
-			<uuidresource>a888e234-8c44-11dc-8613-f5a391e6c891</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:28:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 06 Nov 2007 08:45:42 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[18]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.3 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.3 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.0.4.html</source>
-			<destination>release/notes_7.0.4.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>9f579584-e5e9-11dc-a1ea-31960a76c470</uuidstructure>
-			<uuidresource>9f579585-e5e9-11dc-a1ea-31960a76c470</uuidresource>
-			<datelastmodified>Sat, 01 Mar 2008 12:31:26 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 10:40:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[9.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.4 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.4 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.0.5.html</source>
-			<destination>release/notes_7.0.5.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>15873677-4763-11dd-b806-f9ac78a2765b</uuidstructure>
-			<uuidresource>15873678-4763-11dd-b806-f9ac78a2765b</uuidresource>
-			<datelastmodified>Tue, 01 Jul 2008 12:02:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jul 2008 11:44:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[8.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.0.5 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.0.5 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.5.0.html</source>
-			<destination>release/notes_7.5.0.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>5080d54e-511f-11de-bc13-8f23054f3cbd</uuidstructure>
-			<uuidresource>5080d54f-511f-11de-bc13-8f23054f3cbd</uuidresource>
-			<datelastmodified>Thu, 04 Jun 2009 16:03:40 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 04 Jun 2009 15:49:40 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[7.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.5.0 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.5.0 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_7.5.1.html</source>
-			<destination>release/notes_7.5.1.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>e4575606-ac0b-11de-bdbd-d1fa1cb57324</uuidstructure>
-			<uuidresource>e4575607-ac0b-11de-bdbd-d1fa1cb57324</uuidresource>
-			<datelastmodified>Mon, 28 Sep 2009 09:10:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 28 Sep 2009 08:49:54 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[6.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[7.5.1 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 7.5.1 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>release/_config_</destination>
-			<type>folder</type>
-			<uuidstructure>42f00c42-e54e-11dc-af52-31960a76c470</uuidstructure>
-			<datelastmodified>Wed, 27 Feb 2008 16:08:40 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Feb 2008 16:08:40 GMT</datecreated>
+			<datecreated>Thu, 05 May 2011 14:18:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -382,92 +1278,12 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/_config_/default</source>
-			<destination>release/_config_/default</destination>
-			<type>ttconfig</type>
-			<uuidstructure>42f73834-e54e-11dc-af52-31960a76c470</uuidstructure>
-			<uuidresource>42f73835-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 14:09:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Feb 2008 16:08:40 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Defaultkonfiguration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/_config_/options</source>
-			<destination>release/_config_/options</destination>
-			<type>ttoptions</type>
-			<uuidstructure>43031f17-e54e-11dc-af52-31960a76c470</uuidstructure>
-			<uuidresource>43031f18-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 13:06:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Feb 2008 16:08:40 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Kopf- und Fußbereiche]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/_config_/style</source>
-			<destination>release/_config_/style</destination>
-			<type>ttstyle</type>
-			<uuidstructure>4318a2ea-e54e-11dc-af52-31960a76c470</uuidstructure>
-			<uuidresource>4318a2eb-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 14:07:43 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Feb 2008 16:08:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Farbeinstellungen]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/_config_/twocolums</source>
-			<destination>release/_config_/twocolums</destination>
-			<type>ttpreset</type>
-			<uuidstructure>432944bd-e54e-11dc-af52-31960a76c470</uuidstructure>
-			<uuidresource>432944be-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 14:08:14 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Feb 2008 16:08:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Zweispaltiges Layout (Release Notes)]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>82f2e017-511d-11de-bc13-8f23054f3cbd</uuidstructure>
-			<datelastmodified>Thu, 04 Jun 2009 15:36:46 GMT</datelastmodified>
+			<uuidstructure>fbfc91d6-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 08:58:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 04 Jun 2009 15:36:46 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 08:58:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -486,10 +1302,10 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>838471f0-511d-11de-bc13-8f23054f3cbd</uuidstructure>
-			<datelastmodified>Thu, 04 Jun 2009 15:36:47 GMT</datelastmodified>
+			<uuidstructure>fe8315e5-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 08:58:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 04 Jun 2009 15:36:47 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -721,14 +1537,14 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>index.jsp</source>
-			<destination>index.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>f1b1cbec-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 10:52:08 GMT</datelastmodified>
+			<source>sites/default/index.html</source>
+			<destination>sites/default/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>da97aa19-77c5-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>da97aa1a-77c5-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 09:57:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 09:47:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -745,28 +1561,16 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[Welcome to OpenCms]]></value>
 				</property>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>style.columns</name>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>style.layout</name>
-					<value><![CDATA[/release/_config_/style]]></value>
-				</property>
-				<property>
-					<name>style.options</name>
-					<value><![CDATA[/release/_config_/options]]></value>
-				</property>
-				<property>
-					<name>stylesheet</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/resources/css/welcome.css]]></value>
+					<value><![CDATA[/release/_config/style]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo/templates/main.jsp]]></value>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>
