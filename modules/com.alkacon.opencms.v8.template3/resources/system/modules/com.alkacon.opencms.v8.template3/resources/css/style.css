@@ -1,0 +1,536 @@
+<%@page session="false" taglibs="c,cms,fn" %>
+<c:set var="pathconfig">${param.style}</c:set>
+<c:set var="cols">${param.cols}</c:set>
+<c:if test="${empty param.style}">
+	<c:set var="pathconfig">/system/modules/com.alkacon.opencms.v8.template3/resources/css/style.config</c:set>
+</c:if>
+<c:set var="editmode" value="false" />
+<c:if test="${fn:endsWith(cms:vfs(pageContext).requestContext.uri, 'style_editor.css')}">
+	<c:set var="editmode" value="true" />
+</c:if>
+
+<cms:contentload collector="singleFile" param="%(pageContext.pathconfig)">
+<cms:contentaccess var="content" />
+<c:set var="currloc" value="${content.locale}" />
+<c:forEach var="iloc" items="${content.rawContent.locales}" varStatus="status">
+	<c:if test="${status.first}">
+		<c:set var="loc" value="${iloc}" />
+	</c:if>
+	<c:if test="${iloc eq currloc}">
+		<c:set var="loc" value="${iloc}" />
+	</c:if>
+</c:forEach>
+
+@media all
+{
+  /**
+   * ------------------------------------------------------------------
+   * Basic Settings
+   * ------------------------------------------------------------------
+   */
+
+  * { 
+  	margin: 0px; 
+  	padding: 0px; 
+  	font-family: <c:choose><c:when test="${content.localeValue[loc]['font.family'].isSet}">${content.localeValue[loc]['font.family'].stringValue}</c:when><c:otherwise>'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif</c:otherwise></c:choose>;
+  }
+
+  html * { font-size: 12px }
+
+  textarea, pre, tt, code {
+	font-family:"Courier New", Courier, monospace;  	
+  }
+
+  body {
+    padding: 10px 0;
+    font-family: <c:choose><c:when test="${content.localeValue[loc]['font.family'].isSet}">${content.localeValue[loc]['font.family'].stringValue}</c:when><c:otherwise>'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif</c:otherwise></c:choose>;
+    font-size: 75.00%; 
+    height: 1%;
+    color: ${content.localeValue[loc]['page.font.color']};
+    <c:if test="${editmode}">
+    	background-color: ${content.localeValue[loc]['page.background']};
+    </c:if>
+  }
+
+  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 2px 0; }
+  h1 { font-size: 24px }
+  h2 { font-size: 20px; 	margin-top: 6px }
+  h3 { font-size: 18px; 	margin-top: 5px }
+  h4 { font-size: 16px; 	margin-top: 8px }
+  h5 { font-size: 14px; 	margin-top: 8px }
+  h6 { font-size: 14px; 	font-style: italic; margin-top: 8px }
+
+  p { 
+  	line-height: 16px;
+  	margin-top: 3px;
+  	margin-bottom: 3px;
+  }
+
+  ul, ol, dl { line-height: 15px; margin: 10px 0 10px 10px; }
+  li { margin-left: 15px; line-height: 15px; }
+
+  dt { font-weight: bold; }
+  dd { margin: 0 0 10px 20px; }
+
+  cite, blockquote { font-style: italic; }
+  blockquote { margin: 0 0 10px 15px; }
+
+  strong, b { font-weight: bold; }
+  em, i { font-style: italic; }
+
+  pre, code { 
+  	font-family: monospace; 
+  	font-size: 14px; 
+  	margin-top: 3px;
+  	margin-bottom: 3px;
+  }
+
+  acronym, abbr {
+    letter-spacing: .07em;
+    border-bottom: 1px dashed #c00;
+    cursor: help;
+  }
+
+  a {
+  	color: ${content.localeValue[loc]['link.color']}; 
+  	text-decoration: none;
+  }
+  a:focus,
+  a:hover,
+  a:active {
+  	color: ${content.localeValue[loc]['link.hover.color']};
+  	text-decoration:underline;
+  }
+  
+  a img {
+  	text-decoration: none;
+  	border: none;
+  }
+  
+  option { padding-left: 4px; }
+  
+  /**
+   * ------------------------------------------------------------------
+   * Column Layout
+   * ------------------------------------------------------------------
+   */
+<c:if test="${not editmode}">
+  body { 
+    background: ${content.localeValue[loc]['window.background']} url("<cms:link><c:choose><c:when test="${content.localeValue[loc]['window.background.image'].isSet}">${content.localeValue[loc]['window.background.image'].stringValue}</c:when><c:otherwise>../images/bg_blue.gif</c:otherwise></c:choose></cms:link>") repeat-x top left fixed; 
+  }
+</c:if>
+    
+  #window {
+  	width: 960px;
+    	margin: 0 auto;
+  	text-align: left;
+  }
+
+  #page {
+    background: ${content.localeValue[loc]['page.background']};
+    padding: ${content.localeValue[loc]['page.padding']};
+  }
+
+  #header {
+  	background: ${content.localeValue[loc]['header.background']} <c:if test="${!empty content.localeValue[loc]['header.background.image'].stringValue}">url("<cms:link>${content.localeValue[loc]['header.background.image']}</cms:link>") top left</c:if>;
+  	color: ${content.localeValue[loc]['header.color']};
+    position: relative;
+    padding-top: 0px;
+  }
+  
+  #topnav {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  
+  #topnav a {
+  	color: ${content.localeValue[loc]['page.font.color']};
+  }
+
+  #breadcrumb {
+    padding: 5px 0px 5px 20px;
+    border-bottom: ${content.localeValue[loc]['breadcrumb.divider']};
+    position: relative;
+    height: 1%;
+  }
+  
+  #breadcrumb a {
+  	color: ${content.localeValue[loc]['page.font.color']};
+  }
+
+  #main {
+    padding: 10px 0;
+  }
+
+  #col1 {
+    width: 240px;
+    float: left;
+    
+  }
+
+  #col1_content {
+    padding: 10px 10px 10px 0px;
+    
+  }
+  
+  #col2 {
+    <c:choose>
+    	<c:when test="${cols == '2'}">
+    width: 710px;
+    margin-left: 240px;
+    margin-right: 0;
+    	</c:when>
+    	<c:otherwise>
+    width: 470px;
+    margin-left: 240px;
+    margin-right: 240px;
+    	</c:otherwise>
+    </c:choose>
+    border-left: ${content.localeValue[loc]['column.divider.left']}; 
+    border-right: ${content.localeValue[loc]['column.divider.right']}; 
+  }
+
+  #col2_content {
+    
+    padding: 10px;
+    
+  }
+  
+  #col3 {
+    width: 240px;
+    float: right;
+    <c:if test="${cols == '2'}">display: none;</c:if>    
+  }
+
+  #col3_content {
+    padding: 10px 0px 10px 10px;
+    
+  }
+  
+  #footercnt {
+      margin: 5px 0px;
+      clear: both;
+      width: 100.6%;
+  }
+  
+  #footercnt div.box {
+      margin-right: 5px;
+      width: 32.5%;
+      float: left;
+      min-height: 150px;
+  }
+  
+  
+  #footer {
+  	background: ${content.localeValue[loc]['footer.background']} <c:if test="${!empty content.localeValue[loc]['footer.background.image'].stringValue}">url("<cms:link>${content.localeValue[loc]['footer.background.image']}</cms:link>") top left</c:if>;
+    color: ${content.localeValue[loc]['footer.color']};
+    padding: 10px;
+    margin-top: 10px;
+    border-top: ${content.localeValue[loc]['footer.divider']};
+  }
+  
+  #header, #nav_main, #main, #footer, #breadcrumb { clear:both; }
+
+  .clearfix:after { 
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden; 
+  } 
+
+  .clearfix { display: block; }
+  
+  .clear {
+	clear: both;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Accessible
+   * ------------------------------------------------------------------
+   */
+   
+  .skip {
+    position: absolute;
+    left: 0px;
+    top: -500px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Search Page
+   * ------------------------------------------------------------------
+   */
+   
+   #searchForm {
+     margin-bottom: 10px;
+   }
+   
+   .search_text {
+   	margin-bottom: 10px;
+   }
+   .search_noresult {
+     margin-bottom: 10px;
+   }
+   
+   .search_result, .search_error {
+     margin-bottom: 10px;
+   }
+  
+   .pagination {
+     text-align: center;
+   }
+   
+  /**
+   * ------------------------------------------------------------------
+   * Box Layout
+   * ------------------------------------------------------------------
+   */
+   
+   .box {
+     background: #e1e1e1;
+     margin-bottom: 15px;
+     border-bottom:1px solid #7B7F7E;
+     border-left:1px solid #7B7F7E;
+     border-right:1px solid #7B7F7E;
+   }
+   
+   .box h4 {
+   	 background: #25438D url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
+   	 font-size: 13px;
+   	 width: auto;
+   	 margin: -1px;
+   	 padding: 5px;
+   	 line-height: 16px;
+   }
+   
+   .box h5, .box h5 a {
+   	font-size: 12px;
+   }
+   
+   .box_schema1 {
+   	 background: ${content.localeValue[loc]['schema1.box.background']};   
+   }
+
+   .box_schema2 {
+   	 background: ${content.localeValue[loc]['schema2.box.background']};   
+   }
+
+   .box_schema3 {
+   	 background: ${content.localeValue[loc]['schema3.box.background']};   
+   }
+   
+   .box_schema1 h4 {
+   	 background: ${content.localeValue[loc]['schema1.box.header.background']} url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: ${content.localeValue[loc]['schema1.box.header.color']};
+   }
+
+   .box_schema2 h4 {
+   	 background: ${content.localeValue[loc]['schema2.box.header.background']} url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: ${content.localeValue[loc]['schema2.box.header.color']};
+   }
+
+   .box_schema3 h4 {
+   	 background: ${content.localeValue[loc]['schema3.box.header.background']} url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: ${content.localeValue[loc]['schema3.box.header.color']};
+   }
+   
+   .boxbody {
+     padding: 10px;
+     font-size: 11px;
+   }
+   
+   .boxbody p, .boxbody div.paragraph, .boxbody a {
+     font-size: 11px;
+   }
+   
+   .boxbody small {
+     font-size: 10px;
+   }
+   
+   div.box div.boxbody div.paragraph:after {
+     content: ".";
+     display: block;
+     clear: both;
+     visibility: hidden;
+     line-height: 0;
+     height: 0;
+   }
+
+   div.box div.boxbody div.paragraph{
+      display: inline-block;
+   }
+
+   html[xmlns] div.box div.boxbody div.paragraph{
+     display: block;
+   }
+
+   * html div.box div.boxbody div.paragraph {
+     height: 1%;
+   }
+   
+   .boxbody_listentry {
+     margin-bottom: 5px;
+     overflow:hidden;
+   }
+   
+   .boxbody_listentry div.left img {
+   	 margin-right: 5px;
+   }
+
+   .boxbody_listentry div.right img {
+   	 margin-left: 5px;
+   }
+   
+   form div.boxform {
+     display: block;
+     margin: 5px 0px 0px;
+     padding: 1px 3px;
+   }
+  
+   form div.boxform label {
+     display: block;
+     float: left;
+     padding-right: 5px;
+     text-align: right;
+     width: 60px;
+   }
+ 
+   .left {
+     float: left;
+   }
+   
+   .right {
+     float: right;
+   }
+   
+   img.left {
+   	padding: 0 5px 5px 0;
+   }
+   
+   img.right {
+   	padding: 0 0 5px 5px;
+   }
+   
+   img.top {
+   	padding: 0 0 5px 0;
+   }
+   
+   /**
+   * ------------------------------------------------------------------
+   * Navigation Menu adjustments
+   * ------------------------------------------------------------------
+   */
+   
+   #nav_left li a {
+     color: ${content.localeValue[loc]['page.font.color']};
+   }
+   
+   #nav_left li a:hover, #nav_left li a:focus, #nav_left li a:active {
+     background: ${content.localeValue[loc]['nav.left.hover.background']};
+     color: ${content.localeValue[loc]['nav.left.hover.color']};
+   }
+   
+   #nav_left a.current {
+     background-color: ${content.localeValue[loc]['nav.left.active.background']};
+     color: ${content.localeValue[loc]['nav.left.active.color']};
+   }
+
+   <c:if test="${!empty content.localeValue[loc]['nav.main.background'].stringValue}">
+     #nav_main {
+       background: ${content.localeValue[loc]['nav.main.background']} url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   <c:if test="${!empty content.localeValue[loc]['nav.main.color'].stringValue}">
+     #nav_main a {
+       color: ${content.localeValue[loc]['nav.main.color']};
+     }
+   </c:if>
+   
+   <c:if test="${!empty content.localeValue[loc]['nav.main.hover.background'].stringValue}">
+     #nav_main a:hover {
+       background: ${content.localeValue[loc]['nav.main.hover.background']} url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   <c:if test="${!empty content.localeValue[loc]['nav.main.hover.color'].stringValue}">
+     #nav_main a:hover {
+       color: ${content.localeValue[loc]['nav.main.hover.color']};
+     }
+   </c:if>
+   
+   <c:if test="${!empty content.localeValue[loc]['nav.main.active.background'].stringValue}">
+     #nav_main a.current {
+       color: #fff;
+       background: ${content.localeValue[loc]['nav.main.active.background']} url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   <c:if test="${!empty content.localeValue[loc]['nav.main.active.color'].stringValue}">
+     #nav_main a.current {
+       color: ${content.localeValue[loc]['nav.main.active.color']};
+     }
+   </c:if>
+
+   /**
+   * ------------------------------------------------------------------
+   * Editor adjustments
+   * ------------------------------------------------------------------
+   */
+   <c:choose>
+   	 <c:when test="${param.type == 'textbox' || param.type == 'listbox'}">
+	 	body { 
+	      background: ${content.localeValue[loc]['schema1.box.background']};
+	      padding: 10px;
+	      text-align: left;
+	      font-size: 0.9em;
+	    }   	 	
+   	 </c:when>
+     <c:when test="${!empty param.type}">
+	 	body { 
+	      background: ${content.localeValue[loc]['page.background']};
+	      padding: 10px;
+	      text-align: left;
+	    }
+	 </c:when>
+   </c:choose>
+   
+}
+
+@media print
+{
+   /**
+   * ------------------------------------------------------------------
+   * Print Layout
+   * ------------------------------------------------------------------
+   */
+   
+  body, #window, #page, #main { margin:0; padding: 0; border: 0; }
+  #window, #page {width: 100% !important; min-width:0; max-width: none}
+  #header { height: auto; }
+  #footer { display: none; }
+
+  #topnav, #nav_main, #breadcrumb { display: none; }
+
+  #col1 { display:none; }
+  #col3 { display:none; }
+  
+  #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
+}
+
+<%-- Append additional CSS file --%>
+<c:set var="csspath">${content.localeValue[loc]['css.file'].stringValue}</c:set>
+<c:if test="${not empty csspath}">
+	<cms:resourceload collector="singleFile" param="%(pageContext.csspath)">
+		<cms:resourceaccess var="cssfile" />
+		${cssfile.fileContentAsString}
+	</cms:resourceload>
+</c:if>
+</cms:contentload>

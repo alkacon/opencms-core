@@ -1,0 +1,69 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.event/schemas/nested/paragraph.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.event/schemas/nested/eventdata.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.event/schemas/nested/availability.xsd"/>
+	
+	<xsd:element name="V8EventArticles" type="OpenCmsV8EventArticles"/>
+	
+	<xsd:complexType name="OpenCmsV8EventArticles">
+		<xsd:sequence>
+			<xsd:element name="V8EventArticle" type="OpenCmsV8EventArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsV8EventArticle">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Paragraph" type="OpenCmsV8EventParagraph" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Category" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="5" />
+			<xsd:element name="EventDates" type="OpenCmsV8EventDate" />
+			<xsd:element name="Availability" type="OpenCmsV8EventAvailability" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="com.alkacon.opencms.v8.event.workplace"/>
+			<tabs>
+				<tab element="Title" collapse="false" name="General" />
+				<tab element="EventDates" collapse="true" name="EventData" /> 
+				<tab element="Availability" collapse="true" name="Availability" />  
+			</tabs>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="urlName" />
+				<mapping element="EventDates/EventStartDate" mapto="property:collector.date" />
+				<mapping element="EventDates/EventStartDate" mapto="calendar.startdate" />
+				<mapping element="EventDates/EventEndDate" mapto="property:calendar.enddate" />
+				<mapping element="Availability/Release" mapto="attribute:datereleased" />
+				<mapping element="Availability/Expiration" mapto="attribute:dateexpired" />
+			</mappings>
+			<layouts>
+				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false"/>
+			</layouts>
+			<defaults>
+				<default element="EventDates/EventStartDate" value="%(currenttime)" />
+				<default element="EventDates/EventEndDate" value="%(currenttime + 86400000)" />
+				<default element="Availability/Release" value="%(currenttime)" />
+			</defaults>
+			<validationrules/>
+			<relations>
+				<relation element="Paragraph/Image/Image" invalidate="parent" />
+			</relations>
+			<formatters>
+				<formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.event/elements/detail.jsp" />
+				<formatter minwidth="150" maxwidth="300" uri="/system/modules/com.alkacon.opencms.v8.event/elements/side.jsp" />
+			</formatters>
+			<settings>
+				<setting name="boxschema" nice-name="Box Schema" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />
+				<setting name="imgalign" nice-name="Image Align" type="string" widget="select" widget-config="left:%(key.v8.event.image.left)|right:%(key.v8.event.image.right)|top:%(key.v8.event.image.top)|lefthl:%(key.v8.event.image.lefthl)|righthl:%(key.v8.event.image.righthl)" />
+				<setting name="showlocation" nice-name="Show location" type="string" widget="checkbox" default="true"/>
+				<setting name="showtime" nice-name="Show time" type="string" widget="checkbox" default="true"/>
+			</settings>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>
