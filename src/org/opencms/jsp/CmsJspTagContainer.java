@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/05/06 06:52:50 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0
  */
@@ -372,7 +373,7 @@ public class CmsJspTagContainer extends TagSupport {
                             renderContainerElement(cms, standardContext, allElements.get(i), locale);
                         } catch (Exception e) {
                             if (LOG.isErrorEnabled()) {
-                                LOG.error(e);
+                                LOG.error(e.getLocalizedMessage(), e);
                             }
                         }
                     }
@@ -752,6 +753,9 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private boolean hasProperties(CmsObject cms, CmsResource resource) throws CmsException {
 
+        if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            return false;
+        }
         Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
             resource).getSettings();
@@ -861,10 +865,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
                     }
@@ -896,10 +902,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        elementFormatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            elementFormatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             }
