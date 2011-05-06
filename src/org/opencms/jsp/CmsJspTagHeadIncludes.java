@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/05/03 14:23:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/06 15:49:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -55,8 +56,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0
  */
@@ -89,6 +90,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /** Serial version UID required for safe serialisation. */
     private static final long serialVersionUID = 5496349529835666345L;
+
+    /** The default include resources separated by '|'. */
+    private String m_defaults;
 
     /** Map to save parameters to the include in. */
     private Map<String, String[]> m_parameterMap;
@@ -241,6 +245,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     }
 
     /**
+     * Returns the default include resources separated by '|'.<p>
+     *
+     * @return the default include resources
+     */
+    public String getDefaults() {
+
+        return m_defaults;
+    }
+
+    /**
      * Returns the type.<p>
      *
      * @return the type
@@ -248,6 +262,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * Sets the default include resources separated by '|'.<p>
+     *
+     * @param defaults the default include resources to set
+     */
+    public void setDefaults(String defaults) {
+
+        m_defaults = defaults;
     }
 
     /**
@@ -275,15 +299,22 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsContainerPageBean containerPage = standardContext.getPage();
 
         Set<String> cssIncludes = new LinkedHashSet<String>();
+        // add defaults
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
+            String[] defaults = m_defaults.split("|");
+            for (int i = 0; i < defaults.length; i++) {
+                cssIncludes.add(defaults[i]);
+            }
+        }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             for (CmsContainerElementBean element : containerPage.getElements()) {
                 try {
                     element.initResource(cms);
                     cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        element.getSitePath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
                 }
             }
         }
@@ -293,9 +324,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                    standardContext.getDetailContentId()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        standardContext.getDetailContentId()),
+                    e);
             }
         }
         for (String cssUri : cssIncludes) {
@@ -321,15 +354,22 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
         Set<String> jsIncludes = new LinkedHashSet<String>();
+        // add defaults
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
+            String[] defaults = m_defaults.split("|");
+            for (int i = 0; i < defaults.length; i++) {
+                jsIncludes.add(defaults[i]);
+            }
+        }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             for (CmsContainerElementBean element : containerPage.getElements()) {
                 try {
                     element.initResource(cms);
                     jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        element.getSitePath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
                 }
             }
         }
@@ -339,9 +379,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                    standardContext.getDetailContentId()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        standardContext.getDetailContentId()),
+                    e);
             }
         }
         for (String cssUri : jsIncludes) {
