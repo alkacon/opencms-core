@@ -42,6 +42,12 @@
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="configfolder" id="24">
+                    <properties>
+						<property>
+							<name>search.exclude</name>
+							<value><![CDATA[all]]></value>
+						</property>
+					</properties>
                     <copy-resources>                       
                         <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
                         <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
