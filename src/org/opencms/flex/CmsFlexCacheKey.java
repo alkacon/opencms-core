@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/06 20:34:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.flex;
 
+import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.file.CmsResource;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -55,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,11 +163,14 @@ public class CmsFlexCacheKey {
     /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always. */
     private int m_always;
 
-    /** Cache key variable: The current device. */
-    private String m_device;
+    /** Cache key variable: List of attributes. */
+    private Set<String> m_attrs;
 
     /** Cache key variable: The current container element. */
     private String m_containerElement;
+
+    /** Cache key variable: The current device. */
+    private String m_device;
 
     /** Cache key variable: The requested element. */
     private String m_element;
@@ -179,17 +184,14 @@ public class CmsFlexCacheKey {
     /** Cache key variable: The requested locale. */
     private String m_locale;
 
-    /** Cache key variable: List of "blocking" parameters. */
-    private Set<String> m_noparams;
-
     /** Cache key variable: List of "blocking" attributes. */
     private Set<String> m_noattrs;
 
+    /** Cache key variable: List of "blocking" parameters. */
+    private Set<String> m_noparams;
+
     /** Cache key variable: List of parameters. */
     private Set<String> m_params;
-
-    /** Cache key variable: List of attributes. */
-    private Set<String> m_attrs;
 
     /** Flag raised in case a key parse error occurred. */
     private boolean m_parseError;
@@ -362,7 +364,13 @@ public class CmsFlexCacheKey {
         }
 
         if (m_uri != null) {
-            appendKeyValue(str, CACHE_02_URI, key.getUri());
+            CmsResource detailRes = (CmsResource)key.getAttributes().get(
+                CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
+            if (detailRes != null) {
+                appendKeyValue(str, CACHE_02_URI, key.getUri() + ":" + detailRes.getStructureId());
+            } else {
+                appendKeyValue(str, CACHE_02_URI, key.getUri());
+            }
         }
 
         if (m_site != null) {

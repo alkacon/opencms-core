@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/06 20:34:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,14 +55,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
 public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
     /** The attribute containing the detail content resource. */
-    private static final String ATTR_DETAIL_CONTENT_RESOURCE = "__opencms_detail_content_resource";
+    public static final String ATTR_DETAIL_CONTENT_RESOURCE = "__opencms_detail_content_resource";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailPageResourceHandler.class);

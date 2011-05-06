@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/06 20:34:28 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.0.2
  * 
@@ -146,6 +146,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         String targetSiteRoot = targetSite.getSiteRoot();
         String originalVfsName = vfsName;
+        String detailPage = null;
         try {
             String rootVfsName;
             if (!vfsName.startsWith(targetSiteRoot)
@@ -156,7 +157,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 rootVfsName = vfsName;
             }
             I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-            String detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+            detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
             if (detailPage != null) {
                 if (detailPage.startsWith(targetSiteRoot)) {
                     detailPage = detailPage.substring(targetSiteRoot.length());
@@ -217,8 +218,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     cms.getRequestContext().getSiteRoot() + oriUri));
             }
 
+            String detailPagePart = detailPage == null ? "" : detailPage + ":";
             // check if we have the absolute VFS name for the link target cached
-            String cacheKey = cms.getRequestContext().getSiteRoot() + ":" + absoluteLink;
+            String cacheKey = cms.getRequestContext().getSiteRoot() + ":" + detailPagePart + absoluteLink;
             resultLink = exportManager.getCachedOnlineLink(cacheKey);
             if (resultLink == null) {
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
