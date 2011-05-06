@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2011/05/06 15:56:35 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,6 +70,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -90,7 +91,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 8.0.0
  */
@@ -264,8 +265,16 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void addToNavigation(String sitePath) {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
-        CmsClientSitemapChangeMove move = getChangeForMove(entry, sitePath, entry.getPosition(), true);
-        applyChange(move);
+        entry.setInNavigation(true);
+        CmsClientSitemapCompositeChange change = new CmsClientSitemapCompositeChange();
+        CmsPropertyModification mod = new CmsPropertyModification(
+            entry.getId(),
+            CmsClientProperty.PROPERTY_NAVTEXT,
+            entry.getTitle(),
+            true);
+        change.addChange(getChangeForEdit(entry, sitePath, Collections.singletonList(mod), false));
+        change.addChange(getChangeForMove(entry, sitePath, entry.getPosition(), true));
+        applyChange(change);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/06 15:56:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
+import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -46,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -94,6 +96,15 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
 
         // apply to sitemap model 
         m_entry.setInNavigation(false);
+        CmsPropertyModification propMod = new CmsPropertyModification(
+            m_entry.getId(),
+            CmsClientProperty.PROPERTY_NAVTEXT,
+            null,
+            true);
+        propMod.execute(controller);
+        propMod = new CmsPropertyModification(m_entry.getId(), CmsClientProperty.PROPERTY_NAVTEXT, null, true);
+        propMod.execute(controller);
+        m_entry.normalizeProperties();
         // apply to clipboard model
         applyToClipboardData(controller.getData().getClipboardData());
     }
