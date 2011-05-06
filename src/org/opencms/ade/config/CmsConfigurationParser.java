@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/05 19:22:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/06 15:46:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -626,7 +626,7 @@ public class CmsConfigurationParser {
                     searchContent,
                     m_content.getFile().getRootPath()));
             }
-            CmsFormatterConfiguration formatterConfiguration = new CmsFormatterConfiguration(formatters);
+            CmsFormatterConfiguration formatterConfiguration = CmsFormatterConfiguration.create(cms, formatters);
 
             if (formatterConfiguration.hasFormatters()) {
                 m_formatterConfigurations.put(resTypeName, formatterConfiguration);

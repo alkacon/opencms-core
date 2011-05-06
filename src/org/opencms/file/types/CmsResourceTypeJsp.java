@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/06 15:46:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,7 +218,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
             false,
             res.getRootPath());
 
-        return new CmsFormatterConfiguration(Collections.singletonList(selfFormatter));
+        return CmsFormatterConfiguration.create(cms, Collections.singletonList(selfFormatter));
     }
 
     /**

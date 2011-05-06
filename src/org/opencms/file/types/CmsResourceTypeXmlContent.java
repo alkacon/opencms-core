@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/06 15:46:50 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,7 +221,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsXmlContentDefinition cd = null;
         try {
             cd = CmsXmlContentDefinition.getContentDefinitionForResource(cms, resource);
-            result = cd.getContentHandler().getFormatterConfiguration();
+            result = cd.getContentHandler().getFormatterConfiguration(cms);
         } catch (CmsException e) {
             // no content definition found, use the preview formatter
         }

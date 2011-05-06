@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/06 15:46:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,14 +57,14 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
 public class CmsFormatterConfiguration {
 
     /** The empty formatter configuration. */
-    public static final CmsFormatterConfiguration EMPTY_CONFIGURATION = new CmsFormatterConfiguration(null);
+    public static final CmsFormatterConfiguration EMPTY_CONFIGURATION = new CmsFormatterConfiguration(null, null);
 
     /** The log instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsFormatterConfiguration.class);
@@ -93,9 +93,10 @@ public class CmsFormatterConfiguration {
     /**
      * Creates a new formatter configuration based on the given list of formatters.<p>
      * 
+     * @param cms the current users OpenCms context
      * @param formatters the list of configured formatters
      */
-    public CmsFormatterConfiguration(List<CmsFormatterBean> formatters) {
+    private CmsFormatterConfiguration(CmsObject cms, List<CmsFormatterBean> formatters) {
 
         if (formatters == null) {
             // this is needed for the empty configuration
@@ -105,7 +106,24 @@ public class CmsFormatterConfiguration {
         }
         m_widthFormatters = new ArrayList<CmsFormatterBean>(m_allFormatters.size());
         m_typeFormatters = new HashMap<String, CmsFormatterBean>(m_allFormatters.size());
-        init(m_adminCms);
+        init(cms, m_adminCms);
+    }
+
+    /**
+     * Returns the formatter configuration for the current project based on the given list of formatters.<p>
+     * 
+     * @param cms the current users OpenCms context, required to know which project to read the JSP from
+     * @param formatters the list of configured formatters
+     * 
+     * @return the formatter configuration for the current project based on the given list of formatters
+     */
+    public static CmsFormatterConfiguration create(CmsObject cms, List<CmsFormatterBean> formatters) {
+
+        if ((formatters != null) && (formatters.size() > 0) && (cms != null)) {
+            return new CmsFormatterConfiguration(cms, formatters);
+        } else {
+            return EMPTY_CONFIGURATION;
+        }
     }
 
     /**
@@ -279,9 +297,10 @@ public class CmsFormatterConfiguration {
      * It is also checked if the configured JSP root path exists, if not the formatter is removed 
      * as it is unusable.<p>
      * 
-     * @param cms the OpenCms user context to use for validating the JSP resources
+     * @param userCms the current users OpenCms context, used for selecting the right project
+     * @param adminCms the Admin user context to use for reading the JSP resources
      */
-    private void init(CmsObject cms) {
+    private void init(CmsObject userCms, CmsObject adminCms) {
 
         for (CmsFormatterBean formatter : m_allFormatters) {
 
@@ -291,11 +310,12 @@ public class CmsFormatterConfiguration {
                 // first we make sure that the JSP exists at all (and also we read the UUID that way)
                 try {
                     // first get a cms copy so we can mess up the context without modifying the original
-                    CmsObject cmsCopy = OpenCms.initCmsObject(cms);
+                    CmsObject cmsCopy = OpenCms.initCmsObject(adminCms);
+                    cmsCopy.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
                     // switch to the root site
                     cmsCopy.getRequestContext().setSiteRoot("");
                     // now read the JSP
-                    res = cms.readResource(formatter.getJspRootPath());
+                    res = cmsCopy.readResource(formatter.getJspRootPath());
                 } catch (CmsException e) {
                     //if this happens the result is null and we write a LOG error
                 }
