@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterConfiguration.java,v $
- * Date   : $Date: 2011/05/06 15:46:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/06 19:28:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -248,7 +248,7 @@ public class CmsFormatterConfiguration {
     public boolean hasFormatters() {
 
         if (EMPTY_CONFIGURATION == this) {
-            return true;
+            return false;
         }
         return (m_typeFormatters.size() > 0) || (m_widthFormatters.size() > 0);
     }
