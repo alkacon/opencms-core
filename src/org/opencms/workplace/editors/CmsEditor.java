@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/06 19:53:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import org.apache.commons.logging.Log;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,6 +196,9 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** Helper variable to store the uri to the editors pictures. */
     private String m_picsUri;
 
+    /** The editor session info bean. */
+    private CmsEditorSessionInfo m_editorSessionInfo;
+
     /**
      * Public constructor.<p>
      * 
@@ -203,6 +207,60 @@ public abstract class CmsEditor extends CmsEditorBase {
     public CmsEditor(CmsJspActionElement jsp) {
 
         super(jsp);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    @Override
+    protected void initMessages() {
+
+        initSessionInfo();
+        super.initMessages();
+    }
+
+    /**
+     * Initializes the editor session info bean.<p>
+     * 
+     * @return the editor session info bean
+     */
+    protected CmsEditorSessionInfo initSessionInfo() {
+
+        CmsResource editedResource = null;
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamResource())) {
+                editedResource = getCms().readResource(getParamResource());
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
+
+        CmsEditorSessionInfo info = null;
+        if (editedResource != null) {
+            HttpSession session = getSession();
+            info = (CmsEditorSessionInfo)session.getAttribute(CmsEditorSessionInfo.getEditorSessionInfoKey(editedResource));
+            if (info == null) {
+                info = new CmsEditorSessionInfo(editedResource.getStructureId());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramBackLink)) {
+                info.setBackLink(m_paramBackLink);
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramElementlanguage)) {
+                info.setElementLocale(new Locale(m_paramElementlanguage));
+            }
+            session.setAttribute(info.getEditorSessionInfoKey(), info);
+        }
+        return info;
+    }
+
+    /**
+     * Returns the editor session info bean.<p>
+     * 
+     * @return the editor session info bean
+     */
+    protected CmsEditorSessionInfo getEditorSessionInfo() {
+
+        return m_editorSessionInfo;
     }
 
     /**
@@ -374,9 +432,13 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         if (active) {
             // create the link for the button
-            return button("javascript:" + jsFunction, null, image, name, type, url.substring(
-                0,
-                url.lastIndexOf("/") + 1));
+            return button(
+                "javascript:" + jsFunction,
+                null,
+                image,
+                name,
+                type,
+                url.substring(0, url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
             return button(null, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
@@ -484,6 +546,10 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         if (m_paramBackLink == null) {
             m_paramBackLink = "";
+            if ((m_editorSessionInfo != null)
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editorSessionInfo.getBackLink())) {
+                m_paramBackLink = m_editorSessionInfo.getBackLink();
+            }
         }
         return m_paramBackLink;
     }
@@ -705,32 +771,47 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected void actionClose() throws IOException, JspException, ServletException {
 
-        if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
-            // editor is in direct edit mode
-            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
-                // set link to the specified back link target
-                setParamCloseLink(getJsp().link(getParamBacklink()));
-            } else {
-                // set link to the edited resource
-                setParamCloseLink(getJsp().link(getParamResource()));
-            }
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
-            // load the common JSP close dialog
-            getJsp().include(FILE_DIALOG_CLOSE);
-        } else {
-            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
-                // set link to the specified back link target
-                setParamCloseLink(getJsp().link(getParamBacklink()));
+        try {
+            if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
+                // editor is in direct edit mode
+                if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
+                    // set link to the specified back link target
+                    setParamCloseLink(getJsp().link(getParamBacklink()));
+                } else {
+                    // set link to the edited resource
+                    setParamCloseLink(getJsp().link(getParamResource()));
+                }
                 // save initialized instance of this class in request attribute for included sub-elements
                 getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
                 // load the common JSP close dialog
                 getJsp().include(FILE_DIALOG_CLOSE);
             } else {
-                // forward to the workplace explorer view
-                sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap());
+                if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
+                    // set link to the specified back link target
+                    setParamCloseLink(getJsp().link(getParamBacklink()));
+                    // save initialized instance of this class in request attribute for included sub-elements
+                    getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
+                    // load the common JSP close dialog
+                    getJsp().include(FILE_DIALOG_CLOSE);
+                } else {
+                    // forward to the workplace explorer view
+                    sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap());
+                }
             }
+        } finally {
+            clearEditorSessionInfo();
         }
+    }
+
+    /**
+     * Clears the editor session info bean.<p>
+     */
+    protected void clearEditorSessionInfo() {
+
+        if (m_editorSessionInfo != null) {
+            getSession().removeAttribute(m_editorSessionInfo.getEditorSessionInfoKey());
+        }
+        m_editorSessionInfo = null;
     }
 
     /**
