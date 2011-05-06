@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.edit;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +90,13 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @return the initial URL name
      */
     String getName();
+
+    /**
+     * Returns the page info bean.<p>
+     * 
+     * @return the page info bean
+     */
+    CmsListInfoBean getPageInfo();
 
     /**
      * Returns the title with which the sitemap entry editor should be initialized.<p>

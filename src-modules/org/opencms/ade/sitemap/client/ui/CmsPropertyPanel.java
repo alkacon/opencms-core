@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/05 07:11:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,18 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -62,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -110,6 +115,15 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     /** The "simple" tab. */
     private FlowPanel m_simpleTab = new FlowPanel();
 
+    /** The tab wrapper for the simple tab. */
+    private FlowPanel m_simpleTabWrapper = new FlowPanel();
+
+    /** The tab wrapper for the shared tab. */
+    private FlowPanel m_sharedTabWrapper = new FlowPanel();
+
+    /** The tab wrapper for the individual tab. */
+    private FlowPanel m_individualTabWrapper = new FlowPanel();
+
     /** The tab panel. */
     private CmsTabbedPanel<Widget> m_tabPanel = new CmsTabbedPanel<Widget>();
 
@@ -140,6 +154,55 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
         }
         initWidget(m_tabPanel);
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param showShared true if the "shared" tab should be shown 
+     * @param info the bean to use for displaying the info item
+     */
+    public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
+
+        // TODO: replace with dynamic calculation
+        m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
+
+        CmsListItemWidget liWidget = new CmsListItemWidget(info);
+        CmsListItemWidgetUtil.setPageIcon(liWidget, info.getPageIcon());
+        if (CmsSitemapView.getInstance().isNavigationMode()) {
+            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+        } else {
+            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
+        }
+        m_simpleTabWrapper.add(liWidget);
+        m_simpleTabWrapper.add(m_simpleTab);
+        m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_simpleTab.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
+
+        m_sharedTabWrapper.add(new CmsListItemWidget(info));
+        m_sharedTabWrapper.add(m_sharedTab);
+
+        m_individualTabWrapper.add(new CmsListItemWidget(info));
+        m_individualTabWrapper.add(m_individualTab);
+
+        CmsDomUtil.makeScrollable(m_simpleTabWrapper);
+        CmsDomUtil.makeScrollable(m_sharedTabWrapper);
+        CmsDomUtil.makeScrollable(m_individualTabWrapper);
+
+        m_groups.put(TAB_SIMPLE, m_simpleTab);
+        m_groups.put(TAB_SHARED, m_sharedTab);
+        m_groups.put(TAB_INDIVIDUAL, m_individualTab);
+
+        m_tabPanel.add(m_simpleTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
+        m_showShared = showShared;
+        if (m_showShared) {
+            m_tabPanel.add(m_individualTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
+            m_tabPanel.add(m_sharedTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
+        } else {
+            m_tabPanel.add(m_individualTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
+        }
+        initWidget(m_tabPanel);
+
     }
 
     /**

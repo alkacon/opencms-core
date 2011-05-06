@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/06 08:33:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.3 $
+ *  @version $Revision: 1.4 $
  *  
  *  @since 8.0.0
  */
@@ -270,7 +270,7 @@ public abstract class A_CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFac
         buildFields();
         form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
         form.render();
-        m_dialog.center();
+        m_dialog.centerHorizontally(100);
     }
 
     /**

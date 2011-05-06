@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/05 10:31:44 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  */
@@ -325,6 +325,9 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTBOX_UNSELECTED_1 = "GUI_SELECTBOX_UNSELECTED_1";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

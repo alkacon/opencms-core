@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsVfsModeSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,20 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.CmsPropertyPanel;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
-import org.opencms.ade.sitemap.shared.CmsClientProperty.Mode;
 import org.opencms.ade.sitemap.shared.CmsPathValue;
+import org.opencms.ade.sitemap.shared.CmsClientProperty.Mode;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -161,7 +164,8 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     @Override
     protected void setupFieldContainer() {
 
-        m_panel = new CmsPropertyPanel(m_showResourceProperties);
+        CmsListInfoBean info = m_handler.getPageInfo();
+        m_panel = new CmsPropertyPanel(m_showResourceProperties, info);
         m_panel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
 
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
@@ -214,7 +218,8 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            new HashMap<String, String>(),
+            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
+                Messages.GUI_SELECTBOX_UNSELECTED_1)),
             true);
 
         //START HERE

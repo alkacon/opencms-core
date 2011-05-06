@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/06 08:33:50 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +56,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /** True if the sitemap editor is in simple mode. */
     private boolean m_isSimpleMode;
+
+    /** The page info bean. */
+    private CmsListInfoBean m_pageInfo;
 
     /**
      * Creates a new instance of this class.<p>
@@ -111,6 +115,14 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getPageInfo()
+     */
+    public CmsListInfoBean getPageInfo() {
+
+        return m_pageInfo;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode)
      */
     public void handleSubmit(
@@ -139,6 +151,16 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public boolean isSimpleMode() {
 
         return m_isSimpleMode;
+    }
+
+    /**
+     * Sets the page info bean.<p>
+     * 
+     * @param pageInfo the page info bean
+     */
+    public void setPageInfo(CmsListInfoBean pageInfo) {
+
+        m_pageInfo = pageInfo;
     }
 
     /**

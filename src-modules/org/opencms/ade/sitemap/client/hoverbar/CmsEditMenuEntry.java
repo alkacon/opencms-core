@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,11 @@ import org.opencms.ade.sitemap.client.edit.CmsNavModeSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.edit.CmsVfsModeSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Command;
 
@@ -49,7 +53,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -73,14 +77,43 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void execute() {
 
-                CmsSitemapController controller = getHoverbar().getController();
-                CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                I_CmsSitemapEntryEditorHandler handler = new CmsEditEntryHandler(
-                    controller,
-                    entry,
-                    CmsSitemapView.getInstance().isNavigationMode());
-                A_CmsSitemapEntryEditor editor = createEntryEditor(handler);
-                editor.start();
+                final CmsSitemapController controller = getHoverbar().getController();
+                final CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+
+                final CmsUUID infoId;
+
+                if ((entry.getDefaultFileId() != null) && CmsSitemapView.getInstance().isNavigationMode()) {
+                    infoId = entry.getDefaultFileId();
+                } else {
+                    infoId = entry.getId();
+                }
+                CmsRpcAction<CmsListInfoBean> action = new CmsRpcAction<CmsListInfoBean>() {
+
+                    @Override
+                    public void execute() {
+
+                        start(300, false);
+                        CmsCoreProvider.getVfsService().getPageInfo(infoId, this);
+                    }
+
+                    @Override
+                    protected void onResponse(CmsListInfoBean result) {
+
+                        stop(false);
+                        CmsEditEntryHandler handler = new CmsEditEntryHandler(
+                            controller,
+                            entry,
+                            CmsSitemapView.getInstance().isNavigationMode());
+                        handler.setPageInfo(result);
+                        A_CmsSitemapEntryEditor editor = createEntryEditor(handler);
+
+                        editor.start();
+
+                    }
+
+                };
+                action.execute();
+
             }
         });
     }

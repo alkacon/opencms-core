@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModeSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/06 08:33:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,17 +33,18 @@ package org.opencms.ade.sitemap.client.edit;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.ui.CmsSimpleSitemapFormFieldPanel;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsPathValue;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
-import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -97,7 +98,7 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     @Override
     protected void setupFieldContainer() {
 
-        m_form.setWidget(new CmsSimpleFormFieldPanel());
+        m_form.setWidget(new CmsSimpleSitemapFormFieldPanel(m_handler.getPageInfo()));
     }
 
     /**
@@ -141,7 +142,8 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             propDef,
             pathValue.getPath(),
             this,
-            new HashMap<String, String>(),
+            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
+                Messages.GUI_SELECTBOX_UNSELECTED_1)),
             alwaysAllowEmpty);
         CmsClientProperty inheritedProperty = CmsSitemapView.getInstance().getController().getInheritedPropertyObject(
             m_entry,

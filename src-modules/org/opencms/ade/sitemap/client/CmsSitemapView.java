@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2011/05/06 08:33:51 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,9 +53,9 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 8.0.0
  */
@@ -403,6 +403,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.clipboardCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         rootPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
