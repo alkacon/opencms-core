@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>8.0.0</opencms_version>
+		<createdate>Fri, 06 May 2011 16:36:31 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>com.alkacon.opencms.v8.template3.demo</name>
+		<nicename><![CDATA[OpenCms 8 Template 3 Demo]]></nicename>
+		<group>Template 3</group>
+		<class/>
+		<description><![CDATA[Contains demo contents for the OpenCms 8 template 3.]]></description>
+		<version>8.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="com.alkacon.opencms.v8.article" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.event" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.list" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.login" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.news" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.search" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.template3" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.twitter" version="8.0.0"/>
+			<dependency name="org.opencms.ade.containerpage" version="8.0.0"/>
+			<dependency name="org.opencms.ade.sitemap" version="8.0.0"/>
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/com.alkacon.opencms.v8.template3.demo/"/>
+			<resource uri="/sites/default/_categories/"/>
+			<resource uri="/sites/default/_config/"/>
+			<resource uri="/sites/default/_contents/"/>
+			<resource uri="/sites/default/flower_en/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>sites</destination>
+			<type>folder</type>
+			<uuidstructure>fe445f2f-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 08:58:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default</destination>
+			<type>folder</type>
+			<uuidstructure>fe596dd1-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 07:37:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[OpenCms 8 Demo]]></value>
+				</property>
+				<property>
+					<name>config.sitemap</name>
+					<value><![CDATA[/_config/sitemap_restype.config]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/_config/style]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>sites/default/_categories</destination>
+			<type>folder</type>
+			<uuidstructure>85aa1109-718c-11e0-87bc-000c2972a6a4</uuidstructure>
+			<datelastmodified>Thu, 28 Apr 2011 11:42:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Apr 2011 11:41:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Categories]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/_config</destination>
+			<type>configfolder</type>
+			<uuidstructure>ec3ba002-6b24-11e0-897c-e363b206b5de</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 09:31:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 08:05:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Configuration]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/_contents</destination>
+			<type>folder</type>
+			<uuidstructure>92a41ea3-6bfa-11e0-ad63-c3baf286301a</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 14:28:30 GMT</datelastmodified>
+			<userlastmodified>Michael</userlastmodified>
+			<datecreated>Thu, 21 Apr 2011 09:34:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Container contents]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/flower_en</destination>
+			<type>subsitemap</type>
+			<uuidstructure>0f521354-77e8-11e0-be13-000c2972a6a4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 13:54:07 GMT</datelastmodified>
+			<userlastmodified>Michael</userlastmodified>
+			<datecreated>Fri, 06 May 2011 13:52:19 GMT</datecreated>
+			<usercreated>Michael</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Template 3 Demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 8 Template 3 Demo [en]]]></value>
+				</property>
+				<property>
+					<name>config.sitemap</name>
+					<value><![CDATA[/_config/sitemap_flower_en.config]]></value>
+				</property>
+				<property type="shared">
+					<name>config.sitemap</name>
+					<value><![CDATA[/_config/sitemap_flower_en.config]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
