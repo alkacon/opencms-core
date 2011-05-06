@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/05/06 15:49:04 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/06 19:40:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0
  */
@@ -79,8 +79,8 @@ public final class CmsJspStandardContextBean {
     /** The current detail content resource if available. */
     private CmsResource m_detailContentResource;
 
-    /** Flag to indicate if in drag and drop mode. */
-    private boolean m_dndMode;
+    /** Flag to indicate if element was just edited. */
+    private boolean m_edited;
 
     /** The currently rendered element. */
     private CmsContainerElementBean m_element;
@@ -284,9 +284,9 @@ public final class CmsJspStandardContextBean {
      *
      * @return <code>true</code> if in drag and drop mode
      */
-    public boolean isDndMode() {
+    public boolean isEdited() {
 
-        return m_dndMode;
+        return m_edited;
     }
 
     /**
@@ -302,11 +302,11 @@ public final class CmsJspStandardContextBean {
     /**
      * Sets the flag to indicate if in drag and drop mode.<p>
      *
-     * @param dndMode <code>true</code> if in drag and drop mode
+     * @param edited <code>true</code> if in drag and drop mode
      */
-    public void setDndMode(boolean dndMode) {
+    public void setEdited(boolean edited) {
 
-        m_dndMode = dndMode;
+        m_edited = edited;
     }
 
     /**

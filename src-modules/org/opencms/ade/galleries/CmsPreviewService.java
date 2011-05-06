@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/06 19:40:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -171,7 +171,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(getRequest());
                     standardContext.setContainer(containerBean);
                     standardContext.setElement(element);
-                    standardContext.setDndMode(true);
+                    standardContext.setEdited(true);
                     standardContext.setPage(new CmsContainerPageBean(
                         locale,
                         Collections.<CmsContainerBean> singletonList(containerBean)));
