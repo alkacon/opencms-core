@@ -52,10 +52,6 @@
 					<value><![CDATA[OpenCms Demo [EN]]]></value>
 				</property>
 				<property>
-					<name>config.containerpage</name>
-					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
-				</property>
-				<property>
 					<name>config.sitemap</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
@@ -159,26 +155,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/_config/restype.config</source>
-			<destination>demo_t3/_config/restype.config</destination>
-			<type>containerpage_config</type>
-			<uuidstructure>ae375399-9e05-11de-87d2-dd9f629b113b</uuidstructure>
-			<uuidresource>ae37539a-9e05-11de-87d2-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:30:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>demo_t3/_config/sitemap_restype.config</source>
 			<destination>demo_t3/_config/sitemap_restype.config</destination>
 			<type>sitemap_config</type>
@@ -192,7 +168,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource Type Configuration]]></value>
+					<value><![CDATA[Site map configuration]]></value>
 				</property>
 			</properties>
 			<relations/>

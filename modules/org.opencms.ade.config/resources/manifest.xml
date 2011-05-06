@@ -35,9 +35,6 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
-                    <param name="schema">/system/modules/org.opencms.ade.config/schemas/containerpage_config.xsd</param>
-                </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
                 </type>
@@ -55,12 +52,6 @@
                 </type>
             </resourcetypes>
             <explorertypes>
-				<explorertype name="containerpage_config" key="fileicon.containerpage_config" icon="containerpage_config.png" bigicon="containerpage_config_big.png" reference="xmlcontent">
-					<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage_config" order="20" autosetnavigation="false" autosettitle="false" info="desc.containerpage_config"/>
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-					</accesscontrol>
-				</explorertype>
 				<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
 					<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
 					<accesscontrol>
