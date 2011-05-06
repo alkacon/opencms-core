@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationCache.java,v $
- * Date   : $Date: 2011/05/05 19:22:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/06 10:15:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -69,6 +69,9 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageConfigurationCache.class);
 
+    /** The list of cache flush handlers. */
+    private List<I_CmsCacheFlushHandler> m_flushHandlers = new ArrayList<I_CmsCacheFlushHandler>();
+
     /**
      * Creates a new instance.<p>
      * 
@@ -79,6 +82,16 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
         m_adminCms = adminCms;
         m_combinedConfigurations.put(Boolean.TRUE, new HashMap<String, CmsContainerPageConfigurationData>());
         m_combinedConfigurations.put(Boolean.FALSE, new HashMap<String, CmsContainerPageConfigurationData>());
+    }
+
+    /**
+     * Adds a new cache flush handler.<p>
+     * 
+     * @param handler the cache flush handler to add 
+     */
+    public void addFlushHandler(I_CmsCacheFlushHandler handler) {
+
+        m_flushHandlers.add(handler);
     }
 
     /**
@@ -132,6 +145,18 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
     }
 
     /**
+     * Notifies the cache flush handlers of a cache flush.<p>
+     * 
+     * @param online true if the online cache is being flushed 
+     */
+    protected void fireFlush(boolean online) {
+
+        for (I_CmsCacheFlushHandler handler : m_flushHandlers) {
+            handler.onFlushCache(online);
+        }
+    }
+
+    /**
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
     @Override
@@ -142,23 +167,6 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
             super.flush(online);
             fireFlush(online);
             m_combinedConfigurations.get(new Boolean(online)).clear();
-        }
-    }
-
-    /**
-     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
-     */
-    @Override
-    protected void uncacheResource(CmsResource resource) {
-
-        super.uncacheResource(resource);
-        if (OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(
-            CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME)
-            && !CmsResource.isTemporaryFileName(resource.getRootPath())) {
-            synchronized (OpenCms.getADEConfigurationManager()) {
-                fireFlush(false);
-                m_combinedConfigurations.get(Boolean.FALSE).clear();
-            }
         }
     }
 
@@ -179,28 +187,21 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
         return result;
     }
 
-    /** The list of cache flush handlers. */
-    private List<I_CmsCacheFlushHandler> m_flushHandlers = new ArrayList<I_CmsCacheFlushHandler>();
-
     /**
-     * Adds a new cache flush handler.<p>
-     * 
-     * @param handler the cache flush handler to add 
+     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
      */
-    public void addFlushHandler(I_CmsCacheFlushHandler handler) {
+    @Override
+    protected void uncacheResource(CmsResource resource) {
 
-        m_flushHandlers.add(handler);
-    }
-
-    /**
-     * Notifies the cache flush handlers of a cache flush.<p>
-     * 
-     * @param online true if the online cache is being flushed 
-     */
-    protected void fireFlush(boolean online) {
-
-        for (I_CmsCacheFlushHandler handler : m_flushHandlers) {
-            handler.onFlushCache(online);
+        super.uncacheResource(resource);
+        String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        String configTypeName = CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME;
+        boolean isTemp = CmsResource.isTemporaryFileName(resource.getRootPath());
+        if (resTypeName.equals(configTypeName) && !isTemp) {
+            synchronized (OpenCms.getADEConfigurationManager()) {
+                fireFlush(false);
+                m_combinedConfigurations.get(Boolean.FALSE).clear();
+            }
         }
     }
 
