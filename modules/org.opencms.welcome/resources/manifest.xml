@@ -23,7 +23,12 @@
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+				<dependency name="org.opencms.ade.containerpage" version="8.0.0"/>
+				<dependency name="org.opencms.ade.sitemap" version="8.0.0"/>
+                <dependency name="com.alkacon.opencms.v8.template3" version="8.0.0"/>
+                <dependency name="com.alkacon.opencms.v8.article" version="8.0.0"/>
+            </dependencies>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/modules/org.opencms.welcome/"/>
@@ -55,24 +60,7 @@
 			<datecreated>Fri, 06 May 2011 08:58:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 8 Demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_restype.config]]></value>
-				</property>
-				<property>
-					<name>style.layout</name>
-					<value><![CDATA[/_config/style]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol>
 				<accessentry>
