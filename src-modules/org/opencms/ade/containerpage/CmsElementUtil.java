@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/06 09:51:51 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
@@ -78,16 +79,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Utility class to generate the element data objects used within the container-page editor.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
 public class CmsElementUtil {
+
+    /** Static reference to the log. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
 
     /** The cms context. */
     private CmsObject m_cms;
@@ -168,12 +174,7 @@ public class CmsElementUtil {
                 try {
                     content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
                 } catch (Exception e) {
-                    // TODO: Log error
-                    //                    LOG.error(Messages.get().getBundle().key(
-                    //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
-                    //                        m_cms.getSitePath(resource),
-                    //                        formatterUri,
-                    //                        type), e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
                 if (content != null) {
                     result.put(name, content);
