@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/04 09:56:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/06 07:12:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -96,13 +96,13 @@ public final class Messages {
     public static final String GUI_DIALOG_SAVE_QUESTION_0 = "GUI_DIALOG_SAVE_QUESTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPCONTAINER_LABEL_TITLE_0 = "GUI_GROUPCONTAINER_LABEL_TITLE_0";
+    public static final String GUI_GROUPCONTAINER_CAPTION_0 = "GUI_GROUPCONTAINER_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPCONTAINER_LABEL_DESCRIPTION_0 = "GUI_GROUPCONTAINER_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPCONTAINER_CAPTION_0 = "GUI_GROUPCONTAINER_CAPTION_0";
+    public static final String GUI_GROUPCONTAINER_LABEL_TITLE_0 = "GUI_GROUPCONTAINER_LABEL_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPCONTAINER_LOADING_DATA_0 = "GUI_GROUPCONTAINER_LOADING_DATA_0";
@@ -139,6 +139,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_FAVORITES_DESCRIPTION_0 = "GUI_TAB_FAVORITES_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_FAVORITES_NO_ELEMENTS_0 = "GUI_TAB_FAVORITES_NO_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_FAVORITES_TITLE_0 = "GUI_TAB_FAVORITES_TITLE_0";

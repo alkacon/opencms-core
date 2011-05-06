@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/06 07:12:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -105,6 +105,7 @@ public class CmsFavoriteTab extends Composite {
         m_buttonEditingPanel.setVisible(false);
         m_editButton.setText(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
         m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
+        m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
         m_saveButton.setText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         m_saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         m_cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
@@ -120,6 +121,9 @@ public class CmsFavoriteTab extends Composite {
     public void addListItem(CmsListItem item) {
 
         m_listPanel.add(item);
+        if (m_listPanel.getWidgetCount() > 0) {
+            m_editButton.enable();
+        }
     }
 
     /**
@@ -128,6 +132,7 @@ public class CmsFavoriteTab extends Composite {
     public void clearList() {
 
         m_listPanel.clear();
+        m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
     }
 
     /**
@@ -193,6 +198,9 @@ public class CmsFavoriteTab extends Composite {
     public void saveFavorites() {
 
         m_clipboard.saveFavorites();
+        if (m_listPanel.getWidgetCount() < 1) {
+            m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
+        }
         m_buttonEditingPanel.setVisible(false);
         m_buttonUsePanel.setVisible(true);
     }
