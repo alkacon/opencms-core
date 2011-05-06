@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/05/06 15:53:57 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 7.6 
  */
@@ -250,7 +250,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public Collection<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
-        return getCreatableElements(cms, cntPageUri, request);
+        CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(cntPageUri));
+        return configData.getSearchableElements(cms);
     }
 
     /**

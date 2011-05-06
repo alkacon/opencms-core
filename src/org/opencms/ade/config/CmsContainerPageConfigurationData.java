@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationData.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/06 15:53:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -138,6 +138,22 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
     public CmsConfigurationSourceInfo getLastSource() {
 
         return m_lastSource;
+    }
+
+    /**
+     * Returns the searchable resource types.<p>
+     * 
+     * @param cms the CMS context
+     * 
+     * @return the searchable resource types
+     */
+    public Collection<CmsResource> getSearchableElements(CmsObject cms) {
+
+        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
+        for (CmsConfigurationItem item : m_typeConfiguration.values()) {
+            result.add(item.getSourceFile());
+        }
+        return result;
     }
 
     /**
