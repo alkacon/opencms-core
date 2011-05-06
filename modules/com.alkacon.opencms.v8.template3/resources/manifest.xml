@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Fri, 06 May 2011 13:50:05 GMT</createdate>
+		<createdate>Fri, 06 May 2011 17:23:19 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -60,10 +60,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>c8d53ed5-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:48 GMT</datelastmodified>
+			<uuidstructure>15c6920e-77f6-11e0-b79c-11339f3a73b8</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 15:32:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:48 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 15:32:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -82,10 +82,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>c979e384-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:49 GMT</datelastmodified>
+			<uuidstructure>166654ba-77f6-11e0-b79c-11339f3a73b8</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 15:32:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:49 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 15:32:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -128,7 +128,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com</destination>
 			<type>folder</type>
 			<uuidstructure>6754829d-6b1d-11e0-8f1e-e363b206b5de</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 13:26:00 GMT</datelastmodified>
@@ -141,7 +141,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon</destination>
 			<type>folder</type>
 			<uuidstructure>6756cc8f-6b1d-11e0-8f1e-e363b206b5de</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 13:26:00 GMT</datelastmodified>
@@ -154,7 +154,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms</destination>
 			<type>folder</type>
 			<uuidstructure>67593d91-6b1d-11e0-8f1e-e363b206b5de</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 13:26:00 GMT</datelastmodified>
@@ -167,7 +167,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8</destination>
 			<type>folder</type>
 			<uuidstructure>675bae93-6b1d-11e0-8f1e-e363b206b5de</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 13:26:00 GMT</datelastmodified>
@@ -180,8 +180,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3/workplace.properties</source>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3/workplace.properties</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3</destination>
+			<type>folder</type>
+			<uuidstructure>411aa63e-7805-11e0-b79c-11339f3a73b8</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 17:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 17:21:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3/workplace.properties</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3/workplace.properties</destination>
 			<type>plain</type>
 			<uuidstructure>c6f9b0fd-6b21-11e0-8f1e-e363b206b5de</uuidstructure>
 			<uuidresource>c6f9b0fe-6b21-11e0-8f1e-e363b206b5de</uuidresource>
@@ -195,8 +208,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3/workplace_de.properties</source>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3/workplace_de.properties</destination>
+			<source>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3/workplace_de.properties</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidstructure>e357f5a0-6b21-11e0-8f1e-e363b206b5de</uuidstructure>
 			<uuidresource>e357f5a1-6b21-11e0-8f1e-e363b206b5de</uuidresource>
@@ -215,7 +228,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/org/opencms/frontend/template3/workplace_en.properties</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/classes/com/alkacon/opencms/v8/template3/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidstructure>d42741cf-6b21-11e0-8f1e-e363b206b5de</uuidstructure>
 			<uuidresource>c6f9b0fe-6b21-11e0-8f1e-e363b206b5de</uuidresource>
