@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2011/05/04 19:03:28 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/07 15:29:15 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,12 +78,13 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @author Ruediger Kurz
  */
@@ -92,7 +93,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.26 $
+     * @version $Revision: 1.27 $
      * 
      * @author Ruediger Kurz
      */
@@ -502,7 +503,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         m_tmpValue = value;
         if (fireEvents) {
-            CmsDateChangeEvent.fireIfNotEqualDates(this, getValue(), value);
+            fireChange(getValue(), value);
             m_oldValue = value;
         }
         m_box.setText(CmsDateConverter.toString(value));
@@ -517,6 +518,17 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             updateFromPicker();
         }
         updateCloseBehavior();
+    }
+
+    /**
+     * Fires the value change event if needed.<p>
+     * 
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
+    protected void fireChange(Date oldValue, Date newValue) {
+
+        ValueChangeEvent.<Date> fireIfNotEqual(this, oldValue, CalendarUtil.copyDate(newValue));
     }
 
     /**
@@ -800,7 +812,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         date = CmsDateConverter.getDateWithTime(date, timeAsString);
         setValue(date);
         setErrorMessage(null);
-        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, date);
+        fireChange(m_oldValue, date);
         m_oldValue = date;
     }
 
@@ -812,7 +824,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         Date date = getValue();
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
-        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, getValue());
+        fireChange(m_oldValue, getValue());
         m_oldValue = date;
     }
 }
