@@ -2,9 +2,9 @@
 
 <export>
 	<info>
-		<creator>Admin</creator>
+		<creator>Michael</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Fri, 06 May 2011 16:46:51 GMT</createdate>
+		<createdate>Sat, 07 May 2011 12:48:54 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template 3</group>
 		<class/>
 		<description><![CDATA[Contains demo contents for the OpenCms 8 template 3.]]></description>
-		<version>8.0.0</version>
+		<version>8.0.14</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1637,8 +1637,8 @@
 			<type>sitemap_config</type>
 			<uuidstructure>2a38ac20-77e8-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>2a38ac21-77e8-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:28:09 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 08:37:16 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Fri, 06 May 2011 13:53:04 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -1652,8 +1652,8 @@
 			<type>sitemap_config</type>
 			<uuidstructure>149882c7-6bfa-11e0-ad63-c3baf286301a</uuidstructure>
 			<uuidresource>149882c8-6bfa-11e0-ad63-c3baf286301a</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 14:14:44 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:39:44 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Thu, 21 Apr 2011 09:31:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
@@ -1901,18 +1901,18 @@
 		<file>
 			<source>sites/default/_contents/_new/twitter.html</source>
 			<destination>sites/default/_contents/_new/twitter.html</destination>
-			<type>plain</type>
-			<uuidstructure>d939c402-7270-11e0-af82-3ba067aa63bd</uuidstructure>
-			<uuidresource>d939c403-7270-11e0-af82-3ba067aa63bd</uuidresource>
-			<datelastmodified>Mon, 02 May 2011 08:38:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 29 Apr 2011 14:56:22 GMT</datecreated>
-			<usercreated>Admin</usercreated>
+			<type>v8twitter</type>
+			<uuidstructure>3d36cac3-78a6-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>3d36cac4-78a6-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Sat, 07 May 2011 12:33:49 GMT</datelastmodified>
+			<userlastmodified>Michael</userlastmodified>
+			<datecreated>Sat, 07 May 2011 12:33:40 GMT</datecreated>
+			<usercreated>Michael</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New Twitter]]></value>
+					<value><![CDATA[New Twitterbox]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1980,7 +1980,7 @@
 			<type>v8article</type>
 			<uuidstructure>d09fdff8-719c-11e0-9371-000c2972a6a4</uuidstructure>
 			<uuidresource>d09fdff9-719c-11e0-9371-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 08:48:28 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 09:58:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 28 Apr 2011 13:38:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2106,8 +2106,8 @@
 			<type>v8article</type>
 			<uuidstructure>b21335c0-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>b21335c1-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:51:15 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:25:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:49 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2192,8 +2192,8 @@
 			<type>v8article</type>
 			<uuidstructure>9beee082-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9beee083-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:52:03 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:25:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:12 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2278,8 +2278,8 @@
 			<type>v8article</type>
 			<uuidstructure>9cd76bc5-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9cd76bc6-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:52:21 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:26:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:13 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2364,8 +2364,8 @@
 			<type>v8article</type>
 			<uuidstructure>9d8781e8-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9d8781e9-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:52:43 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:26:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:14 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2450,8 +2450,8 @@
 			<type>v8article</type>
 			<uuidstructure>9e1f06fb-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9e1f06fc-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:53:09 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:26:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:15 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2536,8 +2536,8 @@
 			<type>v8article</type>
 			<uuidstructure>9eb1d11e-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9eb1d11f-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:53:32 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:27:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:16 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2622,8 +2622,8 @@
 			<type>v8article</type>
 			<uuidstructure>9f3fe051-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9f3fe052-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:53:53 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:27:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:17 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2708,8 +2708,8 @@
 			<type>v8article</type>
 			<uuidstructure>9fd2d184-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>9fd2d185-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:42:14 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:28:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:18 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2794,8 +2794,8 @@
 			<type>v8article</type>
 			<uuidstructure>a059dbd7-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a059dbd8-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:54:45 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:28:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:19 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2880,8 +2880,8 @@
 			<type>v8article</type>
 			<uuidstructure>a0d85aaa-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a0d85aab-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:55:12 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:29:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:20 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -2966,8 +2966,8 @@
 			<type>v8article</type>
 			<uuidstructure>a15eefcd-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a15eefce-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:55:41 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:29:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:21 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3052,8 +3052,8 @@
 			<type>v8article</type>
 			<uuidstructure>a1e02dc0-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a1e02dc1-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:06 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:29:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:22 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3138,8 +3138,8 @@
 			<type>v8article</type>
 			<uuidstructure>a262f253-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a262f254-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:34 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:30:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:23 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3224,8 +3224,8 @@
 			<type>v8article</type>
 			<uuidstructure>a2e05fb6-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a2e05fb7-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:59 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:30:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:23 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3310,8 +3310,8 @@
 			<type>v8article</type>
 			<uuidstructure>a35a4aa9-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a35a4aaa-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:57:21 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:31:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:24 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3396,8 +3396,8 @@
 			<type>v8article</type>
 			<uuidstructure>a3d212bc-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a3d212bd-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:57:41 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:31:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:25 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3482,8 +3482,8 @@
 			<type>v8article</type>
 			<uuidstructure>a44fa72f-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a44fa730-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:06 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:31:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:26 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3568,8 +3568,8 @@
 			<type>v8article</type>
 			<uuidstructure>a4ccc672-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a4ccc673-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:33 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:32:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:27 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3654,8 +3654,8 @@
 			<type>v8article</type>
 			<uuidstructure>a551fc05-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a551fc06-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:58 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:32:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:28 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -3740,7 +3740,7 @@
 			<type>v8article</type>
 			<uuidstructure>a5d29db8-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a5d29db9-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:17:28 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:33:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:28 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -3826,7 +3826,7 @@
 			<type>v8article</type>
 			<uuidstructure>a64ed29b-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a64ed29c-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:17:15 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:33:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:29 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -3912,7 +3912,7 @@
 			<type>v8article</type>
 			<uuidstructure>a6cb2e8e-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a6cb2e8f-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:17:01 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:33:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:30 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -3998,7 +3998,7 @@
 			<type>v8article</type>
 			<uuidstructure>a73f4c21-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a73f4c22-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 16:16:37 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:34:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:31 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4084,7 +4084,7 @@
 			<type>v8article</type>
 			<uuidstructure>a7bb32e4-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a7bb32e5-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:51 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:34:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:32 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4170,7 +4170,7 @@
 			<type>v8article</type>
 			<uuidstructure>a8345a87-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a8345a88-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:36 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:35:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:32 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4256,7 +4256,7 @@
 			<type>v8article</type>
 			<uuidstructure>a8ada93a-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a8ada93b-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:58:11 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:35:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:33 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4362,7 +4362,7 @@
 			<type>v8article</type>
 			<uuidstructure>a92faa7d-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a92faa7e-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:57:46 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:35:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:34 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4448,7 +4448,7 @@
 			<type>v8article</type>
 			<uuidstructure>a9a8ab10-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>a9a8ab11-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:57:30 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:36:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:35 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4529,7 +4529,7 @@
 			<type>v8article</type>
 			<uuidstructure>aa18d203-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>aa18d204-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:57:08 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:36:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:36 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4615,7 +4615,7 @@
 			<type>v8article</type>
 			<uuidstructure>aa8d65c6-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>aa8d65c7-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:47 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:37:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:36 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4701,7 +4701,7 @@
 			<type>v8article</type>
 			<uuidstructure>ab00e819-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>ab00e81a-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:26 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:37:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:37 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4787,7 +4787,7 @@
 			<type>v8article</type>
 			<uuidstructure>ab757bdc-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>ab757bdd-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 15:56:02 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 10:37:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:39:38 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -4911,8 +4911,8 @@
 			<destination>sites/default/_contents/configs</destination>
 			<type>folder</type>
 			<uuidstructure>2e9f0e28-70d7-11e0-b894-5de1afb8a118</uuidstructure>
-			<datelastmodified>Wed, 04 May 2011 08:55:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:36:49 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Wed, 27 Apr 2011 14:03:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -4920,6 +4920,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Configurations for header and footer]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5123,8 +5127,8 @@
 			<destination>sites/default/_contents/group_container</destination>
 			<type>folder</type>
 			<uuidstructure>da89163a-77e8-11e0-be13-000c2972a6a4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 13:58:07 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:38:15 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Fri, 06 May 2011 13:58:00 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -5132,6 +5136,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Group Container Gallery]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5163,7 +5171,7 @@
 			<type>groupcontainer</type>
 			<uuidstructure>82065df5-77eb-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>82068506-77eb-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 14:18:35 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 May 2011 18:45:05 GMT</datelastmodified>
 			<userlastmodified>Michael</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:17:00 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -7873,8 +7881,8 @@
 			<destination>sites/default/_contents/lists</destination>
 			<type>v8listgallery</type>
 			<uuidstructure>e9e20cba-7013-11e0-a276-c3baf286301a</uuidstructure>
-			<datelastmodified>Wed, 04 May 2011 08:56:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:37:22 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 14:46:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -7882,6 +7890,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Lists]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8031,8 +8043,8 @@
 			<destination>sites/default/_contents/logins</destination>
 			<type>folder</type>
 			<uuidstructure>ba3691ea-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<datelastmodified>Thu, 05 May 2011 08:00:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:37:16 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Thu, 05 May 2011 08:00:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -8040,6 +8052,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Logins]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8051,15 +8067,15 @@
 			<type>v8login</type>
 			<uuidstructure>5fba7e2c-7655-11e0-a2c2-000c2972a6a4</uuidstructure>
 			<uuidresource>5fba7e2d-7655-11e0-a2c2-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 13:50:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 08:35:50 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Wed, 04 May 2011 13:49:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New login]]></value>
+					<value><![CDATA[Login to the Extranet]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8089,8 +8105,8 @@
 			<type>v8news</type>
 			<uuidstructure>b8ea4f82-77ee-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>b8ea4f83-77ee-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 14:59:00 GMT</datelastmodified>
-			<userlastmodified>Michael</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 11:30:01 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:40:00 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
@@ -8207,8 +8223,8 @@
 			<destination>sites/default/_contents/searches</destination>
 			<type>folder</type>
 			<uuidstructure>ea7508b6-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<datelastmodified>Thu, 05 May 2011 08:01:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:37:00 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Thu, 05 May 2011 08:01:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -8216,6 +8232,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Searches]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8227,15 +8247,15 @@
 			<type>v8search</type>
 			<uuidstructure>2a5908f7-77ec-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>2a5908f8-77ec-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Mon, 02 May 2011 08:38:22 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 08:55:15 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:21:42 GMT</datecreated>
 			<usercreated>Michael</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New search]]></value>
+					<value><![CDATA[Search the World of Flowers]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8245,8 +8265,8 @@
 			<destination>sites/default/_contents/twitters</destination>
 			<type>folder</type>
 			<uuidstructure>0ba0db02-76ee-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<datelastmodified>Thu, 05 May 2011 08:02:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 07 May 2011 12:37:11 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Thu, 05 May 2011 08:02:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -8254,6 +8274,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Twitters]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -8263,7 +8287,7 @@
 			<destination>sites/default/flower_en</destination>
 			<type>subsitemap</type>
 			<uuidstructure>0f521354-77e8-11e0-be13-000c2972a6a4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 13:54:07 GMT</datelastmodified>
+			<datelastmodified>Sat, 07 May 2011 11:53:27 GMT</datelastmodified>
 			<userlastmodified>Michael</userlastmodified>
 			<datecreated>Fri, 06 May 2011 13:52:19 GMT</datecreated>
 			<usercreated>Michael</usercreated>
@@ -8271,7 +8295,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.5]]></value>
+					<value><![CDATA[12.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -8318,7 +8342,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/flower_en/Flower_dictionary</destination>
+			<destination>sites/default/flower_en/Flower_Dictionary</destination>
 			<type>folder</type>
 			<uuidstructure>d359494b-77fd-11e0-be13-000c2972a6a4</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 16:34:33 GMT</datelastmodified>
@@ -8340,8 +8364,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/flower_en/Flower_dictionary/index.html</source>
-			<destination>sites/default/flower_en/Flower_dictionary/index.html</destination>
+			<source>sites/default/flower_en/Flower_Dictionary/index.html</source>
+			<destination>sites/default/flower_en/Flower_Dictionary/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>d3a2392f-77fd-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>d3a23930-77fd-11e0-be13-000c2972a6a4</uuidresource>
@@ -8386,6 +8410,43 @@
 			<userlastmodified>Michael</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:47:43 GMT</datecreated>
 			<usercreated>Michael</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/flower_en/Flower_Special</destination>
+			<type>folder</type>
+			<uuidstructure>03bc1afd-789e-11e0-be13-000c2972a6a4</uuidstructure>
+			<datelastmodified>Sat, 07 May 2011 11:34:55 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
+			<datecreated>Sat, 07 May 2011 11:34:48 GMT</datecreated>
+			<usercreated>alex</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[27.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Flower Special]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/flower_en/Flower_Special/index.html</source>
+			<destination>sites/default/flower_en/Flower_Special/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>03de4901-789e-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>03de4902-789e-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Sat, 07 May 2011 11:34:48 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
+			<datecreated>Sat, 07 May 2011 11:34:48 GMT</datecreated>
+			<usercreated>alex</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -8503,6 +8564,43 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>sites/default/flower_en/Search</destination>
+			<type>folder</type>
+			<uuidstructure>35dffd34-7885-11e0-be13-000c2972a6a4</uuidstructure>
+			<datelastmodified>Sat, 07 May 2011 08:37:21 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
+			<datecreated>Sat, 07 May 2011 08:37:15 GMT</datecreated>
+			<usercreated>alex</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Search]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/flower_en/Search/index.html</source>
+			<destination>sites/default/flower_en/Search/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>35fc85e8-7885-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>35fcacf9-7885-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Sat, 07 May 2011 08:39:27 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
+			<datecreated>Sat, 07 May 2011 08:37:15 GMT</datecreated>
+			<usercreated>alex</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system</destination>
 			<type>folder</type>
 			<uuidstructure>fbfc91d6-77be-11e0-a3ae-000c2972a6a4</uuidstructure>
@@ -8556,6 +8654,52 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/com.alkacon.opencms.v8.template3.demo/resources</destination>
+			<type>folder</type>
+			<uuidstructure>ca050dff-788f-11e0-be13-000c2972a6a4</uuidstructure>
+			<datelastmodified>Sat, 07 May 2011 09:53:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 May 2011 09:52:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/com.alkacon.opencms.v8.template3.demo/resources/license</destination>
+			<type>folder</type>
+			<uuidstructure>d64a88c2-788f-11e0-be13-000c2972a6a4</uuidstructure>
+			<datelastmodified>Sat, 07 May 2011 09:53:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 May 2011 09:53:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3.demo/resources/license/fdl.txt</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3.demo/resources/license/fdl.txt</destination>
+			<type>plain</type>
+			<uuidstructure>dcec1314-788f-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>dcec1315-788f-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Sat, 07 May 2011 09:53:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 May 2011 09:53:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[GNU Free Documentation License]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

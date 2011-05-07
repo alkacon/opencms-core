@@ -858,6 +858,10 @@
 					<name>template</name>
 					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/resources/css/style_editor.css]]></value>
 				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon OpenCms Template III]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>

@@ -1,0 +1,2 @@
+serviceClass: org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService
+path: 1B7EF0300273DABF112595FF564D51D8.gwt.rpc

@@ -1,0 +1,2 @@
+serviceClass: org.opencms.gwt.shared.rpc.I_CmsCoreService
+path: BA1B5BEFB694E39C2764F39D58C15853.gwt.rpc

@@ -1,0 +1,6 @@
+# Module upload
+# RPC service class, partial path of RPC policy file
+org.opencms.gwt.shared.rpc.I_CmsCoreService, 926F434C577193A05DDFDF81DE63458F.gwt.rpc
+org.opencms.gwt.shared.rpc.I_CmsVfsService, 4B800F89DAEE35E40F8A7908F5A23CB2.gwt.rpc
+org.opencms.gwt.shared.rpc.I_CmsLogService, 3E00C7EA053DF326835610BE15B692F1.gwt.rpc
+org.opencms.ade.upload.shared.rpc.I_CmsUploadService, 1931C6EE9B50D26441789A3FA29E4168.gwt.rpc

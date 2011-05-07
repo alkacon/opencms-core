@@ -1,0 +1,2 @@
+serviceClass: org.opencms.gwt.shared.rpc.I_CmsVfsService
+path: 4B800F89DAEE35E40F8A7908F5A23CB2.gwt.rpc
