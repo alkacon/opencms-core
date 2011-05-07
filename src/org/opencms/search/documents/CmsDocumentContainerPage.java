@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentContainerPage.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/07 11:03:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -65,7 +66,7 @@ import org.apache.lucene.document.Document;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0 
  */
@@ -133,10 +134,9 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
                 // check all elements in this container
 
                 // get the formatter configuration for this element
-                CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(
-                    cms,
-                    resource.getRootPath(),
-                    element.getResource());
+                element.initResource(cms);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
+                CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
 
                 if (formatters.isSearchContent(element.getFormatterId())) {
                     // the content of this element must be included for the container page

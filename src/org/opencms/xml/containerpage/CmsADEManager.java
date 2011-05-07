@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/05/07 11:03:29 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 7.6
  */
@@ -377,26 +377,6 @@ public class CmsADEManager {
         CmsResource res) throws CmsException {
 
         return m_configuration.getFormattersForResource(cms, containerPageRootPath, res);
-    }
-
-    /**
-     * Returns the name of the next new file of the given type to be created.<p>
-     * 
-     * @param cms the current opencms context
-     * @param cntPageUri the container page uri
-     * @param request the current request
-     * @param type the resource type name
-     * 
-     * @return the name of the next new file of the given type to be created
-     * 
-     * @throws CmsException if something goes wrong
-     *
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getNextNewFileName(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest, java.lang.String)
-     */
-    public String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
-    throws CmsException {
-
-        return m_configuration.getNextNewFileName(cms, cntPageUri, request, type);
     }
 
     /**
