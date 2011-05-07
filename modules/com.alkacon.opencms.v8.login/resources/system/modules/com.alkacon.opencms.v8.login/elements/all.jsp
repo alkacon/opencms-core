@@ -24,14 +24,6 @@
 <h4>${value.Title}</h4>
 	
 <div class="boxbody">
-<c:choose>
-	<c:when test="${empty param.requestedResource}">
-		<c:set var="path">${cms.requestContext.uri}</c:set>
-	</c:when>
-	<c:otherwise>
-		<c:set var="path">${param.requestedResource}</c:set>
-	</c:otherwise>
-</c:choose>
 
 <c:choose>
 	<c:when test="${!login.loggedIn}">
@@ -57,7 +49,7 @@
 				${login.loginException.localizedMessage}
 			</div>
 		</c:if>
-		<form method="get" action="<cms:link>${path}</cms:link>" class="loginform">
+		<form method="get" action="<cms:link>${cms.requestContext.uri}</cms:link>" class="loginform">
 			<div class="boxform">
 				<label for="name"><fmt:message key="login.label.username" />:</label>
 				<input type="text" name="name">
