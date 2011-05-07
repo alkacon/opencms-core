@@ -5,7 +5,7 @@
     <window.background>#EEE</window.background>
     <window.background.image>
       <link type="STRONG">
-        <target><![CDATA[/system/modules/org.opencms.frontend.template3/resources/images/bg_demo_png24.png]]></target>
+        <target><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/resources/images/bg_demo_png24.png]]></target>
         <uuid>8b602d06-6b26-11e0-897c-e363b206b5de</uuid>
       </link>
     </window.background.image>
@@ -16,7 +16,7 @@
     <header.background>#FFF</header.background>
     <header.background.image>
       <link type="STRONG">
-        <target><![CDATA[/system/modules/org.opencms.frontend.template3/resources/images/bg_head_demo_png24.png]]></target>
+        <target><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/resources/images/bg_head_demo_png24.png]]></target>
         <uuid>8b6c13ee-6b26-11e0-897c-e363b206b5de</uuid>
       </link>
     </header.background.image>
@@ -25,7 +25,7 @@
     <footer.background>#FFFFFF</footer.background>
     <footer.background.image>
       <link type="STRONG">
-        <target><![CDATA[/system/modules/org.opencms.frontend.template3/resources/images/bg_foot_demo_png24.png]]></target>
+        <target><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/resources/images/bg_foot_demo_png24.png]]></target>
         <uuid>8b64e7fa-6b26-11e0-897c-e363b206b5de</uuid>
       </link>
     </footer.background.image>
