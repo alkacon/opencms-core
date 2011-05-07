@@ -26,12 +26,12 @@
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
 			<layouts>
-				<layout element="Header" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
-				<layout element="Footer" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+				<layout element="Header" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,linkgallery,link,anchor" />
+				<layout element="Footer" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,linkgallery,link,anchor" />
 			</layouts>
 			<formatters>
-				<formatter type="header" uri="/system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp" />
-				<formatter type="footer" uri="/system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp" />
+				<formatter type="header" uri="/system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp" searchcontent="false" />
+				<formatter type="footer" uri="/system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp" searchcontent="false" />
 			</formatters>
 		</xsd:appinfo>
 

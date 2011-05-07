@@ -9,15 +9,12 @@
 	<c:choose>
 		<c:when test="${fn:endsWith(formlink, content.filename)}">
 			<h4>Search Error</h4>
-			<div class="boxbody">No detail page for search page defined in sitemap.</div>
+			<div class="boxbody">No detail page for the search has been defined in the sitemap.</div>
 		</c:when>
 		<c:otherwise>
 			<h4>${value.Title}</h4>
 		
 			<div class="boxbody">
-			<c:if test="${value.Text.isSet}">
-				<p>${cms:stripHtml(value.Text)}</p>
-			</c:if>
 			<form id="searchFormSide" name="searchForm" action="${formlink}" method="post">
 				<input type="hidden" name="searchaction" value="search" />
 				<input type="hidden" name="searchPage" value="1" />

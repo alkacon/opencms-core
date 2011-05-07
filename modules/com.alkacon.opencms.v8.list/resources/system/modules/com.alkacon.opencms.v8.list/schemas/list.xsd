@@ -37,12 +37,12 @@
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>			
 			<layouts>
-				<layout element="Text" widget="HtmlWidget" configuration="height:100px,source,imagegallery,downloadgallery,linkgallery,link,anchor" />
-				<layout element="TextBottom" widget="HtmlWidget" configuration="height:100px,source,imagegallery,downloadgallery,linkgallery,link,anchor" />
+				<layout element="Text" widget="HtmlWidget" configuration="height:100px,source,imagegallery,link" />
+				<layout element="TextBottom" widget="HtmlWidget" configuration="height:100px,source,imagegallery,link" />
 				<layout element="Collector" widget="com.alkacon.opencms.v8.list.CmsCollectorSelectWidget" />
 				<layout element="Parameter" widget="VfsFileWidget" />
 				<layout element="PositionAuthor" widget="SelectorWidget" configuration="top:%(key.v8.list.position.top)|bottom:%(key.v8.list.position.bottom)" />
-				<layout element="PositionDate" widget="SelectorWidget" configuration="top:%(key.v8.list.position.top)|bottom:%(key.v8.list.position.bottom)" />
+				<layout element="PositionDate" widget="SelectorWidget" configuration="top:%(key.v8.list.position.top)|bottom:%(key.v8.list.position.bottom)"  />
 				<layout element="PositionImage" widget="SelectorWidget" configuration="left:%(key.v8.list.position.left)|right:%(key.v8.list.position.right)|top:%(key.v8.list.position.top)" />
 			</layouts>
 			<tabs>
@@ -50,7 +50,7 @@
 				<tab element="PositionAuthor" name="TabMappings" collapse="false" />
 			</tabs>
 			<formatters>
-				<formatter uri="/system/modules/com.alkacon.opencms.v8.list/elements/all.jsp" />
+				<formatter uri="/system/modules/com.alkacon.opencms.v8.list/elements/all.jsp" searchcontent="false" />
 			</formatters>
 			<settings>
 				<setting name="boxschema" nice-name="Box Schema" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />
