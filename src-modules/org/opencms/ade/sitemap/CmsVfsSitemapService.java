@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/06 15:56:35 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/07 16:27:52 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsPropertyModification;
@@ -50,6 +49,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  * 
@@ -174,9 +174,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     cms,
                     CmsStringUtil.joinPaths(folderName, "sitemap_" + subSitemapFolder.getName() + "_%(number).config"));
             }
-            tryUnlock(cms.createResource(
-                sitemapConfigName,
-                OpenCms.getResourceManager().getResourceType("sitemap_config").getTypeId()));
+            tryUnlock(cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
+                "sitemap_config").getTypeId()));
 
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(
@@ -190,9 +189,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             CmsSitemapClipboardData clipboard = getClipboardData();
 
-            CmsClientSitemapEntry entry = toClientEntry(
-                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
-                false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
+                cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSubSitemapInfo(path, System.currentTimeMillis());
@@ -319,9 +317,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(
-                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
-                false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
+                cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSitemapMergeInfo(getChildren(entryPoint, subSitemapPath, 1), System.currentTimeMillis());
@@ -347,7 +344,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             String entryPoint = sitemapMgr.findEntryPoint(cms, openPath);
 
-            Map<String, CmsXmlContentProperty> propertyConfig = new HashMap<String, CmsXmlContentProperty>(
+            Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                 sitemapMgr.getElementPropertyConfiguration(cms, entryPoint));
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(entryPoint);
 
@@ -705,11 +702,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(
-                    entryFolderPath,
-                    entryFolder,
-                    null,
-                    generateInheritProperties(change, entryFolder));
+                entryFolder = cms.createResource(entryFolderPath, entryFolder, null, generateInheritProperties(
+                    change,
+                    entryFolder));
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
                 newRes = cms.createResource(
                     entryPath,

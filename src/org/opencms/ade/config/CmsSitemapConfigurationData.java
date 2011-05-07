@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsSitemapConfigurationData.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/07 16:27:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,7 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
         this(
             new HashMap<String, CmsConfigurationItem>(),
             new LinkedHashSet<CmsConfigurationItem>(),
-            new HashMap<String, CmsXmlContentProperty>(),
+            new LinkedHashMap<String, CmsXmlContentProperty>(),
             new HashMap<String, List<CmsDetailPageInfo>>(),
             -1,
             new CmsConfigurationSourceInfo(null, false));

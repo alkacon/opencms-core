@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/07 11:03:29 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/05/07 16:27:52 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 7.6
  */
@@ -298,7 +299,7 @@ public class CmsADEManager {
     public Map<String, CmsXmlContentProperty> getElementSettings(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
         Map<String, CmsXmlContentProperty> settings = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
             resource).getSettings();
