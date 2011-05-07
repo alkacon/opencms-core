@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/07 08:37:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.collections.Transformer;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0
  */
@@ -73,6 +73,18 @@ public class CmsContainerBean {
 
     /** The container width set by the rendering container tag. */
     private String m_width;
+
+    /** 
+     * Creates a new container bean with an unlimited number of elements.<p> 
+     * 
+     * @param name the container name
+     * @param type the container type
+     * @param elements the elements
+     **/
+    public CmsContainerBean(String name, String type, List<CmsContainerElementBean> elements) {
+
+        this(name, type, -1, elements);
+    }
 
     /** 
      * Creates a new container bean.<p> 

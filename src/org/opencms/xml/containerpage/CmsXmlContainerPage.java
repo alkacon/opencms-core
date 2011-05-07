@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/05 16:07:01 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/07 08:37:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 7.5.2
  * 
@@ -430,7 +430,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         }
                     }
 
-                    containers.add(new CmsContainerBean(name.getText(), type.getText(), -1, elements));
+                    containers.add(new CmsContainerBean(name.getText(), type.getText(), elements));
                 }
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));

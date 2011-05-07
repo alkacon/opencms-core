@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/07 08:37:42 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 8.0.0
  */
@@ -540,7 +540,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 log(e.getLocalizedMessage(), e);
             }
         }
-        CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), -1, elements);
+        CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), elements);
         return result;
     }
 
