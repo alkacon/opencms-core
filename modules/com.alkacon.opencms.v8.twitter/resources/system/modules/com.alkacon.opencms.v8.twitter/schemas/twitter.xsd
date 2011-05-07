@@ -32,7 +32,7 @@
 				<default element="LinksColor" value="#B31B34" />
 			</defaults>
 			<formatters>
-				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.twitter/elements/all.jsp" searchcontent="true" />
+				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.twitter/elements/all.jsp" searchcontent="false" />
 			</formatters>
 			<settings>
 				<setting name="box-height" nice-name="${key.v8.twitter.box.height}" type="string" widget="select" widget-config="150:150px|200:200px|250:250px|300:300px|350:350px|400:450px" />
