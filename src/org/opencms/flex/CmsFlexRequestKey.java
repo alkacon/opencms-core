@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/07 08:03:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,8 +76,8 @@ public class CmsFlexRequestKey {
     /** The OpenCms resource that this key is used for. */
     private String m_resource;
 
-    /** The current sitemap entry. */
-    private String m_sitemapEntry;
+    /** The current detail view id. */
+    private CmsUUID m_detailViewId;
 
     /**
      * This constructor is used when building a cache key from a request.<p>
@@ -107,8 +108,12 @@ public class CmsFlexRequestKey {
         // calculate the device
         m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
 
+        CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
         // get the current container element
-        m_containerElement = CmsJspStandardContextBean.getInstance(req).elementCachingHash();
+        m_containerElement = standardContext.elementCachingHash();
+
+        // get the current detail view id
+        m_detailViewId = standardContext.getDetailContentId();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
@@ -256,23 +261,17 @@ public class CmsFlexRequestKey {
     }
 
     /**
-     * Returns the current sitemap entry.<p>
-     *
-     * @return the current sitemap entry
-     */
-    public String getSitemapEntry() {
-
-        return m_sitemapEntry;
-    }
-
-    /**
      * Returns the uri.<p>
      *
      * @return the uri
      */
     public String getUri() {
 
-        return m_context.addSiteRoot(m_context.getUri());
+        String uri = m_context.addSiteRoot(m_context.getUri());
+        if (m_detailViewId != null) {
+            uri += m_detailViewId.toString() + "/";
+        }
+        return uri;
     }
 
     /**
