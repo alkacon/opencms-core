@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStandardContextBean.java,v $
- * Date   : $Date: 2011/05/06 19:40:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/07 09:05:13 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0
  */
@@ -211,6 +211,18 @@ public final class CmsJspStandardContextBean {
     public CmsUUID getDetailContentId() {
 
         return m_detailContentResource == null ? null : m_detailContentResource.getStructureId();
+    }
+
+    /**
+     * Returns the detail content site path. Returns <code>null</code> if not available.<p>
+     * 
+     * @return the detail content site path
+     */
+    public String getDetailContentSitePath() {
+
+        return ((m_cms == null) || (m_detailContentResource == null))
+        ? null
+        : m_cms.getSitePath(m_detailContentResource);
     }
 
     /**    
