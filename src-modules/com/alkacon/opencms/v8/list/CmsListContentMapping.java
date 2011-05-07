@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/alkacon/opencms/v8/list/CmsListContentMapping.java,v $
- * Date   : $Date: 2011/05/06 15:43:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/07 13:31:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsListContentMapping {
 
@@ -417,7 +417,7 @@ public class CmsListContentMapping {
             if (link == null) {
                 String sPath = cms.getSitePath(content.getFile());
                 // generate the link
-                link = OpenCms.getLinkManager().getServerLink(cms, sPath);
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, sPath);
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);
