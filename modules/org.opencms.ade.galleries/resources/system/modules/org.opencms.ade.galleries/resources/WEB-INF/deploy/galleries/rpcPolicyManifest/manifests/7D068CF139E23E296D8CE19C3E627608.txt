@@ -1,2 +1,0 @@
-serviceClass: org.opencms.gwt.shared.rpc.I_CmsLogService
-path: 3E00C7EA053DF326835610BE15B692F1.gwt.rpc

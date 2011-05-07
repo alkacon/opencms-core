@@ -1,2 +1,0 @@
-serviceClass: org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService
-path: 876D605BB8CB1930BF6507AA24E58994.gwt.rpc

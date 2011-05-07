@@ -1,2 +1,0 @@
-serviceClass: org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService
-path: 1894A83308A673E71F848722BC58C0A8.gwt.rpc

@@ -1,2 +1,0 @@
-serviceClass: org.opencms.ade.publish.shared.rpc.I_CmsPublishService
-path: 23A2929B3979EEA04C21012A5CA640B1.gwt.rpc
