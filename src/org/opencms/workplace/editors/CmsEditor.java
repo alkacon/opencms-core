@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2011/05/07 07:43:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/07 10:56:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,6 +247,9 @@ public abstract class CmsEditor extends CmsEditorBase {
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramElementlanguage)) {
                 info.setElementLocale(new Locale(m_paramElementlanguage));
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramDirectedit)) {
+                info.setDirectEdit(Boolean.parseBoolean(m_paramDirectedit));
             }
             session.setAttribute(info.getEditorSessionInfoKey(), info);
         }
@@ -544,12 +547,12 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     public String getParamBacklink() {
 
+        if ((m_editorSessionInfo != null)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editorSessionInfo.getBackLink())) {
+            m_paramBackLink = m_editorSessionInfo.getBackLink();
+        }
         if (m_paramBackLink == null) {
             m_paramBackLink = "";
-            if ((m_editorSessionInfo != null)
-                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editorSessionInfo.getBackLink())) {
-                m_paramBackLink = m_editorSessionInfo.getBackLink();
-            }
         }
         return m_paramBackLink;
     }
@@ -573,6 +576,9 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     public String getParamDirectedit() {
 
+        if (m_editorSessionInfo != null) {
+            return String.valueOf(m_editorSessionInfo.isDirectEdit());
+        }
         return m_paramDirectedit;
     }
 

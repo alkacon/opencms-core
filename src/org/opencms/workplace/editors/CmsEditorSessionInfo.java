@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorSessionInfo.java,v $
- * Date   : $Date: 2011/05/06 19:53:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/07 10:56:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -52,6 +52,9 @@ public class CmsEditorSessionInfo {
 
     /** The back link for closing the editor. */
     private String m_backLink;
+
+    /** Flag indicating if in direct edit mode. */
+    private boolean m_directEdit;
 
     /** The id of the edited resource. */
     private CmsUUID m_editedStructureId;
@@ -122,6 +125,16 @@ public class CmsEditorSessionInfo {
     }
 
     /**
+     * Returns if in direct edit mode.<p>
+     *
+     * @return <code>true</code> if in direct edit mode
+     */
+    public boolean isDirectEdit() {
+
+        return m_directEdit;
+    }
+
+    /**
      * Sets the back link for closing the editor.<p>
      *
      * @param backLink the back link for closing the editor to set
@@ -129,6 +142,16 @@ public class CmsEditorSessionInfo {
     public void setBackLink(String backLink) {
 
         m_backLink = backLink;
+    }
+
+    /**
+     * Sets the flag indicating if in direct edit mode.<p>
+     *
+     * @param directEdit the flag indicating if in direct edit mode
+     */
+    public void setDirectEdit(boolean directEdit) {
+
+        m_directEdit = directEdit;
     }
 
     /**
