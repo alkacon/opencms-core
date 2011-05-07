@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/07 07:41:26 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/05/07 07:42:00 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 8.0
  */
@@ -612,7 +612,6 @@ public class CmsJspTagContainer extends TagSupport {
         if (CmsResourceTypeJsp.isJsp(elementBean.getResource())) {
             // JSP may not be handled in ADE
             viewPermission += false;
-            noEditReason = "JSPs may not only be edited from the workplace";
         } else {
             viewPermission += cms.hasPermissions(
                 elementBean.getResource(),
