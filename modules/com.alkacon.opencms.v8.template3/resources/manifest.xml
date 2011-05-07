@@ -20,7 +20,10 @@
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.ade.containerpage" version="8.0.0"/>
+			<dependency name="org.opencms.ade.sitemap" version="8.0.0"/>
+		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/com.alkacon.opencms.v8.template3/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/modules/com.alkacon.opencms.v8.template3/classes/" destination="WEB-INF/classes/"/>
