@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2011/05/06 19:53:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/07 07:43:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -603,6 +603,11 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     public String getParamElementlanguage() {
 
+        if (m_paramElementlanguage == null) {
+            if ((m_editorSessionInfo != null) && (m_editorSessionInfo.getElementLocale() != null)) {
+                m_paramElementlanguage = m_editorSessionInfo.getElementLocale().toString();
+            }
+        }
         return m_paramElementlanguage;
     }
 
