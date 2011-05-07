@@ -1,6 +1,6 @@
 # Module containerpage
 # RPC service class, partial path of RPC policy file
-org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService, AEB03AF4B9869E43D84DC1D23B7B4F11.gwt.rpc
+org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService, 876D605BB8CB1930BF6507AA24E58994.gwt.rpc
 org.opencms.ade.publish.shared.rpc.I_CmsPublishService, 23A2929B3979EEA04C21012A5CA640B1.gwt.rpc
 org.opencms.gwt.shared.rpc.I_CmsVfsService, 01490316A081F4C1E5E93565D621C089.gwt.rpc
 org.opencms.gwt.shared.rpc.I_CmsLogService, 3E00C7EA053DF326835610BE15B692F1.gwt.rpc
