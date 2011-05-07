@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2011/05/05 19:22:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/07 16:54:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
@@ -104,7 +104,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     public static final String PROPERTY_CONFIG_SITEMAP = "config.sitemap";
 
     /** Property for the template image. */
-    public static final String PROPERTY_ADE_TEMPLATE_IMAGE = "ade.template.image";
+    public static final String PROPERTY_TEMPLATE_IMAGE = "template.image";
 
     /** Property for the allowed set of locales. */
     public static final String PROPERTY_AVAILABLE_LOCALES = "locale-available";

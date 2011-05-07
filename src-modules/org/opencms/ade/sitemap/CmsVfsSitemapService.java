@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/07 16:27:52 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/05/07 16:54:20 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  * 
@@ -1181,7 +1181,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsProperty descProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         CmsProperty imageProp = cms.readPropertyObject(
             resource,
-            CmsPropertyDefinition.PROPERTY_ADE_TEMPLATE_IMAGE,
+            CmsPropertyDefinition.PROPERTY_TEMPLATE_IMAGE,
             false);
         return new CmsSitemapTemplate(
             titleProp.getValue(),
