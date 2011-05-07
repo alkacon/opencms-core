@@ -6,7 +6,7 @@
 <div class="twitter-box">
 	<c:set var="height"><cms:elementsetting name="box-height" default="250"/></c:set>
 	<c:choose>
-		<c:when test="${cms.dndMode}" >
+		<c:when test="${cms.edited}" >
 			<%-- Handle the case the twitter box was recenty moved --%>						
 			<div id="twtr-widget-1" class="twtr-widget twtr-widget-profile twtr-scroll">
 				<div style="width: ${cms.container.width}px;" class="twtr-doc">
