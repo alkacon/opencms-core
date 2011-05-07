@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/06 06:52:50 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/05/07 07:41:26 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 8.0
  */
@@ -607,12 +608,19 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         result.append(" hasprops='").append(hasProperties(cms, elementBean.getResource())).append("'");
-        result.append(" hasviewpermission='").append(
-            cms.hasPermissions(
+        String viewPermission = "";
+        if (CmsResourceTypeJsp.isJsp(elementBean.getResource())) {
+            // JSP may not be handled in ADE
+            viewPermission += false;
+            noEditReason = "JSPs may not only be edited from the workplace";
+        } else {
+            viewPermission += cms.hasPermissions(
                 elementBean.getResource(),
                 CmsPermissionSet.ACCESS_VIEW,
                 false,
-                CmsResourceFilter.DEFAULT_ONLY_VISIBLE)).append("'");
+                CmsResourceFilter.DEFAULT_ONLY_VISIBLE);
+        }
+        result.append(" hasviewpermission='").append(viewPermission).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
         if (isGroupcontainer) {
             result.append("'>");
