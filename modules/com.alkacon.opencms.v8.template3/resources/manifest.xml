@@ -675,6 +675,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3/resources/images/template.png</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/resources/images/template.png</destination>
+			<type>image</type>
+			<uuidstructure>334ed19e-7976-11e0-8f0e-5b5f3ddaa102</uuidstructure>
+			<uuidresource>334ed19f-7976-11e0-8f0e-5b5f3ddaa102</uuidresource>
+			<datelastmodified>Sun, 08 May 2011 13:22:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 08 May 2011 13:22:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[template]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:48,h:48]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.template3/resources/menus</destination>
 			<type>folder</type>
 			<uuidstructure>4f51b289-6b29-11e0-bc98-e363b206b5de</uuidstructure>
@@ -861,6 +885,14 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Alkacon OpenCms Template III]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[The main template JSP for the Alkacon OpenCms Template III]]></value>
+				</property>
+				<property>
+					<name>template.image</name>
+					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/resources/images/template.png]]></value>
 				</property>
 			</properties>
 			<relations/>
