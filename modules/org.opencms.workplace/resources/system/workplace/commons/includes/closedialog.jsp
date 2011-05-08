@@ -11,7 +11,7 @@
 <% if (link) { %>
 // check for direct edit frame
 if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
-    top.frames['cmsAdvancedDirectEditor'].location.href = "<%= wp.getParamCloseLink() %>";
+    location.href = "<%= wp.getParamCloseLink() %>";
 }else{
 	this.location.href = "<%= wp.getParamCloseLink() %>";
 }
