@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/08 17:26:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.8 
  */
@@ -206,6 +206,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypeParams());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWidgets());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddCollectors());
+        //m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateSchemaTypes());
 
         // workplace
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlUpdateDirectEditProvider());
@@ -219,7 +220,8 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateMenuRules());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlChangeDefaultDirectEditProvider());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateContextMenuEntries());
-
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlChangeDefaultUpload());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateExplorerTypes());
         setup();
     }
 

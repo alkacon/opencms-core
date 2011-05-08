@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddADESearch.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/08 17:26:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.search.galleries.CmsGallerySearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGallerySearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.setup.xml.A_CmsXmlSearch;
+import org.opencms.setup.xml.CmsSetupXmlHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,9 @@ import org.dom4j.Node;
  * Adds the gallery search nodes.<p>
  * 
  * @author Michael Moossen
+ * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -114,34 +116,31 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     "offline",
                     "Offline",
                     "all",
-                    "ADE_gallery_fields",
-                    new String[] {"ADE_gallery_source"});
+                    "gallery_fields",
+                    new String[] {"gallery_source"});
             } else if (xpath.equals(getXPathsToUpdate().get(4))) {
                 // create doc type
-                createIndexSource(
-                    document,
-                    xpath,
-                    "ADE_gallery_source",
-                    CmsVfsIndexer.class,
-                    new String[] {"/sites/"},
-                    new String[] {
-                        "xmlpage-galleries",
-                        "xmlcontent-galleries",
-                        "page",
-                        "text",
-                        "pdf",
-                        "rtf",
-                        "html",
-                        "msword",
-                        "msexcel",
-                        "mspowerpoint",
-                        "image",
-                        "generic",
-                        "openoffice"});
+                createIndexSource(document, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {
+                    "/sites/",
+                    "/shared/"}, new String[] {
+                    "xmlpage-galleries",
+                    "xmlcontent-galleries",
+                    "jsp",
+                    "page",
+                    "text",
+                    "pdf",
+                    "rtf",
+                    "html",
+                    "msword",
+                    "msexcel",
+                    "mspowerpoint",
+                    "image",
+                    "generic",
+                    "openoffice"});
             } else if (xpath.equals(getXPathsToUpdate().get(5))) {
                 // create field config
                 CmsSearchFieldConfiguration fieldConf = new CmsSearchFieldConfiguration();
-                fieldConf.setName("ADE_gallery_fields");
+                fieldConf.setName("gallery_fields");
                 fieldConf.setDescription("The standard OpenCms search index field configuration.");
                 CmsSearchField field = new CmsSearchField();
                 // <field name="content" store="compress" index="true" excerpt="true">
@@ -336,6 +335,10 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     CmsDocumentContainerPage.class,
                     new String[] {"text/html"},
                     new String[] {"containerpage"});
+            } else if (xpath.equals(getXPathsToUpdate().get(7))) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "containerpage");
+            } else if (xpath.equals(getXPathsToUpdate().get(8))) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
             }
             return true;
         }
@@ -405,7 +408,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='").append(CmsGallerySearchIndex.GALLERY_INDEX_NAME).append("']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/indexsources/indexsource[name='ADE_gallery_source']    (4)
+            // /opencms/search/indexsources/indexsource[name='gallery_source']    (4)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -414,9 +417,9 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='ADE_gallery_source']");
+            xp.append("='gallery_source']");
             m_xpaths.add(xp.toString());
-            // /opencms/search/fieldconfigurations/fieldconfiguration[name='ADE_gallery_fields']  (5)
+            // /opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']  (5)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -425,10 +428,10 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATION);
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='ADE_gallery_fields']");
+            xp.append("='gallery_fields']");
             m_xpaths.add(xp.toString());
 
-            // /opencms/search/documenttypes/documenttype[name='xmlpage-galleries']   (6)
+            // /opencms/search/documenttypes/documenttype[name='containerpage']   (6)
             xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("/");
@@ -438,6 +441,40 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='containerpage']");
+            m_xpaths.add(xp.toString());
+
+            // /opencms/search/indexsources/indxsource[name='source1']/documenttypes_indexed/name[text()='containerpage']
+            xp = new StringBuffer(256);
+            xp.append(getCommonPath());
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
+            xp.append("[");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='source1']");
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES_INDEXED);
+            xp.append("/");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("[text()='containerpage']");
+            m_xpaths.add(xp.toString());
+
+            // /opencms/search/indexsources/indxsource[name='source1']/documenttypes_indexed/name[text()='openoffice']
+            xp = new StringBuffer(256);
+            xp.append(getCommonPath());
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
+            xp.append("[");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='source1']");
+            xp.append("/");
+            xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES_INDEXED);
+            xp.append("/");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("[text()='openoffice']");
             m_xpaths.add(xp.toString());
 
         }

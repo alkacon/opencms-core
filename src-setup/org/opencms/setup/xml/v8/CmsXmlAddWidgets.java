@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddWidgets.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/08 17:26:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,12 +45,12 @@ import java.util.List;
 import org.dom4j.Document;
 
 /**
- * Adds the new loader parameters.<p>
+ * Updates the widget configuration.<p>
  * 
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -94,7 +94,7 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
         for (int i = 0; i < m_widgets.length; i++) {
             if (xpath.equals(getXPathsToUpdate().get(i))) {
-                CmsSetupXmlHelper.setValue(document, xpathForWidgetAlias(m_widgets[i][0]), m_widgets[i][1]);
+                CmsSetupXmlHelper.setValue(document, xpathForWidgetClassAttribute(m_widgets[i][1]), m_widgets[i][0]);
                 return true;
             }
         }
@@ -119,41 +119,42 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
         if (m_xpaths == null) {
             m_xpaths = new ArrayList<String>();
             for (int i = 0; i < m_widgets.length; i++) {
-                m_xpaths.add(xpathForWidgetByClass(m_widgets[i][0]));
+                m_xpaths.add(xpathForWidgetByAlias(m_widgets[i][1]));
             }
         }
         return m_xpaths;
     }
 
     /**
-     * Returns the xpath for the alias attribute of a widget node with a given class name.<p>
+     * Returns the xpath for a widget with a given alias.<p>
      * 
-     * @param className the class name 
+     * @param alias the widget alias
      * 
-     * @return the xpath of the widget node's alias attribute 
+     * @return the xpath for the widget with the given alias 
      */
-    protected String xpathForWidgetAlias(String className) {
-
-        return xpathForWidgetByClass(className) + "/@" + I_CmsXmlConfiguration.A_ALIAS;
-    }
-
-    /**
-     * Returns the xpath for a widget node with a given class attribute.<p>
-     * 
-     * @param className the class name 
-     * 
-     * @return the xpath for the widget with the given class name attribute 
-     */
-    protected String xpathForWidgetByClass(String className) {
+    protected String xpathForWidgetByAlias(String alias) {
 
         return xpathForWidgets()
             + "/"
             + CmsVfsConfiguration.N_WIDGET
             + "[@"
-            + I_CmsXmlConfiguration.A_CLASS
+            + I_CmsXmlConfiguration.A_ALIAS
             + "='"
-            + className
+            + alias
             + "']";
+
+    }
+
+    /**
+     * Returns the xpath of the class attribute for a widget with a given alias.<p>
+     * 
+     * @param alias the widget alias 
+     * 
+     * @return the xpath of the widget's class attribute 
+     */
+    protected String xpathForWidgetClassAttribute(String alias) {
+
+        return xpathForWidgetByAlias(alias) + "/@" + I_CmsXmlConfiguration.A_CLASS;
     }
 
     /**

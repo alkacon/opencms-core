@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlUpdateContextMenuEntries.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/08 17:26:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.dom4j.DocumentException;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -101,18 +101,6 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
     protected String getCommonPath() {
 
         return xpathForExplorerTypes();
-    }
-
-    /**
-     * Helper method for generating an xpath fragment "[@attr='value']".<p>
-     * 
-     * @param attr the attribute name 
-     * @param value the attribute value 
-     * @return the xpath fragment 
-     */
-    protected String xpathAttr(String attr, String value) {
-
-        return "[@" + attr + "='" + value + "']";
     }
 
     /**
@@ -185,6 +173,21 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                         doc,
                         availabilityEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
                         "containerpage");
+                    String workplaceEntry = xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_ENTRY
+                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0");
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        workplaceEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
+                        "org.opencms.gwt.client.ui.CmsShowWorkplace"
+
+                    );
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        workplaceEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
+                        "containerpage");
+
                     return true;
 
                 }
@@ -193,6 +196,18 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
         }
         return new ArrayList<String>(m_updateActions.keySet());
 
+    }
+
+    /**
+     * Helper method for generating an xpath fragment "[@attr='value']".<p>
+     * 
+     * @param attr the attribute name 
+     * @param value the attribute value 
+     * @return the xpath fragment 
+     */
+    protected String xpathAttr(String attr, String value) {
+
+        return "[@" + attr + "='" + value + "']";
     }
 
     /**

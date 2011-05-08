@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetValueAction.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/08 17:26:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.common.base.Objects;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,8 @@ public class CmsSetValueAction extends CmsXmlUpdateAction {
     @Override
     public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
-        if (Objects.equal(doc.selectSingleNode(xpath).getText(), m_value)) {
+        org.dom4j.Node node = doc.selectSingleNode(xpath);
+        if ((node != null) && Objects.equal(node.getText(), m_value)) {
             return false;
         }
         CmsSetupXmlHelper.setValue(doc, xpath, m_value);
