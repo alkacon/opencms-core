@@ -744,7 +744,16 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>      
-    </tag>        
+    </tag>   
+    
+    <tag>
+        <description>
+            This tag sends no-cache headers to the browser.
+        </description> 
+        <name>nocache</name>
+        <tag-class>org.opencms.jsp.CmsJspTagNoCache</tag-class>
+        <body-content>empty</body-content>
+    </tag>
         
     <tag>
         <description>
