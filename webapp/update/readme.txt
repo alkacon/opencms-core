@@ -81,13 +81,10 @@ page. Then execute the wizard which guides you through the update process.
 You will need the Admin password to continue with the upgrade.
 
 When asked to select the modules to update you should definitely select all
-org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
-the org.opencms.frontend.* modules if you have installed them before on your 
-OpenCms server. 
+org.opencms.ade.*, org.opencms.editors.*, org.opencms.gwt and org.opencms.workplace.* 
+modules.
+ 
 
-Here the site selection is only important for the org.opencms.frontend.* modules,
-so it should be the site where you have installed these modules. This is by default:
-/sites/default/
 
 After you confirmed the module selection, you should see the status report of the 
 module import. This report is also written to WEB-INF/logs/update.log. Check this 
