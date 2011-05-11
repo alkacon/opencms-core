@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2011/05/05 07:38:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/11 12:52:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.0 
  */
@@ -553,7 +553,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             if (categoryBuffer.length() > 0) {
                 field = new Field(
                     CmsSearchField.FIELD_CATEGORY,
-                    categoryBuffer.toString(),
+                    categoryBuffer.toString().toLowerCase(),
                     Field.Store.YES,
                     Field.Index.ANALYZED);
                 field.setBoost(0);
