@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2011/05/11 06:54:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/11 08:41:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author  Michael Emmerich
  * @author  Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -139,7 +139,7 @@ public class CmsUserSettings {
     }
 
     /** A enum for the different upload variants. */
-    public static enum V_UPLOAD_VARIANT {
+    public enum UploadVariant {
         /** The java applet upload. */
         applet,
         /** The default html upload. */
@@ -335,7 +335,7 @@ public class CmsUserSettings {
     private String m_uploadAppletClientFolder;
 
     /** Stores the upload variant enum. */
-    private V_UPLOAD_VARIANT m_uploadVariant;
+    private UploadVariant m_uploadVariant;
 
     private CmsUser m_user;
 
@@ -366,7 +366,7 @@ public class CmsUserSettings {
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
         m_listAllProjects = false;
-        m_uploadVariant = V_UPLOAD_VARIANT.gwt;
+        m_uploadVariant = UploadVariant.gwt;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
@@ -797,32 +797,9 @@ public class CmsUserSettings {
      *
      * @return the uploadVariant
      */
-    public V_UPLOAD_VARIANT getUploadVariant() {
+    public UploadVariant getUploadVariant() {
 
         return m_uploadVariant;
-    }
-
-    /**
-     * Returns the corresponding enum, or null.<p>
-     *  
-     * @param s the value to get the enum for
-     * 
-     * @return the corresponding enum, or null
-     */
-    public V_UPLOAD_VARIANT getUploadVariantForString(String s) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(s)) {
-            V_UPLOAD_VARIANT variant = getEnumFromString(V_UPLOAD_VARIANT.class, s);
-            if (variant == null) {
-                if (s.equalsIgnoreCase(Boolean.TRUE.toString())) {
-                    variant = V_UPLOAD_VARIANT.applet;
-                } else if (s.equalsIgnoreCase(Boolean.FALSE.toString())) {
-                    variant = V_UPLOAD_VARIANT.basic;
-                }
-            }
-            return variant;
-        }
-        return null;
     }
 
     /**
@@ -932,17 +909,9 @@ public class CmsUserSettings {
             m_showPublishNotification = OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification();
         }
         // workplace upload applet mode
-        String uploadVariant = null;
-        Object temp = m_user.getAdditionalInfo(PREFERENCES
+        setUploadVariant(String.valueOf(m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-            + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
-        if (temp != null) {
-            uploadVariant = String.valueOf(temp);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadVariant)) {
-            uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant().toString();
-        }
-        setUploadVariant(uploadVariant);
+            + CmsWorkplaceConfiguration.N_UPLOADAPPLET)));
 
         // locale
         Object obj = m_user.getAdditionalInfo(PREFERENCES
@@ -1223,7 +1192,7 @@ public class CmsUserSettings {
         if (getUploadVariant() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, getUploadVariant().toString());
+                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, getUploadVariant().name());
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -2076,13 +2045,29 @@ public class CmsUserSettings {
      */
     public void setUploadVariant(String uploadVariant) {
 
-        m_uploadVariant = getUploadVariantForString(uploadVariant);
-        if (m_uploadVariant == null) {
-            m_uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant();
+        UploadVariant upload = null;
+        try {
+            upload = UploadVariant.valueOf(uploadVariant);
+        } catch (Exception e) {
+            // may happen, set default
+            if (upload == null) {
+                upload = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant();
+            }
+            if (upload == null) {
+                upload = UploadVariant.gwt;
+            }
         }
-        if (m_uploadVariant == null) {
-            m_uploadVariant = V_UPLOAD_VARIANT.gwt;
-        }
+        setUploadVariant(upload);
+    }
+
+    /**
+     * Sets the upload variant.<p>
+     *
+     * @param uploadVariant the upload variant
+     */
+    public void setUploadVariant(UploadVariant uploadVariant) {
+
+        m_uploadVariant = uploadVariant;
     }
 
     /**
@@ -2263,27 +2248,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserLastModified() {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
-    }
-
-    /**
-     * A common method for all enums since they can't have another base class.<p>
-     * 
-     * @param <T> Enum type 
-     * @param c enum type. All enums must be all caps. 
-     * @param string case insensitive
-     *  
-     * @return corresponding enum, or null 
-     */
-    private <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
-
-        if ((c != null) && (string != null)) {
-            try {
-                return Enum.valueOf(c, string.trim().toLowerCase());
-            } catch (IllegalArgumentException ex) {
-                // noop
-            }
-        }
-        return null;
     }
 
     /**
