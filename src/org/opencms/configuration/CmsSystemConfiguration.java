@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2011/03/23 14:51:40 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/05/11 14:16:40 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 6.0.0
  */
@@ -1396,10 +1396,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     "" + servletContainerSettings.isPreventResponseFlush());
                 servletContainerSettingsElem.addElement(N_RELEASETAGSAFTEREND).addText(
                     "" + servletContainerSettings.isReleaseTagsAfterEnd());
-                if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
-                    servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
-                        servletContainerSettings.getRequestErrorPageAttribute());
-                }
+            }
+            // always write back the error page attribute 
+            if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
+                servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
+                    servletContainerSettings.getRequestErrorPageAttribute());
             }
         }
 
