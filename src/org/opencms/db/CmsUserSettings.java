@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/11 06:54:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author  Michael Emmerich
  * @author  Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -932,9 +932,13 @@ public class CmsUserSettings {
             m_showPublishNotification = OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification();
         }
         // workplace upload applet mode
-        String uploadVariant = (String)m_user.getAdditionalInfo(PREFERENCES
+        String uploadVariant = null;
+        Object temp = m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
             + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        if (temp != null) {
+            uploadVariant = String.valueOf(temp);
+        }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadVariant)) {
             uploadVariant = OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant().toString();
         }
