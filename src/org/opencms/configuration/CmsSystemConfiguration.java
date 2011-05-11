@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/05/11 14:19:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -392,6 +392,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
 
+    /** Shared folder node name. */
+    public static final String N_SHARED_FOLDER = "shared-folder";
+
     /** The sitemap node name. */
     public static final String N_SITEMAP = "sitemap";
 
@@ -493,9 +496,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
-
-    /** Shared folder node name. */
-    public static final String N_SHARED_FOLDER = "shared-folder";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -1528,10 +1528,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     "" + servletContainerSettings.isPreventResponseFlush());
                 servletContainerSettingsElem.addElement(N_RELEASETAGSAFTEREND).addText(
                     "" + servletContainerSettings.isReleaseTagsAfterEnd());
-                if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
-                    servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
-                        servletContainerSettings.getRequestErrorPageAttribute());
-                }
+            }
+            // always write back the error page attribute
+            if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
+                servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
+                    servletContainerSettings.getRequestErrorPageAttribute());
             }
         }
 
@@ -1608,9 +1609,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                m_authorizationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                    m_authorizationHandler),
+                t);
             return new CmsDefaultAuthorizationHandler();
         }
     }
@@ -1896,9 +1899,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
-                m_sessionStorageProvider), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                    m_sessionStorageProvider),
+                t);
             return new CmsDefaultSessionStorageProvider();
         }
     }
@@ -1956,9 +1961,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return validationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
-                m_validationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1, m_validationHandler),
+                t);
             return new CmsDefaultValidationHandler();
         }
     }
