@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/12 09:39:23 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,8 +62,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -74,9 +74,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 8.0.0
  */
@@ -1380,12 +1380,18 @@ public final class CmsContainerpageController {
                 }
             }
             CmsContainerJso cnt = m_containers.get(entry.getKey());
-            containers.add(new CmsContainer(
-                entry.getKey(),
-                cnt.getType(),
-                cnt.getWidth(),
-                cnt.getMaxElements(),
-                elements));
+            if (!cnt.isDetailView()) {
+                // container is currently showing detail element.
+                // we don't include it in the data to save, so on the server side
+                // the existing elements in that container will be preserved.
+
+                containers.add(new CmsContainer(
+                    entry.getKey(),
+                    cnt.getType(),
+                    cnt.getWidth(),
+                    cnt.getMaxElements(),
+                    elements));
+            }
 
         }
         return containers;
