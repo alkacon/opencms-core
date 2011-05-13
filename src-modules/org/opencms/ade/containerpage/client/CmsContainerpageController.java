@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/12 09:39:23 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/13 15:35:22 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -62,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -74,9 +75,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -87,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
@@ -993,7 +994,9 @@ public final class CmsContainerpageController {
 
                 try {
                     replaceContainerElement(elementWidget, newElement);
-                    setPageChanged(true, false);
+                    if (!isGroupcontainerEditing()) {
+                        setPageChanged(true, false);
+                    }
                     resetEditableListButtons();
                 } catch (Exception e) {
                     // should never happen
@@ -1031,7 +1034,7 @@ public final class CmsContainerpageController {
         org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement,
         CmsContainerElementData elementData) throws Exception {
 
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer parentContainer = (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer)containerElement.getParentTarget();
+        I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();
 
         String elementContent = elementData.getContents().get(containerId);
@@ -1616,6 +1619,10 @@ public final class CmsContainerpageController {
             protected void onResponse(CmsContainerElementData result) {
 
                 stop(false);
+                if (result != null) {
+                    // cache the loaded element
+                    m_elements.put(result.getClientId(), result);
+                }
                 callback.execute(result);
             }
 
