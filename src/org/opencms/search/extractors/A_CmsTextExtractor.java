@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/13 12:02:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,14 +37,23 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.tika.metadata.DublinCore;
+import org.apache.tika.metadata.MSOffice;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
+import org.apache.tika.sax.BodyContentHandler;
 
 /**
  * Base utility class that allows extraction of the indexable "plain" text from a given document format.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +142,56 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
             content.append('\n');
             content.append(itemValue);
         }
+    }
+
+    /**
+     * Parses the given input stream with the provided parser and returns the result as a map of content items.<p>
+     * 
+     * @param in the input stream for the content to parse
+     * @param parser the parser to use
+     * 
+     * @return the result of the parsing as a map of content items
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    protected CmsExtractionResult extractText(InputStream in, Parser parser) throws Exception {
+
+        Map<String, String> contentItems = new HashMap<String, String>();
+
+        StringWriter writer = new StringWriter();
+        BodyContentHandler handler = new BodyContentHandler(writer);
+        Metadata meta = new Metadata();
+        ParseContext context = new ParseContext();
+
+        parser.parse(in, handler, meta, context);
+
+        String result = writer.toString();
+
+        // add the main document text
+        StringBuffer content = new StringBuffer(result);
+        if (CmsStringUtil.isNotEmpty(result)) {
+            contentItems.put(I_CmsExtractionResult.ITEM_RAW, result);
+        }
+
+        // appends all known document meta data as content items
+        combineContentItem(meta.get(DublinCore.TITLE), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
+        combineContentItem(meta.get(MSOffice.KEYWORDS), I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
+        combineContentItem(meta.get(DublinCore.SUBJECT), I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
+        combineContentItem(meta.get(MSOffice.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+        combineContentItem(meta.get(DublinCore.CREATOR), I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
+        combineContentItem(meta.get(MSOffice.CATEGORY), I_CmsExtractionResult.ITEM_CATEGORY, content, contentItems);
+        combineContentItem(meta.get(MSOffice.COMMENTS), I_CmsExtractionResult.ITEM_COMMENTS, content, contentItems);
+        combineContentItem(meta.get(MSOffice.COMPANY), I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
+        combineContentItem(meta.get(MSOffice.MANAGER), I_CmsExtractionResult.ITEM_MANAGER, content, contentItems);
+        // this constant seems to be missing from TIKA
+        combineContentItem(
+            meta.get(I_CmsExtractionResult.ITEM_PRODUCER),
+            I_CmsExtractionResult.ITEM_PRODUCER,
+            content,
+            contentItems);
+
+        // return the final result
+        return new CmsExtractionResult(content.toString(), contentItems);
     }
 
     /**

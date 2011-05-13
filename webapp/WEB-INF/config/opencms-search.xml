@@ -47,39 +47,6 @@
 				</resourcetypes>
 			</documenttype>		
 			<documenttype>
-				<name>msexcel</name>
-				<class>org.opencms.search.documents.CmsDocumentMsExcel</class>
-				<mimetypes>
-					<mimetype>application/vnd.ms-excel</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>		
-			<documenttype>
-				<name>mspowerpoint</name>
-				<class>org.opencms.search.documents.CmsDocumentMsPowerPoint</class>
-				<mimetypes>
-					<mimetype>application/vnd.ms-powerpoint</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>
-			<documenttype>
-				<name>msword</name>
-				<class>org.opencms.search.documents.CmsDocumentMsWord</class>
-				<mimetypes>
-					<mimetype>application/msword</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>	
-			<documenttype>
 				<name>pdf</name>
 				<class>org.opencms.search.documents.CmsDocumentPdf</class>
 				<mimetypes>
@@ -157,6 +124,32 @@
 					<resourcetype>xmlpage-galleries</resourcetype>
 				</resourcetypes>
 			</documenttype>		
+			<documenttype>
+				<name>msoffice-ole2</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
+				<mimetypes>
+					<mimetype>application/vnd.ms-powerpoint</mimetype>
+					<mimetype>application/msword</mimetype>		
+					<mimetype>application/vnd.ms-excel</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>					
+			<documenttype>
+				<name>msoffice-ooxml</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>
+				<mimetypes>				
+					<mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
+		        	<mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
+		        	<mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>					
 			<documenttype>
 				<name>openoffice</name>
 				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
@@ -256,11 +249,10 @@
 	                <name>pdf</name>
 	                <name>rtf</name>
 	                <name>html</name>
-	                <name>msword</name>
-	                <name>msexcel</name>
-	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>		
+	                <name>msoffice-ole2</name>
+	                <name>msoffice-ooxml</name>
 	            	<name>openoffice</name>	                	
 				</documenttypes-indexed>				
 			</indexsource>
@@ -289,11 +281,10 @@
 	                <name>pdf</name>
 	                <name>rtf</name>
 	                <name>html</name>
-	                <name>msword</name>
-	                <name>msexcel</name>
-	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>
+	                <name>msoffice-ole2</name>
+	                <name>msoffice-ooxml</name>
 	                <name>openoffice</name>
 				</documenttypes-indexed>				
 			</indexsource>     

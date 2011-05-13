@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsOfficeOLE2.java,v $
  * Date   : $Date: 2011/05/13 12:02:33 $
- * Version: $Revision: 1.5 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,26 +33,31 @@ package org.opencms.search.extractors;
 
 import java.io.InputStream;
 
-import org.apache.tika.parser.pdf.PDFParser;
+import org.apache.tika.parser.microsoft.OfficeParser;
 
 /**
- * Extracts the text from a PDF document.<p>
+ * Extracts text data from a VFS resource that is an OLE 2 MS Office document.<p>
  * 
- * @author Alexander Kandzior 
+ * Supported formats are MS Word (.doc), MS PowerPoint (.ppt) and MS Excel (.xls).<p>
  * 
- * @version $Revision: 1.5 $ 
+ * The OLE 2 format was introduced in Microsoft Office version 97 and was the default format until Office version 2007 
+ * and the new XML-based OOXML format.<p> 
  * 
- * @since 6.0.0 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.1 
  */
-public final class CmsExtractorPdf extends A_CmsTextExtractor {
+public class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorPdf INSTANCE = new CmsExtractorPdf();
+    private static final CmsExtractorMsOfficeOLE2 INSTANCE = new CmsExtractorMsOfficeOLE2();
 
     /**
      * Hide the public constructor.<p> 
      */
-    private CmsExtractorPdf() {
+    private CmsExtractorMsOfficeOLE2() {
 
         // noop
     }
@@ -67,12 +72,12 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
         return INSTANCE;
     }
 
-    /**
+    /** 
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
     @Override
     public I_CmsExtractionResult extractText(InputStream in) throws Exception {
 
-        return extractText(in, new PDFParser());
+        return extractText(in, new OfficeParser());
     }
 }

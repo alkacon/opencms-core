@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsDocumentMsExcel.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsOfficeOLE2.java,v $
+ * Date   : $Date: 2011/05/13 12:02:34 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,35 +37,37 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.extractors.CmsExtractorMsExcel;
+import org.opencms.search.extractors.CmsExtractorMsOfficeOLE2;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
-import java.io.FileNotFoundException;
-
 /**
- * Lucene document factory class to extract index data from a cms resource 
- * containing MS Excel data.<p>
+ * Lucene document factory class to extract text data from a VFS resource that is an OLE 2 MS Office document.<p>
  * 
- * @author Carsten Weinholz 
+ * Supported formats are MS Word (.doc), MS PowerPoint (.ppt) and MS Excel (.xls).<p>
  * 
- * @version $Revision: 1.3 $ 
+ * The OLE 2 format was introduced in Microsoft Office version 97 and was the default format until Office version 2007 
+ * and the new XML-based OOXML format.<p> 
  * 
- * @since 6.0.0 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.1 
  */
-public class CmsDocumentMsExcel extends A_CmsVfsDocument {
+public class CmsDocumentMsOfficeOLE2 extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
      * @param name name of the documenttype
      */
-    public CmsDocumentMsExcel(String name) {
+    public CmsDocumentMsOfficeOLE2(String name) {
 
         super(name);
     }
 
     /**
-     * Returns the raw text content of a given vfs resource containing MS Excel data.<p>
+     * Returns the raw text content of a given vfs resource containing MS Word data.<p>
      * 
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
@@ -75,16 +77,8 @@ public class CmsDocumentMsExcel extends A_CmsVfsDocument {
         CmsFile file = readFile(cms, resource);
 
         try {
-            return CmsExtractorMsExcel.getExtractor().extractText(file.getContents());
+            return CmsExtractorMsOfficeOLE2.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
-            if (e instanceof FileNotFoundException) {
-                if ((e.getMessage() != null) && (e.getMessage().indexOf("Workbook") > 0)) {
-                    // special case: catch Excel95 format error
-                    throw new CmsIndexException(Messages.get().container(
-                        Messages.ERR_NO_EXCEL_FORMAT_1,
-                        resource.getRootPath()), e);
-                }
-            }
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/13 12:02:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,9 +49,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.extractors.CmsExtractorMsExcel;
-import org.opencms.search.extractors.CmsExtractorMsPowerPoint;
-import org.opencms.search.extractors.CmsExtractorMsWord;
+import org.opencms.search.extractors.CmsExtractorMsOfficeOLE2;
 import org.opencms.search.extractors.CmsExtractorPdf;
 import org.opencms.search.extractors.CmsExtractorRtf;
 import org.opencms.search.extractors.I_CmsTextExtractor;
@@ -89,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -380,13 +378,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             if (path1.endsWith(".pdf") && path2.endsWith(".pdf")) {
                 textExtractor = CmsExtractorPdf.getExtractor();
             } else if (path1.endsWith(".doc") && path2.endsWith(".doc")) {
-                textExtractor = CmsExtractorMsWord.getExtractor();
+                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
             } else if (path1.endsWith(".xls") && path2.endsWith(".xls")) {
-                textExtractor = CmsExtractorMsExcel.getExtractor();
+                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
             } else if (path1.endsWith(".rtf") && path2.endsWith(".rtf")) {
                 textExtractor = CmsExtractorRtf.getExtractor();
             } else if (path1.endsWith(".ppt") && path2.endsWith(".ppt")) {
-                textExtractor = CmsExtractorMsPowerPoint.getExtractor();
+                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
             }
             if (textExtractor != null) {
                 try {

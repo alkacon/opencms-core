@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/13 12:02:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,7 +50,7 @@ public interface I_CmsExtractionResult {
     /** Key to access the document author name in the item map. */
     String ITEM_AUTHOR = "author";
 
-    /** Key to access the document catrgory in the item map. */
+    /** Key to access the document category in the item map. */
     String ITEM_CATEGORY = "category";
 
     /** Key to access the document comments in the item map. */
