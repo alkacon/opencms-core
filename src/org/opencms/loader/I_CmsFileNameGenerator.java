@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsFileNameGenerator.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/13 13:30:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Iterator;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,21 @@ public interface I_CmsFileNameGenerator {
 
     /** Format for file create parameter. */
     public static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.5d");
+
+    /**
+     * Generates a new file name based on the provided OpenCms user context and name pattern.<p>
+     * 
+     * Used by the collector API as well as the galleries introduced with OpenCms 8 (ADE).
+     * 
+     * @param cms the current OpenCms user context
+     * @param namePattern the pattern to be used when generating the new resource name
+     * @param defaultDigits the default number of digits to use for numbering the created file names 
+     * 
+     * @return a new resource name based on the provided OpenCms user context and name pattern
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    public abstract String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException;
 
     /**
      * Returns a sequence of URL name candidates for the given XML content value as an iterator.<p>
@@ -82,18 +97,4 @@ public interface I_CmsFileNameGenerator {
         CmsXmlContent content,
         I_CmsXmlContentValue value,
         CmsResource sibling) throws CmsException;
-
-    /**
-     * Generates a new file name based on the provided OpenCms user context and name pattern.<p>
-     * 
-     * Used by the collector API as well as the galleries introduced with OpenCms 8 (ADE).
-     * 
-     * @param cms the current OpenCms user context
-     * @param namePattern the  pattern to be used when generating the new resource name
-     * 
-     * @return a new resource name based on the provided OpenCms user context and name pattern
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    public abstract String getNewFileName(CmsObject cms, String namePattern) throws CmsException;
 }

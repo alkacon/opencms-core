@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/13 13:30:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -218,7 +218,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      */
     protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
 
-        return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, data.getFileName());
+        return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, data.getFileName(), 4);
     }
 
     /**

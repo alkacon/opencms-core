@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDefaultFileNameGenerator.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/13 13:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 import org.opencms.xml.content.CmsXmlContent;
@@ -46,17 +47,101 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.Factory;
+
 /**
  * The default class used for generating file names either for the <code>urlName</code> mapping 
  * or when using a "new" operation in the context of the direct edit interface.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
+
+    /**
+     * Factory to use for resolving the %(number) macro.<p>
+     */
+    public class CmsNumberFactory implements Factory {
+
+        /** The actual number. */
+        private int m_number;
+
+        /** Format for file create parameter. */
+        private PrintfFormat m_numberFormat;
+
+        /**
+         * Create a new number factory.<p>
+         * 
+         * @param digits the number of digits to use
+         */
+        public CmsNumberFactory(int digits) {
+
+            m_numberFormat = new PrintfFormat("%0." + digits + "d");
+            m_number = 0;
+        }
+
+        /**
+         * Create the number based on the number of digits set.<p>
+         * 
+         * @see org.apache.commons.collections.Factory#create()
+         */
+        public Object create() {
+
+            // formats the number with the amount of digits selected
+            return m_numberFormat.sprintf(m_number);
+        }
+
+        /**
+         * Sets the number to create to the given value.<p>
+         * 
+         * @param number the number to set
+         */
+        public void setNumber(int number) {
+
+            m_number = number;
+        }
+    }
+
+    /** Start sequence for macro with digits. */
+    private static final String MACRO_NUMBER_START = "%(" + I_CmsFileNameGenerator.MACRO_NUMBER + ":";
+
+    /**
+     * Returns a new resource name based on the provided OpenCms user context and name pattern.<p>
+     * 
+     * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
+     * This will be replaced by the first "n" digit sequence for which the resulting file name is not already
+     * used. For example the pattern <code>"/file_%(number).xml"</code> would result in something like <code>"/file_00003.xml"</code>.<p>
+     * 
+     * Alternatively, the macro can have the form <code>%(number:n)</code> with <code>n = {1...9}</code>, for example <code>%(number:6)</code>.
+     * In this case the default digits will be ignored and instead the digits provided as "n" will be used.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param namePattern the  pattern to be used when generating the new resource name
+     * @param defaultDigits the default number of digits to use for numbering the created file names 
+     * 
+     * @return a new resource name based on the provided OpenCms user context and name pattern
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException {
+
+        String checkPattern = cms.getRequestContext().removeSiteRoot(namePattern);
+        String folderName = CmsResource.getFolderPath(checkPattern);
+
+        // must check ALL resources in folder because name doesn't care for type
+        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
+
+        // now create a list of all the file names
+        List<String> fileNames = new ArrayList<String>(resources.size());
+        for (CmsResource res : resources) {
+            fileNames.add(cms.getSitePath(res));
+        }
+
+        return getNewFileNameFromList(fileNames, checkPattern, defaultDigits);
+    }
 
     /**
      * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case 
@@ -76,33 +161,36 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /**
-     * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
-     * This will be replaced by the first 5 digit sequence for which the resulting file name is not already
-     * used.<p>
+     * Internal method for file name generation, decoupled for testing.<p>
      * 
-     * @see org.opencms.loader.I_CmsFileNameGenerator#getNewFileName(org.opencms.file.CmsObject, java.lang.String)
+     * @param fileNames the list of file names already existing in the folder
+     * @param checkPattern the pattern to be used when generating the new resource name
+     * @param defaultDigits the default number of digits to use for numbering the created file names 
+     * 
+     * @return a new resource name based on the provided OpenCms user context and name pattern
      */
-    public String getNewFileName(CmsObject cms, String namePattern) throws CmsException {
+    protected String getNewFileNameFromList(List<String> fileNames, String checkPattern, int defaultDigits) {
 
-        String checkPattern = cms.getRequestContext().removeSiteRoot(namePattern);
-        String folderName = CmsResource.getFolderPath(checkPattern);
+        String checkFileName, checkTempFileName;
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
 
-        // must check ALL resources in folder because name doesn't care for type
-        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
+        String macro = I_CmsFileNameGenerator.MACRO_NUMBER;
+        int useDigits = defaultDigits;
 
-        // now create a list of all the file names
-        List<String> fileNames = new ArrayList<String>(resources.size());
-        for (CmsResource res : resources) {
-            fileNames.add(cms.getSitePath(res));
+        int prefixIndex = checkPattern.indexOf(MACRO_NUMBER_START);
+        if (prefixIndex >= 0) {
+            // this macro contains an individual digit setting
+            char n = checkPattern.charAt(prefixIndex + MACRO_NUMBER_START.length());
+            macro = macro + ':' + n;
+            useDigits = Character.getNumericValue(n);
         }
 
-        String checkFileName, checkTempFileName, number;
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        CmsNumberFactory numberFactory = new CmsNumberFactory(useDigits);
+        resolver.addDynamicMacro(macro, numberFactory);
 
         int j = 0;
         do {
-            number = I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(++j);
-            resolver.addMacro(I_CmsFileNameGenerator.MACRO_NUMBER, number);
+            numberFactory.setNumber(++j);
             // resolve macros in file name
             checkFileName = resolver.resolveMacros(checkPattern);
             // get name of the resolved temp file
