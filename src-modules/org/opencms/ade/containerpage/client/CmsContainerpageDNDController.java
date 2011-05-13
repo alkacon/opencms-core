@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/03 16:47:57 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/05/13 14:16:30 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -340,7 +340,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 container.insert((CmsContainerPageElement)draggable, container.getPlaceholderIndex());
             }
             m_controller.addToRecentList(draggable.getId());
-            m_controller.setPageChanged();
+            if (!m_controller.isGroupcontainerEditing()) {
+                // changes are only relevant to the container page if not group-container editing
+                m_controller.setPageChanged();
+            }
         }
         stopDrag(handler);
     }
