@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/07 07:42:00 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/05/13 14:15:07 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 8.0
  */
@@ -149,6 +149,9 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** The name attribute value. */
     private String m_name;
+
+    /** The element session cache. */
+    private CmsADESessionCache m_sessionCache;
 
     /** The tag attribute value. */
     private String m_tag;
@@ -353,19 +356,6 @@ public class CmsJspTagContainer extends TagSupport {
                         } catch (JSONException e) {
                             // should never happen
                             throw new JspException(e);
-                        }
-
-                        // writing elements to the session cache to improve performance of the container-page editor
-                        CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)req).getSession().getAttribute(
-                            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-                        if (sessionCache == null) {
-                            sessionCache = new CmsADESessionCache(cms);
-                            ((HttpServletRequest)req).getSession().setAttribute(
-                                CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
-                                sessionCache);
-                        }
-                        for (CmsContainerElementBean element : allElements) {
-                            sessionCache.setCacheContainerElement(element.editorHash(), element);
                         }
                     }
                     // iterate over elements to render
@@ -749,6 +739,28 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Returns the ADE session cache for container elements.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache(CmsObject cms) {
+
+        if (m_sessionCache == null) {
+            m_sessionCache = (CmsADESessionCache)((HttpServletRequest)pageContext.getRequest()).getSession().getAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+            if (m_sessionCache == null) {
+                m_sessionCache = new CmsADESessionCache(cms);
+                ((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(
+                    CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
+                    m_sessionCache);
+            }
+        }
+        return m_sessionCache;
+    }
+
+    /**
      * Helper method for checking whether there are properties defined for a given content element.<p>
      * 
      * @param cms the CmsObject to use for VFS operations 
@@ -815,6 +827,8 @@ public class CmsJspTagContainer extends TagSupport {
         int containerWidth = getContainerWidth();
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         element.initResource(cms);
+        // writing elements to the session cache to improve performance of the container-page editor
+        getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
         if (element.getResource().getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                 cms,
@@ -836,6 +850,8 @@ public class CmsJspTagContainer extends TagSupport {
             for (CmsContainerElementBean subelement : groupContainer.getElements()) {
                 try {
                     subelement.initResource(cms);
+                    // writing elements to the session cache to improve performance of the container-page editor
+                    getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
                     CmsFormatterConfiguration subelementFormatters = OpenCms.getADEManager().getFormattersForResource(
                         cms,
                         cms.getRequestContext().getRootUri(),

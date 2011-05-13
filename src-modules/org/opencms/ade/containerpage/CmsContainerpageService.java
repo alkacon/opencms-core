@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/07 08:37:42 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/13 14:15:07 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
@@ -428,10 +428,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String propName = entry.getKey();
                 String propType = propertiesConf.get(propName).getType();
-                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    cms,
-                    propType,
-                    properties.get(propName)));
+                changedProps.put(
+                    propName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedProps, false);
@@ -496,7 +495,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsContainerBean getContainerBean(CmsContainer container, String containerpageUri, String locale) {
 
         CmsObject cms = getCmsObject();
-        CmsADESessionCache cache = getSessionCache();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElement elementData : container.getElements()) {
             try {
@@ -507,7 +505,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         elementData.getResourceType(),
                         locale);
                 }
-                CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
+                CmsContainerElementBean element = getCachedElement(elementData.getClientId());
 
                 // make sure resource is readable, 
                 CmsResource resource = cms.readResource(element.getId());
@@ -648,7 +646,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String locale) {
 
         CmsObject cms = getCmsObject();
-        CmsADESessionCache cache = getSessionCache();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElement elementData : groupContainer.getElements()) {
             try {
@@ -659,7 +656,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         elementData.getResourceType(),
                         locale);
                 }
-                CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
+                CmsContainerElementBean element = getCachedElement(elementData.getClientId());
 
                 // make sure resource is readable, 
                 if (cms.existsResource(element.getId())) {
