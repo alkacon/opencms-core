@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/13 15:18:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -97,12 +97,12 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         suite.setName(TestCmsSearchInDocuments.class.getName());
 
         suite.addTest(new TestCmsSearchInDocuments("testSearchIndexGeneration"));
+        suite.addTest(new TestCmsSearchInDocuments("testSearchBoostInMeta"));
+        suite.addTest(new TestCmsSearchInDocuments("testSearchBoost"));
         suite.addTest(new TestCmsSearchInDocuments("testSearchInDocuments"));
         suite.addTest(new TestCmsSearchInDocuments("testExceptGeneration"));
         suite.addTest(new TestCmsSearchInDocuments("testExceptHighlighting"));
         suite.addTest(new TestCmsSearchInDocuments("testExceptEscaping"));
-        suite.addTest(new TestCmsSearchInDocuments("testSearchBoost"));
-        suite.addTest(new TestCmsSearchInDocuments("testSearchBoostInMeta"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -130,29 +130,71 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
     public void testSearchBoost() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing search boosting");
+        echo("Testing search with boosting the whole Document");
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
 
-        // count depend on the number of documents indexed
-        int expected = 6;
+        String path = "/search/";
+        String query = "OpenCms by Alkacon";
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_OFFLINE);
-        searchBean.setSearchRoot("/search/");
+        searchBean.setSearchRoot(path);
+        searchBean.setQuery(query);
 
-        searchBean.setQuery("OpenCms");
         searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Results searching OFFLINE (no boost factors set)");
+        // since no resource has any description, no results should be found
+        System.out.println("\n\n----- 6 results should be displayed below");
         TestCmsSearch.printResults(searchResult, cms);
-        assertEquals(expected, searchResult.size());
+        assertEquals(6, searchResult.size());
 
-        CmsSearchResult res1 = searchResult.get(searchResult.size() - 1);
-        CmsSearchResult res2 = searchResult.get(searchResult.size() - 2);
-        CmsSearchResult res3 = searchResult.get(0);
+        CmsProperty descripion = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, query, null, true);
+        CmsProperty delete = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
+            CmsProperty.DELETE_VALUE,
+            CmsProperty.DELETE_VALUE);
+
+        List<CmsResource> resources = cms.getFilesInFolder(path);
+
+        Iterator<CmsResource> i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = i.next();
+            String sitePath = cms.getSitePath(res);
+            System.out.println(sitePath);
+            cms.lockResource(sitePath);
+            cms.writePropertyObject(sitePath, descripion);
+            // delete potential "search.priority" setting from earlier tests
+            cms.writePropertyObject(sitePath, delete);
+            cms.unlockResource(sitePath);
+        }
+
+        assertEquals(6, resources.size());
+
+        // update the search indexes
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
+
+        // perform the same search again in the online index - must be same result as before
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setQuery(query);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(6, searchResult.size());
+
+        // now the search in the offline index - documents should now be found
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setQuery(query);
+        List<CmsSearchResult> firstSearchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n-----  Results searching in OFFLINE index");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(6, firstSearchResult.size());
+
+        CmsSearchResult res1 = firstSearchResult.get(firstSearchResult.size() - 1);
+        CmsSearchResult res2 = firstSearchResult.get(firstSearchResult.size() - 2);
+        CmsSearchResult res3 = firstSearchResult.get(0);
 
         String path1 = cms.getRequestContext().removeSiteRoot(res1.getPath());
         String path2 = cms.getRequestContext().removeSiteRoot(res2.getPath());
@@ -185,31 +227,27 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         cms.unlockResource(path3);
 
         // update the search indexes
-        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
         // this call does not throws the rebuild index event
         OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
-        searchBean.setQuery("OpenCms");
+        searchBean.setQuery(query);
         searchResult = searchBean.getSearchResult();
+        assertEquals(6, searchResult.size());
 
-        System.out.println("\n\n----- Results searching ONLINE (no boost factors set)");
-        TestCmsSearch.printResults(searchResult, cms);
-        assertEquals(expected, searchResult.size());
-
-        assertEquals(res1.getPath(), (searchResult.get(searchResult.size() - 1)).getPath());
-        assertEquals(res2.getPath(), (searchResult.get(searchResult.size() - 2)).getPath());
-        assertEquals(res3.getPath(), (searchResult.get(0)).getPath());
+        // just output the first seach result again, just for convenient comparison on the console
+        System.out.println("\n\n-----  Results searching in ONLINE index (repeat)");
+        TestCmsSearch.printResults(firstSearchResult, cms);
 
         // now the search in the offline index - the boosted docs should now be on top
         searchBean.setIndex(INDEX_OFFLINE);
-        searchBean.setQuery("OpenCms");
+        searchBean.setQuery(query);
         searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Results searching OFFLINE (using changed boost factors)");
+        System.out.println("\n\n-----  Results searching in OFFLINE index (with changes)");
         TestCmsSearch.printResults(searchResult, cms);
-        assertEquals(expected, searchResult.size());
+
+        assertEquals(6, searchResult.size());
 
         // ensure boosted results are on top
         assertEquals(res1.getPath(), (searchResult.get(0)).getPath());
@@ -219,7 +257,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
     }
 
     /**
-     * Tests search boosting when seachrching in meta information only.<p>
+     * Tests search boosting when searching in meta information only.<p>
      * 
      * @throws Exception if the test fails
      */
@@ -233,7 +271,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
-        int expected = 7;
+        int expected = 6;
 
         String path = "/search/";
         String query = "OpenCms by Alkacon";

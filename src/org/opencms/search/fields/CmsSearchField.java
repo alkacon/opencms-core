@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/13 15:18:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -373,9 +373,9 @@ public class CmsSearchField {
     }
 
     /**
-     * Returns the boost factor of thsi field as String value for display use.<p>
+     * Returns the boost factor of this field as String value for display use.<p>
      * 
-     * @return the boost factor of thsi field as String value for display use
+     * @return the boost factor of this field as String value for display use
      */
     public String getBoostDisplay() {
 

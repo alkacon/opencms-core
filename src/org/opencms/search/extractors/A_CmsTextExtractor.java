@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2011/05/13 14:13:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/13 15:18:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -53,22 +52,19 @@ import org.apache.tika.sax.BodyContentHandler;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
-
-    /** A buffer in case the input stream must be read more then once. */
-    protected byte[] m_inputBuffer;
 
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(byte[])
      */
     public I_CmsExtractionResult extractText(byte[] content) throws Exception {
 
-        // encoding is null        
-        return extractText(content, null);
+        // call stream based method of extraction without encoding     
+        return extractText(new ByteArrayInputStream(content));
     }
 
     /**
@@ -76,8 +72,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     public I_CmsExtractionResult extractText(byte[] content, String encoding) throws Exception {
 
-        // call stream based method of extraction
-        m_inputBuffer = content;
+        // call stream based method of extraction with encoding
         return extractText(new ByteArrayInputStream(content), encoding);
     }
 
@@ -86,10 +81,8 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     public I_CmsExtractionResult extractText(InputStream in) throws Exception {
 
-        // read the byte content
-        byte[] text = CmsFileUtil.readFully(in);
-        // call byte array based method of extraction  
-        return extractText(text, null);
+        // encoding is null        
+        return extractText(in, null);
     }
 
     /**
@@ -101,27 +94,6 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         byte[] text = CmsFileUtil.readFully(in);
         // call byte array based method of extraction
         return extractText(text, encoding);
-    }
-
-    /**
-     * Creates a copy of the original input stream, which allows to read the input stream more then 
-     * once, required for certain document types.<p>
-     * 
-     * @param in the inpur stram to copy
-     * @return a copy of the original input stream
-     * @throws IOException in case of read errors from the original input stream
-     */
-    public InputStream getStreamCopy(InputStream in) throws IOException {
-
-        if (m_inputBuffer != null) {
-            return new ByteArrayInputStream(m_inputBuffer);
-        }
-
-        // read the input stream fully and copy it to a byte array
-        m_inputBuffer = CmsFileUtil.readFully(in);
-
-        // now return a reader from the byte array
-        return new ByteArrayInputStream(m_inputBuffer);
     }
 
     /**
@@ -166,6 +138,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         ParseContext context = new ParseContext();
 
         parser.parse(in, handler, meta, context);
+        in.close();
 
         String result = writer.toString();
 
