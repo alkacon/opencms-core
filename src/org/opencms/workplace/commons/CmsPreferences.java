@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2011/05/04 14:18:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/13 14:13:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
-import org.opencms.db.CmsUserSettings.V_UPLOAD_VARIANT;
+import org.opencms.db.CmsUserSettings.UploadVariant;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -934,8 +934,8 @@ public class CmsPreferences extends CmsTabDialog {
         int selectedIndex = 0;
         int pos = 0;
 
-        V_UPLOAD_VARIANT currentVariant = getParamTabWpUploadVariant();
-        for (V_UPLOAD_VARIANT variant : V_UPLOAD_VARIANT.values()) {
+        UploadVariant currentVariant = getParamTabWpUploadVariant();
+        for (UploadVariant variant : UploadVariant.values()) {
 
             values.add(variant.toString());
             options.add(getUploadVariantMessage(variant));
@@ -1552,7 +1552,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return <code>"applet"</code>, <code>"gwt"</code> or <code>"basic"</code>
      */
-    public V_UPLOAD_VARIANT getParamTabWpUploadVariant() {
+    public UploadVariant getParamTabWpUploadVariant() {
 
         return m_userSettings.getUploadVariant();
     }
@@ -2230,7 +2230,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the message
      */
-    private String getUploadVariantMessage(V_UPLOAD_VARIANT variant) {
+    private String getUploadVariantMessage(UploadVariant variant) {
 
         String message = null;
         switch (variant) {
