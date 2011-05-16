@@ -116,7 +116,7 @@ div.editorGallery {}
 
 .searchTabRow {
 	clear: both;
-	height: 22px;
+	height: 24px;
 }
 .searchTabRowRightAlign {
 	clear: both;
@@ -125,10 +125,12 @@ div.editorGallery {}
 .searchTabLabelLeft {
 	width: 120px;
 	float: left;
+	margin-top: 2px;
 }
 .searchTabLabelRight {
 	width: 120px;
 	float: right;
+	margin-top: 2px;
 }
 .searchTabInputLeft {
 	width: 166px;

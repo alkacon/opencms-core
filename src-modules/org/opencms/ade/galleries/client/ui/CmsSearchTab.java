@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2011/05/05 18:29:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/16 06:42:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.
  */
@@ -350,6 +351,7 @@ public class CmsSearchTab extends A_CmsTab {
         super(GalleryTabId.cms_tab_search.name());
         m_tab = uiBinder.createAndBindUi(this);
         initWidget(m_tab);
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
         m_tabHandler = tabHandler;
         m_autoHideParent = autoHideParent;
         m_currentLocale = currentLocale;
