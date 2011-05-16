@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/05 05:48:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/16 13:51:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -73,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -398,6 +399,16 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_editorDialog.setGlassEnabled(false);
         m_editorDialog.setModal(false);
         m_editorDialog.setWidth(500);
+        m_editorDialog.addDialogClose(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                cancelEdit();
+            }
+        });
         if (m_groupContainerPosition != null) {
             if (m_groupContainerPosition.getLeft() > 600) {
                 // place left of the group container if there is enough space
@@ -410,9 +421,9 @@ public final class CmsGroupcontainerEditor extends Composite {
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_editorDialog.setPopupPosition(
-                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
-                    m_groupContainerPosition.getTop());
+                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft()
+                    + m_groupContainerPosition.getWidth()
+                    + 20, m_groupContainerPosition.getTop());
             }
             m_editorDialog.show();
         } else {
