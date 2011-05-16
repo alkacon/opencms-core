@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/16 15:47:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -89,6 +89,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
     private static final String SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -135,6 +137,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXml"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
         suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
@@ -664,7 +667,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        List locales = xmlcontent.getLocales();
+        List<Locale> locales = xmlcontent.getLocales();
         assertEquals(1, locales.size());
         assertEquals(Locale.ENGLISH, locales.get(0));
 
@@ -848,7 +851,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        List locales = xmlcontent.getLocales();
+        List<Locale> locales = xmlcontent.getLocales();
         assertEquals(1, locales.size());
         assertEquals(Locale.ENGLISH, locales.get(0));
 
@@ -947,7 +950,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         htmlValue.setStringValue(cms, htmlValue.getStringValue(cms));
         vfsValue.setStringValue(cms, vfsValue.getStringValue(cms));
 
-        Iterator i;
+        Iterator<CmsLink> i;
         CmsLinkTable table;
 
         String retranslatedOutput = htmlValue.getStringValue(cms);
@@ -965,7 +968,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         int result = 0;
         while (i.hasNext()) {
             // iterate all links and check if the required values are found
-            CmsLink link = (CmsLink)i.next();
+            CmsLink link = i.next();
             if (link.getTarget().equals("/sites/default/index.html") && link.isInternal()) {
                 result++;
             } else if (link.getTarget().equals("http://www.alkacon.com") && !link.isInternal()) {
@@ -1376,7 +1379,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // check for written property values as list
         prop = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        List list = prop.getValueList();
+        List<String> list = prop.getValueList();
         assertNotNull(list);
         assertEquals(4, list.size());
         assertEquals(sr + res1, list.get(0));
@@ -1413,7 +1416,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // check for written property values as list
         prop2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
-        List list2 = prop.getValueList();
+        List<String> list2 = prop.getValueList();
         assertNotNull(list2);
         assertEquals(4, list2.size());
         assertEquals(sr + res1, list2.get(0));
@@ -1450,7 +1453,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // check for written property values as list
         prop3 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
-        List list3 = prop.getValueList();
+        List<String> list3 = prop.getValueList();
         assertNotNull(list3);
         assertEquals(4, list3.size());
         assertEquals(sr + res1, list3.get(0));
@@ -1548,7 +1551,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent.validateXmlStructure(resolver);
 
         // create "en" property
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
 
         String resourcenameEn = "/mappingtext_en.html";
@@ -1736,6 +1739,77 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(
             "The following errors occurred when validating the form:",
             messages.key(org.opencms.xml.content.Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
+    }
+
+    /**
+     * Test the resource bundles defined in XML content.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testResourceBundleFromXml() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing resource bundles defined in XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContentDefinition definition;
+        I_CmsXmlContentHandler contentHandler;
+
+        // unmarshal content definition with localization in properties
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1_localized1.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L1, resolver);
+
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        CmsMessages messagesEN = contentHandler.getMessages(Locale.ENGLISH);
+        assertNotNull(messagesEN);
+
+        assertEquals("The author is", messagesEN.key("label.author"));
+        assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
+            "editor.xmlcontent.validation.warning",
+            "Arg0",
+            "Arg1"));
+
+        CmsMessages messagesDE = contentHandler.getMessages(Locale.GERMAN);
+        assertNotNull(messagesDE);
+
+        assertEquals("Der Autor ist", messagesDE.key("label.author"));
+        assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesDE.key(
+            "editor.xmlcontent.validation.warning",
+            "Arg0",
+            "Arg1"));
+
+        // unmarshal content definition with localization in XML
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1_localized2.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L2, resolver);
+
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        messagesEN = contentHandler.getMessages(Locale.ENGLISH);
+        assertNotNull(messagesEN);
+
+        assertEquals("The author is NOW", messagesEN.key("label.author"));
+        assertEquals("VERY Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
+            "editor.xmlcontent.validation.warning",
+            "Arg0",
+            "Arg1"));
+
+        messagesDE = contentHandler.getMessages(Locale.GERMAN);
+        assertNotNull(messagesDE);
+
+        assertEquals("Der Autor ist JETZT", messagesDE.key("label.author"));
+        assertEquals("ECHT schlechter Wert \"Arg0\" wegen Regel Arg1", messagesDE.key(
+            "editor.xmlcontent.validation.warning",
+            "Arg0",
+            "Arg1"));
     }
 
     /**

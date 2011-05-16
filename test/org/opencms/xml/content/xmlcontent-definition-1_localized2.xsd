@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Multitests" type="OpenCmsMultitests"/>
+	
+	<xsd:complexType name="OpenCmsMultitests">
+		<xsd:sequence>
+			<xsd:element name="Multitest" type="OpenCmsMultitest" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsMultitest">
+		<xsd:sequence>
+			<xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Locale" type="OpenCmsLocale" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.content.testmessages.UPDATE">
+				<bundle locale="EN">
+					<resource key="label.author" value="The author is NOW" />
+					<resource key="editor.xmlcontent.optionalelement">(Click on the "New" button on the right side to activate this element)</resource>
+					<resource key="editor.xmlcontent.validation.error.title">The following errors occurred when validating the form:</resource>
+					<resource key="editor.xmlcontent.validation.error">Invalid value "{0}" according to rule {1}</resource>
+					<resource key="editor.xmlcontent.validation.warning">VERY Bad value "{0}" according to rule {1}</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="label.author" value="Der Autor ist JETZT" />
+					<resource key="editor.xmlcontent.validation.warning">ECHT schlechter Wert "{0}" wegen Regel {1}</resource>
+				</bundle>			
+			</resourcebundle>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentChoice.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/16 15:47:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML content support for <code>xsd:choice</code>.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
@@ -173,7 +173,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         // fire "clear cache" event to clear up previously cached schemas
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap()));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>()));
         // read and cache the sub-schemas
         cacheXmlSchema(
             "org/opencms/xml/content/xmlcontent-choice-definition-1-subA.xsd",

@@ -7,7 +7,27 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundle">
+		<xsd:sequence>
+			<xsd:element name="bundle" type="OpenCmsDefaultAppinfoResourcebundleBundle" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>		
 		<xsd:attribute name="name" type="xsd:string" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundleBundle">
+		<xsd:sequence>
+			<xsd:element name="resource" type="OpenCmsDefaultAppinfoResourcebundleResource" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>		
+		<xsd:attribute name="locale" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType
+		name="OpenCmsDefaultAppinfoResourcebundleResource">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="key" type="xsd:string" use="required" />
+				<xsd:attribute name="value" type="xsd:string" use="optional" />
+			</xsd:extension>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoModelfolder">

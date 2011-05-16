@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent75Features.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/16 15:47:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations for features introduced in OpenCms 7.5.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContent75Features extends OpenCmsTestCase {
 
@@ -133,9 +133,9 @@ public class TestCmsXmlContent75Features extends OpenCmsTestCase {
         CmsJspContentAccessBean bean = new CmsJspContentAccessBean(cms, Locale.ENGLISH, xmlcontent);
 
         // access the content form the default locale
-        CmsJspContentAccessValueWrapper cascade = (CmsJspContentAccessValueWrapper)bean.getValue().get("Cascade");
+        CmsJspContentAccessValueWrapper cascade = bean.getValue().get("Cascade");
 
-        CmsJspContentAccessValueWrapper link = (CmsJspContentAccessValueWrapper)cascade.getValue().get("VfsLink");
+        CmsJspContentAccessValueWrapper link = cascade.getValue().get("VfsLink");
         assertEquals("/index.html", link.toString());
         System.out.println("\n\n-----------------------------");
         System.out.println("<target> : " + link.getXmlText().get("link/target"));
@@ -147,7 +147,7 @@ public class TestCmsXmlContent75Features extends OpenCmsTestCase {
         assertEquals("/sites/default/index.html", link.getXmlText().get("link[1]/target"));
         assertEquals("7d6c22cd-4e3a-11db-9016-5bf59c6009b3", link.getXmlText().get("link[1]/uuid"));
 
-        CmsJspContentAccessValueWrapper html = (CmsJspContentAccessValueWrapper)cascade.getValue().get("Html");
+        CmsJspContentAccessValueWrapper html = cascade.getValue().get("Html");
         assertEquals("a=b&c=d", html.getXmlText().get("links/link/query"));
         assertEquals("/sites/default/noexist/index.html", html.getXmlText().get("links/link[3]/target"));
 
@@ -167,7 +167,7 @@ public class TestCmsXmlContent75Features extends OpenCmsTestCase {
     private void cacheSchema(CmsXmlEntityResolver resolver, String id, String filename) throws Exception {
 
         // fire "clear cache" event to clear up previously cached schemas
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap()));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>()));
         // read the XML from the given file and store it in the resolver
         String content = CmsFileUtil.readFile(filename, CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, id, resolver);

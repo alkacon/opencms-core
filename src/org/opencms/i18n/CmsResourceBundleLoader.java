@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/16 15:47:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -166,6 +166,25 @@ public final class CmsResourceBundleLoader {
     }
 
     /**
+     * Adds the specified resource bundle to the cache.<p>
+     * 
+     * @param baseName the raw bundle name, without locale qualifiers
+     * @param locale the locale
+     * @param bundle the bundle to cache
+     */
+    public static synchronized void addBundleToCache(String baseName, Locale locale, ResourceBundle bundle) {
+
+        BundleKey key = new BundleKey(baseName, locale);
+        if (bundle == null) {
+            // Cache the fact that this lookup has previously failed.
+            m_bundleCache.put(key, NULL_ENTRY);
+        } else {
+            // Cache the result and return it.
+            m_bundleCache.put(key, bundle);
+        }
+    }
+
+    /**
      * Flushes the resource bundle cache.<p>
      */
     public static synchronized void flushBundleCache() {
@@ -228,8 +247,8 @@ public final class CmsResourceBundleLoader {
 
         Object obj = m_bundleCache.get(m_lookupKey);
 
-        if (obj instanceof CmsResourceBundle) {
-            return (CmsResourceBundle)obj;
+        if (obj instanceof ResourceBundle) {
+            return (ResourceBundle)obj;
         } else if (obj == NULL_ENTRY) {
             // Lookup has failed previously. Fall through.
         } else {
@@ -243,13 +262,11 @@ public final class CmsResourceBundleLoader {
                 bundle = tryBundle(baseName, defaultLocale, true);
             }
 
-            BundleKey key = new BundleKey(baseName, locale);
-            if (bundle == null) {
-                // Cache the fact that this lookup has previously failed.
-                m_bundleCache.put(key, NULL_ENTRY);
-            } else {
-                // Cache the result and return it.
-                m_bundleCache.put(key, bundle);
+            // add the bundle to the cache
+            addBundleToCache(baseName, locale, bundle);
+
+            if (bundle != null) {
+                // return the bundle if it was correctly found 
                 return bundle;
             }
         }

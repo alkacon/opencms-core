@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/06 15:46:50 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/05/16 15:47:04 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -87,6 +89,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +108,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,6 +137,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "invalidate" appinfo attribute name. */
     public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
+
+    /** Constant for the "key" appinfo attribute name. */
+    public static final String APPINFO_ATTR_KEY = "key";
 
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
@@ -174,6 +180,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
 
+    /** Constant for the "locale" appinfo attribute name. */
+    public static final String APPINFO_ATTR_LOCALE = "locale";
+
     /** Constant for the "node" appinfo attribute value. */
     public static final String APPINFO_ATTR_TYPE_NODE = "node";
 
@@ -203,6 +212,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for formatter include resource type 'JAVASCRIPT'. */
     public static final String APPINFO_ATTRIBUTE_TYPE_JAVASCRIPT = "javascript";
+
+    /** Constant for the "bundle" appinfo element name. */
+    public static final String APPINFO_BUNDLE = "bundle";
 
     /** Constant for the "default" appinfo element name. */
     public static final String APPINFO_DEFAULT = "default";
@@ -245,6 +257,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "relations" appinfo element name. */
     public static final String APPINFO_RELATIONS = "relations";
+
+    /** Constant for the "resource" appinfo element name. */
+    public static final String APPINFO_RESOURCE = "resource";
 
     /** Constant for the "resourcebundle" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
@@ -379,6 +394,56 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
+
+    /**
+     * Describes an XML content defined resource bundle.<p>
+     */
+    public class CmsXmlResourceBundle extends ListResourceBundle {
+
+        /** The configured resource key / value pairs. */
+        private Map<String, String> m_resources;
+
+        /** The configured resource key / value pairs as Objects. */
+        private Object[][] m_resourceAsObjects;
+
+        /**
+         * Create a new list resource bundle for the XML.
+         */
+        public CmsXmlResourceBundle() {
+
+            m_resources = new LinkedHashMap<String, String>();
+        }
+
+        /**
+         * @see java.util.ListResourceBundle#getContents()
+         */
+        @Override
+        public Object[][] getContents() {
+
+            if (m_resourceAsObjects == null) {
+                // fill object array based on map
+                m_resourceAsObjects = new String[m_resources.size()][2];
+                int i = 0;
+                for (Map.Entry<String, String> entry : m_resources.entrySet()) {
+                    m_resourceAsObjects[i][0] = entry.getKey();
+                    m_resourceAsObjects[i][1] = entry.getValue();
+                    i++;
+                }
+            }
+            return m_resourceAsObjects;
+        }
+
+        /**
+         * Adds a message to this list bundle.<p>
+         * 
+         * @param key the message key
+         * @param value the message itself
+         */
+        public void addMessage(String key, String value) {
+
+            m_resources.put(key, value);
+        }
+    }
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -1856,6 +1921,48 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 contentDefinition.getSchemaLocation()));
         }
         m_messageBundleName = name;
+
+        // get an iterator for all "bundle" subnodes
+        Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(root, APPINFO_BUNDLE);
+        while (bundles.hasNext()) {
+            // iterate all "bundle" elements in the "resourcebundle" node
+            Element bundle = bundles.next();
+            String localeStr = bundle.attributeValue(APPINFO_ATTR_LOCALE);
+            Locale locale;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(localeStr)) {
+                // no locale set, so use the default locale
+                locale = CmsLocaleManager.getDefaultLocale();
+            } else {
+                // use provided locale
+                locale = CmsLocaleManager.getLocale(localeStr);
+            }
+
+            CmsXmlResourceBundle xmlBundle = null;
+
+            Iterator<Element> resources = CmsXmlGenericWrapper.elementIterator(bundle, APPINFO_RESOURCE);
+            while (resources.hasNext()) {
+                // now collect all resource bundle keys
+                Element resource = resources.next();
+                String key = resource.attributeValue(APPINFO_ATTR_KEY);
+                String value = resource.attributeValue(APPINFO_ATTR_VALUE);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    value = resource.getTextTrim();
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    if (xmlBundle == null) {
+                        // use lazy initilaizing of the bundle
+                        xmlBundle = new CmsXmlResourceBundle();
+                    }
+                    xmlBundle.addMessage(key, value);
+                }
+            }
+
+            if (xmlBundle != null) {
+                // cache the bundle from the XML
+                CmsResourceBundleLoader.addBundleToCache(m_messageBundleName, locale, xmlBundle);
+            }
+        }
+
     }
 
     /**
