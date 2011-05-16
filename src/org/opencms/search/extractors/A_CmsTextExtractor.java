@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2011/05/13 15:18:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/16 15:52:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.tika.sax.BodyContentHandler;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,8 +81,9 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     public I_CmsExtractionResult extractText(InputStream in) throws Exception {
 
-        // encoding is null        
-        return extractText(in, null);
+        // encoding is null
+        // (using cast to disambiguate method)
+        return extractText(in, (String)null);
     }
 
     /**
