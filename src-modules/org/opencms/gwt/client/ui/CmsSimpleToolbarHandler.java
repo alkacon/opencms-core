@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleToolbarHandler.java,v $
- * Date   : $Date: 2011/05/03 18:37:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/16 10:08:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,23 +35,19 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * Very basic implementation of the {@link I_CmsToolbarHandler} interface.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsSimpleToolbarHandler implements I_CmsToolbarHandler {
+public class CmsSimpleToolbarHandler extends A_CmsToolbarHandler {
 
     /** The currently active button. */
     private I_CmsToolbarButton m_activeButton;
@@ -60,70 +56,19 @@ public class CmsSimpleToolbarHandler implements I_CmsToolbarHandler {
     private CmsToolbarContextButton m_contextButton;
 
     /**
-     * Transforms a list of context menu entry beans to a list of context menu entries.<p>
-     * 
-     * @param menuBeans the list of context menu entry beans
-     * @param uri the uri to generate the menu entries for
-     * 
-     * @return a list of context menu entries 
-     */
-    public static List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
-
-        List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
-        for (CmsContextMenuEntryBean bean : menuBeans) {
-            final CmsContextMenuEntry entry = new CmsContextMenuEntry();
-
-            entry.setBean(bean);
-
-            if (bean.hasSubMenu()) {
-                entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
-            }
-
-            Command cmd = null;
-
-            String name = entry.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-
-                if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
-
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            new CmsAvailabilityDialog(CmsCoreProvider.get().getUri()).loadAndShow();
-                        }
-                    };
-                } else if (name.equals(CmsShowWorkplace.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace());
-
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            new CmsShowWorkplace(uri).openWorkplace();
-                        }
-                    };
-                }
-            }
-            entry.setCommand(cmd);
-            menuEntries.add(entry);
-        }
-        return menuEntries;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#activateSelection()
      */
     public void activateSelection() {
 
         // does nothing for now 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canOpenAvailabilityDialog()
+     */
+    public boolean canOpenAvailabilityDialog() {
+
+        return true;
     }
 
     /**
@@ -201,4 +146,5 @@ public class CmsSimpleToolbarHandler implements I_CmsToolbarHandler {
 
         m_contextButton = button;
     }
+
 }

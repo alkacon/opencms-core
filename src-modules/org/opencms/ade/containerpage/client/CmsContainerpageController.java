@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/13 15:35:22 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -75,9 +75,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -88,11 +88,25 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 8.0.0
  */
 public final class CmsContainerpageController {
+
+    /**
+     * A type which indicates the locking status of the currently edited container page.<p>
+     */
+    enum LockStatus {
+        /** Locking the resource has not been tried. */
+        unknown,
+
+        /** The resource could be successfully locked. */
+        locked,
+
+        /** Locking the resource failed. */
+        failed
+    }
 
     /**
      * A RPC action implementation used to request the data for container-page elements.<p>
@@ -343,6 +357,9 @@ public final class CmsContainerpageController {
 
     /** The drag targets within this page. */
     private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
+
+    /** The current lock status for the page. */
+    private LockStatus m_lockStatus = LockStatus.unknown;
 
     /**
      * Constructor.<p>
@@ -826,17 +843,34 @@ public final class CmsContainerpageController {
             public void onWindowClosing(ClosingEvent event) {
 
                 deactivateOnClosing();
-                if (hasPageChanged()) {
+                if (hasPageChanged() && !isEditingDisabled()) {
                     boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_DIALOG_SAVE_BEFORE_LEAVING_0));
                     if (savePage) {
                         syncSaveContainerpage();
                     } else {
                         unlockContainerpage();
                     }
+                } else {
+                    // the page itself hasn't changed, but maybe the availability
+                    unlockContainerpage();
                 }
-
             }
         });
+        String noEditReason = m_data.getNoEditReason();
+        if ((noEditReason != null) && (noEditReason.length() > 0)) {
+            m_lockStatus = LockStatus.failed;
+            handler.onNoEdit(noEditReason);
+        }
+    }
+
+    /**
+     * Checks if the page editing features should be disabled.<p>
+     * 
+     * @return true if the page editing features should be disabled 
+     */
+    public boolean isEditingDisabled() {
+
+        return m_lockStatus == LockStatus.failed;
     }
 
     /**
@@ -957,6 +991,53 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Locks the container-page.<p>
+     * 
+     * @return <code>true</code> if page was locked successfully 
+     */
+    public boolean lockContainerpage() {
+
+        if (m_lockStatus == LockStatus.locked) {
+            return true;
+        }
+        if (m_lockStatus == LockStatus.failed) {
+            return false;
+        }
+        String errorMessage = CmsCoreProvider.get().lockAndCheckModification(
+            getCurrentUri(),
+            m_data.getDateLastModified(),
+            false);
+        if (errorMessage == null) {
+            onLockSuccess();
+            return true;
+        } else {
+            onLockFail(errorMessage);
+            return false;
+        }
+    }
+
+    /**
+     * This method should be called when locking the page has failed.<p>
+     * 
+     * @param errorMessage the error message from locking the resource 
+     */
+    public void onLockFail(String errorMessage) {
+
+        assert m_lockStatus == LockStatus.unknown;
+        m_lockStatus = LockStatus.failed;
+        m_handler.onLockFail(errorMessage);
+    }
+
+    /**
+     * This method should be called when locking the page has succeeded.<p>
+     */
+    public void onLockSuccess() {
+
+        assert m_lockStatus == LockStatus.unknown;
+        m_lockStatus = LockStatus.locked;
     }
 
     /**
@@ -1387,7 +1468,6 @@ public final class CmsContainerpageController {
                 // container is currently showing detail element.
                 // we don't include it in the data to save, so on the server side
                 // the existing elements in that container will be preserved.
-
                 containers.add(new CmsContainer(
                     entry.getKey(),
                     cnt.getType(),
@@ -1408,21 +1488,6 @@ public final class CmsContainerpageController {
     protected String getRequestParams() {
 
         return m_data.getRequestParams();
-    }
-
-    /**
-     * Locks the container-page.<p>
-     * 
-     * @return <code>true</code> if page was locked successfully 
-     */
-    protected boolean lockContainerpage() {
-
-        if (CmsCoreProvider.get().lock(getCurrentUri())) {
-            return true;
-        } else {
-            CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
-            return false;
-        }
     }
 
     /**
@@ -1500,8 +1565,9 @@ public final class CmsContainerpageController {
             if (!m_pageChanged) {
 
                 m_pageChanged = changed;
-                lockContainerpage();
-                m_handler.enableSaveReset(true);
+                if (lockContainerpage()) {
+                    m_handler.enableSaveReset(!isEditingDisabled());
+                }
             }
         } else {
             m_pageChanged = changed;

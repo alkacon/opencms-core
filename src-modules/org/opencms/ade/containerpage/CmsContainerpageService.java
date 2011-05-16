@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/13 14:15:07 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 8.0.0
  */
@@ -290,6 +290,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         HttpServletRequest request = getRequest();
         try {
             CmsResource cntPage = getContainerpage(cms);
+            long lastModified = cntPage.getDateLastModified();
             String cntPageUri = cms.getSitePath(cntPage);
             data = new CmsCntPageData(
                 cms.getSitePath(cntPage),
@@ -298,6 +299,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
                 cntPageUri,
                 getNewTypes(cms, request),
+                lastModified,
                 cms.getRequestContext().getLocale().toString());
         } catch (Throwable e) {
             error(e);
@@ -488,7 +490,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Helper method for converting a CmsContainer to a CmsContainerBean when saving a container page.<p>
      * 
      * @param container the container for which the CmsContainerBean should be created
-     * @param containerpageUri the URI of the container page 
+     * @param containerpageUri the URI of the container page
+     * @param locale the locale to use  
      *  
      * @return a container bean
      */
@@ -579,6 +582,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param clientIds the list of IDs of the elements to retrieve the data for
      * @param uriParam the current URI
      * @param containers the containers for which the element data should be fetched 
+     * @param locale the locale to use 
      * 
      * @return the elements data
      * 
@@ -637,6 +641,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param groupContainer the group-container data
      * @param containerpageUri the URI of the container page 
+     * @param locale the locale to use 
      * 
      * @return the group-container bean
      */
@@ -680,6 +685,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param listElements the list of element beans to retrieve the data for
      * @param containerpageUri the current URI
      * @param containers the containers which exist on the container page  
+     * @param locale the locale to use 
      * 
      * @return the elements data
      * 

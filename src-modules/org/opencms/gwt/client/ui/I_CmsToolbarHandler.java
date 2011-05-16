@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -48,6 +48,13 @@ public interface I_CmsToolbarHandler {
      * Activates the selection button.<p>
      */
     void activateSelection();
+
+    /**
+     * Checks if the availability dialog can be opened.<p>
+     * 
+     * @return true if the availability dialog can be opened 
+     */
+    boolean canOpenAvailabilityDialog();
 
     /**
      * De-activates the current button.<p> 

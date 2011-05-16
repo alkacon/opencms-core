@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/05 16:08:21 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,9 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -97,7 +97,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,6 +113,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
+    /** The uri used for deleting. */
     private static final String EDITOR_DELETE_URI = "/system/workplace/commons/delete.jsp";
 
     /** Serialization uid. */

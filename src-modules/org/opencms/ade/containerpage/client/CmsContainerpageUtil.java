@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -88,6 +88,23 @@ public class CmsContainerpageUtil {
 
         m_controller = controller;
         m_optionButtons = optionButtons;
+    }
+
+    /**
+     * Adds an option bar to the given drag element.<p>
+     * 
+     * @param element the element
+     */
+    public void addOptionBar(CmsContainerPageElement element) {
+
+        // the view permission is required for any actions regarding this element
+        if (element.hasViewPermission()) {
+            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
+                element,
+                m_controller.getDndHandler(),
+                m_optionButtons);
+            element.setElementOptionBar(optionBar);
+        }
     }
 
     /**
@@ -263,20 +280,6 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Creates a list item.<p>
-     * 
-     * @param containerElement the element data
-     * 
-     * @return the list item widget
-     */
-    public CmsMenuListItem createListItem(CmsContainerElementData containerElement) {
-
-        CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
-        listItem.initMoveHandle(m_controller.getDndHandler());
-        return listItem;
-    }
-
-    /**
      * Creates a drag container element for group-container elements.<p>
      * 
      * @param containerElement the container element data 
@@ -322,20 +325,17 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Adds an option bar to the given drag element.<p>
+     * Creates a list item.<p>
      * 
-     * @param element the element
+     * @param containerElement the element data
+     * 
+     * @return the list item widget
      */
-    private void addOptionBar(CmsContainerPageElement element) {
+    public CmsMenuListItem createListItem(CmsContainerElementData containerElement) {
 
-        // the view permission is required for any actions regarding this element
-        if (element.hasViewPermission()) {
-            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
-                element,
-                m_controller.getDndHandler(),
-                m_optionButtons);
-            element.setElementOptionBar(optionBar);
-        }
+        CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
+        listItem.initMoveHandle(m_controller.getDndHandler());
+        return listItem;
     }
 
     /**

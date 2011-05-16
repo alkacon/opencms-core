@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/13 14:16:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,10 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -162,6 +162,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** Map of current drag info beans. */
     private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
 
+    /** The drag overlay. */
     private Element m_dragOverlay;
 
     /** The ionitial drop target. */
@@ -190,6 +191,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onAnimationStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
+    @SuppressWarnings("unchecked")
     public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         // hide dropzone if it is not the current target
@@ -233,6 +235,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_initialDropTarget = target;
         handler.setOrientation(Orientation.ALL);
         m_controller.hideEditableListButtons();
+
+        if (!m_controller.isGroupcontainerEditing()) {
+            boolean locked = m_controller.lockContainerpage();
+            if (!locked) {
+                handler.cancel();
+            }
+        }
+
         if (target != null) {
             handler.addTarget(target);
             if (target instanceof I_CmsDropContainer) {
@@ -240,13 +250,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
 
-        m_dragInfos.put(
-            target,
-            new DragInfo(
-                handler.getDragHelper(),
-                handler.getPlaceholder(),
-                handler.getCursorOffsetX(),
-                handler.getCursorOffsetY()));
+        m_dragInfos.put(target, new DragInfo(
+            handler.getDragHelper(),
+            handler.getPlaceholder(),
+            handler.getCursorOffsetX(),
+            handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
@@ -342,8 +350,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_controller.addToRecentList(draggable.getId());
             if (!m_controller.isGroupcontainerEditing()) {
                 // changes are only relevant to the container page if not group-container editing
-                m_controller.setPageChanged();
-            }
+            m_controller.setPageChanged();
+        }
         }
         stopDrag(handler);
     }
@@ -420,6 +428,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             handler.cancel();
             return;
         }
+
         if (!(handler.getDraggable() instanceof CmsContainerPageElement)) {
             // inserting element from menu
             if ((elementData.getCssResources() != null) && !elementData.getCssResources().isEmpty()) {
@@ -452,42 +461,44 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
             return;
         }
-        for (CmsContainerPageContainer container : m_controller.getContainerTargets().values()) {
+        if (!m_controller.isEditingDisabled()) {
+            for (CmsContainerPageContainer container : m_controller.getContainerTargets().values()) {
 
-            if ((container != m_initialDropTarget)
-                && !container.isDetailView()
-                && elementData.getContents().containsKey(container.getContainerId())) {
+                if ((container != m_initialDropTarget)
+                    && !container.isDetailView()
+                    && elementData.getContents().containsKey(container.getContainerId())) {
 
-                Element helper = null;
-                Element placeholder = null;
-                if (elementData.isGroupContainer()) {
-                    helper = DOM.createDiv();
-                    String content = "";
-                    for (String groupId : elementData.getSubItems()) {
-                        CmsContainerElementData subData = m_controller.getCachedElement(groupId);
-                        if ((subData != null) && subData.getContents().containsKey(container.getContainerId())) {
-                            content += subData.getContents().get(container.getContainerId());
+                    Element helper = null;
+                    Element placeholder = null;
+                    if (elementData.isGroupContainer()) {
+                        helper = DOM.createDiv();
+                        String content = "";
+                        for (String groupId : elementData.getSubItems()) {
+                            CmsContainerElementData subData = m_controller.getCachedElement(groupId);
+                            if ((subData != null) && subData.getContents().containsKey(container.getContainerId())) {
+                                content += subData.getContents().get(container.getContainerId());
+                            }
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+                            helper.setInnerHTML(content);
+                        } else {
+                            helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+                        }
+                        placeholder = CmsDomUtil.clone(helper);
+                    } else {
+                        try {
+                            String htmlContent = elementData.getContents().get(container.getContainerId());
+                            helper = CmsDomUtil.createElement(htmlContent);
+                            placeholder = CmsDomUtil.clone(helper);
+                            placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+                        } catch (Exception e) {
+                            CmsDebugLog.getInstance().printLine(e.getMessage());
                         }
                     }
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-                        helper.setInnerHTML(content);
-                    } else {
-                        helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+                    if (helper != null) {
+                        prepareDragInfo(helper, placeholder, container, handler);
+                        container.highlightContainer();
                     }
-                    placeholder = CmsDomUtil.clone(helper);
-                } else {
-                    try {
-                        String htmlContent = elementData.getContents().get(container.getContainerId());
-                        helper = CmsDomUtil.createElement(htmlContent);
-                        placeholder = CmsDomUtil.clone(helper);
-                        placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
-                    } catch (Exception e) {
-                        CmsDebugLog.getInstance().printLine(e.getMessage());
-                    }
-                }
-                if (helper != null) {
-                    prepareDragInfo(helper, placeholder, container, handler);
-                    container.highlightContainer();
                 }
             }
         }

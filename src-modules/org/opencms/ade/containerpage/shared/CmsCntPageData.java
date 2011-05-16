@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
+    /** The date at which the container page was last modified. */
+    private long m_lastModified;
+
     /**
      * Constructor.<p>
      * 
@@ -85,6 +88,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapUri the current sitemap URI
      * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
      * @param newTypes the map of available types and their new resource id's
+     * @param lastModified the last modification date of the page 
      * @param locale the content locale
      */
     public CmsCntPageData(
@@ -94,6 +98,7 @@ public final class CmsCntPageData implements IsSerializable {
         String sitemapUri,
         String sitePath,
         Map<String, String> newTypes,
+        long lastModified,
         String locale) {
 
         m_cntPageUri = cntPageUri;
@@ -102,6 +107,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_sitemapUri = sitemapUri;
         m_sitePath = sitePath;
         m_newTypes = newTypes;
+        m_lastModified = lastModified;
         m_locale = locale;
     }
 
@@ -131,6 +137,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getContainerpageUri() {
 
         return m_cntPageUri;
+    }
+
+    /**
+     * Gets the date at which the page was last modified.<p>
+     * 
+     * @return the date at which the page was last modified 
+     */
+    public long getDateLastModified() {
+
+        return m_lastModified;
     }
 
     /**

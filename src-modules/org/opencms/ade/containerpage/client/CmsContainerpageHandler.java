@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
+import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
@@ -45,12 +46,10 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsSimpleToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.gwt.client.ui.I_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -87,11 +86,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerpageHandler implements I_CmsToolbarHandler {
+public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /** The container-page controller. */
     protected CmsContainerpageController m_controller;
@@ -154,6 +153,14 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
     public void addToRecent(CmsListItem listItem) {
 
         m_editor.getClipboard().addToRecent(listItem);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canOpenAvailabilityDialog()
+     */
+    public boolean canOpenAvailabilityDialog() {
+
+        return CmsContainerpageController.get().lockContainerpage();
     }
 
     /**
@@ -336,7 +343,7 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
      */
     public void leavePage(final String target) {
 
-        if (!m_controller.hasPageChanged()) {
+        if (!m_controller.hasPageChanged() || m_controller.isEditingDisabled()) {
             m_controller.leaveUnsaved(target);
             return;
         }
@@ -435,6 +442,32 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
                 }
             }
         });
+    }
+
+    /**
+     * Should be called when locking the container page failed.<p>
+     * 
+     * @param errorMessage the error message from trying to lock the container page 
+     */
+    public void onLockFail(String errorMessage) {
+
+        m_editor.disableEditing(errorMessage);
+        CmsAlertDialog alert = new CmsAlertDialog(Messages.get().key(Messages.GUI_LOCK_FAIL_0), errorMessage);
+        alert.center();
+    }
+
+    /**
+     * Method which is called when we know directly after loading that we can't edit the page.<p>
+     * 
+     * @param errorMessage the error message from the server  
+     */
+    public void onNoEdit(String errorMessage) {
+
+        // disable this for now; will be changed anyway when the "Info" button is added 
+
+        //        m_editor.disableEditing(errorMessage);
+        //        CmsAlertDialog alert = new CmsAlertDialog(Messages.get().key(Messages.GUI_LOCK_FAIL_0), errorMessage);
+        //        alert.center();
     }
 
     /**
@@ -681,15 +714,4 @@ public class CmsContainerpageHandler implements I_CmsToolbarHandler {
         CmsGroupcontainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
     }
 
-    /**
-     * Transforms a list of context menu entry beans to a list of context menu entries.<p>
-     * 
-     * @param menuBeans the list of context menu entry beans
-     * 
-     * @return a list of context menu entries 
-     */
-    private List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
-
-        return CmsSimpleToolbarHandler.transformEntries(menuBeans, uri);
-    }
 }

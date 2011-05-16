@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2011/05/03 16:47:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)-
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,8 +33,8 @@ package org.opencms.gwt.client.dnd;
 
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -650,7 +650,12 @@ public class CmsDNDHandler implements MouseDownHandler {
             callback.execute();
             return;
         }
-        Element parentElement = m_dragHelper.getParentElement();
+        Element parentElement;
+        if (m_dragHelper != null) {
+            parentElement = m_dragHelper.getParentElement();
+        } else {
+            return;
+        }
         int endTop = m_startTop - parentElement.getAbsoluteTop();
         int endLeft = m_startLeft - parentElement.getAbsoluteLeft();
         int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);

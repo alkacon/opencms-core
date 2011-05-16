@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -328,6 +328,21 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     public boolean lockAndCheckModification(final String uri, final long modification) {
 
+        return lockAndCheckModification(uri, modification, true) == null;
+    }
+
+    /**
+     * Locks the given resource with a temporary lock, synchronously and additionally checking that 
+     * the given resource has not been modified after the given timestamp.<p>
+     * 
+     * @param uri the resource URI
+     * @param modification the timestamp to check
+     * @param useNotifications if true, send a notification message in case of failure 
+     * 
+     * @return <code>null</code> if successful, else an error message
+     */
+    public String lockAndCheckModification(final String uri, final long modification, final boolean useNotifications) {
+
         // lock the sitemap
         CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
 
@@ -354,11 +369,13 @@ public final class CmsCoreProvider extends CmsCoreData {
                     return;
                 }
                 // unable to lock
-                String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
-                CmsNotification.get().sendDeferred(CmsNotification.Type.ERROR, text);
+                if (useNotifications) {
+                    String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
+                    CmsNotification.get().sendDeferred(CmsNotification.Type.ERROR, text);
+                }
             }
         };
-        return lockAction.executeSync() == null;
+        return lockAction.executeSync();
     }
 
     /**

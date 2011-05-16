@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2011/05/06 07:12:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -156,6 +156,19 @@ public class CmsFavoriteTab extends Composite {
     }
 
     /**
+     * Saves the favorites.<p>
+     */
+    public void saveFavorites() {
+
+        m_clipboard.saveFavorites();
+        if (m_listPanel.getWidgetCount() < 1) {
+            m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
+        }
+        m_buttonEditingPanel.setVisible(false);
+        m_buttonUsePanel.setVisible(true);
+    }
+
+    /**
      * Cancels the editing.<p>
      * 
      * @param event the click event
@@ -190,18 +203,5 @@ public class CmsFavoriteTab extends Composite {
     void saveAction(ClickEvent event) {
 
         saveFavorites();
-    }
-
-    /**
-     * Saves the favorites.<p>
-     */
-    public void saveFavorites() {
-
-        m_clipboard.saveFavorites();
-        if (m_listPanel.getWidgetCount() < 1) {
-            m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
-        }
-        m_buttonEditingPanel.setVisible(false);
-        m_buttonUsePanel.setVisible(true);
     }
 }

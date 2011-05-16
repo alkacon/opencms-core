@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/16 10:08:54 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
@@ -54,19 +55,26 @@ import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The container page editor.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0
  */
@@ -131,6 +139,17 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public static I_CmsContainerZIndexManager getZIndexManager() {
 
         return Z_INDEX_MANAGER;
+    }
+
+    /**
+     * Disables the edit functionality.<p>
+     * 
+     * @param reason the text stating the reason why the edit functionality was disabled 
+     */
+    public void disableEditing(String reason) {
+
+        reinitializeButtons();
+        m_save.disable(reason);
     }
 
     /**
@@ -236,7 +255,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();
 
-        CmsContainerpageController controller = new CmsContainerpageController();
+        final CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
         CmsContentEditorHandler contentEditorHandler = new CmsContentEditorHandler(containerpageHandler);
         CmsContainerpageDNDController dndController = new CmsContainerpageDNDController(controller);
@@ -345,6 +364,29 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
+     * Reinitializes the buttons in the container element menus.<p>
+     */
+    public void reinitializeButtons() {
+
+        List<CmsContainerPageElement> elemWidgets = new ArrayList<CmsContainerPageElement>();
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
+            Iterator<Widget> elIt = entry.getValue().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
+                    elemWidgets.add(elementWidget);
+                } catch (ClassCastException e) {
+                    // no proper container element, skip it (this should never happen!)
+                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
+                }
+            }
+        }
+        for (CmsContainerPageElement elemWidget : elemWidgets) {
+            CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
+        }
+    }
+
+    /**
      * Shows the tool-bar.<p>
      * 
      * @param show if <code>true</code> the tool-bar will be shown
@@ -353,4 +395,5 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
     }
+
 }
