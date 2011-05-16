@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/16 12:03:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -60,6 +60,13 @@ public interface I_CmsToolbarHandler {
      * De-activates the current button.<p> 
      */
     void deactivateCurrentButton();
+
+    /**
+     * Returns the currently active button (may be null).<p>
+     * 
+     * @return the currently active button 
+     */
+    I_CmsToolbarButton getActiveButton();
 
     /**
      * Loads the context menu.<p>

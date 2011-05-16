@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/16 12:03:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -119,7 +119,9 @@ implements I_CmsToolbarButton {
         setDown(m_isActive);
 
         if (active) {
-            m_handler.deactivateCurrentButton();
+            if (m_handler.getActiveButton() != this) {
+                m_handler.deactivateCurrentButton();
+            }
             m_handler.setActiveButton(this);
             onToolbarActivate();
         } else {

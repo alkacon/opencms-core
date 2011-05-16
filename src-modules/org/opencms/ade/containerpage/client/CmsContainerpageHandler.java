@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/05/16 12:03:18 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 8.0.0
  */
@@ -279,6 +279,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_editor.getSave().disable(Messages.get().key(Messages.GUI_BUTTON_SAVE_DISABLED_0));
             m_editor.getReset().disable(Messages.get().key(Messages.GUI_BUTTON_RESET_DISABLED_0));
         }
+    }
+
+    /** 
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#getActiveButton()
+     */
+    public I_CmsToolbarButton getActiveButton() {
+
+        return m_activeButton;
     }
 
     /**
