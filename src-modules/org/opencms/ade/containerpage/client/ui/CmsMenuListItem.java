@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -71,10 +71,10 @@ public class CmsMenuListItem extends CmsListItem {
         super(new CmsListItemWidget(new CmsListInfoBean(
             element.getTitle(),
             element.getSitePath(),
-            element.getFormatedIndividualProperties())));
+            element.getFormatedIndividualSettings())));
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
-        if ((element.getProperties() != null) && !element.getProperties().isEmpty()) {
+        if ((element.getSettings() != null) && !element.getSettings().isEmpty()) {
             getListItemWidget().setBackground(Background.BLUE);
         }
         m_removeButton = new CmsPushButton();

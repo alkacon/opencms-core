@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -80,11 +80,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The no edit reason. If empty editing is allowed. */
     private String m_noEditReason;
 
-    /** The properties for this container entry. */
-    private Map<String, String> m_properties;
+    /** The settings for this container entry. */
+    private Map<String, String> m_settings;
 
-    /** The property for this container element. */
-    private Map<String, CmsXmlContentProperty> m_propertyConfig;
+    /** The setting for this container element. */
+    private Map<String, CmsXmlContentProperty> m_settingConfig;
 
     /** The full site path. */
     private String m_sitePath;
@@ -138,23 +138,23 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the individual element properties formated with nice-names to be used as additional-info.<p>
+     * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
      * 
-     * @return the properties map
+     * @return the settings map
      */
-    public Map<String, CmsPair<String, String>> getFormatedIndividualProperties() {
+    public Map<String, CmsPair<String, String>> getFormatedIndividualSettings() {
 
         Map<String, CmsPair<String, String>> result = new HashMap<String, CmsPair<String, String>>();
-        if (m_properties != null) {
-            for (Entry<String, String> propertyEntry : m_properties.entrySet()) {
-                String propertyKey = propertyEntry.getKey();
-                if (m_propertyConfig.containsKey(propertyEntry.getKey())) {
-                    String niceName = m_propertyConfig.get(propertyEntry.getKey()).getNiceName();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_propertyConfig.get(propertyEntry.getKey()).getNiceName())) {
-                        propertyKey = niceName;
+        if (m_settings != null) {
+            for (Entry<String, String> settingEntry : m_settings.entrySet()) {
+                String settingKey = settingEntry.getKey();
+                if (m_settingConfig.containsKey(settingEntry.getKey())) {
+                    String niceName = m_settingConfig.get(settingEntry.getKey()).getNiceName();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settingConfig.get(settingEntry.getKey()).getNiceName())) {
+                        settingKey = niceName;
                     }
                 }
-                result.put(propertyKey, new CmsPair<String, String>(propertyEntry.getValue(), null));
+                result.put(settingKey, new CmsPair<String, String>(settingEntry.getValue(), null));
             }
         }
         return result;
@@ -201,23 +201,23 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the properties for this container element.<p>
+     * Returns the settings for this container element.<p>
      * 
-     * @return a map of properties
+     * @return a map of settings
      */
-    public Map<String, String> getProperties() {
+    public Map<String, String> getSettings() {
 
-        return m_properties;
+        return m_settings;
     }
 
     /**
-     * Gets the property configuration for this container element.<p>
+     * Gets the setting configuration for this container element.<p>
      * 
-     * @return the property configuration map 
+     * @return the setting configuration map 
      */
-    public Map<String, CmsXmlContentProperty> getPropertyConfig() {
+    public Map<String, CmsXmlContentProperty> getSettingConfig() {
 
-        return m_propertyConfig;
+        return m_settingConfig;
     }
 
     /**
@@ -364,23 +364,23 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets the properties for this container element.<p>
+     * Sets the settings for this container element.<p>
      * 
-     * @param properties the new properties
+     * @param settings the new settings
      */
-    public void setProperties(Map<String, String> properties) {
+    public void setSettings(Map<String, String> settings) {
 
-        m_properties = properties;
+        m_settings = settings;
     }
 
     /**
-     * Sets the property configuration of this container element.<p>
+     * Sets the setting configuration of this container element.<p>
      * 
-     * @param propConfig the new property configuration 
+     * @param settingConfig the new setting configuration 
      */
-    public void setPropertyConfig(Map<String, CmsXmlContentProperty> propConfig) {
+    public void setSettingConfig(Map<String, CmsXmlContentProperty> settingConfig) {
 
-        m_propertyConfig = propConfig;
+        m_settingConfig = settingConfig;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -266,7 +266,7 @@ public class CmsContainerpageUtil {
             }
             return createGroupcontainerElement(containerElement, subElements, container);
         }
-        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
+        boolean hasProps = !containerElement.getSettingConfig().isEmpty();
         com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
             container.getContainerId()));
         return createElement(
@@ -297,7 +297,7 @@ public class CmsContainerpageUtil {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
         element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
-        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
+        boolean hasProps = !containerElement.getSettingConfig().isEmpty();
 
         CmsGroupContainerElement groupContainer = createGroupcontainer(
             element,

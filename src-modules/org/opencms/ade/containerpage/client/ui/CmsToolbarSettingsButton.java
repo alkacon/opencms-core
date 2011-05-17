@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPropertiesButton.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.15 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSettingsButton.java,v $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,18 +43,18 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarPropertiesButton extends A_CmsToolbarOptionButton {
+public class CmsToolbarSettingsButton extends A_CmsToolbarOptionButton {
 
     /**
      * Constructor.<p>
      * 
      * @param handler the container-page handler
      */
-    public CmsToolbarPropertiesButton(CmsContainerpageHandler handler) {
+    public CmsToolbarSettingsButton(CmsContainerpageHandler handler) {
 
         super(I_CmsButton.ButtonData.PROPERTIES, handler);
     }
@@ -67,7 +67,7 @@ public class CmsToolbarPropertiesButton extends A_CmsToolbarOptionButton {
 
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
 
-        return element.hasProperties() && !element.getParentTarget().isDetailView() && !disableButtons;
+        return element.hasSettings() && !element.getParentTarget().isDetailView() && !disableButtons;
     }
 
     /**
@@ -77,6 +77,6 @@ public class CmsToolbarPropertiesButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
 
         CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
-        getHandler().editProperties(element);
+        getHandler().editElementSettings(element);
     }
 }

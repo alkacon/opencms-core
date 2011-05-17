@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -109,12 +109,12 @@ public interface I_CmsContainerpageService extends RemoteService {
         String locale) throws CmsRpcException;
 
     /**
-     * Gets the element data for an id and a map of properties.<p>
+     * Gets the element data for an id and a map of settings.<p>
      * 
      * @param containerPageUri the current URI
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
-     * @param properties the properties for which the element data should be loaded 
+     * @param settings the settings for which the element data should be loaded 
      * @param containers the containers of the current page 
      * @param locale the content locale
      * 
@@ -122,11 +122,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request 
      */
-    CmsContainerElementData getElementWithProperties(
+    CmsContainerElementData getElementWithSettings(
         String containerPageUri,
         String reqParams,
         String clientId,
-        Map<String, String> properties,
+        Map<String, String> settings,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 

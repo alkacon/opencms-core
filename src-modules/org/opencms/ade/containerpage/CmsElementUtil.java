@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/06 19:40:17 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -215,14 +215,14 @@ public class CmsElementUtil {
             cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
         }
         elementBean.setCssResources(cssResources);
-        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
+        Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
             element.getResource());
-        elementBean.setProperties(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+        elementBean.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
             element.getSettings(),
-            propertyConfig));
-        elementBean.setPropertyConfig(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
+            settingConfig));
+        elementBean.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         elementBean.setViewPermission(m_cms.hasPermissions(
             element.getResource(),
             CmsPermissionSet.ACCESS_VIEW,

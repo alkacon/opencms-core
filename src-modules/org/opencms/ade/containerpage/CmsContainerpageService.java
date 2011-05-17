@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/05/17 13:39:26 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 8.0.0
  */
@@ -205,13 +205,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithProperties(java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, java.lang.String)
      */
-    public CmsContainerElementData getElementWithProperties(
+    public CmsContainerElementData getElementWithSettings(
         String containerpageUri,
         String uriParams,
         String clientId,
-        Map<String, String> properties,
+        Map<String, String> settings,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException {
 
@@ -226,7 +226,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
-            CmsContainerElementBean elementBean = createElement(serverId, properties);
+            CmsContainerElementBean elementBean = createElement(serverId, settings);
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -408,34 +408,33 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Creates a new container element from a resource id and a map of properties.<p> 
+     * Creates a new container element from a resource id and a map of settings.<p> 
      * 
      * @param resourceId the resource id 
-     * @param properties the map of properties 
+     * @param settings the map of settings 
      * 
      * @return the new container element bean 
      * 
      * @throws CmsException if something goes wrong 
      */
-    private CmsContainerElementBean createElement(CmsUUID resourceId, Map<String, String> properties)
-    throws CmsException {
+    private CmsContainerElementBean createElement(CmsUUID resourceId, Map<String, String> settings) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
+        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(
             cms,
             cms.readResource(resourceId));
 
-        Map<String, String> changedProps = new HashMap<String, String>();
-        if (properties != null) {
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                String propName = entry.getKey();
-                String propType = propertiesConf.get(propName).getType();
-                changedProps.put(
-                    propName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
+        Map<String, String> changedSettings = new HashMap<String, String>();
+        if (settings != null) {
+            for (Map.Entry<String, String> entry : settings.entrySet()) {
+                String settingName = entry.getKey();
+                String settingType = settingsConf.get(settingName).getType();
+                changedSettings.put(
+                    settingName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(cms, settingType, settings.get(settingName)));
             }
         }
-        return new CmsContainerElementBean(resourceId, null, changedProps, false);
+        return new CmsContainerElementBean(resourceId, null, changedSettings, false);
     }
 
     /**
