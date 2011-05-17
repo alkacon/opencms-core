@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/16 13:51:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/17 07:09:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -370,12 +370,21 @@ public final class CmsGroupcontainerEditor extends Composite {
         while (it.hasNext()) {
             Widget w = it.next();
             if (w instanceof CmsContainerPageElement) {
-                subItems.add(m_controller.getCachedElement(((CmsContainerPageElement)w).getId()));
+                CmsContainerPageElement elementWidget = (CmsContainerPageElement)w;
+                CmsContainerElement element = new CmsContainerElement();
+                element.setClientId(elementWidget.getId());
+                element.setResourceType(elementWidget.getNewType());
+                element.setNew(elementWidget.isNew());
+                element.setSitePath(elementWidget.getSitePath());
+                subItems.add(element);
             }
         }
         return subItems;
     }
 
+    /**
+     * Opens the group container edit dialog.<p>
+     */
     private void openDialog() {
 
         m_editorDialog = new CmsConfirmDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
@@ -413,17 +422,17 @@ public final class CmsGroupcontainerEditor extends Composite {
             if (m_groupContainerPosition.getLeft() > 600) {
                 // place left of the group container if there is enough space
                 m_editorDialog.setPopupPosition(
-                    m_groupContainerPosition.getLeft() - 520,
-                    m_groupContainerPosition.getTop());
+                    m_groupContainerPosition.getLeft() - 530,
+                    m_groupContainerPosition.getTop() - 1);
             } else if (m_groupContainerPosition.getTop() > contentHeight + 103 + 40) {
                 // else place above if there is enough space
                 m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft()
-                    + m_groupContainerPosition.getWidth()
-                    + 20, m_groupContainerPosition.getTop());
+                m_editorDialog.setPopupPosition(
+                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
+                    m_groupContainerPosition.getTop() - 1);
             }
             m_editorDialog.show();
         } else {
