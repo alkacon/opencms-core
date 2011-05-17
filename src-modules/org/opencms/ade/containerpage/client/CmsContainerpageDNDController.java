@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/05/17 08:51:47 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -191,11 +191,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onAnimationStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    @SuppressWarnings("unchecked")
     public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         // hide dropzone if it is not the current target
-        if ((target == null) || !(target instanceof CmsList)) {
+        if ((target == null) || !(target instanceof CmsList<?>)) {
             m_controller.getHandler().showDropzone(false);
         }
         // remove highlighting
@@ -239,7 +238,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!m_controller.isGroupcontainerEditing()) {
             boolean locked = m_controller.lockContainerpage();
             if (!locked) {
-                handler.cancel();
+                return false;
             }
         }
 
@@ -259,14 +258,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
             CmsDebugLog.getInstance().printLine("draggable has no id, canceling drop");
-            handler.cancel();
+            return false;
         }
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
             clientId = m_controller.getNewResourceId(clientId);
             m_isNew = true;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
-                handler.cancel();
+                return false;
             }
         }
         m_controller.getElement(clientId, new I_CmsSimpleCallback<CmsContainerElementData>() {
@@ -350,8 +349,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_controller.addToRecentList(draggable.getId());
             if (!m_controller.isGroupcontainerEditing()) {
                 // changes are only relevant to the container page if not group-container editing
-            m_controller.setPageChanged();
-        }
+                m_controller.setPageChanged();
+            }
         }
         stopDrag(handler);
     }
@@ -722,6 +721,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 m_controller.resetEditableListButtons();
             }
         });
+        if (handler.getDraggable() instanceof CmsContainerPageElement) {
+            ((CmsContainerPageElement)(handler.getDraggable())).removeHighlighting();
+        }
     }
 
     /**
@@ -735,4 +737,5 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
     }
+
 }
