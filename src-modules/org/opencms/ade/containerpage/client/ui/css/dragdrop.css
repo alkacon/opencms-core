@@ -17,8 +17,9 @@
 .dragStarted, .dragPlaceholder{}
 
 .emptyGroupContainer{
-	min-height: 50px;
-	background: value("constants.css.backgroundColorEmptyContainer");
+	min-height: 27px;
+	background: #ffffff;
+	border: 1px dashed value("constants.css.borderColorHighlight");
 }
 
 .currentTarget{

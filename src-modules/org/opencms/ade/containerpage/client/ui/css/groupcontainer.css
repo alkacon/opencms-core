@@ -20,7 +20,7 @@
 	width: 300px;
 }
 .containerMarker{
-	background: #000000;
+	background: #ffffff;
 	opacity: 0.6;
 	border: 1px dashed value("constants.css.borderColorHighlight");
 	position: absolute;
