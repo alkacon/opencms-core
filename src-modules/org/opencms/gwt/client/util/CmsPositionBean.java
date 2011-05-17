@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPositionBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/17 13:41:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -157,9 +159,9 @@ public class CmsPositionBean {
         int right = 0;
         Element child = panel.getFirstChildElement();
         while (child != null) {
-            String positioning = child.getStyle().getPosition();
-            if (!Display.NONE.getCssName().equals(child.getStyle().getDisplay())
-                && !(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))) {
+            String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
+            if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
+                && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
                 if (first) {
                     first = false;
                     top = child.getAbsoluteTop();
