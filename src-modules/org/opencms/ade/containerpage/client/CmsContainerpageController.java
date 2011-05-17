@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/17 07:09:09 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/05/17 07:29:02 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 8.0.0
  */
@@ -855,11 +855,6 @@ public final class CmsContainerpageController {
                 }
             }
         });
-        String noEditReason = m_data.getNoEditReason();
-        if ((noEditReason != null) && (noEditReason.length() > 0)) {
-            m_lockStatus = LockStatus.failed;
-            handler.onNoEdit(noEditReason);
-        }
     }
 
     /**
