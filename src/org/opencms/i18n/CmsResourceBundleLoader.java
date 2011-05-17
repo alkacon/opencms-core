@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2011/05/17 10:14:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/17 13:54:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.2.0 
  */
@@ -178,7 +178,7 @@ public final class CmsResourceBundleLoader {
     public static synchronized void addBundleToCache(String baseName, Locale locale, CmsListResourceBundle bundle) {
 
         String key = baseName;
-        if (!Locale.ROOT.equals(locale)) {
+        if (locale != null) {
             key += "_" + locale;
         }
         m_permanentCache.put(key, bundle);
