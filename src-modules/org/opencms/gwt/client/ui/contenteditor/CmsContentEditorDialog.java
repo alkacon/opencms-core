@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/05/05 16:09:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/17 06:35:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -179,6 +179,7 @@ public final class CmsContentEditorDialog {
         m_dialog.setHeight(height);
 
         m_dialog.setGlassEnabled(true);
+        m_dialog.setUseAnimation(false);
         CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_sitePath));
 
         m_dialog.add(editorFrame);
@@ -203,9 +204,9 @@ public final class CmsContentEditorDialog {
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
      */
     private native void exportClosingMethod() /*-{
-        $wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
-            @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
-        };
+      $wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
+         @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
+      };
     }-*/;
 
     /**
