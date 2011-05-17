@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/17 12:47:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import java.util.List;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -59,14 +60,20 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     /** The menu data. */
     protected List<I_CmsContextMenuEntry> m_menuEntries;
 
-    /** Signals whether the widget has been initialized or not. */
-    private boolean m_initialized;
-
     /** The context menu. */
     private CmsContextMenu m_menu;
 
     /** The main content widget. */
     private FlexTable m_menuPanel;
+
+    /** The registration for the first close handler. */
+    private HandlerRegistration m_menuCloseHandler;
+
+    /** The registration for the second close handler. */
+    private HandlerRegistration m_popupCloseHandler;
+
+    /** The label which is displayed when no entries are found. */
+    private CmsLabel m_noEntriesLabel = new CmsLabel("No entries found!");
 
     /**
      * Constructor.<p>
@@ -94,12 +101,8 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
      */
     public void onToolbarActivate() {
 
-        if (!m_initialized) {
-            getHandler().loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
-            m_initialized = true;
-        } else if (m_initialized && (m_menu != null)) {
-            m_resizeRegistration = Window.addResizeHandler(m_menu);
-        }
+        // we don't cache the context menu anymore!
+        getHandler().loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
     }
 
     /**
@@ -129,9 +132,15 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             m_resizeRegistration = Window.addResizeHandler(m_menu);
             // set the menu as widget for the panel 
             m_menuPanel.setWidget(0, 0, m_menu);
+            if (m_menuCloseHandler != null) {
+                m_menuCloseHandler.removeHandler();
+            }
+            if (m_popupCloseHandler != null) {
+                m_popupCloseHandler.removeHandler();
+            }
             // add the close handler for the menu
-            getPopup().addCloseHandler(new CmsContextMenuHandler(m_menu));
-            getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
+            m_menuCloseHandler = getPopup().addCloseHandler(new CmsContextMenuHandler(m_menu));
+            m_popupCloseHandler = getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
 
@@ -140,11 +149,12 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             });
             positionPopup();
         } else {
-            // if no entries were found, inform the user
-            CmsLabel label = new CmsLabel("No entries found!");
-            label.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
-            label.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-            getPopup().add(label);
+            if (m_noEntriesLabel.getParent() != null) {
+                m_noEntriesLabel.removeFromParent();
+            }
+            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+            getPopup().add(m_noEntriesLabel);
             positionPopup();
         }
     }

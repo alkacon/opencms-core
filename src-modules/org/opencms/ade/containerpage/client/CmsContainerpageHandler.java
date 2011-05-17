@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/16 12:03:18 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/05/17 12:47:55 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -64,6 +65,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 8.0.0
  */
@@ -694,6 +696,23 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformEntries(java.util.List, java.lang.String)
+     */
+    @Override
+    public List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
+
+        List<I_CmsContextMenuEntry> entries = super.transformEntries(menuBeans, uri);
+        List<I_CmsContextMenuEntry> result = new ArrayList<I_CmsContextMenuEntry>();
+
+        for (I_CmsContextMenuEntry entry : entries) {
+            if (shouldShowMenuEntry(entry)) {
+                result.add(entry);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Opens the publish dialog without changes check.<p>
      */
     protected void openPublish() {
@@ -720,6 +739,22 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     private void openGroupcontainerEditor(CmsGroupContainerElement groupContainer) {
 
         CmsGroupcontainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
+    }
+
+    /**
+     * Internal method to decide dynamically whether a context menu entry should be shown.<p>
+     * 
+     * @param entry the context menu entry 
+     * @return true if the menu entry should be shown
+     */
+    private boolean shouldShowMenuEntry(I_CmsContextMenuEntry entry) {
+
+        if ((entry.getName() != null) && entry.getName().equals(CmsAvailabilityDialog.class.getName())) {
+            if (m_controller.isEditingDisabled()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
