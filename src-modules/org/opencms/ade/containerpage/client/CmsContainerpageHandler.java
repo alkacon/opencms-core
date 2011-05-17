@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/17 12:47:55 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/05/17 13:41:15 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 8.0.0
  */
@@ -158,6 +158,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Adds the element with the given id to the favorite list.<p>
+     * 
+     * @param clientId the client id
+     */
+    public void addToRecent(String clientId) {
+
+        m_controller.addToRecentList(clientId);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canOpenAvailabilityDialog()
      */
     public boolean canOpenAvailabilityDialog() {
@@ -204,7 +214,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param elementWidget the container element widget for which the properties should be edited 
      */
-    public void editProperties(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget) {
+    public void editElementSettings(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget) {
 
         final String id = elementWidget.getId();
 
@@ -212,8 +222,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             public void execute(final CmsContainerElementData elementBean) {
 
-                Map<String, String> properties = elementBean.getProperties();
-                Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getPropertyConfig();
+                Map<String, String> settings = elementBean.getSettings();
+                Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
                 if (propertyConfig.size() == 0) {
                     String message = Messages.get().key(Messages.GUI_NO_PROPERTIES_0);
                     String title = Messages.get().key(Messages.GUI_NO_PROPERTIES_TITLE_0);
@@ -228,7 +238,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                      */
                     public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
 
-                        m_controller.reloadElementWithProperties(
+                        m_controller.reloadElementWithSettings(
                             elementWidget,
                             elementBean.getClientId(),
                             CmsCollectionUtil.removeNullEntries(fieldValues));
@@ -242,7 +252,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
                 for (I_CmsFormField field : formFields.values()) {
                     String fieldId = field.getId();
-                    String initialValue = properties.get(fieldId);
+                    String initialValue = settings.get(fieldId);
                     if (initialValue == null) {
                         CmsXmlContentProperty propDef = propertyConfig.get(fieldId);
                         initialValue = propDef.getDefault();

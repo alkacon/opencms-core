@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/17 13:41:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,8 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -74,8 +74,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
 
-    /** Indicates whether this element has properties to edit. */
-    private boolean m_hasProperties;
+    /** Indicates whether this element has settings to edit. */
+    private boolean m_hasSettings;
 
     /** The is new element type. */
     private String m_newType;
@@ -103,7 +103,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
-     * @param hasProps should be true if the element has properties which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      */
     public CmsContainerPageElement(
@@ -112,14 +112,14 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps,
+        boolean hasSettings,
         boolean hasViewPermission) {
 
         super((com.google.gwt.user.client.Element)element);
         m_clientId = clientId;
         m_sitePath = sitePath;
         m_noEditReason = noEditReason;
-        m_hasProperties = hasProps;
+        m_hasSettings = hasSettings;
         m_parent = parent;
         setViewPermission(hasViewPermission);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
@@ -218,13 +218,13 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
-     * Returns true if the element has properties to edit.<p>
+     * Returns true if the element has settings to edit.<p>
      * 
-     * @return true if the element has properties to edit 
+     * @return true if the element has settings to edit 
      */
-    public boolean hasProperties() {
+    public boolean hasSettings() {
 
-        return m_hasProperties;
+        return m_hasSettings;
     }
 
     /**

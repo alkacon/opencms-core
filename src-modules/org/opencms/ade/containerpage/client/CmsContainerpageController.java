@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/17 12:47:55 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/05/17 13:41:15 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 8.0.0
  */
@@ -307,7 +307,7 @@ public final class CmsContainerpageController {
         }
     }
 
-    /** The client side id/property-hash seperator. */
+    /** The client side id/setting-hash seperator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
 
     /** Instance of the data provider. */
@@ -1065,16 +1065,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Reloads a container page element with a new set of properties.<p>
+     * Reloads a container page element with a new set of settings.<p>
      * 
      * @param elementWidget the widget of the container page element which should be reloaded
      * @param clientId the id of the container page element which should be reloaded
-     * @param properties the new set of properties 
+     * @param settings the new set of settings 
      */
-    public void reloadElementWithProperties(
+    public void reloadElementWithSettings(
         final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget,
         String clientId,
-        Map<String, String> properties) {
+        Map<String, String> settings) {
 
         I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
 
@@ -1086,13 +1086,14 @@ public final class CmsContainerpageController {
                         setPageChanged(true, false);
                     }
                     resetEditableListButtons();
+                    addToRecentList(newElement.getClientId());
                 } catch (Exception e) {
                     // should never happen
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
                 }
             }
         };
-        getElementWithProperties(clientId, properties, callback);
+        getElementWithSettings(clientId, settings, callback);
     }
 
     /**
@@ -1132,7 +1133,7 @@ public final class CmsContainerpageController {
                 parentContainer);
             if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
-                // this should only be the case when editing properties of a new element that has not been created in the VFS yet
+                // this should only be the case when editing settings of a new element that has not been created in the VFS yet
                 String id = getServerId(containerElement.getId());
                 if (elementData.getClientId().startsWith(id)) {
                     replacer.setNewType(containerElement.getNewType());
@@ -1301,6 +1302,7 @@ public final class CmsContainerpageController {
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine("Error replacing group container element");
                     }
+                    addToRecentList(groupContainerElement.getId());
                     CmsNotification.get().send(
                         Type.NORMAL,
                         Messages.get().key(Messages.GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0));
@@ -1658,16 +1660,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Retrieves a container element with a given set of properties.<p>
+     * Retrieves a container element with a given set of settings.<p>
      * 
      * @param clientId the id of the container element
-     * @param properties the set of properties
+     * @param settings the set of settings
      *  
      * @param callback the callback which should be executed when the element has been loaded 
      */
-    private void getElementWithProperties(
+    private void getElementWithSettings(
         final String clientId,
-        final Map<String, String> properties,
+        final Map<String, String> settings,
         final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
         CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
@@ -1679,11 +1681,11 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, false);
-                getContainerpageService().getElementWithProperties(
+                getContainerpageService().getElementWithSettings(
                     CmsContainerpageController.getCurrentUri(),
                     getRequestParams(),
                     clientId,
-                    properties,
+                    settings,
                     m_containerBeans,
                     getLocale(),
                     this);

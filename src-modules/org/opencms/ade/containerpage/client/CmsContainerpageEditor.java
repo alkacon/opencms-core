@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/17 13:41:15 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarPropertiesButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -102,7 +102,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     private CmsToolbarMoveButton m_move;
 
     /** Properties button. */
-    private CmsToolbarPropertiesButton m_properties;
+    private CmsToolbarSettingsButton m_properties;
 
     /** Publish button. */
     private CmsToolbarPublishButton m_publish;
@@ -313,7 +313,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_remove = new CmsToolbarRemoveButton(containerpageHandler);
 
-        m_properties = new CmsToolbarPropertiesButton(containerpageHandler);
+        m_properties = new CmsToolbarSettingsButton(containerpageHandler);
 
         m_clipboard = new CmsToolbarClipboardMenu(containerpageHandler);
         m_clipboard.addClickHandler(clickHandler);

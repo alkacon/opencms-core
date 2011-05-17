@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContentEditorHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/17 13:41:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         } else {
             m_handler.reloadElements(m_currentElementId);
         }
+        m_handler.addToRecent(m_currentElementId);
         m_currentElementId = null;
     }
 
