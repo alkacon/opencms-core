@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupContainerElement.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/17 13:40:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +59,9 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
 
     /** The container type. */
     private String m_containerId;
+
+    /** The editing marker. Used to highlight the container background while editing. */
+    private Element m_editingMarker;
 
     /** The editing placeholder. Used within group-container editing. */
     private Element m_editingPlaceholder;
@@ -77,7 +80,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
-     * @param hasProps should be true if the element has properties which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      */
     public CmsGroupContainerElement(
@@ -86,10 +89,10 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         String clientId,
         String sitePath,
         String noEditReason,
-        boolean hasProps,
+        boolean hasSettings,
         boolean hasViewPermission) {
 
-        super(element, parent, clientId, sitePath, noEditReason, hasProps, hasViewPermission);
+        super(element, parent, clientId, sitePath, noEditReason, hasSettings, hasViewPermission);
 
     }
 
@@ -143,6 +146,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     public void clearEditingPlaceholder() {
 
         m_editingPlaceholder = null;
+        m_editingMarker = null;
     }
 
     /**
@@ -234,6 +238,10 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         if (m_editingPlaceholder != null) {
             m_editingPlaceholder.getStyle().setHeight(position.getHeight() + 10, Unit.PX);
         }
+        if (m_editingMarker != null) {
+            m_editingMarker.getStyle().setHeight(position.getHeight() + 4, Unit.PX);
+            m_editingMarker.getStyle().setWidth(position.getWidth() + 4, Unit.PX);
+        }
         m_highlighting.setPosition(position);
     }
 
@@ -307,6 +315,16 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     public void setContainerId(String containerId) {
 
         m_containerId = containerId;
+    }
+
+    /**
+     * Sets the editing marker. Used to highlight the container background while editing.<p>
+     *  
+     * @param editingMarker the editing marker element
+     */
+    public void setEditingMarker(Element editingMarker) {
+
+        m_editingMarker = editingMarker;
     }
 
     /**

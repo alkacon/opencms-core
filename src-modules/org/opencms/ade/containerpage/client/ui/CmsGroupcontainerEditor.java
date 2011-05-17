@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/17 07:09:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/17 13:40:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -114,6 +114,10 @@ public final class CmsGroupcontainerEditor extends Composite {
     /** The overlay div element. */
     @UiField
     protected DivElement m_overlayDiv;
+
+    /** The container marker div element. */
+    @UiField
+    protected DivElement m_containerMarker;
 
     /** List of elements when editing started, use to restore on cancel. */
     private List<CmsContainerPageElement> m_backUpElements;
@@ -184,6 +188,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_groupContainerPosition = CmsPositionBean.generatePositionInfo(m_groupContainer);
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
+        m_groupContainer.setEditingMarker(m_containerMarker);
         m_indexPosition = m_parentContainer.getWidgetIndex(m_groupContainer);
         // inserting placeholder element
         m_parentContainer.getElement().insertBefore(m_editingPlaceholder, m_groupContainer.getElement());
@@ -194,6 +199,10 @@ public final class CmsGroupcontainerEditor extends Composite {
         style.setTop(m_groupContainerPosition.getTop(), Unit.PX);
         style.setWidth(m_groupContainerPosition.getWidth(), Unit.PX);
         style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup());
+        m_containerMarker.getStyle().setLeft(m_groupContainerPosition.getLeft() - 3, Unit.PX);
+        m_containerMarker.getStyle().setTop(m_groupContainerPosition.getTop() - 4, Unit.PX);
+        m_containerMarker.getStyle().setWidth(m_groupContainerPosition.getWidth() + 4, Unit.PX);
+        m_containerMarker.getStyle().setHeight(m_groupContainerPosition.getHeight() + 4, Unit.PX);
         m_groupContainer.getElementOptionBar().setVisible(false);
         m_groupContainer.getElementOptionBar().removeStyleName(
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
@@ -440,5 +449,4 @@ public final class CmsGroupcontainerEditor extends Composite {
             m_editorDialog.center();
         }
     }
-
 }

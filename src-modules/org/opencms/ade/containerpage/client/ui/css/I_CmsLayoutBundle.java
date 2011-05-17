@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/03 10:49:16 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/05/17 13:40:24 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -227,6 +227,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Group container editor CSS. */
     public interface I_CmsGroupContainer extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String containerMarker();
 
         /** Access method.<p>
          * 

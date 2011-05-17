@@ -19,3 +19,9 @@
 	display: inline-block;
 	width: 300px;
 }
+.containerMarker{
+	background: #000000;
+	opacity: 0.6;
+	border: 1px dashed value("constants.css.borderColorHighlight");
+	position: absolute;
+}
