@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/17 10:14:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -153,7 +153,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         // check again if the XML is correct - this time it must work without exception
         xmlcontent.validateXmlStructure(resolver);
-        
+
         // write the content to the VFS
         cms.createResource(
             filename,
@@ -240,17 +240,11 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         echo("Combined modification test for a nested XML schema");
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCmsObject());
-        
-        cacheSchema(
-            resolver,
-            "http://www.opencms.org/test3.xsd",
-            "org/opencms/xml/content/xmlcontent-definition-3.xsd");
-        
-        cacheSchema(
-            resolver,
-            "http://www.opencms.org/test4.xsd",
-            "org/opencms/xml/content/xmlcontent-definition-4.xsd");
-        
+
+        cacheSchema(resolver, "http://www.opencms.org/test3.xsd", "org/opencms/xml/content/xmlcontent-definition-3.xsd");
+
+        cacheSchema(resolver, "http://www.opencms.org/test4.xsd", "org/opencms/xml/content/xmlcontent-definition-4.xsd");
+
         runTestWithChangedSchema(
             "http://www.opencms.org/test3.xsd",
             "/testCombinedNestedSchemaNodesA.html",
@@ -267,7 +261,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             "xmlcontent-definition-3.mod2.xsd",
             "xmlcontent-4.mod2.xml");
     }
-    
+
     /**
      * Test re-arranging nodes in the XML schema.<p>
      * 
@@ -325,7 +319,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         String content = CmsFileUtil.readFile(originalFile, CmsEncoder.ENCODING_UTF_8);
 
         // DEMO TEST 1:
-        
+
         // assumtion: the schema definition of an existing XML content has changed
         // the XML content is unmarshaled (using the changed schema) and then validated
         // after validation fails, it is corrected using the API and then saved to the VFS
@@ -359,7 +353,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         // demo test 1 is finished
 
         // setup steps for demo test 2: 
-        
+
         // write the content to the VFS
         cms.createResource(
             filename,
@@ -374,7 +368,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         cacheSchema(resolver, SCHEMA_SYSTEM_ID_1, changedSchema);
 
         // DEMO TEST 2:
-        
+
         // assumption: a file is to be corrected automatically while writing it to the VFS
         // for this, a special OpenCms request context attribute has been introduced
         // if this is set to a Boolean.TRUE object, the XML content is always corrected while saving it to the VFS
@@ -434,7 +428,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     private void cacheSchema(CmsXmlEntityResolver resolver, String id, String filename) throws Exception {
 
         // fire "clear cache" event to clear up previously cached schemas
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap()));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>()));
         // read the XML from the given file and store it in the resolver
         String content = CmsFileUtil.readFile(filename, CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, id, resolver);

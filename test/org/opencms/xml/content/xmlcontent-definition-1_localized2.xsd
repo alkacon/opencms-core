@@ -20,6 +20,7 @@
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
+	
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.content.testmessages.UPDATE">
@@ -32,6 +33,8 @@
 				</bundle> 
 				<bundle locale="DE">
 					<resource key="label.author" value="Der Autor ist JETZT" />
+				</bundle>				
+				<bundle locale="DE_de">
 					<resource key="editor.xmlcontent.validation.warning">ECHT schlechter Wert "{0}" wegen Regel {1}</resource>
 				</bundle>			
 			</resourcebundle>

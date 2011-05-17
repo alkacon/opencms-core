@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2011/05/16 15:47:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/17 10:14:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
@@ -75,7 +77,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1757,7 +1759,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContentDefinition definition;
         I_CmsXmlContentHandler contentHandler;
 
-        // unmarshal content definition with localization in properties
+        // unmarshal content definition with localization in properties and XML
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-1_localized1.xsd",
             CmsEncoder.ENCODING_UTF_8);
@@ -1767,7 +1769,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
 
         CmsMessages messagesEN = contentHandler.getMessages(Locale.ENGLISH);
-        assertNotNull(messagesEN);
+        assertNotNull(messagesEN.getResourceBundle());
 
         assertEquals("The author is", messagesEN.key("label.author"));
         assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
@@ -1776,7 +1778,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             "Arg1"));
 
         CmsMessages messagesDE = contentHandler.getMessages(Locale.GERMAN);
-        assertNotNull(messagesDE);
+        assertNotNull(messagesDE.getResourceBundle());
 
         assertEquals("Der Autor ist", messagesDE.key("label.author"));
         assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesDE.key(
@@ -1784,7 +1786,20 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             "Arg0",
             "Arg1"));
 
-        // unmarshal content definition with localization in XML
+        // get a Locale / language variation and see if this works
+        CmsMessages messagesDEde = contentHandler.getMessages(Locale.GERMANY);
+        assertNotNull(messagesDEde.getResourceBundle());
+
+        // from DE locale (properties)
+        assertEquals("Der Autor ist", messagesDEde.key("label.author"));
+        // from EN locale (properties)
+        assertEquals(
+            "The following errors occurred when validating the form:",
+            messagesDEde.key("editor.xmlcontent.validation.error.title"));
+        // from DE_de locale (XML)
+        assertEquals("Warnung aus dem XML", messagesDEde.key("editor.xmlcontent.validation.warning"));
+
+        // unmarshal content definition with localization in XML only
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-1_localized2.xsd",
             CmsEncoder.ENCODING_UTF_8);
@@ -1794,7 +1809,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
 
         messagesEN = contentHandler.getMessages(Locale.ENGLISH);
-        assertNotNull(messagesEN);
+        assertNotNull(messagesEN.getResourceBundle());
 
         assertEquals("The author is NOW", messagesEN.key("label.author"));
         assertEquals("VERY Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
@@ -1803,13 +1818,55 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             "Arg1"));
 
         messagesDE = contentHandler.getMessages(Locale.GERMAN);
-        assertNotNull(messagesDE);
+        assertNotNull(messagesDE.getResourceBundle());
 
         assertEquals("Der Autor ist JETZT", messagesDE.key("label.author"));
-        assertEquals("ECHT schlechter Wert \"Arg0\" wegen Regel Arg1", messagesDE.key(
+        assertEquals("VERY Bad value \"Arg0\" according to rule Arg1", messagesDE.key(
             "editor.xmlcontent.validation.warning",
             "Arg0",
             "Arg1"));
+
+        // get a Locale / language variation and see if this works
+        messagesDEde = contentHandler.getMessages(Locale.GERMANY);
+        assertNotNull(messagesDEde.getResourceBundle());
+
+        // from DE_de locale
+        assertEquals("Der Autor ist JETZT", messagesDEde.key("label.author"));
+        // from DE locale
+        assertEquals("ECHT schlechter Wert \"Arg0\" wegen Regel Arg1", messagesDEde.key(
+            "editor.xmlcontent.validation.warning",
+            "Arg0",
+            "Arg1"));
+        // from EN locale
+        assertEquals(
+            "The following errors occurred when validating the form:",
+            messagesDEde.key("editor.xmlcontent.validation.error.title"));
+
+        // no test with a "real" XSD schema to make sure flushing of the caches does not "kill" the localization
+        String filename = "/xmlcontent/article_0001.html";
+        // now read the XML content
+        CmsFile file = cms.readFile(filename);
+        CmsXmlContent article = CmsXmlContentFactory.unmarshal(cms, file);
+
+        // get a Locale / language variation and see if this works
+        messagesDEde = article.getHandler().getMessages(Locale.GERMANY);
+        assertNotNull(messagesDEde.getResourceBundle());
+        assertEquals("Lokalisierung im XML Schema", messagesDEde.key("from.xml"));
+
+        // fire a clear cache event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null));
+
+        // the messages that where just injected must not be null because the permanent cache is NOT cleared
+        messagesEN = contentHandler.getMessages(Locale.ENGLISH);
+        assertNotNull(messagesEN.getResourceBundle());
+        assertEquals("The author is NOW", messagesEN.key("label.author"));
+
+        // if a content is unmarshalled, the content definition will be re-read after clear cache, 
+        // but we better not depend on that as "old" references to content objects may be held when the clear cache is done 
+        article = CmsXmlContentFactory.unmarshal(cms, file);
+        messagesDEde = article.getHandler().getMessages(Locale.GERMANY);
+        assertNotNull(messagesDEde);
+        assertEquals("Lokalisierung im XML Schema", messagesDEde.key("from.xml"));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/16 15:47:04 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/05/17 10:14:22 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsListResourceBundle;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
@@ -89,7 +90,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -108,7 +108,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -394,56 +394,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
-
-    /**
-     * Describes an XML content defined resource bundle.<p>
-     */
-    public class CmsXmlResourceBundle extends ListResourceBundle {
-
-        /** The configured resource key / value pairs. */
-        private Map<String, String> m_resources;
-
-        /** The configured resource key / value pairs as Objects. */
-        private Object[][] m_resourceAsObjects;
-
-        /**
-         * Create a new list resource bundle for the XML.
-         */
-        public CmsXmlResourceBundle() {
-
-            m_resources = new LinkedHashMap<String, String>();
-        }
-
-        /**
-         * @see java.util.ListResourceBundle#getContents()
-         */
-        @Override
-        public Object[][] getContents() {
-
-            if (m_resourceAsObjects == null) {
-                // fill object array based on map
-                m_resourceAsObjects = new String[m_resources.size()][2];
-                int i = 0;
-                for (Map.Entry<String, String> entry : m_resources.entrySet()) {
-                    m_resourceAsObjects[i][0] = entry.getKey();
-                    m_resourceAsObjects[i][1] = entry.getValue();
-                    i++;
-                }
-            }
-            return m_resourceAsObjects;
-        }
-
-        /**
-         * Adds a message to this list bundle.<p>
-         * 
-         * @param key the message key
-         * @param value the message itself
-         */
-        public void addMessage(String key, String value) {
-
-            m_resources.put(key, value);
-        }
-    }
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -1931,13 +1881,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             Locale locale;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(localeStr)) {
                 // no locale set, so use the default locale
-                locale = CmsLocaleManager.getDefaultLocale();
+                locale = Locale.ROOT;
             } else {
                 // use provided locale
                 locale = CmsLocaleManager.getLocale(localeStr);
             }
+            if (locale.equals(CmsLocaleManager.getDefaultLocale())) {
+                // in case the default locale is given, we store this as root
+                locale = Locale.ROOT;
+            }
 
-            CmsXmlResourceBundle xmlBundle = null;
+            CmsListResourceBundle xmlBundle = null;
 
             Iterator<Element> resources = CmsXmlGenericWrapper.elementIterator(bundle, APPINFO_RESOURCE);
             while (resources.hasNext()) {
@@ -1946,14 +1900,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 String key = resource.attributeValue(APPINFO_ATTR_KEY);
                 String value = resource.attributeValue(APPINFO_ATTR_VALUE);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    // read from inside XML tag if value attribute is not set
                     value = resource.getTextTrim();
                 }
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                     if (xmlBundle == null) {
                         // use lazy initilaizing of the bundle
-                        xmlBundle = new CmsXmlResourceBundle();
+                        xmlBundle = new CmsListResourceBundle();
                     }
-                    xmlBundle.addMessage(key, value);
+                    xmlBundle.addMessage(key.trim(), value.trim());
                 }
             }
 

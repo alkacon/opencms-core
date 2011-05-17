@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/Attic/CmsResourceBundle.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsResourceBundle.java,v $
+ * Date   : $Date: 2011/05/17 10:14:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,70 +31,37 @@
 
 package org.opencms.i18n;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
- * A property based resource bundle with increased visibility of some key methods.<p>
+ * Increases the visibility of some key methods of a {@link ResourceBundle}.<p>
  * 
- * This class is required because the methods {@link #setParent(ResourceBundle)} and
+ * This interface is required because the methods {@link #setParent(ResourceBundle)} and
  * {@link #setLocale(Locale)} are not visible in the standard implementation. However,
  * access to these methods is required by the {@link org.opencms.i18n.CmsResourceBundleLoader}.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
- * @since 6.2.0 
+ * @since 8.0.1
  * 
  * @see org.opencms.i18n.CmsResourceBundleLoader
  */
-public class CmsResourceBundle extends PropertyResourceBundle {
-
-    /** The locale to use. */
-    protected Locale m_locale;
-
-    /**
-     * Default constructer from parent class.<p>
-     * 
-     * @param stream property file to read from
-     * 
-     * @throws IOException in case the file could not be read from
-     */
-    public CmsResourceBundle(InputStream stream)
-    throws IOException {
-
-        super(stream);
-    }
-
-    /**
-     * @see java.util.ResourceBundle#getLocale()
-     */
-    @Override
-    public Locale getLocale() {
-
-        return m_locale;
-    }
+public interface I_CmsResourceBundle {
 
     /**
      * Sets the locale used for this resource bundle.<p>
      * 
      * @param l the locale to set
      */
-    protected void setLocale(Locale l) {
-
-        m_locale = l;
-    }
+    public void setLocale(Locale l);
 
     /**
-     * @see java.util.ResourceBundle#setParent(java.util.ResourceBundle)
+     * Sets the parent bundle.<p>
+     * 
+     * @param parent the parent bundle to set
      */
-    @Override
-    protected void setParent(ResourceBundle p) {
-
-        super.setParent(p);
-    }
+    public void setParent(ResourceBundle parent);
 }
