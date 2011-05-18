@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/18 13:25:57 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -157,6 +157,18 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_RESOURCE_CHANGED_BY_1 = "ERR_LOCK_RESOURCE_CHANGED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_RESOURCE_LOCKED_BY_1 = "ERR_LOCK_RESOURCE_LOCKED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_TITLE_RESOURCE_CHANGED_0 = "ERR_LOCK_TITLE_RESOURCE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

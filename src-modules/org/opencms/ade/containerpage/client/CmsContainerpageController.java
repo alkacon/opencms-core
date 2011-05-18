@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/18 09:51:47 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/05/18 13:25:57 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 8.0.0
  */
@@ -1013,15 +1014,14 @@ public final class CmsContainerpageController {
         if (m_lockStatus == LockStatus.failed) {
             return false;
         }
-        String errorMessage = CmsCoreProvider.get().lockAndCheckModification(
+        CmsLockInfo lockInfo = CmsCoreProvider.get().lockTempAndCheckModification(
             getCurrentUri(),
-            m_data.getDateLastModified(),
-            false);
-        if (errorMessage == null) {
-            onLockSuccess();
+            m_data.getDateLastModified());
+        if (lockInfo.couldLock()) {
+            onLockSuccess(lockInfo);
             return true;
         } else {
-            onLockFail(errorMessage);
+            onLockFail(lockInfo);
             return false;
         }
     }
@@ -1029,19 +1029,20 @@ public final class CmsContainerpageController {
     /**
      * This method should be called when locking the page has failed.<p>
      * 
-     * @param errorMessage the error message from locking the resource 
+     * @param lockInfo the locking information  
      */
-    public void onLockFail(String errorMessage) {
+    public void onLockFail(CmsLockInfo lockInfo) {
 
         m_lockStatus = LockStatus.failed;
-        m_lockErrorMessage = errorMessage;
-        m_handler.onLockFail(errorMessage);
+        m_handler.onLockFail(lockInfo);
     }
 
     /**
      * This method should be called when locking the page has succeeded.<p>
+     * 
+     * @param lockInfo the locking information 
      */
-    public void onLockSuccess() {
+    public void onLockSuccess(CmsLockInfo lockInfo) {
 
         assert m_lockStatus == LockStatus.unknown;
         m_lockStatus = LockStatus.locked;
@@ -1106,13 +1107,13 @@ public final class CmsContainerpageController {
         dragElement.removeFromParent();
         if (isGroupcontainerEditing()) {
             if (!getGroupcontainer().iterator().hasNext()) {
-                // group-container is empty, mark it
+            // group-container is empty, mark it
                 getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
-            }
+        }
         } else {
             // only set changed if not editing a group container
-            setPageChanged();
-        }
+        setPageChanged();
+    }
     }
 
     /**

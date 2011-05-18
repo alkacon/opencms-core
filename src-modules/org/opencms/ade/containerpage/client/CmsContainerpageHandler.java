@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/17 13:41:15 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/05/18 13:25:57 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 8.0.0
  */
@@ -467,27 +468,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Should be called when locking the container page failed.<p>
      * 
-     * @param errorMessage the error message from trying to lock the container page 
+     * @param lockInfo the locking information  
      */
-    public void onLockFail(String errorMessage) {
+    public void onLockFail(CmsLockInfo lockInfo) {
 
+        String errorMessage = getLockErrorMessage(lockInfo);
+        String errorTitle = getLockErrorTitle(lockInfo);
         m_editor.disableEditing(errorMessage);
-        CmsAlertDialog alert = new CmsAlertDialog(Messages.get().key(Messages.GUI_LOCK_FAIL_0), errorMessage);
+        CmsAlertDialog alert = new CmsAlertDialog(errorTitle, errorMessage);
         alert.center();
-    }
-
-    /**
-     * Method which is called when we know directly after loading that we can't edit the page.<p>
-     * 
-     * @param errorMessage the error message from the server  
-     */
-    public void onNoEdit(String errorMessage) {
-
-        // disable this for now; will be changed anyway when the "Info" button is added 
-
-        //        m_editor.disableEditing(errorMessage);
-        //        CmsAlertDialog alert = new CmsAlertDialog(Messages.get().key(Messages.GUI_LOCK_FAIL_0), errorMessage);
-        //        alert.center();
     }
 
     /**
@@ -720,6 +709,47 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             }
         }
         return result;
+    }
+
+    /**
+     * Helper method for getting the error message for a locking error.<p>
+     * 
+     * @param lockInfo the lock information 
+     * @return the error message 
+     */
+    protected String getLockErrorMessage(CmsLockInfo lockInfo) {
+
+        switch (lockInfo.getState()) {
+            case changed:
+                return Messages.get().key(Messages.ERR_LOCK_RESOURCE_CHANGED_BY_1, lockInfo.getUser());
+            case locked:
+                return Messages.get().key(Messages.ERR_LOCK_RESOURCE_LOCKED_BY_1, lockInfo.getUser());
+            case other:
+                return lockInfo.getErrorMessage();
+            case success:
+            default:
+                return "";
+        }
+    }
+
+    /** 
+     * Helper method for getting the error message box title for a locking error.<p>
+     * 
+     * @param lockInfo the lock information 
+     * @return the error message box title
+     */
+    protected String getLockErrorTitle(CmsLockInfo lockInfo) {
+
+        switch (lockInfo.getState()) {
+            case changed:
+                return Messages.get().key(Messages.ERR_LOCK_TITLE_RESOURCE_CHANGED_0);
+            case locked:
+                return Messages.get().key(Messages.ERR_LOCK_TITLE_RESOURCE_LOCKED_0);
+            case other:
+            case success:
+            default:
+                return Messages.get().key(Messages.GUI_LOCK_FAIL_0);
+        }
     }
 
     /**

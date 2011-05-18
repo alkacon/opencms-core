@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/18 13:25:57 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -172,7 +173,7 @@ public interface I_CmsCoreService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    String lockTempAndCheckModification(String uri, long modification) throws CmsRpcException;
+    CmsLockInfo lockTempAndCheckModification(String uri, long modification) throws CmsRpcException;
 
     /**
      * Generates core data for prefetching in the host page.<p>

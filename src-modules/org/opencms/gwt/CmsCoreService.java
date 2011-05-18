@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/05/18 13:25:57 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -97,7 +98,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 8.0.0
  * 
@@ -390,19 +391,23 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTempAndCheckModification(java.lang.String, long)
      */
-    public String lockTempAndCheckModification(String uri, long modification) throws CmsRpcException {
+    public CmsLockInfo lockTempAndCheckModification(String uri, long modification) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
-            // check time stamp
-            if (cms.readResource(uri).getDateLastModified() != modification) {
-                return Messages.get().container(Messages.ERR_RESOURCE_MODIFIED_AFTER_OPEN_1, uri).key();
+            CmsResource resource = cms.readResource(uri);
+            if (resource.getDateLastModified() != modification) {
+                CmsUser user = cms.readUser(resource.getUserLastModified());
+                return CmsLockInfo.forChangedResource(uri, user.getName());
             }
         } catch (Throwable e) {
             error(e);
         }
-        // lock
-        return lockTemp(uri);
+        try {
+            return getLock(uri);
+        } catch (CmsException e) {
+            return CmsLockInfo.forError(uri, e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -540,6 +545,31 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * Helper method for locking a resource which returns some information on whether the locking 
+     * failed, and why.<p>
+     * 
+     * @param sitepath the site path of the resource to lock
+     * @return the locking information
+     *  
+     * @throws CmsException if something went wrong 
+     */
+    protected CmsLockInfo getLock(String sitepath) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(sitepath);
+        if (lock.isOwnedBy(user)) {
+            return CmsLockInfo.forSuccess();
+        }
+        if (lock.getUserId().isNullUUID()) {
+            cms.lockResourceTemporary(sitepath);
+            return CmsLockInfo.forSuccess();
+        }
+        CmsUser owner = cms.readUser(lock.getUserId());
+        return CmsLockInfo.forLockedResource(sitepath, owner.getName());
     }
 
     /**
