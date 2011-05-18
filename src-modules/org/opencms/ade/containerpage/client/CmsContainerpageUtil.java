@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/18 09:51:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -207,7 +207,9 @@ public class CmsContainerpageUtil {
                     groupContainer.setContainerId(container.getContainerId());
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
-
+                    if (groupContainer.getWidgetCount() == 0) {
+                        groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+                    }
                     // important: adding the option-bar only after the group-containers have been consumed 
                     addOptionBar(groupContainer);
                     child = (Element)child.getNextSiblingElement();
@@ -318,7 +320,7 @@ public class CmsContainerpageUtil {
             }
         }
         if (subElements.size() == 0) {
-            groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+            groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
         }
         addOptionBar(groupContainer);
         return groupContainer;

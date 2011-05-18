@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/17 13:40:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/18 09:51:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -258,7 +258,9 @@ public final class CmsGroupcontainerEditor extends Composite {
         for (CmsContainerPageElement element : m_backUpElements) {
             m_groupContainer.add(element);
         }
-
+        if (m_backUpElements.size() == 0) {
+            m_groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+        }
         closeDialog();
     }
 
@@ -342,7 +344,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_groupContainer.getElementOptionBar().setVisible(true);
         if (!m_groupContainer.iterator().hasNext()) {
             // group-container is empty, mark it
-            m_groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+            m_groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
         }
         INSTANCE = null;
         this.removeFromParent();

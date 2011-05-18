@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/05/18 09:51:47 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -331,7 +331,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
                 if (m_controller.isGroupcontainerEditing()) {
                     container.getElement().removeClassName(
-                        I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+                        I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                 }
             } else if (target instanceof CmsList<?>) {
                 m_controller.addToFavoriteList(draggable.getId());
@@ -483,7 +483,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
                             helper.setInnerHTML(content);
                         } else {
-                            helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+                            helper.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                         }
                         placeholder = CmsDomUtil.clone(helper);
                     } else {

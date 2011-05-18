@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/17 13:41:15 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/05/18 09:51:47 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -75,9 +75,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 8.0.0
  */
@@ -1104,11 +1104,15 @@ public final class CmsContainerpageController {
     public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement) {
 
         dragElement.removeFromParent();
-        if (isGroupcontainerEditing() && !getGroupcontainer().iterator().hasNext()) {
-            // group-container is empty, mark it
-            getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptyGroupContainer());
+        if (isGroupcontainerEditing()) {
+            if (!getGroupcontainer().iterator().hasNext()) {
+                // group-container is empty, mark it
+                getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+            }
+        } else {
+            // only set changed if not editing a group container
+            setPageChanged();
         }
-        setPageChanged();
     }
 
     /**

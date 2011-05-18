@@ -16,11 +16,7 @@
 
 .dragStarted, .dragPlaceholder{}
 
-.emptyGroupContainer{
-	min-height: 27px;
-	background: #ffffff;
-	border: 1px dashed value("constants.css.borderColorHighlight");
-}
+
 
 .currentTarget{
 	position: relative;

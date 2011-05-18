@@ -130,11 +130,18 @@ div.toolbarToggle{
 .dragStarted .optionBar, .dragPlaceholder .optionBar, .groupcontainerEditing .optionBar, .cms_ade_groupcontainer .dragElement .optionBar{
 	display: none;
 }
-.groupcontainerPlaceholder{
+.emptyGroupContainer{
+	min-height: 27px;
+	background: #ffffff;
+	border: 1px dashed value("constants.css.borderColorHighlight");
+}
+
+div.groupcontainerPlaceholder{
 	position:relative;
 	/** Take the same color for text as for the background to make the text invisible. */
 	color: value("constants.css.backgroundColorDialog");
 	background: value("constants.css.backgroundColorDialog");
+	border: none;
 }
 .groupcontainerPlaceholder *{
 	visibility: hidden !important;
@@ -153,6 +160,11 @@ div.toolbarToggle{
 
 .groupcontainerEditing .cms_ade_groupcontainer .optionBar {
 	display: block;
+}
+
+.groupcontainerEditing .emptyGroupContainer{
+	background: transparent;
+	border: none;
 }
 
 .dragStarted .dragElement.dragging .optionBar{
