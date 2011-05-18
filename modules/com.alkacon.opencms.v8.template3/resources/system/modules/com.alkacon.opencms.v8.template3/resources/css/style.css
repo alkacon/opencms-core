@@ -354,7 +354,7 @@
      font-size: 10px;
    }
    
-   div.box div.boxbody div.paragraph:after {
+   div.paragraph:after {
      content: ".";
      display: block;
      clear: both;
@@ -363,15 +363,15 @@
      height: 0;
    }
 
-   div.box div.boxbody div.paragraph{
+   div.paragraph {
       display: inline-block;
    }
 
-   html[xmlns] div.box div.boxbody div.paragraph{
+   html[xmlns] div.paragraph{
      display: block;
    }
 
-   * html div.box div.boxbody div.paragraph {
+   * html div.paragraph {
      height: 1%;
    }
    
