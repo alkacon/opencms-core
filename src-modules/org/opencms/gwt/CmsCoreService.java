@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/05/18 15:22:02 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 8.0.0
  * 
@@ -398,7 +398,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsResource resource = cms.readResource(uri);
             if (resource.getDateLastModified() != modification) {
                 CmsUser user = cms.readUser(resource.getUserLastModified());
-                return CmsLockInfo.forChangedResource(uri, user.getName());
+                return CmsLockInfo.forChangedResource(uri, user.getFullName());
             }
         } catch (Throwable e) {
             error(e);
