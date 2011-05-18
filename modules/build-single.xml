@@ -415,6 +415,7 @@
 										<pathelement path="${opencms.input}/src" />
 									</classpath>
 								</java>
+								<delete dir="${module.gwt.output}/../WEB-INF" />
 							</sequential>
 						</outofdate>
 					</then>
