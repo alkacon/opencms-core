@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/20 11:53:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -111,10 +111,10 @@ public final class Messages {
     public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NO_PROPERTIES_0 = "GUI_NO_PROPERTIES_0";
+    public static final String GUI_NO_SETTINGS_0 = "GUI_NO_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NO_PROPERTIES_TITLE_0 = "GUI_NO_PROPERTIES_TITLE_0";
+    public static final String GUI_NO_SETTINGS_TITLE_0 = "GUI_NO_SETTINGS_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_ADD_TO_FAVORITES_0 = "GUI_NOTIFICATION_ADD_TO_FAVORITES_0";

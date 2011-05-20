@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/20 09:07:33 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2011/05/20 11:53:47 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 8.0.0
  */
@@ -225,8 +225,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 Map<String, String> settings = elementBean.getSettings();
                 Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
                 if (propertyConfig.size() == 0) {
-                    String message = Messages.get().key(Messages.GUI_NO_PROPERTIES_0);
-                    String title = Messages.get().key(Messages.GUI_NO_PROPERTIES_TITLE_0);
+                    String message = Messages.get().key(Messages.GUI_NO_SETTINGS_0);
+                    String title = Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0);
                     (new CmsAlertDialog(title, message)).center();
                     return;
                 }
