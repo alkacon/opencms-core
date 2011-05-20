@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/20 07:48:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -51,7 +52,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,6 +179,17 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_2,
                 cms.getSitePath(resource),
                 destination));
+        }
+
+        // check the destination
+        try {
+            securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
+                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                destination));
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
         }
 
         // first validate the destination name

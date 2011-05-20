@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename3.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/20 07:48:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -58,9 +59,85 @@ import junit.framework.TestSuite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestMoveRename3 extends OpenCmsTestCase {
+
+    /**
+     * Container for structure entries.<p>
+     */
+    class CmsVfsStructureEntry {
+
+        /** Parent id. */
+        private final String m_parentId;
+
+        /** Resource id. */
+        private final String m_resourceId;
+
+        /** Resource path. */
+        private final String m_resourcePath;
+
+        /** Structure id. */
+        private final String m_structureId;
+
+        /**
+         * Constructor for a structure entry.<p>
+         * 
+         * Immutable object.<p>
+         * 
+         * @param structureId the structure id
+         * @param parentId the parent structure id
+         * @param resourceId the resource id
+         * @param resourcePath the resource path
+         */
+        public CmsVfsStructureEntry(String structureId, String parentId, String resourceId, String resourcePath) {
+
+            m_structureId = structureId;
+            m_parentId = parentId;
+            m_resourceId = resourceId;
+            m_resourcePath = resourcePath;
+        }
+
+        /**
+         * Returns the parent Id.<p>
+         *
+         * @return the parent Id
+         */
+        public String getParentId() {
+
+            return m_parentId;
+        }
+
+        /**
+         * Returns the resource Id.<p>
+         *
+         * @return the resource Id
+         */
+        public String getResourceId() {
+
+            return m_resourceId;
+        }
+
+        /**
+         * Returns the resource Path.<p>
+         *
+         * @return the resource Path
+         */
+        public String getResourcePath() {
+
+            return m_resourcePath;
+        }
+
+        /**
+         * Returns the structure Id.<p>
+         *
+         * @return the structure Id
+         */
+        public String getStructureId() {
+
+            return m_structureId;
+        }
+    }
 
     /**
      * Default JUnit constructor.<p>
@@ -87,7 +164,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename3("testDeleteUndeleteMovedFile"));
         suite.addTest(new TestMoveRename3("testDeleteUndeletePublishMovedFile"));
         suite.addTest(new TestMoveRename3("testMovedFileParent"));
-
+        suite.addTest(new TestMoveRename3("testRenameToExistingFolder"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -247,6 +324,62 @@ public class TestMoveRename3 extends OpenCmsTestCase {
         System.out.println(ret.size() + " broken entries found.");
     }
 
+    /**
+     * Test that renaming a folder fails if a folder with the same name already exists.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testRenameToExistingFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing renaming to an already existing folder");
+        String folderOne = "/folderSource";
+        String folderTwo = "/folderTarget";
+        cms.createResource(folderOne, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(folderTwo, CmsResourceTypeFolder.getStaticTypeId());
+        CmsException exception = null;
+        try {
+            cms.moveResource(folderOne, folderTwo);
+        } catch (CmsException e) {
+            exception = e;
+        }
+        assertNotNull("renaming a folder to an already existing one should fail!", exception);
+    }
+
+    /**
+     * Test all entries in <code>strEntries</code>, and adds the
+     * broken entries to the <code>brokenEntries</code> list.<p>
+     * 
+     * @param brokenEntries list, may be empty, to add found broken entries
+     * @param strEntries entries to test
+     * 
+     * @return <code>true</code> if at least one broken entry has been found
+     */
+    private boolean addBrokenEntries(List brokenEntries, Map strEntries) {
+
+        boolean ret = false;
+        // remove all entries with parent
+        for (Iterator iter = strEntries.values().iterator(); iter.hasNext();) {
+            CmsVfsStructureEntry strEntry = (CmsVfsStructureEntry)iter.next();
+            if (brokenEntries.contains(strEntry)) {
+                continue;
+            }
+            // look for a direct broken entry
+            if (strEntries.get(strEntry.getParentId()) == null) {
+                if (!strEntry.getResourcePath().equals("/")) {
+                    brokenEntries.add(strEntry);
+                    ret = true;
+                }
+            } else if (brokenEntries.contains(strEntries.get(strEntry.getParentId()))) {
+                // look for an indirect broken entry
+                brokenEntries.add(strEntry);
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
     private Map readOnlineStructure() {
 
         Map strEntries = new HashMap();
@@ -295,114 +428,5 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
         }
         return strEntries;
-    }
-
-    /**
-     * Test all entries in <code>strEntries</code>, and adds the
-     * broken entries to the <code>brokenEntries</code> list.<p>
-     * 
-     * @param brokenEntries list, may be empty, to add found broken entries
-     * @param strEntries entries to test
-     * 
-     * @return <code>true</code> if at least one broken entry has been found
-     */
-    private boolean addBrokenEntries(List brokenEntries, Map strEntries) {
-
-        boolean ret = false;
-        // remove all entries with parent
-        for (Iterator iter = strEntries.values().iterator(); iter.hasNext();) {
-            CmsVfsStructureEntry strEntry = (CmsVfsStructureEntry)iter.next();
-            if (brokenEntries.contains(strEntry)) {
-                continue;
-            }
-            // look for a direct broken entry
-            if (strEntries.get(strEntry.getParentId()) == null) {
-                if (!strEntry.getResourcePath().equals("/")) {
-                    brokenEntries.add(strEntry);
-                    ret = true;
-                }
-            } else if (brokenEntries.contains(strEntries.get(strEntry.getParentId()))) {
-                // look for an indirect broken entry
-                brokenEntries.add(strEntry);
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * Container for structure entries.<p>
-     */
-    class CmsVfsStructureEntry {
-
-        /** Parent id. */
-        private final String m_parentId;
-
-        /** Resource id. */
-        private final String m_resourceId;
-
-        /** Resource path. */
-        private final String m_resourcePath;
-
-        /** Structure id. */
-        private final String m_structureId;
-
-        /**
-         * Constructor for a structure entry.<p>
-         * 
-         * Immutable object.<p>
-         * 
-         * @param structureId the structure id
-         * @param parentId the parent structure id
-         * @param resourceId the resource id
-         * @param resourcePath the resource path
-         */
-        public CmsVfsStructureEntry(String structureId, String parentId, String resourceId, String resourcePath) {
-
-            m_structureId = structureId;
-            m_parentId = parentId;
-            m_resourceId = resourceId;
-            m_resourcePath = resourcePath;
-        }
-
-        /**
-         * Returns the parent Id.<p>
-         *
-         * @return the parent Id
-         */
-        public String getParentId() {
-
-            return m_parentId;
-        }
-
-        /**
-         * Returns the resource Id.<p>
-         *
-         * @return the resource Id
-         */
-        public String getResourceId() {
-
-            return m_resourceId;
-        }
-
-        /**
-         * Returns the resource Path.<p>
-         *
-         * @return the resource Path
-         */
-        public String getResourcePath() {
-
-            return m_resourcePath;
-        }
-
-        /**
-         * Returns the structure Id.<p>
-         *
-         * @return the structure Id
-         */
-        public String getStructureId() {
-
-            return m_structureId;
-        }
     }
 }
