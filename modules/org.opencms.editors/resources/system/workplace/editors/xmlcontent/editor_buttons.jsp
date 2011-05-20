@@ -37,7 +37,8 @@ function getFrame(startFrame, frameName){
 }
 
 // the frame of the input form
-var formFrame = (editFrame=getFrame(self, 'edit')) ? editFrame.editform : top.edit.editform;
+var editFrame=getFrame(self, 'edit');
+var formFrame = (editFrame!=null) ? editFrame.editform : top.edit.editform;
 
 function buttonAction(actionValue) {
 	lastPosY = 0;
