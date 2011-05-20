@@ -8,10 +8,9 @@
 	<h2>${value.Title}</h2>
 	
 	<%-- Event Dates --%>			
-	<c:set var="showtime"><cms:elementsetting name="showtime" /></c:set>		
 	<p><i>
 		<c:choose>		
-			<c:when test="${showtime}">
+			<c:when test="${cms.element.settings.showtime}">
 				<fmt:formatDate value="${cms:convertDate(value.Date)}" dateStyle="SHORT" timeStyle="SHORT" type="both" />
 			</c:when>
 			<c:otherwise>

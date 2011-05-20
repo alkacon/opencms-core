@@ -3,8 +3,7 @@
 <fmt:bundle basename="com.alkacon.opencms.v8.login.messages">
 <cms:formatter var="content" val="value">
 
-<c:set var="boxschema"><cms:elementsetting name="boxschema" default="box_schema1" /></c:set>
-<div class="box ${boxschema}">
+<div class="box ${cms.element.settings.boxschema}">
 
 <jsp:useBean id="login" class="org.opencms.jsp.CmsJspLoginBean" scope="page">
 	<% 

@@ -1,8 +1,7 @@
 <%@page buffer="none" session="false" taglibs="c,cms" %>
 <cms:formatter var="content" val="value">
 
-<c:set var="boxschema"><cms:elementsetting name="boxschema" default="box_schema1" /></c:set>
-<div class="box ${boxschema}">
+<div class="box ${cms.element.settings.boxschema}">
 
 	<%-- Title of the article --%>
 	<h4>${value.Title}</h4>

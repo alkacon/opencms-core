@@ -7,11 +7,9 @@
 	<h2>${value.Title}</h2>
 	
 	<%-- Event Dates --%>
-	<c:set var="showlocation"><cms:elementsetting name="showlocation" /></c:set>		
-	<c:set var="showtime"><cms:elementsetting name="showtime" /></c:set>		
 	<p><i>
 		<c:choose>		
-			<c:when test="${showtime}">
+			<c:when test="${cms.element.settings.showtime}">
 				<fmt:formatDate value="${cms:convertDate(value.EventDates.value.EventStartDate)}" dateStyle="SHORT" timeStyle="SHORT" type="both" />
 			</c:when>
 			<c:otherwise>
@@ -21,7 +19,7 @@
 		<c:if test="${value.EventDates.value.EventEndDate.isSet}">
 			&nbsp;-&nbsp;				
 			<c:choose>
-				<c:when test="${showtime}">						
+				<c:when test="${cms.element.settings.showtime}">						
 					<fmt:formatDate value="${cms:convertDate(value.EventDates.value.EventEndDate)}" dateStyle="SHORT" timeStyle="SHORT" type="both" />
 				</c:when>
 				<c:otherwise>
@@ -36,7 +34,7 @@
 			</c:if>
 							
 		</c:if>
-		<c:if test="${showlocation && value.EventDates.value.EventLocation.isSet}">
+		<c:if test="${cms.element.settings.showlocation && value.EventDates.value.EventLocation.isSet}">
 			<br />				
 			${value.EventDates.value.EventLocation}							
 		</c:if>			

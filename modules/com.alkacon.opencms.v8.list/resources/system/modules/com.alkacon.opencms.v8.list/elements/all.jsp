@@ -23,8 +23,7 @@
 
 <fmt:setLocale value="${cms.locale}" />
 
-<c:set var="boxschema"><cms:elementsetting name="boxschema" default="box_schema1" /></c:set>
-<div class="box ${boxschema}">
+<div class="box ${cms.element.settings.boxschema}">
 
 
 	<cms:formatter var="listbox">

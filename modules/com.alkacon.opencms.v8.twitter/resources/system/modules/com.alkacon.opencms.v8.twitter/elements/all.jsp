@@ -4,7 +4,6 @@
 <cms:formatter var="content" val="value">
 
 <div class="twitter-box">
-	<c:set var="height"><cms:elementsetting name="box-height" default="250"/></c:set>
 	<c:choose>
 		<c:when test="${cms.edited}" >
 			<%-- Handle the case the twitter box was recenty moved --%>						
@@ -15,7 +14,7 @@
 		                      		<h4><a href="http://twitter.com/intent/user?screen_name=${value.Channel}" target="_blank"><c:out value="${value.Channel}" /></a></h4> 
 					</div>
 		            		<div class="twtr-bd">
-		              			<div style="height: ${height}px;" class="twtr-timeline">
+		              			<div style="height: ${cms.element.settings["box-height"]}px;" class="twtr-timeline">
 		                			<div class="twtr-tweets">
 		                  				<div class="twtr-reference-tweet">
 		                  					<fmt:message key="v8.twitter.reload" />
@@ -41,8 +40,8 @@
 				  type: 'profile',
 				  rpp: 10,
 				  interval: 6000,
-				  width: '<c:out value="${cms.container.width}" />',
-				  height: '<c:out value="${height}" />',
+				  width: '${cms.container.width}',
+				  height: '${cms.element.settings["box-height"]}',
 				  theme: {
 				    shell: {
 				      background: '<c:out value="${value.BackgroundColor}" />',
@@ -51,7 +50,7 @@
 				    tweets: {
 				      background: '#ffffff',
 				      color: '#000000',
-				      links: '<c:out value="${value.LinksColor}" />'
+				      links: '${value.LinksColor}'
 				    }
 				  },
 				  features: {
@@ -63,7 +62,7 @@
 				    avatars: false,
 				    behavior: 'all'
 				  }
-				}).render().setUser('<c:out value="${value.Channel}" />').start();
+				}).render().setUser('${value.Channel}').start();
 			</script>
 		</c:otherwise>		
 	</c:choose>

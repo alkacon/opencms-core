@@ -3,8 +3,7 @@
 <fmt:bundle basename="com/alkacon/opencms/v8/news/messages">
 <cms:formatter var="content" val="value">
 
-<c:set var="boxschema"><cms:elementsetting name="boxschema" default="box_schema1" /></c:set>
-<div class="box ${boxschema}">
+<div class="box ${cms.element.settings.boxschema}">
 
 	<%-- Title of the article --%>
 	<h4>${value.Title}</h4>
@@ -13,10 +12,9 @@
 	<div class="boxbody">
 	
 		<%-- Event Dates --%>			
-		<c:set var="showtime"><cms:elementsetting name="showtime" /></c:set>	
 		<p><i>
 			<c:choose>		
-				<c:when test="${showtime}">
+				<c:when test="${cms.element.settings.showtime}">
 					<fmt:formatDate value="${cms:convertDate(value.Date)}" dateStyle="SHORT" timeStyle="SHORT" type="both" />
 				</c:when>
 				<c:otherwise>
