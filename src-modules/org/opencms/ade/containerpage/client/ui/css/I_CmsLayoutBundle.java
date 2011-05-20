@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/18 09:51:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/05/20 09:09:04 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -55,12 +55,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Container-page CSS. */
     public interface I_CmsContainerpageCss extends I_CmsDirectEditCss, I_CmsDragDropCss {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String clipboardDropzone();
 
         /** Access method.<p>
          * 
@@ -110,12 +104,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String menuTabContainer();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String showDropzone();
 
         /** Access method.<p>
          * 

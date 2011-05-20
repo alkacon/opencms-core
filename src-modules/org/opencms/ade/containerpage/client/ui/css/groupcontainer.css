@@ -21,7 +21,20 @@
 }
 .containerMarker{
 	background: #ffffff;
-	opacity: 0.6;
 	border: 1px dashed value("constants.css.borderColorHighlight");
 	position: absolute;
+}
+
+@if user.agent ie6 {
+	.containerMarker {
+		filter: literal("alpha(opacity = 60)");
+	}
+} @elif user.agent ie8 {
+	.containerMarker {
+		-ms-filter: "alpha(opacity = 60)";
+	}
+} @else {
+	.containerMarker {
+        opacity: 0.6;
+	}
 }

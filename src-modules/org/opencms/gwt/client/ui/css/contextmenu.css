@@ -117,8 +117,8 @@ div.menuInfoLabel {
 		-webkit-border-top-left-radius: 8px;
 		-webkit-border-top-right-radius: 8px;
 	}
-} @elif user.agent opera {
-	/** opera */
+} @elif user.agent opera ie9 {
+	/** opera, ie9 */
 	.cmsMenuBar, .menuPanel{
 		border-radius: 8px;
 	}

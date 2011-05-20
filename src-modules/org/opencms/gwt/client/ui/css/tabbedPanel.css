@@ -78,8 +78,8 @@
 	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
 		-webkit-border-radius: 8px;
 	}
-} @elif user.agent opera {
-	/** opera */
+} @elif user.agent opera ie9 {
+	/** opera, ie9 */
 	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 		border-top-right-radius: value("constants.css.borderRadiusButton");
 		border-bottom-right-radius: value("constants.css.borderRadiusButton");
@@ -123,21 +123,25 @@
 	gwt-image: "inputImages.buttonBlackUpBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "inputImages.buttonBlackHoverBackground"; 
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover {
 	gwt-image: "inputImages.buttonBlueUpBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected{    
 	gwt-image: "inputImages.buttonBlueDownBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 
 
@@ -145,21 +149,25 @@
 	gwt-image: "inputImages.buttonRedUpBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "inputImages.buttonRedHoverBackground"; 
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover {
 	gwt-image: "inputImages.buttonRedHoverBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 @sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected{    
 	gwt-image: "inputImages.buttonRedDownBackground";
 	background-position: 50% 50%;
 	height: auto;
+	overflow: visible;
 }
 
 
@@ -168,9 +176,10 @@
 	background-position: 50% 50%;
 	height: auto;
 	cursor: default;
+	overflow: visible;
 }
 .buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
-	color:value("constants.css.textColorDisabledButton") !important;
+	color: value("constants.css.textColorDisabledButton") !important;
 }
 
 

@@ -19,8 +19,8 @@
 	.meterWrap, .meterValue {
 		-webkit-border-radius: 5px;
 	}
-} @elif user.agent opera {
-	/** opera */
+} @elif user.agent opera ie9{
+	/** opera, ie9 */
 	.meterWrap, .meterValue {
 		border-radius: 5px;
 	}

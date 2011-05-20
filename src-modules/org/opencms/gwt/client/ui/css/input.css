@@ -159,8 +159,8 @@
 	.selectBoxSelector div{
 		-webkit-border-radius: value("constants.css.borderRadius");
 	}
-} @elif user.agent opera {
-	/** opera */
+} @elif user.agent opera ie9{
+	/** opera, ie9 */
 	.selectBoxSelector div{
 		border-radius: value("constants.css.borderRadius");
 	}

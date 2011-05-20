@@ -62,7 +62,6 @@
 @sprite .placeholderOverlay{
 	gwt-image: 'otherImages.placeholderImage';
 	display: none;
-	opacity: 1;
 	position:absolute;
 	z-index: value("constants.css.zIndexInline");
 	top: 0px;
@@ -90,9 +89,6 @@
 	/** Assigned to the body on drag start. */
 	body.dragStarted{
 		overflow-y: scroll;
-	}
-	.dragPlaceholder{
-		opacity: 0.5;
 	}
 } @elif user.agent ie6 {
 	

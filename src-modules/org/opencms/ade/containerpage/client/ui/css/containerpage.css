@@ -3,9 +3,6 @@
 .toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
 
-.showDropzone .menuTabContainer{
-	display: none;
-}
 .menuTabContainer{
 	height: 486px;
 }
@@ -43,27 +40,7 @@ ul.clipboardList{
 	display: none;
 }
 
-
-/*.menuContent.showDropzone{
-	padding: 5px 0px;	
-}*/
-
-.showDropzone .clipboardDropzone{
-	display: block;
-}
-
-.clipboardDropzone{
-	display: none;
-	margin: 0px 5px;
-	-moz-border-radius: 4px;
-	border: 1px solid value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorDialog");
-	height: 38px;
-	position: relative;
-	padding: 0px 2px;
-}
-
-.clipboardDropzone > div, .clipboardList > div  {
+.clipboardList > div  {
 	margin: 2px;
 }
 
@@ -118,9 +95,27 @@ div.toolbarToggle{
 @sprite .toolbarSelection .optionBar.cmsHovering{
 	gwt-image: "backgrounds.softBackground";
 	height: auto;
-	-moz-border-radius: 2px;
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorSoft");
+}
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.toolbarSelection .optionBar.cmsHovering{
+		-moz-border-radius: 2px;
+	}
+
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.toolbarSelection .optionBar.cmsHovering{
+		-webkit-border-radius: 2px;
+	}
+} @elif user.agent opera ie9 {
+	/** opera, ie9 */
+	.toolbarSelection .optionBar.cmsHovering{
+		border-radius: 2px;
+	}
 }
 
 .optionBar div.cmsState{

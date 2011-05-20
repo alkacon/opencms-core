@@ -76,7 +76,7 @@
 	.popupMainContent, .caption{
 		-webkit-border-radius: 8px;
 	}
-} @elif user.agent opera {
+} @elif user.agent opera ie9 {
 	.popupContent{
 		box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
 		border-radius: 12px;

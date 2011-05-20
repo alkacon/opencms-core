@@ -30,5 +30,18 @@ div.overlay{
 	position: absolute;
 	/** Don't use a constant here. */
 	background: #000000;
-	opacity: 0.4;
+}
+
+@if user.agent ie6 { 
+	div.overlay { 
+		filter: literal("alpha(opacity = 40)"); 
+	}
+} @elif user.agent ie8 { 
+	div.overlay { 
+		-ms-filter: "alpha(opacity = 40)";
+	}
+} @else {
+	div.overlay { 
+		opacity: 0.4;
+	}
 }

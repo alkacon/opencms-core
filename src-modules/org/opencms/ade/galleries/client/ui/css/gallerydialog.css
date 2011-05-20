@@ -9,7 +9,7 @@ div.editorGallery {}
 		-webkit-box-shadow: none;
 		-webkit-border-radius: 0;
 	}
-} @elif user.agent opera {
+} @elif user.agent opera ie9 {
 	div.editorGallery{
 		box-shadow: none;
 		border-radius: 0;

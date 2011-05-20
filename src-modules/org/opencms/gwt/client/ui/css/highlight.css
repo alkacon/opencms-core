@@ -2,7 +2,20 @@
 	position: absolute;
 	z-index: value("constants.css.zIndexHighlighting");
 	background: transparent;
-	opacity: 0.6;
+}
+
+@if user.agent ie6 {
+	.highlightBox {
+		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=60, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
+	}
+} @elif user.agent ie8 {
+	.highlightBox {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=60, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
+	}
+} @else {
+	.highlightBox {
+		opacity: 0.6;
+	}
 }
 
 .highlightBox div{

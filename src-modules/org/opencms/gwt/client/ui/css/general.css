@@ -46,13 +46,10 @@
 }
 
 @if user.agent ie6 {
-	
 	.toolTip {
 		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
 	}
 } @elif user.agent ie8 {
-
-/** Assigned to the body on drag start. */
 	.toolTip {
 		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
 	}
@@ -157,8 +154,8 @@
 	.shadow{
 		-webkit-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
-} @elif user.agent opera {
-	/** opera */
+} @elif user.agent opera ie9 {
+	/** opera, ie9 */
 	.cornerAll{
 		border-radius: value("constants.css.borderRadius");
 	}
@@ -186,7 +183,7 @@
 	.cornerAll, .buttonCornerAll, .cornerBottom, .cornerTop{} 
 
 } @elif user.agent ie8 {
-	/** ie7, ie8 and the rest, add new @elif block if necessary **/
+	/** ie7, ie8 **/
 	
 	.cornerAll{
 		border-radius: value("constants.css.borderRadius");
@@ -209,7 +206,7 @@
 	}
 	
 } @else {
-	 .cornerAll, .cornerBottom, .cornerTop, .shadow{}
+	 .cornerAll, .cornerBottom, .buttonCornerAll, .cornerTop, .shadow{}
 }
 
 .clearStyles, .clearStyles *{
