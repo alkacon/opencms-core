@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/20 09:09:58 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  * 
@@ -197,7 +197,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             public void onAttachOrDetach(AttachEvent event) {
 
                 setOverflowVisibleToContent();
-
             }
         });
     }
@@ -520,7 +519,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelContent(),
             CmsDomUtil.Tag.div,
             tabRoot);
-
+        tabContentDivs.addAll(CmsDomUtil.getElementsByClass(
+            "gwt-TabLayoutPanelContentContainer",
+            CmsDomUtil.Tag.div,
+            tabRoot));
         for (Element e : tabContentDivs) {
             e.getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
         }
