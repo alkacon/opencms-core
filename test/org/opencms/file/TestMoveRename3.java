@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename3.java,v $
- * Date   : $Date: 2011/05/20 07:48:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/20 14:35:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -59,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestMoveRename3 extends OpenCmsTestCase {
 
@@ -165,6 +167,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename3("testDeleteUndeletePublishMovedFile"));
         suite.addTest(new TestMoveRename3("testMovedFileParent"));
         suite.addTest(new TestMoveRename3("testRenameToExistingFolder"));
+        suite.addTest(new TestMoveRename3("testRenameToInvalidName"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -345,6 +348,28 @@ public class TestMoveRename3 extends OpenCmsTestCase {
             exception = e;
         }
         assertNotNull("renaming a folder to an already existing one should fail!", exception);
+    }
+
+    /**
+     * Test that renaming a folder fails if a folder with the same name already exists.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testRenameToInvalidName() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing renaming to an invalid name");
+        String folderOne = "/folderWithValidName";
+        String folderTwo = "/folder with spaces in it";
+        cms.createResource(folderOne, CmsResourceTypeFolder.getStaticTypeId());
+        CmsRuntimeException exception = null;
+        try {
+            cms.moveResource(folderOne, folderTwo);
+        } catch (CmsIllegalArgumentException e) {
+            exception = e;
+        }
+        assertNotNull("Renaming to an invalid name should fail!", exception);
     }
 
     /**
