@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/20 14:04:05 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
@@ -64,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  *  
  * @since 8.0.0 
  */
@@ -238,6 +240,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         if (m_helper == null) {
             if (m_listItemWidget != null) {
                 m_listItemWidget.setAdditionalInfoVisible(false);
+                Iterator<Widget> buttonIterator = m_listItemWidget.getButtonPanel().iterator();
+                while (buttonIterator.hasNext()) {
+                    Widget button = buttonIterator.next();
+                    if (button != m_moveHandle) {
+                        button.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                    }
+                }
             }
             m_helper = CmsDomUtil.clone(getElement());
             // remove all decorations
@@ -542,6 +551,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     private void clearDrag() {
 
+        if (m_listItemWidget != null) {
+            Iterator<Widget> buttonIterator = m_listItemWidget.getButtonPanel().iterator();
+            while (buttonIterator.hasNext()) {
+                Widget button = buttonIterator.next();
+                button.getElement().getStyle().clearVisibility();
+            }
+        }
         if (m_helper != null) {
             m_helper.removeFromParent();
             m_helper = null;

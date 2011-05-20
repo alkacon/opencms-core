@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2011/05/20 13:47:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/20 14:04:05 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,14 +34,12 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsIconUtil;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
@@ -49,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.
  */
@@ -187,54 +185,6 @@ public class CmsResultListItem extends CmsListItem {
     public String getVfsPath() {
 
         return m_vfsPath;
-    }
-
-    //    /**
-    //     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
-    //     */
-    //    @Override
-    //    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
-    //
-    //        if (super.initMoveHandle(dndHandler)) {
-    //            // move handle should always be visible
-    //            getMoveHandle().getElement().addClassName(
-    //                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-    //            return true;
-    //        }
-    //        return false;
-    //    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#onDragCancel()
-     */
-    @Override
-    public void onDragCancel() {
-
-        m_deleteButton.getElement().getStyle().clearDisplay();
-        m_previewButton.getElement().getStyle().clearDisplay();
-        super.onDragCancel();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
-     */
-    @Override
-    public void onDrop(I_CmsDropTarget target) {
-
-        m_deleteButton.getElement().getStyle().clearDisplay();
-        m_previewButton.getElement().getStyle().clearDisplay();
-        super.onDrop(target);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
-     */
-    @Override
-    public void onStartDrag(I_CmsDropTarget target) {
-
-        m_deleteButton.getElement().getStyle().setDisplay(Display.NONE);
-        m_previewButton.getElement().getStyle().setDisplay(Display.NONE);
-        super.onStartDrag(target);
     }
 
     /**

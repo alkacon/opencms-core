@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/05/20 14:04:05 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 8.0.0
  */
@@ -420,9 +420,19 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
      * 
      * @return the number of buttons
      */
-    public int getCountButtons() {
+    public int getButtonCount() {
 
         return m_buttonPanel.getWidgetCount();
+    }
+
+    /**
+     * Returns the button panel.<p>
+     * 
+     * @return the button panel
+     */
+    public FlowPanel getButtonPanel() {
+
+        return m_buttonPanel;
     }
 
     /**
