@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import java.util.Map;
  * @author Michael Moossen
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0
  */
@@ -65,11 +66,14 @@ public class CmsContainerElementBean {
     /** The formatter's structure id. */
     private final CmsUUID m_formatterId;
 
+    /** The configured properties. */
+    private final Map<String, String> m_individualSettings;
+
+    /** The settings of this element containing also default values. */
+    private transient Map<String, String> m_settings;
+
     /** The resource of this element. */
     private transient CmsResource m_resource;
-
-    /** The configured properties. */
-    private final Map<String, String> m_settings;
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
@@ -79,22 +83,24 @@ public class CmsContainerElementBean {
      *  
      * @param elementId the element's structure id
      * @param formatterId the formatter's structure id, could be <code>null</code>
-     * @param settings the element settings as a map of name/value pairs
+     * @param individualSettings the element settings as a map of name/value pairs
      * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
      **/
     public CmsContainerElementBean(
         CmsUUID elementId,
         CmsUUID formatterId,
-        Map<String, String> settings,
+        Map<String, String> individualSettings,
         boolean createNew) {
 
         m_elementId = elementId;
         m_formatterId = formatterId;
-        Map<String, String> newSettings = (settings == null ? new HashMap<String, String>() : settings);
-        m_settings = Collections.unmodifiableMap(newSettings);
+        Map<String, String> newSettings = (individualSettings == null
+        ? new HashMap<String, String>()
+        : individualSettings);
+        m_individualSettings = Collections.unmodifiableMap(newSettings);
         String clientId = m_elementId.toString();
-        if (!m_settings.isEmpty()) {
-            int hash = m_settings.toString().hashCode();
+        if (!m_individualSettings.isEmpty()) {
+            int hash = m_individualSettings.toString().hashCode();
             clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         m_editorHash = clientId;
@@ -144,6 +150,16 @@ public class CmsContainerElementBean {
     }
 
     /**
+     * Returns the settings of this element.<p>
+     * 
+     * @return the settings of this element
+     */
+    public Map<String, String> getIndividualSettings() {
+
+        return m_individualSettings;
+    }
+
+    /**
      * Returns the resource of this element.<p>
      * 
      * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
@@ -155,16 +171,6 @@ public class CmsContainerElementBean {
     public CmsResource getResource() {
 
         return m_resource;
-    }
-
-    /**
-     * Returns the settings of this element.<p>
-     * 
-     * @return the settings of this element
-     */
-    public Map<String, String> getSettings() {
-
-        return m_settings;
     }
 
     /**
@@ -202,6 +208,9 @@ public class CmsContainerElementBean {
         if (m_resource == null) {
             m_resource = cms.readResource(getId());
         }
+        if (m_settings == null) {
+            m_settings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
+        }
         // redo on every init call to ensure sitepath is calculated for current site
         m_sitePath = cms.getSitePath(m_resource);
     }
@@ -229,6 +238,17 @@ public class CmsContainerElementBean {
 
         CmsResource resource = cms.readResource(m_elementId);
         return resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
+    }
+
+    /**
+     * Returns the element settings including default values for settings not set.<p>
+     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
+     * 
+     * @return the element settings
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
     }
 
     /**

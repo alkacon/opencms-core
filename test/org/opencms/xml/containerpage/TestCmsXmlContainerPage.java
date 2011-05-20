@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/20 13:47:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -182,7 +182,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                     assertEquals(expected.editorHash(), element.editorHash());
                     assertEquals(expected.getId(), element.getId());
                     assertEquals(expected.getFormatterId(), element.getFormatterId());
-                    assertEquals(expected.getSettings(), element.getSettings());
+                    assertEquals(expected.getIndividualSettings(), element.getIndividualSettings());
                 }
             }
         }

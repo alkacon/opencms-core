@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagElementSetting.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.Collections;
 import java.util.Map;
@@ -54,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */
@@ -90,10 +89,8 @@ public class CmsJspTagElementSetting extends TagSupport {
         // try to find element setting on the container element
         try {
             CmsContainerElementBean currentElement = OpenCms.getADEManager().getCurrentElement(req);
-            return CmsXmlContentPropertyHelper.mergeDefaults(
-                cms,
-                cms.readResource(currentElement.getId()),
-                currentElement.getSettings());
+            currentElement.initResource(cms);
+            return currentElement.getSettings();
         } catch (CmsException e) {
             // most likely we are not in a container page
             LOG.debug(e.getLocalizedMessage(), e);

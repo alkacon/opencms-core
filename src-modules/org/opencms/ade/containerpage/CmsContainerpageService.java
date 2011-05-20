@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 8.0.0
  */
@@ -170,7 +170,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
                 null,
-                bean.getSettings(),
+                bean.getIndividualSettings(),
                 false);
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
@@ -533,7 +533,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elements.add(new CmsContainerElementBean(
                         element.getId(),
                         formatter.getJspStructureId(),
-                        element.getSettings(),
+                        element.getIndividualSettings(),
                         false));
                 }
             } catch (Exception e) {

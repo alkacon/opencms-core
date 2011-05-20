@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/07 08:37:42 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 7.5.2
  * 
@@ -473,7 +473,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 fillResource(cms, formatterElem, element.getFormatterId());
 
                 // the properties
-                Map<String, String> properties = element.getSettings();
+                Map<String, String> properties = element.getIndividualSettings();
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
                     uriRes);

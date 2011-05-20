@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -220,7 +220,7 @@ public class CmsElementUtil {
             element.getResource());
         elementBean.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
-            element.getSettings(),
+            element.getIndividualSettings(),
             settingConfig));
         elementBean.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         elementBean.setViewPermission(m_cms.hasPermissions(

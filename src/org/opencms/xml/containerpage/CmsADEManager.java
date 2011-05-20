@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/07 16:27:52 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/20 13:47:00 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 7.6
  */
@@ -578,7 +578,7 @@ public class CmsADEManager {
                 data.put(FavListProp.FORMATTER.name().toLowerCase(), element.getFormatterId().toString());
             }
             JSONObject properties = new JSONObject();
-            for (Map.Entry<String, String> entry : element.getSettings().entrySet()) {
+            for (Map.Entry<String, String> entry : element.getIndividualSettings().entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
             }
             data.put(FavListProp.PROPERTIES.name().toLowerCase(), properties);
