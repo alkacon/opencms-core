@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/20 14:37:07 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -739,7 +739,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
         }
-
+        String targetName = CmsResource.getName(destination).replace("/", "");
+        CmsResource.checkResourceName(targetName);
         // move
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
     }

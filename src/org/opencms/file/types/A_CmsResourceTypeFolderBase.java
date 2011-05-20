@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2011/05/20 07:48:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/20 14:37:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,6 +194,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         // first validate the destination name
         dest = validateFoldername(dest);
+        String targetName = CmsResource.getName(destination).replace("/", "");
+        CmsResource.checkResourceName(targetName);
 
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
     }
