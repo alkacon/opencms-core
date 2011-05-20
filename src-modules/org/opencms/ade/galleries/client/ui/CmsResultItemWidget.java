@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultItemWidget.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -127,10 +128,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         StringBuffer result = new StringBuffer();
         result.append("<p><b>").append(infoBean.getTitle()).append("</b></p>");
         result.append("<p>").append(infoBean.getSubTitle()).append("</p>");
-        if (infoBean.getAdditionalInfo() != null) {
-            for (String infoName : infoBean.getAdditionalInfo().keySet()) {
-                result.append("<p>").append(infoName).append(":&nbsp;").append(infoBean.getAdditionalInfo(infoName)).append(
-                    "</p>");
+        if (infoBean.hasAdditionalInfo()) {
+            for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
+                result.append("<p>").append(additionalInfo.getName()).append(":&nbsp;").append(
+                    additionalInfo.getValue()).append("</p>");
             }
         }
         return result.toString();

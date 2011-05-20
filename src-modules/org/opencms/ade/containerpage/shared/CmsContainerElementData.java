@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,11 @@
 
 package org.opencms.ade.containerpage.shared;
 
-import org.opencms.util.CmsPair;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,7 +46,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -140,11 +139,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /**
      * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
      * 
-     * @return the settings map
+     * @return the settings list
      */
-    public Map<String, CmsPair<String, String>> getFormatedIndividualSettings() {
+    public List<CmsAdditionalInfoBean> getFormatedIndividualSettings() {
 
-        Map<String, CmsPair<String, String>> result = new HashMap<String, CmsPair<String, String>>();
+        List<CmsAdditionalInfoBean> result = new ArrayList<CmsAdditionalInfoBean>();
         if (m_settings != null) {
             for (Entry<String, String> settingEntry : m_settings.entrySet()) {
                 String settingKey = settingEntry.getKey();
@@ -154,7 +153,7 @@ public class CmsContainerElementData extends CmsContainerElement {
                         settingKey = niceName;
                     }
                 }
-                result.put(settingKey, new CmsPair<String, String>(settingEntry.getValue(), null));
+                result.add(new CmsAdditionalInfoBean(settingKey, settingEntry.getValue(), null));
             }
         }
         return result;

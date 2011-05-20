@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,12 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -55,7 +54,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -148,7 +147,7 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
         m_subtitle.setText(infoBean.getSubTitle());
-        if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
+        if (infoBean.hasAdditionalInfo()) {
             m_openClose = new CmsPushButton(
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),
                 I_CmsImageBundle.INSTANCE.style().triangleDown());
@@ -199,10 +198,8 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                 }
             });
             m_additionalInfo.clear();
-            for (Entry<String, CmsPair<String, String>> entry : infoBean.getAdditionalInfo().entrySet()) {
-                CmsPair<String, String> values = entry.getValue();
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), values.getFirst(), values.getSecond());
-                m_additionalInfo.add(info);
+            for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
+                m_additionalInfo.add(new AdditionalInfoItem(additionalInfo));
             }
 
         }

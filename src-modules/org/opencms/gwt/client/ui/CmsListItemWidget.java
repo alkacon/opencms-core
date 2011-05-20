@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,15 +42,14 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -88,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 8.0.0
  */
@@ -113,6 +112,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         /**
          * Constructor.<p>
          * 
+         * @param additionalInfo the info to display
+         */
+        public AdditionalInfoItem(CmsAdditionalInfoBean additionalInfo) {
+
+            this(additionalInfo.getName(), additionalInfo.getValue(), additionalInfo.getStyle());
+        }
+
+        /**
+         * Constructor.<p>
+         * 
          * @param title info title
          * @param value info value
          * @param additionalStyle an additional class name
@@ -124,12 +133,12 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
             initWidget(panel);
             I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
             // create title
-            m_titleLabel = new CmsLabel(title + ":");
+            m_titleLabel = new CmsLabel(CmsStringUtil.isEmptyOrWhitespaceOnly(title) ? "" : title + ":");
             m_titleLabel.addStyleName(style.itemAdditionalTitle());
             panel.add(m_titleLabel);
             // create value
             m_valueLabel = new CmsLabel();
-            if ((value == null) || (value.trim().length() == 0)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                 m_valueLabel.setHTML(CmsDomUtil.Entity.nbsp.html());
             } else {
                 m_valueLabel.setHTML(value);
@@ -289,6 +298,17 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     }
 
     /**
+     * Adds an additional info item to the list.<p>
+     * 
+     * @param additionalInfo the additional info to display
+     */
+    public void addAdditionalInfo(CmsAdditionalInfoBean additionalInfo) {
+
+        m_additionalInfo.add(new AdditionalInfoItem(additionalInfo));
+        ensureOpenCloseAdditionalInfo();
+    }
+
+    /**
      * Adds a widget to the button panel.<p>
      * 
      * @param w the widget to add
@@ -433,6 +453,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     public String getTitleLabel() {
 
         return m_title.getText();
+    }
+
+    /**
+     * Returns if additional info items are present.<p>
+     * 
+     * @return <code>true</code> if additional info items are present
+     */
+    public boolean hasAdditionalInfo() {
+
+        return m_additionalInfo.getWidgetCount() > 0;
     }
 
     /**
@@ -770,6 +800,30 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     }
 
     /**
+     * Ensures the open close button for the additional info list is present.<p>
+     */
+    protected void ensureOpenCloseAdditionalInfo() {
+
+        if (m_openClose == null) {
+            m_openClose = new CmsPushButton(
+                I_CmsImageBundle.INSTANCE.style().triangleRight(),
+                I_CmsImageBundle.INSTANCE.style().triangleDown());
+            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            m_titleRow.insert(m_openClose, 0);
+            m_openClose.addClickHandler(new ClickHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
+                public void onClick(ClickEvent event) {
+
+                    setAdditionalInfoVisible(!getElement().getClassName().contains(CmsListItemWidget.OPENCLASS));
+                }
+            });
+        }
+    }
+
+    /**
      * Constructor.<p>
      * 
      * @param infoBean bean holding the item information
@@ -795,26 +849,10 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         }
 
         // set the additional info
-        if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
-            m_openClose = new CmsPushButton(
-                I_CmsImageBundle.INSTANCE.style().triangleRight(),
-                I_CmsImageBundle.INSTANCE.style().triangleDown());
-            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            m_titleRow.insert(m_openClose, 0);
-            m_openClose.addClickHandler(new ClickHandler() {
-
-                /**
-                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-                 */
-                public void onClick(ClickEvent event) {
-
-                    setAdditionalInfoVisible(!getElement().getClassName().contains(CmsListItemWidget.OPENCLASS));
-                }
-            });
-            for (Entry<String, CmsPair<String, String>> entry : infoBean.getAdditionalInfo().entrySet()) {
-                CmsPair<String, String> values = entry.getValue();
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), values.getFirst(), values.getSecond());
-                m_additionalInfo.add(info);
+        if (infoBean.hasAdditionalInfo()) {
+            ensureOpenCloseAdditionalInfo();
+            for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
+                m_additionalInfo.add(new AdditionalInfoItem(additionalInfo));
             }
         }
     }

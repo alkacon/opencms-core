@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -52,7 +53,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -72,6 +73,10 @@ public class CmsMenuListItem extends CmsListItem {
             element.getTitle(),
             element.getSitePath(),
             element.getFormatedIndividualSettings())));
+        if (!m_listItemWidget.hasAdditionalInfo()) {
+            m_listItemWidget.addAdditionalInfo(new CmsAdditionalInfoBean("", Messages.get().key(
+                Messages.GUI_NO_SETTINGS_TITLE_0), null));
+        }
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
         if ((element.getSettings() != null) && !element.getSettings().isEmpty()) {

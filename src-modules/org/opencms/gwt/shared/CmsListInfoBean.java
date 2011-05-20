@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/20 11:54:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,9 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.db.CmsResourceState;
-import org.opencms.util.CmsPair;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -47,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +72,7 @@ public class CmsListInfoBean implements IsSerializable {
     public static final String CSS_CLASS_MULTI_LINE = "multiLineLabel";
 
     /** The additional info. */
-    private Map<String, CmsPair<String, String>> m_additionalInfo;
+    private List<CmsAdditionalInfoBean> m_additionalInfo;
 
     /** The page icon information: for the type of page icon which should be displayed. */
     private PageIcon m_pageIcon;
@@ -105,7 +104,7 @@ public class CmsListInfoBean implements IsSerializable {
      * @param subtitle the subtitle
      * @param additionalInfo the additional info
      */
-    public CmsListInfoBean(String title, String subtitle, Map<String, CmsPair<String, String>> additionalInfo) {
+    public CmsListInfoBean(String title, String subtitle, List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_title = title;
         m_subTitle = subtitle;
@@ -120,7 +119,7 @@ public class CmsListInfoBean implements IsSerializable {
      */
     public void addAdditionalInfo(String name, String value) {
 
-        getAdditionalInfo().put(name, new CmsPair<String, String>(value, null));
+        getAdditionalInfo().add(new CmsAdditionalInfoBean(name, value, null));
     }
 
     /**
@@ -132,7 +131,7 @@ public class CmsListInfoBean implements IsSerializable {
      */
     public void addAdditionalInfo(String name, String value, String style) {
 
-        getAdditionalInfo().put(name, new CmsPair<String, String>(value, style));
+        getAdditionalInfo().add(new CmsAdditionalInfoBean(name, value, style));
     }
 
     /**
@@ -140,27 +139,12 @@ public class CmsListInfoBean implements IsSerializable {
      *
      * @return the additional info
      */
-    public Map<String, CmsPair<String, String>> getAdditionalInfo() {
+    public List<CmsAdditionalInfoBean> getAdditionalInfo() {
 
         if (m_additionalInfo == null) {
-            m_additionalInfo = new LinkedHashMap<String, CmsPair<String, String>>();
+            m_additionalInfo = new ArrayList<CmsAdditionalInfoBean>();
         }
         return m_additionalInfo;
-    }
-
-    /**
-     * Returns the additional info with the given name or <code>null</code> if not found.<p>
-     * 
-     * @param name the additional info name
-     * 
-     * @return the additional info value
-     */
-    public String getAdditionalInfo(String name) {
-
-        if (m_additionalInfo.get(name) != null) {
-            return m_additionalInfo.get(name).getFirst();
-        }
-        return null;
     }
 
     /**
@@ -214,18 +198,13 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Gets the value style for the given additional info item.<p>
+     * Returns if the bean has additional info elements.<p>
      * 
-     * @param key the additional info key
-     * 
-     * @return the style name
+     * @return <code>true</code> if the bean has additional info elements
      */
-    public String getValueStyle(String key) {
+    public boolean hasAdditionalInfo() {
 
-        if (m_additionalInfo.get(key) != null) {
-            return m_additionalInfo.get(key).getSecond();
-        }
-        return null;
+        return (m_additionalInfo != null) && (m_additionalInfo.size() > 0);
     }
 
     /**
@@ -233,7 +212,7 @@ public class CmsListInfoBean implements IsSerializable {
      *
      * @param additionalInfo the additional info to set
      */
-    public void setAdditionalInfo(Map<String, CmsPair<String, String>> additionalInfo) {
+    public void setAdditionalInfo(List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
     }
