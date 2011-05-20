@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsAdditionalInfoBean.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/20 13:46:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.1
  */
@@ -52,6 +52,14 @@ public class CmsAdditionalInfoBean implements IsSerializable {
 
     /** The info value. */
     private String m_value;
+
+    /**
+     * Constructor for serialization only.<p>
+     */
+    protected CmsAdditionalInfoBean() {
+
+        // nothing to do
+    }
 
     /**
      * Constructor.<p>
