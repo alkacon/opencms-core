@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Fri, 06 May 2011 08:15:40 GMT</createdate>
+		<createdate>Fri, 20 May 2011 08:49:22 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -60,10 +60,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>c8d53ed5-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:48 GMT</datelastmodified>
+			<uuidstructure>2b19ae5b-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 11:37:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:48 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -82,10 +82,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>c979e384-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:49 GMT</datelastmodified>
+			<uuidstructure>2bbe2bf7-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 11:37:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:49 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -198,7 +198,7 @@
 			<type>plain</type>
 			<uuidstructure>5a42a305-6ff2-11e0-b779-c3baf286301a</uuidstructure>
 			<uuidresource>5a42a306-6ff2-11e0-b779-c3baf286301a</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 14:15:18 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2011 08:45:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 10:45:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -213,7 +213,7 @@
 			<type>plain</type>
 			<uuidstructure>ddfe10d7-7004-11e0-81d2-c3baf286301a</uuidstructure>
 			<uuidresource>ddfe10d8-7004-11e0-81d2-c3baf286301a</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 14:15:32 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2011 08:44:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 12:58:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -232,7 +232,7 @@
 			<type>plain</type>
 			<uuidstructure>60767767-6ff2-11e0-b779-c3baf286301a</uuidstructure>
 			<uuidresource>5a42a306-6ff2-11e0-b779-c3baf286301a</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 14:15:18 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2011 08:45:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 10:45:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -339,7 +339,7 @@
 			<type>jsp</type>
 			<uuidstructure>48e413e4-700c-11e0-81d2-c3baf286301a</uuidstructure>
 			<uuidresource>48e413e5-700c-11e0-81d2-c3baf286301a</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 12:17:21 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2011 08:36:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 13:51:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -497,7 +497,7 @@
 			<type>plain</type>
 			<uuidstructure>c813273f-6fef-11e0-b779-c3baf286301a</uuidstructure>
 			<uuidresource>c8132740-6fef-11e0-b779-c3baf286301a</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 12:42:46 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2011 08:17:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Apr 2011 10:27:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -525,6 +525,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/com.alkacon.opencms.v8.list/schemas/nested/link.xsd</source>
+			<destination>system/modules/com.alkacon.opencms.v8.list/schemas/nested/link.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>7cca53ec-82b9-11e0-b31e-c1b6fb5574d7</uuidstructure>
+			<uuidresource>7cca53ed-82b9-11e0-b31e-c1b6fb5574d7</uuidresource>
+			<datelastmodified>Fri, 20 May 2011 08:45:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2011 08:16:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for additional link]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/com.alkacon.opencms.v8.list/schemas/nested/mappings.xsd</source>
 			<destination>system/modules/com.alkacon.opencms.v8.list/schemas/nested/mappings.xsd</destination>
 			<type>plain</type>
@@ -547,7 +567,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>2e3ac4e3-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -590,7 +610,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>2e3f7fdb-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -603,7 +623,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>2e41f0dd-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

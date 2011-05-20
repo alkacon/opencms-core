@@ -4,6 +4,7 @@
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.list/schemas/nested/mappings.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.list/schemas/nested/link.xsd"/>
 		
 	<xsd:element name="V8Lists" type="OpenCmsV8Lists"/>
 	
@@ -22,6 +23,7 @@
 			<xsd:element name="Parameter" type="OpenCmsString" />
 			<xsd:element name="Links" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="10" />
 			<xsd:element name="More" type="OpenCmsString" />
+			<xsd:element name="AdditionalLink" type="OpenCmsV8ListLink" minOccurs="0" />
 			<xsd:element name="PositionAuthor" type="OpenCmsString" />
 			<xsd:element name="PositionDate" type="OpenCmsString" />
 			<xsd:element name="PositionImage" type="OpenCmsString" />
