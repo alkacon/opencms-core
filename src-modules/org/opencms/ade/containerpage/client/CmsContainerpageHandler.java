@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/05/20 09:07:33 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
@@ -61,8 +60,8 @@ import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -89,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 8.0.0
  */
@@ -300,16 +299,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public I_CmsToolbarButton getActiveButton() {
 
         return m_activeButton;
-    }
-
-    /**
-     * Returns the tool-bar drop-zone.<p>
-     * 
-     * @return the drop-zone
-     */
-    public CmsList<CmsListItem> getDropzone() {
-
-        return m_editor.getClipboard().getDropzone();
     }
 
     /**
@@ -600,16 +589,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void setActiveButton(I_CmsToolbarButton button) {
 
         m_activeButton = button;
-    }
-
-    /**
-     * Opens the menu showing the favorite list drop-zone and hiding all other menu content.<p>
-     * 
-     * @param show <code>true</code> to show the drop-zone
-     */
-    public void showDropzone(boolean show) {
-
-        m_editor.getClipboard().showDropzone(show);
     }
 
     /**

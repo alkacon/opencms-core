@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2011/05/18 09:51:47 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/05/20 09:07:33 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -193,10 +193,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // hide dropzone if it is not the current target
-        if ((target == null) || !(target instanceof CmsList<?>)) {
-            m_controller.getHandler().showDropzone(false);
-        }
         // remove highlighting
         for (I_CmsDropTarget dropTarget : m_dragInfos.keySet()) {
             if (dropTarget instanceof I_CmsDropContainer) {
@@ -709,7 +705,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
         m_isNew = false;
-        m_controller.getHandler().showDropzone(false);
         m_controller.getHandler().deactivateMenuButton();
         m_dragInfos.clear();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {

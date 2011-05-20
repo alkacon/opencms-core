@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/20 09:07:33 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.containerpage.client.CmsFavoritesDNDController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
-import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -58,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -75,9 +74,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /** The favorites editing drag and drop controller. */
     private CmsFavoritesDNDController m_dndController;
-
-    /** The favorite list drop-zone. */
-    private CmsList<CmsListItem> m_dropzone;
 
     /** The recent list widget. */
     private CmsRecentTab m_recent;
@@ -117,11 +113,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
         tabsContainer.add(m_tabs);
         m_content.add(tabsContainer);
-
-        m_dropzone = new CmsList<CmsListItem>();
-        m_dropzone.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardDropzone());
-        m_dropzone.setDropEnabled(true);
-        m_content.add(m_dropzone);
         setMenuWidget(m_content);
         m_dndController = new CmsFavoritesDNDController();
     }
@@ -174,20 +165,11 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.setMoveIconStyle(I_CmsImageBundle.INSTANCE.style().changeOrderIcon(), Messages.get().key(
-                Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
+            element.setMoveIconStyle(
+                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
+                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
             element.showRemoveButton();
         }
-    }
-
-    /**
-     * Returns the tool-bar drop-zone.<p>
-     *
-     * @return the drop-zone
-     */
-    public CmsList<CmsListItem> getDropzone() {
-
-        return m_dropzone;
     }
 
     /**
@@ -242,23 +224,4 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         }
         getHandler().saveFavoriteList(clientIds);
     }
-
-    /**
-     * Opens the menu showing the favorite list drop-zone and hiding all other menu content.<p>
-     * 
-     * @param show <code>true</code> to show the drop-zone
-     */
-    public void showDropzone(boolean show) {
-
-        if (show) {
-            m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().showDropzone());
-            openMenu();
-        } else {
-            if (isOpen()) {
-                m_content.removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().showDropzone());
-                closeMenu();
-            }
-        }
-    }
-
 }
