@@ -5535,7 +5535,7 @@
 		</file>
 		<file>
 			<destination>sites/default/_contents/infoboxes</destination>
-			<type>folder</type>
+			<type>v8infoboxgallery</type>
 			<uuidstructure>f0b03360-851d-11e0-ade9-c1b6fb5574d7</uuidstructure>
 			<datelastmodified>Mon, 23 May 2011 09:20:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
