@@ -1,0 +1,49 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.infobox/schemas/nested/furtherinfo.xsd"/>
+		
+	<xsd:element name="V8Infoboxes" type="OpenCmsV8Infoboxes"/>
+	
+	<xsd:complexType name="OpenCmsV8Infoboxes">
+		<xsd:sequence>
+			<xsd:element name="V8Infobox" type="OpenCmsV8Infobox" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsV8Infobox">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml"/>
+			<xsd:element name="FurtherInfo" type="OpenCmsV8InfoboxFurtherinfo" />
+			<xsd:element name="Category" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="com.alkacon.opencms.v8.infobox.workplace"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="urlName" />
+			</mappings>
+			<layouts>
+				<layout element="Text" widget="HtmlWidget" configuration="height:400px,link,anchor,source,imagegallery"/>
+				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
+			</layouts>
+			<validationrules/>
+			<defaults/>
+			<!--<relations>
+				<relation element="Paragraph/Image/Image" invalidate="parent" />
+			</relations>
+			//--><formatters>
+				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.infobox/elements/side.jsp" searchcontent="true" />
+			</formatters>
+			<settings>
+				<setting name="boxschema" nice-name="Box Schema" default="box_schema1" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />
+			</settings>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

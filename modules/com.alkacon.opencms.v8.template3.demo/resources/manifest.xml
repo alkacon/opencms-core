@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Sat, 07 May 2011 17:41:56 GMT</createdate>
+		<createdate>Mon, 23 May 2011 10:19:11 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -29,6 +29,7 @@
 			<dependency name="com.alkacon.opencms.v8.search" version="8.0.0"/>
 			<dependency name="com.alkacon.opencms.v8.template3" version="8.0.0"/>
 			<dependency name="com.alkacon.opencms.v8.twitter" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.infobox" version="8.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -44,10 +45,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>1c5e4ec5-78ae-11e0-991f-000c2972a6a4</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 13:30:01 GMT</datelastmodified>
+			<uuidstructure>2bb4b611-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 11:37:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 13:30:01 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -57,10 +58,10 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>1c7224e7-78ae-11e0-991f-000c2972a6a4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:37:16 GMT</datelastmodified>
+			<uuidstructure>2bb97103-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 15:26:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 13:30:01 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -914,7 +915,7 @@
 			<type>sitemap_config</type>
 			<uuidstructure>149882c7-6bfa-11e0-ad63-c3baf286301a</uuidstructure>
 			<uuidresource>149882c8-6bfa-11e0-ad63-c3baf286301a</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 12:39:44 GMT</datelastmodified>
+			<datelastmodified>Mon, 23 May 2011 09:22:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 21 Apr 2011 09:31:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1068,6 +1069,26 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_contents/_new/infobox.html</source>
+			<destination>sites/default/_contents/_new/infobox.html</destination>
+			<type>v8infobox</type>
+			<uuidstructure>be1e30a4-851d-11e0-ade9-c1b6fb5574d7</uuidstructure>
+			<uuidresource>be1e30a5-851d-11e0-ade9-c1b6fb5574d7</uuidresource>
+			<datelastmodified>Mon, 23 May 2011 09:20:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 May 2011 09:19:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New Info Box]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -5513,6 +5534,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>sites/default/_contents/infoboxes</destination>
+			<type>folder</type>
+			<uuidstructure>f0b03360-851d-11e0-ade9-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Mon, 23 May 2011 09:20:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 May 2011 09:20:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Info Boxes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/_contents/lists</destination>
 			<type>v8listgallery</type>
 			<uuidstructure>e9e20cba-7013-11e0-a276-c3baf286301a</uuidstructure>
@@ -6510,10 +6549,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>1a1ff74f-78ae-11e0-991f-000c2972a6a4</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 13:29:58 GMT</datelastmodified>
+			<uuidstructure>2b19ae5b-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 11:37:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 13:29:58 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -6532,10 +6571,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>1c94c81b-78ae-11e0-991f-000c2972a6a4</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 13:30:02 GMT</datelastmodified>
+			<uuidstructure>2bbe2bf7-8143-11e0-9b05-c1b6fb5574d7</uuidstructure>
+			<datelastmodified>Wed, 18 May 2011 11:37:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 13:30:02 GMT</datecreated>
+			<datecreated>Wed, 18 May 2011 11:37:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
