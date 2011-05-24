@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/alkacon/opencms/v8/list/CmsListConfiguration.java,v $
- * Date   : $Date: 2011/05/06 15:43:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/24 10:37:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsListConfiguration extends CmsJspActionElement {
 
@@ -120,7 +120,23 @@ public class CmsListConfiguration extends CmsJspActionElement {
     public CmsListConfiguration(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super();
-        init(context, req, res);
+        init(context, req, res, null);
+    }
+
+    /**
+     * Constructor, with parameters.<p>
+     * 
+     * Use this constructor for the template.<p>
+     * 
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     * @param configPath the VFS path to the list configuration
+     */
+    public CmsListConfiguration(PageContext context, HttpServletRequest req, HttpServletResponse res, String configPath) {
+
+        super();
+        init(context, req, res, configPath);
     }
 
     /**
@@ -195,18 +211,30 @@ public class CmsListConfiguration extends CmsJspActionElement {
     }
 
     /**
+     * Initializes the list configuration.<p>
+     * 
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     * @param configPath the VFS path to the list configuration
+     * 
      * @see org.opencms.jsp.CmsJspBean#init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    @Override
-    public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public void init(PageContext context, HttpServletRequest req, HttpServletResponse res, String configPath) {
 
+        // call super initialization
         super.init(context, req, res);
 
         // collect the configuration information 
         try {
-            CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
             CmsObject cms = getCmsObject();
-            CmsFile file = cms.readFile(cms.readResource(element.getId()));
+            CmsFile file = null;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(configPath)) {
+                CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
+                file = cms.readFile(cms.readResource(element.getId()));
+            } else {
+                file = cms.readFile(configPath);
+            }
             m_content = CmsXmlContentFactory.unmarshal(cms, file);
 
             // process the default mappings (if set / available)
