@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/Attic/CmsImagePreviewProvider.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/25 10:16:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,29 +32,17 @@
 package org.opencms.ade.galleries.preview;
 
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
-import org.opencms.file.CmsObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * The preview provider for binary resources.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsImagePreviewProvider implements I_CmsPreviewProvider {
-
-    /**
-     * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewInclude(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public String getPreviewInclude(CmsObject cms, HttpServletRequest request, HttpServletResponse response) {
-
-        return "";
-    }
 
     /**
      * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()

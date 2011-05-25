@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/Attic/I_CmsPreviewProvider.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/25 10:16:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,13 @@
 
 package org.opencms.ade.galleries.preview;
 
-import org.opencms.file.CmsObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Interface for all resource preview provider.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -53,16 +49,4 @@ public interface I_CmsPreviewProvider {
      * @return the name of the preview
      */
     String getPreviewName();
-
-    /** 
-     * Returns the preview include.<p>
-     * 
-     * @param cms the cms object instance
-     * @param request the current request
-     * @param response the current response
-     * 
-     * @return the preview include 
-     *  
-     */
-    String getPreviewInclude(CmsObject cms, HttpServletRequest request, HttpServletResponse response);
 }
