@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2011/05/20 13:47:00 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -228,8 +229,15 @@ public class CmsElementUtil {
             CmsPermissionSet.ACCESS_VIEW,
             false,
             CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
-        elementBean.setNoEditReason(CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-            m_cms))));
+        String noEditReason = "";
+        if (CmsResourceTypeXmlContent.isXmlContent(element.getResource())) {
+            noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                m_cms)));
+        } else {
+            noEditReason = org.opencms.jsp.Messages.get().getBundle().key(
+                org.opencms.jsp.Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+        }
+        elementBean.setNoEditReason(noEditReason);
         elementBean.setStatus(resUtil.getStateAbbreviation());
 
         Map<String, String> contents = new HashMap<String, String>();

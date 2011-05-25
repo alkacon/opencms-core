@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagHeadIncludes.java,v $
- * Date   : $Date: 2011/05/06 15:49:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0
  */
@@ -139,13 +139,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      * @param resource the resource
      * 
      * @return the configured CSS head include resources
-     * 
-     * @throws CmsLoaderException if something goes wrong reading the resource type
      */
-    public static Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
+    public static Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) {
 
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-        if (resType instanceof CmsResourceTypeXmlContent) {
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             try {
                 CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
                     cms,

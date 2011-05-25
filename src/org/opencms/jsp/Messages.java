@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -140,6 +140,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1 = "GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0 = "GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";

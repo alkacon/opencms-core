@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/05/13 14:15:07 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
-import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
@@ -88,7 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 8.0
  */
@@ -584,8 +583,12 @@ public class CmsJspTagContainer extends TagSupport {
         }
         result.append("'");
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale);
-
+        String noEditReason = "";
+        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale);
+        } else {
+            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+        }
         result.append(" title='").append(elementBean.editorHash()).append("'");
         result.append(" alt='").append(elementBean.getSitePath()).append("'");
         if (elementBean.isCreateNew()) {
@@ -598,17 +601,11 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         result.append(" hasprops='").append(hasProperties(cms, elementBean.getResource())).append("'");
-        String viewPermission = "";
-        if (CmsResourceTypeJsp.isJsp(elementBean.getResource())) {
-            // JSP may not be handled in ADE
-            viewPermission += false;
-        } else {
-            viewPermission += cms.hasPermissions(
-                elementBean.getResource(),
-                CmsPermissionSet.ACCESS_VIEW,
-                false,
-                CmsResourceFilter.DEFAULT_ONLY_VISIBLE);
-        }
+        boolean viewPermission = cms.hasPermissions(
+            elementBean.getResource(),
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.DEFAULT_ONLY_VISIBLE);
         result.append(" hasviewpermission='").append(viewPermission).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
         if (isGroupcontainer) {

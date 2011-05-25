@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/05/20 13:47:00 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -55,6 +56,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -73,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 7.6
  */
@@ -299,12 +301,15 @@ public class CmsADEManager {
     public Map<String, CmsXmlContentProperty> getElementSettings(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
-        Map<String, CmsXmlContentProperty> settings = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            resource).getSettings();
-        result.putAll(settings);
-        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+            Map<String, CmsXmlContentProperty> settings = CmsXmlContentDefinition.getContentHandlerForResource(
+                cms,
+                resource).getSettings();
+            result.putAll(settings);
+            return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
+        }
+        return Collections.<String, CmsXmlContentProperty> emptyMap();
     }
 
     /**

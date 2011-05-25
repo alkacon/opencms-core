@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/05/05 07:14:48 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/25 10:14:40 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.content;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -55,6 +56,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -71,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -219,11 +221,14 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static Map<String, CmsXmlContentProperty> getPropertyInfo(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-        Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings();
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+            Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings();
 
-        CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
-        return resolveMacrosInProperties(propertiesConf, resolver);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+            return resolveMacrosInProperties(propertiesConf, resolver);
+        }
+        return Collections.<String, CmsXmlContentProperty> emptyMap();
     }
 
     /**
@@ -311,9 +316,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 result.put(entry.getKey(), entry.getValue());
             } catch (JSONException e) {
                 // should never happen
-                LOG.error(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
-                    widgetConfiguration), e);
+                LOG.error(
+                    Messages.get().container(Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1, widgetConfiguration),
+                    e);
             }
         }
         return result;
@@ -344,17 +349,19 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
 
         Map<String, String> result = new HashMap<String, String>();
-        try {
-            Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-                cms,
-                resource).getSettings();
-            for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-                CmsXmlContentProperty prop = entry.getValue();
-                result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            try {
+                Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
+                    cms,
+                    resource).getSettings();
+                for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+                    CmsXmlContentProperty prop = entry.getValue();
+                    result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
+                }
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (CmsException e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
         }
         result.putAll(properties);
         return result;
@@ -389,9 +396,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
             // property itself
             int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
-            String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
-                property.getName(),
-                propIndex));
+            String propPath = CmsXmlUtils.concatXpath(
+                elemPath,
+                CmsXmlUtils.createXpathElement(property.getName(), propIndex));
             I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
             I_CmsXmlContentValue propValue = propSchemaType.createValue(xmlContent, property, locale);
             xmlContent.addBookmarkForValue(propValue, propPath, locale, true);
@@ -408,9 +415,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 continue;
             }
             int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
-            String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
-                value.getName(),
-                valueIndex));
+            String valuePath = CmsXmlUtils.concatXpath(
+                propPath,
+                CmsXmlUtils.createXpathElement(value.getName(), valueIndex));
             I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
             I_CmsXmlContentValue valueValue = valueSchemaType.createValue(xmlContent, value, locale);
             xmlContent.addBookmarkForValue(valueValue, valuePath, locale, true);
@@ -430,9 +437,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                     continue;
                 }
                 int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
-                String valueFileListPath = CmsXmlUtils.concatXpath(valuePath, CmsXmlUtils.createXpathElement(
-                    valueFileList.getName(),
-                    valueFileListIndex));
+                String valueFileListPath = CmsXmlUtils.concatXpath(
+                    valuePath,
+                    CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
                 I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
                 I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
                     xmlContent,
