@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/25 15:25:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  */
@@ -2002,6 +2002,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         new Integer(mappingType),
                         propertyKey));
                 }
+                property.setOrigin(resource.getRootPath());
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

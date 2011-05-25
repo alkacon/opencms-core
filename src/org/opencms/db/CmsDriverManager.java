@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/05/25 15:25:39 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -6035,7 +6035,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             vfsDriver.deleteUrlNameMappingEntries(dbc, true, idFilter);
             vfsDriver.deleteUrlNameMappingEntries(dbc, false, idFilter);
         } else {
-            // copy the new entry (if there is one) to the online table  
+            // copy the new entries to the online table  
             List<CmsUrlNameMappingEntry> entries = vfsDriver.readUrlNameMappingEntries(
                 dbc,
                 false,
@@ -7151,9 +7151,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 } while (cont);
             } else {
                 properties = getVfsDriver(dbc).readPropertyObjects(dbc, dbc.currentProject(), resource);
-                for (CmsProperty prop : properties) {
-                    prop.setOrigin(resource.getRootPath());
-                }
+                //                for (CmsProperty prop : properties) {
+                //                    prop.setOrigin(resource.getRootPath());
+                //                }
             }
 
             // set all properties in the result list as frozen

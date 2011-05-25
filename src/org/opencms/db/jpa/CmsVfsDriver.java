@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsVfsDriver.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/25 15:25:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -121,7 +121,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0 
  */
@@ -2147,6 +2147,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         new Integer(mappingType),
                         propertyKey));
                 }
+                property.setOrigin(resource.getRootPath());
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
