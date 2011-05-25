@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/20 11:53:47 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2011/05/25 15:39:25 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsEditProperties;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
@@ -60,8 +61,8 @@ import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 8.0.0
  */
@@ -165,6 +166,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void addToRecent(String clientId) {
 
         m_controller.addToRecentList(clientId);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canEditProperties()
+     */
+    public boolean canEditProperties() {
+
+        return CmsContainerpageController.get().lockContainerpage();
     }
 
     /**
@@ -768,8 +777,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     private boolean shouldShowMenuEntry(I_CmsContextMenuEntry entry) {
 
-        if ((entry.getName() != null) && entry.getName().equals(CmsAvailabilityDialog.class.getName())) {
-            if (m_controller.isEditingDisabled()) {
+        if (m_controller.isEditingDisabled()) {
+            String name = entry.getName();
+            if ((name != null)
+                && (name.equals(CmsAvailabilityDialog.class.getName()) || name.equals(CmsEditProperties.class.getName()))) {
                 return false;
             }
         }

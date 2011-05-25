@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/25 15:39:25 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
@@ -42,6 +43,9 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -59,7 +63,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
@@ -301,6 +305,53 @@ public class CmsGwtService extends RemoteServiceServlet {
         if (user.isGuestUser()) {
             throw new CmsException(Messages.get().container(Messages.ERR_SESSION_EXPIRED_0));
         }
+    }
+
+    /**
+     * Locks the given resource and returns the lock.<p>
+     * 
+     * @param resource the resource to lock
+     * 
+     * @return the lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsLock getLockIfPossible(String resource) throws CmsException {
+
+        // lock the resource in the current project
+        CmsLock lock = getCmsObject().getLock(resource);
+        // prove is current lock from current but not in current project
+        if ((lock != null)
+            && lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(
+                getCmsObject().getRequestContext().getCurrentUser(),
+                getCmsObject().getRequestContext().getCurrentProject())) {
+            // file is locked by current user but not in current project
+            // change the lock from this file
+            getCmsObject().changeLock(resource);
+        }
+        // lock resource from current user in current project
+        getCmsObject().lockResource(resource);
+        // get current lock
+        lock = getCmsObject().getLock(resource);
+        return lock;
+    }
+
+    /**
+     * Converts a list of properties to a map.<p>
+     * 
+     * @param properties the list of properties 
+     * 
+     * @return a map from property names to properties 
+     */
+    protected Map<String, CmsProperty> getPropertiesByName(List<CmsProperty> properties) {
+
+        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
+        for (CmsProperty property : properties) {
+            String key = property.getName();
+            result.put(key, property.clone());
+        }
+        return result;
     }
 
     /**
