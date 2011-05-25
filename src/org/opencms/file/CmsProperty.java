@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/25 15:29:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert   
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -460,15 +460,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
             // null property must never be cloned
             return NULL_PROPERTY;
         }
-
         CmsProperty clone = new CmsProperty();
-
         clone.m_name = m_name;
         clone.m_structureValue = m_structureValue;
         clone.m_structureValueList = m_structureValueList;
         clone.m_resourceValue = m_resourceValue;
         clone.m_resourceValueList = m_resourceValueList;
         clone.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
+        clone.m_origin = m_origin;
         // the value for m_frozen does not need to be set as it is false by default
 
         return clone;
