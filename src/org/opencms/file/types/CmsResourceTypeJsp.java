@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2011/05/06 15:46:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/25 10:12:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,17 +36,21 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
@@ -56,6 +60,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "jsp".<p>
@@ -68,11 +74,20 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
+
+    /** Key for formatter setting container maximum width. */
+    public static final String FORMATTER_SETTING_MAX_WIDTH = "maxwidth";
+
+    /** Key for formatter setting container minimum width. */
+    public static final String FORMATTER_SETTING_MIN_WIDTH = "minwidth";
+
+    /** Key for formatter setting container type. */
+    public static final String FORMATTER_SETTING_TYPE = "type";
 
     /** The type id of the containerpage_template resource type. */
     private static final int CONTAINERPAGE_TEMPLATE_TYPE_ID = 21;
@@ -82,6 +97,9 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
     /** The type id of the JSP resource type. */
     private static final int JSP_RESOURCE_TYPE_ID = 4;
+
+    /** Static reference to the log. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.file.types.CmsResourceTypeJsp.class);
 
     /** The registered JSP resource type id's.    */
     private static List<Integer> m_jspResourceTypeIds = new ArrayList<Integer>();
@@ -207,13 +225,39 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     @Override
     public CmsFormatterConfiguration getFormattersForResource(CmsObject cms, CmsResource res) {
 
-        // currently a JSP fits all containers because of minwidth 1, maybe check for a property later
+        // by default JSPs may be rendered within any container with itself as formatter
+        String containerType = CmsFormatterBean.WILDCARD_TYPE;
+        int minWidth = 1;
+        int maxWidth = Integer.MAX_VALUE;
+        try {
+            // check template property to override default settings
+            String formatterSetting = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterSetting)) {
+                JSONObject setting = new JSONObject(formatterSetting);
+                if (setting.has(FORMATTER_SETTING_TYPE)) {
+                    containerType = setting.getString(FORMATTER_SETTING_TYPE);
+                }
+                if (setting.has(FORMATTER_SETTING_MIN_WIDTH)) {
+                    minWidth = setting.getInt(FORMATTER_SETTING_MIN_WIDTH);
+                }
+                if (setting.has(FORMATTER_SETTING_MAX_WIDTH)) {
+                    maxWidth = setting.getInt(FORMATTER_SETTING_MAX_WIDTH);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_PARSING_FORMATTER_SETTINGS_FROM_PROPERTY_2,
+                    res.getName(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE),
+                e);
+        }
         CmsFormatterBean selfFormatter = new CmsFormatterBean(
-            CmsFormatterBean.WILDCARD_TYPE,
+            containerType,
             res.getRootPath(),
             res.getStructureId(),
-            1,
-            Integer.MAX_VALUE,
+            minWidth,
+            maxWidth,
             true,
             false,
             res.getRootPath());

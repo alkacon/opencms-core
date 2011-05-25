@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/25 10:12:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_RESTYPE_CONFIG_NAME_3 = "ERR_INVALID_RESTYPE_CONFIG_NAME_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARSING_FORMATTER_SETTINGS_FROM_PROPERTY_2 = "ERR_PARSING_FORMATTER_SETTINGS_FROM_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROCESS_HTML_CONTENT_1 = "ERR_PROCESS_HTML_CONTENT_1";

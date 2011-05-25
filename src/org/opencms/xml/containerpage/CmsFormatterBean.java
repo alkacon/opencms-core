@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsFormatterBean.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/25 10:13:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsUUID;
  * @author Georg Westenberger
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -111,7 +111,7 @@ public class CmsFormatterBean {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_containerType)) {
             m_containerType = WILDCARD_TYPE;
         }
-        m_isTypeFormatter = WILDCARD_TYPE.equals(m_containerType);
+        m_isTypeFormatter = !WILDCARD_TYPE.equals(m_containerType);
 
         m_minWidth = minWidth;
         m_maxWidth = maxWidth;
