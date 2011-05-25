@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/urlname/CmsUrlNameMappingFilter.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/25 15:26:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -267,7 +267,8 @@ public class CmsUrlNameMappingFilter {
             && (m_name == null)
             && (m_namePattern == null)
             && (m_state == null)
-            && (m_rejectStructureId == null);
+            && (m_rejectStructureId == null)
+            && (m_locale == null);
     }
 
     /**
@@ -281,7 +282,8 @@ public class CmsUrlNameMappingFilter {
             && (m_name != null)
             && (m_namePattern == null)
             && (m_state == null)
-            && (m_rejectStructureId == null);
+            && (m_rejectStructureId == null)
+            && (m_locale == null);
     }
 
     /**

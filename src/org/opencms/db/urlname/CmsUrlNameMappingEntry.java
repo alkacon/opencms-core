@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/urlname/CmsUrlNameMappingEntry.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/25 15:26:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Comparator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -89,22 +89,6 @@ public class CmsUrlNameMappingEntry {
 
     /** The locale of the mapping. */
     protected String m_locale;
-
-    /**
-     * Creates a new URL name mapping entry.<p>
-     * 
-     * @param name the URL name 
-     * @param structureId the id to which the name is mapped 
-     * @param state the state of the entry 
-     * @param dateChanged the date of the entry's last change 
-     */
-    public CmsUrlNameMappingEntry(String name, CmsUUID structureId, int state, long dateChanged) {
-
-        m_name = name;
-        m_structureId = structureId;
-        m_state = state;
-        m_dateChanged = dateChanged;
-    }
 
     /**
      * Creates a new URL name mapping entry.<p>
@@ -193,6 +177,8 @@ public class CmsUrlNameMappingEntry {
         buf.append(m_state);
         buf.append(", ");
         buf.append(m_dateChanged);
+        buf.append(", ");
+        buf.append(m_locale);
         buf.append("]");
         return buf.toString();
     }
