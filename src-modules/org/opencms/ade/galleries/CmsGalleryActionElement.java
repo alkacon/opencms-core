@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/05/25 10:15:50 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -55,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -178,9 +177,6 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
         sb.append("';");
         wrapScript(sb);
-        for (I_CmsPreviewProvider provider : galleryService.getPreviewProvider()) {
-            sb.append(provider.getPreviewInclude(getCmsObject(), getRequest(), getResponse()));
-        }
         return sb.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/25 10:16:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.
  */
@@ -145,7 +145,7 @@ public class CmsTypesTab extends A_CmsListTab {
             listItem.setId(typeBean.getType());
             listItem.setItemTitle(typeBean.getTitle());
             listItem.setSubTitle(typeBean.getDescription());
-            if (m_dndHandler != null) {
+            if (typeBean.isCreatableType() && (m_dndHandler != null)) {
                 listItem.initMoveHandle(m_dndHandler);
             }
             addWidgetToList(listItem);

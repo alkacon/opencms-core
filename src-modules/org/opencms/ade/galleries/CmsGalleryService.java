@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/05/25 10:15:50 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries;
 
+import org.opencms.ade.config.CmsContainerPageConfigurationData;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -69,10 +70,11 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsConfigurationItem;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +91,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  * 
@@ -211,15 +213,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The gallery mode. */
     private GalleryMode m_galleryMode;
 
-    /** The preview provider. */
-    private Map<String, I_CmsPreviewProvider> m_previewProvider;
-
-    /** The available resource types. */
-    private List<I_CmsResourceType> m_resourceTypes;
-
-    /** The map from resource types to preview providers. */
-    private Map<I_CmsResourceType, I_CmsPreviewProvider> m_typeProviderMapping;
-
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
 
@@ -258,7 +251,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
 
-        return buildGalleriesList(readGalleryTypes(readResourceTypes(resourceTypes)));
+        return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
     }
 
     /**
@@ -272,8 +265,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
         //  data.setReferenceSitePath(referenceSitePath)
-        List<I_CmsResourceType> types = getResourceTypes();
-        List<CmsResourceTypeBean> typeList = buildTypesList(types);
+        List<CmsResourceTypeBean> types = getResourceTypeBeans();
         switch (m_galleryMode) {
 
             case editor:
@@ -284,8 +276,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     referencePath = getRequest().getParameter(ReqParam.gallerypath.name());
                 }
                 data.setReferenceSitePath(referencePath);
-                data.setTypes(typeList);
-                data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
+                data.setTypes(types);
+                data.setGalleries(buildGalleriesList(readGalleryInfosByTypeBeans(types)));
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))
                     || CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
                         ReqParam.currentelement.name()))) {
@@ -296,54 +288,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());
-                data.setTypes(typeList);
+                data.setTypes(types);
                 data.setStartTab(GalleryTabId.cms_tab_types);
                 break;
             default:
                 break;
         }
         return data;
-    }
-
-    /**
-     * Returns the preview provider for this gallery mode.<p>
-     * 
-     * @return the preview provider 
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    public Collection<I_CmsPreviewProvider> getPreviewProvider() throws CmsRpcException {
-
-        if (m_previewProvider == null) {
-            initPreviewProvider();
-        }
-        return m_previewProvider.values();
-    }
-
-    /**
-     * Returns the resource types configured to be used within the given gallery mode.<p>
-     * 
-     * @return the resource types
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    public List<I_CmsResourceType> getResourceTypes() throws CmsRpcException {
-
-        if (m_resourceTypes != null) {
-            return m_resourceTypes;
-        }
-        switch (m_galleryMode) {
-            case editor:
-            case view:
-            case widget:
-                m_resourceTypes = readResourceTypesFromRequest();
-                break;
-            case ade:
-                m_resourceTypes = readResourceTypesForContainerpage();
-                break;
-            default:
-        }
-        return m_resourceTypes;
     }
 
     /**
@@ -429,6 +380,31 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         assert false : "should never be executed";
         return null;
+    }
+
+    private void addGalleriesForType(Map<String, CmsGalleryTypeInfo> galleryTypeInfos, String typeName)
+    throws CmsLoaderException {
+
+        I_CmsResourceType contentType = getResourceManager().getResourceType(typeName);
+        for (I_CmsResourceType galleryType : contentType.getGalleryTypes()) {
+            try {
+                if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
+                    CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
+                    typeInfo.addContentType(contentType);
+                } else {
+                    CmsGalleryTypeInfo typeInfo;
+
+                    typeInfo = new CmsGalleryTypeInfo(
+                        galleryType,
+                        contentType,
+                        getGalleriesByType(galleryType.getTypeId()));
+
+                    galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
+                }
+            } catch (CmsException e) {
+                logError(e);
+            }
+        }
     }
 
     /**
@@ -585,39 +561,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @throws CmsRpcException 
      */
-    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types) throws CmsRpcException {
+    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types, List<String> creatableTypes) {
 
         ArrayList<CmsResourceTypeBean> list = new ArrayList<CmsResourceTypeBean>();
         if (types == null) {
             return list;
         }
-        Map<I_CmsResourceType, I_CmsPreviewProvider> typeMapping = getTypeProviderMapping();
+        Map<I_CmsResourceType, I_CmsPreviewProvider> typeProviderMapping = getPreviewProviderForTypes(types);
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
 
             I_CmsResourceType type = it.next();
             try {
-                CmsResourceTypeBean bean = new CmsResourceTypeBean();
-
-                // unique id
-                bean.setType(type.getTypeName());
-                // type nice name            
-                Locale wpLocale = getWorkplaceLocale();
-                // type title and subtitle
-                bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-                bean.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
-                // gallery id of corresponding galleries
-                ArrayList<String> galleryNames = new ArrayList<String>();
-                Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
-                while (galleryTypes.hasNext()) {
-                    I_CmsResourceType galleryType = galleryTypes.next();
-                    galleryNames.add(galleryType.getTypeName());
-                }
-                bean.setGalleryTypeNames(galleryNames);
-                I_CmsPreviewProvider preview = typeMapping.get(type);
-                if (preview != null) {
-                    bean.setPreviewProviderName(preview.getPreviewName());
-                }
+                CmsResourceTypeBean bean = createTypeBean(
+                    type,
+                    typeProviderMapping.get(type),
+                    creatableTypes.contains(type.getTypeName()));
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
@@ -630,6 +589,40 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
         }
         return list;
+    }
+
+    /**
+     * Creates a resource type bean for the given type.<p>
+     * 
+     * @param type the resource type
+     * @param creatable if the type may be created by the current user
+     * 
+     * @return the resource type bean
+     */
+    private CmsResourceTypeBean createTypeBean(I_CmsResourceType type, I_CmsPreviewProvider preview, boolean creatable) {
+
+        CmsResourceTypeBean result = new CmsResourceTypeBean();
+
+        // unique id
+        result.setType(type.getTypeName());
+        // type nice name            
+        Locale wpLocale = getWorkplaceLocale();
+        // type title and subtitle
+        result.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
+        result.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+        // gallery id of corresponding galleries
+        ArrayList<String> galleryNames = new ArrayList<String>();
+        Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
+        while (galleryTypes.hasNext()) {
+            I_CmsResourceType galleryType = galleryTypes.next();
+            galleryNames.add(galleryType.getTypeName());
+        }
+        result.setGalleryTypeNames(galleryNames);
+        if (preview != null) {
+            result.setPreviewProviderName(preview.getPreviewName());
+        }
+        result.setCreatableType(creatable);
+        return result;
     }
 
     /**
@@ -750,6 +743,36 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Reads the preview provider configuration and generates needed type-provider mappings.<p>
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    private Map<I_CmsResourceType, I_CmsPreviewProvider> getPreviewProviderForTypes(List<I_CmsResourceType> types) {
+
+        Map<String, I_CmsPreviewProvider> previewProviderMap = new HashMap<String, I_CmsPreviewProvider>();
+        Map<I_CmsResourceType, I_CmsPreviewProvider> typeProviderMapping = new HashMap<I_CmsResourceType, I_CmsPreviewProvider>();
+        for (I_CmsResourceType type : types) {
+            String providerClass = type.getGalleryPreviewProvider().trim();
+            try {
+                if (previewProviderMap.containsKey(providerClass)) {
+                    typeProviderMapping.put(type, previewProviderMap.get(providerClass));
+                } else {
+                    I_CmsPreviewProvider previewProvider = (I_CmsPreviewProvider)Class.forName(providerClass).newInstance();
+                    previewProviderMap.put(providerClass, previewProvider);
+                    typeProviderMapping.put(type, previewProvider);
+                }
+            } catch (Exception e) {
+                logError(new CmsException(Messages.get().container(
+                    Messages.ERROR_INSTANCING_PREVIEW_PROVIDER_2,
+                    providerClass,
+                    type.getTypeName()), e));
+            }
+
+        }
+        return typeProviderMapping;
+    }
+
+    /**
      * Returns the resourceManager.<p>
      *
      * @return the resourceManager
@@ -760,6 +783,52 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_resourceManager = OpenCms.getResourceManager();
         }
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the resource types configured to be used within the given gallery mode.<p>
+     * 
+     * @return the resource types
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    private List<CmsResourceTypeBean> getResourceTypeBeans() throws CmsRpcException {
+
+        List<I_CmsResourceType> resourceTypes = null;
+        List<String> creatableTypes = null;
+        switch (m_galleryMode) {
+            case editor:
+            case view:
+            case widget:
+                resourceTypes = readResourceTypesFromRequest();
+                creatableTypes = Collections.<String> emptyList();
+                break;
+            case ade:
+                resourceTypes = new ArrayList<I_CmsResourceType>();
+                creatableTypes = new ArrayList<String>();
+                try {
+                    CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+                        getCmsObject(),
+                        getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
+                    Map<String, CmsConfigurationItem> typeConfig = configData.getTypeConfiguration();
+                    for (Entry<String, CmsConfigurationItem> configEntry : typeConfig.entrySet()) {
+                        resourceTypes.add(getResourceManager().getResourceType(configEntry.getKey()));
+                        if (CmsContainerPageConfigurationData.isCreatableType(
+                            getCmsObject(),
+                            configEntry.getKey(),
+                            configEntry.getValue())) {
+                            creatableTypes.add(configEntry.getKey());
+                        }
+                    }
+                } catch (CmsException e) {
+                    error(e);
+                }
+                break;
+            default:
+                resourceTypes = Collections.<I_CmsResourceType> emptyList();
+                creatableTypes = Collections.<String> emptyList();
+        }
+        return buildTypesList(resourceTypes, creatableTypes);
     }
 
     /**
@@ -799,21 +868,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Returns the resource type - preview provider mapping.<p>
-     * 
-     * @return the resource type - preview provider mapping
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    private Map<I_CmsResourceType, I_CmsPreviewProvider> getTypeProviderMapping() throws CmsRpcException {
-
-        if (m_typeProviderMapping == null) {
-            initPreviewProvider();
-        }
-        return m_typeProviderMapping;
-    }
-
-    /**
      * Returns the workplace locale from the current user's settings.<p>
      * 
      * @return the workplace locale
@@ -824,32 +878,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         }
         return m_wpLocale;
-    }
-
-    /**
-     * Reads the preview provider configuration and generates needed type-provider mappings.<p>
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    private void initPreviewProvider() throws CmsRpcException {
-
-        m_previewProvider = new HashMap<String, I_CmsPreviewProvider>();
-        m_typeProviderMapping = new HashMap<I_CmsResourceType, I_CmsPreviewProvider>();
-        for (I_CmsResourceType type : getResourceTypes()) {
-            String providerClass = type.getGalleryPreviewProvider().trim();
-            try {
-                if (m_previewProvider.containsKey(providerClass)) {
-                    m_typeProviderMapping.put(type, m_previewProvider.get(providerClass));
-                } else {
-                    I_CmsPreviewProvider previewProvider = (I_CmsPreviewProvider)Class.forName(providerClass).newInstance();
-                    m_previewProvider.put(providerClass, previewProvider);
-                    m_typeProviderMapping.put(type, previewProvider);
-                }
-            } catch (Exception e) {
-                log(e.getLocalizedMessage(), e);
-            }
-
-        }
     }
 
     /**
@@ -945,79 +973,37 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return a map with gallery type and  the associated galleries
      */
-    private Map<String, CmsGalleryTypeInfo> readGalleryTypes(List<I_CmsResourceType> resourceTypes) {
+    private Map<String, CmsGalleryTypeInfo> readGalleryInfosByTypeBeans(List<CmsResourceTypeBean> resourceTypes) {
 
         Map<String, CmsGalleryTypeInfo> galleryTypeInfos = new HashMap<String, CmsGalleryTypeInfo>();
-        Iterator<I_CmsResourceType> iTypes = resourceTypes.iterator();
-        while (iTypes.hasNext()) {
-            I_CmsResourceType contentType = iTypes.next();
-            Iterator<I_CmsResourceType> galleryTypes = contentType.getGalleryTypes().iterator();
-            while (galleryTypes.hasNext()) {
-                try {
-                    I_CmsResourceType galleryType = galleryTypes.next();
-                    if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
-                        CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
-                        typeInfo.addContentType(contentType);
-                    } else {
-                        CmsGalleryTypeInfo typeInfo;
-
-                        typeInfo = new CmsGalleryTypeInfo(
-                            galleryType,
-                            contentType,
-                            getGalleriesByType(galleryType.getTypeId()));
-
-                        galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
-                    }
-                } catch (CmsException e) {
-                    logError(e);
-                }
+        for (CmsResourceTypeBean typeBean : resourceTypes) {
+            try {
+                addGalleriesForType(galleryTypeInfos, typeBean.getType());
+            } catch (CmsLoaderException e1) {
+                logError(e1);
             }
         }
         return galleryTypeInfos;
     }
 
     /**
-     * Reads a list of resource types by the given names.<p>
+     * Returns a map with gallery type names associated with the list of available galleries for this type.<p>
      * 
-     * @param typeNames the type names
+     * @param resourceTypes the resources types to collect the galleries for 
      * 
-     * @return the resource types
+     * @return a map with gallery type and  the associated galleries
      */
-    private List<I_CmsResourceType> readResourceTypes(List<String> typeNames) {
+    private Map<String, CmsGalleryTypeInfo> readGalleryInfosByTypeNames(List<String> resourceTypes) {
 
-        List<I_CmsResourceType> resTypes = new ArrayList<I_CmsResourceType>();
-        for (String typeName : typeNames) {
+        Map<String, CmsGalleryTypeInfo> galleryTypeInfos = new HashMap<String, CmsGalleryTypeInfo>();
+        for (String typeName : resourceTypes) {
             try {
-                resTypes.add(getResourceManager().getResourceType(typeName));
-            } catch (CmsLoaderException e) {
-                logError(e);
+                addGalleriesForType(galleryTypeInfos, typeName);
+            } catch (CmsLoaderException e1) {
+                logError(e1);
             }
         }
-        return resTypes;
-    }
-
-    /**
-     * Returns the resource types configured to be used within the container-page editor.<p>
-     * 
-     * @return the resource types
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    private List<I_CmsResourceType> readResourceTypesForContainerpage() throws CmsRpcException {
-
-        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
-        try {
-            Collection<CmsResource> resources = OpenCms.getADEManager().getSearchableResourceTypes(
-                getCmsObject(),
-                getCmsObject().getRequestContext().getUri(),
-                getThreadLocalRequest());
-            for (CmsResource resource : resources) {
-                result.add(getResourceManager().getResourceType(resource));
-            }
-        } catch (CmsException e) {
-            error(e);
-        }
-        return result;
+        return galleryTypeInfos;
     }
 
     /**
@@ -1083,5 +1069,4 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         m_galleryMode = galleryMode;
     }
-
 }

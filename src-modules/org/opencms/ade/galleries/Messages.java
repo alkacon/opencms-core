@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/25 10:15:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERROR_BUILD_TYPE_LIST_1 = "ERROR_BUILD_TYPE_LIST_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERROR_INSTANCING_PREVIEW_PROVIDER_2 = "ERROR_INSTANCING_PREVIEW_PROVIDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_TITLE_0 = "GUI_DOWNLOAD_GALLERY_TITLE_0";
