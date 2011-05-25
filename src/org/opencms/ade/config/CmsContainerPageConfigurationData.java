@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsContainerPageConfigurationData.java,v $
- * Date   : $Date: 2011/05/06 15:53:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/25 10:13:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,10 @@ package org.opencms.ade.config;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -53,7 +55,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -115,7 +117,12 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
         boolean editable = settings.isEditable(cms, permissionCheckFolder);
         boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
-        return editable && controlPermission;
+        boolean hasWritePermission = cms.hasPermissions(
+            permissionCheckFolder,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        return editable && controlPermission && hasWritePermission;
     }
 
     /**
@@ -141,22 +148,6 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
     }
 
     /**
-     * Returns the searchable resource types.<p>
-     * 
-     * @param cms the CMS context
-     * 
-     * @return the searchable resource types
-     */
-    public Collection<CmsResource> getSearchableElements(CmsObject cms) {
-
-        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
-        for (CmsConfigurationItem item : m_typeConfiguration.values()) {
-            result.add(item.getSourceFile());
-        }
-        return result;
-    }
-
-    /**
      * Gets the list of 'prototype resources' which are used for creating new content elements.
      * 
      * @param cms the CMS context
@@ -174,6 +165,22 @@ public class CmsContainerPageConfigurationData implements I_CmsMergeable<CmsCont
             if (isCreatableType(cms, type, item)) {
                 result.add(item.getSourceFile());
             }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the searchable resource types.<p>
+     * 
+     * @param cms the CMS context
+     * 
+     * @return the searchable resource types
+     */
+    public Collection<CmsResource> getSearchableElements(CmsObject cms) {
+
+        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
+        for (CmsConfigurationItem item : m_typeConfiguration.values()) {
+            result.add(item.getSourceFile());
         }
         return result;
     }
