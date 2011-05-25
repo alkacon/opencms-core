@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/05 06:21:30 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * 
  * @since 8.0.0
  */
@@ -1622,6 +1622,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the page CSS
+     */
+    @Source("properties.css")
+    public I_CmsPropertiesCss propertiesCss();
 
     /**
      * Access method.<p>

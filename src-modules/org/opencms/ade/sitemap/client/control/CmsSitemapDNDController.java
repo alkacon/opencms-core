@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/05/08 15:18:36 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,25 +33,25 @@ package org.opencms.ade.sitemap.client.control;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +66,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -256,7 +256,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         CmsDNDHandler handler) {
 
         if (!isChangedPosition(draggable, target, true)) {
-            draggable.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
+            draggable.getElement().addClassName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
             List<Element> itemWidget = CmsDomUtil.getElementsByClass(
                 org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContainer(),
                 handler.getPlaceholder());
@@ -264,7 +264,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 CmsDomUtil.addDisablingOverlay(itemWidget.get(0));
             }
         } else {
-            draggable.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
+            draggable.getElement().removeClassName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
             CmsDomUtil.removeDisablingOverlay(handler.getPlaceholder());
         }
     }
@@ -326,7 +326,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                     entry.getVfsPath(),
                     Collections.<CmsPropertyModification> emptyList(),
                     !entry.isNew(),
-                    ReloadMode.none);
+                    CmsReloadMode.none);
                 m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
             } else {
                 CmsDebugLog.getInstance().printLine(
@@ -349,7 +349,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContainer(),
             element);
         if ((itemWidget != null) && (itemWidget.size() > 0)) {
-            itemWidget.get(0).addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().contentHide());
+            itemWidget.get(0).addClassName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().contentHide());
         }
     }
 

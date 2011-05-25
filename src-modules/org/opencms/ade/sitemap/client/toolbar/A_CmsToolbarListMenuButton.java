@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/A_CmsToolbarListMenuButton.java,v $
- * Date   : $Date: 2011/05/08 15:18:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -93,7 +93,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
         m_tabs = new CmsTabbedPanel<FlowPanel>();
         SimplePanel tabsContainer = new SimplePanel();
-        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+        tabsContainer.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
         tabsContainer.add(m_tabs);
         FlowPanel content = new FlowPanel();
         content.add(tabsContainer);
@@ -144,7 +144,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         FlowPanel tab = new FlowPanel();
         tab.setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
         list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        list.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
+        list.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         tab.add(list);
         return tab;
     }

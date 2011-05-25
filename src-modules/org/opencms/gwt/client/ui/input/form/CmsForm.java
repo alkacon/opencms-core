@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2011/05/07 15:28:33 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  * 
@@ -510,6 +510,9 @@ public class CmsForm {
     protected void updateFieldValidationStatus(I_CmsFormField field, CmsValidationResult result) {
 
         if (result.hasNewValue()) {
+            if (field.getModel() != null) {
+                field.getModel().setValue(result.getNewValue(), true);
+            }
             field.getWidget().setFormValueAsString(result.getNewValue());
         }
         String errorMessage = result.getErrorMessage();
@@ -580,7 +583,7 @@ public class CmsForm {
      * 
      * @param formField the form field whose widget should be initialized 
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings( {"rawtypes", "unchecked"})
     private void initializeFormFieldWidget(final I_CmsFormField formField) {
 
         final I_CmsFormWidget widget = formField.getWidget();

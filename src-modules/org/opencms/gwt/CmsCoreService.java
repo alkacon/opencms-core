@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/18 15:22:02 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0.0
  * 
@@ -418,6 +418,17 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
         boolean toolbarVisible = getSessionCache().isToolbarVisible();
+
+        CmsUUID structureId = null;
+
+        try {
+            CmsResource requestedResource = cms.readResource(cms.getRequestContext().getUri());
+            structureId = requestedResource.getStructureId();
+        } catch (CmsVfsResourceNotFoundException e) {
+        } catch (CmsException e) {
+            throw new RuntimeException(e);
+        }
+
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -428,6 +439,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
             cms.getRequestContext().getUri(),
             navigationUri,
+            structureId,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
             System.currentTimeMillis(),
             toolbarVisible);
@@ -689,36 +701,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return null;
-    }
-
-    /**
-     * Locks the given resource and returns the lock.<p>
-     * 
-     * @param resource the resource to lock
-     * 
-     * @return the lock
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsLock getLockIfPossible(String resource) throws CmsException {
-
-        // lock the resource in the current project
-        CmsLock lock = getCmsObject().getLock(resource);
-        // prove is current lock from current but not in current project
-        if ((lock != null)
-            && lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())
-            && !lock.isOwnedInProjectBy(
-                getCmsObject().getRequestContext().getCurrentUser(),
-                getCmsObject().getRequestContext().getCurrentProject())) {
-            // file is locked by current user but not in current project
-            // change the lock from this file
-            getCmsObject().changeLock(resource);
-        }
-        // lock resource from current user in current project
-        getCmsObject().lockResource(resource);
-        // get current lock
-        lock = getCmsObject().getLock(resource);
-        return lock;
     }
 
     /**

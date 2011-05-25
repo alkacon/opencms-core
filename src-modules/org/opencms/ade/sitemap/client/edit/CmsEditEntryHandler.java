@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/05/06 08:33:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,24 +31,30 @@
 
 package org.opencms.ade.sitemap.client.edit;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsClientTemplateBean;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The mode handler for the 'edit entry' mode of the sitemap entry editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -74,8 +80,23 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     }
 
+    public List<String> getAllPropertyNames() {
+
+        return CmsSitemapView.getInstance().getController().getData().getAllPropertyNames();
+    }
+
+    public CmsUUID getDefaultFileId() {
+
+        return m_entry.getDefaultFileId();
+    }
+
+    public Map<String, CmsClientProperty> getDefaultFileProperties() {
+
+        return m_entry.getDefaultFileProperties();
+    }
+
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getDescriptionText()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDescriptionText()
      */
     public String getDescriptionText() {
 
@@ -83,7 +104,7 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getDialogTitle()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDialogTitle()
      */
     public String getDialogTitle() {
 
@@ -92,7 +113,7 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getForbiddenUrlNames()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getForbiddenUrlNames()
      */
     public List<String> getForbiddenUrlNames() {
 
@@ -114,39 +135,92 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         return result;
     }
 
+    public CmsUUID getId() {
+
+        return m_entry.getId();
+    }
+
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getPageInfo()
+     * Gets the property object which would be inherited by a sitemap entry.<p>
+     * 
+     * @param entry the sitemap entry 
+     * @param name the name of the property 
+     * @return the property object which would be inherited 
+     */
+    public CmsClientProperty getInheritedProperty(String name) {
+
+        return CmsSitemapView.getInstance().getController().getInheritedPropertyObject(m_entry, name);
+    }
+
+    public String getModeClass() {
+
+        if (CmsSitemapView.getInstance().isNavigationMode()) {
+            return I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode();
+        } else {
+            return I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode();
+        }
+    }
+
+    public Map<String, CmsClientProperty> getOwnProperties() {
+
+        return m_entry.getOwnProperties();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getPageInfo()
      */
     public CmsListInfoBean getPageInfo() {
 
         return m_pageInfo;
     }
 
+    public String getPath() {
+
+        return m_entry.getSitePath();
+    }
+
+    public Map<String, CmsClientTemplateBean> getPossibleTemplates() {
+
+        return CmsSitemapView.getInstance().getController().getData().getTemplates();
+    }
+
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode)
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.gwt.client.property.CmsReloadMode)
      */
     public void handleSubmit(
         String newUrlName,
         String vfsPath,
         List<CmsPropertyModification> propertyChanges,
         boolean editedName,
-        final ReloadMode reloadStatus) {
+        final CmsReloadMode reloadStatus) {
 
-        // edit
         m_controller.editAndChangeName(m_entry, newUrlName, vfsPath, propertyChanges, editedName, reloadStatus);
 
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#hasEditableName()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#hasEditableName()
      */
     public boolean hasEditableName() {
 
         return !getEntry().isRoot();
     }
 
+    public boolean isFolder() {
+
+        return m_entry.isFolderType();
+    }
+
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isSimpleMode()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#isHiddenProperty(java.lang.String)
+     */
+    public boolean isHiddenProperty(String key) {
+
+        return CmsSitemapView.getInstance().getController().isHiddenProperty(key);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#isSimpleMode()
      */
     public boolean isSimpleMode() {
 
@@ -161,6 +235,11 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public void setPageInfo(CmsListInfoBean pageInfo) {
 
         m_pageInfo = pageInfo;
+    }
+
+    protected CmsClientSitemapEntry getEntry() {
+
+        return m_entry;
     }
 
     /**

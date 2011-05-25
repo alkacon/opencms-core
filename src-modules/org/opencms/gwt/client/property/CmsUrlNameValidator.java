@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsUrlNameValidator.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsUrlNameValidator.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,43 +29,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.edit;
+package org.opencms.gwt.client.property;
 
-import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.validation.I_CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsStringUtil;
-
-import java.util.List;
+import org.opencms.util.CmsUUID;
 
 /**
- * Validator class for the URL name field in the sitemap entry editor.<p>
+ * Validator class for the URL name field in the property editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
 public class CmsUrlNameValidator implements I_CmsValidator {
 
     /** The server-side validator class. */
-    private static final String SERVER_VALIDATOR = "org.opencms.ade.sitemap.CmsUrlNameValidationService";
+    private static final String SERVER_VALIDATOR = "org.opencms.gwt.CmsUrlNameValidationService";
 
-    /** The other url names which the URL name should not be equal to. */
-    private List<String> m_otherUrlNames;
+    /** The path of the parent folder of the edited resource. */
+    private String m_parentPath;
+
+    /** The structure id of the edited resource. */
+    private CmsUUID m_structureId;
 
     /**
-     * Creates a new URL name validator which checks that the translated URL name does not already exist
-     * in a list of URL names.<p>
+     * Creates a new URL name validator.<p>
      * 
-     * @param otherUrlNames the URL names which the URL name which is validated should not equal 
+     * @param parentPath the parent path of the resource for which the URL name is being validated 
+     * @param id the id of the resource whose URL name is being validated 
      */
-    public CmsUrlNameValidator(List<String> otherUrlNames) {
+    public CmsUrlNameValidator(String parentPath, CmsUUID id) {
 
-        m_otherUrlNames = otherUrlNames;
+        m_parentPath = parentPath;
+        m_structureId = id;
     }
 
     /**
@@ -74,15 +76,16 @@ public class CmsUrlNameValidator implements I_CmsValidator {
     public void validate(I_CmsFormField field, I_CmsValidationController controller) {
 
         String value = field.getWidget().getFormValueAsString();
-
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-            String message = Messages.get().key(Messages.GUI_URLNAME_CANT_BE_EMPTY_0);
+            String message = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_URLNAME_CANT_BE_EMPTY_0);
             controller.provideValidationResult(field.getId(), new CmsValidationResult(message));
             return;
         }
-        controller.validateAsync(field.getId(), value, SERVER_VALIDATOR, CmsStringUtil.listAsString(
-            m_otherUrlNames,
-            "|"));
+        controller.validateAsync(field.getId(), value, SERVER_VALIDATOR, "parent:"
+            + m_parentPath
+            + "|id:"
+            + m_structureId);
     }
 
 }

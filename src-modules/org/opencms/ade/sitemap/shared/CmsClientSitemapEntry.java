@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsLinkBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -49,7 +51,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0 
  */

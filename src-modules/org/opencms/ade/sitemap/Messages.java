@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0 
  */
@@ -47,9 +47,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TITLE_MUST_NOT_BE_EMPTY_0 = "ERR_TITLE_MUST_NOT_BE_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_URL_NAME_ALREADY_EXISTS_1 = "ERR_URL_NAME_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_1 = "GUI_EDITOR_TITLE_1";

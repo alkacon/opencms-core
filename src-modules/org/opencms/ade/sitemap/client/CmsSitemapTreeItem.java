@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,25 +32,23 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController.ReloadMode;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -60,6 +58,8 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -82,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 8.0.0
  * 
@@ -165,7 +165,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /** The CSS bundle used by this widget. */
-    private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
+    private static final I_CmsSitemapItemCss CSS = I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss();
 
     /** A map of sitemap tree items by entry id. */
     private static Map<CmsUUID, CmsSitemapTreeItem> m_itemsById = new HashMap<CmsUUID, CmsSitemapTreeItem>();
@@ -280,7 +280,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                     m_entry.getVfsPath(),
                                     propChanges,
                                     false,
-                                    ReloadMode.none);
+                                    CmsReloadMode.none);
                             }
 
                         };
@@ -395,7 +395,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_listItemWidget.setBackground(Background.DEFAULT);
         Element helper = super.getDragHelper(target);
         // ensure the proper CSS context for the drag helper
-        m_provisionalParent.addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+        m_provisionalParent.addClassName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         return helper;
     }
 
@@ -490,7 +490,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public void onDragCancel() {
 
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
+        removeStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
         super.onDragCancel();
     }
 
@@ -500,7 +500,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public void onDrop(I_CmsDropTarget target) {
 
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
+        removeStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
         super.onDrop(target);
     }
 
@@ -512,7 +512,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         setOpen(false);
         // transform the widget into a position indicator
-        addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
+        addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar != null) {
             hoverbar.hide();
@@ -697,25 +697,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public void updateSitePath(String sitePath) {
 
         String newSubTitle = getDisplayedUrl(sitePath);
-
-        //        CmsDetailPageTable detailPageTable = CmsSitemapView.getInstance().getController().getDetailPageTable();
-        //        String type;
-        //        String suffix = "";
-        //        switch (detailPageTable.getStatus(m_entry.getId())) {
-        //            case firstDetailPage:
-        //                type = detailPageTable.get(m_entry.getId()).getType();
-        //                suffix = "&nbsp;&nbsp;" + wrapBold("(*" + type + ")", "Default detail page for " + type);
-        //                break;
-        //            case otherDetailPage:
-        //                type = detailPageTable.get(m_entry.getId()).getType();
-        //                suffix = "&nbsp;&nbsp;" + wrapBold("(" + type + ")", "Detail page for " + type);
-        //                break;
-        //            case noDetailPage:
-        //            default:
-        //                suffix = "";
-        //                break;
-        //        }
-        //        newSubTitle = newSubTitle + suffix;
 
         m_listItemWidget.setSubtitleLabel(newSubTitle);
         String name = getName(sitePath);

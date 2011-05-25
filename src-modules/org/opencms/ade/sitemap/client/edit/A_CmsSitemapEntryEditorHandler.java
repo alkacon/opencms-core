@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,17 +33,18 @@ package org.opencms.ade.sitemap.client.edit;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 
 /**
  * The skeleton for the sitemap entry editor handlers.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsSitemapEntryEditorHandler {
+public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsPropertyEditorHandler {
 
     /** The sitemap controller for this mode handler. */
     protected CmsSitemapController m_controller;
@@ -64,34 +65,11 @@ public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsSitemapEntr
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getController()
-     */
-    public CmsSitemapController getController() {
-
-        return m_controller;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getEntry()
-     */
-    public CmsClientSitemapEntry getEntry() {
-
-        return m_entry;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getName()
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getName()
      */
     public String getName() {
 
         return m_entry.getName();
     }
 
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getTitle()
-     */
-    public String getTitle() {
-
-        return m_entry.getTitle();
-    }
 }

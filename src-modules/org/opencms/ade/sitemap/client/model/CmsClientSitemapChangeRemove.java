@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
- * Date   : $Date: 2011/05/06 15:56:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,12 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -101,9 +101,9 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
             CmsClientProperty.PROPERTY_NAVTEXT,
             null,
             true);
-        propMod.execute(controller);
+        controller.executePropertyModification(propMod);
         propMod = new CmsPropertyModification(m_entry.getId(), CmsClientProperty.PROPERTY_NAVTEXT, null, true);
-        propMod.execute(controller);
+        controller.executePropertyModification(propMod);
         m_entry.normalizeProperties();
         // apply to clipboard model
         applyToClipboardData(controller.getData().getClipboardData());

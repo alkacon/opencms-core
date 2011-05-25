@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2011/05/08 15:18:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -152,7 +152,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
         clearButton.setText(Messages.get().key(Messages.GUI_CLIPBOARD_CLEAR_LIST_0));
         clearButton.setTitle(Messages.get().key(Messages.GUI_CLIPBOARD_CLEAR_LIST_0));
         clearButton.addClickHandler(handler);
-        clearButton.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().listClearButton());
+        clearButton.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().listClearButton());
         return clearButton;
     }
 }

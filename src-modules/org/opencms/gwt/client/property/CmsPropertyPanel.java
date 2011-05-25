@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsPropertyPanel.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.ui;
+package org.opencms.gwt.client.property;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
@@ -67,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -167,22 +165,16 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         // TODO: replace with dynamic calculation
         m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
 
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        CmsListItemWidgetUtil.setPageIcon(liWidget, info.getPageIcon());
-        if (CmsSitemapView.getInstance().isNavigationMode()) {
-            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
-        } else {
-            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
-        }
+        CmsListItemWidget liWidget = createListItemWidget(info);
         m_simpleTabWrapper.add(liWidget);
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_simpleTab.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
+        m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
 
-        m_sharedTabWrapper.add(new CmsListItemWidget(info));
+        m_sharedTabWrapper.add(createListItemWidget(info));
         m_sharedTabWrapper.add(m_sharedTab);
 
-        m_individualTabWrapper.add(new CmsListItemWidget(info));
+        m_individualTabWrapper.add(createListItemWidget(info));
         m_individualTabWrapper.add(m_individualTab);
 
         CmsDomUtil.makeScrollable(m_simpleTabWrapper);
@@ -333,6 +325,15 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         }
     }
 
+    protected CmsListItemWidget createListItemWidget(CmsListInfoBean info) {
+
+        CmsListItemWidget result = new CmsListItemWidget(info);
+        if (info.getPageIcon() != null) {
+            CmsListItemWidgetUtil.setPageIcon(result, info.getPageIcon());
+        }
+        return result;
+    }
+
     /**
      * Partitions a collection of fields by group.<p>
      * 
@@ -368,7 +369,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      * 
      * @param fields the fields 
      * 
-     * @param displaySet the set to which the field property names should be added if the corresponding property should be display at the top.
+     * @return the set of property names of the preprocessed fields 
      */
     private Set<String> preprocessFields(Collection<I_CmsFormField> fields) {
 

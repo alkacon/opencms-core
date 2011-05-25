@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsSimpleSitemapFormFieldPanel.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -79,14 +79,14 @@ public class CmsSimpleSitemapFormFieldPanel extends A_CmsFormFieldPanel {
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
         CmsListItemWidgetUtil.setPageIcon(liWidget, info.getPageIcon());
         if (CmsSitemapView.getInstance().isNavigationMode()) {
-            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+            liWidget.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         } else {
-            liWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
+            liWidget.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
         }
         m_panel.add(liWidget);
         m_panel.add(m_innerPanel);
         m_innerPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().navModePropertiesBox());
+        m_innerPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.propertiesCss().navModePropertiesBox());
         //setBorder(m_panel);
         initWidget(m_panel);
     }

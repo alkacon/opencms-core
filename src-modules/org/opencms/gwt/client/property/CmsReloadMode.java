@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsWidgetNotSupportedException.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsReloadMode.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,30 +29,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.edit;
+package org.opencms.gwt.client.property;
 
 /**
- * The exception which is thrown when a widget is not supported in the sitemap entry editor.<p>
+ * An enum specifying whose values specify whether an entry or its parent need to be reloaded.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision 1.0$
  * 
  * @since 8.0.0
  */
-public class CmsWidgetNotSupportedException extends RuntimeException {
-
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Creates a new exception instance.<p>
-     * 
-     * @param widgetType the unsupported widget type 
-     */
-    public CmsWidgetNotSupportedException(String widgetType) {
-
-        super("The widget type " + widgetType + "is not supported by the sitemap editor!");
-    }
-
+public enum CmsReloadMode {
+    /** This value means that neither the entry nor its parent should be reloaded. */
+    none,
+    /** This value means the entry should be reloaded. */
+    reloadEntry,
+    /** This value means the entry's parent should be reloaded. */
+    reloadParent;
 }

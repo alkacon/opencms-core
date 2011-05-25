@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsUrlNameValidationService.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsUrlNameValidationService.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap;
+package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
-import org.opencms.gwt.I_CmsValidationService;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
+import java.util.Map;
 
 /**
  * Validation class which both translates a sitemap URL name and checks whether it already exists in a '|'-separated 
@@ -41,7 +48,7 @@ import org.opencms.gwt.shared.CmsValidationResult;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -52,42 +59,30 @@ public class CmsUrlNameValidationService implements I_CmsValidationService {
      */
     public CmsValidationResult validate(CmsObject cms, String value, String config) {
 
-        //TODO: implement this correctly
-
-        //
-        //        CmsValidationResult result;
-        //        CmsUUID id = new CmsUUID(config);
-        //        CmsResource res = cms.readResource(id);
-        //        String parentPath = CmsResource.getParentFolder(cms.getSitePath(res));
-        //        
-        //        if (res.getName().equals(value)) {
-        //            return new CmsValidationREsult 
-        //        }
-        //        
-        //        
-        //        
-        //        
-        //        
-        //        
-        //        
-        //        
-        //         
-        //        
-        //        
-        //        Set<String> otherUrlNames = new HashSet<String>(CmsStringUtil.splitAsList(config, "|"));
-        //        String name = cms.getRequestContext().getFileTranslator().translateResource(value);
-        //        name = name.replace('/', '_');
-        //        if (otherUrlNames.contains(name)) {
-        //            result = new CmsValidationResult(Messages.get().getBundle().key(
-        //                Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
-        //                name));
-        //        } else {
-        //            result = new CmsValidationResult(null, name);
-        //        }
-        //        return result;
         String name = cms.getRequestContext().getFileTranslator().translateResource(value);
         name = name.replace('/', '_');
-        return new CmsValidationResult(null, name);
 
+        Map<String, String> configMap = CmsStringUtil.splitAsMap(config, "|", ":");
+        String parentPath = configMap.get("parent");
+        String id = configMap.get("id");
+        try {
+            CmsResource res = cms.readResource(CmsStringUtil.joinPaths(parentPath, name));
+            // file already exists
+            if (!CmsUUID.isValidUUID(id) || res.getStructureId().toString().equals(id)) {
+                // no problem, it's the same resource
+                return new CmsValidationResult(null, name);
+            } else {
+                // it's a different resource, so we fail 
+                return new CmsValidationResult(org.opencms.gwt.Messages.get().getBundle().key(
+                    org.opencms.gwt.Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
+                    name));
+            }
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok, the resource was not found 
+            return new CmsValidationResult(null, name);
+        } catch (CmsException e) {
+            throw new CmsRuntimeException(e.getMessageContainer());
+
+        }
     }
 }

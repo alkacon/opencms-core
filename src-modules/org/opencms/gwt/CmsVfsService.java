@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,8 +43,11 @@ import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertiesBean;
+import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -54,13 +57,13 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -275,6 +278,115 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Updates properties for a resource and possibly its detail page.<p>
+     *     
+     * @param cms the CMS context 
+     * @param ownRes the resource 
+     * @param propertyModifications the property modifications 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void internalUpdateProperties(
+        CmsObject cms,
+        CmsResource ownRes,
+        List<CmsPropertyModification> propertyModifications) throws CmsException {
+
+        Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
+        // determine if the title property should be changed in case of a 'NavText' change
+        boolean changeOwnTitle = shouldChangeTitle(ownProps);
+
+        String hasNavTextChange = null;
+        List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
+        for (CmsPropertyModification propMod : propertyModifications) {
+            CmsProperty propToModify = null;
+            if (ownRes.getStructureId().equals(propMod.getId())) {
+
+                if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
+                    hasNavTextChange = propMod.getValue();
+                } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
+                    changeOwnTitle = false;
+                }
+                propToModify = ownProps.get(propMod.getName());
+                if (propToModify == null) {
+                    propToModify = new CmsProperty(propMod.getName(), null, null);
+                }
+                ownPropertyChanges.add(propToModify);
+            } else {
+                throw new IllegalStateException("Invalid structure id in property changes!");
+            }
+            String newValue = propMod.getValue();
+            if (newValue == null) {
+                newValue = "";
+            }
+            if (propMod.isStructureValue()) {
+                propToModify.setStructureValue(newValue);
+            } else {
+                propToModify.setResourceValue(newValue);
+            }
+        }
+        if (hasNavTextChange != null) {
+            if (changeOwnTitle) {
+                CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
+                if (titleProp == null) {
+                    titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
+                }
+                titleProp.setStructureValue(hasNavTextChange);
+                ownPropertyChanges.add(titleProp);
+            }
+        }
+        if (!ownPropertyChanges.isEmpty()) {
+            cms.writePropertyObjects(ownRes, ownPropertyChanges);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadPropertyData(org.opencms.util.CmsUUID)
+     */
+    public CmsPropertiesBean loadPropertyData(CmsUUID id) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            return internalLoadPropertyData(cms, id);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet)
+     */
+    public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
+
+        try {
+            internalSaveProperties(changes);
+        } catch (Throwable t) {
+            error(t);
+        }
+    }
+
+    /**
+     * Converts CmsProperty objects to CmsClientProperty objects.<p>
+     * 
+     * @param properties a list of server-side properties 
+     * 
+     * @return a map of client-side properties 
+     */
+    protected Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
+
+        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
+        for (CmsProperty prop : properties) {
+            CmsClientProperty clientProp = new CmsClientProperty(
+                prop.getName(),
+                prop.getStructureValue(),
+                prop.getResourceValue());
+            clientProp.setOrigin(prop.getOrigin());
+            result.put(clientProp.getName(), clientProp);
+        }
+        return result;
+    }
+
+    /**
      * Creates a "broken link" bean based on a resource.<p>
      * 
      * @param resource the resource 
@@ -293,6 +405,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String path = cms.getSitePath(resource);
         String subtitle = path;
         return new CmsBrokenLinkBean(title, subtitle, typeName);
+    }
+
+    /**
+     * Saves a set of property changes.<p>
+     *  
+     * @param changes the set of property changes 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void internalSaveProperties(CmsPropertyChangeSet changes) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource target = cms.readResource(changes.getTargetStructureId());
+        getLockIfPossible(cms.getSitePath(target));
+        internalUpdateProperties(cms, target, changes.getChanges());
     }
 
     /**
@@ -461,40 +587,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsListInfoBean result = new CmsListInfoBean();
-
-            result.setResourceState(res.getState());
-
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-
-            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-                result.setTitle(title);
-            } else {
-                result.setTitle(res.getName());
-            }
-            result.setSubTitle(resourceSitePath);
-            String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-            if (Boolean.parseBoolean(secure)) {
-                result.setPageIcon(CmsListInfoBean.PageIcon.secure);
-            } else {
-                String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-                if (Boolean.parseBoolean(export)) {
-                    result.setPageIcon(CmsListInfoBean.PageIcon.export);
-                } else {
-                    result.setPageIcon(CmsListInfoBean.PageIcon.standard);
-                }
-            }
-            String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-            String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-            Locale currentLocale = getCmsObject().getRequestContext().getLocale();
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
-            String resTypeNiceName = messages.key(key);
-            result.addAdditionalInfo(
-                messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
-                resTypeNiceName);
-            result.setResourceType(resTypeName);
-            return result;
+            return CmsServiceUtil.getPageInfo(cms, res);
         } catch (CmsException e) {
             error(e);
             return null; // will never be reached 
@@ -559,6 +652,67 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
         return result;
+    }
+
+    /**
+     * Loads the data needed for editing the properties of a resource.<p>
+     * 
+     * @param cms the CMS context 
+     * @param id the structure id of the resource 
+     * @return the data needed for editing the properties 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsPropertiesBean internalLoadPropertyData(CmsObject cms, CmsUUID id) throws CmsException {
+
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        CmsPropertiesBean result = new CmsPropertiesBean();
+        CmsResource resource = cms.readResource(id);
+        String sitePath = cms.getSitePath(resource);
+        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            sitePath);
+        result.setPropertyDefinitions(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+            CmsResource parent = cms.readResource(parentPath);
+            List<CmsProperty> parentProperties = cms.readPropertyObjects(parent, true);
+            List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
+            result.setOwnProperties(convertProperties(ownProperties));
+            result.setInheritedProperties(convertProperties(parentProperties));
+            result.setPageInfo(CmsServiceUtil.getPageInfo(cms, resource));
+            List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
+            List<String> propNames = new ArrayList<String>();
+            for (CmsPropertyDefinition propDef : propDefs) {
+                propNames.add(propDef.getName());
+            }
+            CmsTemplateFinder templateFinder = new CmsTemplateFinder(cms);
+            result.setTemplates(templateFinder.getTemplates());
+            result.setAllProperties(propNames);
+            result.setStructureId(id);
+            result.setSitePath(sitePath);
+            return result;
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
+    }
+
+    /**
+     * Determines if the title property should be changed in case of a 'NavText' change.<p>
+     * 
+     * @param properties the current resource properties
+     * 
+     * @return <code>true</code> if the title property should be changed in case of a 'NavText' change
+     */
+    private boolean shouldChangeTitle(Map<String, CmsProperty> properties) {
+
+        return (properties == null)
+            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE) == null)
+            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue() == null)
+            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null) && properties.get(
+                CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
+                properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
 
 }

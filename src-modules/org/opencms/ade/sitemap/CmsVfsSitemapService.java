@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/13 13:30:14 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,16 +38,13 @@ import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -64,13 +61,15 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
-import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -82,7 +81,6 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -107,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 8.0.0
  * 
@@ -259,48 +257,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Returns the available templates.<p>
-     * 
-     * @return the available templates
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    public Map<String, CmsSitemapTemplate> getTemplates() throws CmsRpcException {
-
-        Map<String, CmsSitemapTemplate> result = new HashMap<String, CmsSitemapTemplate>();
-        CmsObject cms = getCmsObject();
-        try {
-            // find current site templates
-            int templateId = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeJsp.getContainerPageTemplateTypeName()).getTypeId();
-            List<CmsResource> templates = cms.readResources(
-                "/",
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
-                true);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
-                // if not in the root site, also add template under /system/
-                templates.addAll(cms.readResources(
-                    CmsWorkplace.VFS_PATH_SYSTEM,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
-                    true));
-            }
-            // convert resources to template beans
-            for (CmsResource template : templates) {
-                try {
-                    CmsSitemapTemplate templateBean = getTemplateBean(cms, template);
-                    result.put(templateBean.getSitePath(), templateBean);
-                } catch (CmsException e) {
-                    // should never happen
-                    log(e.getLocalizedMessage(), e);
-                }
-            }
-        } catch (Throwable e) {
-            error(e);
-        }
-        return result;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubSitemap(java.lang.String, java.lang.String)
      */
     public CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, String path) throws CmsRpcException {
@@ -393,7 +349,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             cms.getRequestContext().getSiteRoot();
             result = new CmsSitemapData(
-                getTemplates(),
+                (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
                 getClipboardData(),
                 parentProperties,
@@ -684,6 +640,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 if (change.getEntryId() == null) {
                     change.setEntryId(new CmsUUID());
                 }
+                // we don'T really need to create a folder object here anymore.
                 entryFolder = new CmsResource(
                     change.getEntryId(),
                     new CmsUUID(),
@@ -703,7 +660,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(entryFolderPath, entryFolder, null, generateInheritProperties(
+                entryFolder = cms.createResource(entryFolderPath, OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolder.getStaticTypeName()).getTypeId(), null, generateInheritProperties(
                     change,
                     entryFolder));
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
@@ -1083,23 +1041,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Converts a list of properties to a map.<p>
-     * 
-     * @param properties the list of properties 
-     * 
-     * @return a map from property names to properties 
-     */
-    private Map<String, CmsProperty> getPropertiesByName(List<CmsProperty> properties) {
-
-        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
-        for (CmsProperty property : properties) {
-            String key = property.getName();
-            result.put(key, property.clone());
-        }
-        return result;
-    }
-
-    /**
      * Gets the names of all available properties.<p>
      * 
      * @param cms the CMS context 
@@ -1167,28 +1108,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             result.setSubEntries(getChildren(entryPoint, 1));
         }
         return result;
-    }
-
-    /**
-     * Returns a bean representing the given template resource.<p>
-     * 
-     * @param cms the cms context to use for VFS operations
-     * @param resource the template resource
-     * 
-     * @return bean representing the given template resource
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private CmsSitemapTemplate getTemplateBean(CmsObject cms, CmsResource resource) throws CmsException {
-
-        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        CmsProperty descProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        CmsProperty imageProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TEMPLATE_IMAGE, false);
-        return new CmsSitemapTemplate(
-            titleProp.getValue(),
-            descProp.getValue(),
-            cms.getSitePath(resource),
-            imageProp.getValue());
     }
 
     private boolean hasDefaultFileChanges(CmsSitemapChange change) {

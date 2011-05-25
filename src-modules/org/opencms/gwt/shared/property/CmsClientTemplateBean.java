@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapTemplate.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/property/Attic/CmsClientTemplateBean.java,v $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
+package org.opencms.gwt.shared.property;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -38,11 +38,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0
  */
-public class CmsSitemapTemplate implements IsSerializable {
+public class CmsClientTemplateBean implements IsSerializable {
 
     /** The description. */
     private String m_description;
@@ -62,7 +62,7 @@ public class CmsSitemapTemplate implements IsSerializable {
     /**
      * Constructor.<p>
      */
-    public CmsSitemapTemplate() {
+    public CmsClientTemplateBean() {
 
         // empty
     }
@@ -75,7 +75,7 @@ public class CmsSitemapTemplate implements IsSerializable {
      * @param sitePath the site path
      * @param imgPath the image path
      */
-    public CmsSitemapTemplate(String title, String description, String sitePath, String imgPath) {
+    public CmsClientTemplateBean(String title, String description, String sitePath, String imgPath) {
 
         m_title = title;
         m_description = description;
@@ -88,10 +88,10 @@ public class CmsSitemapTemplate implements IsSerializable {
      * 
      * @return a dummy template object 
      */
-    public static CmsSitemapTemplate getNullTemplate() {
+    public static CmsClientTemplateBean getNullTemplate() {
 
         String imagePath = "/system/modules/org.opencms.ade.sitemap/pages/notemplate.png";
-        CmsSitemapTemplate result = new CmsSitemapTemplate("No template", "", "", imagePath);
+        CmsClientTemplateBean result = new CmsClientTemplateBean("No template", "", "", imagePath);
         result.setShowWeakText(true);
         return result;
     }

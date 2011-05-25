@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,10 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -122,7 +122,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
         editEntry.setVfsPath(getNewEntry().getVfsPath());
         for (CmsPropertyModification propMod : m_propertyChanges) {
-            propMod.execute(controller);
+            controller.executePropertyModification(propMod);
         }
         editEntry.normalizeProperties();
         editEntry.setNew(getNewEntry().isNew());

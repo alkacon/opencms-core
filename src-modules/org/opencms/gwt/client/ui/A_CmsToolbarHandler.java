@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/16 10:08:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +105,21 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
                             new CmsShowWorkplace(uri).openWorkplace();
                         }
                     };
+                } else if (name.equals(CmsEditProperties.class.getName())) {
+                    cmd = new Command() {
+
+                        public void execute() {
+
+                            if (canEditProperties()) {
+
+                                CmsEditProperties editProperties = new CmsEditProperties();
+                                CmsUUID structureId = CmsCoreProvider.get().getStructureId();
+                                if (structureId != null) {
+                                    editProperties.editProperties(CmsCoreProvider.get().getStructureId());
+                                }
+                            }
+                        }
+                    };
                 }
             }
             entry.setCommand(cmd);
@@ -111,5 +127,4 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
         }
         return menuEntries;
     }
-
 }

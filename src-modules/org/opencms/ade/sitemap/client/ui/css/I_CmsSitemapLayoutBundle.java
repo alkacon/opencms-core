@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.11 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsSitemapLayoutBundle.java,v $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,11 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
+public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
     /** Clipboard CSS. */
     interface I_CmsClipboardCss extends CssResource {
@@ -77,25 +77,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String page();
     }
 
-    /**
-     * Property editor CSS.<p>
-     */
-    interface I_CmsPropertiesCss extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String navModePropertiesBox();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String vfsModeSimplePropertiesBox();
-
-    }
-
     /** Root CSS. */
     interface I_CmsRootCss extends CssResource {
 
@@ -113,7 +94,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     }
 
     /** The bundle instance. */
-    I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+    I_CmsSitemapLayoutBundle INSTANCE = GWT.create(I_CmsSitemapLayoutBundle.class);
 
     /**
      * Access method.<p>
@@ -144,14 +125,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("page.css")
     I_CmsPageCss pageCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the page CSS
-     */
-    @Source("properties.css")
-    I_CmsPropertiesCss propertiesCss();
 
     /**
      * Access method.<p>

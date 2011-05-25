@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
+import org.opencms.gwt.shared.property.CmsPropertiesBean;
+import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -122,5 +124,15 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback
      */
     void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
+
+    /**
+     * Load the data necessary to edit the properties of a resource.<p>
+     * 
+     * @param id the structure id of a resource
+     * @param callback the asynchronous callback  
+     */
+    void loadPropertyData(CmsUUID id, AsyncCallback<CmsPropertiesBean> callback);
+
+    void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback);
 
 }

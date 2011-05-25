@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.11 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsTemplateSelectCell.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,14 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.ui;
+package org.opencms.gwt.client.property;
 
-import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.A_CmsSelectCell;
 import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -84,7 +84,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
     protected CmsLabel m_topLabel;
 
     /** The bean containing the data for the select option. */
-    private CmsSitemapTemplate m_template;
+    private CmsClientTemplateBean m_template;
 
     /**
      * Default constructor.<p>
@@ -99,7 +99,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
      * 
      * @return the template bean for this select cell 
      */
-    public CmsSitemapTemplate getTemplate() {
+    public CmsClientTemplateBean getTemplate() {
 
         return m_template;
     }
@@ -119,7 +119,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
      * 
      * @param template the template bean containing the new data for the widget 
      */
-    public void setTemplate(CmsSitemapTemplate template) {
+    public void setTemplate(CmsClientTemplateBean template) {
 
         m_template = template;
         m_topLabel.setText(template.getTitle());

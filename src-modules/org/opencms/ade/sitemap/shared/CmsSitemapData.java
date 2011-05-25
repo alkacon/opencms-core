@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/05/05 06:23:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0
  */
@@ -113,7 +115,7 @@ public class CmsSitemapData implements IsSerializable {
     private String m_siteName;
 
     /** The available templates. */
-    private Map<String, CmsSitemapTemplate> m_templates;
+    private Map<String, CmsClientTemplateBean> m_templates;
 
     /**
      * Constructor.<p>
@@ -148,7 +150,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
      */
     public CmsSitemapData(
-        Map<String, CmsSitemapTemplate> templates,
+        Map<String, CmsClientTemplateBean> templates,
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
         Map<String, CmsClientProperty> parentProperties,
@@ -377,7 +379,7 @@ public class CmsSitemapData implements IsSerializable {
      *
      * @return the available templates
      */
-    public Map<String, CmsSitemapTemplate> getTemplates() {
+    public Map<String, CmsClientTemplateBean> getTemplates() {
 
         return m_templates;
     }

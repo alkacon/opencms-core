@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/05/04 16:45:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -118,7 +118,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
             //TODO: improve styling, add localization
             Label messageLabel = new Label(Messages.get().key(Messages.GUI_NO_CREATABLE_ELEMENTS_0));
-            messageLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+            messageLabel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
             SimplePanel content = new SimplePanel();
             content.setWidget(messageLabel);
             setMenuWidget(messageLabel);

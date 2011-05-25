@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleToolbarHandler.java,v $
- * Date   : $Date: 2011/05/16 12:03:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,11 @@ public class CmsSimpleToolbarHandler extends A_CmsToolbarHandler {
     public void activateSelection() {
 
         // does nothing for now 
+    }
+
+    public boolean canEditProperties() {
+
+        return true;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/05/05 16:09:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -40,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -79,6 +81,8 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current request locale. */
     private String m_locale;
+
+    private CmsUUID m_structureId;
 
     /** The current navigation URI. */
     private String m_navigationUri;
@@ -120,6 +124,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getWpLocale(),
             clone.getUri(),
             clone.getNavigationUri(),
+            clone.getStructureId(),
             clone.getExtensionMapping(),
             clone.getServerTime(),
             clone.isToolbarVisible());
@@ -151,6 +156,7 @@ public class CmsCoreData implements IsSerializable {
         String wpLocale,
         String uri,
         String navigationUri,
+        CmsUUID structureId,
         Map<String, String> extensionMapping,
         long serverTime,
         boolean toolbarVisible) {
@@ -167,16 +173,7 @@ public class CmsCoreData implements IsSerializable {
         m_extensionMapping = extensionMapping;
         m_serverTime = serverTime;
         m_toolbarVisible = toolbarVisible;
-    }
-
-    /**
-     * Returns the XML content editor delete-link URL.<p>
-     * 
-     * @return the XML content editor delete-link URL
-     */
-    public String getContentEditorDeleteLinkUrl() {
-
-        return m_contentEditorDeleteLinkUrl;
+        m_structureId = structureId;
     }
 
     /**
@@ -187,6 +184,16 @@ public class CmsCoreData implements IsSerializable {
     public String getContentEditorBacklinkUrl() {
 
         return m_contentEditorBacklinkUrl;
+    }
+
+    /**
+     * Returns the XML content editor delete-link URL.<p>
+     * 
+     * @return the XML content editor delete-link URL
+     */
+    public String getContentEditorDeleteLinkUrl() {
+
+        return m_contentEditorDeleteLinkUrl;
     }
 
     /**
@@ -257,6 +264,11 @@ public class CmsCoreData implements IsSerializable {
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**

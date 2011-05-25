@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,17 +34,20 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.edit.CmsEditEntryHandler;
-import org.opencms.ade.sitemap.client.edit.CmsNavModeSitemapEntryEditor;
-import org.opencms.ade.sitemap.client.edit.CmsVfsModeSitemapEntryEditor;
-import org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler;
+import org.opencms.ade.sitemap.client.edit.CmsNavModePropertyEditor;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.property.A_CmsPropertyEditor;
+import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
+import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
+
+import java.util.Map;
 
 import com.google.gwt.user.client.Command;
 
@@ -53,7 +56,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -105,8 +108,8 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                             entry,
                             CmsSitemapView.getInstance().isNavigationMode());
                         handler.setPageInfo(result);
-                        A_CmsSitemapEntryEditor editor = createEntryEditor(handler);
-
+                        A_CmsPropertyEditor editor = createEntryEditor(handler);
+                        editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
                         editor.start();
 
                     }
@@ -138,13 +141,15 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
      * 
      * @return a sitemap entry editor instance 
      */
-    protected A_CmsSitemapEntryEditor createEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
+    protected A_CmsPropertyEditor createEntryEditor(I_CmsPropertyEditorHandler handler) {
+
+        Map<String, CmsXmlContentProperty> propConfig = CmsSitemapView.getInstance().getController().getData().getProperties();
 
         if (CmsSitemapView.getInstance().isNavigationMode()) {
-            return new CmsNavModeSitemapEntryEditor(handler);
+            return new CmsNavModePropertyEditor(propConfig, handler);
         } else {
-            boolean isFolder = handler.getEntry().isFolderType();
-            CmsVfsModeSitemapEntryEditor result = new CmsVfsModeSitemapEntryEditor(handler);
+            boolean isFolder = handler.isFolder();
+            CmsVfsModePropertyEditor result = new CmsVfsModePropertyEditor(propConfig, handler);
             result.setShowResourceProperties(!isFolder);
             return result;
         }

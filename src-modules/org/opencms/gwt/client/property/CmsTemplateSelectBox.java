@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectBox.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsTemplateSelectBox.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,15 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.ui;
+package org.opencms.gwt.client.property;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
+import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  * 
@@ -58,14 +58,20 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     /** The select cell which is used as the widget contained in the opener.<p> */
     CmsTemplateSelectCell m_openerWidget;
 
+    /** The possible templates which can be selected. */
+    private Map<String, CmsClientTemplateBean> m_possibleTemplates = new HashMap<String, CmsClientTemplateBean>();
+
     /**
      * Default constructor.<p>
+     * 
+     * @param possibleTemplates the templates which should be available for selection
      */
-    public CmsTemplateSelectBox() {
+    public CmsTemplateSelectBox(Map<String, CmsClientTemplateBean> possibleTemplates) {
 
         super();
+        m_possibleTemplates = possibleTemplates;
         CmsTemplateSelectCell cell = new CmsTemplateSelectCell();
-        cell.setTemplate(CmsSitemapTemplate.getNullTemplate());
+        cell.setTemplate(CmsClientTemplateBean.getNullTemplate());
         addOption(cell);
     }
 
@@ -75,6 +81,16 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     public String getApparentValue() {
 
         return getFormValueAsString();
+    }
+
+    /**
+     * Returns the templates which are available for selection.<p>
+     * 
+     * @return the templates which are available for selection 
+     */
+    public Map<String, CmsClientTemplateBean> getPossibleTemplates() {
+
+        return m_possibleTemplates;
     }
 
     /**
@@ -107,11 +123,11 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
      */
     public void setGhostValue(String value, boolean isGhostMode) {
 
+        Map<String, CmsClientTemplateBean> templates = m_possibleTemplates;
+        CmsClientTemplateBean template = templates.get(value);
+        template = getDefaultTemplate(template);
+        m_selectCells.get("").setTemplate(template);
         if (isGhostMode) {
-            Map<String, CmsSitemapTemplate> templates = CmsSitemapView.getInstance().getController().getData().getTemplates();
-            CmsSitemapTemplate template = templates.get(value);
-            template = getDefaultTemplate(template);
-            m_selectCells.get("").setTemplate(template);
             if (CmsStringUtil.isEmpty(m_selectedValue)) {
                 updateOpener("");
             }
@@ -157,11 +173,11 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
      * 
      * @return the default template 
      */
-    private CmsSitemapTemplate getDefaultTemplate(CmsSitemapTemplate template) {
+    private CmsClientTemplateBean getDefaultTemplate(CmsClientTemplateBean template) {
 
         if (template != null) {
             // replace site path with empty string and title with "default"
-            CmsSitemapTemplate result = new CmsSitemapTemplate(
+            CmsClientTemplateBean result = new CmsClientTemplateBean(
                 template.getTitle(),
                 template.getDescription(),
                 "",
@@ -169,7 +185,7 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
             result.setShowWeakText(true);
             return result;
         } else {
-            return CmsSitemapTemplate.getNullTemplate();
+            return CmsClientTemplateBean.getNullTemplate();
         }
     }
 }

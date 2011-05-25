@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 8.0.0
  */
@@ -201,18 +201,6 @@ public final class Messages {
     public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ORIGIN_INHERITED_1 = "GUI_ORIGIN_INHERITED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_BLOCK_UNUSED_0 = "GUI_PROPERTY_BLOCK_UNUSED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_BLOCK_USED_0 = "GUI_PROPERTY_BLOCK_USED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_EDITOR_TEXT_0 = "GUI_PROPERTY_EDITOR_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -223,18 +211,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_ORIGIN_2 = "GUI_PROPERTY_ORIGIN_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_COMPLETE_0 = "GUI_PROPERTY_TAB_COMPLETE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_RESOURCE_0 = "GUI_PROPERTY_TAB_RESOURCE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_SIMPLE_0 = "GUI_PROPERTY_TAB_SIMPLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_STRUCTURE_0 = "GUI_PROPERTY_TAB_STRUCTURE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REDIRECT_SUBTITLE_0 = "GUI_REDIRECT_SUBTITLE_0";
@@ -306,15 +282,6 @@ public final class Messages {
     public static final String GUI_URLNAME_ALREADY_EXISTS_0 = "GUI_URLNAME_ALREADY_EXISTS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_URLNAME_PROPERTY_0 = "GUI_URLNAME_PROPERTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_URLNAME_PROPERTY_DESC_0 = "GUI_URLNAME_PROPERTY_DESC_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_USE_FOR_SUBPAGES_0 = "GUI_USE_FOR_SUBPAGES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -325,9 +292,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECTBOX_UNSELECTED_1 = "GUI_SELECTBOX_UNSELECTED_1";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

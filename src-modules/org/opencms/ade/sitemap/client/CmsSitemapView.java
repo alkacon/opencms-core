@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 8.0.0
  */
@@ -399,14 +399,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         RootPanel rootPanel = RootPanel.get();
         m_editorMode = EditorMode.navigation;
         // init
-        I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.clipboardCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.rootCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.pageCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
-        rootPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
+        rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.rootCss().root());
 
         // controller 
         m_controller = new CmsSitemapController();
@@ -425,7 +425,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         CmsHeader title = new CmsHeader(
             Messages.get().key(Messages.GUI_EDITOR_TITLE_0),
             m_controller.getData().getSiteName());
-        title.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().pageCenter());
+        title.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.rootCss().pageCenter());
         rootPanel.add(title);
 
         // content page
@@ -503,7 +503,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             highlightPath(CmsResource.getFolderPath(openPath));
         }
-
     }
 
     /**
@@ -516,11 +515,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_editorMode = editorMode;
         if (m_editorMode == EditorMode.vfs) {
             m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
-            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
+            m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
         } else {
 
             m_toolbar.setNewEnabled(true, null);
-            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+            m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsVfsModeSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/05/06 08:33:51 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsVfsModePropertyEditor.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,19 +29,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.edit;
+package org.opencms.gwt.client.property;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.CmsPropertyPanel;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
-import org.opencms.ade.sitemap.shared.CmsPathValue;
-import org.opencms.ade.sitemap.shared.CmsClientProperty.Mode;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPathValue;
+import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -72,11 +70,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
+public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
@@ -95,15 +93,18 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
-     *  
+     * 
+     * @param propConfig the property configuration 
      * @param handler the sitemap entry editor handler 
      */
-    public CmsVfsModeSitemapEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
+    public CmsVfsModePropertyEditor(
+        Map<String, CmsXmlContentProperty> propConfig,
+        I_CmsPropertyEditorHandler handler) {
 
-        super(handler);
+        super(propConfig, handler);
         m_dialog.setCaption(null);
         m_dialog.removePadding();
-        m_properties = CmsClientProperty.makeLazyCopy(handler.getEntry().getOwnProperties());
+        m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
     }
 
     static {
@@ -114,7 +115,7 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor#buildFields()
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#buildFields()
      */
     @Override
     public void buildFields() {
@@ -159,13 +160,17 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor#setupFieldContainer()
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
      */
     @Override
     protected void setupFieldContainer() {
 
         CmsListInfoBean info = m_handler.getPageInfo();
         m_panel = new CmsPropertyPanel(m_showResourceProperties, info);
+        String modeClass = m_handler.getModeClass();
+        if (modeClass != null) {
+            m_panel.addStyleName(modeClass);
+        }
         m_panel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
 
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
@@ -187,7 +192,7 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void buildField(Map<String, CmsClientProperty> ownProps, final String propName, CmsClientProperty.Mode mode) {
 
-        String entryId = m_entry.getId().toString();
+        String entryId = m_handler.getId().toString();
         CmsXmlContentProperty propDef = m_propertyConfig.get(propName);
 
         if (propDef == null) {
@@ -222,7 +227,6 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
                 Messages.GUI_SELECTBOX_UNSELECTED_1)),
             true);
 
-        //START HERE
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
         String defaultValue = "";
         String origin = "";
@@ -339,25 +343,13 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
 
             return CmsPair.create(prop.getResourceValue(), message);
         }
-        CmsClientProperty inheritedProperty = CmsSitemapView.getInstance().getController().getInheritedPropertyObject(
-            m_entry,
-            prop.getName());
+        CmsClientProperty inheritedProperty = m_handler.getInheritedProperty(prop.getName());
         if (CmsClientProperty.isPropertyEmpty(inheritedProperty)) {
             return null;
         }
         CmsPathValue pathValue = inheritedProperty.getPathValue(mode);
         String message = Messages.get().key(Messages.GUI_ORIGIN_INHERITED_1, inheritedProperty.getOrigin());
         return CmsPair.create(pathValue.getValue(), message);
-    }
-
-    /**
-     * Returns the properties of the edited entry.<p>
-     * 
-     * @return the properties of the entry 
-     */
-    private Map<String, CmsClientProperty> getProperties() {
-
-        return m_entry.getOwnProperties();
     }
 
     /**
@@ -387,7 +379,7 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void internalBuildConfiguredFields() {
 
-        Map<String, CmsClientProperty> ownProps = getProperties();
+        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
         keys.remove(CmsClientProperty.PROPERTY_NAVTEXT);
         keys.add(0, CmsClientProperty.PROPERTY_NAVTEXT);
@@ -404,8 +396,8 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      */
     private void internalBuildFields(Mode mode) {
 
-        Map<String, CmsClientProperty> ownProps = getProperties();
-        for (String propName : m_allProps) {
+        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
+        for (String propName : m_handler.getAllPropertyNames()) {
             buildField(ownProps, propName, mode);
         }
     }
@@ -453,7 +445,9 @@ public class CmsVfsModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
         m_form.removeGroup(CmsPropertyPanel.TAB_SIMPLE);
         CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
         panel.clearTab(CmsPropertyPanel.TAB_SIMPLE);
-        m_form.addField(CmsPropertyPanel.TAB_SIMPLE, createUrlNameField());
+        if (m_handler.hasEditableName()) {
+            m_form.addField(CmsPropertyPanel.TAB_SIMPLE, createUrlNameField());
+        }
         internalBuildConfiguredFields();
         m_form.renderGroup(CmsPropertyPanel.TAB_SIMPLE);
     }

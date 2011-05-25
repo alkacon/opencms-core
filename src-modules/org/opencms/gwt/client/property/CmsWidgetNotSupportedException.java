@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsTitleValidationService.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsWidgetNotSupportedException.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,35 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap;
-
-import org.opencms.file.CmsObject;
-import org.opencms.gwt.I_CmsValidationService;
-import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.util.CmsStringUtil;
+package org.opencms.gwt.client.property;
 
 /**
- * A dummy validation service for the title of a sitemap entry.
+ * The exception which is thrown when a widget is not supported in the sitemap entry editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsTitleValidationService implements I_CmsValidationService {
+public class CmsWidgetNotSupportedException extends RuntimeException {
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * @see org.opencms.gwt.I_CmsValidationService#validate(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * Creates a new exception instance.<p>
+     * 
+     * @param widgetType the unsupported widget type 
      */
-    public CmsValidationResult validate(CmsObject cms, String value, String config) {
+    public CmsWidgetNotSupportedException(String widgetType) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-            String errorMessage = Messages.get().getBundle().key(Messages.ERR_TITLE_MUST_NOT_BE_EMPTY_0);
-            return new CmsValidationResult(errorMessage, value);
-        }
-        // TODO: strip whitespace 
-        return new CmsValidationResult(null, value);
+        super("The widget type " + widgetType + "is not supported by the sitemap editor!");
     }
 
 }

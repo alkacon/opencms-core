@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/05/06 15:56:35 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/05/25 15:37:21 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,23 +47,24 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeRemove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeUndelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
-import org.opencms.ade.sitemap.shared.CmsPropertyModification;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -91,23 +92,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController implements I_CmsSitemapController {
-
-    /**
-     * An enum specifying whose values specify whether an entry or its parent need to be reloaded.<p>
-     */
-    public enum ReloadMode {
-        /** This value means that neither the entry nor its parent should be reloaded. */
-        none,
-        /** This value means the entry should be reloaded. */
-        reloadEntry,
-        /** This value means the entry's parent should be reloaded. */
-        reloadParent;
-    }
 
     /** A map of *all* detail page info beans, indexed by page id. */
     protected Map<CmsUUID, CmsDetailPageInfo> m_allDetailPageInfos = new HashMap<CmsUUID, CmsDetailPageInfo>();
@@ -457,7 +446,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         String vfsPath,
         List<CmsPropertyModification> propertyChanges,
         boolean editedName,
-        final ReloadMode reloadStatus) {
+        final CmsReloadMode reloadStatus) {
 
         CmsClientSitemapChangeEdit edit = getChangeForEdit(entry, vfsPath, propertyChanges, !editedName);
         CmsClientSitemapChangeMove move = getChangeForMove(
@@ -495,6 +484,15 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         };
         applyChange(change, callback);
+
+    }
+
+    public void executePropertyModification(CmsPropertyModification propMod) {
+
+        Map<String, CmsClientProperty> props = getPropertiesForId(propMod.getId());
+        if (props != null) {
+            propMod.updatePropertyInMap(props);
+        }
 
     }
 

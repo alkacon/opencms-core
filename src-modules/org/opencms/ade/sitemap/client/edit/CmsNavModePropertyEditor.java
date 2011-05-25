@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModeSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/05/06 08:33:50 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyEditor.java,v $
+ * Date   : $Date: 2011/05/25 15:37:20 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,16 @@
 
 package org.opencms.ade.sitemap.client.edit;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.CmsSimpleSitemapFormFieldPanel;
-import org.opencms.ade.sitemap.shared.CmsClientProperty;
-import org.opencms.ade.sitemap.shared.CmsPathValue;
+import org.opencms.gwt.client.property.A_CmsPropertyEditor;
+import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -55,11 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
+public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The NavText property name. */
     public static final String PROP_NAVTEXT = "NavText";
@@ -69,21 +70,23 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
      * 
      * @param handler the entry editor handler 
      */
-    public CmsNavModeSitemapEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
+    public CmsNavModePropertyEditor(
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        I_CmsPropertyEditorHandler handler) {
 
-        super(handler);
+        super(propertyConfig, handler);
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor#buildFields()
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#buildFields()
      */
     @Override
     public void buildFields() {
 
-        Map<String, CmsClientProperty> ownProps = m_entry.getOwnProperties();
-        Map<String, CmsClientProperty> defaultFileProps = m_entry.getDefaultFileProperties();
-        String entryId = m_entry.getId().toString();
-        String defaultFileId = toStringOrNull(m_entry.getDefaultFileId());
+        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
+        Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
+        String entryId = m_handler.getId().toString();
+        String defaultFileId = toStringOrNull(m_handler.getDefaultFileId());
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
         keys.remove(PROP_NAVTEXT);
         keys.add(0, PROP_NAVTEXT);
@@ -93,7 +96,7 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.A_CmsSitemapEntryEditor#setupFieldContainer()
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
      */
     @Override
     protected void setupFieldContainer() {
@@ -128,10 +131,10 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             pathValue = ownProp.getPathValue().prepend(entryId + "/" + propName);
         } else {
             String targetId = null;
-            if (propDef.isPreferFolder() || (m_entry.getDefaultFileId() == null)) {
+            if (propDef.isPreferFolder() || (m_handler.getDefaultFileId() == null)) {
                 targetId = entryId;
             } else {
-                targetId = m_entry.getDefaultFileId().toString();
+                targetId = m_handler.getDefaultFileId().toString();
             }
             pathValue = new CmsPathValue("", targetId + "/" + propName + "/" + CmsClientProperty.PATH_STRUCTURE_VALUE);
         }
@@ -142,12 +145,10 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             propDef,
             pathValue.getPath(),
             this,
-            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
-                Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_SELECTBOX_UNSELECTED_1)),
             alwaysAllowEmpty);
-        CmsClientProperty inheritedProperty = CmsSitemapView.getInstance().getController().getInheritedPropertyObject(
-            m_entry,
-            propName);
+        CmsClientProperty inheritedProperty = m_handler.getInheritedProperty(propName);
         String inherited = (inheritedProperty == null) ? null : inheritedProperty.getEffectiveValue();
         if (inheritedProperty != null) {
             String message = Messages.get().key(
@@ -168,7 +169,9 @@ public class CmsNavModeSitemapEntryEditor extends A_CmsSitemapEntryEditor {
             }
         }
         if (ghost && (inheritedProperty != null)) {
-            String message = Messages.get().key(Messages.GUI_ORIGIN_INHERITED_1, inheritedProperty.getOrigin());
+            String message = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_ORIGIN_INHERITED_1,
+                inheritedProperty.getOrigin());
             field.getLayoutData().put("info", message);
         }
         m_form.addField(m_form.getWidget().getDefaultGroup(), field, initialValue);
