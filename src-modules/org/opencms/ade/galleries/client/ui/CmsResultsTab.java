@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/25 10:16:54 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 8.0.
  */
@@ -82,7 +82,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.47 $
+     * @version $Revision: 1.48 $
      * 
      * @since 8.0.0
      */
@@ -116,7 +116,7 @@ public class CmsResultsTab extends A_CmsListTab {
                 return;
             }
             final ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
-            final int scrollPos = scrollPanel.getScrollPosition();
+            final int scrollPos = scrollPanel.getVerticalScrollPosition();
             Widget child = scrollPanel.getWidget();
             int childHeight = child.getOffsetHeight();
             int ownHeight = scrollPanel.getOffsetHeight();
@@ -402,7 +402,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     protected void setScrollPosition(final int pos) {
 
-        getList().setScrollPosition(pos);
+        getList().setVerticalScrollPosition(pos);
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
@@ -410,8 +410,8 @@ public class CmsResultsTab extends A_CmsListTab {
              */
             public void execute() {
 
-                if (getList().getScrollPosition() != pos) {
-                    getList().setScrollPosition(pos);
+                if (getList().getVerticalScrollPosition() != pos) {
+                    getList().setVerticalScrollPosition(pos);
                 }
 
             }
