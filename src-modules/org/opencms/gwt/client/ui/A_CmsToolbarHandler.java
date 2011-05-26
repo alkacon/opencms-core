@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/26 13:08:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/26 13:13:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -106,6 +106,7 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
                         }
                     };
                 } else if (name.equals(CmsEditProperties.class.getName())) {
+                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().properties());
                     cmd = new Command() {
 
                         public void execute() {
