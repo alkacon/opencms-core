@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/05/26 09:27:27 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0.0
  * 
@@ -637,10 +637,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms.writePropertyObjects(newRes, generateInheritProperties(change, newRes));
             } else {
                 String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
-                if (change.getEntryId() == null) {
+                boolean idWasNull = change.getEntryId() == null;
+                // we don'T really need to create a folder object here anymore.
+                if (idWasNull) {
+                    // need this for calculateNavPosition, even though the id will get overwritten 
                     change.setEntryId(new CmsUUID());
                 }
-                // we don'T really need to create a folder object here anymore.
                 entryFolder = new CmsResource(
                     change.getEntryId(),
                     new CmsUUID(),
@@ -664,6 +666,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     CmsResourceTypeFolder.getStaticTypeName()).getTypeId(), null, generateInheritProperties(
                     change,
                     entryFolder));
+                if (idWasNull) {
+                    change.setEntryId(entryFolder.getStructureId());
+                }
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
                 newRes = cms.createResource(
                     entryPath,
