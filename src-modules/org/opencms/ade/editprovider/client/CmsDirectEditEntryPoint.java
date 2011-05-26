@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditEntryPoint.java,v $
- * Date   : $Date: 2011/05/26 13:08:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/26 13:36:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.editprovider.client;
 
+import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -52,7 +53,6 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -68,11 +68,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsDirectEditEntryPoint implements EntryPoint {
+public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /** The class name for data elements which precede the direct editable elements. */
     public static final String CLASS_NAME = "cms-editable";
