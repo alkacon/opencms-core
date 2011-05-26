@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleToolbarHandler.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/05/26 13:08:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,9 @@ public class CmsSimpleToolbarHandler extends A_CmsToolbarHandler {
         // does nothing for now 
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canEditProperties()
+     */
     public boolean canEditProperties() {
 
         return true;
@@ -158,6 +161,14 @@ public class CmsSimpleToolbarHandler extends A_CmsToolbarHandler {
     public void setContextMenuButton(CmsToolbarContextButton button) {
 
         m_contextButton = button;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#useAdeTemplates()
+     */
+    public boolean useAdeTemplates() {
+
+        return false;
     }
 
 }

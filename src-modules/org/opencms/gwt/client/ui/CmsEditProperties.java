@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsEditProperties.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/26 13:08:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -52,9 +52,10 @@ public class CmsEditProperties {
     /**
      * Starts the property editor for the resource with the given structure id.<p>
      * 
-     * @param id the structure id of a resource 
+     * @param id the structure id of a resource
+     * @param useAdeTemplates if true, only ADE templates will be selectable  
      */
-    public void editProperties(final CmsUUID id) {
+    public void editProperties(final CmsUUID id, final boolean useAdeTemplates) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -70,6 +71,7 @@ public class CmsEditProperties {
 
                 stop(false);
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler();
+                handler.setUseAdeTemplates(useAdeTemplates);
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
                 editor.setShowResourceProperties(!handler.isFolder());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/I_CmsPropertyEditorHandler.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 13:08:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -191,5 +191,12 @@ public interface I_CmsPropertyEditorHandler {
      * @return true if the sitemap editor is running in simple mode 
      */
     boolean isSimpleMode();
+
+    /**
+     * Returns true if the property editor should use only ADE templates.<p>
+     * 
+     * @return true if the property editor should use only ADE templates 
+     */
+    boolean useAdeTemplates();
 
 }

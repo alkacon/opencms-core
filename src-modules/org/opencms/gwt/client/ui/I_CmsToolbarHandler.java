@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/26 13:08:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -49,6 +49,11 @@ public interface I_CmsToolbarHandler {
      */
     void activateSelection();
 
+    /**
+     * Returns true if the properties can be edited.<p>
+     * 
+     * @return true if the properties an be edited 
+     */
     boolean canEditProperties();
 
     /**
@@ -84,5 +89,12 @@ public interface I_CmsToolbarHandler {
      * @param button the new active button 
      */
     void setActiveButton(I_CmsToolbarButton button);
+
+    /**
+     * Returns true if only ADE templates should be selectable.<p>
+     * 
+     * @return true if only ADE templates should be selectable 
+     */
+    boolean useAdeTemplates();
 
 }

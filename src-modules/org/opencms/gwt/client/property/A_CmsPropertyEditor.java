@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/A_CmsPropertyEditor.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 13:08:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.1 $
+ *  @version $Revision: 1.2 $
  *  
  *  @since 8.0.0
  */
@@ -309,16 +309,22 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      * 
      * @return the template selector widget 
      */
-    private CmsTemplateSelectBox createTemplateSelector() {
+    private I_CmsFormWidget createTemplateSelector() {
 
-        CmsTemplateSelectBox result = new CmsTemplateSelectBox(m_handler.getPossibleTemplates());
-        for (Map.Entry<String, CmsClientTemplateBean> templateEntry : m_handler.getPossibleTemplates().entrySet()) {
-            CmsClientTemplateBean template = templateEntry.getValue();
-            CmsTemplateSelectCell selectCell = new CmsTemplateSelectCell();
-            selectCell.setTemplate(template);
-            result.addOption(selectCell);
+        if (m_handler.useAdeTemplates()) {
+
+            CmsTemplateSelectBox result = new CmsTemplateSelectBox(m_handler.getPossibleTemplates());
+            for (Map.Entry<String, CmsClientTemplateBean> templateEntry : m_handler.getPossibleTemplates().entrySet()) {
+                CmsClientTemplateBean template = templateEntry.getValue();
+                CmsTemplateSelectCell selectCell = new CmsTemplateSelectCell();
+                selectCell.setTemplate(template);
+                result.addOption(selectCell);
+            }
+            return result;
+        } else {
+            CmsTextBox textbox = new CmsTextBox();
+            return textbox;
         }
-        return result;
     }
 
     /**

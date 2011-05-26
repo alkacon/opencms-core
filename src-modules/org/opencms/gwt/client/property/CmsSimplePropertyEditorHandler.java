@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsSimplePropertyEditorHandler.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/26 13:08:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +62,17 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /** The data necessary for editing the properties. */
     protected CmsPropertiesBean m_propertiesBean;
+
+    /** The flag which controls whether only ADE templates should be selectable. */
+    private boolean m_useAdeTemplates = true;
+
+    /** 
+     * Creates a new instance.<p>
+     */
+    public CmsSimplePropertyEditorHandler() {
+
+        // do nothing;
+    }
 
     /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getAllPropertyNames()
@@ -92,6 +103,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public String getDialogTitle() {
 
+        // remove this method, it isn't needed anymore
         return "This is thedialog title.";
     }
 
@@ -246,6 +258,25 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     public void setPropertiesBean(CmsPropertiesBean propertiesBean) {
 
         m_propertiesBean = propertiesBean;
+    }
+
+    /**
+     * Sets the flag which controls whether only ADE templates should be selectable.<p>
+     * 
+     * @param adeTemplates if true, only ADE templates will be selectable 
+     */
+    public void setUseAdeTemplates(boolean adeTemplates) {
+
+        m_useAdeTemplates = adeTemplates;
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#useAdeTemplates()
+     */
+    public boolean useAdeTemplates() {
+
+        return m_useAdeTemplates;
     }
 
 }

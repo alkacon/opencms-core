@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/26 13:08:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -253,6 +253,14 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public void setPageInfo(CmsListInfoBean pageInfo) {
 
         m_pageInfo = pageInfo;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#useAdeTemplates()
+     */
+    public boolean useAdeTemplates() {
+
+        return true;
     }
 
     /**
