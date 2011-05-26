@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsServiceUtil.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ import java.util.Locale;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -65,11 +65,13 @@ public final class CmsServiceUtil {
     /**
      * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 
+     * @param cms the CMS context to use 
      * @param res the resource to get the page info for
      * 
      * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 
-     * @throws CmsRpcException if something goes wrong
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong 
      */
     public static CmsListInfoBean getPageInfo(CmsObject cms, CmsResource res) throws CmsException, CmsLoaderException {
 

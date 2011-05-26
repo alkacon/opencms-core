@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -80,27 +80,28 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getAllPropertyNames()
+     */
     public List<String> getAllPropertyNames() {
 
         return CmsSitemapView.getInstance().getController().getData().getAllPropertyNames();
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFileId()
+     */
     public CmsUUID getDefaultFileId() {
 
         return m_entry.getDefaultFileId();
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFileProperties()
+     */
     public Map<String, CmsClientProperty> getDefaultFileProperties() {
 
         return m_entry.getDefaultFileProperties();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDescriptionText()
-     */
-    public String getDescriptionText() {
-
-        return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0);
     }
 
     /**
@@ -135,6 +136,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         return result;
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getId()
+     */
     public CmsUUID getId() {
 
         return m_entry.getId();
@@ -143,7 +147,6 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     /**
      * Gets the property object which would be inherited by a sitemap entry.<p>
      * 
-     * @param entry the sitemap entry 
      * @param name the name of the property 
      * @return the property object which would be inherited 
      */
@@ -152,6 +155,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         return CmsSitemapView.getInstance().getController().getInheritedPropertyObject(m_entry, name);
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getModeClass()
+     */
     public String getModeClass() {
 
         if (CmsSitemapView.getInstance().isNavigationMode()) {
@@ -161,6 +167,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         }
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getOwnProperties()
+     */
     public Map<String, CmsClientProperty> getOwnProperties() {
 
         return m_entry.getOwnProperties();
@@ -174,11 +183,17 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         return m_pageInfo;
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getPath()
+     */
     public String getPath() {
 
         return m_entry.getSitePath();
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getPossibleTemplates()
+     */
     public Map<String, CmsClientTemplateBean> getPossibleTemplates() {
 
         return CmsSitemapView.getInstance().getController().getData().getTemplates();
@@ -206,6 +221,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         return !getEntry().isRoot();
     }
 
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#isFolder()
+     */
     public boolean isFolder() {
 
         return m_entry.isFolderType();
@@ -237,6 +255,11 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         m_pageInfo = pageInfo;
     }
 
+    /**
+     * Gets the edited sitemap entry.<p>
+     * 
+     * @return the edited sitemap entry 
+     */
     protected CmsClientSitemapEntry getEntry() {
 
         return m_entry;

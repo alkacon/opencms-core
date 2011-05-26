@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -82,6 +82,7 @@ public class CmsCoreData implements IsSerializable {
     /** The current request locale. */
     private String m_locale;
 
+    /** The structure id of the resource. */
     private CmsUUID m_structureId;
 
     /** The current navigation URI. */
@@ -141,6 +142,7 @@ public class CmsCoreData implements IsSerializable {
      * @param locale the current request locale
      * @param wpLocale the workplace locale
      * @param uri the current uri
+     * @param structureId the structure id of tbe resource 
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
      * @param serverTime the current time  
@@ -266,6 +268,11 @@ public class CmsCoreData implements IsSerializable {
         return m_siteRoot;
     }
 
+    /**
+     * Gets the structure id of the current resource.<p>
+     *  
+     * @return the structure id of the current resource 
+     */
     public CmsUUID getStructureId() {
 
         return m_structureId;

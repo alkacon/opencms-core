@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -98,7 +99,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0.0
  * 
@@ -424,9 +425,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         try {
             CmsResource requestedResource = cms.readResource(cms.getRequestContext().getUri());
             structureId = requestedResource.getStructureId();
-        } catch (CmsVfsResourceNotFoundException e) {
         } catch (CmsException e) {
-            throw new RuntimeException(e);
+            throw new CmsRuntimeException(e.getMessageContainer(), e);
         }
 
         CmsCoreData data = new CmsCoreData(

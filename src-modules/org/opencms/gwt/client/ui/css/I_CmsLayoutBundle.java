@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * 
  * @since 8.0.0
  */
@@ -1626,14 +1626,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the page CSS
-     */
-    @Source("properties.css")
-    public I_CmsPropertiesCss propertiesCss();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the constants CSS
      */
     @Source("availability.css")
@@ -1842,6 +1834,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("progressbar.css")
     I_CmsProgressBarCss progressBarCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the page CSS
+     */
+    @Source("properties.css")
+    I_CmsPropertiesCss propertiesCss();
 
     /**
      * Access method.<p>

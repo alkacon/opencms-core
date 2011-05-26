@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -325,6 +325,13 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         }
     }
 
+    /**
+     * Creates a list item widget from a list info bean.<p>
+     * 
+     * @param info the list info bean 
+     * 
+     * @return the list item widget 
+     */
     protected CmsListItemWidget createListItemWidget(CmsListInfoBean info) {
 
         CmsListItemWidget result = new CmsListItemWidget(info);

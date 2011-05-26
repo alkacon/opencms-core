@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsShowWorkplace.java,v $
- * Date   : $Date: 2011/05/03 17:46:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -106,21 +106,21 @@ public class CmsShowWorkplace {
      */
     protected final native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-        if ($wnd.opener && $wnd.opener != self) {
-            $wnd.opener.location.href = path;
-            $wnd.opener.focus();
-        } else {
-            var openerStr = 'width='
-                    + winWidth
-                    + ',height='
-                    + winHeight
-                    + ',left='
-                    + winLeft
-                    + ',top='
-                    + winTop
-                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-            deWindow.focus();
-        }
+      if ($wnd.opener && $wnd.opener != self) {
+         $wnd.opener.location.href = path;
+         $wnd.opener.focus();
+      } else {
+         var openerStr = 'width='
+               + winWidth
+               + ',height='
+               + winHeight
+               + ',left='
+               + winLeft
+               + ',top='
+               + winTop
+               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+         deWindow.focus();
+      }
     }-*/;
 }

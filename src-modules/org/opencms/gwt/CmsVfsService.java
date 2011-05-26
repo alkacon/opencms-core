@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,8 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -64,6 +66,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -88,6 +91,53 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
+
+    /**
+     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param res the resource to get the page info for
+     * 
+     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong 
+     */
+    public static CmsListInfoBean getPageInfo(CmsObject cms, CmsResource res) throws CmsException, CmsLoaderException {
+
+        CmsListInfoBean result = new CmsListInfoBean();
+
+        result.setResourceState(res.getState());
+
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+
+        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            result.setTitle(title);
+        } else {
+            result.setTitle(res.getName());
+        }
+        result.setSubTitle(resourceSitePath);
+        String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+        if (Boolean.parseBoolean(secure)) {
+            result.setPageIcon(CmsListInfoBean.PageIcon.secure);
+        } else {
+            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            if (Boolean.parseBoolean(export)) {
+                result.setPageIcon(CmsListInfoBean.PageIcon.export);
+            } else {
+                result.setPageIcon(CmsListInfoBean.PageIcon.standard);
+            }
+        }
+        String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+        Locale currentLocale = cms.getRequestContext().getLocale();
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        result.addAdditionalInfo(messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0), resTypeNiceName);
+        result.setResourceType(resTypeName);
+        return result;
+    }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(java.lang.String)
@@ -587,7 +637,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         try {
-            return CmsServiceUtil.getPageInfo(cms, res);
+            return CmsVfsService.getPageInfo(cms, res);
         } catch (CmsException e) {
             error(e);
             return null; // will never be reached 
@@ -681,7 +731,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
             result.setOwnProperties(convertProperties(ownProperties));
             result.setInheritedProperties(convertProperties(parentProperties));
-            result.setPageInfo(CmsServiceUtil.getPageInfo(cms, resource));
+            result.setPageInfo(CmsVfsService.getPageInfo(cms, resource));
             List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
             List<String> propNames = new ArrayList<String>();
             for (CmsPropertyDefinition propDef : propDefs) {

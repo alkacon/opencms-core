@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -133,6 +133,13 @@ public interface I_CmsVfsServiceAsync {
      */
     void loadPropertyData(CmsUUID id, AsyncCallback<CmsPropertiesBean> callback);
 
+    /**
+     * Saves a set of property changes.<p>
+     * 
+     * @param changes the property changes
+     *  
+     * @param callback the asynchronous callback 
+     */
     void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback);
 
 }

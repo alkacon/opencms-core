@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyEditor.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/26 08:26:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -67,7 +67,8 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
+     * @param propertyConfig the property configuration 
      * @param handler the entry editor handler 
      */
     public CmsNavModePropertyEditor(
