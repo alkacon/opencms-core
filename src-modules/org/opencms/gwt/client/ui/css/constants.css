@@ -117,7 +117,7 @@
 /** This constant defines the background color for elements have the new state. */
 @def backgroundColorStateNew #445E80;
 /** This constant defines the background color for elements have the sub sitemap state. */
-@def backgroundColorStateSubSitemap FEFEDB;
+@def backgroundColorStateSubSitemap #FEFEDB;
 
 /**
  * The shadow background color definitions.
