@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/05/20 14:04:05 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/05/26 10:20:54 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 8.0.0
  */
@@ -406,16 +406,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     }
 
     /**
-     * Returns the content panel.<p>
-     *
-     * @return the content panel
-     */
-    public FlowPanel getContentPanel() {
-
-        return m_contentPanel;
-    }
-
-    /**
      * Returns the number of buttons.<p>
      * 
      * @return the number of buttons
@@ -433,6 +423,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     public FlowPanel getButtonPanel() {
 
         return m_buttonPanel;
+    }
+
+    /**
+     * Returns the content panel.<p>
+     *
+     * @return the content panel
+     */
+    public FlowPanel getContentPanel() {
+
+        return m_contentPanel;
     }
 
     /**
@@ -855,7 +855,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
             String stateKey = Messages.get().key(Messages.GUI_RESOURCE_STATE_0);
             String stateValue = CmsResourceStateUtil.getStateName(state);
             String stateStyle = CmsResourceStateUtil.getStateStyle(state);
-            infoBean.addAdditionalInfo(stateKey, stateValue, stateStyle);
+            m_additionalInfo.add(new AdditionalInfoItem(new CmsAdditionalInfoBean(stateKey, stateValue, stateStyle)));
         }
 
         // set the additional info
