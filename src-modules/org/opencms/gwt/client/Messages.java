@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  */
@@ -213,6 +213,9 @@ public final class Messages {
     public static final String GUI_LOCK_NOTIFICATION_2 = "GUI_LOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_OWNED_BY_1 = "GUI_LOCK_OWNED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -225,7 +228,31 @@ public final class Messages {
     public static final String GUI_OK_0 = "GUI_OK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORIGIN_INHERITED_1 = "GUI_ORIGIN_INHERITED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_BLOCK_UNUSED_0 = "GUI_PROPERTY_BLOCK_UNUSED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_BLOCK_USED_0 = "GUI_PROPERTY_BLOCK_USED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_TAB_COMPLETE_0 = "GUI_PROPERTY_TAB_COMPLETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_TAB_RESOURCE_0 = "GUI_PROPERTY_TAB_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_TAB_SIMPLE_0 = "GUI_PROPERTY_TAB_SIMPLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_TAB_STRUCTURE_0 = "GUI_PROPERTY_TAB_STRUCTURE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REASON_0 = "GUI_REASON_0";
@@ -259,6 +286,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECTBOX_EMPTY_SELECTION_1 = "GUI_SELECTBOX_EMPTY_SELECTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTBOX_UNSELECTED_1 = "GUI_SELECTBOX_UNSELECTED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TICKET_MESSAGE_3 = "GUI_TICKET_MESSAGE_3";
@@ -318,46 +348,19 @@ public final class Messages {
     public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_BLOCK_UNUSED_0 = "GUI_PROPERTY_BLOCK_UNUSED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_BLOCK_USED_0 = "GUI_PROPERTY_BLOCK_USED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_COMPLETE_0 = "GUI_PROPERTY_TAB_COMPLETE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_RESOURCE_0 = "GUI_PROPERTY_TAB_RESOURCE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_SIMPLE_0 = "GUI_PROPERTY_TAB_SIMPLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROPERTY_TAB_STRUCTURE_0 = "GUI_PROPERTY_TAB_STRUCTURE_0";
+    public static final String GUI_URLNAME_PROPERTY_0 = "GUI_URLNAME_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_PROPERTY_DESC_0 = "GUI_URLNAME_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECTBOX_UNSELECTED_1 = "GUI_SELECTBOX_UNSELECTED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ORIGIN_INHERITED_1 = "GUI_ORIGIN_INHERITED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_URLNAME_PROPERTY_0 = "GUI_URLNAME_PROPERTY_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

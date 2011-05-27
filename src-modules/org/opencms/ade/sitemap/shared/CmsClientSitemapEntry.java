@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPathValue;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 8.0.0 
  */
@@ -95,6 +96,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The default file properties. */
     private Map<String, CmsClientProperty> m_defaultFileProperties = new HashMap<String, CmsClientProperty>();
+
+    /** The default file resource type name. */
+    private String m_defaultFileType;
 
     /** The detail page type name. */
     private String m_detailpageTypeName;
@@ -163,6 +167,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         this();
         setId(clone.getId());
         setDefaultFileId(clone.getDefaultFileId());
+        setDefaultFileType(clone.getDefaultFileType());
         setName(clone.getName());
         setSitePath(clone.getSitePath());
         setOwnProperties(clone.getOwnProperties());
@@ -217,6 +222,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public Map<String, CmsClientProperty> getDefaultFileProperties() {
 
         return m_defaultFileProperties;
+    }
+
+    /**
+     * Returns the default file resource type name.<p>
+     *
+     * @return the default file resource type name
+     */
+    public String getDefaultFileType() {
+
+        return m_defaultFileType;
     }
 
     /**
@@ -371,16 +386,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
         return m_resourceTypeName;
     }
 
-    /**
-     * Returns the sitemap path.<p>
-     *
-     * @return the sitemap path
-     */
-    public String getSitePath() {
-
-        return m_sitePath;
-    }
-
     //    /**
     //     * Returns a map of this entry's own properties.<p>
     //     * 
@@ -390,6 +395,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     //
     //        return m_properties;
     //    }
+
+    /**
+     * Returns the sitemap path.<p>
+     *
+     * @return the sitemap path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
 
     /**
      * Returns the children.<p>
@@ -634,6 +649,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the default file resource type name.<p>
+     *
+     * @param defaultFileType the default file resource type name to set
+     */
+    public void setDefaultFileType(String defaultFileType) {
+
+        m_defaultFileType = defaultFileType;
+    }
+
+    /**
      * Sets the detail resource type name.<p>
      * 
      * @param detailpageTypeName the detail resource type name
@@ -735,6 +760,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the properties inherited by the entry's parent.<p>
+     * 
+     * @param parentProperties the properties inherited by the entry's parent 
+     */
+    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
+    //
+    //        m_parentInheritedProperties = parentProperties;
+    //    }
+
+    /**
      * Sets the name.<p>
      *
      * @param name the name to set
@@ -743,6 +778,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_name = name;
     }
+
+    /**
+     * Sets the properties.<p>
+     *
+     * @param properties the properties to set
+     */
+    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //
+    //        m_properties = properties;
+    //    }
 
     /**
      * Sets the "new" flag of the client sitemap entry.<p>
@@ -755,16 +800,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the properties inherited by the entry's parent.<p>
-     * 
-     * @param parentProperties the properties inherited by the entry's parent 
-     */
-    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
-    //
-    //        m_parentInheritedProperties = parentProperties;
-    //    }
-
-    /**
      * Sets the properties for the entry itself.<p>
      * 
      * @param properties the properties for the entry itself 
@@ -773,16 +808,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_ownProperties = properties;
     }
-
-    /**
-     * Sets the properties.<p>
-     *
-     * @param properties the properties to set
-     */
-    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
-    //
-    //        m_properties = properties;
-    //    }
 
     /**
      * Sets the position.<p>

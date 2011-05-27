@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsSitemapItemCss.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -79,41 +79,6 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * @return a CSS class
      **/
     String itemTitle();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String lockClosed();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String lockIcon();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String lockOpen();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String lockSharedClosed();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String lockSharedOpen();
 
     /**
      * CSS class accessor.<p>

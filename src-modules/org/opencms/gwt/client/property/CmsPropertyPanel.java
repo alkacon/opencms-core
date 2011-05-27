@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -142,8 +141,9 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
 
-        m_tabPanel.add(CmsPopup.wrapWithBorderPadding(m_simpleTab), Messages.get().key(
-            Messages.GUI_PROPERTY_TAB_SIMPLE_0));
+        m_tabPanel.add(
+            CmsPopup.wrapWithBorderPadding(m_simpleTab),
+            Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
         m_showShared = showShared;
         if (m_showShared) {
             m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
@@ -335,8 +335,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     protected CmsListItemWidget createListItemWidget(CmsListInfoBean info) {
 
         CmsListItemWidget result = new CmsListItemWidget(info);
-        if (info.getPageIcon() != null) {
-            CmsListItemWidgetUtil.setPageIcon(result, info.getPageIcon());
+        if (info.getStateIcon() != null) {
+            result.setStateIcon(info.getStateIcon());
         }
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsResourceState.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/27 07:30:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.io.Serializable;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.3 
  */
@@ -80,6 +80,7 @@ public class CmsResourceState implements Serializable {
      * @deprecated Don't use this constructor! 
      * It is only used to transfer the resource state via RPC call.
      */
+    @Deprecated
     protected CmsResourceState() {
 
         // noop

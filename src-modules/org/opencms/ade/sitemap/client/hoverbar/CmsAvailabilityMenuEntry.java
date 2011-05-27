@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAvailabilityMenuEntry.java,v $
- * Date   : $Date: 2011/05/05 10:22:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
-import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -46,7 +44,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -72,8 +70,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
                 CmsSitemapController controller = getHoverbar().getController();
                 CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                CmsSitemapTreeItem item = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
-                new CmsAvailabilityDialog(entry.getVfsPath(), item.getCurrentPageInfo()).loadAndShow();
+                new CmsAvailabilityDialog(entry.getId()).loadAndShow();
             }
         });
     }

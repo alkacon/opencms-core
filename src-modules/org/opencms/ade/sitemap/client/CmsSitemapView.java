@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,9 +53,9 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 8.0.0
  */
@@ -148,6 +148,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             shownPath = "-";
         }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
+        // showing the resource type icon of the default file in navigation mode
+        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+        ? entry.getDefaultFileType()
+        : entry.getResourceTypeName());
 
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
         final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry);
@@ -381,6 +385,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             target.addChild(create(child));
         }
         target.onFinishLoading();
+        target.enableVfsMode(!isNavigationMode());
         target.getTree().setAnimationEnabled(true);
         if (event.isSetOpen()) {
             target.setOpen(true);
@@ -470,7 +475,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         });
 
         m_inNavigationStyle = new CmsStyleVariable(m_tree);
-        setEditorMode(EditorMode.navigation);
+
         if (m_controller.isEditable()) {
             // enable drag'n drop 
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));
@@ -482,7 +487,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
-
+        setEditorMode(EditorMode.navigation);
         // paint
         page.remove(loadingLabel);
         page.add(m_tree);
@@ -516,10 +521,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (m_editorMode == EditorMode.vfs) {
             m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
+            getRootItem().enableVfsMode(true);
         } else {
-
             m_toolbar.setNewEnabled(true, null);
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+            getRootItem().enableVfsMode(false);
         }
     }
 

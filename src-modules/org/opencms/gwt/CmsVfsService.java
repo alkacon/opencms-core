@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -120,13 +120,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         result.setSubTitle(resourceSitePath);
         String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
         if (Boolean.parseBoolean(secure)) {
-            result.setPageIcon(CmsListInfoBean.PageIcon.secure);
+            result.setStateIcon(CmsListInfoBean.StateIcon.secure);
         } else {
             String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
             if (Boolean.parseBoolean(export)) {
-                result.setPageIcon(CmsListInfoBean.PageIcon.export);
+                result.setStateIcon(CmsListInfoBean.StateIcon.export);
             } else {
-                result.setPageIcon(CmsListInfoBean.PageIcon.standard);
+                result.setStateIcon(CmsListInfoBean.StateIcon.standard);
             }
         }
         String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();

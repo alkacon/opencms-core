@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/05/03 18:37:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -272,6 +272,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/selectionIconDeactivated.png")
     ImageResource selectionIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/stateExportIcon.png")
+    ImageResource stateExportIcon();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/stateSecureIcon.png")
+    ImageResource stateSecureIcon();
 
     /**
      * Access method.<p>

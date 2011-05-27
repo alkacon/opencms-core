@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -55,11 +55,9 @@ public class CmsListInfoBean implements IsSerializable {
     /**
      * Enum for the type of page icon which should be displayed.<p>
      */
-    public enum PageIcon {
+    public enum StateIcon {
         /** export page icon. */
         export,
-        /** hidden page icon. */
-        hidden,
         /** redirect status icon. */
         redirect,
         /** secure page icon. */
@@ -74,14 +72,14 @@ public class CmsListInfoBean implements IsSerializable {
     /** The additional info. */
     private List<CmsAdditionalInfoBean> m_additionalInfo;
 
-    /** The page icon information: for the type of page icon which should be displayed. */
-    private PageIcon m_pageIcon;
-
     /** The resource state. */
     private CmsResourceState m_resourceState;
 
     /** The resource type name of the resource. */
     private String m_resourceType;
+
+    /** The state icon information: for the type of state icon which should be displayed. The state icon indicates if a resource is exported, secure etc. */
+    private StateIcon m_stateIcon;
 
     /** The sub-title. */
     private String m_subTitle;
@@ -148,16 +146,6 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Returns the pageIcon.<p>
-     *
-     * @return the pageIcon
-     */
-    public PageIcon getPageIcon() {
-
-        return m_pageIcon;
-    }
-
-    /**
      * Returns the resourceState.<p>
      *
      * @return the resourceState
@@ -175,6 +163,18 @@ public class CmsListInfoBean implements IsSerializable {
     public String getResourceType() {
 
         return m_resourceType;
+    }
+
+    /**
+     * Returns the state icon.<p>
+     * 
+     * The state icon indicates if a resource is exported, secure etc.<p>
+     *
+     * @return the state Icon
+     */
+    public StateIcon getStateIcon() {
+
+        return m_stateIcon;
     }
 
     /**
@@ -218,16 +218,6 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Sets the pageIcon.<p>
-     *
-     * @param pageIcon the pageIcon to set
-     */
-    public void setPageIcon(PageIcon pageIcon) {
-
-        m_pageIcon = pageIcon;
-    }
-
-    /**
      * Sets the resourceState.<p>
      *
      * @param resourceState the resourceState to set
@@ -245,6 +235,18 @@ public class CmsListInfoBean implements IsSerializable {
     public void setResourceType(String resourceType) {
 
         m_resourceType = resourceType;
+    }
+
+    /**
+     * Sets the state icon.<p>
+     * 
+     * The state icon indicates if a resource is exported, secure etc.<p>
+     *
+     * @param stateIcon the state icon to set
+     */
+    public void setStateIcon(StateIcon stateIcon) {
+
+        m_stateIcon = stateIcon;
     }
 
     /**

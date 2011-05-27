@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidgetUtil.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,14 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
+import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 
 /**
  * List item widget util class.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -60,16 +60,12 @@ public final class CmsListItemWidgetUtil {
      * @param listItem the list item to set the icon for
      * @param icon the icon to set
      */
-    public static void setPageIcon(CmsListItemWidget listItem, PageIcon icon) {
+    public static void setPageIcon(CmsListItemWidget listItem, StateIcon icon) {
 
         switch (icon) {
             case export:
                 listItem.setIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().export());
                 listItem.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
-                break;
-            case hidden:
-                listItem.setIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().hidden());
-                listItem.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_HIDDEN_0));
                 break;
             case secure:
                 listItem.setIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().secure());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
-import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.file.CmsResource;
@@ -46,7 +45,6 @@ import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -56,8 +54,7 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
+import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
@@ -72,7 +69,6 @@ import java.util.Map;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -82,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 8.0.0
  * 
@@ -176,14 +172,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** The detail page label title generator. */
     private DetailPageLabelTitleGenerator m_detailPageLabelTitleGenerator;
 
+    /** Style variable for to toggle in navigation style. */
     private CmsStyleVariable m_inNavigationStyle;
 
-    private HTML m_lockIcon;
-
+    /** Style variable for opener. */
     private CmsStyleVariable m_openerForNonNavigationStyle;
-
-    /** The page icon. */
-    private PageIcon m_pageIcon;
 
     /**
      * Default constructor.<p>
@@ -202,17 +195,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_inNavigationStyle = new CmsStyleVariable(this);
         m_openerForNonNavigationStyle = new CmsStyleVariable(m_opener);
         m_listItemWidget.addTitleStyleName(CSS.itemTitle());
-        m_listItemWidget.setFixedIconClasses(CmsIconUtil.getResourceIconClasses(
-            entry.getResourceTypeName(),
-            entry.getSitePath(),
-            false));
         updateInNavigation(entry);
         m_itemsById.put(entry.getId(), this);
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
-        updateSitemapReferenceStatus(entry);
         updateDetailPageStatus();
-        setLockIcon(entry.getLock());
+        m_listItemWidget.setLockIcon(entry.getLock());
         if (!entry.isFolderType()) {
             hideOpeners();
         }
@@ -309,20 +297,25 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Returns the current page info of this sitemap as {@link CmsListInfoBean}.<p>
+     * Enables the site-map VFS mode.<p>
      * 
-     * @return the current page info of this sitemap as {@link CmsListInfoBean}
+     * @param enable <code>true</code> to enable the VFS mode
      */
-    public CmsListInfoBean getCurrentPageInfo() {
+    public void enableVfsMode(boolean enable) {
 
-        CmsListInfoBean info = new CmsListInfoBean();
-
-        info.setPageIcon(m_pageIcon);
-        info.setTitle(m_entry.getTitle());
-        info.setSubTitle(getDisplayedUrl(m_entry.getSitePath()));
-        info.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
-        info.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
-        return info;
+        String iconClass = CmsIconUtil.getResourceIconClasses(
+            m_entry.getResourceTypeName(),
+            m_entry.getSitePath(),
+            false);
+        if (!enable && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getDefaultFileType())) {
+            iconClass = CmsIconUtil.getResourceIconClasses(m_entry.getDefaultFileType(), false);
+        }
+        m_listItemWidget.setIcon(iconClass);
+        for (Widget child : m_children) {
+            if (child instanceof CmsSitemapTreeItem) {
+                ((CmsSitemapTreeItem)child).enableVfsMode(enable);
+            }
+        }
     }
 
     /**
@@ -341,12 +334,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         switch (detailPageTable.getStatus(entryId)) {
             case firstDetailPage:
                 type = detailPageTable.get(entryId).getType();
-                suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, getNiceTypeName(type));
+                suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, type);
                 text = "(*" + type + ")";
                 break;
             case otherDetailPage:
                 type = detailPageTable.get(entryId).getType();
-                suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, getNiceTypeName(type));
+                suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, type);
                 text = "(" + type + ")";
                 break;
             case noDetailPage:
@@ -441,10 +434,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public void highlight(boolean highlightOn) {
 
         if (highlightOn) {
-            m_listItemWidget.getContentPanel().addStyleName(CSS.highlight());
+            setBackgroundColor(Background.YELLOW);
         } else {
-            m_listItemWidget.getContentPanel().removeStyleName(CSS.highlight());
-
+            setBackgroundColor(Background.DEFAULT);
         }
     }
 
@@ -540,63 +532,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Sets the lock icon.<p>
-     * 
-     * @param lock the current item lock
-     */
-    public void setLockIcon(CmsClientLock lock) {
-
-        if (m_lockIcon == null) {
-            m_lockIcon = new HTML();
-            m_listItemWidget.getContentPanel().add(m_lockIcon);
-        }
-        if ((lock == null) || lock.getLockType().isUnlocked()) {
-            m_lockIcon.setStyleName(CSS.lockIcon());
-        } else {
-            if (lock.isOwnedByUser()) {
-                switch (lock.getLockType()) {
-                    case EXCLUSIVE:
-                    case INHERITED:
-                    case TEMPORARY:
-                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockOpen());
-                        break;
-                    case SHARED_EXCLUSIVE:
-                    case SHARED_INHERITED:
-                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockSharedOpen());
-                        break;
-                    default:
-                        // remove for all other cases
-                        m_lockIcon.setStyleName(CSS.lockIcon());
-                }
-            } else {
-                switch (lock.getLockType()) {
-                    case EXCLUSIVE:
-                    case INHERITED:
-                    case TEMPORARY:
-                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockClosed());
-                        break;
-                    case SHARED_EXCLUSIVE:
-                    case SHARED_INHERITED:
-                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockSharedClosed());
-                        break;
-                    default:
-                        // remove for all other cases
-                        m_lockIcon.setStyleName(CSS.lockIcon());
-                }
-            }
-            m_lockIcon.setTitle(Messages.get().key(Messages.GUI_LOCK_OWNED_BY_1, lock.getLockOwner()));
-        }
-    }
-
-    /**
      * Sets the icon.<p>
      *
      * @param icon the icon to set
      */
-    public void setPageIcon(PageIcon icon) {
+    public void setStateIcon(StateIcon icon) {
 
-        m_pageIcon = icon;
-        CmsListItemWidgetUtil.setPageIcon(m_listItemWidget, icon);
+        m_listItemWidget.setStateIcon(icon);
     }
 
     /**
@@ -615,16 +557,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             sb.append(child.toString());
         }
         return sb.toString();
-    }
-
-    /**
-     * Updates the color of the sitemap tree item.<p>
-     * 
-     * @param entry the entry whose data should be used to update the color of the sitemap tree item.<p>
-     */
-    public void updateColor(CmsClientSitemapEntry entry) {
-
-        //TODO: check if still needed
     }
 
     /**
@@ -654,14 +586,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             shownPath = "-";
         }
         m_listItemWidget.setAdditionalInfoValue(1, shownPath);
-        updateSitemapReferenceStatus(entry);
-        updateColor(entry);
         updateSitePath();
         updateDetailPageStatus();
-        setLockIcon(entry.getLock());
+        m_listItemWidget.setLockIcon(entry.getLock());
         updateInNavigation(entry);
-        getListItemWidget().setFixedIconClasses(
-            CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false));
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
     }
 
@@ -766,19 +694,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Returns the nice type name for a resource type.<p>
-     * 
-     * @param type the type identifier 
-     * 
-     * @return the nice type name 
-     */
-    protected String getNiceTypeName(String type) {
-
-        // TODO: return nice type name by getting information from the sitemap controller 
-        return type;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem#onChangeChildren()
      */
     @Override
@@ -801,20 +716,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             }
         }
         m_openerForNonNavigationStyle.setValue(CSS.notInNavigationEntry());
-    }
-
-    /**
-     * Changes the look of this widget if the entry passed as a parameter has a reference to a sub-sitemap.<p>
-     * 
-     * @param entry the entry which should be checked 
-     */
-    protected void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
-
-        if (entry.isSubSitemapType()) {
-            m_listItemWidget.setBackground(Background.YELLOW);
-        } else {
-            m_listItemWidget.setBackground(Background.DEFAULT);
-        }
     }
 
     /**

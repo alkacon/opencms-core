@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -123,35 +124,15 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
     }
 
     /**
-     * Sets the icon to the open or closed state.<p>
-     * 
-     * @param open if true, sets the icon to the open state, else to the closed state 
-     */
-    protected void setIcon(boolean open) {
-
-        String imageClass = open
-        ? I_CmsImageBundle.INSTANCE.style().triangleDown()
-        : I_CmsImageBundle.INSTANCE.style().triangleRight();
-        m_openClose.setDownImageClass(imageClass);
-        m_openClose.setImageClass(imageClass);
-    }
-
-    /**
-     * Constructor.<p>
-     * 
-     * @param infoBean bean holding the item information
+     * @see org.opencms.gwt.client.ui.CmsListItemWidget#initAdditionalInfo(org.opencms.gwt.shared.CmsListInfoBean)
      */
     @Override
-    protected void init(final CmsListInfoBean infoBean) {
+    protected void initAdditionalInfo(final CmsListInfoBean infoBean) {
 
-        m_iconPanel.setVisible(false);
-        m_title.setText(infoBean.getTitle());
-        m_subtitle.setText(infoBean.getSubTitle());
         if (infoBean.hasAdditionalInfo()) {
             m_openClose = new CmsPushButton(
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),
                 I_CmsImageBundle.INSTANCE.style().triangleDown());
-            setIcon(false);
             m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
@@ -164,11 +145,11 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                     if (m_additionalInfoOpen) {
                         setAdditionalInfoVisible(false);
                         m_additionalInfoOpen = false;
-                        setIcon(false);
                     } else {
                         if (!m_loading) {
                             m_loading = true;
-                            setIcon(true);
+                            m_openClose.setDown(true);
+                            m_openClose.disable(Messages.get().getBundle().key(Messages.GUI_LOADING_0));
                             m_additionalInfoLoader.load(new AsyncCallback<List<AdditionalInfoItem>>() {
 
                                 /**
@@ -177,7 +158,8 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                                 public void onFailure(Throwable caught) {
 
                                     m_loading = false;
-                                    setIcon(false);
+                                    m_openClose.enable();
+                                    m_openClose.setDown(false);
                                 }
 
                                 /**
@@ -185,11 +167,11 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                                  */
                                 public void onSuccess(List<AdditionalInfoItem> result) {
 
+                                    m_openClose.enable();
                                     setDynamicInfo(result);
                                     m_loading = false;
                                     m_additionalInfoOpen = true;
                                     setDynamicInfo(result);
-                                    setIcon(true);
                                     setAdditionalInfoVisible(true);
                                 }
                             });
@@ -201,7 +183,6 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
             for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
                 m_additionalInfo.add(new AdditionalInfoItem(additionalInfo));
             }
-
         }
     }
 

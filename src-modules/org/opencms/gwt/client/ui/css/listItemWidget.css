@@ -47,6 +47,39 @@ li div.itemContainer.cmsHovering{
 	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
 }
 
+.stateIcon{
+	left: 0px;
+    position: absolute;
+    top: 16px;
+    z-index: value("constants.css.zIndexInline");
+}
+
+@sprite .stateIcon.export{
+	gwt-image: "gwtImages.icons.stateExportIcon";
+}
+
+@sprite .stateIcon.secure{
+	gwt-image: "gwtImages.icons.stateSecureIcon";
+}
+
+.lockIcon{
+    left: 16px;
+    position: absolute;
+    top: 16px;
+    z-index: value("constants.css.zIndexInline");
+}
+
+@sprite .lockClosed, .lockSharedClosed{
+	gwt-image: "gwtImages.lockOtherImage";
+}
+
+@sprite .lockOpen{
+	gwt-image: "gwtImages.lockUserImage";
+}
+
+@sprite .lockSharedOpen{
+	gwt-image: "gwtImages.lockSharedImage";
+}
 
 
 @sprite div.itemContent {
@@ -54,27 +87,27 @@ li div.itemContainer.cmsHovering{
     background-position: 50% 50%;
     height: auto;
 	position: relative;
-	/** background-color: value("constants.css.backgroundColorStateStandard"); */
 	background-color: value("constants.css.backgroundColorListItem");
+	white-space: nowrap;
 }
 
-.itemActive > div.itemContent {
+.itemActive div.itemContent {
     background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.disabledItem > div.itemContent {
+.disabledItem div.itemContent {
 	background-color: value("constants.css.backgroundColorStateDisabled");
 }
 
-.itemBlue > div.itemContent {
+.itemBlue div.itemContent {
     background-color: value("constants.css.backgroundColorStateNew");
 }
 
-.itemRed > div.itemContent {
+.itemRed div.itemContent {
     background-color: value("constants.css.backgroundColorStateChanged");
 }
 
-.itemYellow > div.itemContent {
+.itemYellow div.itemContent {
     background-color: value("constants.css.backgroundColorStateSubSitemap");
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsSimpleSitemapFormFieldPanel.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,11 @@ package org.opencms.ade.sitemap.client.ui;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -77,7 +77,7 @@ public class CmsSimpleSitemapFormFieldPanel extends A_CmsFormFieldPanel {
         m_panel = new FlowPanel();
         m_innerPanel = new FlowPanel();
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        CmsListItemWidgetUtil.setPageIcon(liWidget, info.getPageIcon());
+        liWidget.setStateIcon(StateIcon.standard);
         if (CmsSitemapView.getInstance().isNavigationMode()) {
             liWidget.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/04 19:03:28 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -70,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -78,9 +77,6 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
     /** The bean that stores the dialog data. */
     protected CmsAvailabilityInfoBean m_availabilityInfo;
-
-    /** The page info for displaying the CmsListItemWidget. */
-    protected CmsListInfoBean m_pageInfo;
 
     /** The structure id of the resource. */
     protected CmsUUID m_structureId;
@@ -137,27 +133,12 @@ public class CmsAvailabilityDialog extends CmsPopup {
     /**
      * Creates the availability dialog.<p>
      * 
-     * <b>Note</b>: Don't initialize this dialog with an sitemap path.<p>
-     * 
      * @param vfsPath the vfs path of the resource to create the dialog for
      */
-    public CmsAvailabilityDialog(final String vfsPath) {
+    public CmsAvailabilityDialog(String vfsPath) {
 
         this();
         m_vfsPath = vfsPath;
-    }
-
-    /**
-     * Creates the availability dialog.<p>
-     * 
-     * @param vfsPath the vfs path of the resource to create the dialog for
-     * @param info the page information that won't be loaded in a sitemap case
-     */
-    public CmsAvailabilityDialog(String vfsPath, CmsListInfoBean info) {
-
-        this();
-        m_vfsPath = vfsPath;
-        m_pageInfo = info;
     }
 
     /**
@@ -201,12 +182,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
             public void onResponse(CmsAvailabilityInfoBean availabilityInfo) {
 
                 stop(false);
-                if (m_pageInfo == null) {
-                    showDialog(availabilityInfo, availabilityInfo.getPageInfo());
-                } else {
-                    m_pageInfo.setResourceState(availabilityInfo.getPageInfo().getResourceState());
-                    showDialog(availabilityInfo, m_pageInfo);
-                }
+                showDialog(availabilityInfo);
             }
         };
         availabilityCallback.execute();
@@ -273,16 +249,12 @@ public class CmsAvailabilityDialog extends CmsPopup {
      * This method creates the dialog components.<p>
      * 
      * @param dialogBean the bean that stores the dialog information
-     * @param infoBean the bean that stores the page info for the dialog
      */
-    protected void showDialog(CmsAvailabilityInfoBean dialogBean, CmsListInfoBean infoBean) {
+    protected void showDialog(CmsAvailabilityInfoBean dialogBean) {
 
         m_availabilityInfo = dialogBean;
-        m_pageInfo = infoBean;
-
         // create the info box
-        CmsListItemWidget info = new CmsListItemWidget(m_pageInfo);
-        CmsListItemWidgetUtil.setPageIcon(info, m_pageInfo.getPageIcon());
+        CmsListItemWidget info = new CmsListItemWidget(m_availabilityInfo.getPageInfo());
         m_panel.add(info);
 
         // create the publish scheduled field

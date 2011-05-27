@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2011/05/05 05:50:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,11 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
+import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -57,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -217,7 +216,7 @@ public class CmsToolbarClipboardView {
 
         });
         itemWidget.addButton(button);
-        CmsListItemWidgetUtil.setPageIcon(itemWidget, PageIcon.standard);
+        itemWidget.setStateIcon(StateIcon.standard);
         listItem.setId(entry.getId().toString());
         return listItem;
     }
@@ -254,9 +253,6 @@ public class CmsToolbarClipboardView {
                 // TODO: check if entry is intern or extern
                 boolean intern = true;
                 if (intern) {
-                    //                    final CmsSitemapTreeItem treeItem = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
-                    //                    // TODO: it could be that the item is not yet loaded, so ensure that it is load
-                    //                    CmsSitemapView.getInstance().ensureVisible(treeItem);
                     CmsDomUtil.ensureMouseOut(listItem.getElement());
                     m_clipboardButton.closeMenu();
                     CmsSitemapView.getInstance().highlightPath(entry.getSitePath());
@@ -267,7 +263,7 @@ public class CmsToolbarClipboardView {
             }
         });
         itemWidget.addButton(button);
-        CmsListItemWidgetUtil.setPageIcon(itemWidget, PageIcon.standard);
+        itemWidget.setStateIcon(StateIcon.standard);
         listItem.setId(entry.getId().toString());
         return listItem;
     }

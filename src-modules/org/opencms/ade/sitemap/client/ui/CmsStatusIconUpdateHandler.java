@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/05/27 07:30:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
-import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
+import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 
 /**
  * A class which changes the status icon of a sitemap item when the "secure" or "export" properties
@@ -45,7 +44,7 @@ import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -66,20 +65,14 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         String exportName = controller.getEffectiveProperty(entry, "exportname");
         entry.setExportName(exportName);
 
-        PageIcon icon = PageIcon.standard;
-        if (!entry.isInNavigation()) {
-            icon = PageIcon.hidden;
-        }
+        StateIcon icon = StateIcon.standard;
         if (Boolean.parseBoolean(exportProp)) {
-            icon = PageIcon.export;
+            icon = StateIcon.export;
         }
         if (Boolean.parseBoolean(secureProp)) {
-            icon = PageIcon.secure;
+            icon = StateIcon.secure;
         }
-        if ((entry.getEntryType()) == EntryType.redirect) {
-            icon = PageIcon.redirect;
-        }
-        item.setPageIcon(icon);
+        item.setStateIcon(icon);
         item.updateSitePath();
     }
 }
