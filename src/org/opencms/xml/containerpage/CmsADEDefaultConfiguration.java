@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/13 13:30:14 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/05/27 10:00:38 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 7.6 
  */
@@ -126,7 +126,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(cms.getSitePath(item.getSourceFile()), newFileName);
         CmsResource resource = cms.readResource(newFileName);
-
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, request);
             if (!xmlContent.hasLocale(locale)) {
@@ -144,9 +143,9 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
                 CmsFile file = xmlContent.getFile();
                 file.setContents(xmlContent.marshal());
                 cms.writeFile(file);
-                cms.unlockResource(newFileName);
                 resource = cms.readResource(newFileName);
             }
+            cms.unlockResource(newFileName);
         }
 
         return resource;
