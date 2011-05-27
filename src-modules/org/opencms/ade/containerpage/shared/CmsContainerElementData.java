@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/27 08:12:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,14 +46,11 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerElementData extends CmsContainerElement {
-
-    /** The element client id. */
-    private String m_clientId;
 
     /** The contents by container type. */
     private Map<String, String> m_contents;
@@ -84,9 +81,6 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The setting for this container element. */
     private Map<String, CmsXmlContentProperty> m_settingConfig;
-
-    /** The full site path. */
-    private String m_sitePath;
 
     /** The resource status. */
     private char m_status;
@@ -439,8 +433,8 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String toString() {
 
         StringBuffer result = new StringBuffer();
-        result.append("Title: ").append(m_title).append("  File: ").append(m_sitePath).append("  ClientId: ").append(
-            m_clientId);
+        result.append("Title: ").append(m_title).append("  File: ").append(getSitePath()).append("  ClientId: ").append(
+            getClientId());
         return result.toString();
     }
 
