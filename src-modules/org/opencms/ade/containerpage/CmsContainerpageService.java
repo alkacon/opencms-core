@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/20 13:47:00 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 8.0.0
  */
@@ -429,9 +429,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(
-                    settingName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(cms, settingType, settings.get(settingName)));
+                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    settingType,
+                    settings.get(settingName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedSettings, false);

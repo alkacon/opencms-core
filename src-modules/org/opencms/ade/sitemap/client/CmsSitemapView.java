@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
@@ -85,7 +86,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 8.0.0
  */
@@ -400,6 +401,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        CmsPingTimer.start();
         m_instance = this;
         RootPanel rootPanel = RootPanel.get();
         m_editorMode = EditorMode.navigation;
@@ -523,6 +525,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
             getRootItem().enableVfsMode(true);
         } else {
+
             m_toolbar.setNewEnabled(true, null);
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
             getRootItem().enableVfsMode(false);

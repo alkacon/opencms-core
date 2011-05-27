@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,8 +65,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -76,9 +77,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -89,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 8.0.0
  */
@@ -121,7 +122,7 @@ public final class CmsContainerpageController {
         private Set<String> m_clientIds;
 
         /**
-         * Constructor.<p>
+        "         * Constructor.<p>
          * 
          * @param clientIds the client id's
          * @param callback the call-back
@@ -905,10 +906,10 @@ public final class CmsContainerpageController {
     /**
      * Loads the context menu entries.<p>
      * 
-     * @param uri the URI to get the context menu entries for 
+     * @param structureId the structure id of the resource to get the context menu entries for  
      * @param context the ade context (sitemap or containerpae)
      */
-    public void loadContextMenu(final String uri, final AdeContext context) {
+    public void loadContextMenu(final CmsUUID structureId, final AdeContext context) {
 
         /** The RPC menu action for the container page dialog. */
         CmsRpcAction<List<CmsContextMenuEntryBean>> menuAction = new CmsRpcAction<List<CmsContextMenuEntryBean>>() {
@@ -919,7 +920,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getCoreService().getContextMenuEntries(uri, context, this);
+                getCoreService().getContextMenuEntries(structureId, context, this);
             }
 
             /**
@@ -928,7 +929,8 @@ public final class CmsContainerpageController {
             @Override
             public void onResponse(List<CmsContextMenuEntryBean> menuBeans) {
 
-                m_handler.insertContextMenu(menuBeans, uri);
+                //@STRUCTUREID
+                m_handler.insertContextMenu(menuBeans, structureId);
             }
         };
         menuAction.execute();
@@ -1015,7 +1017,7 @@ public final class CmsContainerpageController {
             return false;
         }
         CmsLockInfo lockInfo = CmsCoreProvider.get().lockTempAndCheckModification(
-            getCurrentUri(),
+            CmsCoreProvider.get().getStructureId(),
             m_data.getDateLastModified());
         if (lockInfo.couldLock()) {
             onLockSuccess(lockInfo);
@@ -1107,13 +1109,13 @@ public final class CmsContainerpageController {
         dragElement.removeFromParent();
         if (isGroupcontainerEditing()) {
             if (!getGroupcontainer().iterator().hasNext()) {
-            // group-container is empty, mark it
+                // group-container is empty, mark it
                 getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
-        }
+            }
         } else {
             // only set changed if not editing a group container
-        setPageChanged();
-    }
+            setPageChanged();
+        }
     }
 
     /**
@@ -1370,7 +1372,7 @@ public final class CmsContainerpageController {
      */
     public boolean startEditingGroupcontainer(CmsGroupContainerElement groupContainer) {
 
-        if (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getSitePath())) {
+        if (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId())) {
             m_editingGroupcontainer = groupContainer;
             return true;
         }
@@ -1637,7 +1639,7 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        if (CmsCoreProvider.get().unlock(getCurrentUri())) {
+        if (CmsCoreProvider.get().unlock(CmsCoreProvider.get().getStructureId())) {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore

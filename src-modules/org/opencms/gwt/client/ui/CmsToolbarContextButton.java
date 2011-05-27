@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2011/05/17 12:47:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -101,8 +101,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
      */
     public void onToolbarActivate() {
 
-        // we don't cache the context menu anymore!
-        getHandler().loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
+        getHandler().loadContextMenu(CmsCoreProvider.get().getStructureId(), AdeContext.containerpage);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -222,10 +222,10 @@ public final class CmsCoreProvider extends CmsCoreData {
     /**
      * Fetches the state of a resource from the server.<p>
      * 
-     * @param path the VFS path  
+     * @param structureId the structure id of the resource 
      * @param callback the callback which should receive the result 
      */
-    public void getResourceState(final String path, final AsyncCallback<CmsResourceState> callback) {
+    public void getResourceState(final CmsUUID structureId, final AsyncCallback<CmsResourceState> callback) {
 
         CmsRpcAction<CmsResourceState> action = new CmsRpcAction<CmsResourceState>() {
 
@@ -236,7 +236,7 @@ public final class CmsCoreProvider extends CmsCoreData {
             public void execute() {
 
                 start(0, false);
-                getService().getResourceState(path, this);
+                getService().getResourceState(structureId, this);
             }
 
             /**
@@ -265,27 +265,14 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
-     * Locks the current resource.<p>
-     * 
-     * @return <code>true</code> if succeeded
-     * 
-     * @see #lock(String)
-     */
-    public boolean lock() {
-
-        return lock(getUri());
-    }
-
-    /**
      * Locks the given resource with a temporary lock, synchronously.<p>
      * 
-     * @param uri the resource URI
+     * @param structureId the resource structure id 
      * 
      * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
-    public boolean lock(final String uri) {
+    public boolean lock(final CmsUUID structureId) {
 
-        // lock the sitemap
         CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
 
             /**
@@ -296,7 +283,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
                 setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
-                getService().lockTemp(uri, this);
+                getService().lockTemp(structureId, this);
             }
 
             /**
@@ -311,7 +298,7 @@ public final class CmsCoreProvider extends CmsCoreData {
                     return;
                 }
                 // unable to lock
-                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
                 CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
             }
         };
@@ -322,12 +309,12 @@ public final class CmsCoreProvider extends CmsCoreData {
      * Locks the given resource with a temporary lock, synchronously and additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
-     * @param uri the resource URI
+     * @param structureId the resource structure id 
      * @param modification the timestamp to check
      * 
      * @return <code>null</code> if successful, else an error message
      */
-    public CmsLockInfo lockTempAndCheckModification(final String uri, final long modification) {
+    public CmsLockInfo lockTempAndCheckModification(final CmsUUID structureId, final long modification) {
 
         // lock the sitemap
         CmsRpcAction<CmsLockInfo> lockAction = new CmsRpcAction<CmsLockInfo>() {
@@ -340,7 +327,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
                 setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
-                getService().lockTempAndCheckModification(uri, modification, this);
+                getService().lockTempAndCheckModification(structureId, modification, this);
             }
 
             /**
@@ -416,21 +403,21 @@ public final class CmsCoreProvider extends CmsCoreData {
      * 
      * @return <code>true</code> if succeeded
      * 
-     * @see #unlock(String)
+     * @see #unlock(CmsUUID)
      */
     public boolean unlock() {
 
-        return unlock(getUri());
+        return unlock(getStructureId());
     }
 
     /**
      * Unlocks the given resource, synchronously.<p>
      * 
-     * @param uri the resource URI
+     * @param structureId the resource structure id 
      * 
      * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
-    public boolean unlock(final String uri) {
+    public boolean unlock(final CmsUUID structureId) {
 
         // lock the sitemap
         CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
@@ -443,7 +430,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
                 setLoadingMessage(Messages.get().key(Messages.GUI_UNLOCKING_0));
                 start(200, false);
-                getService().unlock(uri, this);
+                getService().unlock(structureId, this);
             }
 
             /**
@@ -458,7 +445,7 @@ public final class CmsCoreProvider extends CmsCoreData {
                     return;
                 }
                 // unable to lock
-                String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, uri, result);
+                String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, structureId.toString(), result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }
         };

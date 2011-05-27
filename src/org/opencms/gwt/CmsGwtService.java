@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2011/05/25 15:39:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -274,6 +275,20 @@ public class CmsGwtService extends RemoteServiceServlet {
         if (!lock.isOwnedBy(user)) {
             cms.lockResourceTemporary(resource);
         }
+    }
+
+    /**
+     * 
+     * Locks the given resource with a temporary, if not already locked by the current user.
+     * Will throw an exception if the resource could not be locked for the current user.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void ensureLock(CmsUUID structureId) throws CmsException {
+
+        ensureLock(getCmsObject().readResource(structureId));
+
     }
 
     /**

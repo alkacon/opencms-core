@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2011/05/27 13:38:36 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -96,57 +96,58 @@ public interface I_CmsCoreServiceAsync {
     /**
      * Returns a list of menu entry beans for the context menu.<p>
      * 
-     * @param uri the URI to the resource to get the context menu for
+     * @param structureId the structure id of the resource for which to get the context menu 
      * @param context the ade context (sitemap or containerpage)
      * @param callback the asynchronous callback
      */
-    void getContextMenuEntries(String uri, AdeContext context, AsyncCallback<List<CmsContextMenuEntryBean>> callback);
+    void getContextMenuEntries(
+        CmsUUID structureId,
+        AdeContext context,
+        AsyncCallback<List<CmsContextMenuEntryBean>> callback);
 
     /**
-     * Gets the resource state of a resource on a given path.<p>
+     * Gets the resource state of a resource.<p>
      * 
-     * @param path the resource path 
+     * @param structureId the structure id of the resource 
      * @param callback the callback which receives the result  
      */
-    void getResourceState(String path, AsyncCallback<CmsResourceState> callback);
+    void getResourceState(CmsUUID structureId, AsyncCallback<CmsResourceState> callback);
 
     /**
      * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      * 
-     * @param uri the uri to get the workplace link for
+     * @param structureId the structure id of the resource for which to open the workplace 
      * @param callback the callback which receives the result  
      */
-    void getWorkplaceLink(String uri, AsyncCallback<String> callback);
-
-    /**
-     * Locks the given resource.<p>
-     * 
-     * @param uri the resource URI 
-     * @param callback the async callback
-     */
-    @SynchronizedRpcRequest
-    void lock(String uri, AsyncCallback<String> callback);
+    void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource with a temporary lock.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the resource structure id  
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void lockTemp(String uri, AsyncCallback<String> callback);
+    void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource with a temporary lock additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the resource structure id  
      * @param modification the timestamp to check
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void lockTempAndCheckModification(String uri, long modification, AsyncCallback<CmsLockInfo> callback);
+    void lockTempAndCheckModification(CmsUUID structureId, long modification, AsyncCallback<CmsLockInfo> callback);
+
+    /**
+     * A method which does nothing and is just used to keep the session alive.<p>
+     *  
+     * @param callback the asynchronous callback 
+     */
+    void ping(AsyncCallback<Void> callback);
 
     /**
      * Generates core data for prefetching in the host page.<p>
@@ -201,11 +202,11 @@ public interface I_CmsCoreServiceAsync {
     /**
      * Unlocks the given resource.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the resource structure id  
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void unlock(String uri, AsyncCallback<String> callback);
+    void unlock(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Performs a batch of validations and returns the results.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/26 13:08:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,14 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.util.CmsUUID;
 
 /**
  * An abstract interface used to coordinate toolbar buttons with a toolbar.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -77,11 +78,10 @@ public interface I_CmsToolbarHandler {
 
     /**
      * Loads the context menu.<p>
-     * 
-     * @param path the path  of the resource for which the context menu should be loaded 
+     * @param structureId the structure id of the resource for which to load the context menu  
      * @param context the context menu item visibility context 
      */
-    void loadContextMenu(String path, AdeContext context);
+    void loadContextMenu(CmsUUID structureId, AdeContext context);
 
     /** 
      * Sets the active button.<p>

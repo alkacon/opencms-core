@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsShowWorkplace.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
 
@@ -41,31 +42,29 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsShowWorkplace {
 
     /** The uri to open in the workplace. */
-    private String m_uri;
+    protected CmsUUID m_structureId;
 
     /**
      * Public constructor.<p>
      * 
-     * @param uri the uri to open in the workplace
+     * @param structureId the structure id of the resource for which the workplace should be opened 
      */
-    public CmsShowWorkplace(String uri) {
+    public CmsShowWorkplace(CmsUUID structureId) {
 
-        m_uri = uri;
+        m_structureId = structureId;
     }
 
     /**
      * Opens the workplace.<p>
      */
     public void openWorkplace() {
-
-        final String uri = m_uri;
 
         CmsRpcAction<String> callback = new CmsRpcAction<String>() {
 
@@ -75,7 +74,7 @@ public class CmsShowWorkplace {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().getWorkplaceLink(uri, this);
+                CmsCoreProvider.getService().getWorkplaceLink(m_structureId, this);
             }
 
             /**

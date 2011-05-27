@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,8 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -96,7 +96,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
         view.removeModified(m_entry.getId().toString());
         if (!m_entry.isNew()) {
             // make sure to only add items that are not of resource state 'new'
-            CmsCoreProvider.get().getResourceState(m_entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {
+            CmsCoreProvider.get().getResourceState(m_entry.getId(), new AsyncCallback<CmsResourceState>() {
 
                 /**
                  * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)

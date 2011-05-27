@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsGroupcontainerEditor.java,v $
- * Date   : $Date: 2011/05/18 09:51:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -441,9 +441,9 @@ public final class CmsGroupcontainerEditor extends Composite {
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_editorDialog.setPopupPosition(
-                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
-                    m_groupContainerPosition.getTop() - 1);
+                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft()
+                    + m_groupContainerPosition.getWidth()
+                    + 20, m_groupContainerPosition.getTop() - 1);
             }
             m_editorDialog.show();
         } else {

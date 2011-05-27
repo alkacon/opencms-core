@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2011/05/27 13:38:36 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  * 
@@ -107,73 +107,67 @@ public interface I_CmsCoreService extends RemoteService {
     /**
      * Returns the context menu entries for the given URI.<p>
      * 
-     * @param uri the current requested URI
+     * @param structureId the currently requested structure id 
      * @param context the ade context (sitemap or containerpage)
      * 
      * @return the context menu entries 
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException;
+    List<CmsContextMenuEntryBean> getContextMenuEntries(CmsUUID structureId, AdeContext context) throws CmsRpcException;
 
     /**
      * Gets the resource state for a resource with a given path.<p>
      * 
-     * @param path the resource path
+     * @param structureId the resource structure id 
      *  
      * @return the resource state of the resource 
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsResourceState getResourceState(String path) throws CmsRpcException;
+    CmsResourceState getResourceState(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      * 
-     * @param uri the uri to get the workplace link for
+     * @param structureId the structure id of the resource for which to open the workplace 
      * 
      * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
      *         
      * @throws CmsRpcException if something goes wrong
      */
-    String getWorkplaceLink(String uri) throws CmsRpcException;
-
-    /**
-     * Locks the given resource.<p>
-     * 
-     * @param uri the resource URI 
-     * 
-     * @return <code>null</code> if successful, an error message if not 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    String lock(String uri) throws CmsRpcException;
+    String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Locks the given resource with a temporary lock.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the structure id of the resource to lock 
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    String lockTemp(String uri) throws CmsRpcException;
+    String lockTemp(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Locks the given resource with a temporary lock additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the structure id of the resource to lock  
      * @param modification the timestamp to check
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsLockInfo lockTempAndCheckModification(String uri, long modification) throws CmsRpcException;
+    CmsLockInfo lockTempAndCheckModification(CmsUUID structureId, long modification) throws CmsRpcException;
+
+    /**
+     * An RPC method which does nothing and is just used to keep the session alive.<p>
+     */
+    void ping();
 
     /**
      * Generates core data for prefetching in the host page.<p>
@@ -237,13 +231,13 @@ public interface I_CmsCoreService extends RemoteService {
     /**
      * Unlocks the given resource.<p>
      * 
-     * @param uri the resource URI 
+     * @param structureId the structure id of the resource to unlock   
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    String unlock(String uri) throws CmsRpcException;
+    String unlock(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Performs a batch of validations and returns the results.<p>
@@ -273,4 +267,5 @@ public interface I_CmsCoreService extends RemoteService {
         Map<String, CmsValidationQuery> validationQueries,
         Map<String, String> values,
         String config) throws CmsRpcException;
+
 }

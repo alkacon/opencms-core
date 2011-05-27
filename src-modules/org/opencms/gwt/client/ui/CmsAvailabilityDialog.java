@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -119,8 +119,6 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
     /**
      * Creates the availability dialog.<p>
-     * 
-     * <b>Note</b>: Don't initialize this dialog with an sitemap entry id.<p>
      * 
      * @param structureId the structure id of the resource to create the dialog for
      */
@@ -183,7 +181,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
                 stop(false);
                 showDialog(availabilityInfo);
-            }
+                }
         };
         availabilityCallback.execute();
     }
@@ -264,9 +262,8 @@ public class CmsAvailabilityDialog extends CmsPopup {
         m_publishScheduled.setAutoHideParent(this);
         FlowPanel publishScheduled = createInputCombinationPanel(m_publishScheduledCheck, m_publishScheduled);
         addClickHandlerToInputCheckbox(m_publishScheduledCheck, m_publishScheduled);
-        publishScheduledField.addContent(createTwoColumnRow(
-            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0),
-            publishScheduled));
+        publishScheduledField.addContent(createTwoColumnRow(Messages.get().key(
+            Messages.GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0), publishScheduled));
         m_panel.add(publishScheduledField);
 
         // create the release and expiration field
@@ -275,15 +272,13 @@ public class CmsAvailabilityDialog extends CmsPopup {
         availabilityField.setLegend(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_AVAILABILITY_0));
         m_dateReleased.setAutoHideParent(this);
         FlowPanel dateReleased = createInputCombinationPanel(m_dateReleasedCheck, m_dateReleased);
-        availabilityField.addContent(createTwoColumnRow(
-            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0),
-            dateReleased));
+        availabilityField.addContent(createTwoColumnRow(Messages.get().key(
+            Messages.GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0), dateReleased));
         addClickHandlerToInputCheckbox(m_dateReleasedCheck, m_dateReleased);
         m_dateExpired.setAutoHideParent(this);
         FlowPanel dateExpired = createInputCombinationPanel(m_dateExpiredCheck, m_dateExpired);
-        availabilityField.addContent(createTwoColumnRow(
-            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0),
-            dateExpired));
+        availabilityField.addContent(createTwoColumnRow(Messages.get().key(
+            Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0), dateExpired));
         addClickHandlerToInputCheckbox(m_dateExpiredCheck, m_dateExpired);
         m_panel.add(availabilityField);
 
@@ -305,14 +300,12 @@ public class CmsAvailabilityDialog extends CmsPopup {
             });
 
             FlowPanel notificationInterval = createInputCombinationPanel(m_notificationEnabled, m_notificationInterval);
-            notificationField.addContent(createTwoColumnRow(
-                Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0),
-                notificationInterval));
+            notificationField.addContent(createTwoColumnRow(Messages.get().key(
+                Messages.GUI_DIALOG_AVAILABILITY_NOTI_INTERVAL_0), notificationInterval));
             addClickHandlerToNotificationCheckBox();
             if (m_availabilityInfo.isHasSiblings()) {
-                notificationField.addContent(createTwoColumnRow(
-                    Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0),
-                    m_modifySiblings));
+                notificationField.addContent(createTwoColumnRow(Messages.get().key(
+                    Messages.GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0), m_modifySiblings));
             }
             notificationField.addContent(createResposibles());
             m_panel.add(notificationField);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsLockInfo.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -67,20 +67,15 @@ public class CmsLockInfo implements IsSerializable {
     /** An additional error message. */
     private String m_exceptionMessage;
 
-    /** The name of the resource which we tried to lock. */
-    private String m_resourceName;
-
     /**
      * Creates a new lock info bean.<p>
      * 
-     * @param resourceName the name of the resource 
      * @param state the state of the locking operation 
      * @param user a user name 
      * @param exceptionMessage an additional error message 
      */
-    public CmsLockInfo(String resourceName, State state, String user, String exceptionMessage) {
+    public CmsLockInfo(State state, String user, String exceptionMessage) {
 
-        m_resourceName = resourceName;
         m_state = state;
         m_user = user;
         m_exceptionMessage = exceptionMessage;
@@ -97,39 +92,36 @@ public class CmsLockInfo implements IsSerializable {
     /**
      * Creates a new info bean for a resource which has changed since it was opened.<p>
      * 
-     * @param resourceName the resource name 
      * @param user the user by which it was changed 
      * @return the new lock info bean 
      */
-    public static CmsLockInfo forChangedResource(String resourceName, String user) {
+    public static CmsLockInfo forChangedResource(String user) {
 
-        return new CmsLockInfo(resourceName, State.changed, user, null);
+        return new CmsLockInfo(State.changed, user, null);
     }
 
     /**
      * Creates a new info bean for other types of errors.<p>
      * 
-     * @param resourceName the resource name 
      * @param errorMessage the additional error message 
      * 
      * @return the new lock info bean 
      */
-    public static CmsLockInfo forError(String resourceName, String errorMessage) {
+    public static CmsLockInfo forError(String errorMessage) {
 
-        return new CmsLockInfo(resourceName, State.other, null, errorMessage);
+        return new CmsLockInfo(State.other, null, errorMessage);
     }
 
     /**
      * Returns a lock info bean for  a resource locked by another user.<p>
      * 
-     * @param resourceName the resource name 
      * @param lockUser the other user 
      * 
      * @return the new lock info bean 
      */
-    public static CmsLockInfo forLockedResource(String resourceName, String lockUser) {
+    public static CmsLockInfo forLockedResource(String lockUser) {
 
-        return new CmsLockInfo(resourceName, State.locked, lockUser, null);
+        return new CmsLockInfo(State.locked, lockUser, null);
     }
 
     /**
@@ -139,7 +131,7 @@ public class CmsLockInfo implements IsSerializable {
      */
     public static CmsLockInfo forSuccess() {
 
-        return new CmsLockInfo(null, State.success, null, null);
+        return new CmsLockInfo(State.success, null, null);
     }
 
     /**
@@ -160,16 +152,6 @@ public class CmsLockInfo implements IsSerializable {
     public String getErrorMessage() {
 
         return m_exceptionMessage;
-    }
-
-    /**
-     * Returns the resource name.<p>
-     * 
-     * @return the resource name 
-     */
-    public String getResourceName() {
-
-        return m_resourceName;
     }
 
     /** 

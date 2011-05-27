@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/26 13:13:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -56,11 +56,13 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
      * Transforms a list of context menu entry beans to a list of context menu entries.<p>
      * 
      * @param menuBeans the list of context menu entry beans
-     * @param uri the uri to generate the menu entries for
+     * @param structureId the id of the resource for which to transform the context menu entries 
      * 
      * @return a list of context menu entries 
      */
-    public List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
+    public List<I_CmsContextMenuEntry> transformEntries(
+        List<CmsContextMenuEntryBean> menuBeans,
+        final CmsUUID structureId) {
 
         List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
         for (CmsContextMenuEntryBean bean : menuBeans) {
@@ -69,7 +71,7 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
             entry.setBean(bean);
 
             if (bean.hasSubMenu()) {
-                entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
+                entry.setSubMenu(transformEntries(bean.getSubMenu(), structureId));
             }
 
             Command cmd = null;
@@ -88,7 +90,7 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
                         public void execute() {
 
                             if (canOpenAvailabilityDialog()) {
-                                new CmsAvailabilityDialog(CmsCoreProvider.get().getUri()).loadAndShow();
+                                new CmsAvailabilityDialog(CmsCoreProvider.get().getStructureId()).loadAndShow();
                             }
                         }
                     };
@@ -102,7 +104,7 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
                          */
                         public void execute() {
 
-                            new CmsShowWorkplace(uri).openWorkplace();
+                            new CmsShowWorkplace(structureId).openWorkplace();
                         }
                     };
                 } else if (name.equals(CmsEditProperties.class.getName())) {
@@ -114,7 +116,6 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
                             if (canEditProperties()) {
 
                                 CmsEditProperties editProperties = new CmsEditProperties();
-                                CmsUUID structureId = CmsCoreProvider.get().getStructureId();
                                 if (structureId != null) {
                                     editProperties.editProperties(
                                         CmsCoreProvider.get().getStructureId(),

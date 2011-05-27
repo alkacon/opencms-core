@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2011/05/17 13:41:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,16 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -218,6 +220,19 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * Returns the structure id of the element.<p>
+     * 
+     * @return the structure id of the element 
+     */
+    public CmsUUID getStructureId() {
+
+        if (m_clientId == null) {
+            return null;
+        }
+        return new CmsUUID(CmsContainerpageController.getServerId(m_clientId));
+    }
+
+    /**
      * Returns true if the element has settings to edit.<p>
      * 
      * @return true if the element has settings to edit 
@@ -233,6 +248,16 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     public boolean hasTag(String tag) {
 
         return false;
+    }
+
+    /**
+     * Returns if the current user has view permissions for the element resource.<p>
+     *
+     * @return <code>true</code> if the current user has view permissions for the element resource
+     */
+    public boolean hasViewPermission() {
+
+        return m_viewPermission;
     }
 
     /**
@@ -375,6 +400,16 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * Sets if the current user has view permissions for the element resource.<p>
+     *
+     * @param viewPermission the view permission to set
+     */
+    public void setViewPermission(boolean viewPermission) {
+
+        m_viewPermission = viewPermission;
+    }
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     public void showEditableListButtons() {
@@ -426,25 +461,5 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
             m_elementOptionBar.removeFromParent();
             add(m_elementOptionBar);
         }
-    }
-
-    /**
-     * Sets if the current user has view permissions for the element resource.<p>
-     *
-     * @param viewPermission the view permission to set
-     */
-    public void setViewPermission(boolean viewPermission) {
-
-        m_viewPermission = viewPermission;
-    }
-
-    /**
-     * Returns if the current user has view permissions for the element resource.<p>
-     *
-     * @return <code>true</code> if the current user has view permissions for the element resource
-     */
-    public boolean hasViewPermission() {
-
-        return m_viewPermission;
     }
 }

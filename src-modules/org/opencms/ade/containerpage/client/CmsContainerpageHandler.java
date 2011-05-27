@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/26 13:08:21 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 8.0.0
  */
@@ -347,11 +348,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Inserts the context menu.<p>
      *  
      * @param menuBeans the menu beans from the server
-     * @param uri the called uri
+     * @param structureId the structure id of the resource for which the context menu entries should be generated 
      */
-    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, String uri) {
+    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
-        List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans, uri);
+        List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans, structureId);
         m_editor.getContext().showMenu(menuEntries);
     }
 
@@ -409,12 +410,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Loads the context menu entries for a given URI.<p>
      * 
-     * @param uri the URI to get the context menu entries for 
+     * @param structureId the structure id of the resource for which the context menu should be loaded  
      * @param context the ade context (sitemap or containerpage)
      */
-    public void loadContextMenu(final String uri, final AdeContext context) {
+    public void loadContextMenu(CmsUUID structureId, final AdeContext context) {
 
-        m_controller.loadContextMenu(uri, context);
+        m_controller.loadContextMenu(structureId, context);
     }
 
     /**
@@ -485,6 +486,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void openEditorForElement(CmsContainerPageElement element) {
 
         if (element.isNew()) {
+            //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished 
             m_controller.createAndEditNewElement(element);
             return;
         }
@@ -683,12 +685,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformEntries(java.util.List, java.lang.String)
+     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformEntries(java.util.List, org.opencms.util.CmsUUID)
      */
     @Override
-    public List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
+    public List<I_CmsContextMenuEntry> transformEntries(
+        List<CmsContextMenuEntryBean> menuBeans,
+        final CmsUUID structureId) {
 
-        List<I_CmsContextMenuEntry> entries = super.transformEntries(menuBeans, uri);
+        List<I_CmsContextMenuEntry> entries = super.transformEntries(menuBeans, structureId);
         List<I_CmsContextMenuEntry> result = new ArrayList<I_CmsContextMenuEntry>();
 
         for (I_CmsContextMenuEntry entry : entries) {

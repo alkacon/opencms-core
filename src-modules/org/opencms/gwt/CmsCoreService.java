@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/27 13:38:35 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/05/27 14:51:46 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  * 
@@ -265,9 +265,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(java.lang.String, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
      */
-    public List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException {
+    public List<CmsContextMenuEntryBean> getContextMenuEntries(CmsUUID structureId, AdeContext context)
+    throws CmsRpcException {
 
         List<CmsContextMenuEntryBean> result = null;
         CmsObject cms = getCmsObject();
@@ -288,7 +289,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         try {
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(uri));
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId));
 
             // the explorer type settings
             CmsExplorerTypeSettings settings = null;
@@ -323,15 +324,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getResourceState(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getResourceState(org.opencms.util.CmsUUID)
      */
-    public CmsResourceState getResourceState(String path) throws CmsRpcException {
+    public CmsResourceState getResourceState(CmsUUID structureId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         CmsResourceState result = null;
         try {
             try {
-                CmsResource res = cms.readResource(path);
+                CmsResource res = cms.readResource(structureId);
                 result = res.getState();
             } catch (CmsVfsResourceNotFoundException e) {
                 result = CmsResourceState.STATE_DELETED;
@@ -343,13 +344,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID)
      */
-    public String getWorkplaceLink(String uri) throws CmsRpcException {
+    public String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException {
 
         String result = null;
         try {
-            String resourceRootFolder = CmsResource.getFolderPath(getCmsObject().readResource(uri).getRootPath());
+            String resourceRootFolder = CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath());
             result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
         } catch (Throwable e) {
             error(e);
@@ -358,13 +359,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(org.opencms.util.CmsUUID)
      */
-    public String lock(String uri) throws CmsRpcException {
+    public String lockTemp(CmsUUID structureId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
-            cms.lockResource(uri);
+            ensureLock(structureId);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {
@@ -374,41 +375,33 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTempAndCheckModification(org.opencms.util.CmsUUID, long)
      */
-    public String lockTemp(String uri) throws CmsRpcException {
+    public CmsLockInfo lockTempAndCheckModification(CmsUUID structureId, long modification) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
-            ensureLock(uri);
-        } catch (CmsException e) {
-            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTempAndCheckModification(java.lang.String, long)
-     */
-    public CmsLockInfo lockTempAndCheckModification(String uri, long modification) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsResource resource = cms.readResource(uri);
+            CmsResource resource = cms.readResource(structureId);
             if (resource.getDateLastModified() != modification) {
                 CmsUser user = cms.readUser(resource.getUserLastModified());
-                return CmsLockInfo.forChangedResource(uri, user.getFullName());
+                return CmsLockInfo.forChangedResource(user.getFullName());
             }
         } catch (Throwable e) {
             error(e);
         }
         try {
-            return getLock(uri);
+            return getLock(structureId);
         } catch (CmsException e) {
-            return CmsLockInfo.forError(uri, e.getLocalizedMessage());
+            return CmsLockInfo.forError(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#ping()
+     */
+    public void ping() {
+
+        // do nothing 
     }
 
     /**
@@ -514,13 +507,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(org.opencms.util.CmsUUID)
      */
-    public String unlock(String uri) throws CmsRpcException {
+    public String unlock(CmsUUID structureId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(uri);
+            CmsResource resource = cms.readResource(structureId);
             tryUnlock(resource);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
@@ -572,6 +565,21 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * Helper method for locking a resource which returns some information on whether the locking 
      * failed, and why.<p>
      * 
+     * @param structureId the structure id of the resource 
+     * @return the locking information
+     *  
+     * @throws CmsException if something went wrong 
+     */
+    protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
+
+        CmsResource res = getCmsObject().readResource(structureId);
+        return getLock(getCmsObject().getSitePath(res));
+    }
+
+    /**
+     * Helper method for locking a resource which returns some information on whether the locking 
+     * failed, and why.<p>
+     * 
      * @param sitepath the site path of the resource to lock
      * @return the locking information
      *  
@@ -590,7 +598,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             return CmsLockInfo.forSuccess();
         }
         CmsUser owner = cms.readUser(lock.getUserId());
-        return CmsLockInfo.forLockedResource(sitepath, owner.getName());
+        return CmsLockInfo.forLockedResource(owner.getName());
     }
 
     /**
@@ -610,7 +618,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
             String parentPath = CmsResource.getParentFolder(current.getPath());
             CmsCategoryTreeEntry parent = null;
-            parent = findCategory(result, parentPath);
+                parent = findCategory(result, parentPath);
             if (parent != null) {
                 parent.addChild(current);
             } else {
