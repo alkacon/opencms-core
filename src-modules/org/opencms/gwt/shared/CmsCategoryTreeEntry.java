@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCategoryTreeEntry.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.relations.CmsCategory;
-import org.opencms.relations.CmsCategoryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,23 +41,17 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsCategoryTreeEntry extends CmsCategory {
+public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /** The serialization id. */
     private static final long serialVersionUID = 3787936028869506095L;
 
-    /** The category's base path. */
-    private String m_basePath;
-
     /** The children. */
     private List<CmsCategoryTreeEntry> m_children;
-
-    /** The path of the category. */
-    private String m_path;
 
     /**
      * Clone constructor.<p>
@@ -70,24 +63,7 @@ public class CmsCategoryTreeEntry extends CmsCategory {
     public CmsCategoryTreeEntry(CmsCategory category)
     throws Exception {
 
-        super(category.getId(), category.getRootPath(), category.getTitle(), category.getDescription(), "/");
-        m_path = category.getPath();
-        m_basePath = category.getBasePath();
-    }
-
-    /**
-     * Constructor for serialization.<p>
-     * 
-     * @param path the category path 
-     * 
-     * @throws Exception will never happen 
-     */
-    public CmsCategoryTreeEntry(String path)
-    throws Exception {
-
-        super(null, CmsCategoryService.CENTRALIZED_REPOSITORY, null, null, null);
-        m_path = path;
-        m_basePath = CmsCategoryService.CENTRALIZED_REPOSITORY;
+        super(category);
     }
 
     /**
@@ -112,17 +88,6 @@ public class CmsCategoryTreeEntry extends CmsCategory {
     }
 
     /**
-     * Returns the basePath.<p>
-     *
-     * @return the basePath
-     */
-    @Override
-    public String getBasePath() {
-
-        return m_basePath;
-    }
-
-    /**
      * Returns the children.<p>
      *
      * @return the children
@@ -130,17 +95,6 @@ public class CmsCategoryTreeEntry extends CmsCategory {
     public List<CmsCategoryTreeEntry> getChildren() {
 
         return m_children;
-    }
-
-    /**
-     * Returns the path.<p>
-     *
-     * @return the path
-     */
-    @Override
-    public String getPath() {
-
-        return m_path;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -57,7 +57,7 @@ public class CmsGalleryDataBean implements IsSerializable {
     //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
 
     /** The category tree entry to display as tree. */
-    private CmsCategoryTreeEntry m_categoryTreeEntry;
+    private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
 
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
@@ -91,7 +91,7 @@ public class CmsGalleryDataBean implements IsSerializable {
      *
      * @return the categories
      */
-    public CmsCategoryTreeEntry getCategories() {
+    public List<CmsCategoryTreeEntry> getCategories() {
 
         return m_categoryTreeEntry;
     }
@@ -183,7 +183,7 @@ public class CmsGalleryDataBean implements IsSerializable {
      *
      * @param categories the categories to set
      */
-    public void setCategories(CmsCategoryTreeEntry categories) {
+    public void setCategories(List<CmsCategoryTreeEntry> categories) {
 
         m_categoryTreeEntry = categories;
     }

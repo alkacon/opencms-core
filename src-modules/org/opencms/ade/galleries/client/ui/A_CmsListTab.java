@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsPair;
 
 import java.util.List;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -219,6 +220,35 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if (event.getSource() == m_sortSelectBox) {
             getTabHandler().onSort(event.getValue());
         }
+    }
+
+    /**
+     * Searches in the categories tree or list the item and returns it.<p>
+     * 
+     * @param list the list of items to start from
+     * @param categoryPath the category id to search
+     * @return the category item widget
+     */
+    protected CmsTreeItem searchTreeItem(CmsList<? extends I_CmsListItem> list, String categoryPath) {
+
+        CmsTreeItem resultItem = (CmsTreeItem)list.getItem(categoryPath);
+        // item is not in this tree level
+        if (resultItem == null) {
+            // if list is not empty
+            for (int i = 0; i < list.getWidgetCount(); i++) {
+                CmsTreeItem listItem = (CmsTreeItem)list.getWidget(i);
+                if (listItem.getChildCount() == 0) {
+                    continue;
+                }
+                // continue search in children
+                resultItem = searchTreeItem(listItem.getChildren(), categoryPath);
+                // break the search if result item is found
+                if (resultItem != null) {
+                    break;
+                }
+            }
+        }
+        return resultItem;
     }
 
     /**

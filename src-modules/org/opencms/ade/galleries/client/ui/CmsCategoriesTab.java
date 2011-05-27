@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,13 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
-import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -47,7 +46,9 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the widget for the categories tab.<p>
@@ -56,7 +57,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.
  */
@@ -103,6 +104,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "CategoryTab";
 
+    /** Map of the categories by path. */
+    private Map<String, CmsCategoryBean> m_categories;
+
     /** The flag to indicate when the categories are opened for the fist time. */
     private boolean m_isInitOpen;
 
@@ -130,11 +134,11 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * 
      * @param categoryRoot the category tree root entry 
      */
-    public void fillContent(CmsCategoryTreeEntry categoryRoot) {
+    public void fillContent(List<CmsCategoryTreeEntry> categoryRoot) {
 
         setInitOpen(true);
 
-        updateContent(categoryRoot, null);
+        updateContentTree(categoryRoot, null);
     }
 
     /**
@@ -151,10 +155,10 @@ public class CmsCategoriesTab extends A_CmsListTab {
         }
         StringBuffer result = new StringBuffer(128);
         for (String categoryPath : selectedCategories) {
-            CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, categoryPath);
-            String title = categoryItem.getItemTitle();
+            CmsCategoryBean categoryItem = m_categories.get(categoryPath);
+            String title = categoryItem.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = categoryItem.getSubTitle();
+                title = categoryItem.getPath();
             }
             result.append(title).append(", ");
         }
@@ -196,38 +200,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
     public void openFirstLevel() {
 
         for (int i = 0; i < m_scrollList.getWidgetCount(); i++) {
-            CmsCategoryTreeItem item = (CmsCategoryTreeItem)m_scrollList.getItem(i);
+            CmsTreeItem item = (CmsTreeItem)m_scrollList.getItem(i);
             item.setOpen(true);
         }
-    }
-
-    /**
-     * Searches in the categories tree or list the item and returns it.<p>
-     * 
-     * @param list the list of items to start from
-     * @param categoryPath the category id to search
-     * @return the category item widget
-     */
-    public CmsCategoryTreeItem searchCategoryItem(CmsList<? extends I_CmsListItem> list, String categoryPath) {
-
-        CmsCategoryTreeItem resultItem = (CmsCategoryTreeItem)list.getItem(categoryPath);
-        // item is not in this tree level
-        if (resultItem == null) {
-            // if list is not empty
-            for (int i = 0; i < list.getWidgetCount(); i++) {
-                CmsCategoryTreeItem listItem = (CmsCategoryTreeItem)list.getWidget(i);
-                if (listItem.getChildCount() == 0) {
-                    continue;
-                }
-                // continue search in children
-                resultItem = searchCategoryItem(listItem.getChildren(), categoryPath);
-                // break the search if result item is found
-                if (resultItem != null) {
-                    break;
-                }
-            }
-        }
-        return resultItem;
     }
 
     /**
@@ -248,29 +223,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
     public void uncheckCategories(List<String> categories) {
 
         for (String category : categories) {
-            CmsCategoryTreeItem item = searchCategoryItem(m_scrollList, category);
+            CmsTreeItem item = searchTreeItem(m_scrollList, category);
             item.getCheckBox().setChecked(false);
-        }
-    }
-
-    /**
-     * Updates the content of th categories tree.<p>
-     * 
-     * @param treeEntry the root category entry
-     * @param selectedCategories the categories to select after update
-     */
-    public void updateContent(CmsCategoryTreeEntry treeEntry, List<String> selectedCategories) {
-
-        clearList();
-        if (treeEntry.getChildren() != null) {
-            // add the first level and children
-            for (CmsCategoryTreeEntry category : treeEntry.getChildren()) {
-                // set the category tree item and add to list 
-                CmsCategoryTreeItem treeItem = buildTreeItem(category, selectedCategories);
-                addChildren(treeItem, category.getChildren(), selectedCategories);
-                addWidgetToList(treeItem);
-                treeItem.setOpen(true);
-            }
         }
     }
 
@@ -280,10 +234,14 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
-    public void updateContent(List<CmsCategoryBean> categoriesBeans, List<String> selectedCategories) {
+    public void updateContentList(List<CmsCategoryBean> categoriesBeans, List<String> selectedCategories) {
 
         clearList();
+        if (m_categories == null) {
+            m_categories = new HashMap<String, CmsCategoryBean>();
+        }
         for (CmsCategoryBean categoryBean : categoriesBeans) {
+            m_categories.put(categoryBean.getPath(), categoryBean);
             // set the list item widget
             CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
                 categoryBean.getTitle(),
@@ -300,9 +258,33 @@ public class CmsCategoriesTab extends A_CmsListTab {
             checkBox.addClickHandler(selectionHandler);
             listItemWidget.addDoubleClickHandler(selectionHandler);
             // set the category list item and add to list 
-            CmsCategoryTreeItem listItem = new CmsCategoryTreeItem(false, checkBox, listItemWidget);
-            listItem.init(categoryBean.getPath(), categoryBean.getTitle(), categoryBean.getDescription());
+            CmsTreeItem listItem = new CmsTreeItem(false, checkBox, listItemWidget);
+            listItem.setId(categoryBean.getPath());
             addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Updates the content of th categories tree.<p>
+     * 
+     * @param treeEntries the root category entry
+     * @param selectedCategories the categories to select after update
+     */
+    public void updateContentTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
+
+        clearList();
+        if (m_categories == null) {
+            m_categories = new HashMap<String, CmsCategoryBean>();
+        }
+        if (treeEntries != null) {
+            // add the first level and children
+            for (CmsCategoryTreeEntry category : treeEntries) {
+                // set the category tree item and add to list 
+                CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
+                addChildren(treeItem, category.getChildren(), selectedCategories);
+                addWidgetToList(treeItem);
+                treeItem.setOpen(true);
+            }
         }
     }
 
@@ -339,15 +321,12 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
-    private void addChildren(
-        CmsCategoryTreeItem parent,
-        List<CmsCategoryTreeEntry> children,
-        List<String> selectedCategories) {
+    private void addChildren(CmsTreeItem parent, List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {
 
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
-                CmsCategoryTreeItem treeItem = buildTreeItem(child, selectedCategories);
+                CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
                 if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
                     parent.setOpen(true);
                     openParents(parent);
@@ -366,14 +345,14 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * 
      * @return the tree item widget
      */
-    private CmsCategoryTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
+    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         CmsListInfoBean categoryBean = new CmsListInfoBean(
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
             : category.getPath(), null);
-
+        m_categories.put(category.getPath(), category);
         // set the list item widget
         CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
         listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
@@ -386,8 +365,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
         checkBox.addClickHandler(selectionHandler);
         listItemWidget.addDoubleClickHandler(selectionHandler);
         // set the category tree item and add to list 
-        CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
-        treeItem.init(category.getPath(), categoryBean.getTitle(), categoryBean.getSubTitle());
+        CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, listItemWidget);
+        treeItem.setId(category.getPath());
         return treeItem;
     }
 
@@ -396,11 +375,11 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * 
      * @param item the child item to start from
      */
-    private void openParents(CmsCategoryTreeItem item) {
+    private void openParents(CmsTreeItem item) {
 
         if (item != null) {
             item.setOpen(true);
-            openParents((CmsCategoryTreeItem)item.getParentItem());
+            openParents(item.getParentItem());
         }
     }
 }

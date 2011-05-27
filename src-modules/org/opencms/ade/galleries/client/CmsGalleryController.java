@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2011/05/05 15:51:50 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,10 @@
 
 package org.opencms.ade.galleries.client;
 
-import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -48,6 +48,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
@@ -81,7 +82,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  */
@@ -569,19 +570,19 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         SortParams sort = SortParams.valueOf(sortParams);
         switch (sort) {
             case tree:
-                m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
+                m_handler.onUpdateCategoriesTree(m_dialogBean.getCategories(), m_searchObject.getCategories());
                 break;
             case title_asc:
                 categories = new ArrayList<CmsCategoryBean>();
                 categoryTreeToList(categories, m_dialogBean.getCategories());
                 Collections.sort(categories, new CmsComparatorTitle(true));
-                m_handler.onUpdateCategories(categories, m_searchObject.getCategories());
+                m_handler.onUpdateCategoriesList(categories, m_searchObject.getCategories());
                 break;
             case title_desc:
                 categories = new ArrayList<CmsCategoryBean>();
                 categoryTreeToList(categories, m_dialogBean.getCategories());
                 Collections.sort(categories, new CmsComparatorTitle(false));
-                m_handler.onUpdateCategories(categories, m_searchObject.getCategories());
+                m_handler.onUpdateCategoriesList(categories, m_searchObject.getCategories());
                 break;
             case type_asc:
             case type_desc:
@@ -622,9 +623,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             case path_desc:
                 Collections.sort(galleries, new CmsComparatorPath(false));
                 break;
+            case tree:
+                m_handler.onUpdateGalleryTree(galleryListToTree(galleries), m_searchObject.getGalleries());
+                return;
             case dateLastModified_asc:
             case dateLastModified_desc:
-            case tree:
             default:
                 // not supported
                 return;
@@ -878,21 +881,46 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param categoryList the category list
      * @param entries the tree entries
      */
-    private void categoryTreeToList(List<CmsCategoryBean> categoryList, CmsCategoryTreeEntry treeEntry) {
+    private void categoryTreeToList(List<CmsCategoryBean> categoryList, List<CmsCategoryTreeEntry> treeEntry) {
 
         if (treeEntry == null) {
             return;
         }
         // skipping the root tree entry where the path property is empty
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(treeEntry.getPath())) {
-            CmsCategoryBean bean = new CmsCategoryBean(treeEntry.getTitle(), treeEntry.getPath(), treeEntry.getPath());
+        for (CmsCategoryTreeEntry entry : treeEntry) {
+            CmsCategoryBean bean = new CmsCategoryBean(entry);
             categoryList.add(bean);
+            categoryTreeToList(categoryList, entry.getChildren());
         }
-        if (treeEntry.getChildren() != null) {
-            for (CmsCategoryTreeEntry entry : treeEntry.getChildren()) {
-                categoryTreeToList(categoryList, entry);
+    }
+
+    /**
+     * Creates a tree structure from the given gallery folder list.<p>
+     * The tree may have several entries at root level.<p>
+     * 
+     * @param galleries the gallery folder list
+     * 
+     * @return the list of tree entries
+     */
+    private List<CmsGalleryTreeEntry> galleryListToTree(List<CmsGalleryFolderBean> galleries) {
+
+        List<CmsGalleryTreeEntry> result = new ArrayList<CmsGalleryTreeEntry>();
+        Collections.sort(galleries, new CmsComparatorPath(true));
+        CmsGalleryTreeEntry previous = null;
+        for (CmsGalleryFolderBean folderBean : galleries) {
+            CmsGalleryTreeEntry current = new CmsGalleryTreeEntry(folderBean);
+            CmsGalleryTreeEntry parent = null;
+            if (previous != null) {
+                parent = lookForParent(previous, current.getPath());
             }
+            if (parent != null) {
+                parent.addChild(current);
+            } else {
+                result.add(current);
+            }
+            previous = current;
         }
+        return result;
     }
 
     /**
@@ -917,7 +945,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     private void loadCategories() {
 
-        CmsRpcAction<CmsCategoryTreeEntry> action = new CmsRpcAction<CmsCategoryTreeEntry>() {
+        CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
 
             @Override
             public void execute() {
@@ -926,7 +954,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
 
             @Override
-            protected void onResponse(CmsCategoryTreeEntry result) {
+            protected void onResponse(List<CmsCategoryTreeEntry> result) {
 
                 m_dialogBean.setCategories(result);
                 m_handler.setCategoriesTabContent(result);
@@ -963,6 +991,25 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         action.execute();
+    }
+
+    /**
+     * Looks for an ancestor tree entry for the given path.<p>
+     * 
+     * @param possibleParent the possible parent entry
+     * @param targetPath the target path
+     * 
+     * @return the parent entry or <code>null</code> if there is none
+     */
+    private CmsGalleryTreeEntry lookForParent(CmsGalleryTreeEntry possibleParent, String targetPath) {
+
+        if (targetPath.startsWith(possibleParent.getPath())) {
+            return possibleParent;
+        }
+        if (possibleParent.getParent() != null) {
+            return lookForParent(possibleParent.getParent(), targetPath);
+        }
+        return null;
     }
 
     /**

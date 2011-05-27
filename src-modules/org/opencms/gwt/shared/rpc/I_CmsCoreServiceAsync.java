@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2011/05/18 13:25:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -83,7 +83,7 @@ public interface I_CmsCoreServiceAsync {
         String fromCatPath,
         boolean includeSubCats,
         List<String> refVfsPaths,
-        AsyncCallback<CmsCategoryTreeEntry> callback);
+        AsyncCallback<List<CmsCategoryTreeEntry>> callback);
 
     /**
      * Returns the categories for the given reference site-path.<p>
@@ -91,7 +91,7 @@ public interface I_CmsCoreServiceAsync {
      * @param sitePath the reference site-path
      * @param callback the async callback
      */
-    void getCategoriesForSitePath(String sitePath, AsyncCallback<CmsCategoryTreeEntry> callback);
+    void getCategoriesForSitePath(String sitePath, AsyncCallback<List<CmsCategoryTreeEntry>> callback);
 
     /**
      * Returns a list of menu entry beans for the context menu.<p>
@@ -154,6 +154,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void prefetch(AsyncCallback<CmsCoreData> callback);
+
+    /**
+     * Removes the temporary file and unlocks the given resource.<p>
+     * Used on closing the content editor.<p>
+     * 
+     * @param uri the site-path of the resource
+     * @param callback the async callback
+     */
+    void removeTempFileAndUnlock(String uri, AsyncCallback<Void> callback);
 
     /**
      * Applies the changes stored in the info bean to the vfs of OpenCms.<p>

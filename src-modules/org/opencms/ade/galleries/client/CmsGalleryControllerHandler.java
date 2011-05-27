@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,10 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -43,6 +43,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
@@ -64,10 +65,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
-
  */
 public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGallerySearchBean> {
 
@@ -292,9 +292,9 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * @param categoryTreeEntry the category root entry
      * @param selectedCategories the selected categories
      */
-    public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, List<String> selectedCategories) {
+    public void onUpdateCategoriesTree(List<CmsCategoryTreeEntry> categoryTreeEntry, List<String> selectedCategories) {
 
-        m_galleryDialog.getCategoriesTab().updateContent(categoryTreeEntry, selectedCategories);
+        m_galleryDialog.getCategoriesTab().updateContentTree(categoryTreeEntry, selectedCategories);
     }
 
     /**
@@ -303,9 +303,9 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * @param categoriesList the updated categories list
      * @param selectedCategories the selected categories
      */
-    public void onUpdateCategories(List<CmsCategoryBean> categoriesList, List<String> selectedCategories) {
+    public void onUpdateCategoriesList(List<CmsCategoryBean> categoriesList, List<String> selectedCategories) {
 
-        m_galleryDialog.getCategoriesTab().updateContent(categoriesList, selectedCategories);
+        m_galleryDialog.getCategoriesTab().updateContentList(categoriesList, selectedCategories);
     }
 
     /**
@@ -316,7 +316,18 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     public void onUpdateGalleries(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
 
-        m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
+        m_galleryDialog.getGalleriesTab().updateListContent(galleries, selectedGalleries);
+    }
+
+    /**
+     * Updates the gallery tree.<p>
+     * 
+     * @param galleryTreeEntries the gallery tree entries
+     * @param selectedGalleries the selected galleries
+     */
+    public void onUpdateGalleryTree(List<CmsGalleryTreeEntry> galleryTreeEntries, List<String> selectedGalleries) {
+
+        m_galleryDialog.getGalleriesTab().updateTreeContent(galleryTreeEntries, selectedGalleries);
     }
 
     /**
@@ -355,7 +366,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * 
      * @param categoryRoot the root category tree entry
      */
-    public void setCategoriesTabContent(CmsCategoryTreeEntry categoryRoot) {
+    public void setCategoriesTabContent(List<CmsCategoryTreeEntry> categoryRoot) {
 
         m_galleryDialog.getCategoriesTab().fillContent(categoryRoot);
     }

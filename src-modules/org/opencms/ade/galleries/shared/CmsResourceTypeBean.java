@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsResourceTypeBean.java,v $
- * Date   : $Date: 2011/05/25 10:16:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,11 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsTypeListItem}s.<p>
- * 
- * @see org.opencms.ade.galleries.client.ui.CmsTypeListItem
+ * Bean representing resource type information.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/05/27 13:38:35 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,10 +45,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -99,7 +99,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,11 +112,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /** The editor back-link URI. */
     private static final String EDITOR_BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
 
-    /** The xml-content editor URI. */
-    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
-
     /** The uri used for deleting. */
     private static final String EDITOR_DELETE_URI = "/system/workplace/commons/delete.jsp";
+
+    /** The xml-content editor URI. */
+    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -217,7 +217,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.util.List)
      */
-    public CmsCategoryTreeEntry getCategories(String fromPath, boolean includeSubCats, List<String> refPaths)
+    public List<CmsCategoryTreeEntry> getCategories(String fromPath, boolean includeSubCats, List<String> refPaths)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
@@ -232,7 +232,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             repositories.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
         }
 
-        CmsCategoryTreeEntry result = null;
+        List<CmsCategoryTreeEntry> result = null;
         try {
             // get the categories
             List<CmsCategory> categories = catService.readCategoriesForRepositories(
@@ -240,7 +240,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 fromPath,
                 includeSubCats,
                 repositories);
-            result = buildCategoryTree("", categories);
+            result = buildCategoryTree(categories);
         } catch (Throwable e) {
             error(e);
         }
@@ -250,14 +250,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategoriesForSitePath(java.lang.String)
      */
-    public CmsCategoryTreeEntry getCategoriesForSitePath(String sitePath) throws CmsRpcException {
+    public List<CmsCategoryTreeEntry> getCategoriesForSitePath(String sitePath) throws CmsRpcException {
 
         CmsCategoryService catService = CmsCategoryService.getInstance();
-        CmsCategoryTreeEntry result = null;
+        List<CmsCategoryTreeEntry> result = null;
         try {
             // get the categories
             List<CmsCategory> categories = catService.readCategories(getCmsObject(), "", true, sitePath);
-            result = buildCategoryTree("", categories);
+            result = buildCategoryTree(categories);
         } catch (Throwable e) {
             error(e);
         }
@@ -447,6 +447,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#removeTempFileAndUnlock(java.lang.String)
+     */
+    public void removeTempFileAndUnlock(String uri) throws CmsRpcException {
+
+        // TODO: implement
+
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
      */
     public void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException {
@@ -594,17 +603,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @throws Exception if something goes wrong
      */
-    private CmsCategoryTreeEntry buildCategoryTree(String fromPath, List<CmsCategory> categories) throws Exception {
+    private List<CmsCategoryTreeEntry> buildCategoryTree(List<CmsCategory> categories) throws Exception {
 
-        CmsCategoryTreeEntry result = new CmsCategoryTreeEntry(fromPath);
-        CmsCategoryTreeEntry parent = result;
+        List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
         for (CmsCategory category : categories) {
             CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
             String parentPath = CmsResource.getParentFolder(current.getPath());
-            if (!parentPath.equals(parent.getPath())) {
-                parent = findCategory(result, parentPath);
+            CmsCategoryTreeEntry parent = null;
+            parent = findCategory(result, parentPath);
+            if (parent != null) {
+                parent.addChild(current);
+            } else {
+                result.add(current);
             }
-            parent.addChild(current);
         }
         return result;
     }
@@ -673,16 +684,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @return the category with the given path or <code>null</code> if not found
      */
-    private CmsCategoryTreeEntry findCategory(CmsCategoryTreeEntry tree, String path) {
+    private CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
 
-        // we assume that the category to find is descendant of tree
-        CmsCategoryTreeEntry parent = tree;
-        if (path.equals(parent.getPath())) {
-            return parent;
+        if (path == null) {
+            return null;
         }
+        // we assume that the category to find is descendant of tree
+        List<CmsCategoryTreeEntry> children = tree;
         boolean found = true;
         while (found) {
-            List<CmsCategoryTreeEntry> children = parent.getChildren();
             if (children == null) {
                 return null;
             }
@@ -694,7 +704,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     return child;
                 }
                 if (path.startsWith(child.getPath())) {
-                    parent = child;
+                    children = child.getChildren();
                     found = true;
                     break;
                 }

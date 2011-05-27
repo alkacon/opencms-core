@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2011/05/25 10:16:42 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/27 13:38:35 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
@@ -46,7 +47,9 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the widget for the types tab.<p>
@@ -55,7 +58,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.
  */
@@ -107,6 +110,9 @@ public class CmsTypesTab extends A_CmsListTab {
     /** The reference to the handler of this tab. */
     private CmsTypesTabHandler m_tabHandler;
 
+    /** Map of type beans to type name. */
+    private Map<String, CmsResourceTypeBean> m_types;
+
     /**
      * Constructor.<p>
      * 
@@ -129,7 +135,12 @@ public class CmsTypesTab extends A_CmsListTab {
      */
     public void fillContent(List<CmsResourceTypeBean> typeInfos, List<String> selectedTypes) {
 
+        if (m_types == null) {
+            m_types = new HashMap<String, CmsResourceTypeBean>();
+        }
+        m_types.clear();
         for (CmsResourceTypeBean typeBean : typeInfos) {
+            m_types.put(typeBean.getType(), typeBean);
             CmsListItemWidget listItemWidget;
             CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
             listItemWidget = new CmsListItemWidget(infoBean);
@@ -141,10 +152,8 @@ public class CmsTypesTab extends A_CmsListTab {
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
                 checkBox.setChecked(true);
             }
-            CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
+            CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
             listItem.setId(typeBean.getType());
-            listItem.setItemTitle(typeBean.getTitle());
-            listItem.setSubTitle(typeBean.getDescription());
             if (typeBean.isCreatableType() && (m_dndHandler != null)) {
                 listItem.initMoveHandle(m_dndHandler);
             }
@@ -184,10 +193,10 @@ public class CmsTypesTab extends A_CmsListTab {
         StringBuffer result = new StringBuffer();
         for (String type : selectedTypes) {
 
-            CmsTypeListItem galleryItem = (CmsTypeListItem)m_scrollList.getItem(type);
-            String title = galleryItem.getItemTitle();
+            CmsResourceTypeBean typeBean = m_types.get(type);
+            String title = typeBean.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = galleryItem.getSubTitle();
+                title = typeBean.getType();
             }
             result.append(title).append(", ");
         }
@@ -203,7 +212,7 @@ public class CmsTypesTab extends A_CmsListTab {
     public void uncheckTypes(List<String> types) {
 
         for (String type : types) {
-            CmsTypeListItem item = (CmsTypeListItem)m_scrollList.getItem(type);
+            CmsListItem item = (CmsListItem)m_scrollList.getItem(type);
             item.getCheckBox().setChecked(false);
         }
     }

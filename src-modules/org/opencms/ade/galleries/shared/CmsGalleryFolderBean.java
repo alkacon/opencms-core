@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryFolderBean.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/27 13:38:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,13 +40,11 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsGalleryListItem}s.<p>
+ * Represents a gallery folder.<p>
  * 
- * @see org.opencms.ade.galleries.client.ui.CmsGalleryListItem
+ * @author Tobias Herrmann
  * 
- * @author Polina Smagina
- * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
