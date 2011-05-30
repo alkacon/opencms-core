@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsTruncable.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ package org.opencms.gwt.client.ui;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -47,7 +47,7 @@ public interface I_CmsTruncable {
      * Truncates long text and sets the original text to the title attribute.<p>
      *  
      * @param textMetricsKey the key identifying the text metrics to use  
-     * @param labelWidth the width to use in pixels
+     * @param clientWidth the width to use in pixels
      */
-    void truncate(String textMetricsKey, int labelWidth);
+    void truncate(String textMetricsKey, int clientWidth);
 }

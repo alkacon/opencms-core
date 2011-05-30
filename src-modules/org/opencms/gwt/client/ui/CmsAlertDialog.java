@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/05/04 09:11:26 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -48,11 +50,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
-public class CmsAlertDialog extends CmsPopup {
+public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
 
     /** The panel for the bottom widgets. */
     private FlowPanel m_bottomWidgets;
@@ -197,7 +199,7 @@ public class CmsAlertDialog extends CmsPopup {
     public void center() {
 
         super.center();
-        getCloseButton().setEnabled(true);
+        onShow();
     }
 
     /**
@@ -257,7 +259,19 @@ public class CmsAlertDialog extends CmsPopup {
     public void show() {
 
         super.show();
-        getCloseButton().setEnabled(true);
+        onShow();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        for (Widget w : m_topWidgets) {
+            if (w instanceof I_CmsTruncable) {
+                ((I_CmsTruncable)w).truncate(textMetricsKey, clientWidth);
+            }
+        }
     }
 
     /**
@@ -271,6 +285,16 @@ public class CmsAlertDialog extends CmsPopup {
     }
 
     /**
+     * Returns the top widgets panel.<p>
+     * 
+     * @return the top widgets panel
+     */
+    protected FlowPanel getTopWidgets() {
+
+        return m_topWidgets;
+    }
+
+    /**
      * Executed on 'close' click. <p>
      */
     protected void onClose() {
@@ -280,5 +304,21 @@ public class CmsAlertDialog extends CmsPopup {
             getHandler().onClose();
         }
         hide();
+    }
+
+    /**
+     * Executed when the dialog is shown.<p>
+     */
+    protected void onShow() {
+
+        getCloseButton().setEnabled(true);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                truncate(CmsAlertDialog.this.hashCode() + "", getTopWidgets().getElement().getClientWidth());
+
+            }
+        });
     }
 }

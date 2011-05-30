@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,8 @@ import org.opencms.util.CmsUUID;
 import java.util.Date;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -69,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -181,7 +183,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
                 stop(false);
                 showDialog(availabilityInfo);
-                }
+            }
         };
         availabilityCallback.execute();
     }
@@ -212,6 +214,16 @@ public class CmsAvailabilityDialog extends CmsPopup {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the content panel.<p>
+     * 
+     * @return the content panel
+     */
+    protected FlowPanel getPanel() {
+
+        return m_panel;
     }
 
     /**
@@ -252,7 +264,7 @@ public class CmsAvailabilityDialog extends CmsPopup {
 
         m_availabilityInfo = dialogBean;
         // create the info box
-        CmsListItemWidget info = new CmsListItemWidget(m_availabilityInfo.getPageInfo());
+        final CmsListItemWidget info = new CmsListItemWidget(m_availabilityInfo.getPageInfo());
         m_panel.add(info);
 
         // create the publish scheduled field
@@ -320,6 +332,14 @@ public class CmsAvailabilityDialog extends CmsPopup {
         // add the main panel and center the popup
         add(m_panel);
         center();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                info.truncate(CmsAvailabilityDialog.this.hashCode() + "", getPanel().getElement().getClientWidth());
+
+            }
+        });
     }
 
     /**

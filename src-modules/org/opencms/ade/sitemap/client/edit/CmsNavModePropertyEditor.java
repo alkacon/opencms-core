@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNavModePropertyEditor.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,13 @@
 package org.opencms.ade.sitemap.client.edit;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.CmsSimpleSitemapFormFieldPanel;
 import org.opencms.gwt.client.property.A_CmsPropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsStringUtil;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -102,7 +102,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
     @Override
     protected void setupFieldContainer() {
 
-        m_form.setWidget(new CmsSimpleSitemapFormFieldPanel(m_handler.getPageInfo()));
+        m_form.setWidget(new CmsInfoBoxFormFieldPanel(m_handler.getPageInfo()));
     }
 
     /**

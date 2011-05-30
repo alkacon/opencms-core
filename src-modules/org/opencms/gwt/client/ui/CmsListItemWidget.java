@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -90,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 8.0.0
  */
@@ -807,18 +806,10 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
             // IE fails with a JS error if the width is negative 
             width = 0;
         }
-        if (m_iconPanel.isVisible()) {
-            m_titleRow.getElement().getStyle().setMarginLeft(32, Unit.PX);
-
-        } else {
-            m_titleRow.getElement().getStyle().clearMargin();
-        }
-
-        // m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
         m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
-        if (m_subtitleSuffix.getParent() != null) {
-            m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 150);
-            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 160);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_subtitleSuffix.getText())) {
+            m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 100);
+            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 110);
         } else {
             m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
         }

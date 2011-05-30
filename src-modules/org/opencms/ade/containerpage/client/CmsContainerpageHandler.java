@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2011/05/30 10:45:43 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,13 +56,15 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -90,7 +92,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 8.0.0
  */
@@ -241,6 +243,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     return;
                 }
                 final CmsForm form = new CmsForm(true);
+                CmsListInfoBean infoBean = new CmsListInfoBean();
+                infoBean.setTitle(elementBean.getTitle());
+                infoBean.setSubTitle(elementBean.getSitePath());
+                infoBean.setResourceType(elementBean.getResourceType());
+                CmsInfoBoxFormFieldPanel formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
+                form.setWidget(formFieldPanel);
                 I_CmsFormHandler formHandler = new I_CmsFormHandler() {
 
                     /**
