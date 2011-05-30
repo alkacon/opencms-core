@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/05/30 09:51:26 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,10 +45,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -99,7 +99,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 8.0.0
  * 
@@ -442,9 +442,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#removeTempFileAndUnlock(java.lang.String)
      */
-    public void removeTempFileAndUnlock(String uri) throws CmsRpcException {
+    public void removeTempFileAndUnlock(String uri) {
 
         // TODO: implement
+        // TODO: maybe use a structure id instead of a path 
 
     }
 
@@ -604,7 +605,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * Builds the tree structure for the given categories.<p>
      * 
-     * @param fromPath the category path
      * @param categories the categories
      * 
      * @return the tree root element
@@ -618,7 +618,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
             String parentPath = CmsResource.getParentFolder(current.getPath());
             CmsCategoryTreeEntry parent = null;
-                parent = findCategory(result, parentPath);
+            parent = findCategory(result, parentPath);
             if (parent != null) {
                 parent.addChild(current);
             } else {

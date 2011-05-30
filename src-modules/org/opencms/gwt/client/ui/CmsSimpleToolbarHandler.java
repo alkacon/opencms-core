@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleToolbarHandler.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/05/30 09:51:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -134,7 +134,6 @@ public class CmsSimpleToolbarHandler extends A_CmsToolbarHandler {
             @Override
             public void onResponse(List<CmsContextMenuEntryBean> menuBeans) {
 
-                //@STRUCTUREID
                 insertContextMenu(menuBeans, structureId);
             }
         };
