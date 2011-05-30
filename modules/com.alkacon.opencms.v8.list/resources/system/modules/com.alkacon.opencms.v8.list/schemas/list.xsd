@@ -58,6 +58,7 @@
 				<formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.list/elements/center.jsp" searchcontent="false" />
 			</formatters>
 			<headincludes>
+				<headinclude type="javascript" uri="/system/modules/org.opencms.jquery/resources/packed/jquery.js" />
 				<headinclude type="javascript" uri="/system/modules/com.alkacon.opencms.v8.list/resources/jquery.pagination.js" />
 				<headinclude type="javascript" uri="/system/modules/com.alkacon.opencms.v8.list/resources/pagination.js" />
 				<headinclude type="css" uri="/system/modules/com.alkacon.opencms.v8.list/resources/pagination.css" />

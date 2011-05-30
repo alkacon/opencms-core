@@ -20,11 +20,9 @@
 		
 	<!--[if lte IE 6]>
 		<link href="<cms:link>%(link.weak:/system/modules/com.alkacon.opencms.v8.template3/resources/css/patch_ie.css:3b6f5d87-6b29-11e0-bc98-e363b206b5de)</cms:link>" rel="stylesheet" type="text/css"></link>
-    	<![endif]-->
+	<![endif]-->
     	
-    	<script type="text/javascript" src="<cms:link>%(link.weak:/system/modules/com.alkacon.opencms.v8.template3/resources/js/jquery.min.js:48542149-8547-11e0-8012-c96c1b6c43a9)</cms:link>"></script>
-    	
-    	<cms:headincludes type="javascript" />
+	<cms:headincludes type="javascript" />
 	<cms:headincludes type="css" /> 
 		
 </head><body>
