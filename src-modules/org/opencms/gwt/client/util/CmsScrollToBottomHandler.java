@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsScrollToBottomHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/05/30 10:45:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -106,7 +106,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
             return;
         }
         final ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
-        final int scrollPos = scrollPanel.getScrollPosition();
+        final int scrollPos = scrollPanel.getVerticalScrollPosition();
         Widget child = scrollPanel.getWidget();
         int childHeight = child.getOffsetHeight();
         int ownHeight = scrollPanel.getOffsetHeight();
@@ -114,7 +114,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
         if (isBottom) {
             m_callback.run();
             m_enabled = false;
-            scrollPanel.setScrollPosition(scrollPos);
+            scrollPanel.setVerticalScrollPosition(scrollPos);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 /**
@@ -122,7 +122,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
                  */
                 public void execute() {
 
-                    scrollPanel.setScrollPosition(scrollPos);
+                    scrollPanel.setVerticalScrollPosition(scrollPos);
                     m_enabled = true;
                 }
             });
