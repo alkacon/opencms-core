@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/05/30 15:06:34 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -74,14 +75,14 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
     void createNewElement(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         String clientId,
         String resourceType,
         String locale,
@@ -90,7 +91,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Requests container element data by client id.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
@@ -98,7 +99,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void getElementsData(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
@@ -108,7 +109,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Gets the element data for an id and a map of settings.<p>
      * 
-     * @param containerPageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
@@ -117,7 +118,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback for receiving the element data  
      */
     void getElementWithSettings(
-        String containerPageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         String clientId,
         Map<String, String> settings,
@@ -128,30 +129,26 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Requests the container element data of the favorite list.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param containers the containers of the current page
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void getFavoriteList(
-        String containerpageUri,
-        Collection<CmsContainer> containers,
-        String locale,
-        AsyncCallback<List<CmsContainerElementData>> callback);
+    void getFavoriteList(CmsUUID pageStructureId,
+
+    Collection<CmsContainer> containers, String locale, AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
      * Requests the container element data of the recent list.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param containers the containers of the current page
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void getRecentList(
-        String containerpageUri,
-        Collection<CmsContainer> containers,
-        String locale,
-        AsyncCallback<List<CmsContainerElementData>> callback);
+    void getRecentList(CmsUUID pageStructureId,
+
+    Collection<CmsContainer> containers, String locale, AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
      * Returns the initialization data.<p>
@@ -163,13 +160,13 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves the container-page.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
     void saveContainerpage(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         List<CmsContainer> containers,
         String locale,
         AsyncCallback<Void> callback);
@@ -185,7 +182,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves a group-container element.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
      * @param containers the containers of the current page
@@ -193,7 +190,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void saveGroupContainer(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
@@ -211,14 +208,14 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
     void syncSaveContainerpage(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         List<CmsContainer> containers,
         String locale,
         AsyncCallback<Void> callback);

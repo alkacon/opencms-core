@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/30 09:51:26 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2011/05/30 15:06:34 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 8.0.0
  */
@@ -157,7 +157,7 @@ public final class CmsContainerpageController {
                 m_callback.execute(result);
             } else {
                 getContainerpageService().getElementsData(
-                    CmsContainerpageController.getCurrentUri(),
+                    CmsCoreProvider.get().getStructureId(),
                     getRequestParams(),
                     m_clientIds,
                     m_containerBeans,
@@ -213,7 +213,7 @@ public final class CmsContainerpageController {
         public void execute() {
 
             getContainerpageService().getElementsData(
-                CmsContainerpageController.getCurrentUri(),
+                CmsCoreProvider.get().getStructureId(),
                 getRequestParams(),
                 m_clientIds,
                 m_containerBeans,
@@ -285,13 +285,9 @@ public final class CmsContainerpageController {
             } else {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
-                getContainerpageService().getElementsData(
-                    CmsContainerpageController.getCurrentUri(),
-                    getRequestParams(),
-                    clientIds,
-                    m_containerBeans,
-                    getLocale(),
-                    this);
+                getContainerpageService().getElementsData(CmsCoreProvider.get().getStructureId(),
+
+                getRequestParams(), clientIds, m_containerBeans, getLocale(), this);
             }
 
         }
@@ -500,7 +496,7 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 getContainerpageService().createNewElement(
-                    getCurrentUri(),
+                    CmsCoreProvider.get().getStructureId(),
                     element.getId(),
                     element.getNewType(),
                     getLocale(),
@@ -533,6 +529,7 @@ public final class CmsContainerpageController {
 
         elementId = getServerId(elementId);
         removeContainerElements(elementId);
+        addToRecentList(elementId);
         reloadElements(new String[] {relatedElementId});
     }
 
@@ -952,7 +949,11 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, true);
-                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerBeans, getLocale(), this);
+                getContainerpageService().getFavoriteList(
+                    CmsCoreProvider.get().getStructureId(),
+                    m_containerBeans,
+                    getLocale(),
+                    this);
             }
 
             /**
@@ -985,7 +986,11 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, true);
-                getContainerpageService().getRecentList(getCurrentUri(), m_containerBeans, getLocale(), this);
+                getContainerpageService().getRecentList(
+                    CmsCoreProvider.get().getStructureId(),
+                    m_containerBeans,
+                    getLocale(),
+                    this);
             }
 
             /**
@@ -1185,7 +1190,11 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), getLocale(), this);
+                    getContainerpageService().saveContainerpage(
+                        CmsCoreProvider.get().getStructureId(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
                 }
 
                 /**
@@ -1220,7 +1229,11 @@ public final class CmsContainerpageController {
                     setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_SAVING_0));
                     start(0, true);
-                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), getLocale(), this);
+                    getContainerpageService().saveContainerpage(
+                        CmsCoreProvider.get().getStructureId(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
                 }
 
                 /**
@@ -1288,7 +1301,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().saveGroupContainer(
-                        getCurrentUri(),
+                        CmsCoreProvider.get().getStructureId(),
                         getRequestParams(),
                         groupContainer,
                         m_containerBeans,
@@ -1613,7 +1626,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().syncSaveContainerpage(
-                        getCurrentUri(),
+                        CmsCoreProvider.get().getStructureId(),
                         getPageContent(),
                         getLocale(),
                         this);
@@ -1688,7 +1701,7 @@ public final class CmsContainerpageController {
 
                 start(200, false);
                 getContainerpageService().getElementWithSettings(
-                    CmsContainerpageController.getCurrentUri(),
+                    CmsCoreProvider.get().getStructureId(),
                     getRequestParams(),
                     clientId,
                     settings,

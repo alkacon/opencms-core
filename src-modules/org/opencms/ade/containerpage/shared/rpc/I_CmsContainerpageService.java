@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2011/05/17 13:39:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/05/30 15:06:34 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -76,7 +77,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
      * @param locale the content locale
@@ -85,13 +86,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType, String locale)
+    CmsContainerElement createNewElement(CmsUUID pageStructureId, String clientId, String resourceType, String locale)
     throws CmsRpcException;
 
     /**
      * Returns container element data by client id.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param  pageStructureId the container page structure id
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
@@ -102,7 +103,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     Map<String, CmsContainerElementData> getElementsData(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
@@ -111,7 +112,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Gets the element data for an id and a map of settings.<p>
      * 
-     * @param containerPageUri the current URI
+     * @param pageStructureId the container page structure id 
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
@@ -123,7 +124,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request 
      */
     CmsContainerElementData getElementWithSettings(
-        String containerPageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         String clientId,
         Map<String, String> settings,
@@ -133,7 +134,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Returns the container element data of the favorite list.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the containers of the current page
      * @param locale the content locale
      * 
@@ -142,14 +143,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     List<CmsContainerElementData> getFavoriteList(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 
     /**
      * Returns the container element data of the recent list.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the containers of the current page
      * @param locale the content locale
      * 
@@ -158,7 +159,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     List<CmsContainerElementData> getRecentList(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 
@@ -174,13 +175,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves the container-page.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveContainerpage(String containerpageUri, List<CmsContainer> containers, String locale)
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
     throws CmsRpcException;
 
     /**
@@ -195,7 +196,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves a group-container element.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
      * @param containers the containers of the current page
@@ -206,7 +207,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     Map<String, CmsContainerElementData> saveGroupContainer(
-        String containerpageUri,
+        CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
@@ -224,12 +225,12 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves the container-page in a synchronized RPC call.<p>
      * 
-     * @param containerpageUri the current URI
+     * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers, String locale)
+    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
     throws CmsRpcException;
 }
