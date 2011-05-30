@@ -1,5 +1,6 @@
 <%@page buffer="none" session="false" taglibs="c,cms" %>
 <cms:formatter var="content" val="value">
+<div>
 
 <c:if test="${cms.container.name == 'headercontainer'}">
 	<c:choose>
@@ -23,4 +24,5 @@
 	</c:choose>
 </c:if>
 
+</div>
 </cms:formatter>
