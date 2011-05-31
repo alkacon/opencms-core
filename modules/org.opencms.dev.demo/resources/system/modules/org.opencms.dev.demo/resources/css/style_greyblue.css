@@ -1,0 +1,461 @@
+@media all
+{
+  /**
+   * ------------------------------------------------------------------
+   * Basic Settings
+   * ------------------------------------------------------------------
+   */
+
+  * { 
+  	margin: 0px; 
+  	padding: 0px; 
+  	font-family: Verdana, Helvetica, Arial, sans-serif;
+  }
+
+  html * { font-size: 12px }
+
+  textarea, pre, tt, code {
+	font-family:"Courier New", Courier, monospace;  	
+  }
+
+  body {
+    padding: 10px 0;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 75.00%; 
+    height: 1%;
+    color: #444444;
+  }
+
+  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 2px 0; }
+  h1 { font-size: 24px }
+  h2 { font-size: 20px; 	margin-top: 6px }
+  h3 { font-size: 18px; 	margin-top: 5px }
+  h4 { font-size: 16px; 	margin-top: 8px }
+  h5 { font-size: 14px; 	margin-top: 8px }
+  h6 { font-size: 14px; 	font-style: italic; margin-top: 8px }	/* 14px */
+
+  p { 
+  	line-height: 16px;
+  	margin-top: 3px;
+  	margin-bottom: 3px;
+  }
+
+  ul, ol, dl { line-height: 15px; margin: 10px 0 10px 10px; }
+  li { margin-left: 15px; line-height: 15px; }
+
+  dt { font-weight: bold; }
+  dd { margin: 0 0 10px 20px; }
+
+  cite, blockquote { font-style: italic; }
+  blockquote { margin: 0 0 10px 15px; }
+
+  strong, b { font-weight: bold; }
+  em, i { font-style: italic; }
+
+  pre, code { 
+  	font-family: monospace; 
+  	font-size: 14px; 
+  	margin-top: 3px;
+  	margin-bottom: 3px;
+  }
+
+  acronym, abbr {
+    letter-spacing: .07em;
+    border-bottom: 1px dashed #c00;
+    cursor: help;
+  }
+
+  a {
+  	color: #444444; 
+  	text-decoration: none;
+  }
+  a:focus,
+  a:hover,
+  a:active {
+  	color: #444444;
+  	text-decoration:underline;
+  }
+  
+  a img {
+  	text-decoration: none;
+  	border: none;
+  }
+  
+  option { padding-left: 4px; }
+  
+  /**
+   * ------------------------------------------------------------------
+   * Column Layout
+   * ------------------------------------------------------------------
+   */
+
+  body { 
+    background: #EEE url("../images/bg_demo_png24.png") repeat-x top left fixed; 
+  }
+    
+  #window {
+  	width: 960px;
+    	margin: 0 auto;
+  	text-align: left;
+  }
+
+  #page {
+    background: #FFFFFF;
+    padding: 5px;
+  }
+
+  #header {
+  	background: #FFF url("../images/bg_head_demo_png24.png") top left;
+  	color: #444444;
+    position: relative;
+    padding-top: 0px;
+  }
+  
+  #topnav {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  
+  #topnav a {
+  	color: #444444;
+  }
+
+  #breadcrumb {
+    padding: 5px 0px 5px 20px;
+    border-bottom: 1px solid #B31B34;
+    position: relative;
+    height: 1%;
+  }
+  
+  #breadcrumb a {
+  	color: #444444;
+  }
+
+  #main {
+    padding: 10px 0;
+  }
+
+  #col1 {
+    width: 240px;
+    float: left;
+    
+  }
+
+  #col1_content {
+    padding: 10px 10px 10px 0px;
+    
+  }
+  
+  #col2 {
+    width: 470px;
+    margin-left: 240px;
+    margin-right: 240px;     
+  }
+
+  #col2_content {
+  
+    padding: 10px;
+    
+  }
+  
+  #col3 {
+    width: 240px;
+    float: right;   
+  }
+
+  #col3_content {
+    padding: 10px 0px 10px 10px;
+  }
+  
+  #footer {
+  	background: #FFFFFF url("../images/bg_foot_demo_png24.png") top left;
+    color: #444444;
+    padding: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #B31B34;
+  }
+  
+  #header, #nav_main, #main, #footer, #breadcrumb { clear:both; }
+
+  .clearfix:after { 
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden; 
+  } 
+
+  .clearfix { display: block; }
+  
+  .clear {
+	clear: both;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Accessible
+   * ------------------------------------------------------------------
+   */
+   
+  .skip {
+    position: absolute;
+    left: 0px;
+    top: -500px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Search Page
+   * ------------------------------------------------------------------
+   */
+   
+   #searchForm {
+     margin-bottom: 10px;
+   }
+   
+   .search_text {
+   	margin-bottom: 10px;
+   }
+   .search_noresult {
+     margin-bottom: 10px;
+   }
+   
+   .search_result, .search_error {
+     margin-bottom: 10px;
+   }
+  
+   .pagination {
+     text-align: center;
+   }
+   
+  /**
+   * ------------------------------------------------------------------
+   * Box Layout
+   * ------------------------------------------------------------------
+   */
+   
+   .box {
+   	 background: #e1e1e1;
+     margin-bottom: 15px;
+     border-bottom:1px solid #7B7F7E;
+     border-left:1px solid #7B7F7E;
+     border-right:1px solid #7B7F7E;
+   }
+   
+   .box h4 {
+   	 background: #25438D url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
+   	 font-size: 13px;
+   	 width: auto;
+   	 margin: -1px;
+   	 padding: 5px;
+   	 line-height: 16px;
+   }
+   
+   .box h5, .box h5 a {
+   	font-size: 12px;
+   }
+   
+   .box_schema1 {
+   	 background: #AACCFF;   
+   }
+
+   .box_schema2 {
+   	 background: #CCCCCC;   
+   }
+
+   .box_schema3 {
+   	 background: #FFFFFF;   
+   }
+   
+   .box_schema1 h4 {
+   	 background: #003082 url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #FFFFFF;
+   }
+
+   .box_schema2 h4 {
+   	 background: #444444 url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #FFFFFF;
+   }
+
+   .box_schema3 h4 {
+   	 background: #003082 url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #FFFFFF;
+   }
+   
+   .boxbody {
+     padding: 10px;
+     font-size: 11px;
+   }
+   
+   .boxbody p, .boxbody div.paragraph, .boxbody a {
+     font-size: 11px;
+   }
+   
+   .boxbody small {
+     font-size: 10px;
+   }
+   
+   div.box div.boxbody div.paragraph:after {
+     content: ".";
+     display: block;
+     clear: both;
+     visibility: hidden;
+     line-height: 0;
+     height: 0;
+   }
+
+   div.box div.boxbody div.paragraph{
+      display: inline-block;
+   }
+
+   html[xmlns] div.box div.boxbody div.paragraph{
+     display: block;
+   }
+
+   * html div.box div.boxbody div.paragraph {
+     height: 1%;
+   }
+   
+   .boxbody_listentry {
+     margin-bottom: 5px;
+     overflow:hidden;
+   }
+   
+   .boxbody_listentry div.left img {
+   	 margin-right: 5px;
+   }
+
+   .boxbody_listentry div.right img {
+   	 margin-left: 5px;
+   }
+   
+   form div.boxform {
+     display: block;
+     margin: 5px 0px 0px;
+     padding: 1px 3px;
+   }
+  
+   form div.boxform label {
+     display: block;
+     float: left;
+     padding-right: 5px;
+     text-align: right;
+     width: 60px;
+   }
+ 
+   .left {
+     float: left;
+   }
+   
+   .right {
+     float: right;
+   }
+   
+   img.left {
+   	padding: 0 5px 5px 0;
+   }
+   
+   img.right {
+   	padding: 0 0 5px 5px;
+   }
+   
+   img.top {
+   	padding: 0 0 5px 0;
+   }
+   
+   /**
+   * ------------------------------------------------------------------
+   * Navigation Menu adjustments
+   * ------------------------------------------------------------------
+   */
+   
+   #nav_left li a {
+     color: #444444;
+   }
+   
+   #nav_left li a:hover, #nav_left li a:focus, #nav_left li a:active {
+     background: #DDD;
+     color: #444444;
+   }
+   
+   #nav_left a.current {
+     background-color: #003082;
+     color: #FFFFFF;
+   }
+
+   
+     #nav_main {
+       background: #003082 url(../images/gradient.png) repeat-x top left;
+     }
+   
+
+   
+     #nav_main a {
+       color: #EEE;
+     }
+   
+   
+   
+     #nav_main a:hover {
+       background: #444444 url(../images/gradient.png) repeat-x top left;
+     }
+   
+
+   
+     #nav_main a:hover {
+       color: #FFFFFF;
+     }
+   
+   
+   
+     #nav_main a.current {
+       color: #fff;
+       background: #444444 url(../images/gradient.png) repeat-x top left;
+     }
+   
+
+   
+     #nav_main a.current {
+       color: #FFFFFF;
+     }
+   
+
+   /**
+   * ------------------------------------------------------------------
+   * Editor adjustments
+   * ------------------------------------------------------------------
+   */
+   
+   	 
+     
+   
+   
+}
+
+@media print
+{
+   /**
+   * ------------------------------------------------------------------
+   * Print Layout
+   * ------------------------------------------------------------------
+   */
+   
+  body, #window, #page, #main { margin:0; padding: 0; border: 0; }
+  #window, #page {width: 100% !important; min-width:0; max-width: none}
+  #header { height: auto; }
+  #footer { display: none; }
+
+  #topnav, #nav_main, #breadcrumb { display: none; }
+
+  #col1 { display:none; }
+  #col3 { display:none; }
+  
+  #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
+}
+
+

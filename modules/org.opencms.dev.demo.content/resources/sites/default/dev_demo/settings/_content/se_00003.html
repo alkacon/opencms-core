@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoSettingsArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/settings_article.xsd">
+  <DevDemoSettingsArticle language="en">
+    <Title><![CDATA[Settings demo with image]]></Title>
+    <Options>
+      <Html name="Html0">
+        <links>
+          <link name="link2" internal="true" type="A">
+            <target><![CDATA[/system/modules/org.opencms.dev.demo.content/resources/license/fdl.txt]]></target>
+            <uuid>63d20ff8-8acb-11e0-a3d4-eda89ab1c2d4</uuid>
+          </link>
+          <link name="link0" internal="false" type="A">
+            <target><![CDATA[http://en.wikipedia.org/]]></target>
+          </link>
+          <link name="link1" internal="false" type="A">
+            <target><![CDATA[http://en.wikipedia.org/wiki/Tulip]]></target>
+          </link>
+        </links>
+        <content><![CDATA[<p>&nbsp;Settings examples of this article:</p>
+<ul>
+    <li><strong>name=&quot;boxschema&quot; widget=&quot;select&quot;:</strong> Selects the color scheme of the article.</li>
+    <li><strong>name=&quot;text&quot; widget=&quot;string&quot;:</strong> Fills in the text to overwrite the title of this article.</li>
+    <li><strong>name=&quot;showimage&quot; widget=&quot;checkbox&quot;: </strong>Controls the visibility of the image<strong>.<br />
+    </strong></li>
+    <li><strong>name=&quot;date&quot; widget=&quot;datebox&quot;:</strong> Defines the date for this article</li>
+    <li><strong>name=&quot;format&quot; widget=&quot;radio&quot;:</strong> Chooses the date format to be shown with or without the time.</li>
+</ul>
+<p>&nbsp;</p>
+<p>This article uses material from the <a title="Wikipedia" target="_self" href="%(link0)">Wikipedia</a> article <a href="%(link1)" target="_self">Tulip</a> and is licensed under the <a target="_self" href="%(link2)">GNU Free Documentation License</a>.</p>]]></content>
+      </Html>
+    </Options>
+    <Image>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/dev_demo/_content/images/r-z/tulip.jpg]]></target>
+        <uuid>b8bd79eb-7727-11e0-a2f4-eda16dd9314c</uuid>
+      </link>
+    </Image>
+  </DevDemoSettingsArticle>
+</DevDemoSettingsArticles>

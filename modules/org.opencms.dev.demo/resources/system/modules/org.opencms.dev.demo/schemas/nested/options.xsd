@@ -1,0 +1,34 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="DevDemoTextOptions" type="OpenCmsDevDemoTextOptions"/>
+	
+	<xsd:complexType name="OpenCmsDevDemoTextOptions">
+		<xsd:sequence>
+			<xsd:element name="DevDemoTextOption" type="OpenCmsDevDemoTextOption" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDevDemoTextOption">
+		<xsd:choice minOccurs="0" maxOccurs="3">
+			<xsd:element name="Text" type="OpenCmsString" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1" />
+		</xsd:choice>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.dev.demo.workplace" />
+			<mappings/>
+			<layouts>
+				<layout element="Html" widget="HtmlWidget" configuration="height:200px,link,source" />
+			</layouts>	
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

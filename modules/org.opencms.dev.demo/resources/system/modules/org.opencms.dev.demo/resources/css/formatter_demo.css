@@ -1,0 +1,76 @@
+/**
+  * Css file for the formatter demonstration template.
+  */
+
+/* Template styles */
+div.container-showcase {
+	border: 2px solid #003082; 
+	margin-bottom: 10px;
+	min-height:80px;
+}
+
+div.container-description {
+	border: 2px solid #FFFFFF; 
+}
+
+div.narrow {
+	width: 250px;
+}
+
+div.middle {
+	width: 450px;
+}
+
+div.wide {
+	width: 850px;
+}
+
+
+div.type-left-description {
+	float:left;
+	width:250px;
+}
+
+div.type-left-container {
+	clear:left;
+	float:left;
+	width:250px;
+}
+
+div.type-right-description {
+	float:left;
+	width: 682px;
+	margin-left: 10px;
+	height:28px;
+}
+
+div.type-right-container {
+	float:left;
+	width: 682px;
+	margin-left: 10px;
+}
+
+/* Formatter styles. */
+.container-box {
+	padding:8px;
+}
+
+div.color-blue{
+	background-color: #99FFFF;
+}
+
+div.color-grey{
+	background-color: #CCCCCC;
+}
+
+div.color-rose{
+	background-color: #FFCCCC;
+}
+
+div.color-yellow{
+	background-color: #FFFFCC;
+}
+
+div.color-green{
+	background-color: #66FFCC;
+}

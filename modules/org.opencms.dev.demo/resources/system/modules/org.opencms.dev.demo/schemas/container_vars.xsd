@@ -1,0 +1,35 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="DevDemoContainerVariables" type="OpenCmsDevDemoContainerVariables"/>
+	
+	<xsd:complexType name="OpenCmsDevDemoContainerVariables">
+		<xsd:sequence>
+			<xsd:element name="DevDemoContainerVariable" type="OpenCmsDevDemoContainerVariable" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDevDemoContainerVariable">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Content" type="OpenCmsHtml" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.dev.demo.workplace"/>
+			<formatters>
+				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/elements/container_vars/containervar.jsp" searchcontent="false"/>
+			</formatters>
+			<layouts>
+				<layout element="Content" widget="HtmlWidget" configuration="formatselect,source" />
+			</layouts>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>			
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/05/08 14:23:47 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2011/05/31 10:39:46 $
+ * Version: $Revision: 1.87 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 8.x.x - 
+! Added development demo module and content
 
 OpenCms 8.0.0 - May 8th, 2011
 ! The "Advanced Direct Edit" mode allows to create page content by drag & drop.

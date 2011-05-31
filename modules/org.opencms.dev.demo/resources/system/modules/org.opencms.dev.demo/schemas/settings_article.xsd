@@ -1,0 +1,49 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/nested/options.xsd"/>
+		
+	<xsd:element name="DevDemoSettingsArticles" type="OpenCmsDevDemoSettingsArticles"/>
+	
+	<xsd:complexType name="OpenCmsDevDemoSettingsArticles">
+		<xsd:sequence>
+			<xsd:element name="DevDemoSettingsArticle" type="OpenCmsDevDemoSettingsArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDevDemoSettingsArticle">
+		<xsd:sequence>			
+			<xsd:element name="Title" type="OpenCmsString" />					
+			<xsd:element name="Options" type="OpenCmsDevDemoTextOption" minOccurs="0" maxOccurs="1"/>				
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.dev.demo.workplace"/>			
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<!-- Enables nice url name for detail pages -->
+				<mapping element="Title" mapto="urlName" />
+			</mappings>
+			<layouts>								
+				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:false}" />				
+			</layouts>
+			<validationrules/>
+			<defaults/>
+			<relations/>
+			<formatters>				
+				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/elements/settings_article/settings.jsp" searchcontent="false"/>
+			</formatters>
+			<settings>
+				<setting name="boxschema" nice-name="Box Color" type="string" widget="select" widget-config="box_schema1:blue|box_schema2:grey" />
+				<setting name="text" nice-name="Text" type="string" widget="string" default="Default setting text" rule-regex=".+" error="The Input should may not be empty!"/> 					
+				<setting name="showimage" nice-name="Show Image" type="string" widget="checkbox" default="false" />								
+				<setting name="date" nice-name="Date Picker" type="string" widget="datebox" />
+				<setting name="format" nice-name="Date format" type="string" widget="radio" default="both" widget-config="both:With time|date:No time"/>
+			</settings>							
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>
