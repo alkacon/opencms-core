@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2011/05/05 07:14:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/05/31 08:41:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.workplace.editors.Messages;
 
 import java.util.Random;
 
@@ -49,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -225,6 +226,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put("hasEdit", params.getButtonSelection().isShowEdit());
         editableData.put("hasDelete", params.getButtonSelection().isShowDelete());
         editableData.put("hasNew", params.getButtonSelection().isShowNew());
+        editableData.put("newtitle", m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0));
 
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {

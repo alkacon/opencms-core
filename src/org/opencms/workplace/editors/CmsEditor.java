@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2011/05/07 10:56:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/31 08:41:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,10 +221,8 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Initializes the editor session info bean.<p>
-     * 
-     * @return the editor session info bean
      */
-    protected CmsEditorSessionInfo initSessionInfo() {
+    protected void initSessionInfo() {
 
         CmsResource editedResource = null;
         try {
@@ -253,7 +251,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             }
             session.setAttribute(info.getEditorSessionInfoKey(), info);
         }
-        return info;
+        m_editorSessionInfo = info;
     }
 
     /**
@@ -435,13 +433,9 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         if (active) {
             // create the link for the button
-            return button(
-                "javascript:" + jsFunction,
-                null,
-                image,
-                name,
-                type,
-                url.substring(0, url.lastIndexOf("/") + 1));
+            return button("javascript:" + jsFunction, null, image, name, type, url.substring(
+                0,
+                url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
             return button(null, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));

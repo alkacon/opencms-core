@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsEditableDataJSO.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/05/31 08:41:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -60,7 +60,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the data object
      */
     public static final native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
-        return eval('('+jsonText+')');
+        return eval('(' + jsonText + ')');
     }-*/;
 
     /**
@@ -69,7 +69,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the edit id
      */
     public final native String getEditId() /*-{
-        return this.editId;
+        return this.editId ? this.editId : "";
     }-*/;
 
     /** 
@@ -78,7 +78,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the element language
      */
     public final native String getElementLanguage() /*-{
-        return this.elementlanguage;
+        return this.elementlanguage ? this.elementlanguage : "";
     }-*/;
 
     /**
@@ -87,7 +87,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the element name
      */
     public final native String getElementName() /*-{
-        return this.elementname;
+        return this.elementname ? this.elementname : "";
     }-*/;
 
     /**
@@ -96,7 +96,16 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the new link url
      */
     public final native String getNewLink() /*-{
-        return this.newlink;
+        return this.newlink ? this.newlink : "";
+    }-*/;
+
+    /**
+     * Returns the new link url.<p>
+     * 
+     * @return the new link url
+     */
+    public final native String getNewTitle() /*-{
+        return this.newtitle ? this.newtitle : "";
     }-*/;
 
     /**
@@ -105,7 +114,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the site path
      */
     public final native String getSitePath() /*-{
-        return this.sitePath;
+        return this.sitePath ? this.sitePath : "";
     }-*/;
 
     /**
@@ -114,7 +123,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * @return the structure id
      */
     public final native String getStructureId() /*-{
-        return this.structureId;
+        return this.structureId ? this.structureId : "";
     }-*/;
 
     /**

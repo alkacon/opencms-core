@@ -116,7 +116,7 @@ div.itemIcon{
 	width: 24px;
 	float: left;
 	overflow: hidden;
-	margin: 7px 0 7px 4px;
+	margin: 7px 4px;
 }
 
 .itemIcon .cms_type_icon{
