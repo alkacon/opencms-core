@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Mon, 30 May 2011 15:00:24 GMT</createdate>
+		<createdate>Tue, 31 May 2011 12:41:39 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -43,9 +43,6 @@
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ddcontainervars" id="137">
 				<param name="schema">/system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ddheadincludearticle" id="141">
-				<param name="schema">/system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd</param>
-			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="ddarticle" key="fileicon.ddarticle" icon="ddarticle.png" bigicon="ddarticle_big.png" reference="xmlcontent">
@@ -66,22 +63,16 @@
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="ddheadincludearticle" key="fileicon.ddheadincludearticle" icon="ddarticle.png" bigicon="ddarticle_big.png" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=ddheadincludearticle" order="110" autosetnavigation="false" autosettitle="false" info="desc.ddheadincludearticle"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
 		</explorertypes>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>fa3ad58d-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 08:08:18 GMT</datelastmodified>
+			<uuidstructure>7c9e2cc7-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<datelastmodified>Tue, 31 May 2011 09:43:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:18 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -100,10 +91,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>fae8c809-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 08:08:19 GMT</datelastmodified>
+			<uuidstructure>7d582e33-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<datelastmodified>Tue, 31 May 2011 09:43:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:19 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -455,64 +446,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/article_with_headincludes</destination>
-			<type>folder</type>
-			<uuidstructure>6a138392-7fa5-11e0-91cd-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:16:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:15:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Formatters for headincludes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article_with_headincludes/center.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article_with_headincludes/center.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>993ca0cb-7faa-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>993ca0cc-7faa-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 13:40:58 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:52:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article_with_headincludes/side.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article_with_headincludes/side.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>994887ae-7faa-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>994887af-7faa-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 13:41:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:52:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.dev.demo/elements/container_vars</destination>
 			<type>folder</type>
 			<uuidstructure>83cbe09e-7715-11e0-ae74-eda16dd9314c</uuidstructure>
@@ -820,634 +753,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox</destination>
-			<type>folder</type>
-			<uuidstructure>53549150-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/addfancybox.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/addfancybox.js</destination>
-			<type>plain</type>
-			<uuidstructure>08528755-7fb1-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>08528756-7fb1-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 13:33:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 11:38:34 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/blank.gif</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/blank.gif</destination>
-			<type>image</type>
-			<uuidstructure>535bbd42-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>535bbd43-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[blank]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_close.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_close.png</destination>
-			<type>image</type>
-			<uuidstructure>536ed022-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>536ed023-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_close]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:30,h:30]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_loading.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_loading.png</destination>
-			<type>image</type>
-			<uuidstructure>53738b16-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53738b17-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_loading]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:40,h:480]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_nav_left.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_nav_left.png</destination>
-			<type>image</type>
-			<uuidstructure>5375fc1a-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>5375fc1b-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_nav_left]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:30,h:30]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_nav_right.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_nav_right.png</destination>
-			<type>image</type>
-			<uuidstructure>537ab70e-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>537ab70f-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_nav_right]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:30,h:30]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_e.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_e.png</destination>
-			<type>image</type>
-			<uuidstructure>537f7202-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>537f7203-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_e]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_n.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_n.png</destination>
-			<type>image</type>
-			<uuidstructure>5381e306-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>5381e307-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_n]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_ne.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_ne.png</destination>
-			<type>image</type>
-			<uuidstructure>53890efa-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53890efb-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_ne]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_nw.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_nw.png</destination>
-			<type>image</type>
-			<uuidstructure>538b58ee-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>538b58ef-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_nw]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_s.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_s.png</destination>
-			<type>image</type>
-			<uuidstructure>53903af2-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53903af3-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_s]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_se.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_se.png</destination>
-			<type>image</type>
-			<uuidstructure>5394f5e6-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>5394f5e7-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_se]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_sw.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_sw.png</destination>
-			<type>image</type>
-			<uuidstructure>5399b0da-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>5399b0db-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_sw]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_w.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_shadow_w.png</destination>
-			<type>image</type>
-			<uuidstructure>539c21de-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>539c21df-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_shadow_w]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_left.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_left.png</destination>
-			<type>image</type>
-			<uuidstructure>53a0dcd2-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53a0dcd3-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_title_left]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:15,h:32]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_main.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_main.png</destination>
-			<type>image</type>
-			<uuidstructure>53a597c6-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53a597c7-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_title_main]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:32]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_over.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_over.png</destination>
-			<type>image</type>
-			<uuidstructure>53aa79ca-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53aa79cb-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_title_over]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_right.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancy_title_right.png</destination>
-			<type>image</type>
-			<uuidstructure>53acc3be-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53acc3bf-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancy_title_right]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:15,h:32]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox-x.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox-x.png</destination>
-			<type>image</type>
-			<uuidstructure>53607836-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53607837-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancybox-x]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:72]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox-y.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox-y.png</destination>
-			<type>image</type>
-			<uuidstructure>5365332a-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>5365332b-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancybox-y]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:40,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox.png</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/fancybox.png</destination>
-			<type>image</type>
-			<uuidstructure>536a152e-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>536a152f-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[fancybox]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:70,h:480]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery-1.4.3.min.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery-1.4.3.min.js</destination>
-			<type>plain</type>
-			<uuidstructure>67166598-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>67166599-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:08:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:08:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery-1.4.3.min]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.easing-1.3.pack.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.easing-1.3.pack.js</destination>
-			<type>plain</type>
-			<uuidstructure>53b17eb2-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53b17eb3-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.easing-1.3.pack]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.css</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.css</destination>
-			<type>plain</type>
-			<uuidstructure>53b3efb5-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53b3efb6-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.fancybox-1.3.4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.js</destination>
-			<type>plain</type>
-			<uuidstructure>53b660b8-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53b660b9-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.fancybox-1.3.4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.pack.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.fancybox-1.3.4.pack.js</destination>
-			<type>plain</type>
-			<uuidstructure>53bb1bab-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53bb1bac-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.fancybox-1.3.4.pack]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.mousewheel-3.0.4.pack.js</source>
-			<destination>system/modules/org.opencms.dev.demo/resources/fancybox/jquery.mousewheel-3.0.4.pack.js</destination>
-			<type>plain</type>
-			<uuidstructure>53bd8cae-7fa4-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>53bd8caf-7fa4-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 10:07:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:07:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.mousewheel-3.0.4.pack]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1897,26 +1202,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd</source>
-			<destination>system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>2a0bfb74-7fa3-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>2a0bfb75-7fa3-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 08:31:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 09:59:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for the article with headincludes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</source>
 			<destination>system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</destination>
 			<type>plain</type>
@@ -2067,7 +1352,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>7ff631cf-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2110,7 +1395,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>7ffaecc7-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2123,7 +1408,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>7ffd5dc9-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

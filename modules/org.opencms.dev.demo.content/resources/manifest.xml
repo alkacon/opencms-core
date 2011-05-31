@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Mon, 30 May 2011 15:00:41 GMT</createdate>
+		<createdate>Tue, 31 May 2011 13:00:59 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -34,10 +34,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>fada9733-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 08:08:19 GMT</datelastmodified>
+			<uuidstructure>7d49d64d-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<datelastmodified>Tue, 31 May 2011 09:43:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:19 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -47,13 +47,30 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>fae40d15-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
+			<uuidstructure>7d4eb84f-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
 			<datelastmodified>Mon, 30 May 2011 08:22:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:19 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[OpenCms 8 Demo]]></value>
+				</property>
+				<property>
+					<name>config.sitemap</name>
+					<value><![CDATA[/_config/sitemap_restype.config]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/_config/style]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol>
 				<accessentry>
@@ -2467,197 +2484,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/headincludes_demo</destination>
-			<type>subsitemap</type>
-			<uuidstructure>57424932-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:40:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:36:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.4028235E38]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Additional javascript and css]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Additional javascript and css]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/headincludes_demo/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_headincludes_demo.config]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/headincludes_demo/index.html</source>
-			<destination>sites/default/dev_demo/headincludes_demo/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>57497527-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>57497528-7fa8-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 13:33:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:36:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Additional javascript and css]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/headincludes_demo/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>8e27535e-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:37:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:37:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/headincludes_demo/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/headincludes_demo/_config/sitemap_restype.config</destination>
-			<type>sitemap_config</type>
-			<uuidstructure>8e29c461-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>8e29c462-7fa8-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 12:22:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:37:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/headincludes_demo/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>8e30f056-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:37:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:37:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/headincludes_demo/_config/models/article.html</source>
-			<destination>sites/default/dev_demo/headincludes_demo/_config/models/article.html</destination>
-			<type>ddheadincludearticle</type>
-			<uuidstructure>fe706932-7fb6-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>fe706933-7fb6-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 12:21:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 12:21:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New Dev Demo Article with additional javascript and css]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/headincludes_demo/_content</destination>
-			<type>folder</type>
-			<uuidstructure>b83b1d96-7fa8-11e0-a51c-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 10:39:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 10:39:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/headincludes_demo/_content/a_00001.html</source>
-			<destination>sites/default/dev_demo/headincludes_demo/_content/a_00001.html</destination>
-			<type>ddheadincludearticle</type>
-			<uuidstructure>2bea68e0-7fb7-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>2bea68e1-7fb7-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:58:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 12:22:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dev Demo Article with additional javascript and css]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/headincludes_demo/_content/a_00002.html</source>
-			<destination>sites/default/dev_demo/headincludes_demo/_content/a_00002.html</destination>
-			<type>ddheadincludearticle</type>
-			<uuidstructure>8fd31f51-7fb9-11e0-a51c-1df1339be1a9</uuidstructure>
-			<uuidresource>8fd31f52-7fb9-11e0-a51c-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:57:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 12:39:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dev Demo Article with additional javascript and css]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>sites/default/dev_demo/model_containerpage</destination>
 			<type>subsitemap</type>
 			<uuidstructure>b6d98c87-7f95-11e0-91cd-1df1339be1a9</uuidstructure>
@@ -3191,7 +3017,7 @@
 			<type>containerpage</type>
 			<uuidstructure>29e97d5a-77f7-11e0-b1d0-cde485e16fbf</uuidstructure>
 			<uuidresource>29e97d5b-77f7-11e0-b1d0-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:31:48 GMT</datelastmodified>
+			<datelastmodified>Tue, 31 May 2011 12:59:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 15:40:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3856,10 +3682,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>fa3ad58d-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 08:08:18 GMT</datelastmodified>
+			<uuidstructure>7c9e2cc7-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<datelastmodified>Tue, 31 May 2011 09:43:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:18 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -3878,10 +3704,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>fae8c809-8a93-11e0-b2f6-eda89ab1c2d4</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 08:08:19 GMT</datelastmodified>
+			<uuidstructure>7d582e33-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<datelastmodified>Tue, 31 May 2011 09:43:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 08:08:19 GMT</datecreated>
+			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
