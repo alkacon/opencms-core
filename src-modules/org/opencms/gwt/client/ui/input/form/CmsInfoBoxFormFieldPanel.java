@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsInfoBoxFormFieldPanel.java,v $
- * Date   : $Date: 2011/05/30 10:45:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/05/31 13:02:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -64,6 +64,9 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
     /** The inner panel containing the form fields. */
     private FlowPanel m_innerPanel;
 
+    /** Text metrics key for the info box. */
+    public static String TM_INFOBOX = "infobox_";
+
     /**
      * Creates a new instance.<p>
      * 
@@ -74,6 +77,7 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
         m_panel = new FlowPanel();
         m_innerPanel = new FlowPanel();
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
+        liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
         liWidget.setStateIcon(StateIcon.standard);
         m_panel.add(liWidget);
         m_panel.add(m_innerPanel);
