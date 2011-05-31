@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/05/31 12:33:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.common.base.Joiner;
  * 
  * @author Antonio Core 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             @Override
             protected boolean useWindowFunctionsForPaging() {
 
-                return true;
+                return false;
             }
         };
     }
