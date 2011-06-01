@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/alkacon/opencms/v8/list/CmsListContentMapping.java,v $
- * Date   : $Date: 2011/05/07 13:31:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/06/01 07:50:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsListContentMapping {
 
@@ -497,22 +497,20 @@ public class CmsListContentMapping {
         String value,
         int maxLength) {
 
-        if (value.length() <= maxLength) {
-            return value;
-        }
-        String result;
-        // value is to long, apply limitation
+        // assume default "text/plain" as value
+        String result = value;
         if (xmlContentValue instanceof CmsXmlHtmlValue) {
             // the content is HTML
             result = xmlContentValue.getPlainText(cms);
+        }
+
+        if (value.length() <= maxLength) {
+            // value is shorter than maximum length, no trimming needed
+            return result;
         } else {
-            // assume default "text/plain"
-            result = value;
+            // value is too long, apply limitation
+            return CmsStringUtil.trimToSize(result, maxLength);
         }
-        if (result.length() > maxLength) {
-            result = CmsStringUtil.trimToSize(result, maxLength);
-        }
-        return result;
     }
 
     /**
