@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/06/01 07:51:37 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2011/06/01 13:48:41 $
+ * Version: $Revision: 1.89 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 8.x.x - 
 ! Added development demo module and content
 * Fixed CSS layout issues for Template III
+- Added german demo content for Template III
 
 OpenCms 8.0.0 - May 8th, 2011
 ! The "Advanced Direct Edit" mode allows to create page content by drag & drop.
