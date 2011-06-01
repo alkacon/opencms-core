@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/05/06 20:34:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/01 13:00:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -89,7 +88,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns the current detail content resource, or <code>null</code> if this is not a request to a content detail page
+     * Returns the current detail content resource, or <code>null</code> if this is not a request to a content detail page.<p>
      * 
      * @param req the current request
      * 
@@ -108,8 +107,6 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
         // check if the resource was already found
         boolean abort = (resource != null);
-        // check if the resource comes from the root site
-        abort |= CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot());
         // check if the resource comes from the /system/ folder
         abort |= cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
         if (abort) {
