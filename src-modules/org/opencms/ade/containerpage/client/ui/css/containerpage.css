@@ -250,3 +250,5 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
     gwt-image: "images.selectionIconDeactivated";
 }
+
+.toolbarBack{}

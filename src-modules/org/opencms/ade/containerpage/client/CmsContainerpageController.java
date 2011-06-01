@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2011/05/30 15:06:34 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 8.0.0
  */
@@ -779,6 +779,22 @@ public final class CmsContainerpageController {
     public String getNewResourceId(String resourceType) {
 
         return getData().getNewTypes().get(resourceType);
+    }
+
+    /**
+     * Produces the "return code", which is needed to return to the current page from the sitemap.<p>
+     * 
+     * @return the return code 
+     */
+    public String getReturnCode() {
+
+        CmsUUID ownId = CmsCoreProvider.get().getStructureId();
+        CmsUUID detailId = m_data.getDetailId();
+        if (detailId != null) {
+            return "" + ownId + ":" + detailId;
+        } else {
+            return "" + ownId;
+        }
     }
 
     /**
@@ -1758,4 +1774,5 @@ public final class CmsContainerpageController {
         }
         return result;
     }
+
 }

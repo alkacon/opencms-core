@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2011/05/16 10:08:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -40,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -76,6 +78,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
+    /** The detail structure id, if available. */
+    private CmsUUID m_detailId;
+
     /** The date at which the container page was last modified. */
     private long m_lastModified;
 
@@ -87,6 +92,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
      * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
+     * @param detailId the detail resource id, if available
      * @param newTypes the map of available types and their new resource id's
      * @param lastModified the last modification date of the page 
      * @param locale the content locale
@@ -97,6 +103,7 @@ public final class CmsCntPageData implements IsSerializable {
         String requestParams,
         String sitemapUri,
         String sitePath,
+        CmsUUID detailId,
         Map<String, String> newTypes,
         long lastModified,
         String locale) {
@@ -109,6 +116,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_newTypes = newTypes;
         m_lastModified = lastModified;
         m_locale = locale;
+        m_detailId = detailId;
     }
 
     /**
@@ -147,6 +155,16 @@ public final class CmsCntPageData implements IsSerializable {
     public long getDateLastModified() {
 
         return m_lastModified;
+    }
+
+    /**
+     * Returns the detail structure id, if available.<p>
+     * 
+     * @return the detail structure id 
+     */
+    public CmsUUID getDetailId() {
+
+        return m_detailId;
     }
 
     /**
@@ -218,4 +236,5 @@ public final class CmsCntPageData implements IsSerializable {
 
         return m_sitePath;
     }
+
 }

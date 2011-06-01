@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/06/01 12:24:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,6 +66,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
+
+    /** The parameter name for the return code. */
+    public static final String PARAM_RETURNCODE = "returncode";
 
     /** Internal instance. */
     private static CmsCoreProvider INSTANCE;

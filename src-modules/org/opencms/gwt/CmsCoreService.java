@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/05/30 09:51:26 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/06/01 12:24:06 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -99,7 +100,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 8.0.0
  * 
@@ -324,6 +325,20 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getLinkForReturnCode(java.lang.String)
+     */
+    public CmsReturnLinkInfo getLinkForReturnCode(String returnCode) throws CmsRpcException {
+
+        try {
+            return internalGetLinkForReturnCode(returnCode);
+        } catch (Throwable e) {
+            error(e);
+            return null;
+
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getResourceState(org.opencms.util.CmsUUID)
      */
     public CmsResourceState getResourceState(CmsUUID structureId) throws CmsRpcException {
@@ -356,6 +371,58 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Implementation method for getting the link for a given return code.<p>
+     * 
+     * @param returnCode the return code 
+     * @return the link for the return code 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsReturnLinkInfo internalGetLinkForReturnCode(String returnCode) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+
+        if (CmsUUID.isValidUUID(returnCode)) {
+            try {
+                CmsResource pageRes = cms.readResource(new CmsUUID(returnCode));
+                return new CmsReturnLinkInfo(CmsStringUtil.joinPaths(
+                    OpenCms.getSystemInfo().getOpenCmsContext(),
+                    cms.getSitePath(pageRes)), CmsReturnLinkInfo.Status.ok);
+            } catch (CmsVfsResourceNotFoundException e) {
+                return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
+            }
+        } else {
+            int colonIndex = returnCode.indexOf(':');
+            if (colonIndex >= 0) {
+                String before = returnCode.substring(0, colonIndex);
+                String after = returnCode.substring(colonIndex + 1);
+
+                if (CmsUUID.isValidUUID(before) && CmsUUID.isValidUUID(after)) {
+                    try {
+                        CmsUUID pageId = new CmsUUID(before);
+                        CmsUUID detailId = new CmsUUID(after);
+                        CmsResource pageRes = cms.readResource(pageId);
+                        String pagePath = CmsResource.getFolderPath(cms.getSitePath(pageRes));
+                        CmsResource detailRes = cms.readResource(detailId);
+                        String detailName = cms.getDetailName(
+                            detailRes,
+                            cms.getRequestContext().getLocale(),
+                            OpenCms.getLocaleManager().getDefaultLocales());
+                        String uri = CmsStringUtil.joinPaths(pagePath, detailName);
+                        return new CmsReturnLinkInfo(CmsStringUtil.joinPaths(
+                            OpenCms.getSystemInfo().getOpenCmsContext(),
+                            uri), CmsReturnLinkInfo.Status.ok);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
+
+                    }
+                }
+            }
+            throw new IllegalArgumentException("return code has wrong format");
+        }
     }
 
     /**

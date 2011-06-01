@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 8.0.0
  */
@@ -289,6 +289,12 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RETURN_PAGE_NOT_FOUND_TITLE_0 = "GUI_RETURN_PAGE_NOT_FOUND_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RETURN_PAGE_NOT_FOUND_TEXT_0 = "GUI_RETURN_PAGE_NOT_FOUND_TEXT_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

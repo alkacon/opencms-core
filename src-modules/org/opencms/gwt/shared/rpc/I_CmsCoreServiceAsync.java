@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,11 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -104,6 +105,14 @@ public interface I_CmsCoreServiceAsync {
         CmsUUID structureId,
         AdeContext context,
         AsyncCallback<List<CmsContextMenuEntryBean>> callback);
+
+    /**
+     * Given a return code, returns the link to the page which corresponds to the return code.<p>
+     * 
+     * @param returnCode the return code
+     * @param callback the asynchronous callback  
+     */
+    void getLinkForReturnCode(String returnCode, AsyncCallback<CmsReturnLinkInfo> callback);
 
     /**
      * Gets the resource state of a resource.<p>

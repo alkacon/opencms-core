@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -142,7 +142,11 @@ public interface I_CmsButton {
 
         /** Toolbar button. */
         SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SITEMAP_0));
+            Messages.GUI_TOOLBAR_SITEMAP_0)),
+
+        /** Toolbar button. */
+        BACK(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarBack(), Messages.get().key(
+            Messages.GUI_TOOLBAR_BACK_0));
 
         /** The icon class name. */
         private String m_iconClass;

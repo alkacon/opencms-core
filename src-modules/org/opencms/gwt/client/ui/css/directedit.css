@@ -78,6 +78,8 @@ div.optionBar div, div.optionBar span {
 .toolbarRemove{}
 .toolbarNew{}
 .toolbarPublish{}
+.toolbarBack{}
+
 
 @sprite .toolbarSelection .optionBar.cmsHovering{
 	gwt-image: "backgrounds.softBackground";

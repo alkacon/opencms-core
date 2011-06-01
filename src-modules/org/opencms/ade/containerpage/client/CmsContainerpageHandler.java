@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/05/30 10:45:43 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2011/06/01 12:24:07 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,9 +62,9 @@ import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -92,7 +92,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 8.0.0
  */
@@ -328,7 +328,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (sitemapUri.equals("")) {
             return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
         }
-        String target = sitemapUri + "?path=" + CmsContainerpageController.getCurrentUri();
+        String target = sitemapUri
+            + "?"
+            + CmsCoreProvider.PARAM_RETURNCODE
+            + "="
+            + m_controller.getReturnCode()
+            + "&path="
+            + CmsContainerpageController.getCurrentUri();
         leavePage(target);
     }
 
