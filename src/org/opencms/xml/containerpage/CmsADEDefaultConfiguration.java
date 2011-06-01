@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/05/27 10:00:38 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/06/01 13:01:59 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 7.6 
  */
@@ -145,7 +145,11 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
                 cms.writeFile(file);
                 resource = cms.readResource(newFileName);
             }
-            cms.unlockResource(newFileName);
+            try {
+                cms.unlockResource(newFileName);
+            } catch (CmsException e) {
+                // may happen if lock is inherited, ignore
+            }
         }
 
         return resource;
