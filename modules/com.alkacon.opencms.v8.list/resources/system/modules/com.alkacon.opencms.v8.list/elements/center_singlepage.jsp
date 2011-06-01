@@ -20,6 +20,9 @@
 	String configPath = request.getParameter("listConfig");
 	CmsListConfiguration cms = new CmsListConfiguration(pageContext, request, response, configPath);
 	pageContext.setAttribute("list", cms);
+	String pageUri = request.getParameter("pageUri");
+	String oldUri = cms.getRequestContext().getUri();
+	cms.getRequestContext().setUri(pageUri);
 %>
 
 <fmt:setLocale value="${cms.locale}" />
@@ -39,7 +42,11 @@
 		
 	<%-- Entries of the list box --%>
 	<c:if test="${!listbox.value['Collector'].isEmptyOrWhitespaceOnly}">
-		<cms:contentload collector="${listbox.value['Collector']}" param="${list.parameter}" editable="true" pageSize="%(param.itemsPerPage)" pageIndex="%(param.pageIndex)" pageNavLength="5" >
+		<c:set var="listeditable" value="true" />
+		<c:if test="${param.pageIndex != '1'}">
+			<c:set var="listeditable" value="false" />
+		</c:if>
+		<cms:contentload collector="${listbox.value['Collector']}" param="${list.parameter}" editable="${listeditable}" pageSize="%(param.itemsPerPage)" pageIndex="%(param.pageIndex)" pageNavLength="5" >
 						
 			<cms:contentaccess var="resource" />
 			<c:set var="entry" value="${list.mappedEntry[resource.rawContent]}" />
@@ -89,3 +96,6 @@
 
 		</cms:contentload>
 	</c:if>
+<%
+	cms.getRequestContext().setUri(oldUri);
+%>

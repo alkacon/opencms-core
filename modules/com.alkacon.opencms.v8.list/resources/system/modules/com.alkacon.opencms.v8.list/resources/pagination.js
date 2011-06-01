@@ -21,7 +21,7 @@ function loadListPage(page) {
 	currentPage = page;
 	if (lastPage != currentPage) {
 		if ($('#list_center_page_' + page).length == 0 ) {
-			$.post(listCenterPath, { __locale: itemLocale, pageIndex: currentPage, listConfig: listConfig, itemsPerPage: itemsPerPage, imgPos: imgPos, imgWidth: imgWidth}, function(data){ loadListPage2(data); });
+			$.post(listCenterPath, { pageUri: pageUri, __locale: itemLocale, pageIndex: currentPage, listConfig: listConfig, itemsPerPage: itemsPerPage, imgPos: imgPos, imgWidth: imgWidth}, function(data){ loadListPage2(data); });
 		} else {
 			switchPage();
 		}

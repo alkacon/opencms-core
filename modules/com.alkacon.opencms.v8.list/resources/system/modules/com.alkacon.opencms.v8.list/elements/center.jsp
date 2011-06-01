@@ -34,6 +34,7 @@
 		var itemLocale = "${cms.locale}";
 		var listCenterPath = "<cms:link>%(link.weak:/system/modules/com.alkacon.opencms.v8.list/elements/center_singlepage.jsp:6693efd7-854a-11e0-8012-c96c1b6c43a9)</cms:link>";
 		var listConfig = "${cms.element.sitePath}";
+		var pageUri = "${cms.requestContext.uri}";
 		var imgPos = "";
 		var imgWidth = ${(cms.container.width - 20) / 3};
 		var fmtPaginationPrev = "<fmt:message key="v8.list.pagination.previous" />";
@@ -45,7 +46,7 @@
 		<%-- Set the items per page --%>
 		<c:set var="itemsperpage" value="1000" />
 		<c:if test="${listbox.value['ItemsPerPage'].isSet}">
-			<c:set var="itemsperpage" value="${listbox.value['ItemsPerPage']}" />	
+			<c:set var="itemsperpage" value="${listbox.value['ItemsPerPage'].stringValue}" />	
 		</c:if>
 		<%-- Set the image position --%>
 		<c:set var="imgpos"><cms:elementsetting name="imgalign" default="${listbox.value['PositionImage']}" /></c:set>
@@ -95,18 +96,45 @@
 			</cms:contentload>
 						
 			<div id="list_center_pages">
-				<div id="list_center_page_1">
-					<%-- Show the links in the given path --%>
-					<cms:include file="%(link.weak:/system/modules/com.alkacon.opencms.v8.list/elements/center_singlepage.jsp:6693efd7-854a-11e0-8012-c96c1b6c43a9)">
-						<cms:param name="__locale" value="${cms.locale}" />
-						<cms:param name="imgPos" value="${imgpos}" />
-						<cms:param name="imgWidth" value="${imgwidth}" />
-						<cms:param name="itemsPerPage" value="${itemsperpage}" />
-						<cms:param name="collectorParam" value="${list.parameter}" />
-						<cms:param name="pageIndex" value="${param.pageIndex}" />
-						<cms:param name="listConfig" value="${cms.element.sitePath}" />
-					</cms:include>
-				</div>
+				
+				<c:choose>
+				<c:when test="${!cms.requestContext.currentProject.onlineProject && (innerInfo.resultSize > innerInfo.pageSize)}">
+					<c:set var="pages" value="${innerInfo.resultSize / itemsperpage}" />
+					<c:if test="${(innerInfo.resultSize % itemsperpage) > 0}">
+						<c:set var="pages" value="${pages + 1}" />
+					</c:if>
+					<c:forEach begin="1" end="${pages}" varStatus="status">
+					<div id="list_center_page_${status.count}"<c:if test="${status.count > 1}"> style="display: none;"</c:if>>
+						<%-- Show the links in the given path --%>
+						<cms:include file="%(link.weak:/system/modules/com.alkacon.opencms.v8.list/elements/center_singlepage.jsp:6693efd7-854a-11e0-8012-c96c1b6c43a9)">
+							<cms:param name="pageUri" value="${cms.requestContext.uri}" />
+							<cms:param name="__locale" value="${cms.locale}" />
+							<cms:param name="imgPos" value="${imgpos}" />
+							<cms:param name="imgWidth" value="${imgwidth}" />
+							<cms:param name="itemsPerPage" value="${itemsperpage}" />
+							<cms:param name="collectorParam" value="${list.parameter}" />
+							<cms:param name="pageIndex" value="${status.count}" />
+							<cms:param name="listConfig" value="${cms.element.sitePath}" />
+						</cms:include>
+					</div>
+					</c:forEach>
+				</c:when>
+				<c:otherwise>
+					<div id="list_center_page_1">
+						<%-- Show the links in the given path --%>
+						<cms:include file="%(link.weak:/system/modules/com.alkacon.opencms.v8.list/elements/center_singlepage.jsp:6693efd7-854a-11e0-8012-c96c1b6c43a9)">
+							<cms:param name="pageUri" value="${cms.requestContext.uri}" />
+							<cms:param name="__locale" value="${cms.locale}" />
+							<cms:param name="imgPos" value="${imgpos}" />
+							<cms:param name="imgWidth" value="${imgwidth}" />
+							<cms:param name="itemsPerPage" value="${itemsperpage}" />
+							<cms:param name="collectorParam" value="${list.parameter}" />
+							<cms:param name="pageIndex" value="${param.pageIndex}" />
+							<cms:param name="listConfig" value="${cms.element.sitePath}" />
+						</cms:include>
+					</div>
+				</c:otherwise>
+				</c:choose>
 			</div>
 			
 			<c:if test="${innerInfo.resultSize > innerInfo.pageSize}">
