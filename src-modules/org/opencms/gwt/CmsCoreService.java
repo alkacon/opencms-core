@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/06/01 12:24:06 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,11 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -100,7 +100,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 8.0.0
  * 
@@ -118,6 +118,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    private static final String DEFAULT_LOGIN_URL = "/system/login/index.html";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -488,11 +490,21 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer(), e);
         }
+        String loginUrl = DEFAULT_LOGIN_URL;
+        try {
+            loginUrl = cms.readPropertyObject(
+                cms.getRequestContext().getUri(),
+                CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                true).getValue(DEFAULT_LOGIN_URL);
+        } catch (CmsException e) {
+            log(e.getLocalizedMessage(), e);
+        }
 
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
             EDITOR_DELETE_URI,
+            loginUrl,
             OpenCms.getSystemInfo().getOpenCmsContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),

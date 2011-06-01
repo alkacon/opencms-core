@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/I_CmsContextMenuCommand.java,v $
  * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,42 +29,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.util.CmsUUID;
 
 /**
- * An abstract interface used to coordinate toolbar buttons with a toolbar.<p>
+ * Interface for context menu commands.<p>
  * 
- * @author Georg Westenberger
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
- * @since 8.0.0
+ * @since version 8.0.1
  */
-public interface I_CmsToolbarHandler extends I_CmsContextMenuHandler {
+public interface I_CmsContextMenuCommand {
 
     /**
-     * Activates the selection button.<p>
-     */
-    void activateSelection();
-
-    /**
-     * De-activates the current button.<p> 
-     */
-    void deactivateCurrentButton();
-
-    /**
-     * Returns the currently active button (may be null).<p>
+     * Executed on context menu item click.<p>
      * 
-     * @return the currently active button 
+     * @param structureId the structure id of the resource
+     * @param handler the context menu handler
      */
-    I_CmsToolbarButton getActiveButton();
+    void execute(CmsUUID structureId, I_CmsContextMenuHandler handler);
 
-    /** 
-     * Sets the active button.<p>
+    /**
+     * Returns the icon class for this command.<p>
      * 
-     * @param button the new active button 
+     * @return the icon class for this command
      */
-    void setActiveButton(I_CmsToolbarButton button);
+    String getCommandIconClass();
 }

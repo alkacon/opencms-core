@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/A_CmsSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,25 +31,20 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
-import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 
 import java.util.List;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * Common super class for all sitemap context menu entries.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_CmsHoverbarShowHandler {
-
-    /** The command for the entry. */
-    private Command m_command;
 
     /** The reason if the entry is de-activated. */
     private String m_disabledReason;
@@ -81,15 +76,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getCommand()
-     */
-    public Command getCommand() {
-
-        return m_command;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getImageClass()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImageClass()
      */
     public String getImageClass() {
 
@@ -97,7 +84,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getImagePath()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImagePath()
      */
     public String getImagePath() {
 
@@ -105,7 +92,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getJspPath()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getJspPath()
      */
     public String getJspPath() {
 
@@ -113,7 +100,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getName()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getName()
      */
     public String getName() {
 
@@ -121,7 +108,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getLabel()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getLabel()
      */
     public String getLabel() {
 
@@ -129,7 +116,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getReason()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getReason()
      */
     public String getReason() {
 
@@ -137,7 +124,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getSubMenu()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getSubMenu()
      */
     public List<I_CmsContextMenuEntry> getSubMenu() {
 
@@ -145,7 +132,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#hasSubMenu()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#hasSubMenu()
      */
     public boolean hasSubMenu() {
 
@@ -153,7 +140,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isActive()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isActive()
      */
     public boolean isActive() {
 
@@ -161,7 +148,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isSeparator()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isSeparator()
      */
     public boolean isSeparator() {
 
@@ -169,7 +156,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isVisible()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isVisible()
      */
     public boolean isVisible() {
 
@@ -191,16 +178,6 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     public void setActive(boolean active) {
 
         m_isActive = active;
-    }
-
-    /**
-     * Sets the command for the entry.<p>
-     * 
-     * @param command the command for the entry
-     */
-    public void setCommand(Command command) {
-
-        m_command = command;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsToolbarHandler.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -39,14 +41,12 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Abstract class which implements the common part of all toolbar handler functionality.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -66,67 +66,16 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
 
         List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
         for (CmsContextMenuEntryBean bean : menuBeans) {
-            final CmsContextMenuEntry entry = new CmsContextMenuEntry();
-
+            String name = bean.getName();
+            I_CmsContextMenuCommand command = null;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+                command = getContextMenuCommands().get(name);
+            }
+            CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
             entry.setBean(bean);
-
             if (bean.hasSubMenu()) {
                 entry.setSubMenu(transformEntries(bean.getSubMenu(), structureId));
             }
-
-            Command cmd = null;
-
-            String name = entry.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-
-                if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
-
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            if (canOpenAvailabilityDialog()) {
-                                new CmsAvailabilityDialog(CmsCoreProvider.get().getStructureId()).loadAndShow();
-                            }
-                        }
-                    };
-                } else if (name.equals(CmsShowWorkplace.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace());
-
-                    cmd = new Command() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            new CmsShowWorkplace(structureId).openWorkplace();
-                        }
-                    };
-                } else if (name.equals(CmsEditProperties.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().properties());
-                    cmd = new Command() {
-
-                        public void execute() {
-
-                            if (canEditProperties()) {
-
-                                CmsEditProperties editProperties = new CmsEditProperties();
-                                if (structureId != null) {
-                                    editProperties.editProperties(
-                                        CmsCoreProvider.get().getStructureId(),
-                                        useAdeTemplates());
-                                }
-                            }
-                        }
-                    };
-                }
-            }
-            entry.setCommand(cmd);
             menuEntries.add(entry);
         }
         return menuEntries;

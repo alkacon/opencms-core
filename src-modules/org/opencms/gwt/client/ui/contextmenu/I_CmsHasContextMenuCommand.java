@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/I_CmsHasContextMenuCommand.java,v $
  * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,42 +29,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
-
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+package org.opencms.gwt.client.ui.contextmenu;
 
 /**
- * An abstract interface used to coordinate toolbar buttons with a toolbar.<p>
+ * Interface for classes that provide context menu commands.<p>
  * 
- * @author Georg Westenberger
+ * Implementing classes need to implement the static method getContextMenuCommand() returning a
+ * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand}.<p>
  * 
- * @version $Revision: 1.8 $
+ * @author Tobias Herrmann
  * 
- * @since 8.0.0
+ * @version $Revision: 1.1 $
+ * 
+ * @since version 8.0.1
  */
-public interface I_CmsToolbarHandler extends I_CmsContextMenuHandler {
-
-    /**
-     * Activates the selection button.<p>
-     */
-    void activateSelection();
-
-    /**
-     * De-activates the current button.<p> 
-     */
-    void deactivateCurrentButton();
-
-    /**
-     * Returns the currently active button (may be null).<p>
-     * 
-     * @return the currently active button 
-     */
-    I_CmsToolbarButton getActiveButton();
-
-    /** 
-     * Sets the active button.<p>
-     * 
-     * @param button the new active button 
-     */
-    void setActiveButton(I_CmsToolbarButton button);
+public interface I_CmsHasContextMenuCommand {
+    //empty
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsShowWorkplace.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,9 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
@@ -41,30 +44,52 @@ import com.google.gwt.user.client.Window;
  * Provides a method to open the workplace.<p>
  * 
  * @author Ruediger Kurz
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsShowWorkplace {
-
-    /** The uri to open in the workplace. */
-    protected CmsUUID m_structureId;
+public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
     /**
-     * Public constructor.<p>
-     * 
-     * @param structureId the structure id of the resource for which the workplace should be opened 
+     * Hidden utility class constructor.<p>
      */
-    public CmsShowWorkplace(CmsUUID structureId) {
+    private CmsShowWorkplace() {
 
-        m_structureId = structureId;
+        // nothing to do
+    }
+
+    /**
+     * Returns the context menu command according to 
+     * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
+     * 
+     * @return the context menu command
+     */
+    public static I_CmsContextMenuCommand getContextMenuCommand() {
+
+        return new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler) {
+
+                if (handler.ensureLockOnResource(structureId)) {
+                    openWorkplace(structureId);
+                }
+            }
+
+            public String getCommandIconClass() {
+
+                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace();
+            }
+        };
     }
 
     /**
      * Opens the workplace.<p>
+     * 
+     * @param structureId the structure id of the resource for which the workplace should be opened 
      */
-    public void openWorkplace() {
+    protected static void openWorkplace(final CmsUUID structureId) {
 
         CmsRpcAction<String> callback = new CmsRpcAction<String>() {
 
@@ -74,7 +99,7 @@ public class CmsShowWorkplace {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().getWorkplaceLink(m_structureId, this);
+                CmsCoreProvider.getService().getWorkplaceLink(structureId, this);
             }
 
             /**
@@ -103,23 +128,23 @@ public class CmsShowWorkplace {
      * @param winLeft the left space of the window
      * @param winTop the top space of the window
      */
-    protected final native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
+    protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-      if ($wnd.opener && $wnd.opener != self) {
-         $wnd.opener.location.href = path;
-         $wnd.opener.focus();
-      } else {
-         var openerStr = 'width='
-               + winWidth
-               + ',height='
-               + winHeight
-               + ',left='
-               + winLeft
-               + ',top='
-               + winTop
-               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-         deWindow.focus();
-      }
+        if ($wnd.opener && $wnd.opener != self) {
+            $wnd.opener.location.href = path;
+            $wnd.opener.focus();
+        } else {
+            var openerStr = 'width='
+                    + winWidth
+                    + ',height='
+                    + winHeight
+                    + ',left='
+                    + winLeft
+                    + ',top='
+                    + winTop
+                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+            deWindow.focus();
+        }
     }-*/;
 }

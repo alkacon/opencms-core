@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsMergeMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,12 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu merge entry.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -63,39 +61,37 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().mergeSitemap());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MERGE_SUB_0));
         setActive(true);
-        setCommand(new Command() {
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
+
+        final String sitePath = getHoverbar().getSitePath();
+        final CmsSitemapController controller = getHoverbar().getController();
+        String confirmTitle = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TITLE_0);
+        String confirmMessage = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TEXT_0);
+        CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
+        confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
 
             /**
-             * @see com.google.gwt.user.client.Command#execute()
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
              */
-            public void execute() {
+            public void onClose() {
 
-                final String sitePath = getHoverbar().getSitePath();
-                final CmsSitemapController controller = getHoverbar().getController();
-                String confirmTitle = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TITLE_0);
-                String confirmMessage = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TEXT_0);
-                CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
-                confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
+                // do nothing
+            }
 
-                    /**
-                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                     */
-                    public void onClose() {
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
 
-                        // do nothing
-                    }
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                     */
-                    public void onOk() {
-
-                        controller.mergeSubSitemap(sitePath);
-                    }
-                });
-                confirmDialog.center();
+                controller.mergeSubSitemap(sitePath);
             }
         });
+        confirmDialog.center();
     }
 
     /**

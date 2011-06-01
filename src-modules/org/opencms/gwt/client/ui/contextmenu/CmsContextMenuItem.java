@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/CmsContextMenuItem.java,v $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,18 +29,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
- * An entry in a {@link org.opencms.gwt.client.ui.CmsContextMenu}. Menu items can either fire a
+ * An entry in a {@link org.opencms.gwt.client.ui.contextmenu.CmsContextMenu}. Menu items can either fire a
  * {@link com.google.gwt.user.client.Command} when they are clicked, or open a cascading sub-menu.<p>
  * 
  * This implementation of the abstract context menu item provides a possible image in front of the text
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
  * @since version 8.0.0
  */
@@ -60,13 +59,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     private HTML m_panel;
 
     /** The command for this menu item. */
-    private Command m_command;
-
-    /** The image class. */
-    private String m_imageClass;
-
-    /** The image path. */
-    private String m_imagePath;
+    private I_CmsContextMenuEntry m_entry;
 
     /**
      * Constructs a context menu item.<p>
@@ -77,14 +70,10 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
 
         // call the super constructor
         super(entry.getLabel());
-
-        // set the privates
-        m_command = entry.getCommand();
-        m_imageClass = entry.getImageClass();
-        m_imagePath = entry.getImagePath();
+        m_entry = entry;
 
         // get the HTML for the menu item
-        m_panel = new HTML(getMenuItemHtml(entry.hasSubMenu()));
+        m_panel = new HTML(getMenuItemHtml(m_entry.hasSubMenu()));
 
         // initialize the widget with the panel and set the style name for the menu item       
         initWidget(m_panel);
@@ -92,11 +81,11 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
 
         // now, if the widget is initialized, it's possible to set the item active or inactive,
         // because the mouse handlers for the item are added or removed
-        if (!entry.isActive()) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getReason())) {
-                setActive(entry.isActive(), entry.getReason());
+        if (!m_entry.isActive()) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getReason())) {
+                setActive(m_entry.isActive(), m_entry.getReason());
             } else {
-                setActive(entry.isActive(), "");
+                setActive(m_entry.isActive(), "");
             }
         }
     }
@@ -108,13 +97,13 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     public void onClick(ClickEvent event) {
 
         getParentMenu().hide();
-        if (m_command != null) {
-            m_command.execute();
+        if (m_entry != null) {
+            m_entry.execute();
         }
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsContextMenuItem#getMenuItemHtml(boolean)
+     * @see org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem#getMenuItemHtml(boolean)
      */
     @Override
     protected String getMenuItemHtml(boolean hasSubMenu) {
@@ -128,19 +117,19 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
                 + I_CmsImageBundle.INSTANCE.style().triangleRight());
             html.append("\"></div>");
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_imageClass)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getImageClass())) {
             // if an image class is set to the menu item show the image in front of the text
             html.append("<div class=\"");
-            html.append(m_imageClass);
+            html.append(m_entry.getImageClass());
             html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
             html.append("\"></div>");
-        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_imagePath)) {
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getImagePath())) {
             // if an image path is set to the menu item show the image in front of the text
             html.append("<div class=\"");
             html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().image());
             html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
             html.append("\" ");
-            html.append("style=\"background: transparent url('" + m_imagePath + "') no-repeat scroll 0 0\"");
+            html.append("style=\"background: transparent url('" + m_entry.getImagePath() + "') no-repeat scroll 0 0\"");
             html.append("\"");
             html.append("></div>");
         }

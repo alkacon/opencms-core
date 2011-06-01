@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/06/01 13:06:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -82,8 +82,8 @@ public class CmsCoreData implements IsSerializable {
     /** The current request locale. */
     private String m_locale;
 
-    /** The structure id of the resource. */
-    private CmsUUID m_structureId;
+    /** The login JSP URL. */
+    private String m_loginURL;
 
     /** The current navigation URI. */
     private String m_navigationUri;
@@ -91,14 +91,17 @@ public class CmsCoreData implements IsSerializable {
     /** The current site root. */
     private String m_siteRoot;
 
+    /** The structure id of the resource. */
+    private CmsUUID m_structureId;
+
+    /** A flag which indicates whether the toolbar should be shown initially. */
+    private boolean m_toolbarVisible;
+
     /** The current uri. */
     private String m_uri;
 
     /** The current workplace locale. */
     private String m_wpLocale;
-
-    /** A flag which indicates whether the toolbar should be shown initially. */
-    private boolean m_toolbarVisible;
 
     /**
      * Constructor.<p>
@@ -119,6 +122,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getContentEditorUrl(),
             clone.getContentEditorBacklinkUrl(),
             clone.getContentEditorDeleteLinkUrl(),
+            clone.getLoginURL(),
             clone.getContext(),
             clone.getSiteRoot(),
             clone.getLocale(),
@@ -137,6 +141,7 @@ public class CmsCoreData implements IsSerializable {
      * @param contentEditorUrl the XML content editor URL
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
      * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
+     * @param loginUrl the login JSP URL
      * @param context the OpenCms context
      * @param siteRoot the current site root
      * @param locale the current request locale
@@ -152,6 +157,7 @@ public class CmsCoreData implements IsSerializable {
         String contentEditorUrl,
         String contentEditorBacklinkUrl,
         String contentEditorDeleteLinkUrl,
+        String loginUrl,
         String context,
         String siteRoot,
         String locale,
@@ -166,6 +172,7 @@ public class CmsCoreData implements IsSerializable {
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
         m_contentEditorDeleteLinkUrl = contentEditorDeleteLinkUrl;
+        m_loginURL = loginUrl;
         m_context = context;
         m_siteRoot = siteRoot;
         m_locale = locale;
@@ -176,6 +183,16 @@ public class CmsCoreData implements IsSerializable {
         m_serverTime = serverTime;
         m_toolbarVisible = toolbarVisible;
         m_structureId = structureId;
+    }
+
+    /**
+     * Returns the login URL.<p>
+     *
+     * @return the login URL
+     */
+    public String getLoginURL() {
+
+        return m_loginURL;
     }
 
     /**

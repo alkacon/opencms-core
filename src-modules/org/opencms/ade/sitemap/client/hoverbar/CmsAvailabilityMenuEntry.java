@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAvailabilityMenuEntry.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,14 +37,12 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu availability entry.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -61,18 +59,16 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_AVAILABILITY_0));
         setActive(true);
-        setCommand(new Command() {
+    }
 
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
 
-                CmsSitemapController controller = getHoverbar().getController();
-                CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                new CmsAvailabilityDialog(entry.getId()).loadAndShow();
-            }
-        });
+        CmsSitemapController controller = getHoverbar().getController();
+        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        new CmsAvailabilityDialog(entry.getId()).loadAndShow();
     }
 
     /**

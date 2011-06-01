@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/05/30 10:45:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,9 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -71,11 +74,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
-public class CmsAvailabilityDialog extends CmsPopup {
+public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMenuCommand {
 
     /** The bean that stores the dialog data. */
     protected CmsAvailabilityInfoBean m_availabilityInfo;
@@ -150,6 +153,30 @@ public class CmsAvailabilityDialog extends CmsPopup {
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
+    }
+
+    /**
+     * Returns the context menu command according to 
+     * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
+     * 
+     * @return the context menu command
+     */
+    public static I_CmsContextMenuCommand getContextMenuCommand() {
+
+        return new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler) {
+
+                if (handler.ensureLockOnResource(structureId)) {
+                    new CmsAvailabilityDialog(CmsCoreProvider.get().getStructureId()).loadAndShow();
+                }
+            }
+
+            public String getCommandIconClass() {
+
+                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability();
+            }
+        };
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/06/01 12:24:07 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,8 +49,9 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -92,7 +93,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 8.0.0
  */
@@ -169,22 +170,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void addToRecent(String clientId) {
 
         m_controller.addToRecentList(clientId);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canEditProperties()
-     */
-    public boolean canEditProperties() {
-
-        return CmsContainerpageController.get().lockContainerpage();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#canOpenAvailabilityDialog()
-     */
-    public boolean canOpenAvailabilityDialog() {
-
-        return CmsContainerpageController.get().lockContainerpage();
     }
 
     /**
@@ -311,12 +296,28 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
+     */
+    public boolean ensureLockOnResource(CmsUUID structureId) {
+
+        return m_controller.lockContainerpage();
+    }
+
     /** 
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#getActiveButton()
      */
     public I_CmsToolbarButton getActiveButton() {
 
         return m_activeButton;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextMenuCommands()
+     */
+    public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
+
+        return m_editor.getContextMenuCommands();
     }
 
     /**
@@ -381,12 +382,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_controller.leaveUnsaved(target);
             return;
         }
-        StringBuffer warningMessage = new StringBuffer();
-        warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
-        warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
+        StringBuffer message = new StringBuffer();
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
 
         CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
-            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), warningMessage.toString());
+            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), message.toString());
         leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
         leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
@@ -529,6 +530,38 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath(), false);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
+     */
+    public void refreshResource(CmsUUID structureId) {
+
+        if (!m_controller.hasPageChanged()) {
+            m_controller.resetPage();
+            return;
+        }
+        StringBuffer message = new StringBuffer();
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_RELOAD_TEXT_0) + "</p>");
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
+        CmsConfirmDialog dialog = new CmsConfirmDialog(
+            Messages.get().key(Messages.GUI_DIALOG_RELOAD_TITLE_0),
+            message.toString());
+        dialog.setOkText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            public void onClose() {
+
+                // do nothing
+            }
+
+            public void onOk() {
+
+                m_controller.saveContainerpage();
+            }
+        });
+        dialog.center();
+
     }
 
     /**
@@ -718,11 +751,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#useAdeTemplates()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#unlockResource(org.opencms.util.CmsUUID)
      */
-    public boolean useAdeTemplates() {
+    public void unlockResource(CmsUUID structureId) {
 
-        return true;
+        // only unlock the container page, if nothing has changed yet
+        if (!m_controller.hasPageChanged()) {
+            m_controller.unlockContainerpage();
+        }
     }
 
     /**
@@ -812,5 +848,4 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
         return true;
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,12 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu edit entry.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -73,52 +71,49 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().properties());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
         setActive(true);
-        setCommand(new Command() {
+    }
 
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
+
+        final CmsSitemapController controller = getHoverbar().getController();
+        final CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+
+        final CmsUUID infoId;
+
+        if ((entry.getDefaultFileId() != null) && CmsSitemapView.getInstance().isNavigationMode()) {
+            infoId = entry.getDefaultFileId();
+        } else {
+            infoId = entry.getId();
+        }
+        CmsRpcAction<CmsListInfoBean> action = new CmsRpcAction<CmsListInfoBean>() {
+
+            @Override
             public void execute() {
 
-                final CmsSitemapController controller = getHoverbar().getController();
-                final CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+                start(300, false);
+                CmsCoreProvider.getVfsService().getPageInfo(infoId, this);
+            }
 
-                final CmsUUID infoId;
+            @Override
+            protected void onResponse(CmsListInfoBean result) {
 
-                if ((entry.getDefaultFileId() != null) && CmsSitemapView.getInstance().isNavigationMode()) {
-                    infoId = entry.getDefaultFileId();
-                } else {
-                    infoId = entry.getId();
-                }
-                CmsRpcAction<CmsListInfoBean> action = new CmsRpcAction<CmsListInfoBean>() {
-
-                    @Override
-                    public void execute() {
-
-                        start(300, false);
-                        CmsCoreProvider.getVfsService().getPageInfo(infoId, this);
-                    }
-
-                    @Override
-                    protected void onResponse(CmsListInfoBean result) {
-
-                        stop(false);
-                        CmsEditEntryHandler handler = new CmsEditEntryHandler(
-                            controller,
-                            entry,
-                            CmsSitemapView.getInstance().isNavigationMode());
-                        handler.setPageInfo(result);
-                        A_CmsPropertyEditor editor = createEntryEditor(handler);
-                        editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
-                        editor.start();
-
-                    }
-
-                };
-                action.execute();
+                stop(false);
+                CmsEditEntryHandler handler = new CmsEditEntryHandler(
+                    controller,
+                    entry,
+                    CmsSitemapView.getInstance().isNavigationMode());
+                handler.setPageInfo(result);
+                A_CmsPropertyEditor editor = createEntryEditor(handler);
+                editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                editor.start();
 
             }
-        });
+
+        };
+        action.execute();
     }
 
     /**

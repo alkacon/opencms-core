@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsNewMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,14 +38,12 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu new entry.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -62,27 +60,25 @@ public class CmsNewMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().newElement());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
         setActive(true);
-        setCommand(new Command() {
+    }
 
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
 
-                CmsSitemapController controller = getHoverbar().getController();
-                CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                CmsClientSitemapEntry root = controller.getData().getRoot();
-                String rootRelativePath = entry.getSitePath().substring(root.getSitePath().length());
-                int numSlashes = rootRelativePath.replaceAll("[^/]", "").length();
-                if (numSlashes < controller.getData().getMaxDepth() - 1) {
-                    controller.createSubEntry(entry);
-                } else {
-                    String title = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_TITLE_0);
-                    String message = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_MESSAGE_0);
-                    (new CmsAlertDialog(title, message)).center();
-                }
-            }
-        });
+        CmsSitemapController controller = getHoverbar().getController();
+        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        CmsClientSitemapEntry root = controller.getData().getRoot();
+        String rootRelativePath = entry.getSitePath().substring(root.getSitePath().length());
+        int numSlashes = rootRelativePath.replaceAll("[^/]", "").length();
+        if (numSlashes < controller.getData().getMaxDepth() - 1) {
+            controller.createSubEntry(entry);
+        } else {
+            String title = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_TITLE_0);
+            String message = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_MESSAGE_0);
+            (new CmsAlertDialog(title, message)).center();
+        }
     }
 
     /**

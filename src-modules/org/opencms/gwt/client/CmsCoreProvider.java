@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2011/06/01 12:24:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,16 +53,13 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsGwtActionElement
  */
 public final class CmsCoreProvider extends CmsCoreData {
-
-    /** Path to the editor. */
-    public static final String VFS_PATH_EDITOR = "/system/workplace/editors/editor.jsp";
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";

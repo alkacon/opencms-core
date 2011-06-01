@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/I_CmsContextMenuCommandInitializer.java,v $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,41 +29,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import java.util.Map;
 
 /**
- * Implements the close handler for the menu.<p>
+ * Interface for context menu command initializer.<p>
  * 
- * @author Ruediger Kurz
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
- * @since version 8.0.0
+ * @since version 8.0.1
  */
-public class CmsContextMenuHandler implements CloseHandler<PopupPanel> {
-
-    /** The menu. */
-    private CmsContextMenu m_menu;
+public interface I_CmsContextMenuCommandInitializer {
 
     /**
-     * Constructor.<p>
+     * The method which, when called, should initialize all classes implementing the {@link I_CmsHasContextMenuCommand} interface.
+     * Returning a map of commands by class name<p>
      * 
-     * @param menu the menu
+     * @return the initialized command map
      */
-    public CmsContextMenuHandler(CmsContextMenu menu) {
-
-        m_menu = menu;
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-     */
-    public void onClose(CloseEvent<PopupPanel> event) {
-
-        m_menu.onClose();
-    }
+    Map<String, I_CmsContextMenuCommand> initCommands();
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsToolbarHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/CmsContextMenuHandler.java,v $
  * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,42 +29,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
- * An abstract interface used to coordinate toolbar buttons with a toolbar.<p>
+ * Implements the close handler for the menu.<p>
  * 
- * @author Georg Westenberger
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
- * @since 8.0.0
+ * @since version 8.0.0
  */
-public interface I_CmsToolbarHandler extends I_CmsContextMenuHandler {
+public class CmsContextMenuHandler implements CloseHandler<PopupPanel> {
+
+    /** The menu. */
+    private CmsContextMenu m_menu;
 
     /**
-     * Activates the selection button.<p>
-     */
-    void activateSelection();
-
-    /**
-     * De-activates the current button.<p> 
-     */
-    void deactivateCurrentButton();
-
-    /**
-     * Returns the currently active button (may be null).<p>
+     * Constructor.<p>
      * 
-     * @return the currently active button 
+     * @param menu the menu
      */
-    I_CmsToolbarButton getActiveButton();
+    public CmsContextMenuHandler(CmsContextMenu menu) {
 
-    /** 
-     * Sets the active button.<p>
-     * 
-     * @param button the new active button 
+        m_menu = menu;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
      */
-    void setActiveButton(I_CmsToolbarButton button);
+    public void onClose(CloseEvent<PopupPanel> event) {
+
+        m_menu.onClose();
+    }
 }

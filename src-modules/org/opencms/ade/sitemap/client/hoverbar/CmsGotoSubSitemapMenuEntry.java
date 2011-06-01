@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsGotoSubSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,14 +37,12 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu goto sub sitemap entry.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -61,22 +59,20 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoSub());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0));
         setActive(true);
-        setCommand(new Command() {
+    }
 
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
 
-                String sitePath = getHoverbar().getSitePath();
-                if (!sitePath.endsWith("/")) {
-                    sitePath += "/";
-                }
-                CmsSitemapController controller = getHoverbar().getController();
-                String sitemapLocation = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
-                controller.leaveEditor(sitemapLocation);
-            }
-        });
+        String sitePath = getHoverbar().getSitePath();
+        if (!sitePath.endsWith("/")) {
+            sitePath += "/";
+        }
+        CmsSitemapController controller = getHoverbar().getController();
+        String sitemapLocation = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
+        controller.leaveEditor(sitemapLocation);
     }
 
     /**

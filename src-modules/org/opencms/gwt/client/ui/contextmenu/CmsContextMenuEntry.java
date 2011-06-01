@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/CmsContextMenuEntry.java,v $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,21 +29,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * Implementation for a context menu entry.<p>
  * 
  * @author Ruediger Kurz
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since version 8.0.0
  */
@@ -52,14 +52,47 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /** The server bean for this menu entry. */
     private CmsContextMenuEntryBean m_bean;
 
-    /** The command for this entry. */
-    private Command m_command;
+    /** The context menu handler. */
+    private I_CmsContextMenuHandler m_handler;
 
     /** The CSS image class for the icon in front of the label of this entry. */
     private String m_imageClass;
 
+    /** The command for this entry. */
+    private I_CmsContextMenuCommand m_menuCommand;
+
+    /** The structure id of the resource to execute the command on. */
+    private CmsUUID m_structureId;
+
     /** The sub menu entries as list. */
     private List<I_CmsContextMenuEntry> m_subMenu;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param handler the context menu handler
+     * @param structureId the structure id
+     * @param menuCommand the menu command
+     */
+    public CmsContextMenuEntry(I_CmsContextMenuHandler handler, CmsUUID structureId, I_CmsContextMenuCommand menuCommand) {
+
+        m_menuCommand = menuCommand;
+        if (m_menuCommand != null) {
+            setImageClass(m_menuCommand.getCommandIconClass());
+        }
+        m_handler = handler;
+        m_structureId = structureId;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
+
+        if (m_menuCommand != null) {
+            m_menuCommand.execute(m_structureId, m_handler);
+        }
+    }
 
     /**
      * Returns the bean.<p>
@@ -69,14 +102,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public CmsContextMenuEntryBean getBean() {
 
         return m_bean;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getCommand()
-     */
-    public Command getCommand() {
-
-        return m_command;
     }
 
     /**
@@ -90,7 +115,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getImagePath()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImagePath()
      */
     public String getImagePath() {
 
@@ -98,7 +123,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getJspPath()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getJspPath()
      */
     public String getJspPath() {
 
@@ -106,7 +131,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getLabel()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getLabel()
      */
     public String getLabel() {
 
@@ -114,7 +139,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getName()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getName()
      */
     public String getName() {
 
@@ -122,7 +147,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getReason()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getReason()
      */
     public String getReason() {
 
@@ -130,7 +155,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getSubMenu()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getSubMenu()
      */
     public List<I_CmsContextMenuEntry> getSubMenu() {
 
@@ -138,7 +163,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#hasSubMenu()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#hasSubMenu()
      */
     public boolean hasSubMenu() {
 
@@ -149,7 +174,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isActive()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isActive()
      */
     public boolean isActive() {
 
@@ -157,7 +182,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isSeparator()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isSeparator()
      */
     public boolean isSeparator() {
 
@@ -165,7 +190,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isVisible()
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#isVisible()
      */
     public boolean isVisible() {
 
@@ -183,16 +208,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * Sets the command.<p>
-     * 
-     * @param cmd the command to set
-     */
-    public void setCommand(Command cmd) {
-
-        m_command = cmd;
-    }
-
-    /**
      * Sets the imageClass.<p>
      *
      * @param imageClass the imageClass to set
@@ -200,6 +215,16 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public void setImageClass(String imageClass) {
 
         m_imageClass = imageClass;
+    }
+
+    /**
+     * Sets the command.<p>
+     * 
+     * @param command the command to set
+     */
+    public void setMenuCommand(I_CmsContextMenuCommand command) {
+
+        m_menuCommand = command;
     }
 
     /**

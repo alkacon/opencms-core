@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsEditProperties.java,v $
- * Date   : $Date: 2011/05/26 13:08:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,27 +35,62 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
 /**
- * The class for the "edit properties" context menu entries in the container page editor.<p>
+ * The class for the "edit properties" context menu entries.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsEditProperties {
+public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
+
+    /**
+     * Hidden utility class constructor.<p>
+     */
+    private CmsEditProperties() {
+
+        // nothing to do
+    }
+
+    /**
+     * Returns the context menu command according to 
+     * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
+     * 
+     * @return the context menu command
+     */
+    public static I_CmsContextMenuCommand getContextMenuCommand() {
+
+        return new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler) {
+
+                if (handler.ensureLockOnResource(structureId)) {
+                    editProperties(structureId, handler);
+                }
+            }
+
+            public String getCommandIconClass() {
+
+                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().properties();
+            }
+        };
+    }
 
     /**
      * Starts the property editor for the resource with the given structure id.<p>
      * 
-     * @param id the structure id of a resource
-     * @param useAdeTemplates if true, only ADE templates will be selectable  
+     * @param structureId the structure id of a resource
+     * @param contextMenuHandler the context menu handler
      */
-    public void editProperties(final CmsUUID id, final boolean useAdeTemplates) {
+    protected static void editProperties(final CmsUUID structureId, final I_CmsContextMenuHandler contextMenuHandler) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -63,15 +98,14 @@ public class CmsEditProperties {
             public void execute() {
 
                 start(300, false);
-                CmsCoreProvider.getVfsService().loadPropertyData(id, this);
+                CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
             }
 
             @Override
             protected void onResponse(CmsPropertiesBean result) {
 
                 stop(false);
-                CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler();
-                handler.setUseAdeTemplates(useAdeTemplates);
+                CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
                 editor.setShowResourceProperties(!handler.isFolder());

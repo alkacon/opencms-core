@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsSimplePropertyEditorHandler.java,v $
- * Date   : $Date: 2011/05/26 13:08:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.property;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
@@ -54,7 +55,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -63,15 +64,17 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     /** The data necessary for editing the properties. */
     protected CmsPropertiesBean m_propertiesBean;
 
-    /** The flag which controls whether only ADE templates should be selectable. */
-    private boolean m_useAdeTemplates = true;
+    /** The context menu handler. */
+    private I_CmsContextMenuHandler m_handler;
 
     /** 
      * Creates a new instance.<p>
+     * 
+     * @param handler  the context menu handler 
      */
-    public CmsSimplePropertyEditorHandler() {
+    public CmsSimplePropertyEditorHandler(I_CmsContextMenuHandler handler) {
 
-        // do nothing;
+        m_handler = handler;
     }
 
     /**
@@ -210,6 +213,10 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
             protected void onResponse(Void result) {
 
                 stop(false);
+                if (getContextMenuHandler() != null) {
+                    getContextMenuHandler().unlockResource(m_propertiesBean.getStructureId());
+                    getContextMenuHandler().refreshResource(m_propertiesBean.getStructureId());
+                }
             }
         };
         saveAction.execute();
@@ -229,8 +236,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public boolean isFolder() {
 
-        //TODO: get this information from the server 
-        return false;
+        return (m_propertiesBean != null) && m_propertiesBean.isFolder();
     }
 
     /**
@@ -246,7 +252,6 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public boolean isSimpleMode() {
 
-        // TODO: Auto-generated method stub
         return false;
     }
 
@@ -261,22 +266,21 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     }
 
     /**
-     * Sets the flag which controls whether only ADE templates should be selectable.<p>
-     * 
-     * @param adeTemplates if true, only ADE templates will be selectable 
-     */
-    public void setUseAdeTemplates(boolean adeTemplates) {
-
-        m_useAdeTemplates = adeTemplates;
-
-    }
-
-    /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#useAdeTemplates()
      */
     public boolean useAdeTemplates() {
 
-        return m_useAdeTemplates;
+        return (m_propertiesBean != null) && (m_propertiesBean.isContainerPage() || m_propertiesBean.isFolder());
+    }
+
+    /**
+     * Returns the context menu handler.<p>
+     * 
+     * @return the context menu handler
+     */
+    protected I_CmsContextMenuHandler getContextMenuHandler() {
+
+        return m_handler;
     }
 
 }

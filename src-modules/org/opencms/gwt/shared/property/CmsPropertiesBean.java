@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/property/Attic/CmsPropertiesBean.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/06/01 13:06:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,32 +45,38 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsPropertiesBean implements IsSerializable {
 
-    /** A map of configured properties. */
-    private Map<String, CmsXmlContentProperty> m_propertyDefinitions;
-
     /** A list of all property names. */
     private List<String> m_allProperties;
+
+    /** The map of inherited properties of the resource. */
+    private Map<String, CmsClientProperty> m_inheritedProperties;
+
+    /** Indicates if the resource is a container page. */
+    private boolean m_isContainerPage;
+
+    /** Indicates if the resource is a folder. */
+    private boolean m_isFolder;
 
     /** A map of the resource's own properties. */
     private Map<String, CmsClientProperty> m_ownProperties;
 
-    /** The structure id of the resource. */
-    private CmsUUID m_structureId;
-
     /** Page information for displaying a list item representing the resource. */
     private CmsListInfoBean m_pageInfo;
+
+    /** A map of configured properties. */
+    private Map<String, CmsXmlContentProperty> m_propertyDefinitions;
 
     /** The site path of the resource. */
     private String m_sitePath;
 
-    /** The map of inherited properties of the resource. */
-    private Map<String, CmsClientProperty> m_inheritedProperties;
+    /** The structure id of the resource. */
+    private CmsUUID m_structureId;
 
     /** The map of available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
@@ -164,6 +170,26 @@ public class CmsPropertiesBean implements IsSerializable {
     }
 
     /**
+     * Returns the if the resource is a container page.<p>
+     *
+     * @return the if the resource is a container page
+     */
+    public boolean isContainerPage() {
+
+        return m_isContainerPage;
+    }
+
+    /**
+     * Returns the if the resource is a folder.<p>
+     *
+     * @return the if the resource is a folder
+     */
+    public boolean isFolder() {
+
+        return m_isFolder;
+    }
+
+    /**
      * Sets the list of property names.<p>
      * 
      * @param allProperties the list of property names 
@@ -171,6 +197,26 @@ public class CmsPropertiesBean implements IsSerializable {
     public void setAllProperties(List<String> allProperties) {
 
         m_allProperties = allProperties;
+    }
+
+    /**
+     * Sets if the resource is a container page.<p>
+     *
+     * @param isContainerPage <code>true</code> if the resource is a container page
+     */
+    public void setContainerPage(boolean isContainerPage) {
+
+        m_isContainerPage = isContainerPage;
+    }
+
+    /**
+     * Sets if the resource is a folder.<p>
+     *
+     * @param isFolder <code>true</code> if the resource is a folder
+     */
+    public void setFolder(boolean isFolder) {
+
+        m_isFolder = isFolder;
     }
 
     /**

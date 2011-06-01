@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,9 +52,11 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -62,6 +64,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
@@ -75,17 +78,26 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
-    /** Add menu. */
-    private CmsToolbarGalleryMenu m_add;
+    /** The Z index manager. */
+    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
     /** Margin-top added to the document body element when the tool-bar is shown. */
     //    private int m_bodyMarginTop;
+
+    /** Style to toggle toolbar visibility. */
+    protected CmsStyleVariable m_toolbarVisibility;
+
+    /** Add menu. */
+    private CmsToolbarGalleryMenu m_add;
+
+    /** Add to favorites button. */
+    private CmsAddToFavoritesButton m_addToFavorites;
 
     /** Clip-board menu. */
     private CmsToolbarClipboardMenu m_clipboard;
@@ -93,11 +105,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The Button for the context menu. */
     private CmsToolbarContextButton m_context;
 
+    /** The available context menu commands. */
+    private Map<String, I_CmsContextMenuCommand> m_contextMenuCommands;
+
     /** Edit button. */
     private CmsToolbarEditButton m_edit;
-
-    /** Add to favorites button. */
-    private CmsAddToFavoritesButton m_addToFavorites;
 
     /** Move button. */
     private CmsToolbarMoveButton m_move;
@@ -125,12 +137,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
-
-    /** Style to toggle toolbar visibility. */
-    protected CmsStyleVariable m_toolbarVisibility;
-
-    /** The Z index manager. */
-    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
     /** 
      * Returns the Z index manager for the container page editor.<p> 
@@ -181,6 +187,20 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public CmsToolbarContextButton getContext() {
 
         return m_context;
+    }
+
+    /**
+     * Returns the available context menu commands as a map by class name.<p>
+     * 
+     * @return the available context menu commands as a map by class name
+     */
+    public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
+
+        if (m_contextMenuCommands == null) {
+            I_CmsContextMenuCommandInitializer initializer = GWT.create(I_CmsContextMenuCommandInitializer.class);
+            m_contextMenuCommands = initializer.initCommands();
+        }
+        return m_contextMenuCommands;
     }
 
     /**

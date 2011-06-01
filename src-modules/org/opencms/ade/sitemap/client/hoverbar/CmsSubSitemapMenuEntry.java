@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSubSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/05/30 10:45:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,14 +42,12 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
-import com.google.gwt.user.client.Command;
-
 /**
  * Sitemap context menu create sub sitemap entry.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -66,56 +64,54 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().subSitemap());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
         setActive(true);
-        setCommand(new Command() {
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
+
+        final String sitePath = getHoverbar().getSitePath();
+        final CmsSitemapController controller = getHoverbar().getController();
+        String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
+        String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
+        CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
+
+        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+
+        CmsListInfoBean infoBean = new CmsListInfoBean();
+        infoBean.setTitle(entry.getTitle());
+        infoBean.setSubTitle(entry.getSitePath());
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
+        String shownPath = entry.getVfsPath();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(shownPath)) {
+            shownPath = "-";
+        }
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
+        // showing the resource type icon of the default file in navigation mode
+        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+        ? entry.getDefaultFileType()
+        : entry.getResourceTypeName());
+        confirmDialog.addTopWidget(new CmsListItemWidget(infoBean));
+        confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
 
             /**
-             * @see com.google.gwt.user.client.Command#execute()
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
              */
-            public void execute() {
+            public void onClose() {
 
-                final String sitePath = getHoverbar().getSitePath();
-                final CmsSitemapController controller = getHoverbar().getController();
-                String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
-                String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
-                CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
+                // do nothing
+            }
 
-                CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
 
-                CmsListInfoBean infoBean = new CmsListInfoBean();
-                infoBean.setTitle(entry.getTitle());
-                infoBean.setSubTitle(entry.getSitePath());
-                infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
-                String shownPath = entry.getVfsPath();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(shownPath)) {
-                    shownPath = "-";
-                }
-                infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
-                // showing the resource type icon of the default file in navigation mode
-                infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-                ? entry.getDefaultFileType()
-                : entry.getResourceTypeName());
-                confirmDialog.addTopWidget(new CmsListItemWidget(infoBean));
-                confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                     */
-                    public void onClose() {
-
-                        // do nothing
-                    }
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                     */
-                    public void onOk() {
-
-                        controller.createSubSitemap(sitePath);
-                    }
-                });
-                confirmDialog.center();
+                controller.createSubSitemap(sitePath);
             }
         });
+        confirmDialog.center();
     }
 
     /**

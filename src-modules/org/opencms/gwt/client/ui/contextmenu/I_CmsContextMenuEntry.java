@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsContextMenuEntry.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contextmenu/Attic/I_CmsContextMenuEntry.java,v $
+ * Date   : $Date: 2011/06/01 13:06:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,29 +29,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import java.util.List;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * Interface for a context menu entry.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since version 8.0.0
  */
 public interface I_CmsContextMenuEntry {
 
     /**
-     * Returns the command for the entry.<p>
-     * 
-     * @return the command
+     * Executes the context menu action.<p>
      */
-    Command getCommand();
+    void execute();
 
     /**
      * Returns the image class for the icon in front of the label.<p>
