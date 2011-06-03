@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/05/05 08:16:50 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/06/03 12:39:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -1499,7 +1499,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_CREATE_FOLDER_1, rfsName));
+        return null;
     }
 
     /**
