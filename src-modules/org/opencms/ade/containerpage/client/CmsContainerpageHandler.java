@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2011/06/03 13:45:00 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 8.0.0
  */
@@ -227,7 +227,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     (new CmsAlertDialog(title, message)).center();
                     return;
                 }
-                final CmsForm form = new CmsForm(true);
+                final CmsForm form = new CmsForm(false);
                 CmsListInfoBean infoBean = new CmsListInfoBean();
                 infoBean.setTitle(elementBean.getTitle());
                 infoBean.setSubTitle(elementBean.getSitePath());
