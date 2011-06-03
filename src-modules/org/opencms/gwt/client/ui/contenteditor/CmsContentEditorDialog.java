@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/05/17 06:35:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/03 14:13:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -156,6 +157,19 @@ public final class CmsContentEditorDialog {
     }
 
     /**
+     * Closes the dialog.<p>
+     */
+    protected void close() {
+
+        if (m_dialog != null) {
+            m_dialog.hide();
+            m_dialog = null;
+            m_editorHandler.onClose(m_sitePath, m_isNew);
+            m_editorHandler = null;
+        }
+    }
+
+    /**
      * Opens the dialog for the given sitepath.<p>
      * 
      * @param sitePath the sitepath of the resource to edit
@@ -181,23 +195,20 @@ public final class CmsContentEditorDialog {
         m_dialog.setGlassEnabled(true);
         m_dialog.setUseAnimation(false);
         CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_sitePath));
+        m_dialog.addDialogClose(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                CmsContentEditorDialog.this.close();
+            }
+        });
 
         m_dialog.add(editorFrame);
         m_dialog.center();
         m_dialog.show();
-    }
-
-    /**
-     * Closes the dialog.<p>
-     */
-    private void close() {
-
-        if (m_dialog != null) {
-            m_dialog.hide();
-            m_dialog = null;
-            m_editorHandler.onClose(m_sitePath, m_isNew);
-            m_editorHandler = null;
-        }
     }
 
     /**
