@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2011/05/20 11:54:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/06/03 13:43:51 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -53,7 +53,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -80,7 +80,7 @@ public class CmsMenuListItem extends CmsListItem {
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
         if ((element.getSettings() != null) && !element.getSettings().isEmpty()) {
-            getListItemWidget().setBackground(Background.BLUE);
+            getListItemWidget().setBackground(Background.YELLOW);
         }
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
@@ -154,17 +154,6 @@ public class CmsMenuListItem extends CmsListItem {
     }
 
     /**
-     * Removes all styling done during drag and drop.<p>
-     */
-    private void clearDrag() {
-
-        // using own implementation as GWT won't do it properly on IE7-8
-        CmsDomUtil.clearOpacity(getElement());
-
-        getElement().getStyle().clearDisplay();
-    }
-
-    /**
      * Sets the icon style.<p>
      * 
      * @param imageClass the image class to set
@@ -177,5 +166,16 @@ public class CmsMenuListItem extends CmsListItem {
             button.setImageClass(imageClass);
             button.setTitle(title);
         }
+    }
+
+    /**
+     * Removes all styling done during drag and drop.<p>
+     */
+    private void clearDrag() {
+
+        // using own implementation as GWT won't do it properly on IE7-8
+        CmsDomUtil.clearOpacity(getElement());
+
+        getElement().getStyle().clearDisplay();
     }
 }
