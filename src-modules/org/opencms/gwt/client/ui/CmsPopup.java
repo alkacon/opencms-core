@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/06/03 14:17:25 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,8 +61,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -421,10 +421,13 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                  */
                 public void onClick(ClickEvent event) {
 
-                    if (cmd != null) {
-                        cmd.execute();
+                    try {
+                        if (cmd != null) {
+                            cmd.execute();
+                        }
+                    } finally {
+                        hide();
                     }
-                    hide();
                 }
             });
             DOM.appendChild(m_containerElement, m_close.getElement());
