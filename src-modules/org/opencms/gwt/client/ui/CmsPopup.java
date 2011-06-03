@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/06/03 14:17:25 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/06/03 16:31:04 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -421,12 +421,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                  */
                 public void onClick(ClickEvent event) {
 
+                    boolean cancelled = false;
                     try {
                         if (cmd != null) {
                             cmd.execute();
                         }
+                    } catch (CmsCancelCloseException e) {
+                        cancelled = true;
                     } finally {
-                        hide();
+                        if (!cancelled) {
+                            hide();
+                        }
                     }
                 }
             });

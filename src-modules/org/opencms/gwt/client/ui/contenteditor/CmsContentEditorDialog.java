@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/contenteditor/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2011/06/03 14:13:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/06/03 16:31:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,11 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsCancelCloseException;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
@@ -50,7 +53,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -202,7 +205,23 @@ public final class CmsContentEditorDialog {
              */
             public void execute() {
 
-                CmsContentEditorDialog.this.close();
+                CmsConfirmDialog confirmDlg = new CmsConfirmDialog(Messages.get().key(
+                    Messages.GUI_EDITOR_CLOSE_CAPTION_0), Messages.get().key(Messages.GUI_EDITOR_CLOSE_TEXT_0));
+                confirmDlg.setHandler(new I_CmsConfirmDialogHandler() {
+
+                    public void onClose() {
+
+                        // do nothing
+                    }
+
+                    public void onOk() {
+
+                        CmsContentEditorDialog.this.close();
+                    }
+                });
+                confirmDlg.center();
+                // Let the confirm dialog handle the closing
+                throw new CmsCancelCloseException();
             }
         });
 
