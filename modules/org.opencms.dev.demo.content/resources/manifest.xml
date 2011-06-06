@@ -14,7 +14,7 @@
 		<group>OpenCms 8 dev demo</group>
 		<class/>
 		<description><![CDATA[The Content for the Dev Demo Module in OpenCms 8]]></description>
-		<version>8.0.0</version>
+		<version>8.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

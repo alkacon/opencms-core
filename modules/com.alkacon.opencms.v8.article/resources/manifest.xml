@@ -14,7 +14,7 @@
 		<group>OpenCms 8 types</group>
 		<class/>
 		<description><![CDATA[Provides an article resource type that can be used in OpenCms 8 templates.]]></description>
-		<version>8.0.0</version>
+		<version>8.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
