@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditRedirectMenuEntry.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
+import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -44,7 +45,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -71,21 +72,21 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsContentEditorDialog.get().openEditDialog(
-            getEntry().getId(),
-            getHoverbar().getSitePath(),
-            false,
-            new I_CmsContentEditorHandler() {
+        CmsEditableData editableData = new CmsEditableData();
+        editableData.setElementLanguage("");
+        editableData.setStructureId(getEntry().getId());
+        editableData.setSitePath(getHoverbar().getSitePath());
+        CmsContentEditorDialog.get().openEditDialog(editableData, false, new I_CmsContentEditorHandler() {
 
-                /**
-                 * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
-                 */
-                public void onClose(String sitePath, boolean isNew) {
+            /**
+             * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
+             */
+            public void onClose(String sitePath, boolean isNew) {
 
-                    getHoverbar().getController().updateEntry(sitePath);
+                getHoverbar().getController().updateEntry(sitePath);
 
-                }
-            });
+            }
+        });
     }
 
     /**

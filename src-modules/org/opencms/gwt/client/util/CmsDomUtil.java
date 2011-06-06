@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/05/04 15:53:43 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,15 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -60,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 8.0.0
  */
@@ -708,6 +712,28 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Generates a form element with hidden input fields.<p>
+     * 
+     * @param action the form action
+     * @param method the form method
+     * @param target the form target
+     * @param values the input values
+     * 
+     * @return the generated form element
+     */
+    public static FormElement generateHiddenForm(String action, String method, String target, Map<String, String> values) {
+
+        FormElement formElement = Document.get().createFormElement();
+        formElement.setMethod(method);
+        formElement.setTarget(target);
+        formElement.setAction(action);
+        for (Entry<String, String> input : values.entrySet()) {
+            formElement.appendChild(createHiddenInput(input.getKey(), input.getValue()));
+        }
+        return formElement;
+    }
+
+    /**
      * Returns the given element or it's closest ancestor with the given class.<p>
      * 
      * Returns <code>null</code> if no appropriate element was found.<p>
@@ -1352,6 +1378,21 @@ public final class CmsDomUtil {
         } else {
             element.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().hideOverlay());
         }
+    }
+
+    /**
+     * Creates a hidden input field with the given name and value.<p>
+     * 
+     * @param name the field name
+     * @param value the field value
+     * @return the input element
+     */
+    private static InputElement createHiddenInput(String name, String value) {
+
+        InputElement input = Document.get().createHiddenInputElement();
+        input.setName(name);
+        input.setValue(value);
+        return input;
     }
 
     /**

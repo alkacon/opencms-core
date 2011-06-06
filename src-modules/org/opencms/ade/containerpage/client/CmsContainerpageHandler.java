@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/06/03 13:45:00 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,9 +63,9 @@ import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -93,7 +93,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 8.0.0
  */
@@ -528,7 +528,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupcontainerEditor((CmsGroupContainerElement)element);
         } else {
-            m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath(), false);
+            m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
         }
     }
 

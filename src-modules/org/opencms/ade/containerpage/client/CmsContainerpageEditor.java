@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,6 +60,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -78,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -357,14 +358,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_sitemap.addClickHandler(clickHandler);
         m_toolbar.addRight(m_sitemap);
 
-        if (controller.getData().getSitemapUri().equals("")) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
             m_sitemap.setEnabled(false);
         }
 
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);
         m_toolbar.addRight(m_reset);
-
         containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(root);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());

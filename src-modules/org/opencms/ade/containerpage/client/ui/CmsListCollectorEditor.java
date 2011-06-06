@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2011/05/03 10:48:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.gwt.client.util.CmsPositionBean;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.Command;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -80,9 +79,8 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             parent = containerElement;
         }
         Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth() - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()),
-            Unit.PX);
+        style.setRight(parent.getOffsetWidth()
+            - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()), Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25
@@ -96,7 +94,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
      */
     protected void deleteElement() {
 
-        CmsContainerpageController.get().deleteElement(m_editableData.getStructureId(), m_parentResourceId);
+        CmsContainerpageController.get().deleteElement(m_editableData.getStructureId().toString(), m_parentResourceId);
     }
 
     /**
@@ -138,18 +136,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
      */
     protected void openEditDialog(boolean isNew) {
 
-        if (isNew) {
-            CmsContainerpageController.get().getContentEditorHandler().openDialog(
-                m_parentResourceId,
-                m_editableData.getSitePath() + "&amp;newlink=" + URL.encodeQueryString(m_editableData.getNewLink()),
-                true);
-        } else {
-            CmsContainerpageController.get().getContentEditorHandler().openDialog(
-                m_editableData.getStructureId(),
-                m_editableData.getSitePath(),
-                false,
-                m_parentResourceId);
-        }
+        CmsContainerpageController.get().getContentEditorHandler().openDialog(m_editableData, isNew, m_parentResourceId);
     }
 
     /**

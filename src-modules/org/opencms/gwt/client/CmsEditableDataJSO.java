@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsEditableDataJSO.java,v $
- * Date   : $Date: 2011/05/31 08:41:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.util.CmsUUID;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -38,11 +40,11 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsEditableDataJSO extends JavaScriptObject {
+public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsEditableData {
 
     /**
      * Constructor.<p>
@@ -59,79 +61,66 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * 
      * @return the data object
      */
-    public static final native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
+    public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
         return eval('(' + jsonText + ')');
     }-*/;
 
     /**
-     * Returns the edit id.<p>
-     * 
-     * @return the edit id
+     * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
      */
-    public final native String getEditId() /*-{
+    public native String getEditId() /*-{
         return this.editId ? this.editId : "";
     }-*/;
 
-    /** 
-     * Returns the element language.<p>
-     * 
-     * @return the element language
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getElementLanguage()
      */
-    public final native String getElementLanguage() /*-{
+    public native String getElementLanguage() /*-{
         return this.elementlanguage ? this.elementlanguage : "";
     }-*/;
 
     /**
-     * Returns the element name.<p>
-     * 
-     * @return the element name
+     * @see org.opencms.gwt.client.I_CmsEditableData#getElementName()
      */
-    public final native String getElementName() /*-{
+    public native String getElementName() /*-{
         return this.elementname ? this.elementname : "";
     }-*/;
 
     /**
-     * Returns the new link url.<p>
-     * 
-     * @return the new link url
+     * @see org.opencms.gwt.client.I_CmsEditableData#getNewLink()
      */
-    public final native String getNewLink() /*-{
+    public native String getNewLink() /*-{
         return this.newlink ? this.newlink : "";
     }-*/;
 
     /**
-     * Returns the new link url.<p>
-     * 
-     * @return the new link url
+     * @see org.opencms.gwt.client.I_CmsEditableData#getNewTitle()
      */
-    public final native String getNewTitle() /*-{
+    public native String getNewTitle() /*-{
         return this.newtitle ? this.newtitle : "";
     }-*/;
 
     /**
-     * Returns the site path.<p>
-     * 
-     * @return the site path
+     * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
      */
-    public final native String getSitePath() /*-{
+    public native String getSitePath() /*-{
         return this.sitePath ? this.sitePath : "";
     }-*/;
 
     /**
-     * Returns the structure id.<p>
-     * 
-     * @return the structure id
+     * @see org.opencms.gwt.client.I_CmsEditableData#getStructureId()
      */
-    public final native String getStructureId() /*-{
-        return this.structureId ? this.structureId : "";
-    }-*/;
+    public CmsUUID getStructureId() {
+
+        return new CmsUUID(nativeGetStructureId());
+    }
 
     /**
      * Returns if the delete button should be present.<p>
      * 
      * @return <code>true</code> if the delete button should be present
      */
-    public final native boolean hasDelete() /*-{
+    public native boolean hasDelete() /*-{
         return this.hasDelete;
     }-*/;
 
@@ -140,7 +129,7 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * 
      * @return <code>true</code> if the edit button should be present
      */
-    public final native boolean hasEdit() /*-{
+    public native boolean hasEdit() /*-{
         return this.hasEdit;
     }-*/;
 
@@ -149,8 +138,25 @@ public class CmsEditableDataJSO extends JavaScriptObject {
      * 
      * @return <code>true</code> if the new button should be present
      */
-    public final native boolean hasNew() /*-{
+    public native boolean hasNew() /*-{
         return this.hasNew;
+    }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#setSitePath(java.lang.String)
+     */
+    public native void setSitePath(String sitePath) /*-{
+
+        this.sitePath = sitePath;
+    }-*/;
+
+    /**
+     * Returns the structure id as string.<p>
+     * 
+     * @return the structure id as string
+     */
+    private native String nativeGetStructureId() /*-{
+        return this.structureId ? this.structureId : "";
     }-*/;
 
 }

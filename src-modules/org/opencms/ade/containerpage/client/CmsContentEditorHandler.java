@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContentEditorHandler.java,v $
- * Date   : $Date: 2011/05/17 13:41:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsEditableData;
+import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.util.CmsUUID;
@@ -40,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -83,13 +86,19 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     /**
      * Opens the XML content editor.<p>
      * 
-     * @param elementId the element id
-     * @param sitePath the element site-path
-     * @param isNew <code>true</code> to create a new resource
+     * @param editableData the data of the element to edit
+     * @param isNew <code>true</code> if a new resource should be created
+     * @param dependingElementId the id of a depending element
      */
-    public void openDialog(String elementId, String sitePath, boolean isNew) {
+    public void openDialog(I_CmsEditableData editableData, boolean isNew, String dependingElementId) {
 
-        openDialog(elementId, sitePath, isNew, null);
+        if (editableData.getStructureId() != null) {
+            m_currentElementId = editableData.getStructureId().toString();
+        } else {
+            m_currentElementId = null;
+        }
+        m_dependingElementId = dependingElementId;
+        CmsContentEditorDialog.get().openEditDialog(editableData, isNew, this);
     }
 
     /**
@@ -97,15 +106,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * 
      * @param elementId the element id
      * @param sitePath the element site-path
-     * @param isNew <code>true</code> to create a new resource
-     * @param dependingElementId id of the element that needs to be refreshed when editing is finished
      */
-    public void openDialog(String elementId, String sitePath, boolean isNew, String dependingElementId) {
+    public void openDialog(String elementId, String sitePath) {
 
         m_currentElementId = elementId;
-        m_dependingElementId = dependingElementId;
-        CmsUUID structureId = new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId));
-        CmsContentEditorDialog.get().openEditDialog(structureId, sitePath, isNew, this);
+        CmsEditableData editableData = new CmsEditableData();
+        editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+        editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
+        editableData.setSitePath(sitePath);
+        CmsContentEditorDialog.get().openEditDialog(editableData, false, this);
     }
-
 }

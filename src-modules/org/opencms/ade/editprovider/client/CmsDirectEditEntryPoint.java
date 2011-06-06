@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditEntryPoint.java,v $
- * Date   : $Date: 2011/05/26 13:36:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,9 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -128,6 +128,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
+    @Override
     public void onModuleLoad() {
 
         RootPanel.get().addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection());

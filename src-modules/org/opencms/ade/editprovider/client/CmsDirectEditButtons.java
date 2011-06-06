@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/editprovider/client/Attic/CmsDirectEditButtons.java,v $
- * Date   : $Date: 2011/05/31 08:41:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/06 12:10:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,11 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
-import com.google.gwt.dom.client.Document;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -155,37 +156,26 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     protected void openEditDialog(boolean isNew) {
 
         // create a form to submit a post request to the editor JSP
-        FormElement formElement = Document.get().createFormElement();
-        formElement.setMethod("post");
-        formElement.setTarget("_top");
-        formElement.setAction(CmsCoreProvider.get().link(CmsCoreProvider.get().getContentEditorUrl()));
-        formElement.appendChild(createHiddenInput("resource", m_editableData.getSitePath()));
-        formElement.appendChild(createHiddenInput("elementlanguage", m_editableData.getElementLanguage()));
-        formElement.appendChild(createHiddenInput("elementname", m_editableData.getElementName()));
-        formElement.appendChild(createHiddenInput("backlink", CmsCoreProvider.get().getUri()));
-        formElement.appendChild(createHiddenInput("redirect", "true"));
-        formElement.appendChild(createHiddenInput("directedit", "true"));
-        if (isNew) {
-            formElement.appendChild(createHiddenInput("newlink", m_editableData.getNewLink()));
-            formElement.appendChild(createHiddenInput("editortitle", m_editableData.getNewTitle()));
+        Map<String, String> formVaules = new HashMap<String, String>();
+        if (m_editableData.getSitePath() != null) {
+            formVaules.put("resource", m_editableData.getSitePath());
         }
-
+        if (m_editableData.getElementLanguage() != null) {
+            formVaules.put("elementlanguage", m_editableData.getElementLanguage());
+        }
+        if (m_editableData.getElementName() != null) {
+            formVaules.put("elementname", m_editableData.getElementName());
+        }
+        formVaules.put("backlink", CmsCoreProvider.get().getUri());
+        formVaules.put("redirect", "true");
+        formVaules.put("directedit", "true");
+        if (isNew) {
+            formVaules.put("newlink", m_editableData.getNewLink());
+            formVaules.put("editortitle", m_editableData.getNewTitle());
+        }
+        FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
+            CmsCoreProvider.get().getContentEditorUrl()), "post", "_top", formVaules);
         getMarkerTag().appendChild(formElement);
         formElement.submit();
-    }
-
-    /**
-     * Creates a hidden input field with the given name and value.<p>
-     * 
-     * @param name the field name
-     * @param value the field value
-     * @return the input element
-     */
-    private InputElement createHiddenInput(String name, String value) {
-
-        InputElement input = Document.get().createHiddenInputElement();
-        input.setName(name);
-        input.setValue(value);
-        return input;
     }
 }
