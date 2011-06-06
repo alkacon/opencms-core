@@ -43,7 +43,7 @@
 	<%-- Entries of the list box --%>
 	<c:if test="${!listbox.value['Collector'].isEmptyOrWhitespaceOnly}">
 		<c:set var="listeditable" value="true" />
-		<c:if test="${param.pageIndex != '1'}">
+		<c:if test="${param.pageIndex > 1}">
 			<c:set var="listeditable" value="false" />
 		</c:if>
 		<cms:contentload collector="${listbox.value['Collector']}" param="${list.parameter}" editable="${listeditable}" pageSize="%(param.itemsPerPage)" pageIndex="%(param.pageIndex)" pageNavLength="5" >
