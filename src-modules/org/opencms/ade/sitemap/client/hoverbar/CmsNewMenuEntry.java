@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsNewMenuEntry.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -87,18 +87,15 @@ public class CmsNewMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        if (CmsSitemapView.getInstance().isNavigationMode()) {
-            String sitePath = getHoverbar().getSitePath();
-            CmsSitemapController controller = getHoverbar().getController();
-            CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-            boolean show = (controller.getData().getDefaultNewElementInfo() != null)
-                && (entry != null)
-                && entry.isInNavigation()
-                && entry.isFolderType()
-                && !entry.hasForeignFolderLock();
-            setVisible(show);
-        } else {
-            setVisible(false);
-        }
+        String sitePath = getHoverbar().getSitePath();
+        CmsSitemapController controller = getHoverbar().getController();
+        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        boolean show = (controller.getData().getDefaultNewElementInfo() != null)
+            && CmsSitemapView.getInstance().isNavigationMode()
+            && (entry != null)
+            && entry.isInNavigation()
+            && entry.isFolderType()
+            && !entry.hasForeignFolderLock();
+        setVisible(show);
     }
 }

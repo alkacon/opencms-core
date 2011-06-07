@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2011/05/05 08:17:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -90,6 +90,9 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                         CmsHoverbarMoveButton.this.setVisible(true);
                     } else if (entry.hasForeignFolderLock()) {
                         disable(Messages.get().key(Messages.GUI_DISABLED_PARENT_LOCK_0));
+                        CmsHoverbarMoveButton.this.setVisible(true);
+                    } else if (entry.hasBlockingLockedChildren()) {
+                        disable(Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0));
                         CmsHoverbarMoveButton.this.setVisible(true);
                     } else {
                         enable();

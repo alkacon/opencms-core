@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsRemoveMenuEntry.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +79,14 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation() && entry.isEditable();
+        boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation();
         setVisible(show);
+        if (show && (entry != null) && !entry.isEditable()) {
+            setActive(false);
+            setDisabledReason(controller.getNoEditReason(entry));
+        } else {
+            setActive(true);
+            setDisabledReason(null);
+        }
     }
 }

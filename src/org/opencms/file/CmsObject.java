@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/05/25 10:11:56 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0 
  */
@@ -297,6 +297,21 @@ public final class CmsObject {
      * 
      * This is the "steal lock" operation.<p>
      * 
+     * @param resource the resource to change the lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void changeLock(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).changeLock(this, m_securityManager, resource);
+    }
+
+    /**
+     * Changes the lock of a resource to the current user,
+     * that is "steals" the lock from another user.<p>
+     * 
+     * This is the "steal lock" operation.<p>
+     * 
      * @param resourcename the name of the resource to change the lock with complete path
      * 
      * @throws CmsException if something goes wrong
@@ -304,7 +319,7 @@ public final class CmsObject {
     public void changeLock(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource).changeLock(this, m_securityManager, resource);
+        changeLock(resource);
     }
 
     /**
@@ -435,6 +450,23 @@ public final class CmsObject {
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
+     * @param resource the resource to copy to the current project
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void copyResourceToProject(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).copyResourceToProject(this, m_securityManager, resource);
+    }
+
+    /**
+     * Copies a resource to the current project of the user.<p>
+     * 
+     * This is used to extend the current users project with the
+     * specified resource, in case that the resource is not yet part of the project.
+     * The resource is not really copied like in a regular copy operation, 
+     * it is in fact only "enabled" in the current users project.<p>   
+     * 
      * @param resourcename the name of the resource to copy to the current project (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
@@ -442,7 +474,7 @@ public final class CmsObject {
     public void copyResourceToProject(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource).copyResourceToProject(this, m_securityManager, resource);
+        copyResourceToProject(resource);
     }
 
     /**
@@ -1063,6 +1095,40 @@ public final class CmsObject {
     }
 
     /**
+     * Returns a list of child resources to the given resource that can not be locked by the current user.<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return a list of child resources to the given resource that can not be locked by the current user
+     * 
+     * @throws CmsException if something goes wrong reading the resources
+     */
+    public List<CmsResource> getBlockingLockedResources(CmsResource resource) throws CmsException {
+
+        if (resource.isFolder()) {
+            CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
+            blockingFilter = blockingFilter.filterNotLockableByUser(getRequestContext().getCurrentUser());
+            return getLockedResources(resource, blockingFilter);
+        }
+        return Collections.<CmsResource> emptyList();
+    }
+
+    /**
+     * Returns a list of child resources to the given resource that can not be locked by the current user.<p>
+     * 
+     * @param resourceName the resource site path
+     * 
+     * @return a list of child resources to the given resource that can not be locked by the current user
+     * 
+     * @throws CmsException if something goes wrong reading the resources
+     */
+    public List<CmsResource> getBlockingLockedResources(String resourceName) throws CmsException {
+
+        CmsResource resource = readResource(resourceName);
+        return getBlockingLockedResources(resource);
+    }
+
+    /**
      * Returns all child groups of a group.<p>
      * 
      * @param groupname the name of the group
@@ -1188,14 +1254,9 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(
-            m_context,
-            username,
-            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
-            includeOtherOus,
-            false,
-            directGroupsOnly,
-            remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
+        ? ""
+        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
     }
 
     /**
@@ -2969,6 +3030,24 @@ public final class CmsObject {
     public List<CmsResource> readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, filter);
+        return readSiblings(resource, filter);
+    }
+
+    /**
+     * Returns a list of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
+     * 
+     * @param resource the resource
+     * @param filter a resource filter
+     * 
+     * @return a list of <code>{@link CmsResource}</code>s that 
+     *          are siblings to the specified resource, 
+     *          including the specified resource itself.
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readSiblings(CmsResource resource, CmsResourceFilter filter) throws CmsException {
+
         return m_securityManager.readSiblings(m_context, resource, filter);
     }
 
@@ -3198,6 +3277,20 @@ public final class CmsObject {
     /**
      * Changes the "expire" date of a resource.<p>
      * 
+     * @param resource the resource to change
+     * @param dateExpired the new expire date of the changed resource
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateExpired(CmsResource resource, long dateExpired, boolean recursive) throws CmsException {
+
+        getResourceType(resource).setDateExpired(this, m_securityManager, resource, dateExpired, recursive);
+    }
+
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
      * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateExpired the new expire date of the changed resource
      * @param recursive if this operation is to be applied recursively to all resources in a folder
@@ -3207,7 +3300,7 @@ public final class CmsObject {
     public void setDateExpired(String resourcename, long dateExpired, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource).setDateExpired(this, m_securityManager, resource, dateExpired, recursive);
+        setDateExpired(resource, dateExpired, recursive);
     }
 
     /**
@@ -3228,6 +3321,20 @@ public final class CmsObject {
     /**
      * Changes the "release" date of a resource.<p>
      * 
+     * @param resource the resource to change
+     * @param dateReleased the new release date of the changed resource
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateReleased(CmsResource resource, long dateReleased, boolean recursive) throws CmsException {
+
+        getResourceType(resource).setDateReleased(this, m_securityManager, resource, dateReleased, recursive);
+    }
+
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
      * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateReleased the new release date of the changed resource
      * @param recursive if this operation is to be applied recursively to all resources in a folder
@@ -3237,7 +3344,7 @@ public final class CmsObject {
     public void setDateReleased(String resourcename, long dateReleased, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource).setDateReleased(this, m_securityManager, resource, dateReleased, recursive);
+        setDateReleased(resource, dateReleased, recursive);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidget.LockIcon;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -78,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 8.0.0
  * 
@@ -200,7 +201,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
         updateDetailPageStatus();
-        m_listItemWidget.setLockIcon(entry.getLock());
+        updateLock(entry);
         if (!entry.isFolderType()) {
             hideOpeners();
         }
@@ -588,7 +589,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_listItemWidget.setAdditionalInfoValue(1, shownPath);
         updateSitePath();
         updateDetailPageStatus();
-        m_listItemWidget.setLockIcon(entry.getLock());
+        updateLock(entry);
         updateInNavigation(entry);
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
     }
@@ -732,5 +733,54 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             return (CmsSitemapHoverbar)w;
         }
         return null;
+    }
+
+    /**
+     * Updates the lock icon according to the entry information.<p>
+     * 
+     * @param entry the entry
+     */
+    private void updateLock(CmsClientSitemapEntry entry) {
+
+        LockIcon icon = LockIcon.NONE;
+        String iconTitle = null;
+        if (entry.hasBlockingLockedChildren()) {
+            icon = LockIcon.CLOSED;
+            iconTitle = Messages.get().key(Messages.GUI_BLOCKING_LOCKED_CHILDREN_0);
+        }
+        if (!entry.getLock().isOwnedByUser()) {
+            switch (entry.getLock().getLockType()) {
+                case EXCLUSIVE:
+                case INHERITED:
+                case TEMPORARY:
+                    icon = LockIcon.CLOSED;
+                    break;
+                case SHARED_EXCLUSIVE:
+                case SHARED_INHERITED:
+                    icon = LockIcon.SHARED_CLOSED;
+                    break;
+                default:
+            }
+        } else {
+            switch (entry.getLock().getLockType()) {
+                case EXCLUSIVE:
+                case INHERITED:
+                case TEMPORARY:
+                    icon = LockIcon.OPEN;
+                    break;
+                case SHARED_EXCLUSIVE:
+                case SHARED_INHERITED:
+                    icon = LockIcon.SHARED_OPEN;
+                    break;
+                default:
+            }
+        }
+        if (entry.getLock().getLockOwner() != null) {
+            iconTitle = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_LOCK_OWNED_BY_1,
+                entry.getLock().getLockOwner());
+        }
+
+        m_listItemWidget.setLockIcon(icon, iconTitle);
     }
 }

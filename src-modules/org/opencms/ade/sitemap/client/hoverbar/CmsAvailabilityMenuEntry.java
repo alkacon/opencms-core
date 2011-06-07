@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAvailabilityMenuEntry.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +79,14 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-        boolean show = (entry != null) && entry.isEditable();
+        boolean show = (entry != null);
         setVisible(show);
+        if (show && (entry != null) && !entry.isEditable()) {
+            setActive(false);
+            setDisabledReason(controller.getNoEditReason(entry));
+        } else {
+            setActive(true);
+            setDisabledReason(null);
+        }
     }
 }

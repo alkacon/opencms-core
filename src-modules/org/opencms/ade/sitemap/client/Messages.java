@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/06/01 12:24:07 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BLOCKING_LOCKED_CHILDREN_0 = "GUI_BLOCKING_LOCKED_CHILDREN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
@@ -73,6 +76,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLE_CLEAR_LIST_0 = "GUI_DISABLE_CLEAR_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0 = "GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_LOCKED_BY_1 = "GUI_DISABLED_LOCKED_BY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLED_PARENT_LOCK_0 = "GUI_DISABLED_PARENT_LOCK_0";
@@ -222,6 +231,12 @@ public final class Messages {
     public static final String GUI_REDIRECTION_FIELD_LABEL_0 = "GUI_REDIRECTION_FIELD_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RETURN_PAGE_NOT_FOUND_TEXT_0 = "GUI_RETURN_PAGE_NOT_FOUND_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RETURN_PAGE_NOT_FOUND_TITLE_0 = "GUI_RETURN_PAGE_NOT_FOUND_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SAVING_0 = "GUI_SAVING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -289,12 +304,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RETURN_PAGE_NOT_FOUND_TITLE_0 = "GUI_RETURN_PAGE_NOT_FOUND_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RETURN_PAGE_NOT_FOUND_TEXT_0 = "GUI_RETURN_PAGE_NOT_FOUND_TEXT_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

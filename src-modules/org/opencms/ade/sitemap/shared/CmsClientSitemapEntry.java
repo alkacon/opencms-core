@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/06/06 12:10:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.0 
  */
@@ -84,6 +84,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
         /** An entry of type sub-sitemap is a reference to a sub-sitemap. */
         subSitemap
     }
+
+    /** Locked child resources. */
+    private boolean m_hasBlockingLockedChildren;
 
     /** The cached export name. */
     private String m_cachedExportName;
@@ -179,6 +182,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setEntryType(clone.getEntryType());
         setInNavigation(clone.isInNavigation());
         setResourceTypeName(clone.getResourceTypeName());
+        setBlockingLockedChildren(clone.hasBlockingLockedChildren());
     }
 
     /**
@@ -344,40 +348,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the redirect target.<p>
-     *   
-     * @return the redirect target 
-     */
-    public String getRedirect() {
-
-        //        CmsSimplePropertyValue redirect = m_properties.get(EXTERNAL_REDIRECT);
-        //        if (redirect == null) {
-        //            redirect = m_properties.get(INTERNAL_REDIRECT);
-        //        }
-        //        return redirect.getOwnValue();
-
-        return null;
-    }
-
-    /**
-     * Returns the redirect target as a bean.<p>
-     * 
-     * @return the redirect target as a bean
-     */
-    public CmsLinkBean getRedirectInfo() {
-
-        //        CmsSimplePropertyValue internal = m_properties.get(INTERNAL_REDIRECT);
-        //        CmsSimplePropertyValue external = m_properties.get(EXTERNAL_REDIRECT);
-        //        if (internal != null) {
-        //            return new CmsLinkBean(internal.getOwnValue(), true);
-        //        } else if (external != null) {
-        //            return new CmsLinkBean(external.getOwnValue(), false);
-        //        } else {
-        return null;
-        //        }
-    }
-
-    /**
      * Returns the resource type name.<p>
      * 
      * @return the resource type name 
@@ -386,16 +356,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         return m_resourceTypeName;
     }
-
-    //    /**
-    //     * Returns a map of this entry's own properties.<p>
-    //     * 
-    //     * @return a map of this entry's own properties
-    //     */
-    //    public Map<String, CmsSimplePropertyValue> getProperties() {
-    //
-    //        return m_properties;
-    //    }
 
     /**
      * Returns the sitemap path.<p>
@@ -416,6 +376,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         return m_subEntries;
     }
+
+    //    /**
+    //     * Returns a map of this entry's own properties.<p>
+    //     * 
+    //     * @return a map of this entry's own properties
+    //     */
+    //    public Map<String, CmsSimplePropertyValue> getProperties() {
+    //
+    //        return m_properties;
+    //    }
 
     /**
      * Returns the title.<p>
@@ -443,6 +413,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getVfsPath() {
 
         return m_vfsPath;
+    }
+
+    /**
+     * Returns if this entry has blocking locked children.<p>
+     * 
+     * @return <code>true</code> if this entry has blocking locked children
+     */
+    public boolean hasBlockingLockedChildren() {
+
+        return m_hasBlockingLockedChildren;
     }
 
     /**
@@ -523,6 +503,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean isEditable() {
 
         return !hasForeignFolderLock()
+            && !hasBlockingLockedChildren()
             && (((getLock() == null) || (getLock().getLockOwner() == null)) || getLock().isOwnedByUser());
     }
 
@@ -619,6 +600,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
         CmsClientSitemapEntry removed = m_subEntries.remove(position);
         updatePositions(position);
         return removed;
+    }
+
+    /**
+     * Sets if the entry resource has blocking locked children that can not be locked by the current user.<p>
+     * 
+     * @param hasBlockingLockedChildren <code>true</code> if the entry resource has blocking locked children
+     */
+    public void setBlockingLockedChildren(boolean hasBlockingLockedChildren) {
+
+        m_hasBlockingLockedChildren = hasBlockingLockedChildren;
     }
 
     /**
@@ -942,6 +933,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setEntryType(source.getEntryType());
         setInNavigation(source.isInNavigation());
         setHasForeignFolderLock(source.hasForeignFolderLock());
+        setBlockingLockedChildren(source.hasBlockingLockedChildren());
     }
 
     /**

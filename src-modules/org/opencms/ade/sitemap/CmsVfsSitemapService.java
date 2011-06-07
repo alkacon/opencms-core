@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/06/07 14:02:17 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0.0
  * 
@@ -173,9 +173,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     CmsStringUtil.joinPaths(folderName, "sitemap_" + subSitemapFolder.getName() + "_%(number).config"),
                     2);
             }
-            tryUnlock(cms.createResource(
-                sitemapConfigName,
-                OpenCms.getResourceManager().getResourceType("sitemap_config").getTypeId()));
+            tryUnlock(cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
+                "sitemap_config").getTypeId()));
 
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(
@@ -189,9 +188,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             CmsSitemapClipboardData clipboard = getClipboardData();
 
-            CmsClientSitemapEntry entry = toClientEntry(
-                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
-                false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
+                cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSubSitemapInfo(path, System.currentTimeMillis());
@@ -276,9 +274,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(
-                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
-                false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
+                cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
             return new CmsSitemapMergeInfo(getChildren(entryPoint, subSitemapPath, 1), System.currentTimeMillis());
@@ -665,11 +662,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(
-                    entryFolderPath,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId(),
-                    null,
-                    generateInheritProperties(change, entryFolder));
+                entryFolder = cms.createResource(entryFolderPath, OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolder.getStaticTypeName()).getTypeId(), null, generateInheritProperties(
+                    change,
+                    entryFolder));
                 if (idWasNull) {
                     change.setEntryId(entryFolder.getStructureId());
                 }
@@ -1423,7 +1419,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         } else {
             defaultFileProps = new HashMap<String, CmsClientProperty>();
         }
-
         boolean isDefault = isDefaultFile(ownResource);
         clientEntry.setId(ownResource.getStructureId());
         clientEntry.setFolderDefaultPage(isDefault);
@@ -1437,6 +1432,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (!isRoot && isSubSitemap(navElement)) {
                 clientEntry.setEntryType(EntryType.subSitemap);
             }
+            CmsLock folderLock = cms.getLock(entryFolder);
+            clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()
+                && !folderLock.isOwnedBy(cms.getRequestContext().getCurrentUser()));
+            List<CmsResource> blockingChildren = cms.getBlockingLockedResources(entryFolder);
+            clientEntry.setBlockingLockedChildren((blockingChildren != null) && !blockingChildren.isEmpty());
         } else {
             entryPage = navElement.getResource();
             clientEntry.setName(entryPage.getName());
@@ -1446,19 +1446,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 clientEntry.setEntryType(EntryType.leaf);
             }
         }
-
         String path = cms.getSitePath(entryPage);
-        if (entryFolder != null) {
-            CmsLock folderLock = cms.getLock(entryFolder);
-            clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()
-                && !folderLock.isOwnedBy(cms.getRequestContext().getCurrentUser()));
-        }
-
         clientEntry.setVfsPath(path);
-
         clientEntry.setOwnProperties(ownProps);
         clientEntry.setDefaultFileProperties(defaultFileProps);
-
         clientEntry.setSitePath(entryFolder != null ? cms.getSitePath(entryFolder) : path);
         //CHECK: assuming that, if entryPage refers to the default file, the lock state of the folder 
         clientEntry.setLock(generateClientLock(entryPage));

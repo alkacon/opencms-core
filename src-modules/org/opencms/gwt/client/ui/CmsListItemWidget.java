@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/05/30 10:45:43 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
@@ -89,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 8.0.0
  */
@@ -210,6 +209,20 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         void handleEdit(CmsLabel title, TextBox box);
     }
 
+    /** Lock icons. */
+    public enum LockIcon {
+        /** Closed lock. */
+        CLOSED,
+        /** No lock. */
+        NONE,
+        /** Open lock. */
+        OPEN,
+        /** Shared closed lock. */
+        SHARED_CLOSED,
+        /** Shared open lock. */
+        SHARED_OPEN
+    }
+
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
@@ -263,12 +276,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     @UiField
     protected FlowPanel m_titleRow;
 
-    /** The lock icon. */
-    private HTML m_lockIcon;
-
-    /** The state icon. */
-    private HTML m_stateIcon;
-
     /** Variable for the background style. */
     private CmsStyleVariable m_backgroundStyle;
 
@@ -280,6 +287,12 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
+
+    /** The lock icon. */
+    private HTML m_lockIcon;
+
+    /** The state icon. */
+    private HTML m_stateIcon;
 
     /** The handler registration for the click handler on the title field. */
     private HandlerRegistration m_titleClickHandlerRegistration;
@@ -579,98 +592,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     }
 
     /**
-     * Sets the state icon.<p>
-     * 
-     * The state icon indicates if a resource is exported, secure, etc.<p>
-     * 
-     * @param icon the state icon
-     */
-    public void setStateIcon(StateIcon icon) {
-
-        if (m_stateIcon == null) {
-            m_stateIcon = new HTML();
-            m_contentPanel.add(m_stateIcon);
-        }
-
-        switch (icon) {
-            case export:
-                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().export());
-                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
-                break;
-            case secure:
-                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().secure());
-                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0));
-                break;
-            default:
-                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon());
-                m_stateIcon.setTitle(null);
-                break;
-        }
-
-    }
-
-    /**
-     * Sets the lock icon.<p>
-     * 
-     * @param lock the current item lock
-     */
-    public void setLockIcon(CmsClientLock lock) {
-
-        if (m_lockIcon == null) {
-            m_lockIcon = new HTML();
-            m_contentPanel.add(m_lockIcon);
-        }
-        if ((lock == null) || lock.getLockType().isUnlocked()) {
-            m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon());
-        } else {
-            if (lock.isOwnedByUser()) {
-                switch (lock.getLockType()) {
-                    case EXCLUSIVE:
-                    case INHERITED:
-                    case TEMPORARY:
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                            + " "
-                            + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockOpen());
-                        break;
-                    case SHARED_EXCLUSIVE:
-                    case SHARED_INHERITED:
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                            + " "
-                            + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedOpen());
-                        break;
-                    default:
-                        // remove for all other cases
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon());
-                }
-            } else {
-                switch (lock.getLockType()) {
-                    case EXCLUSIVE:
-                    case INHERITED:
-                    case TEMPORARY:
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                            + " "
-                            + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockClosed());
-                        break;
-                    case SHARED_EXCLUSIVE:
-                    case SHARED_INHERITED:
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                            + " "
-                            + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedClosed());
-                        break;
-                    default:
-                        // remove for all other cases
-                        m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon());
-                }
-            }
-            m_lockIcon.setTitle(Messages.get().key(Messages.GUI_LOCK_OWNED_BY_1, lock.getLockOwner()));
-        }
-    }
-
-    /**
      * Sets the icon of this item.<p>
      * 
      * @param image the image to use as icon
@@ -705,6 +626,81 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     public void setIconTitle(String title) {
 
         m_iconPanel.setTitle(title);
+    }
+
+    /**
+     * Sets the lock icon.<p>
+     * 
+     * @param icon the icon to use
+     * @param iconTitle the icon title
+     */
+    public void setLockIcon(LockIcon icon, String iconTitle) {
+
+        if (m_lockIcon == null) {
+            m_lockIcon = new HTML();
+            m_contentPanel.add(m_lockIcon);
+        }
+        switch (icon) {
+            case CLOSED:
+                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockClosed());
+                break;
+            case OPEN:
+                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockOpen());
+                break;
+            case SHARED_CLOSED:
+                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedClosed());
+                break;
+            case SHARED_OPEN:
+                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedOpen());
+                break;
+            case NONE:
+            default:
+                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon());
+        }
+        m_lockIcon.setTitle(iconTitle);
+    }
+
+    /**
+     * Sets the state icon.<p>
+     * 
+     * The state icon indicates if a resource is exported, secure, etc.<p>
+     * 
+     * @param icon the state icon
+     */
+    public void setStateIcon(StateIcon icon) {
+
+        if (m_stateIcon == null) {
+            m_stateIcon = new HTML();
+            m_contentPanel.add(m_stateIcon);
+        }
+
+        switch (icon) {
+            case export:
+                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().export());
+                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
+                break;
+            case secure:
+                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().secure());
+                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0));
+                break;
+            default:
+                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon());
+                m_stateIcon.setTitle(null);
+                break;
+        }
+
     }
 
     /**

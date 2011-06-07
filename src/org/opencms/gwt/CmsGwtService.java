@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2011/05/27 14:51:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
@@ -265,16 +265,29 @@ public class CmsGwtService extends RemoteServiceServlet {
      * 
      * @param resource the resource to lock
      * 
+     * @return the assigned lock
+     * 
      * @throws CmsException if the resource could not be locked
      */
-    protected void ensureLock(CmsResource resource) throws CmsException {
+    protected CmsLock ensureLock(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
+        List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
+        if ((blockingResources != null) && !blockingResources.isEmpty()) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
+                cms.getSitePath(resource)));
+        }
         CmsUser user = cms.getRequestContext().getCurrentUser();
         CmsLock lock = cms.getLock(resource);
         if (!lock.isOwnedBy(user)) {
             cms.lockResourceTemporary(resource);
+            lock = cms.getLock(resource);
+        } else if (!lock.isOwnedInProjectBy(user, cms.getRequestContext().getCurrentProject())) {
+            cms.changeLock(resource);
+            lock = cms.getLock(resource);
         }
+        return lock;
     }
 
     /**
@@ -283,11 +296,14 @@ public class CmsGwtService extends RemoteServiceServlet {
      * Will throw an exception if the resource could not be locked for the current user.<p>
      * 
      * @param structureId the structure id of the resource 
+     * 
+     * @return the assigned lock
+     * 
      * @throws CmsException if something goes wrong 
      */
-    protected void ensureLock(CmsUUID structureId) throws CmsException {
+    protected CmsLock ensureLock(CmsUUID structureId) throws CmsException {
 
-        ensureLock(getCmsObject().readResource(structureId));
+        return ensureLock(getCmsObject().readResource(structureId));
 
     }
 
@@ -297,16 +313,13 @@ public class CmsGwtService extends RemoteServiceServlet {
      * 
      * @param sitepath the site-path of the resource to lock
      * 
+     * @return the assigned lock
+     * 
      * @throws CmsException if the resource could not be locked
      */
-    protected void ensureLock(String sitepath) throws CmsException {
+    protected CmsLock ensureLock(String sitepath) throws CmsException {
 
-        CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        CmsLock lock = cms.getLock(sitepath);
-        if (!lock.isOwnedBy(user)) {
-            cms.lockResourceTemporary(sitepath);
-        }
+        return ensureLock(getCmsObject().readResource(sitepath));
     }
 
     /**
@@ -320,36 +333,6 @@ public class CmsGwtService extends RemoteServiceServlet {
         if (user.isGuestUser()) {
             throw new CmsException(Messages.get().container(Messages.ERR_SESSION_EXPIRED_0));
         }
-    }
-
-    /**
-     * Locks the given resource and returns the lock.<p>
-     * 
-     * @param resource the resource to lock
-     * 
-     * @return the lock
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsLock getLockIfPossible(String resource) throws CmsException {
-
-        // lock the resource in the current project
-        CmsLock lock = getCmsObject().getLock(resource);
-        // prove is current lock from current but not in current project
-        if ((lock != null)
-            && lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())
-            && !lock.isOwnedInProjectBy(
-                getCmsObject().getRequestContext().getCurrentUser(),
-                getCmsObject().getRequestContext().getCurrentProject())) {
-            // file is locked by current user but not in current project
-            // change the lock from this file
-            getCmsObject().changeLock(resource);
-        }
-        // lock resource from current user in current project
-        getCmsObject().lockResource(resource);
-        // get current lock
-        lock = getCmsObject().getLock(resource);
-        return lock;
     }
 
     /**

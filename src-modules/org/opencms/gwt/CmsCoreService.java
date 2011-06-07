@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0.0
  * 
@@ -110,6 +110,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
+    private static final String DEFAULT_LOGIN_URL = "/system/login/index.html";
+
     /** The editor back-link URI. */
     private static final String EDITOR_BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
 
@@ -118,8 +120,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
-
-    private static final String DEFAULT_LOGIN_URL = "/system/login/index.html";
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -519,23 +519,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#removeTempFileAndUnlock(java.lang.String)
-     */
-    public void removeTempFileAndUnlock(String uri) {
-
-        // TODO: implement
-        // TODO: maybe use a structure id instead of a path 
-
-    }
-
-    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
      */
     public void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException {
 
         try {
             CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            setAvailabilityInfo(res.getRootPath(), bean);
+            setAvailabilityInfo(res, bean);
         } catch (CmsException e) {
             error(e);
         }
@@ -546,18 +536,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public void setAvailabilityInfo(String uri, CmsAvailabilityInfoBean bean) throws CmsRpcException {
 
-        // get the cms object
-        CmsObject cms = getCmsObject();
-
         try {
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(uri);
-            modifyPublishScheduled(resourceSitePath, bean.getDatePubScheduled());
-            modifyAvailability(resourceSitePath, bean.getDateReleased(), bean.getDateExpired());
-            modifyNotification(
-                resourceSitePath,
-                bean.getNotificationInterval(),
-                bean.isNotificationEnabled(),
-                bean.isModifySiblings());
+            String sitePath = getCmsObject().getRequestContext().removeSiteRoot(uri);
+            CmsResource resource = getCmsObject().readResource(sitePath);
+            setAvailabilityInfo(resource, bean);
         } catch (CmsException e) {
             error(e);
         }
@@ -856,12 +838,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void modifyAvailability(String vfsPath, long dateReleased, long dateExpired) throws CmsException {
+    private void modifyAvailability(CmsResource resource, long dateReleased, long dateExpired) throws CmsException {
 
-        getLockIfPossible(vfsPath);
         // modify release and expire date of the resource if needed
-        getCmsObject().setDateReleased(vfsPath, dateReleased, false);
-        getCmsObject().setDateExpired(vfsPath, dateExpired, false);
+        getCmsObject().setDateReleased(resource, dateReleased, false);
+        getCmsObject().setDateExpired(resource, dateExpired, false);
     }
 
     /**
@@ -875,7 +856,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @throws CmsException if something goes wrong
      */
     private void modifyNotification(
-        String resourceSitePath,
+        CmsResource resource,
         int notificationInterval,
         boolean notificationEnabled,
         boolean modifySiblings) throws CmsException {
@@ -883,15 +864,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
             // modify all siblings of a resource
-            resources = getCmsObject().readSiblings(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+            resources = getCmsObject().readSiblings(resource, CmsResourceFilter.IGNORE_EXPIRATION);
         } else {
             // modify only resource without siblings
-            resources.add(getCmsObject().readResource(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+            resources.add(resource);
         }
         for (CmsResource curResource : resources) {
             String resourcePath = getCmsObject().getRequestContext().removeSiteRoot(curResource.getRootPath());
-            // lock resource if auto lock is enabled
-            getLockIfPossible(resourcePath);
             // write notification settings
             writeProperty(
                 resourcePath,
@@ -916,13 +895,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void modifyPublishScheduled(String resourceSitePath, long pubDate) throws CmsException {
+    private void modifyPublishScheduled(CmsResource resource, long pubDate) throws CmsException {
 
         if (pubDate != CmsAvailabilityInfoBean.DATE_PUBLISH_SCHEDULED_DEFAULT) {
 
             CmsObject cms = getCmsObject();
 
-            String resource = resourceSitePath;
             CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
             Locale locale = getCmsObject().getRequestContext().getLocale();
             Date date = new Date(pubDate);
@@ -939,12 +917,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             // create the temporary project, which is deleted after publishing
             // the publish scheduled date in project name
             String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, locale);
-            // the resource name to publish scheduled
-            String resName = CmsResource.getName(resource);
             CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
             String projectName = messages.key(
                 org.opencms.workplace.commons.Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2,
-                new Object[] {resName, dateTime});
+                new Object[] {resource.getName(), dateTime});
 
             // the HTML encoding for slashes is necessary because of the slashes in english date time format
             // in project names slahes are not allowed, because these are separators for organizaional units
@@ -966,9 +942,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
             // copy the resource to the project
             cmsAdmin.copyResourceToProject(resource);
-
-            // get the lock if possible
-            getLockIfPossible(resource);
 
             // create a new scheduled job
             CmsScheduledJobInfo job = new CmsScheduledJobInfo();
@@ -1017,6 +990,30 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             // add the job to the scheduled job list
             OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
         }
+    }
+
+    /**
+     * Sets the availability of a resource by modifying the date release, date expired, 
+     * setting a scheduled publish job according to the info bean.<p>
+     * 
+     * Will also modify the notification settings of the resource.<p>
+     * 
+     * @param resource the resource to modify
+     * @param bean the bean with the information of the dialog
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    private void setAvailabilityInfo(CmsResource resource, CmsAvailabilityInfoBean bean) throws CmsException {
+
+        ensureLock(resource);
+        modifyPublishScheduled(resource, bean.getDatePubScheduled());
+        modifyAvailability(resource, bean.getDateReleased(), bean.getDateExpired());
+        modifyNotification(
+            resource,
+            bean.getNotificationInterval(),
+            bean.isNotificationEnabled(),
+            bean.isModifySiblings());
+        tryUnlock(resource);
     }
 
     /**

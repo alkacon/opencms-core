@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/06/07 14:02:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -468,7 +468,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         CmsResource target = cms.readResource(changes.getTargetStructureId());
-        getLockIfPossible(cms.getSitePath(target));
+        ensureLock(cms.getSitePath(target));
         internalUpdateProperties(cms, target, changes.getChanges());
     }
 
