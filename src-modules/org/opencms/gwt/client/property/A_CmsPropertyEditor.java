@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/A_CmsPropertyEditor.java,v $
- * Date   : $Date: 2011/05/26 13:08:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/06/08 12:41:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.2 $
+ *  @version $Revision: 1.3 $
  *  
  *  @since 8.0.0
  */
@@ -179,7 +179,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         buildFields();
         form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
         form.render();
-        m_dialog.centerHorizontally(100);
+        m_dialog.centerHorizontally(50);
     }
 
     /**

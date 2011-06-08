@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2011/06/06 12:10:26 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/06/08 12:41:52 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,17 +54,18 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 8.0.0
  */
@@ -656,21 +657,21 @@ public final class CmsDomUtil {
      * @param styleSheetLink the style-sheet link
      */
     public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
-        var styles = $wnd.document.styleSheets;
-        for ( var i = 0; i < styles.length; i++) {
-            if (styles[i].href != null
-                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
-                // style-sheet is present
-                return;
-            }
-        }
-        // include style-sheet into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('link');
-        cssNode.type = 'text/css';
-        cssNode.rel = 'stylesheet';
-        cssNode.href = styleSheetLink;
-        headID.appendChild(cssNode);
+      var styles = $wnd.document.styleSheets;
+      for ( var i = 0; i < styles.length; i++) {
+         if (styles[i].href != null
+               && styles[i].href.indexOf(styleSheetLink) >= 0) {
+            // style-sheet is present
+            return;
+         }
+      }
+      // include style-sheet into head
+      var headID = $wnd.document.getElementsByTagName("head")[0];
+      var cssNode = $wnd.document.createElement('link');
+      cssNode.type = 'text/css';
+      cssNode.rel = 'stylesheet';
+      cssNode.href = styleSheetLink;
+      headID.appendChild(cssNode);
     }-*/;
 
     /**
@@ -1062,7 +1063,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-        return "" + style.zIndex;
+      return "" + style.zIndex;
     }-*/;
 
     /**
@@ -1361,8 +1362,8 @@ public final class CmsDomUtil {
      */
     public static native String removeScriptTags(String source)/*-{
 
-        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
-        return source.replace(matchTag, "");
+      var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+      return source.replace(matchTag, "");
     }-*/;
 
     /**
@@ -1378,6 +1379,20 @@ public final class CmsDomUtil {
         } else {
             element.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().hideOverlay());
         }
+    }
+
+    /**
+     * Wraps a widget in a scrollable FlowPanel.<p>
+     *  
+     * @param widget the original widget 
+     * @return the wrapped widget 
+     */
+    public static FlowPanel wrapScrollable(Widget widget) {
+
+        FlowPanel wrapper = new FlowPanel();
+        wrapper.add(widget);
+        makeScrollable(wrapper);
+        return wrapper;
     }
 
     /**

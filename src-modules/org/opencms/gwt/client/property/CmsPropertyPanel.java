@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsPropertyPanel.java,v $
- * Date   : $Date: 2011/05/31 13:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/06/08 12:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,13 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -55,8 +55,12 @@ import java.util.Set;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +93,9 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /** Tab id for the "simple" tab. */
     public static final String TAB_SIMPLE = "simple";
+
+    /** The interval used for updating the height. */
+    public static final int UPDATE_HEIGHT_INTERVAL = 250;
 
     /** Multimap of fields by field group. */
     private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
@@ -124,36 +131,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     private FlowPanel m_individualTabWrapper = new FlowPanel();
 
     /** The tab panel. */
-    private CmsTabbedPanel<Widget> m_tabPanel = new CmsTabbedPanel<Widget>();
-
-    /**
-     * Creates a new instance.<p>
-     * 
-     * @param showShared true if the "shared" tab should be shown 
-     */
-    public CmsPropertyPanel(boolean showShared) {
-
-        // TODO: replace with dynamic calculation
-        m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
-        CmsDomUtil.makeScrollable(m_simpleTab);
-        CmsDomUtil.makeScrollable(m_sharedTab);
-        CmsDomUtil.makeScrollable(m_individualTab);
-
-        m_groups.put(TAB_SIMPLE, m_simpleTab);
-        m_groups.put(TAB_SHARED, m_sharedTab);
-        m_groups.put(TAB_INDIVIDUAL, m_individualTab);
-
-        m_tabPanel.add(CmsPopup.wrapWithBorderPadding(m_simpleTab), Messages.get().key(
-            Messages.GUI_PROPERTY_TAB_SIMPLE_0));
-        m_showShared = showShared;
-        if (m_showShared) {
-            m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
-            m_tabPanel.add(m_sharedTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
-        } else {
-            m_tabPanel.add(m_individualTab, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
-        }
-        initWidget(m_tabPanel);
-    }
+    protected CmsTabbedPanel<Widget> m_tabPanel = new CmsTabbedPanel<Widget>();
 
     /**
      * Creates a new instance.<p>
@@ -164,8 +142,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
 
         // TODO: replace with dynamic calculation
-        m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
-
+        //m_tabPanel.getElement().getStyle().setProperty("minHeight", "300px");
+        //m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
         CmsListItemWidget liWidget = createListItemWidget(info);
         m_simpleTabWrapper.add(liWidget);
         m_simpleTabWrapper.add(m_simpleTab);
@@ -178,9 +156,21 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_individualTabWrapper.add(createListItemWidget(info));
         m_individualTabWrapper.add(m_individualTab);
 
-        CmsDomUtil.makeScrollable(m_simpleTabWrapper);
-        CmsDomUtil.makeScrollable(m_sharedTabWrapper);
-        CmsDomUtil.makeScrollable(m_individualTabWrapper);
+        m_simpleTabWrapper = CmsDomUtil.wrapScrollable(m_simpleTabWrapper);
+        m_sharedTabWrapper = CmsDomUtil.wrapScrollable(m_sharedTabWrapper);
+        m_individualTabWrapper = CmsDomUtil.wrapScrollable(m_individualTabWrapper);
+
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!m_tabPanel.isAttached() || !m_tabPanel.isVisible()) {
+                    return false;
+                }
+                updateHeight();
+                return true;
+            }
+        }, UPDATE_HEIGHT_INTERVAL);
 
         m_groups.put(TAB_SIMPLE, m_simpleTab);
         m_groups.put(TAB_SHARED, m_sharedTab);
@@ -341,6 +331,22 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         }
         result.truncate(CmsInfoBoxFormFieldPanel.TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
         return result;
+    }
+
+    /**
+     * Updates the panel height depending on the content of the current tab.<p>
+     */
+    protected void updateHeight() {
+
+        int tabIndex = m_tabPanel.getSelectedIndex();
+        Element tabElement = m_tabPanel.getWidget(tabIndex).getElement();
+        Element innerElement = tabElement.getFirstChildElement();
+        int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
+        int spaceLeft = Window.getClientHeight() - m_tabPanel.getAbsoluteTop() - 80;
+        int newHeight = Math.min(spaceLeft, contentHeight) + 45;
+        if (m_tabPanel.getOffsetHeight() != newHeight) {
+            m_tabPanel.setHeight(newHeight + "px");
+        }
     }
 
     /**
