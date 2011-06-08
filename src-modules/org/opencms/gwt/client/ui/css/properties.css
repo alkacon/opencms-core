@@ -2,7 +2,6 @@
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	
-	height: 505px;
 	margin-top: 4px;
 	padding-left: 6px;
 	padding-top: 4px;
