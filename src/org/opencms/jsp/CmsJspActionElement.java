@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/06/08 10:07:56 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -490,6 +490,38 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
 
+        include(target, element, editable, true, parameterMap);
+    }
+
+    /**
+     * Include a named sub-element with parameters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
+     * with parameters in the tag body.<p>
+     * 
+     * The parameter map should be a map where the keys are Strings 
+     * (the parameter names) and the values are of type String[].
+     * However, as a convenience feature,
+     * in case you provide just a String for the parameter value, 
+     * it will automatically be translated to a String[1].<p>
+     * 
+     * The handling of the <code>element</code> parameter depends on the 
+     * included file type. Most often it is used as template selector.<p>
+     * 
+     * <b>Important:</b> Exceptions that occur in the include process are NOT
+     * handled even if {@link #setSupressingExceptions(boolean)} was set to <code>true</code>.
+     * 
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if direct edit should be enabled for the element
+     * @param cacheable flag to indicate if the target should be cacheable in the Flex cache
+     * @param parameterMap a map of the request parameters
+     * @throws JspException in case there were problems including the target
+     * 
+     * @see org.opencms.jsp.CmsJspTagInclude
+     */
+    public void include(String target, String element, boolean editable, boolean cacheable, Map parameterMap)
+    throws JspException {
+
         if (isNotInitialized()) {
             return;
         }
@@ -521,7 +553,9 @@ public class CmsJspActionElement extends CmsJspBean {
             getJspContext(),
             target,
             element,
+            null,
             editable,
+            cacheable,
             modParameterMap,
             CmsRequestUtil.getAtrributeMap(getRequest()),
             getRequest(),
