@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/08 08:45:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsServlet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +80,10 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
 
+        if (resourceName.endsWith(OpenCmsServlet.HANDLE_GWT)) {
+            // handle GWT rpc services, return a default info object
+            return new CmsI18nInfo(CmsLocaleManager.getDefaultLocale(), req.getCharacterEncoding());
+        }
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         List<Locale> defaultLocales = null;
         String encoding = null;

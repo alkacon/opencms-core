@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/06/08 08:45:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -86,6 +86,9 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.main.OpenCms
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
+
+    /** GWT RPC services suffix. */
+    public static final String HANDLE_GWT = ".gwt";
 
     /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";
@@ -98,9 +101,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /** Name of the <code>WebApplicationContext</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_WEB_APPLICATION_CONTEXT = "WebApplicationContext";
-
-    /** GWT RPC services suffix. */
-    private static final String HANDLE_GWT = ".gwt";
 
     /** Handler prefix. */
     private static final String HANDLE_PATH = "/handle";
@@ -207,10 +207,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikely to happen 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
-                            name,
-                            OpenCmsCore.getInstance().getPathInfo(req)), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
+                                name,
+                                OpenCmsCore.getInstance().getPathInfo(req)),
+                            e);
                     }
                 }
                 if (exportData != null) {
