@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/A_CmsPropertyEditor.java,v $
- * Date   : $Date: 2011/06/08 12:41:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/06/09 12:48:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.gwt.client.property;
 
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.input.CmsDefaultStringModel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -59,7 +61,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.3 $
+ *  @version $Revision: 1.4 $
  *  
  *  @since 8.0.0
  */
@@ -79,6 +81,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /** The form containing the fields. */
     protected CmsForm m_form;
+
+    /** The reason to disable the form input fields. */
+    protected String m_disabledReason;
 
     /** The handler for this sitemap entry editor. */
     protected I_CmsPropertyEditorHandler m_handler;
@@ -148,6 +153,22 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
     }
 
     /**
+     * Disables all input to the form.<p>
+     * 
+     * @param disabledReason the reason to display to the user 
+     */
+    public void disableInput(String disabledReason) {
+
+        m_disabledReason = disabledReason;
+        for (I_CmsFormField field : m_form.getFields().values()) {
+            field.getWidget().setEnabled(false);
+        }
+        m_urlNameField.getWidget().setEnabled(false);
+        m_dialog.getOkButton().disable(m_disabledReason);
+        CmsNotification.get().send(Type.WARNING, m_disabledReason);
+    }
+
+    /**
      * Sets the names of properties which can be edited.<p>
      * 
      * @param propertyNames the property names 
@@ -180,6 +201,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
         form.render();
         m_dialog.centerHorizontally(50);
+        m_dialog.catchNotifications();
     }
 
     /**

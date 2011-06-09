@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/property/Attic/CmsVfsModePropertyEditor.java,v $
- * Date   : $Date: 2011/05/25 15:37:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/09 12:48:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,8 @@ import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
-import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
+import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -97,9 +97,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
      * @param propConfig the property configuration 
      * @param handler the sitemap entry editor handler 
      */
-    public CmsVfsModePropertyEditor(
-        Map<String, CmsXmlContentProperty> propConfig,
-        I_CmsPropertyEditorHandler handler) {
+    public CmsVfsModePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
         super(propConfig, handler);
         m_dialog.setCaption(null);
@@ -154,9 +152,11 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             default:
                 break;
         }
-
-        // fields 
-        m_form.validateAllFields();
+        if (m_disabledReason != null) {
+            disableInput(m_disabledReason);
+        } else {
+            m_form.validateAllFields();
+        }
     }
 
     /**
