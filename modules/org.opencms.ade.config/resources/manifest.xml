@@ -262,6 +262,10 @@
 					<name>Title</name>
 					<value><![CDATA[Resource type configuration]]></value>
 				</property>
+				<property>
+                     <name>locale</name>
+                     <value><![CDATA[en]]></value>
+                </property>
                 <property>
                      <name>locale-available</name>
                      <value><![CDATA[en]]></value>
