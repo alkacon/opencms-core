@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/06/09 08:35:24 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  * 
@@ -483,13 +483,25 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setGhostMode(boolean ghostMode) {
 
-        if (ghostMode) {
+        setGhostStyleEnabled(ghostMode);
+        m_ghostMode = ghostMode;
+
+    }
+
+    /**
+     * Enables or disables the "ghost mode" style.<p>
+     * 
+     * This *only* changes the style, not the actual mode.
+     * 
+     * @param enabled true if the ghost mode style should be enabled, false if it should be disabled 
+     */
+    public void setGhostStyleEnabled(boolean enabled) {
+
+        if (enabled) {
             m_textbox.addStyleName(CSS.textboxGhostMode());
         } else {
             m_textbox.removeStyleName(CSS.textboxGhostMode());
         }
-        m_ghostMode = ghostMode;
-
     }
 
     /**

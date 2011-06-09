@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2011/05/25 15:37:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/06/09 08:35:24 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
@@ -54,6 +55,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -72,7 +75,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  * 
@@ -612,6 +615,22 @@ public class CmsForm {
                     defaultHandleKeyPress(formField, keyCode);
                 }
             });
+        }
+
+        if (widget instanceof CmsTextBox) {
+            final CmsTextBox textbox = (CmsTextBox)widget;
+            textbox.addClickHandler(new ClickHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
+                public void onClick(ClickEvent event) {
+
+                    //ghost mode will still be enabled when you click on the field, but the style will be set to normal
+                    textbox.setGhostStyleEnabled(false);
+                }
+            });
+
         }
     }
 
