@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/06/07 14:02:17 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  * 
@@ -896,7 +896,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 children.add(child);
                 if (child.isFolderType() && ((levels > 1) || (levels == -1)) && !isSubSitemap(navElement)) {
                     child.setSubEntries(getChildren(child.getSitePath(), levels - 1));
-                    child.setChildrenLoadedInitially();
+                    child.setChildrenLoadedInitially(true);
                 }
                 i++;
             }
@@ -1109,7 +1109,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry result = toClientEntry(navElement, true);
         if (result != null) {
             result.setPosition(0);
-            result.setChildrenLoadedInitially();
+            result.setChildrenLoadedInitially(true);
             result.setSubEntries(getChildren(entryPoint, 1));
         }
         return result;

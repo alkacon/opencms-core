@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsEditMenuEntry.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -109,7 +109,10 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                 A_CmsPropertyEditor editor = createEntryEditor(handler);
                 editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
                 editor.start();
-
+                String noEditReason = controller.getNoEditReason(entry);
+                if (noEditReason != null) {
+                    editor.disableInput(noEditReason);
+                }
             }
 
         };
@@ -127,13 +130,6 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
         boolean show = (entry != null);
         setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
-            setActive(false);
-            setDisabledReason(controller.getNoEditReason(entry));
-        } else {
-            setActive(true);
-            setDisabledReason(null);
-        }
     }
 
     /**

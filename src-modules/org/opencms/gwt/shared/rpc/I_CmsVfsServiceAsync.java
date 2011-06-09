@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsServiceAsync.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +62,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the callback
      */
     void deleteResource(String sitePath, AsyncCallback<Void> callback);
+
+    /**
+     * Forces a resource to be unlocked. In case the given resource is a folder, all sub-resources are also unlocked.<p>
+     * 
+     * @param structureId the structure id of the resource to unlock
+     * @param callback the callback
+     */
+    void forceUnlock(CmsUUID structureId, AsyncCallback<Void> callback);
 
     /**
      * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
@@ -93,6 +102,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Returns the lock report info.<p>
+     * 
+     * @param structureId the structure id of the resource to get the report for
+     * @param callback the callback
+     */
+    void getLockReportInfo(CmsUUID structureId, AsyncCallback<CmsLockReportInfo> callback);
 
     /**
      * Gets a {@link CmsListInfoBean} for a given resource.<p>

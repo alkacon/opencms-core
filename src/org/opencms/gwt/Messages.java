@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/Messages.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_URL_NAME_ALREADY_EXISTS_1 = "ERR_URL_NAME_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLIENT_WITHOUT_TICKET_3 = "LOG_CLIENT_WITHOUT_TICKET_3";

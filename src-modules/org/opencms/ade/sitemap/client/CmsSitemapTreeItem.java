@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,14 +47,13 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
-import org.opencms.gwt.client.ui.CmsListItemWidget.LockIcon;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
@@ -79,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,52 +112,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
             m_detailPageTitle = detailPageTitle;
         }
-    }
-
-    /** 
-     * Class which contains detail page info messages for a sitemap entry.<p>
-     */
-    class DetailPageMessages {
-
-        /** The message to display on the sitemap entry. */
-        private String m_message;
-
-        /** The title to display on the label which displays the message. */
-        private String m_title;
-
-        /**
-         * Constructs a new detail page message bean.<p>
-         * 
-         * @param message the message to display on the sitemap entry
-         * @param title  the title to display on the label which displays the message
-         */
-        public DetailPageMessages(String message, String title) {
-
-            super();
-            m_message = message;
-            m_title = title;
-        }
-
-        /**
-         * Returns the message to display on the sitemap entry.<p>
-         * 
-         * @return the message to display on the sitemap entry
-         */
-        public String getMessage() {
-
-            return m_message;
-        }
-
-        /**
-         * Returns the title to display on the label which displays the message.
-         * 
-         * @return  the title to display on the label which displays the message.
-         */
-        public String getTitle() {
-
-            return m_title;
-        }
-
     }
 
     /** The CSS bundle used by this widget. */
@@ -295,61 +248,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public static CmsSitemapTreeItem getItemById(CmsUUID id) {
 
         return m_itemsById.get(id);
-    }
-
-    /**
-     * Enables the site-map VFS mode.<p>
-     * 
-     * @param enable <code>true</code> to enable the VFS mode
-     */
-    public void enableVfsMode(boolean enable) {
-
-        String iconClass = CmsIconUtil.getResourceIconClasses(
-            m_entry.getResourceTypeName(),
-            m_entry.getSitePath(),
-            false);
-        if (!enable && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getDefaultFileType())) {
-            iconClass = CmsIconUtil.getResourceIconClasses(m_entry.getDefaultFileType(), false);
-        }
-        m_listItemWidget.setIcon(iconClass);
-        for (Widget child : m_children) {
-            if (child instanceof CmsSitemapTreeItem) {
-                ((CmsSitemapTreeItem)child).enableVfsMode(enable);
-            }
-        }
-    }
-
-    /**
-     * Returns the detail page data which should be displayed for a sitemap entry.<p>
-     * 
-     * @param entryId the sitemap entry id
-     *  
-     * @return a detail page message bean for that sitemap entry
-     */
-    public DetailPageMessages getDetailPageMessages(CmsUUID entryId) {
-
-        CmsDetailPageTable detailPageTable = CmsSitemapView.getInstance().getController().getDetailPageTable();
-        String type;
-        String text = "";
-        String suffixTitle = null;
-        switch (detailPageTable.getStatus(entryId)) {
-            case firstDetailPage:
-                type = detailPageTable.get(entryId).getType();
-                suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, type);
-                text = "(*" + type + ")";
-                break;
-            case otherDetailPage:
-                type = detailPageTable.get(entryId).getType();
-                suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, type);
-                text = "(" + type + ")";
-                break;
-            case noDetailPage:
-            default:
-                text = null;
-                break;
-        }
-        return new DetailPageMessages(text, suffixTitle);
-
     }
 
     /**
@@ -565,12 +463,42 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateDetailPageStatus() {
 
-        DetailPageMessages detailPageMessages = getDetailPageMessages(m_entry.getId());
-        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
+        CmsDetailPageTable detailPageTable = CmsSitemapView.getInstance().getController().getDetailPageTable();
+        String type;
+        String text = null;
+        String suffixTitle = null;
+        switch (detailPageTable.getStatus(m_entry.getId())) {
+            case firstDetailPage:
+                type = detailPageTable.get(m_entry.getId()).getType();
+                suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, type);
+                text = "(*" + type + ")";
+                break;
+            case otherDetailPage:
+                type = detailPageTable.get(m_entry.getId()).getType();
+                suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, type);
+                text = "(" + type + ")";
+                break;
+            case noDetailPage:
+            default:
+        }
+        m_detailPageLabelTitleGenerator.setDetailPageTitle(suffixTitle);
         m_listItemWidget.updateTruncation();
         CmsLabel label = m_listItemWidget.getSubTitleSuffix();
         label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
-        m_listItemWidget.setSubtitleSuffixText(detailPageMessages.getMessage());
+        m_listItemWidget.setSubtitleSuffixText(text);
+    }
+
+    /**
+     * Updates the sitemap editor mode.<p>
+     */
+    public void updateEditorMode() {
+
+        m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(m_entry));
+        for (Widget child : m_children) {
+            if (child instanceof CmsSitemapTreeItem) {
+                ((CmsSitemapTreeItem)child).updateEditorMode();
+            }
+        }
     }
 
     /**
@@ -591,6 +519,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateDetailPageStatus();
         updateLock(entry);
         updateInNavigation(entry);
+        m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
     }
 

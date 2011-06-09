@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -103,6 +103,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsRefreshMenuEntry(hoverbar));
         m_entries.add(new CmsDeleteMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
+        m_entries.add(new CmsLockReportMenuEntry(hoverbar));
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
         addClickHandler(new ClickHandler() {

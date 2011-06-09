@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsVfsService.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,8 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
+import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -51,6 +53,8 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -60,6 +64,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -81,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -92,53 +97,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
-
-    /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param res the resource to get the page info for
-     * 
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     * 
-     * @throws CmsLoaderException if the resource type could not be found
-     * @throws CmsException if something else goes wrong 
-     */
-    public static CmsListInfoBean getPageInfo(CmsObject cms, CmsResource res) throws CmsException, CmsLoaderException {
-
-        CmsListInfoBean result = new CmsListInfoBean();
-
-        result.setResourceState(res.getState());
-
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-
-        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            result.setTitle(title);
-        } else {
-            result.setTitle(res.getName());
-        }
-        result.setSubTitle(resourceSitePath);
-        String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-        if (Boolean.parseBoolean(secure)) {
-            result.setStateIcon(CmsListInfoBean.StateIcon.secure);
-        } else {
-            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-            if (Boolean.parseBoolean(export)) {
-                result.setStateIcon(CmsListInfoBean.StateIcon.export);
-            } else {
-                result.setStateIcon(CmsListInfoBean.StateIcon.standard);
-            }
-        }
-        String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-        Locale currentLocale = cms.getRequestContext().getLocale();
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
-        String resTypeNiceName = messages.key(key);
-        result.addAdditionalInfo(messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0), resTypeNiceName);
-        result.setResourceType(resTypeName);
-        return result;
-    }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(java.lang.String)
@@ -168,6 +126,28 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsException e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#forceUnlock(org.opencms.util.CmsUUID)
+     */
+    public void forceUnlock(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsResource resource = getCmsObject().readResource(structureId);
+            // get the current lock
+            CmsLock currentLock = getCmsObject().getLock(resource);
+            // check if the resource is locked at all
+            if (currentLock.getEditionLock().isUnlocked() && currentLock.getSystemLock().isUnlocked()) {
+                getCmsObject().lockResourceTemporary(resource);
+            } else {
+                getCmsObject().changeLock(resource);
+            }
+            getCmsObject().unlockResource(resource);
+        } catch (CmsException e) {
+            error(e);
+        }
+
     }
 
     /**
@@ -266,6 +246,28 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getLockReportInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsLockReportInfo getLockReportInfo(CmsUUID structureId) throws CmsRpcException {
+
+        CmsLockReportInfo result = null;
+        try {
+            CmsResource resource = getCmsObject().readResource(structureId);
+            List<CmsListInfoBean> lockedInfos = new ArrayList<CmsListInfoBean>();
+            List<CmsResource> lockedResources = getCmsObject().getBlockingLockedResources(resource);
+            if (lockedResources != null) {
+                for (CmsResource lockedResource : lockedResources) {
+                    lockedInfos.add(getPageInfoWithLock(lockedResource));
+                }
+            }
+            result = new CmsLockReportInfo(getPageInfoWithLock(resource), lockedInfos);
+        } catch (CmsException e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -628,21 +630,94 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 
+     * @param cms the CMS context to use 
      * @param res the resource to get the page info for
      * 
      * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 
-     * @throws CmsRpcException if something goes wrong
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong 
      */
-    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsRpcException {
+    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsException, CmsLoaderException {
 
         CmsObject cms = getCmsObject();
-        try {
-            return CmsVfsService.getPageInfo(cms, res);
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached 
+        CmsListInfoBean result = new CmsListInfoBean();
+
+        result.setResourceState(res.getState());
+
+        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            result.setTitle(title);
+        } else {
+            result.setTitle(res.getName());
         }
+        result.setSubTitle(cms.getSitePath(res));
+        String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+        if (Boolean.parseBoolean(secure)) {
+            result.setStateIcon(CmsListInfoBean.StateIcon.secure);
+        } else {
+            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            if (Boolean.parseBoolean(export)) {
+                result.setStateIcon(CmsListInfoBean.StateIcon.export);
+            } else {
+                result.setStateIcon(CmsListInfoBean.StateIcon.standard);
+            }
+        }
+        String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+        Locale currentLocale = cms.getRequestContext().getLocale();
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        result.addAdditionalInfo(messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0), resTypeNiceName);
+        result.setResourceType(resTypeName);
+        return result;
+    }
+
+    /**
+     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param res the resource to get the page info for
+     * 
+     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong 
+     */
+    private CmsListInfoBean getPageInfoWithLock(CmsResource resource) throws CmsLoaderException, CmsException {
+
+        CmsListInfoBean result = getPageInfo(resource);
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(getCmsObject(), resource);
+        CmsLock lock = resourceUtil.getLock();
+        LockIcon icon = LockIcon.NONE;
+        String iconTitle = null;
+        CmsLockType lockType = lock.getType();
+        if (!lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())) {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.CLOSED;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_CLOSED;
+            }
+        } else {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.OPEN;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_OPEN;
+            }
+        }
+        if (lock.getUserId() != null) {
+            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, resourceUtil.getLockedByName());
+        }
+        result.setLockIcon(icon);
+        result.setLockIconTitle(iconTitle);
+        if (icon != LockIcon.NONE) {
+            result.setTitle(result.getTitle() + " (" + iconTitle + ")");
+        }
+        return result;
     }
 
     /**
@@ -734,7 +809,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
             result.setOwnProperties(convertProperties(ownProperties));
             result.setInheritedProperties(convertProperties(parentProperties));
-            result.setPageInfo(CmsVfsService.getPageInfo(cms, resource));
+            result.setPageInfo(getPageInfo(resource));
             List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
             List<String> propNames = new ArrayList<String>();
             for (CmsPropertyDefinition propDef : propDefs) {

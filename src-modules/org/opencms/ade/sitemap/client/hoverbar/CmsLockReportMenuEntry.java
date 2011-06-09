@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAvailabilityMenuEntry.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsLockReportMenuEntry.java,v $
  * Date   : $Date: 2011/06/09 12:48:09 $
- * Version: $Revision: 1.10 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,35 +31,36 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
+import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.user.client.Command;
+
 /**
- * Sitemap context menu availability entry.<p>
+ * Sitemap context menu show lock report entry.<p>
  * 
- * @author Ruediger Kurz
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1 $
  * 
- * @since 8.0.0
+ * @since 8.0.1
  */
-public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsAvailabilityMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_AVAILABILITY_0));
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().mergeSitemap());
+        setLabel("Lock Report");
         setActive(true);
+
     }
 
     /**
@@ -67,9 +68,17 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-        new CmsAvailabilityDialog(entry.getId(), CmsSitemapView.getInstance().getIconForEntry(entry)).loadAndShow();
+        final String sitePath = getHoverbar().getSitePath();
+        final CmsSitemapController controller = getHoverbar().getController();
+        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        CmsLockReportDialog.openDialogForResource(entry.getId(), new Command() {
+
+            public void execute() {
+
+                controller.updateEntry(sitePath);
+            }
+        });
+
     }
 
     /**
@@ -78,16 +87,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-        boolean show = (entry != null);
-        setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
-            setActive(false);
-            setDisabledReason(controller.getNoEditReason(entry));
-        } else {
-            setActive(true);
-            setDisabledReason(null);
-        }
+        setVisible(true);
     }
+
 }

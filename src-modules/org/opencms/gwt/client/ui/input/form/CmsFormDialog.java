@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2011/05/31 13:02:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,7 @@ public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
     protected I_CmsFormHandler m_formHandler;
 
     /** The OK button of this dialog. */
-    protected CmsPushButton m_okButton;
+    private CmsPushButton m_okButton;
 
     /** 
      * Constructs a new form dialog with a given title.<p>
@@ -145,6 +145,16 @@ public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
     }
 
     /**
+     * Returns the 'OK' button.<p>
+     * 
+     * @return the 'OK' button
+     */
+    public CmsPushButton getOkButton() {
+
+        return m_okButton;
+    }
+
+    /**
      * Sets the form handler for this form dialog.<p>
      * 
      * @param formHandler the new form handler 
@@ -167,8 +177,8 @@ public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
             public void execute() {
 
                 // The event handling of GWT gets confused if we don't execute this as a scheduled command 
-                m_okButton.setDown(false);
-                m_okButton.setEnabled(enabled);
+                getOkButton().setDown(false);
+                getOkButton().setEnabled(enabled);
             }
         });
 

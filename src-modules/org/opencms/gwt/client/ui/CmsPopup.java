@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2011/06/03 16:31:04 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,8 +61,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -518,6 +518,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Returns the dialog caption text.<p>
+     * 
+     * @return the dialog caption
+     */
+    public String getCaption() {
+
+        return m_caption.getText();
+    }
+
+    /**
      * Returns the child widget with the given index.<p>
      * 
      * @param index the index
@@ -561,6 +571,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     public int getWidgetIndex(Widget child) {
 
         return getChildren().indexOf(child);
+    }
+
+    /**
+     * Returns <code>true</code> if a caption is set for this popup <code>false</code> otherwise.<p>
+     * 
+     * @return <code>true</code> if a caption is set for this popup <code>false</code> otherwise
+     */
+    public boolean hasCaption() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_caption.getText());
     }
 
     /**
@@ -809,6 +829,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Unsupported operation.<p>
+     * 
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
      */
     @Override
@@ -1145,16 +1167,6 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     private boolean hasButtons() {
 
         return m_buttonPanel.getWidgetCount() != 0;
-    }
-
-    /**
-     * Returns <code>true</code> if a caption is set for this popup <code>false</code> otherwise.<p>
-     * 
-     * @return <code>true</code> if a caption is set for this popup <code>false</code> otherwise
-     */
-    private boolean hasCaption() {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_caption.getText());
     }
 
     /**

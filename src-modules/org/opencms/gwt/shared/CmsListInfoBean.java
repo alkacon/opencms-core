@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2011/05/27 07:30:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,25 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
 public class CmsListInfoBean implements IsSerializable {
+
+    /** Lock icons. */
+    public enum LockIcon {
+        /** Closed lock. */
+        CLOSED,
+        /** No lock. */
+        NONE,
+        /** Open lock. */
+        OPEN,
+        /** Shared closed lock. */
+        SHARED_CLOSED,
+        /** Shared open lock. */
+        SHARED_OPEN
+    }
 
     /**
      * Enum for the type of page icon which should be displayed.<p>
@@ -58,8 +72,6 @@ public class CmsListInfoBean implements IsSerializable {
     public enum StateIcon {
         /** export page icon. */
         export,
-        /** redirect status icon. */
-        redirect,
         /** secure page icon. */
         secure,
         /** standard page icon. */
@@ -71,6 +83,12 @@ public class CmsListInfoBean implements IsSerializable {
 
     /** The additional info. */
     private List<CmsAdditionalInfoBean> m_additionalInfo;
+
+    /** The lock icon. */
+    private LockIcon m_lockIcon;
+
+    /** The lock icon title. */
+    private String m_lockIconTitle;
 
     /** The resource state. */
     private CmsResourceState m_resourceState;
@@ -146,6 +164,26 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
+     * Returns the lock icon.<p>
+     *
+     * @return the lockIcon
+     */
+    public LockIcon getLockIcon() {
+
+        return m_lockIcon;
+    }
+
+    /**
+     * Returns the lock icon title.<p>
+     *
+     * @return the lock icon title
+     */
+    public String getLockIconTitle() {
+
+        return m_lockIconTitle;
+    }
+
+    /**
      * Returns the resourceState.<p>
      *
      * @return the resourceState
@@ -215,6 +253,26 @@ public class CmsListInfoBean implements IsSerializable {
     public void setAdditionalInfo(List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
+    }
+
+    /**
+     * Sets the lock icon.<p>
+     *
+     * @param lockIcon the lock icon to set
+     */
+    public void setLockIcon(LockIcon lockIcon) {
+
+        m_lockIcon = lockIcon;
+    }
+
+    /**
+     * Sets the lock icon title.<p>
+     *
+     * @param lockIconTitle the lock icon title to set
+     */
+    public void setLockIconTitle(String lockIconTitle) {
+
+        m_lockIconTitle = lockIconTitle;
     }
 
     /**

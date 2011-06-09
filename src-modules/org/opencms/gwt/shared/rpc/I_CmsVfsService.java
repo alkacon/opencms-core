@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsVfsService.java,v $
- * Date   : $Date: 2011/05/26 08:26:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -64,6 +65,15 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     void deleteResource(String sitePath) throws CmsRpcException;
+
+    /**
+     * Forces a resource to be unlocked. In case the given resource is a folder, all sub-resources are also unlocked.<p>
+     * 
+     * @param structureId the structure id of the resource to unlock
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void forceUnlock(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
@@ -108,6 +118,17 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
+
+    /**
+     * Returns the lock report info.<p>
+     * 
+     * @param structureId the structure id of the resource to get the report for
+     * 
+     * @return the lock report info
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsLockReportInfo getLockReportInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns a {@link CmsListInfoBean} for a given resource.<p>

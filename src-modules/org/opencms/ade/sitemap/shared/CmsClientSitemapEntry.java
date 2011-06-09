@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
-import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -52,7 +51,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 8.0.0 
  */
@@ -85,9 +84,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
         subSitemap
     }
 
-    /** Locked child resources. */
-    private boolean m_hasBlockingLockedChildren;
-
     /** The cached export name. */
     private String m_cachedExportName;
 
@@ -111,6 +107,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The entry type. */
     private EntryType m_entryType;
+
+    /** Locked child resources. */
+    private boolean m_hasBlockingLockedChildren;
 
     /** Indicates if the entry folder is locked by another user. */
     private boolean m_hasForeignFolderLock;
@@ -168,21 +167,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsClientSitemapEntry(CmsClientSitemapEntry clone) {
 
         this();
-        setId(clone.getId());
-        setDefaultFileId(clone.getDefaultFileId());
-        setDefaultFileType(clone.getDefaultFileType());
-        setName(clone.getName());
-        setSitePath(clone.getSitePath());
-        setOwnProperties(clone.getOwnProperties());
-        setDefaultFileProperties(clone.getDefaultFileProperties());
-        setVfsPath(clone.getVfsPath());
+        copyMembers(clone);
         setPosition(clone.getPosition());
-        setEditStatus(clone.getEditStatus());
-        setLock(clone.getLock());
-        setEntryType(clone.getEntryType());
-        setInNavigation(clone.isInNavigation());
-        setResourceTypeName(clone.getResourceTypeName());
-        setBlockingLockedChildren(clone.hasBlockingLockedChildren());
     }
 
     /**
@@ -319,25 +305,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the individual value for a property of this entry.<p>
-     * 
-     * @param propName the name of the property 
-     *  
-     * @return the individual value for the property propName 
-     */
-    //    public String getOwnProperty(String propName) {
-    //
-    //        CmsSimplePropertyValue prop = m_properties.get(propName);
-    //        return prop == null ? null : prop.getOwnValue();
-    //    }
-
-    public CmsPathValue getOwnPropertyPathValue(String propName) {
-
-        //TODO: remove unused methods!
-        return null;
-    }
-
-    /**
      * Returns the position.<p>
      *
      * @return the position
@@ -376,16 +343,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         return m_subEntries;
     }
-
-    //    /**
-    //     * Returns a map of this entry's own properties.<p>
-    //     * 
-    //     * @return a map of this entry's own properties
-    //     */
-    //    public Map<String, CmsSimplePropertyValue> getProperties() {
-    //
-    //        return m_properties;
-    //    }
 
     /**
      * Returns the title.<p>
@@ -613,11 +570,13 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the 'children loaded initially' flag to true.<p>
+     * Sets the 'children loaded initially' flag.<p>
+     * 
+     * @param childrenLoaded <code>true</code> if children are loaded initially
      */
-    public void setChildrenLoadedInitially() {
+    public void setChildrenLoadedInitially(boolean childrenLoaded) {
 
-        m_childrenLoadedInitially = true;
+        m_childrenLoadedInitially = childrenLoaded;
     }
 
     /** 
@@ -752,16 +711,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the properties inherited by the entry's parent.<p>
-     * 
-     * @param parentProperties the properties inherited by the entry's parent 
-     */
-    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
-    //
-    //        m_parentInheritedProperties = parentProperties;
-    //    }
-
-    /**
      * Sets the name.<p>
      *
      * @param name the name to set
@@ -770,16 +719,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_name = name;
     }
-
-    /**
-     * Sets the properties.<p>
-     *
-     * @param properties the properties to set
-     */
-    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
-    //
-    //        m_properties = properties;
-    //    }
 
     /**
      * Sets the "new" flag of the client sitemap entry.<p>
@@ -916,24 +855,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void update(CmsClientSitemapEntry source) {
 
-        setId(source.getId());
-        setName(source.getName());
-        setOwnProperties(new HashMap<String, CmsClientProperty>(source.getOwnProperties()));
-        setDefaultFileId(source.getDefaultFileId());
-        setDefaultFileProperties(new HashMap<String, CmsClientProperty>(source.getDefaultFileProperties()));
-        setOwnProperties(source.getOwnProperties());
-        setSitePath(source.getSitePath());
-        setVfsPath(source.getVfsPath());
+        copyMembers(source);
         // position values < 0 are considered as not set
         if (source.getPosition() >= 0) {
             setPosition(source.getPosition());
         }
-        setEditStatus(source.getEditStatus());
-        setLock(source.getLock());
-        setEntryType(source.getEntryType());
-        setInNavigation(source.isInNavigation());
-        setHasForeignFolderLock(source.hasForeignFolderLock());
-        setBlockingLockedChildren(source.hasBlockingLockedChildren());
     }
 
     /**
@@ -954,6 +880,34 @@ public class CmsClientSitemapEntry implements IsSerializable {
         for (CmsClientSitemapEntry child : m_subEntries) {
             child.updateSitePath(CmsStringUtil.joinPaths(sitepath, CmsResource.getName(child.getSitePath())));
         }
+    }
+
+    /**
+     * Copies all member variables apart from sub-entries and position.<p>
+     * 
+     * @param source the source to copy from
+     */
+    private void copyMembers(CmsClientSitemapEntry source) {
+
+        setId(source.getId());
+        setName(source.getName());
+        setOwnProperties(new HashMap<String, CmsClientProperty>(source.getOwnProperties()));
+        setDefaultFileId(source.getDefaultFileId());
+        setDefaultFileType(source.getDefaultFileType());
+        setDefaultFileProperties(new HashMap<String, CmsClientProperty>(source.getDefaultFileProperties()));
+        setDetailpageTypeName(source.getDetailpageTypeName());
+        setSitePath(source.getSitePath());
+        setVfsPath(source.getVfsPath());
+        setEditStatus(source.getEditStatus());
+        setLock(source.getLock());
+        setEntryType(source.getEntryType());
+        setInNavigation(source.isInNavigation());
+        setHasForeignFolderLock(source.hasForeignFolderLock());
+        setBlockingLockedChildren(source.hasBlockingLockedChildren());
+        setFolderDefaultPage(source.isFolderDefaultPage());
+        setResourceTypeName(source.getResourceTypeName());
+        setChildrenLoadedInitially(source.getChildrenLoadedInitially());
+        setFolderDefaultPage(source.isFolderDefaultPage());
     }
 
     /**

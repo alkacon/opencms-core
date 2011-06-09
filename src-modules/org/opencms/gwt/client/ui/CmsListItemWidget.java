@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.util.CmsStringUtil;
 
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 8.0.0
  */
@@ -207,20 +208,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
          * @param box the 
          */
         void handleEdit(CmsLabel title, TextBox box);
-    }
-
-    /** Lock icons. */
-    public enum LockIcon {
-        /** Closed lock. */
-        CLOSED,
-        /** No lock. */
-        NONE,
-        /** Open lock. */
-        OPEN,
-        /** Shared closed lock. */
-        SHARED_CLOSED,
-        /** Shared open lock. */
-        SHARED_OPEN
     }
 
     /**
@@ -921,6 +908,12 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         // set the resource type icon if present
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {
             setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getResourceType(), false));
+        }
+        if (infoBean.getStateIcon() != null) {
+            setStateIcon(infoBean.getStateIcon());
+        }
+        if (infoBean.getLockIcon() != null) {
+            setLockIcon(infoBean.getLockIcon(), infoBean.getLockIconTitle());
         }
         initAdditionalInfo(infoBean);
     }

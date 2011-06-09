@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2011/06/01 13:06:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -85,9 +85,6 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /** The structure id of the resource. */
     protected CmsUUID m_structureId;
-
-    /** The vfs path of the resource. */
-    protected String m_vfsPath;
 
     /** The date box for the expiration date. */
     private CmsDateBox m_dateExpired = new CmsDateBox();
@@ -100,6 +97,9 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /** The checkbox for enabling the date released box. */
     private CmsCheckBox m_dateReleasedCheck = new CmsCheckBox();
+
+    /** The icon class. */
+    private String m_iconClass;
 
     /** The checkbox for the modify sibling info. */
     private CmsCheckBox m_modifySiblings = new CmsCheckBox();
@@ -127,7 +127,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
      * 
      * @param structureId the structure id of the resource to create the dialog for
      */
-    public CmsAvailabilityDialog(final CmsUUID structureId) {
+    public CmsAvailabilityDialog(CmsUUID structureId) {
 
         this();
         m_structureId = structureId;
@@ -136,12 +136,13 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
     /**
      * Creates the availability dialog.<p>
      * 
-     * @param vfsPath the vfs path of the resource to create the dialog for
+     * @param structureId the structure id of the resource to create the dialog for
+     * @param iconClass icon class to override the resource type icon
      */
-    public CmsAvailabilityDialog(String vfsPath) {
+    public CmsAvailabilityDialog(CmsUUID structureId, String iconClass) {
 
-        this();
-        m_vfsPath = vfsPath;
+        this(structureId);
+        m_iconClass = iconClass;
     }
 
     /**
@@ -195,11 +196,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             public void execute() {
 
                 start(0, true);
-                if (m_structureId != null) {
-                    CmsCoreProvider.getVfsService().getAvailabilityInfo(m_structureId, this);
-                } else {
-                    CmsCoreProvider.getVfsService().getAvailabilityInfo(m_vfsPath, this);
-                }
+                CmsCoreProvider.getVfsService().getAvailabilityInfo(m_structureId, this);
             }
 
             /**
@@ -292,6 +289,9 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         m_availabilityInfo = dialogBean;
         // create the info box
         final CmsListItemWidget info = new CmsListItemWidget(m_availabilityInfo.getPageInfo());
+        if (m_iconClass != null) {
+            info.setIcon(m_iconClass);
+        }
         m_panel.add(info);
 
         // create the publish scheduled field
@@ -613,11 +613,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             @Override
             public void execute() {
 
-                if (m_structureId != null) {
-                    CmsCoreProvider.getService().setAvailabilityInfo(m_structureId, m_availabilityInfo, this);
-                } else {
-                    CmsCoreProvider.getService().setAvailabilityInfo(m_vfsPath, m_availabilityInfo, this);
-                }
+                CmsCoreProvider.getService().setAvailabilityInfo(m_structureId, m_availabilityInfo, this);
             }
 
             /**

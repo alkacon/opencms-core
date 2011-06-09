@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/06/01 12:24:07 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,9 +54,9 @@ import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -65,6 +65,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 8.0.0
  */
@@ -155,6 +156,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         : entry.getResourceTypeName());
 
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
+        itemWidget.setIcon(getIconForEntry(entry));
         final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry);
         itemWidget.setAdditionalInfoLoader(new I_CmsAdditionalInfoLoader() {
 
@@ -283,6 +285,28 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Returns the icon class for the given entry depending on the editor mode.<p>
+     * 
+     * @param entry the entry to get the icon for
+     * 
+     * @return the icon CSS class
+     */
+    public String getIconForEntry(CmsClientSitemapEntry entry) {
+
+        String iconClass = CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false);
+        if (isNavigationMode()) {
+            if (m_controller.isDetailPage(entry.getId())) {
+                iconClass = CmsIconUtil.getResourceIconClasses(
+                    m_controller.getDetailPageInfo(entry.getId()).getType(),
+                    false);
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
+                iconClass = CmsIconUtil.getResourceIconClasses(entry.getDefaultFileType(), false);
+            }
+        }
+        return iconClass;
+    }
+
+    /**
      * Gets the list of descendants of a path and splits it into two lists, one containing the sitemap entries whose children have 
      * already been loaded, and those whose children haven't been loaded.<p>
      * 
@@ -386,7 +410,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             target.addChild(create(child));
         }
         target.onFinishLoading();
-        target.enableVfsMode(!isNavigationMode());
         target.getTree().setAnimationEnabled(true);
         if (event.isSetOpen()) {
             target.setOpen(true);
@@ -523,13 +546,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (m_editorMode == EditorMode.vfs) {
             m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
-            getRootItem().enableVfsMode(true);
         } else {
 
             m_toolbar.setNewEnabled(true, null);
             m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
-            getRootItem().enableVfsMode(false);
         }
+        getRootItem().updateEditorMode();
     }
 
     /**

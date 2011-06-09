@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2011/06/09 12:48:09 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
@@ -92,7 +93,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 8.0.0
  */
@@ -198,25 +199,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
             return null;
         }
         return map.get(key);
-    }
-
-    /**
-     * Returns the no edit reason or <code>null</code> if editing is allowed.<p>
-     * 
-     * @param entry the entry to get the no edit reason for
-     * 
-     * @return the no edit reason
-     */
-    public String getNoEditReason(CmsClientSitemapEntry entry) {
-
-        String reason = null;
-        if ((entry.getLock() != null) && (entry.getLock().getLockOwner() != null) && !entry.getLock().isOwnedByUser()) {
-            reason = Messages.get().key(Messages.GUI_DISABLED_LOCKED_BY_1, entry.getLock().getLockOwner());
-        }
-        if (entry.hasBlockingLockedChildren()) {
-            reason = Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0);
-        }
-        return reason;
     }
 
     /**
@@ -823,6 +805,25 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Returns the no edit reason or <code>null</code> if editing is allowed.<p>
+     * 
+     * @param entry the entry to get the no edit reason for
+     * 
+     * @return the no edit reason
+     */
+    public String getNoEditReason(CmsClientSitemapEntry entry) {
+
+        String reason = null;
+        if ((entry.getLock() != null) && (entry.getLock().getLockOwner() != null) && !entry.getLock().isOwnedByUser()) {
+            reason = Messages.get().key(Messages.GUI_DISABLED_LOCKED_BY_1, entry.getLock().getLockOwner());
+        }
+        if (entry.hasBlockingLockedChildren()) {
+            reason = Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0);
+        }
+        return reason;
+    }
+
+    /**
      * Returns the parent entry of a sitemap entry, or null if it is the root entry.<p>
      * 
      * @param entry a sitemap entry
@@ -1060,7 +1061,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
     */
     protected void applyChange(final I_CmsClientSitemapChange change, final AsyncCallback<Object>... callbacks) {
 
-        if (change.getChangeForCommit() != null) {
+        final CmsSitemapChange commitChange = change.getChangeForCommit();
+        if (commitChange != null) {
             // save the sitemap
             CmsRpcAction<List<CmsClientSitemapEntry>> saveAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -1072,7 +1074,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                     setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
                     start(0, true);
-                    getService().saveSync(getEntryPoint(), change.getChangeForCommit(), this);
+                    getService().saveSync(getEntryPoint(), commitChange, this);
 
                 }
 
