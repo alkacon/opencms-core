@@ -196,35 +196,16 @@
 .alertBottomContent {
 	margin-top: value("constants.css.defaultSpace");
 } 
-.warningContent {
-	width: 100%;
-	border: 1px solid value("constants.css.borderColor");
+
+.popup div.logReportScrollPanel {
+	position: relative;
+	overflow: auto;
+	margin: 5px 0px 0px 0px;
 }
 
-@sprite .warningSprite {
-	gwt-image: "gwtImages.warningSmallImage"; 
+.popup  div.logReportScrollPanel ul{
+	margin: 2px;
 }
-
-@sprite .warningContent > tbody > tr > td:first-child {
-	gwt-image: "gwtImages.warningBigImage";
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	vertical-align: middle;
-	padding: 15px;
-	width: 32px;
-}
-.warningContent > tbody > tr > td {
-	vertical-align: middle;
-	padding: 15px 15px 15px 0px;
-}
-
-.warningContent > tbody > tr > td > p:first-child {
-	margin-top: 0px;
-}
-.warningContent > tbody > tr > td > p {
-	margin-top: 5px;
-}
-
 
 .borderPadding {
 	bottom: 0;

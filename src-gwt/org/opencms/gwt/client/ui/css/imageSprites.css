@@ -142,3 +142,11 @@
 	display: inline-block;
 	cursor: pointer;
 }
+
+@sprite div.warningIcon, span.warningIcon{
+	gwt-image: "warningSmallImage"; 
+}
+
+@sprite .warningBigIcon, div.warningBigIcon, span.warningBigIcon{
+	gwt-image: "warningBigImage"; 
+}

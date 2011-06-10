@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/css/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/06/10 06:57:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -263,6 +263,18 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String uploadIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String warningIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String warningBigIcon();
     }
 
     /** The bundle instance. */

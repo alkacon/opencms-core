@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/publish/client/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2011/06/10 06:57:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -737,8 +737,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         if (numProblems > 0) {
             HorizontalPanel errorBox = new HorizontalPanel();
             Label warnIcon = new Label();
-            String styleName = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().warningSprite();
-            warnIcon.addStyleName(styleName);
+            warnIcon.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
             errorBox.add(warnIcon);
             errorBox.add(new Label(message));

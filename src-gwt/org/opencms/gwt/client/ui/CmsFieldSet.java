@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsFieldSet.java,v $
- * Date   : $Date: 2011/06/10 06:57:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,12 +40,13 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -58,14 +59,14 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @author Ruediger Kurz
  * @author Tobias Herrmann
  * 
  * @since 8.0.0
  */
-public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSet> {
+public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet> {
 
     /** The ui-binder interface for this composite. */
     protected interface I_CmsFieldSetUiBinder extends UiBinder<Widget, CmsFieldSet> {
@@ -81,9 +82,6 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     /** The content of the fieldset. */
     @UiField
     protected FlowPanel m_content;
-
-    /** The event bus for the fieldset. */
-    protected SimpleEventBus m_eventBus;
 
     /** The wrapping panel for this fieldset. */
     @UiField
@@ -124,9 +122,16 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
 
         initWidget(uiBinder.createAndBindUi(this));
         m_visibilityStyle = new CmsStyleVariable(m_fieldset);
-        m_eventBus = new SimpleEventBus();
         setOpen(true);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasCloseHandlers#addCloseHandler(com.google.gwt.event.logical.shared.CloseHandler)
+     */
+    public HandlerRegistration addCloseHandler(CloseHandler<CmsFieldSet> handler) {
+
+        return addHandler(handler, CloseEvent.getType());
     }
 
     /**
@@ -144,16 +149,7 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
      */
     public HandlerRegistration addOpenHandler(OpenHandler<CmsFieldSet> handler) {
 
-        return m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
-     */
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-
-        m_eventBus.fireEventFromSource(event, this);
+        return addHandler(handler, OpenEvent.getType());
     }
 
     /**
@@ -275,6 +271,7 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
                 public void execute() {
 
                     setOpen(false);
+                    CloseEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
                 }
             }, m_animationDuration);
         }

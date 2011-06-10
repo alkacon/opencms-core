@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsPopup.java,v $
- * Date   : $Date: 2011/06/10 06:57:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -474,6 +474,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void center() {
 
+        super.center();
         if (m_resizeHandlerRegistration == null) {
             m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
 
@@ -483,7 +484,6 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                 }
             });
         }
-        super.center();
     }
 
     /**
@@ -870,6 +870,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void show() {
 
+        super.show();
         if (m_useAnimation) {
             CmsFadeAnimation.fadeIn(getElement(), null, 500);
         }
@@ -882,7 +883,6 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                 }
             });
         }
-        super.show();
     }
 
     /**
@@ -1183,5 +1183,20 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             return m_caption.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
+    }
+
+    /**
+     * Returns the maximum available height inside the popup.<p>
+     * 
+     * @param fixedContentHeight fixed content height to deduct from the available height
+     * 
+     * @return the maximum available height
+     */
+    public int getAvailableHeight(int fixedContentHeight) {
+
+        if (m_buttonPanel.isVisible()) {
+            fixedContentHeight += m_buttonPanel.getOffsetHeight();
+        }
+        return Window.getClientHeight() - 150 - fixedContentHeight;
     }
 }

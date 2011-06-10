@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/06/10 06:57:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -48,7 +47,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -61,7 +60,7 @@ public class CmsErrorDialog extends CmsPopup {
     private CmsFieldSet m_detailsFieldset;
 
     /** The message HTML. */
-    private HTML m_messageHtml;
+    private CmsMessageWidget m_messageWidget;
 
     /**
      * Constructor.<p>
@@ -92,8 +91,8 @@ public class CmsErrorDialog extends CmsPopup {
         addButton(m_closeButton);
 
         Panel content = new FlowPanel();
-        m_messageHtml = createMessageHtml(message);
-        content.add(m_messageHtml);
+        m_messageWidget = createMessageWidget(message);
+        content.add(m_messageWidget);
         if (details != null) {
             m_detailsFieldset = createDetailsFieldSet(details);
             m_detailsFieldset.addOpenHandler(new OpenHandler<CmsFieldSet>() {
@@ -119,8 +118,9 @@ public class CmsErrorDialog extends CmsPopup {
     @Override
     public void center() {
 
+        show();
         super.center();
-        onShow();
+
     }
 
     /**
@@ -166,14 +166,12 @@ public class CmsErrorDialog extends CmsPopup {
      * 
      * @return the HTML widget
      */
-    private HTML createMessageHtml(String message) {
+    private CmsMessageWidget createMessageWidget(String message) {
 
-        StringBuffer buffer = new StringBuffer(64);
-        buffer.append("<div class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon()).append(
-            "\"></div><p class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().message()).append("\">").append(
-            message).append("</p><br class=\"").append(I_CmsLayoutBundle.INSTANCE.generalCss().clearAll()).append(
-            "\" />");
-        return new HTML(buffer.toString());
+        CmsMessageWidget widget = new CmsMessageWidget();
+        widget.setIconClass(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon());
+        widget.setMessageText(message);
+        return widget;
     }
 
     /**
@@ -181,10 +179,10 @@ public class CmsErrorDialog extends CmsPopup {
      */
     private void onShow() {
 
-        int maxHeight = Window.getClientHeight() - 180 - m_messageHtml.getOffsetHeight();
         if (m_detailsFieldset != null) {
-            m_detailsFieldset.getContentPanel().getElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+            m_detailsFieldset.getContentPanel().getElement().getStyle().setPropertyPx(
+                "maxHeight",
+                getAvailableHeight(m_messageWidget.getOffsetHeight()));
         }
     }
-
 }

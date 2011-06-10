@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsAlertDialog.java,v $
- * Date   : $Date: 2011/06/10 06:57:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -51,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +72,7 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
     private FlowPanel m_topWidgets;
 
     /** The warning message. */
-    private FlexTable m_warningMessage;
+    private CmsMessageWidget m_warningMessage;
 
     /** 
      * Constructor.<p>
@@ -132,11 +131,9 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
         m_content.add(m_topWidgets);
 
         // create the warning message
-        m_warningMessage = new FlexTable();
-        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().warningContent());
-        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_warningMessage.setText(0, 0, "");
-        m_warningMessage.setHTML(0, 1, content);
+        m_warningMessage = new CmsMessageWidget();
+        m_warningMessage.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().border());
+        m_warningMessage.setMessageHtml(content);
 
         m_content.add(m_warningMessage);
 
@@ -257,7 +254,7 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
      */
     public void setWarningMessage(String warningText) {
 
-        m_warningMessage.setHTML(0, 1, warningText);
+        m_warningMessage.setMessageHtml(warningText);
     }
 
     /**

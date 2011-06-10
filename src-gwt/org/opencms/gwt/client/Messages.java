@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/Messages.java,v $
- * Date   : $Date: 2011/06/10 06:57:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -222,6 +222,15 @@ public final class Messages {
     public static final String GUI_LOCK_OWNED_BY_1 = "GUI_LOCK_OWNED_BY_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_TITLE_0 = "GUI_LOCK_REPORT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_UNLOCK_MESSAGE_0 = "GUI_LOCK_REPORT_UNLOCK_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_NOTHING_LOCKED_0 = "GUI_LOCK_REPORT_NOTHING_LOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -358,6 +367,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNLOCK_ALL_0 = "GUI_UNLOCK_ALL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";

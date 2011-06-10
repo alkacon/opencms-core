@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/upload/client/ui/A_CmsUploadDialog.java,v $
- * Date   : $Date: 2011/06/10 06:57:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,6 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -97,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -154,15 +153,12 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             m_bar.setValue(100);
             m_fileinfo.removeAllRows();
             m_fileinfo.setHTML(0, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_FINISH_UPLOADED_0) + "</b>");
-            m_fileinfo.setText(
-                0,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
-                    new Integer(fileCount),
-                    new Integer(fileCount),
-                    getFileText(),
-                    length));
+            m_fileinfo.setText(0, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
+                new Integer(fileCount),
+                new Integer(fileCount),
+                getFileText(),
+                length));
         }
 
         /**
@@ -211,18 +207,15 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             }
 
             m_fileinfo.setText(0, 1, currFilename);
-            m_fileinfo.setText(
-                1,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
-                    new Integer(currFileIndex + 1),
-                    new Integer(fileCount),
-                    getFileText()));
-            m_fileinfo.setText(
-                2,
-                1,
-                Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2, readBytes, contentLength));
+            m_fileinfo.setText(1, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
+                new Integer(currFileIndex + 1),
+                new Integer(fileCount),
+                getFileText()));
+            m_fileinfo.setText(2, 1, Messages.get().key(
+                Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2,
+                readBytes,
+                contentLength));
         }
 
         /**
@@ -391,7 +384,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         m_contentWrapper = new FlowPanel();
         m_contentWrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().mainContentWidget());
         m_contentWrapper.addStyleName(m_gwtCss.generalCss().cornerAll());
-        m_contentWrapper.getElement().getStyle().setPropertyPx("maxHeight", Window.getClientHeight() - 300);
         m_contentWrapper.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
         m_contentWrapper.add(m_fileList);
         m_mainPanel.add(m_contentWrapper);
@@ -474,11 +466,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                  */
                 public void execute() {
 
+                    setContentWrapperHeight();
                     center();
                 }
             });
         }
-        center();
+        show();
+
     }
 
     /**
@@ -806,6 +800,22 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         } else {
             commit();
         }
+    }
+
+    /**
+     * Execute to set the content wrapper height.<p>
+     */
+    protected void setContentWrapperHeight() {
+
+        // set the max height of the content panel
+        int fixedContent = 0;
+        if (m_dialogInfo.isVisible()) {
+            fixedContent += m_dialogInfo.getOffsetHeight();
+        }
+        if (m_selectionSummary.isVisible()) {
+            fixedContent += m_selectionSummary.getOffsetHeight();
+        }
+        m_contentWrapper.getElement().getStyle().setPropertyPx("maxHeight", getAvailableHeight(fixedContent));
     }
 
     /**

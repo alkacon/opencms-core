@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/property/CmsVfsModePropertyEditor.java,v $
- * Date   : $Date: 2011/06/10 06:57:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
@@ -55,6 +57,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -70,11 +75,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
+
+    /** The interval used for updating the height. */
+    public static final int UPDATE_HEIGHT_INTERVAL = 100;
 
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
@@ -133,6 +141,36 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#start()
+     */
+    @Override
+    public void start() {
+
+        super.start();
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!getPropertyPanel().getTabPanel().isAttached() || !getPropertyPanel().getTabPanel().isVisible()) {
+                    return false;
+                }
+                updateHeight();
+                return true;
+            }
+        }, UPDATE_HEIGHT_INTERVAL);
+    }
+
+    /**
+     * Returns the property panel.<p>
+     * 
+     * @return the property panel
+     */
+    protected CmsPropertyPanel getPropertyPanel() {
+
+        return m_panel;
+    }
+
+    /**
      * Method which is called when the tab is switched.<p>
      * 
      * @param toTab the tab to which the user is switching 
@@ -181,6 +219,23 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         });
 
         m_form.setWidget(m_panel);
+    }
+
+    /**
+     * Updates the panel height depending on the content of the current tab.<p>
+     */
+    protected void updateHeight() {
+
+        int tabIndex = m_panel.getTabPanel().getSelectedIndex();
+        Element tabElement = m_panel.getTabPanel().getWidget(tabIndex).getElement();
+        Element innerElement = tabElement.getFirstChildElement();
+        int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
+        int spaceLeft = m_dialog.getAvailableHeight(0);
+        int newHeight = Math.min(spaceLeft, contentHeight) + 45;
+        if (m_panel.getTabPanel().getOffsetHeight() != newHeight) {
+            m_panel.getTabPanel().setHeight(newHeight + "px");
+            m_dialog.center();
+        }
     }
 
     /**

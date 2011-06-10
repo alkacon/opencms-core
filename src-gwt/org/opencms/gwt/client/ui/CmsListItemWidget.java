@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/06/10 06:57:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,6 +70,12 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -89,12 +95,13 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite
-implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
+implements HasOpenHandlers<CmsListItemWidget>, HasCloseHandlers<CmsListItemWidget>, HasMouseOutHandlers,
+HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /** Additional info item HTML. */
     public static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
@@ -345,6 +352,14 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.HasCloseHandlers#addCloseHandler(com.google.gwt.event.logical.shared.CloseHandler)
+     */
+    public HandlerRegistration addCloseHandler(CloseHandler<CmsListItemWidget> handler) {
+
+        return addHandler(handler, CloseEvent.getType());
+    }
+
+    /**
      * @see com.google.gwt.event.dom.client.HasDoubleClickHandlers#addDoubleClickHandler(com.google.gwt.event.dom.client.DoubleClickHandler)
      */
     public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
@@ -371,6 +386,14 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         HandlerRegistration req = addDomHandler(handler, MouseOverEvent.getType());
         m_handlerRegistrations.add(req);
         return req;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasOpenHandlers#addOpenHandler(com.google.gwt.event.logical.shared.OpenHandler)
+     */
+    public HandlerRegistration addOpenHandler(OpenHandler<CmsListItemWidget> handler) {
+
+        return addHandler(handler, OpenEvent.getType());
     }
 
     /**
@@ -549,9 +572,11 @@ implements HasMouseOutHandlers, HasClickHandlers, HasDoubleClickHandlers, HasMou
         if (visible) {
             addStyleName(CmsListItemWidget.OPENCLASS);
             m_openClose.setDown(true);
+            OpenEvent.fire(this, this);
         } else {
             removeStyleName(CmsListItemWidget.OPENCLASS);
             m_openClose.setDown(false);
+            CloseEvent.fire(this, this);
         }
     }
 

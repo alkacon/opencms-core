@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/css/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/06/10 06:57:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/06/10 14:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * @author Tobias Herrmann
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -446,6 +446,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String logReportScrollPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String menuArrowBottom();
 
         /** 
@@ -482,20 +489,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String popupOverlay();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String warningContent();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String warningSprite();
     }
 
     /** The drag and drop CSS used by the base module. */

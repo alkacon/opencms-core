@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		table.main{
+			display: block;
+		}
+		table.main td.icon{
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			vertical-align: middle;
+			padding: 0px;
+			width: 60px;
+		}
+		table.main td.message{
+			vertical-align: middle;
+			padding: 15px 15px 15px 0px;
+		}
+		table.main td.message > p:first-child {
+			margin-top: 0px;
+		}
+		table.main td.message > p {
+			margin-top: 5px;
+		}
+	</ui:style>
+	<table class="{style.main} {resources.generalCss.cornerAll}">
+		<tr><td ui:field="m_icon" class="{style.icon}"></td><td ui:field="m_message" class="{style.message}"></td></tr>
+	</table>
+</ui:UiBinder>
