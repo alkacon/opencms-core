@@ -1,0 +1,105 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/input/CmsRadioButtonGroup.java,v $
+ * Date   : $Date: 2011/06/10 06:57:09 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.ui.input;
+
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+
+/**
+ * This class coordinates multiple radio buttons and makes sure that when a radio button of a group is
+ * selected, no other radio button of the same group is selected.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsRadioButtonGroup {
+
+    /** The currently selected radio button (null if none is selected). */
+    private CmsRadioButton m_selectedButton;
+
+    /** The object to which value change events should be fired. */
+    private HasValueChangeHandlers<String> m_target;
+
+    /** 
+     * Deselects a selected radio button (if one is selected).<p>
+     */
+    public void deselectButton() {
+
+        if (m_selectedButton != null) {
+            m_selectedButton.setChecked(false);
+            m_selectedButton = null;
+        }
+    }
+
+    /**
+     * Returns the currently selected button, or null if none is selected.<p>
+     * 
+     * @return the selected button or null
+     */
+    public CmsRadioButton getSelectedButton() {
+
+        return m_selectedButton;
+    }
+
+    /**
+     * Selects a new button and deselects the previously selected one.<p>
+     * 
+     * @param button the button which should be selected 
+     */
+    public void selectButton(CmsRadioButton button) {
+
+        if (m_selectedButton != button) {
+            if (m_selectedButton != null) {
+                m_selectedButton.setChecked(false);
+            }
+            button.setChecked(true);
+            m_selectedButton = button;
+            if (m_target != null) {
+                ValueChangeEvent.fire(m_target, button.getName());
+            }
+        }
+    }
+
+    /**
+     * Sets the new value change event target for this button group.<p>
+     * 
+     * @param target the value change event target 
+     */
+    public void setValueChangeTarget(HasValueChangeHandlers<String> target) {
+
+        m_target = target;
+    }
+
+}

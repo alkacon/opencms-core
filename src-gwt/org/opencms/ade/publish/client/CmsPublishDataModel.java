@@ -1,0 +1,313 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/publish/client/CmsPublishDataModel.java,v $
+ * Date   : $Date: 2011/06/10 06:57:33 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ade.publish.client;
+
+import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
+import org.opencms.ade.publish.client.CmsPublishItemStatus.State;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+/**
+ * This class contains the data for the publish resources which are displayed 
+ * in the publish dialog.<p> 
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsPublishDataModel {
+
+    /**
+     * Predicate used to check if a resource has problems.<p>
+     */
+    public static class HasProblems implements I_CmsPublishResourceCheck {
+
+        /**
+         * @see org.opencms.ade.publish.client.CmsPublishDataModel.I_CmsPublishResourceCheck#check(org.opencms.ade.publish.shared.CmsPublishResource)
+         */
+        public boolean check(CmsPublishResource res) {
+
+            boolean result = res.getInfo() != null;
+            return result;
+        }
+    }
+
+    /**
+     * Predicate for testing properties of publish resources.<p>
+     */
+    public static interface I_CmsPublishResourceCheck {
+
+        /**
+         * Applies a boolean test to the publish resource and returns the result.<p>
+         * 
+         * @param res the publish resource 
+         * @return the result 
+         */
+        boolean check(CmsPublishResource res);
+
+    }
+
+    /** The item status bean, indexed by structure id. */
+    private Map<CmsUUID, CmsPublishItemStatus> m_status = Maps.newHashMap();
+
+    /** The publish resources indexed by UUID. */
+    private Map<CmsUUID, CmsPublishResource> m_publishResources = Maps.newHashMap();
+
+    /** The publish resources indexed by path. */
+    private Map<String, CmsPublishResource> m_publishResourcesByPath = Maps.newHashMap();
+
+    /** The structure ids for each group. */
+    private List<List<CmsUUID>> m_idsByGroup = Lists.newArrayList();
+
+    /** The original publish groups. */
+    private List<CmsPublishGroup> m_groups;
+
+    /**
+     * Creates and initializes a new publish resource data model from a list of publish groups.<p>
+     *  
+     * @param publishGroups the original publish groups 
+     * @param handler the handler which should be notified of state changes 
+     */
+    public CmsPublishDataModel(List<CmsPublishGroup> publishGroups, I_CmsPublishItemStatusUpdateHandler handler) {
+
+        m_groups = publishGroups;
+        for (CmsPublishGroup group : publishGroups) {
+            List<CmsUUID> idList = new ArrayList<CmsUUID>();
+            m_idsByGroup.add(idList);
+            for (CmsPublishResource res : group.getResources()) {
+                CmsPublishItemStatus status = new CmsPublishItemStatus(
+                    res.getId(),
+                    State.normal,
+                    res.getInfo() != null,
+                    handler);
+                m_status.put(res.getId(), status);
+                m_publishResources.put(res.getId(), res);
+                m_publishResourcesByPath.put(res.getName(), res);
+                idList.add(res.getId());
+            }
+        }
+    }
+
+    /**
+     * Counts the resources which have problems.<p>
+     * 
+     * @return the number of resources which have problems 
+     */
+    public int countProblems() {
+
+        return countResources(new HasProblems());
+    }
+
+    /**
+     * Counts the resources which pass a given check.<p>
+     * 
+     * @param check the check to apply 
+     * 
+     * @return the number of resources which passed the check 
+     */
+    public int countResources(I_CmsPublishResourceCheck check) {
+
+        int count = 0;
+        for (CmsPublishGroup group : m_groups) {
+            count += countResourcesInGroup(check, group.getResources());
+        }
+        return count;
+    }
+
+    /**
+     * Counts the resources of a group which pass a given check.<p>
+     * 
+     * @param check the check to apply 
+     * @param group the group of publish resources 
+     * 
+     * @return the number of resources in that group which passed the check 
+     */
+    public int countResourcesInGroup(I_CmsPublishResourceCheck check, List<CmsPublishResource> group) {
+
+        int result = 0;
+        for (CmsPublishResource res : group) {
+            if (check.check(res)) {
+                result += 1;
+            }
+        }
+        return result;
+
+    }
+
+    /**
+     * Gets the list of publish groups.<p>
+     * 
+     * @return the list of publish groups 
+     */
+    public List<CmsPublishGroup> getGroups() {
+
+        return m_groups;
+    }
+
+    /** 
+     * Gets the ids for a given publish group.<p>
+     * 
+     * @param groupNum the index of the group
+     *  
+     * @return the UUIDs for that group 
+     */
+    public List<CmsUUID> getIdsForGroup(int groupNum) {
+
+        return m_idsByGroup.get(groupNum);
+    }
+
+    /** 
+     * Returns the ids of publish resources which should be published.<p>
+     * 
+     * @return the ids of publish resources which should be published 
+     */
+    public List<CmsUUID> getPublishIds() {
+
+        List<CmsUUID> toPublish = new ArrayList<CmsUUID>();
+        for (Map.Entry<CmsUUID, CmsPublishItemStatus> entry : m_status.entrySet()) {
+            CmsUUID key = entry.getKey();
+            CmsPublishItemStatus status = entry.getValue();
+            if (status.getState() == State.publish) {
+                toPublish.add(key);
+            }
+        }
+        return toPublish;
+    }
+
+    /** 
+     * Returns the list of all publish resources.<p>
+     * 
+     * @return the list of all publish resources 
+     */
+    public Map<CmsUUID, CmsPublishResource> getPublishResources() {
+
+        return m_publishResources;
+    }
+
+    /** 
+     * Returns the map of publish resources by path.<p>
+     * 
+     * @return the map of publish resources by path 
+     */
+    public Map<String, CmsPublishResource> getPublishResourcesByPath() {
+
+        return m_publishResourcesByPath;
+    }
+
+    /**
+     * Returns the ids of publish resources which should be removed.<p>
+     * 
+     * @return the ids of publish resources which should be removed 
+     */
+    public List<CmsUUID> getRemoveIds() {
+
+        List<CmsUUID> toRemove = new ArrayList<CmsUUID>();
+        for (Map.Entry<CmsUUID, CmsPublishItemStatus> entry : m_status.entrySet()) {
+            CmsUUID key = entry.getKey();
+            CmsPublishItemStatus status = entry.getValue();
+            if (status.getState() == State.remove) {
+                toRemove.add(key);
+            }
+        }
+        return toRemove;
+    }
+
+    /** 
+     * Returns the status for a given publish resource id.<p>
+     * 
+     * @param id the publish resource's structure id 
+     * @return the status for that publish resource 
+     */
+    public CmsPublishItemStatus getStatus(CmsUUID id) {
+
+        return m_status.get(id);
+    }
+
+    /**
+     * Checks if there are any publish resources.<p>
+     * 
+     * @return true if there are no publish resources at all
+     */
+    public boolean isEmpty() {
+
+        return m_status.isEmpty();
+    }
+
+    /**
+     * Sends a signal to a publish item status bean with the given id.<p>
+     * 
+     * @param signal the signal 
+     * @param id the structure id 
+     */
+    public void signal(Signal signal, CmsUUID id) {
+
+        getStatus(id).handleSignal(signal);
+    }
+
+    /**
+     * Sends a signal to all publish item status beans.<p>
+     * 
+     * @param signal the signal 
+     */
+    public void signalAll(Signal signal) {
+
+        for (Map.Entry<CmsUUID, CmsPublishItemStatus> entry : m_status.entrySet()) {
+            entry.getValue().handleSignal(signal);
+        }
+    }
+
+    /**
+     * Sends a signal to all publish items in a given group.<p>
+     * 
+     * @param signal the signal to send 
+     * @param groupNum the group index 
+     */
+    public void signalGroup(Signal signal, int groupNum) {
+
+        CmsPublishGroup group = m_groups.get(groupNum);
+        for (CmsPublishResource res : group.getResources()) {
+            CmsUUID id = res.getId();
+            m_status.get(id).handleSignal(signal);
+        }
+    }
+
+}

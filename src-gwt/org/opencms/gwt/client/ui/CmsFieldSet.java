@@ -1,0 +1,282 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/CmsFieldSet.java,v $
+ * Date   : $Date: 2011/06/10 06:57:05 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.ui;
+
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.util.CmsSlideAnimation;
+import org.opencms.gwt.client.util.CmsStyleVariable;
+
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * A panel that behaves like a HTML fieldset.<p>
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @author Ruediger Kurz
+ * @author Tobias Herrmann
+ * 
+ * @since 8.0.0
+ */
+public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSet> {
+
+    /** The ui-binder interface for this composite. */
+    protected interface I_CmsFieldSetUiBinder extends UiBinder<Widget, CmsFieldSet> {
+        // GWT interface, nothing to do here
+    }
+
+    /** Default animation duration.*/
+    public static final int DEFAULT_ANIMATION_DURATION = 300;
+
+    /** The ui-binder instance. */
+    private static I_CmsFieldSetUiBinder uiBinder = GWT.create(I_CmsFieldSetUiBinder.class);
+
+    /** The content of the fieldset. */
+    @UiField
+    protected FlowPanel m_content;
+
+    /** The event bus for the fieldset. */
+    protected SimpleEventBus m_eventBus;
+
+    /** The wrapping panel for this fieldset. */
+    @UiField
+    protected FlowPanel m_fieldset;
+
+    /** The image for the top and bottom arrow. */
+    @UiField
+    protected Image m_image;
+
+    /** The legend of the fieldset. */
+    @UiField
+    protected CmsLabel m_legend;
+
+    /** Signals whether the fieldset is opened. */
+    protected boolean m_opened;
+
+    /** The legend of the fieldset. */
+    @UiField
+    protected FlowPanel m_wrapper;
+
+    /** The running slide in/out animation. */
+    private Animation m_animation;
+
+    /** The animation duration. */
+    private int m_animationDuration = DEFAULT_ANIMATION_DURATION;
+
+    /** The fieldset visibility style. */
+    private CmsStyleVariable m_visibilityStyle;
+
+    /**
+     * Default constructor.<p>
+     * 
+     * Because this class has a default constructor, it can
+     * be used as a binder template. In other words, it can be used in other
+     * *.ui.xml files:
+     */
+    public CmsFieldSet() {
+
+        initWidget(uiBinder.createAndBindUi(this));
+        m_visibilityStyle = new CmsStyleVariable(m_fieldset);
+        m_eventBus = new SimpleEventBus();
+        setOpen(true);
+
+    }
+
+    /**
+     * Adds a widget to this field set.<p>
+     * 
+     * @param w the widget to add
+     */
+    public void addContent(Widget w) {
+
+        m_content.add(w);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasOpenHandlers#addOpenHandler(com.google.gwt.event.logical.shared.OpenHandler)
+     */
+    public HandlerRegistration addOpenHandler(OpenHandler<CmsFieldSet> handler) {
+
+        return m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+
+        m_eventBus.fireEventFromSource(event, this);
+    }
+
+    /**
+     * Returns the content panel.<p>
+     * 
+     * @return the content panel
+     */
+    public FlowPanel getContentPanel() {
+
+        return m_content;
+    }
+
+    /**
+     * Returns the count of widgets inside this fieldset.<p>
+     * 
+     * @return the count of widgets inside this fieldset
+     */
+    public int getWidgetCount() {
+
+        return m_content.getWidgetCount();
+    }
+
+    /**
+     * Returns the wrapper.<p>
+     *
+     * @return the wrapper
+     */
+    public FlowPanel getWrapper() {
+
+        return m_wrapper;
+    }
+
+    /**
+     * Returns if the fieldset is opened.<p>
+     * 
+     * @return <code>true</code> if the fieldset is opened
+     */
+    public boolean isOpen() {
+
+        return m_opened;
+    }
+
+    /** 
+     * Sets the animation duration.
+     * @param animDuration the animation duration 
+     */
+    public void setAnimationDuration(int animDuration) {
+
+        m_animationDuration = animDuration;
+    }
+
+    /**
+     * Sets the text for the legend of this field set.<p>
+     * 
+     * @param legendText the legend text
+     */
+    public void setLegend(String legendText) {
+
+        m_legend.setText(legendText);
+    }
+
+    /**
+     * Sets the fieldset open, showing the content.<p>
+     * 
+     * @param open <code>true</code> to open the fieldset
+     */
+    public void setOpen(boolean open) {
+
+        m_opened = open;
+        if (m_opened) {
+            // show content
+            m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottomImage());
+        } else {
+            // hide content
+            m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRightImage());
+        }
+    }
+
+    /**
+     * Adds a click handler to the image icon of this fieldset.<p>
+     * 
+     * On click the 
+     * 
+     * @param e the event
+     */
+    @UiHandler("m_image")
+    protected void handleClick(ClickEvent e) {
+
+        if (m_animation != null) {
+            m_animation.cancel();
+        }
+        if (!m_opened) {
+
+            // show content
+            setOpen(true);
+
+            m_animation = CmsSlideAnimation.slideIn(m_content.getElement(), new Command() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    OpenEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
+                }
+            }, m_animationDuration);
+        } else {
+
+            // hide content
+            m_animation = CmsSlideAnimation.slideOut(m_content.getElement(), new Command() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    setOpen(false);
+                }
+            }, m_animationDuration);
+        }
+    }
+}

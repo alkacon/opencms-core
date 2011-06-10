@@ -38,6 +38,7 @@
 	<property name="module.input.lib" location="${module.input.res}/system/modules/${module.name}/lib" />
 	<property name="module.input.src.single" location="${module.input}/src" />
 	<property name="module.input.src.shared" location="${opencms.input}/src-modules" />
+	<property name="module.input.src.gwt" location="${opencms.input}/src-gwt" />
 	<property name="module.output.classes" location="${opencms.build}/classes-${module.name}" />
 	<property name="module.output.jar" location="${opencms.build}/jars-${module.name}" />
 	<property name="module.output.zip" location="${opencms.output}/zip" />
@@ -53,12 +54,11 @@
 		<if>
 			<isset property="module.gwt.output" />
 			<then>
-			    <!-- This only deletes the "loader" Javascript, but this is enough to force a rebuild if the compile-gwt target is executed. -->
+				<!-- This only deletes the "loader" Javascript, but this is enough to force a rebuild if the compile-gwt target is executed. -->
 				<delete>
 					<fileset dir="${module.gwt.output}" includes="*.nocache.js" />
 				</delete>
 			</then>
-			
 		</if>
 		<delete dir="${module.output.classes}" />
 		<delete dir="${module.output.jar}" />
@@ -68,7 +68,6 @@
 				<delete>
 					<fileset dir="${module.output.zip}">
 						<include name="${module.name}_*.zip" />
-						
 					</fileset>
 				</delete>
 			</then>
@@ -212,31 +211,14 @@
 		<if>
 			<isset property="module.gwt" />
 			<then>
-				<if>
-					<equals arg1="${src.mode}" arg2="multishared" />
-					<then>
-						<propertyregex property="module.gwt.package"
-				              input="${module.packages}"
-				              regexp="([^,]*)"
-				              select="\1" />
-						<propertyregex property="module.gwt.package"
-					          override="true"
-							  global="true"
-				              input="${module.gwt.package}"
-				              regexp="\."
-				              replace="/" />
-						<property name="module.gwt.src" location="${module.input.src}/${module.gwt.package}" />
-					</then>
-					<else>
-						<property name="module.gwt.src" location="${module.input.src}" />
-					</else>
-				</if>
-				<propertyregex property="module.gwt.name"
-				              input="${module.gwt}"
-				              regexp="\.([^\.]*)$"
-				              select="\1" />
-
-				<readxmlproperty property="module.gwt.rename" xmlfile="${module.gwt.src}/${module.gwt.name}.gwt.xml" element="module" attribute="rename-to" />
+				<propertyregex property="module.gwt.package"
+											          override="true"
+													  global="true"
+										              input="${module.gwt}"
+										              regexp="\."
+										              replace="/" />
+				<property name="module.gwt.xmlfile" location="${module.input.src.gwt}/${module.gwt.package}.gwt.xml" />
+				<readxmlproperty property="module.gwt.rename" xmlfile="${module.gwt.xmlfile}" element="module" attribute="rename-to" />
 				<if>
 					<equals arg1="${module.gwt.rename}" arg2="" />
 					<then>
@@ -347,84 +329,73 @@
 	</target>
 
 	<target name="compile-gwt" depends="init, builddeps, get-dependency-paths" description="Compiles GWT ${module.gwt} module">
-
 		<if>
-			<not>
-				<equals arg1="${src.mode}" arg2="none" />
-			</not>
+			<isset property="module.gwt" />
 			<then>
-				<if>
-					<isset property="module.gwt" />
-					<then>
-						<outofdate verbose="false">
-							<sourcefiles>
-								<fileset dir="${module.input.src.single}" erroronmissingdir="false">
-									<include name="**/*.gwt.xml" />
-									<include name="**/client/**" />
-									<include name="**/shared/**" />
-								</fileset>
-								<fileset dir="${module.input.src.shared}" erroronmissingdir="false">
-									<include name="**/*.gwt.xml" />
-									<include name="**/client/**" />
-									<include name="**/shared/**" />
-								</fileset>
-								<fileset dir="${opencms.input.libs.runtime}" />
-								<fileset dir="${opencms.input.libs.compile}" />
-							</sourcefiles>
-							<targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
-							<sequential>
-								<!--echo message="Deleting GWT output folder"/-->
-								<delete dir="${module.gwt.output}" failonerror="false" />
+				<outofdate verbose="false">
+					<sourcefiles>
+						<fileset dir="${opencms.input}/src" erroronmissingdir="false">
+							<include name="**/shared/**" />
+						</fileset>
+						<fileset dir="${module.input.src.gwt}" erroronmissingdir="false">
+							<include name="**/*.gwt.xml" />
+							<include name="**/client/**" />
+						</fileset>
+						<fileset dir="${opencms.input.libs.runtime}" />
+						<fileset dir="${opencms.input.libs.compile}" />
+					</sourcefiles>
+					<targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
+					<sequential>
+						<!-- echo message="Deleting GWT output folder: ${module.gwt.output}"/ -->
+						<delete dir="${module.gwt.output}" failonerror="false" />
 
-								<!-- GWT compiling -->
-						  		<java dir="${basedir}" 
+						<!-- GWT compiling -->
+						<java dir="${basedir}" 
 									  classname="com.google.gwt.dev.Compiler" 
 									  fork="yes" 
 									  failonerror="true"
 									  maxmemory="512m">
-									<!--	<arg value="-XdisableClassMetadata" />
+							<!--	<arg value="-XdisableClassMetadata" />
 						  			<arg value="-XdisableCastChecking" />
 						  			<arg value="-compileReport" />  removing compiler args for faster compiling and easier debugging -> stacktrace -->
-									<arg value="-localWorkers" />
-									<arg value="2" />
-									<arg value="-logLevel" />
-									<arg value="INFO" />
-									<arg value="-style" />
-									<arg value="obfuscated" />
-									<arg value="-gen" />
-									<arg file="${opencms.output}/gwt/gen/" />
-									<arg value="-extra" />
-									<arg file="${opencms.output}/gwt/extra/" />
-									<arg value="-war" />
-						  			<arg file="${module.input.res}/system/modules/${module.name}/resources" />
-									<arg value="${module.gwt}" />
-									<classpath>
-										<fileset dir="${opencms.input.libs.runtime}">
-											<include name="**/*.jar" />
-										</fileset>
-										<fileset dir="${opencms.input.libs.compile}">
-											<include name="**/*.jar" />
-										</fileset>
-										<fileset dir="${opencms.output.jars}">
-											<include name="**/*.jar" />
-										</fileset>
-										<pathelement path="${module.input.src.single}" />
-										<pathelement path="${module.input.src.shared}" />
-										<pathelement path="${module.dependencies.path}" />
-										<pathelement path="${module.libs.path}" />
-										<pathelement path="${opencms.input}/src" />
-									</classpath>
-								</java>
-								<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />
-							</sequential>
-						</outofdate>
-					</then>
-				</if>
+							<arg value="-localWorkers" />
+							<arg value="2" />
+							<arg value="-logLevel" />
+							<arg value="INFO" />
+							<arg value="-style" />
+							<arg value="obfuscated" />
+							<arg value="-gen" />
+							<arg file="${opencms.output}/gwt/gen/" />
+							<arg value="-extra" />
+							<arg file="${opencms.output}/gwt/extra/" />
+							<arg value="-war" />
+							<arg file="${module.input.res}/system/modules/${module.name}/resources" />
+							<arg value="${module.gwt}" />
+							<classpath>
+								<fileset dir="${opencms.input.libs.runtime}">
+									<include name="**/*.jar" />
+								</fileset>
+								<fileset dir="${opencms.input.libs.compile}">
+									<include name="**/*.jar" />
+								</fileset>
+								<fileset dir="${opencms.output.jars}">
+									<include name="**/*.jar" />
+								</fileset>
+								<pathelement path="${module.input.src.single}" />
+								<pathelement path="${module.input.src.shared}" />
+								<pathelement path="${module.dependencies.path}" />
+								<pathelement path="${module.libs.path}" />
+								<pathelement path="${opencms.input}/src" />
+								<pathelement path="${module.input.src.gwt}" />
+							</classpath>
+						</java>
+						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />
+					</sequential>
+				</outofdate>
 			</then>
 		</if>
-
 	</target>
-	
+
 	<target name="compile" depends="compile-classes, compile-gwt" description="Compiles ${module.name} module classes and GWT classes" />
 
 	<target name="compile-classes" depends="init, builddeps, get-dependency-paths" description="Compiles ${module.name} module classes">
