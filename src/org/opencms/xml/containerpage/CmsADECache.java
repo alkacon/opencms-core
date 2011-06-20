@@ -144,20 +144,10 @@ public final class CmsADECache extends CmsVfsCache {
                 }
             }
         }
+        if (retValue != null) {
+            System.out.println("got cached page: " + retValue.getFile().getRootPath());
+        }
         return retValue;
-    }
-
-    /**
-     * Returns the cache key for the given parameters.<p>
-     * 
-     * @param structureId the container page's structure id
-     * @param keepEncoding if to keep the encoding while unmarshalling
-     * 
-     * @return the cache key for the given container page and parameters
-     */
-    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
-
-        return structureId.toString() + "_" + keepEncoding;
     }
 
     /**
@@ -204,6 +194,19 @@ public final class CmsADECache extends CmsVfsCache {
     }
 
     /**
+     * Returns the cache key for the given parameters.<p>
+     * 
+     * @param structureId the container page's structure id
+     * @param keepEncoding if to keep the encoding while unmarshalling
+     * 
+     * @return the cache key for the given container page and parameters
+     */
+    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
+
+        return structureId.toString() + "_" + keepEncoding;
+    }
+
+    /**
      * Caches the given container page under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -211,6 +214,8 @@ public final class CmsADECache extends CmsVfsCache {
      * @param online if to cache in online or offline project
      */
     public void setCacheContainerPage(String key, CmsXmlContainerPage containerPage, boolean online) {
+
+        System.out.println("caching page:" + containerPage.getFile().getRootPath());
 
         if (online) {
             m_containerPagesOnline.put(key, containerPage);
@@ -311,6 +316,7 @@ public final class CmsADECache extends CmsVfsCache {
         }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // remove the resource cached by it's structure ID
+            System.out.println("uncaching page: " + resource.getRootPath());
             uncacheContainerPage(resource.getStructureId(), false);
         } else {
             uncacheGroupContainer(resource.getStructureId(), false);

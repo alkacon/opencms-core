@@ -466,7 +466,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 // the properties
                 Map<String, String> properties = element.getIndividualSettings();
-                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
+                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEConfigurationManager().getElementSettings(
                     cms,
                     uriRes);
 
@@ -484,4 +484,5 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // just for visibility from the factory
         super.setFile(file);
     }
+
 }

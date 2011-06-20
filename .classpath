@@ -88,6 +88,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08-gwt.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (3)"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

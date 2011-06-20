@@ -27,18 +27,11 @@
 
 package org.opencms.ade.detailpage;
 
-import org.opencms.ade.config.CmsADEConfigurationManager;
-import org.opencms.ade.config.CmsSitemapConfigurationData;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class uses information from the detail page information stored in the sitemap to find the detail page for 
@@ -53,22 +46,24 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public Collection<String> getAllDetailPages(CmsObject cms, int resType) throws CmsException {
 
-        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
-        String typeName = OpenCms.getResourceManager().getResourceType(resType).getTypeName();
-        Map<String, List<CmsDetailPageInfo>> bestDetailPagesByType = confManager.getAllDetailPages(cms);
-        List<CmsDetailPageInfo> pageInfos = bestDetailPagesByType.get(typeName);
-        if (pageInfos == null) {
-            return Collections.<String> emptyList();
-        }
-        List<String> result = new ArrayList<String>();
-        for (CmsDetailPageInfo pageInfo : pageInfos) {
-            String uri = pageInfo.getUri();
-            if (!CmsResource.isFolder(uri)) {
-                uri = CmsResource.getFolderPath(uri);
-            }
-            result.add(uri);
-        }
-        return result;
+        return new ArrayList<String>();
+
+        //        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
+        //        String typeName = OpenCms.getResourceManager().getResourceType(resType).getTypeName();
+        //        Map<String, List<CmsDetailPageInfo>> bestDetailPagesByType = confManager.getAllDetailPages(cms);
+        //        List<CmsDetailPageInfo> pageInfos = bestDetailPagesByType.get(typeName);
+        //        if (pageInfos == null) {
+        //            return Collections.<String> emptyList();
+        //        }
+        //        List<String> result = new ArrayList<String>();
+        //        for (CmsDetailPageInfo pageInfo : pageInfos) {
+        //            String uri = pageInfo.getUri();
+        //            if (!CmsResource.isFolder(uri)) {
+        //                uri = CmsResource.getFolderPath(uri);
+        //            }
+        //            result.add(uri);
+        //        }
+        //        return result;
     }
 
     /**
@@ -76,33 +71,36 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException {
 
-        String folder = CmsResource.getFolderPath(rootPath);
-        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
-            // exclude these for performance reasons 
-            return null;
-        }
-        if (folder == null) {
-            return null;
-        }
-        Map<String, String> folderTypes = OpenCms.getADEConfigurationManager().getFolderTypes(cms);
-        String folderType = folderTypes.get(folder);
-        if (folderType == null) {
-            return null;
-        }
-        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
-        String rootLinkSource = cms.getRequestContext().addSiteRoot(linkSource);
-        CmsSitemapConfigurationData sitemapConf = confManager.getSitemapConfiguration(cms, rootLinkSource);
-        String typeName = folderType;
-        List<CmsDetailPageInfo> pageInfos = sitemapConf.getDetailPageInfo().get(typeName);
-        if ((pageInfos == null) || pageInfos.isEmpty()) {
-            return null;
-        }
-        CmsDetailPageInfo info = pageInfos.get(0);
-        String detailPageUri = info.getUri();
-        if (!CmsResource.isFolder(detailPageUri)) {
-            detailPageUri = CmsResource.getFolderPath(detailPageUri);
-        }
-        return detailPageUri;
+        return null;
+
+        //        String folder = CmsResource.getFolderPath(rootPath);
+        //        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
+        //            // exclude these for performance reasons 
+        //            return null;
+        //        }
+        //        if (folder == null) {
+        //            return null;
+        //        }
+        //        Map<String, String> folderTypes = OpenCms.getADEConfigurationManager().getFolderTypes(cms);
+        //        String folderType = folderTypes.get(folder);
+        //        if (folderType == null) {
+        //            return null;
+        //        }
+        //        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
+        //        String rootLinkSource = cms.getRequestContext().addSiteRoot(linkSource);
+        //        CmsSitemapConfigurationData sitemapConf = confManager.getSitemapConfiguration(cms, rootLinkSource);
+        //        String typeName = folderType;
+        //        CmsADEConfigData configData = OpenCms.getADEConfigurationManagerV2().lookupConfiguration(cms, rootLinkSource);
+        //        List<CmsDetailPageInfo> pageInfos = configData.getDetailPagesForType(typeName);
+        //        if ((pageInfos == null) || pageInfos.isEmpty()) {
+        //            return null;
+        //        }
+        //        CmsDetailPageInfo info = pageInfos.get(0);
+        //        String detailPageUri = info.getUri();
+        //        if (!CmsResource.isFolder(detailPageUri)) {
+        //            detailPageUri = CmsResource.getFolderPath(detailPageUri);
+        //        }
+        //        return detailPageUri;
     }
 
 }

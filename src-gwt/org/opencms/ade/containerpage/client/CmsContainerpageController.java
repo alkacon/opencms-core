@@ -49,8 +49,8 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -61,8 +61,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -73,9 +73,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -724,48 +724,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the element data for a resource type representing a new element.<p>
-     * 
-     * @param resourceType the resource type name
-     * @param callback the callback to execute with the new element data
-     */
-    public void getNewElement(final String resourceType, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        if (m_elements.containsKey(resourceType)) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
-
-                    callback.execute(m_elements.get(resourceType));
-
-                }
-            });
-        } else {
-            CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
-
-                @Override
-                public void execute() {
-
-                    getContainerpageService().getNewElementData(CmsCoreProvider.get().getStructureId(),
-
-                    getRequestParams(), resourceType, m_containerBeans, getLocale(), this);
-                }
-
-                @Override
-                protected void onResponse(CmsContainerElementData result) {
-
-                    m_elements.put(result.getClientId(), result);
-                    callback.execute(result);
-                }
-            };
-            action.execute();
-        }
-    }
-
-    /**
      * Requests the data for container elements specified by the client id. The data will be provided to the given call-back function.<p>
      * 
      * @param clientIds the element id's
@@ -818,6 +776,48 @@ public final class CmsContainerpageController {
     public String getLockErrorMessage() {
 
         return m_lockErrorMessage;
+    }
+
+    /**
+     * Returns the element data for a resource type representing a new element.<p>
+     * 
+     * @param resourceType the resource type name
+     * @param callback the callback to execute with the new element data
+     */
+    public void getNewElement(final String resourceType, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        if (m_elements.containsKey(resourceType)) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    callback.execute(m_elements.get(resourceType));
+
+                }
+            });
+        } else {
+            CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+                @Override
+                public void execute() {
+
+                    getContainerpageService().getNewElementData(CmsCoreProvider.get().getStructureId(),
+
+                    getRequestParams(), resourceType, m_containerBeans, getLocale(), this);
+                }
+
+                @Override
+                protected void onResponse(CmsContainerElementData result) {
+
+                    m_elements.put(result.getClientId(), result);
+                    callback.execute(result);
+                }
+            };
+            action.execute();
+        }
     }
 
     /**

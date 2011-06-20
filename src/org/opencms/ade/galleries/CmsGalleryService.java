@@ -27,7 +27,8 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.ade.config.CmsContainerPageConfigurationData;
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -66,7 +67,6 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.containerpage.CmsConfigurationItem;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -76,8 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -513,9 +513,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
-                    sResult.getLength() / 1000 + " kb");
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_SIZE_0), sResult.getLength() / 1000 + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -523,14 +522,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(
-                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
-                            temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
-                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
+                    sResult.getDateLastModified(),
+                    DateFormat.SHORT,
+                    getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
@@ -571,11 +571,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.ERROR_BUILD_TYPE_LIST_1,
-                            type.getTypeName()),
-                        e);
+                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.ERROR_BUILD_TYPE_LIST_1,
+                        type.getTypeName()), e);
                 }
             }
         }
@@ -798,18 +796,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 resourceTypes = new ArrayList<I_CmsResourceType>();
                 creatableTypes = new ArrayList<String>();
                 try {
-                    CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+                    CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
-                    Map<String, CmsConfigurationItem> typeConfig = configData.getTypeConfiguration();
-                    for (Entry<String, CmsConfigurationItem> configEntry : typeConfig.entrySet()) {
-                        resourceTypes.add(getResourceManager().getResourceType(configEntry.getKey()));
-                        if (CmsContainerPageConfigurationData.isCreatableType(
-                            getCmsObject(),
-                            configEntry.getKey(),
-                            configEntry.getValue())) {
-                            creatableTypes.add(configEntry.getKey());
-                        }
+                    for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+                        String typeName = typeConfig.getTypeName();
+                        resourceTypes.add(getResourceManager().getResourceType(typeName));
+                    }
+                    for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
+                        String typeName = typeConfig.getTypeName();
+                        creatableTypes.add(typeName);
                     }
                 } catch (CmsException e) {
                     error(e);

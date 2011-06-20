@@ -105,6 +105,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/com.alkacon.opencms.v8.search/.config</source>
+			<destination>system/modules/com.alkacon.opencms.v8.search/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>f55add4f-5d6a-4ace-a58c-448e481693e8</uuidstructure>
+			<uuidresource>f55add4f-5d6a-4ace-a58c-448e481693e9</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 14:14:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.search/classes</destination>
 			<type>folder</type>
 			<uuidstructure>39812725-70e2-11e0-bc96-5de1afb8a118</uuidstructure>

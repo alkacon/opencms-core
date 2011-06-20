@@ -27,6 +27,8 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -586,8 +588,12 @@ public class CmsJspTagContainer extends TagSupport {
         if (elementBean.isCreateNew()) {
             String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
             result.append(" newType='").append(typeName).append("'");
+            CmsResourceTypeConfig typeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri()).getResourceType(typeName);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && !OpenCms.getADEManager().isCreatableType(cms, cms.getRequestContext().getUri(), typeName)) {
+                && (typeConfig != null)
+                && typeConfig.checkCreatable(cms)) {
                 String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
                 noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
             }
@@ -659,12 +665,12 @@ public class CmsJspTagContainer extends TagSupport {
         CmsContainerElementBean element = null;
         if (detailContent != null) {
             // get the right formatter
-            CmsFormatterConfiguration formatters = OpenCms.getADEManager().getFormattersForResource(
+
+            CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
                 cms,
-                cms.getRequestContext().getRootUri(),
-                detailContent);
+                cms.getRequestContext().getRootUri());
+            CmsFormatterConfiguration formatters = config.getFormatters(detailContent);
             CmsFormatterBean formatter = formatters.getFormatter(getType(), getContainerWidth());
-            // check it
             if (formatter != null) {
                 // create element bean
                 element = new CmsContainerElementBean(
@@ -841,10 +847,10 @@ public class CmsJspTagContainer extends TagSupport {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
                     getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
-                    CmsFormatterConfiguration subelementFormatters = OpenCms.getADEManager().getFormattersForResource(
+                    CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
                         cms,
-                        cms.getRequestContext().getRootUri(),
-                        subelement.getResource());
+                        cms.getRequestContext().getRootUri());
+                    CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(subelement.getResource());
                     CmsFormatterBean subelementFormatter = subelementFormatters.getFormatter(
                         containerType,
                         containerWidth);
@@ -877,12 +883,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
                     }
@@ -914,12 +918,10 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            elementFormatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        elementFormatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             }

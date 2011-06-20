@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.file.CmsObject;
@@ -154,10 +155,10 @@ public class CmsElementUtil {
         CmsContainerElementBean element,
         Collection<CmsContainer> containers) throws CmsException {
 
-        CmsFormatterConfiguration configs = OpenCms.getADEManager().getFormattersForResource(
+        CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
             m_cms,
-            m_cms.getRequestContext().addSiteRoot(m_cntPageUri),
-            element.getResource());
+            m_cms.getRequestContext().addSiteRoot(m_cntPageUri));
+        CmsFormatterConfiguration configs = adeConfig.getFormatters(element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
             String name = container.getName();

@@ -137,6 +137,11 @@ public final class CmsFormatterConfiguration {
         }
     }
 
+    public List<CmsFormatterBean> getAllFormatters() {
+
+        return new ArrayList<CmsFormatterBean>(m_allFormatters);
+    }
+
     /**
      * Selects the matching formatter for the provided type and width from this configuration.<p>
      * 
@@ -360,4 +365,5 @@ public final class CmsFormatterConfiguration {
         m_typeFormatters = Collections.unmodifiableMap(m_typeFormatters);
         m_widthFormatters = Collections.unmodifiableList(m_widthFormatters);
     }
+
 }

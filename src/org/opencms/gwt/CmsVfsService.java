@@ -38,10 +38,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
+import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -788,10 +789,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         result.setFolder(resource.isFolder());
         result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
         String sitePath = cms.getSitePath(resource);
-        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().getElementPropertyConfiguration(
+        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
             cms,
-            sitePath);
-        result.setPropertyDefinitions(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
+            resource.getRootPath()).getPropertyConfigurationAsMap();
+        result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
         try {
             cms.getRequestContext().setSiteRoot("");
             String parentPath = CmsResource.getParentFolder(resource.getRootPath());

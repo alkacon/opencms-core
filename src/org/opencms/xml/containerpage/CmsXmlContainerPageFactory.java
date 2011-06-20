@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
 public final class CmsXmlContainerPageFactory {
 
     /** The ADE cache. */
-    private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
+    private static CmsADECache m_cache = OpenCms.getADEConfigurationManager().getCache();
 
     /**
      * No instances of this class should be created.<p> 
@@ -182,6 +182,34 @@ public final class CmsXmlContainerPageFactory {
      * @param file the file with the XML data to unmarshal
      * @param keepEncoding if <code>true</code>, the encoding specified in the XML header is used, 
      *    otherwise the encoding from the VFS file property is used
+     *    
+     * @return a container page instance unmarshalled from the provided file
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static CmsXmlContainerPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding)
+    throws CmsXmlException {
+
+        return unmarshal(cms, file, keepEncoding, false);
+    }
+
+    /**
+     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS file
+     * that contains XML data, using wither the encoding set
+     * in the XML file header, or the encoding set in the VFS file property.<p>
+     * 
+     * If you are not sure about the implications of the encoding issues, 
+     * use {@link #unmarshal(CmsObject, CmsFile)} instead.<p>
+     * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
+     * 
+     * @param cms the current cms object
+     * @param file the file with the XML data to unmarshal
+     * @param keepEncoding if <code>true</code>, the encoding specified in the XML header is used, 
+     *    otherwise the encoding from the VFS file property is used
      * @param noCache <code>true</code> to avoid cached results
      *    
      * @return a container page instance unmarshalled from the provided file
@@ -250,34 +278,6 @@ public final class CmsXmlContainerPageFactory {
         setCache(cms, xmlCntPage, keepEncoding);
 
         return xmlCntPage;
-    }
-
-    /**
-     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS file
-     * that contains XML data, using wither the encoding set
-     * in the XML file header, or the encoding set in the VFS file property.<p>
-     * 
-     * If you are not sure about the implications of the encoding issues, 
-     * use {@link #unmarshal(CmsObject, CmsFile)} instead.<p>
-     * 
-     * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
-     * for history support.<p>
-     * 
-     * @param cms the current cms object
-     * @param file the file with the XML data to unmarshal
-     * @param keepEncoding if <code>true</code>, the encoding specified in the XML header is used, 
-     *    otherwise the encoding from the VFS file property is used
-     *    
-     * @return a container page instance unmarshalled from the provided file
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlContainerPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding)
-    throws CmsXmlException {
-
-        return unmarshal(cms, file, keepEncoding, false);
     }
 
     /**

@@ -1104,10 +1104,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, "setServletContainerSettingsMode", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, 0, A_MODE);
 
-        // add rule for ADE configuration class
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, "setAdeConfiguration", 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, 0, A_CLASS);
-
         // add rule for ADE cache settings
         String adeCachePath = "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_ADE_CACHE;
         digester.addObjectCreate(adeCachePath, CmsADECacheSettings.class);
@@ -1601,11 +1597,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                    m_authorizationHandler),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                m_authorizationHandler), t);
             return new CmsDefaultAuthorizationHandler();
         }
     }
@@ -1891,11 +1885,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
-                    m_sessionStorageProvider),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                m_sessionStorageProvider), t);
             return new CmsDefaultSessionStorageProvider();
         }
     }
@@ -1953,9 +1945,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return validationHandler;
         } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1, m_validationHandler),
-                t);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
+                m_validationHandler), t);
             return new CmsDefaultValidationHandler();
         }
     }

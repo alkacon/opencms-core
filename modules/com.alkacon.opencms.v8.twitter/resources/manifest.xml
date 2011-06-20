@@ -104,6 +104,23 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.twitter/.config</source>
+			<destination>system/modules/com.alkacon.opencms.v8.twitter/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>f25abbeb-e062-4f3b-a989-9460793cf255</uuidstructure>
+			<uuidresource>f25abbeb-e062-4f3b-a989-9460793cf256</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 14:14:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.twitter/classes</destination>
 			<type>folder</type>

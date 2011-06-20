@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -100,8 +101,42 @@ public class CmsContainerElementBean {
         ? new HashMap<String, String>()
         : individualSettings);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        m_editorHash = m_elementId.toString() + getSettingsHash();
+        String clientId = m_elementId.toString();
+        if (!m_individualSettings.isEmpty()) {
+            int hash = m_individualSettings.toString().hashCode();
+            clientId += CmsADEConfigurationManager.CLIENT_ID_SEPERATOR + hash;
+        }
+        m_editorHash = clientId;
         m_createNew = createNew;
+    }
+
+    /**
+     * Clones the given element bean with a different set of settings.<p>
+     * 
+     * @param source the element to clone
+     * @param settings the new settings
+     * 
+     * @return the element bean
+     */
+    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
+
+        CmsContainerElementBean result = new CmsContainerElementBean(
+            source.m_elementId,
+            source.m_formatterId,
+            settings,
+            source.m_createNew);
+        result.m_resource = source.m_resource;
+        result.m_sitePath = source.m_sitePath;
+        result.m_inMemoryOnly = source.m_inMemoryOnly;
+        if (result.m_inMemoryOnly) {
+            String editorHash = source.m_editorHash;
+            if (editorHash.contains(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR)) {
+                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR));
+            }
+            editorHash += result.getSettingsHash();
+            result.m_editorHash = editorHash;
+        }
+        return result;
     }
 
     /**
@@ -172,35 +207,6 @@ public class CmsContainerElementBean {
             0,
             content);
         return elementBean;
-    }
-
-    /**
-     * Clones the given element bean with a different set of settings.<p>
-     * 
-     * @param source the element to clone
-     * @param settings the new settings
-     * 
-     * @return the element bean
-     */
-    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
-
-        CmsContainerElementBean result = new CmsContainerElementBean(
-            source.m_elementId,
-            source.m_formatterId,
-            settings,
-            source.m_createNew);
-        result.m_resource = source.m_resource;
-        result.m_sitePath = source.m_sitePath;
-        result.m_inMemoryOnly = source.m_inMemoryOnly;
-        if (result.m_inMemoryOnly) {
-            String editorHash = source.m_editorHash;
-            if (editorHash.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
-                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
-            }
-            editorHash += result.getSettingsHash();
-            result.m_editorHash = editorHash;
-        }
-        return result;
     }
 
     /**
@@ -370,7 +376,7 @@ public class CmsContainerElementBean {
 
         if (!m_individualSettings.isEmpty()) {
             int hash = m_individualSettings.toString().hashCode();
-            return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
+            return CmsADEConfigurationManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";
     }

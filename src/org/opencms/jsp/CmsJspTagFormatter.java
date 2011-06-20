@@ -192,7 +192,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
         try {
             // get the resource name from the selected container
-            m_element = OpenCms.getADEManager().getCurrentElement(pageContext.getRequest());
+            m_element = OpenCms.getADEConfigurationManager().getCurrentElement(pageContext.getRequest());
             m_element.initResource(m_cms);
             if (m_locale == null) {
                 // no locale set, use locale from users request context

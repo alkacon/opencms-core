@@ -28,7 +28,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -76,11 +75,7 @@ public final class CmsADESessionCache {
 
         // ADE recent lists
         int maxElems = 10;
-        try {
-            maxElems = OpenCms.getADEManager().getRecentListMaxSize(cms);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
+        maxElems = OpenCms.getADEConfigurationManager().getRecentListMaxSize(cms.getRequestContext().getCurrentUser());
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_recentLists = Collections.synchronizedList(adeRecentList);

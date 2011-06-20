@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.ade.config.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEConfigurationManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
@@ -55,7 +55,6 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.util.List;
 import java.util.Map;
@@ -165,24 +164,9 @@ public final class OpenCms {
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
     }
 
-    /**
-     * Returns the ADE configuration manager instance.<p>
-     * 
-     * @return the instance of the ADE configuration manager 
-     */
     public static CmsADEConfigurationManager getADEConfigurationManager() {
 
         return OpenCmsCore.getInstance().getADEConfigurationManager();
-    }
-
-    /**
-     * Returns the advanced direct edit manager.<p>
-     * 
-     * @return the advanced direct edit manager
-     */
-    public static CmsADEManager getADEManager() {
-
-        return OpenCmsCore.getInstance().getADEManager();
     }
 
     /**

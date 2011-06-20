@@ -113,6 +113,24 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.article/.config</source>
+			<destination>system/modules/com.alkacon.opencms.v8.article/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>35b0b6bf-d16e-4833-82b6-e01aa28779d0</uuidstructure>
+			<uuidresource>35b0b6bf-d16e-4833-82b6-e01aa28779d1</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 14:14:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.article/classes</destination>
 			<type>folder</type>

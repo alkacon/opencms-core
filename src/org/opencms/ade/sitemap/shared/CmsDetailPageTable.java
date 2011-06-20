@@ -79,22 +79,6 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     }
 
     /**
-     * Constructs a detail page table from a raw map from type names to lists of detail page information beans.<p>
-     * 
-     * @param detailPageLists a map of detail page info bean lists  
-     */
-    public CmsDetailPageTable(Map<String, List<CmsDetailPageInfo>> detailPageLists) {
-
-        for (Map.Entry<String, List<CmsDetailPageInfo>> entry : detailPageLists.entrySet()) {
-            for (CmsDetailPageInfo info : entry.getValue()) {
-                m_map.put(info.getType(), info);
-                m_infoById.put(info.getId(), info);
-            }
-
-        }
-    }
-
-    /**
      * Empty default constructor for serialization.<p>
      */
     protected CmsDetailPageTable() {

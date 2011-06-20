@@ -303,6 +303,29 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * Reads the content definition which is configured for a resource type.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param typeName the type name
+     *  
+     * @return the content definition 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static CmsXmlContentDefinition getContentDefinitionForType(CmsObject cms, String typeName)
+    throws CmsException {
+
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
+        String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+        CmsXmlContentDefinition contentDef = null;
+        if (schema == null) {
+            return null;
+        }
+        contentDef = unmarshal(cms, schema);
+        return contentDef;
+    }
+
+    /**
      * Returns a content handler instance for the given resource.<p>
      * 
      * @param cms the cms-object

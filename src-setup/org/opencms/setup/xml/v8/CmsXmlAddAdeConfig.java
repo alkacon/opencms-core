@@ -32,7 +32,6 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
-import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class CmsXmlAddAdeConfig extends A_CmsSetupXmlUpdate {
             }
             // <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
             String xp = xpath + "/" + CmsSystemConfiguration.N_CONFIGURATION + "/@" + I_CmsXmlConfiguration.A_CLASS;
-            CmsSetupXmlHelper.setValue(document, xp, CmsADEDefaultConfiguration.class.getName());
+            //CmsSetupXmlHelper.setValue(document, xp, CmsADEDefaultConfiguration.class.getName());
             // <containerpages offline="1024" online="1024" />
             xp = xpath + "/" + CmsSystemConfiguration.N_ADE_CACHE + "/" + CmsSystemConfiguration.N_CONTAINERPAGES;
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "1024");

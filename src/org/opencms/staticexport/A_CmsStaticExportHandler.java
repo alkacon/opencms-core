@@ -408,44 +408,6 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     }
 
     /**
-     * Gets the exported detail page files which need to be purged.<p>
-     *  
-     * @param cms the current cms context 
-     * @param res the published resource  
-     * @param vfsName the vfs name
-     *  
-     * @return the list of files to be purged 
-     */
-    private List<File> getDetailPageFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
-
-        List<File> files = new ArrayList<File>();
-        try {
-            List<String> urlNames = cms.getAllUrlNames(res.getStructureId());
-            Collection<String> detailpages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
-                cms,
-                res.getType());
-            for (String urlName : urlNames) {
-                for (String detailPage : detailpages) {
-                    String rfsName = CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getRfsName(
-                        cms,
-                        detailPage), urlName, CmsStaticExportManager.DEFAULT_FILE);
-                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
-                        vfsName)
-                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
-                    File file = new File(rfsExportFileName);
-                    if (file.exists() && !files.contains(file)) {
-                        files.add(file);
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return files;
-
-    }
-
-    /**
      * Deletes the given file from the RFS, with error handling and logging.<p>
      * 
      * If the parent folder of the file is empty after deletion, the parent folder
@@ -484,6 +446,44 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     t);
             }
         }
+    }
+
+    /**
+     * Gets the exported detail page files which need to be purged.<p>
+     *  
+     * @param cms the current cms context 
+     * @param res the published resource  
+     * @param vfsName the vfs name
+     *  
+     * @return the list of files to be purged 
+     */
+    private List<File> getDetailPageFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
+
+        List<File> files = new ArrayList<File>();
+        try {
+            List<String> urlNames = cms.getAllUrlNames(res.getStructureId());
+            Collection<String> detailpages = OpenCms.getADEConfigurationManager().getDetailPageFinder().getAllDetailPages(
+                cms,
+                res.getType());
+            for (String urlName : urlNames) {
+                for (String detailPage : detailpages) {
+                    String rfsName = CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getRfsName(
+                        cms,
+                        detailPage), urlName, CmsStaticExportManager.DEFAULT_FILE);
+                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                        vfsName)
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
+                    File file = new File(rfsExportFileName);
+                    if (file.exists() && !files.contains(file)) {
+                        files.add(file);
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return files;
+
     }
 
     /**

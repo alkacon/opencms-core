@@ -27,14 +27,12 @@
 
 package org.opencms.ade.sitemap;
 
-import org.opencms.ade.config.CmsConfigurationSourceInfo;
-import org.opencms.ade.config.CmsContainerPageConfigurationData;
-import org.opencms.ade.config.CmsSitemapConfigurationData;
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
@@ -42,6 +40,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
@@ -56,7 +55,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -69,6 +67,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -79,7 +78,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -284,19 +282,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsSitemapData result = null;
         CmsObject cms = getCmsObject();
-        CmsADEManager sitemapMgr = OpenCms.getADEManager();
+
         try {
             String openPath = getRequest().getParameter("path");
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(openPath)) {
                 // if no path is supplied, start from root
                 openPath = "/";
             }
-            String entryPoint = sitemapMgr.findEntryPoint(cms, openPath);
-
+            String entryPoint = OpenCms.getADEConfigurationManager().findEntryPoint(cms, openPath);
             Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
-                sitemapMgr.getElementPropertyConfiguration(cms, entryPoint));
+                OpenCms.getADEConfigurationManager().lookupConfiguration(cms, entryPoint).getPropertyConfigurationAsMap());
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(entryPoint);
-
             String siteRoot = cms.getRequestContext().getSiteRoot();
             String exportRfsPrefix = OpenCms.getStaticExportManager().getDefaultRfsPrefix();
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
@@ -304,11 +300,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             String parentSitemap = null;
             if (!entryPoint.equals("/")) {
-                parentSitemap = sitemapMgr.findEntryPoint(cms, CmsResource.getParentFolder(entryPoint));
+                parentSitemap = OpenCms.getADEConfigurationManager().findEntryPoint(
+                    cms,
+                    CmsResource.getParentFolder(entryPoint));
             }
-            CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
+            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().addSiteRoot(openPath));
+
             String noEdit = "";
             CmsNewResourceInfo defaultNewInfo = null;
             List<CmsNewResourceInfo> newResourceInfos = null;
@@ -316,22 +315,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsNewResourceInfo> resourceTypeInfos = null;
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
-            if (sitemapConfig == null) {
+            if (configData == null) {
                 noEdit = Messages.get().getBundle().key(Messages.GUI_SITEMAP_NO_EDIT_0);
             } else {
-                detailPages = new CmsDetailPageTable(sitemapConfig.getDetailPageInfo());
+                detailPages = new CmsDetailPageTable(configData.getAllDetailPages());
                 if (!isOnlineProject) {
-                    CmsConfigurationItem containerpageConfigItem = sitemapConfig.getTypeConfiguration().get(
-                        CmsResourceTypeXmlContainerPage.getStaticTypeName());
+
+                    CmsConfigurationItem containerpageConfigItem = null; //sitemapConfig.getTypeConfiguration().get(
+                    //CmsResourceTypeXmlContainerPage.getStaticTypeName());
                     if (containerpageConfigItem != null) {
                         resourceTypeInfos = getResourceTypeInfos(
                             getCmsObject(),
                             entryPoint,
                             containerpageConfigItem.getSourceFile());
                         defaultNewInfo = createNewResourceInfo(cms, containerpageConfigItem);
+
                     }
-                    canEditDetailPages = !(sitemapConfig.getLastSource().isModuleConfiguration());
+                    canEditDetailPages = !(configData.isModuleConfiguration());
                     newResourceInfos = getNewResourceInfos(cms, entryPoint);
+
                 }
             }
             if (isOnlineProject) {
@@ -501,14 +503,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry changedEntry = null;
         // lock the config file first, to avoid half done changes
         if (change.hasDetailPageInfos()) {
-            CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
+            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().addSiteRoot(entryPoint));
-            CmsConfigurationSourceInfo srcInfo = sitemapConfig.getLastSource();
-            if (!srcInfo.isModuleConfiguration() && (srcInfo.getResource() != null)) {
-                configFile = srcInfo.getResource();
+            if (!configData.isModuleConfiguration() && (configData.getResource() != null)) {
+                configFile = configData.getResource();
             }
-            ensureLock(configFile);
+            if (configFile != null) {
+                ensureLock(configFile);
+            }
         }
         if (change.isNew()) {
             changedEntry = createNewEntry(entryPoint, change);
@@ -733,7 +736,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (copyResource != null) {
             return new CmsNewResourceInfo(copyResource.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
                 locale,
-                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), copyResource.getStructureId());
+                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), null);
         } else {
             return new CmsNewResourceInfo(resType.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
                 locale,
@@ -1026,15 +1029,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     private List<CmsNewResourceInfo> getNewResourceInfos(CmsObject cms, String entryPoint) throws CmsException {
 
-        List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
-        CmsSitemapConfigurationData config = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
-            cms,
-            cms.getRequestContext().addSiteRoot(entryPoint));
-        for (CmsConfigurationItem configItem : config.getNewElements()) {
-            result.add(createNewResourceInfo(cms, configItem));
-        }
+        throw new IllegalStateException();
 
-        return result;
+        //        List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
+        //        CmsSitemapConfigurationData config = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
+        //            cms,
+        //            cms.getRequestContext().addSiteRoot(entryPoint));
+        //        for (CmsConfigurationItem configItem : config.getNewElements()) {
+        //            result.add(createNewResourceInfo(cms, configItem));
+        //        }
+        //
+        //        return result;
     }
 
     /**
@@ -1071,15 +1076,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     throws CmsException {
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
-        CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+        CmsADEConfigData configData2 = OpenCms.getADEConfigurationManager().lookupConfiguration(
             cms,
             cms.getRequestContext().addSiteRoot(entryPoint));
-        Map<String, CmsConfigurationItem> typeConfig = configData.getTypeConfiguration();
-        for (CmsConfigurationItem item : typeConfig.values()) {
-            CmsResource sourceFile = item.getSourceFile();
-            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(sourceFile.getTypeId());
-            CmsNewResourceInfo info = createResourceTypeInfo(resourceType, copyResource);
-            result.add(info);
+        for (CmsResourceTypeConfig typeConfig : configData2.getResourceTypes()) {
+            String typeName = typeConfig.getTypeName();
+            try {
+                I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeName);
+                result.add(createResourceTypeInfo(resourceType, null));
+            } catch (CmsLoaderException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return result;
     }

@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.ade.config.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEConfigurationManager;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
@@ -95,7 +95,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
@@ -157,12 +156,6 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
-
-    /** The ADE configuration manager instance. */
-    private CmsADEConfigurationManager m_adeConfigurationManager;
-
-    /** The ade manager. */
-    private CmsADEManager m_adeManager;
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
@@ -272,6 +265,8 @@ public final class OpenCmsCore {
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
 
+    private CmsADEConfigurationManager m_adeConfigurationManager;
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -368,24 +363,10 @@ public final class OpenCmsCore {
         }
     }
 
-    /**
-     * Returns the ADE configuration manager instance.<p>
-     * 
-     * @return the ADE configuration manager instance 
-     */
     protected CmsADEConfigurationManager getADEConfigurationManager() {
 
+        m_adeConfigurationManager.initialize();
         return m_adeConfigurationManager;
-    }
-
-    /**
-     * Returns the advanced direct edit manager.<p>
-     * 
-     * @return the advanced direct edit manager
-     */
-    protected CmsADEManager getADEManager() {
-
-        return m_adeManager;
     }
 
     /**
@@ -1245,11 +1226,10 @@ public final class OpenCmsCore {
             m_subscriptionManager.initialize(adminCms);
 
             // initialize ade manager
-            m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_adeConfigurationManager = new CmsADEConfigurationManager(adminCms);
-
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
+            //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
+            m_adeConfigurationManager = new CmsADEConfigurationManager(adminCms, m_memoryMonitor, systemConfiguration);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1743,8 +1723,8 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_adeManager != null) {
-                        m_adeManager.shutdown();
+                    if (m_adeConfigurationManager != null) {
+                        m_adeConfigurationManager.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(

@@ -139,17 +139,6 @@ public interface I_CmsADEConfiguration {
     throws CmsException;
 
     /**
-     * Returns the size of a search page.<p>
-     * 
-     * @param cms the current opencms context
-     * 
-     * @return the maximal size of the favorite list
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    int getSearchPageSize(CmsObject cms) throws CmsException;
-
-    /**
      * Initializes the configuration.<p>
      * 
      * @param cms the CMS object  
