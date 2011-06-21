@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpNavigationListView.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,10 +45,6 @@ import javax.servlet.jsp.PageContext;
  * This is a simpler facade to a fixed html - list based layout. 
  * Only a navigation root path and a desired depth have to be set. 
  * It is not specific to the online help.<p>
- * 
- * @author Achim Westermann 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */

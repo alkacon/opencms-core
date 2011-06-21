@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.22 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -93,14 +89,6 @@ import java.util.Set;
  * Obviously you need the password for the new user.
  * You should never try to create an instance of this class using the constructor, 
  * this is reserved for internal operation only.<p> 
- *
- * @author Alexander Kandzior 
- * @author Thomas Weckert  
- * @author Carsten Weinholz 
- * @author Andreas Zahner 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.22 $
  * 
  * @since 6.0.0 
  */

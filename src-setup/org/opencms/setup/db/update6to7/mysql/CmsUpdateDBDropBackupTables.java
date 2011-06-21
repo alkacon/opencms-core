@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update6to7/mysql/CmsUpdateDBDropBackupTables.java,v $
- * Date   : $Date: 2011/05/03 10:48:46 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,8 +43,6 @@ import java.io.IOException;
  * <li>CMS_BACKUP_RESOURCES</li>
  * <li>CMS_BACKUP_STRUCTURE</li>
  * </ul>
- * 
- * @author metzler
  */
 public class CmsUpdateDBDropBackupTables extends org.opencms.setup.db.update6to7.CmsUpdateDBDropBackupTables {
 

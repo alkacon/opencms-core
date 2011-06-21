@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:48:53 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,10 +52,6 @@ import org.dom4j.Element;
  * "editor_configuration.xml" file in each editor folder.<p>
  * 
  * Provides methods to get the editor information for the editor manager.<p>
- * 
- * @author Andreas Zahner 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:06 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,11 +47,6 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler that loads historical versions of resources.<p>
- *
- * @author Michael Emmerich 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */

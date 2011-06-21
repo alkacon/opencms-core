@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2011/05/13 15:18:42 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,10 +39,6 @@ import org.apache.lucene.document.Field.Index;
 
 /**
  * An individual field configuration in a search index.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */

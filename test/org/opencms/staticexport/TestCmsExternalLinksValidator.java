@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsExternalLinksValidator.java,v $
- * Date   : $Date: 2011/03/23 09:34:43 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,8 +40,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /** 
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 7.0.4
  */

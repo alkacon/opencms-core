@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update7to8/postgresql/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,11 +39,6 @@ import java.util.Map;
 
 /**
  * Oracle implementation to create the new tables for version 7 of OpenCms.<p>
- * 
- * @author Roland Metzler
- * @author Peter Bonrad
- *
- * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */

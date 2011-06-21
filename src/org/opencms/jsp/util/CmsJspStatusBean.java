@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,10 +50,6 @@ import javax.servlet.jsp.PageContext;
  * This bean provides methods to generate customized http status error pages, e.g. to handle 404 (not found) errors.<p>
  * 
  * The JSPs using this bean are placed in the OpenCms VFS folder /system/handler/.<p>
- * 
- * @author Andreas Zahner 
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */

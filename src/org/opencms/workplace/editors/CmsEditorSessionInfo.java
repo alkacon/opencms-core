@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorSessionInfo.java,v $
- * Date   : $Date: 2011/05/07 10:56:46 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import java.util.Locale;
 
 /**
  * Stores editor session data.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */

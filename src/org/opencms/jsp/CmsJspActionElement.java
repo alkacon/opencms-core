@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2011/06/08 10:07:56 $
- * Version: $Revision: 1.19 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,10 +75,6 @@ import javax.servlet.jsp.PageContext;
  * All exceptions that occur when calling any method of this class are caught 
  * and written to the log output only, so that a template still has a chance of
  * working at least in some elements.<p>
- *
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishScheduledJob.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,10 +58,6 @@ import org.apache.commons.logging.Log;
  * an email to a user in OpenCms in case somthing went wrong during this process. To do so specifiy
  * a parameter<code>mail-to-user=username_in_opencms</code>.
  * After running this job, the job is deleted. Therefore the job name is to set in the parameter <code>jobname</code><p>
- * 
- * @author Mario Jaeger
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.1
  */

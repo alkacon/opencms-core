@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,11 +58,6 @@ import java.util.Map;
  * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be 
  * accessible using their xpath. The xpath will have the form like for example 
  * <code>Text[1]</code> or <code>Nested[1]/Text[1]</code>.<p>
- *   
- * @author Alexander Kandzior
- * @author Carsten Weinholz 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

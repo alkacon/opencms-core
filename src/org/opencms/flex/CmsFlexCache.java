@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -94,11 +90,6 @@ import org.apache.commons.logging.Log;
  * Cache clearing is handled using events.
  * The cache is fully flushed if an event {@link I_CmsEventListener#EVENT_PUBLISH_PROJECT} 
  * or {@link I_CmsEventListener#EVENT_CLEAR_CACHES} is caught.<p>
- *
- * @author Alexander Kandzior 
- * @author Thomas Weckert  
- * 
- * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -111,8 +102,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * A simple data container class for the FlexCache variations.<p>
-     * 
-     * @author Alexander Kandzior 
      */
     public static class CmsFlexCacheVariation extends Object {
 
@@ -136,8 +125,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Extended LRUMap that handles the variations in case a key is removed.<p>
-     * 
-     * @author Alexander Kandzior 
      */
     class CmsFlexKeyMap extends LRUMap {
 

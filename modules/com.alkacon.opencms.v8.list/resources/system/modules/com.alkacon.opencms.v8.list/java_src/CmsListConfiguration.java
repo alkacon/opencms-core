@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/modules/com.alkacon.opencms.v8.list/resources/system/modules/com.alkacon.opencms.v8.list/java_src/CmsListConfiguration.java,v $
- * Date   : $Date: 2011/05/06 15:43:51 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,13 +59,7 @@ import org.apache.commons.logging.Log;
 /**
  * Creates a list configuration from an XML content that uses the list schema XSD.<p>
  * 
- * @author Alexander Kandzior 
- * @author Peter Bonrad
- * @author Michael Moossen
- * 
  * @since 7.6
- * 
- * @version $Revision: 1.1 $ 
  */
 public class CmsListConfiguration extends CmsJspActionElement {
 

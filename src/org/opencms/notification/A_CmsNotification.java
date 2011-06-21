@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/A_CmsNotification.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,10 +50,6 @@ import org.apache.commons.mail.EmailException;
 /**
  * Abstract class to create a notfication which will be send as a html mail to
  * a user in OpenCms.
- * 
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.3
  */

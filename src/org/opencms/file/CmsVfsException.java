@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,12 +32,6 @@ import org.opencms.main.CmsException;
 
 /**
  * Used to signal VFS related issues, for example during file access.<p>
- * 
- * @author Alexander Kandzior 
- * @author Michael Moossen 
- * @author Jan Baudisch 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */

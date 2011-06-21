@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2011/05/03 10:49:04 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,10 +69,6 @@ import org.dom4j.Element;
  * Supports browsing the OpenCms virtual file system (VFS), creating folders and uploading files to the VFS.<br>
  * Details about the connector implementation of the FCKeditor file browser can be 
  * found at http://wiki.fckeditor.net/Developer%27s_Guide/Participating/Server_Side_Integration.<p>
- * 
- * @author Andreas Zahner
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.7
  */

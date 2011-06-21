@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCategoryXmlContentHandler.java,v $
- * Date   : $Date: 2008/07/14 10:04:27 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,10 +31,6 @@ import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
 /**
  *  This handler adds the categories to the current resource and all siblings.<p>
- *  
- * @author Michael Moossen
- * 
- * @version $Revision: 1.3 $
  *  
  * @since 7.0.5
  * 

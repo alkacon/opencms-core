@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagNavigation.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,10 +38,6 @@ import javax.servlet.jsp.PageContext;
 /**
  * Implementation of the <code>&lt;cms:navigation var="..." /&gt;</code> tag, 
  * used to access OpenCms VFS navigation information on a JSP with the EL.<p>
- * 
- * @author Alexander Kandzior
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 8.0
  */

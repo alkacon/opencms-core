@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportResponseWrapper.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,10 +39,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * method is called by the static export manager. Many implementations set the http status codes for the response.
  * This wrapper enables the export manager to return the status code set on the response 
  * in <code>{@link org.opencms.staticexport.CmsStaticExportManager#export(javax.servlet.http.HttpServletRequest, HttpServletResponse, org.opencms.file.CmsObject, CmsStaticExportData)}</code>.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

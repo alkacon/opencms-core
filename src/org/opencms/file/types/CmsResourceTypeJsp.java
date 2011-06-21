@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2011/05/25 10:12:26 $
- * Version: $Revision: 1.11 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,10 +67,6 @@ import org.apache.commons.logging.Log;
  * The value for the encoding properties of a new JSP usually is the
  * system default encoding, but this can be overwritten by 
  * a configuration parameters set in <code>opencms-vfs.xml</code>.<p>
- *
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */

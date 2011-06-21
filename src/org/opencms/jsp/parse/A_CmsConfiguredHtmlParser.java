@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/A_CmsConfiguredHtmlParser.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,10 +49,6 @@ import org.htmlparser.util.ParserException;
  * param="config" /&gt;</nobr> tag the only thing that has to be done is to implement the method
  * {@link #createVisitorInstance()} and return the desired {@link org.opencms.util.I_CmsHtmlNodeVisitor} 
  * implementation.<p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.1.7
  */

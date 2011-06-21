@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2011/05/05 06:36:18 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,11 +43,6 @@ import org.apache.commons.logging.Log;
 
 /**
  * Describes a configured site in OpenCms.<p>
- *
- * @author  Alexander Kandzior 
- * @author  Jan Baudisch 
- *
- * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/06/01 13:48:41 $
- * Version: $Revision: 1.89 $
- *
  * This file is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
@@ -19,12 +15,12 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.x.x - 
+OpenCms 8.0.1 - June 29, 2011
 ! Added development demo module and content
 * Fixed CSS layout issues for Template III
-- Added german demo content for Template III
+- Added German demo content for Template III
 
-OpenCms 8.0.0 - May 8th, 2011
+OpenCms 8.0.0 - May 8, 2011
 ! The "Advanced Direct Edit" mode allows to create page content by drag & drop.
 ! The new sitemap editor allows to create new pages and rearrange the navigation tree by drag & drop.
 ! A multiple file enabled upload dialog all based on HTML replaced the old "Upload Applet".
@@ -92,9 +88,7 @@ OpenCms 8.0.0 - May 8th, 2011
 - Content tool "Convert XML contents": Give out the transformed xml content when problems to write the transformed content
 - Added new optional CmsShell start parameter to load additional commands
 
-OpenCms 7.9.2 - February 24th, 2010
-! Added support for xsd:choice in XML content API and editor
-! Added new feature: Advanced Direct Edit
+OpenCms 7.9.2 - February 24, 2010
 ! Added request attributes support for flex cache
 ! Added new feature: Sitemap Editor
 ! Added generic configuration parameters for resource types 
@@ -130,6 +124,93 @@ OpenCms 7.9.2 - February 24th, 2010
 - Added new CmsShell command to import resources with a third parameter to set if keep permissions
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
 - Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
+
+OpenCms 7.9.1 - September 17, 2009
+! Added support for xsd:choice in XML content API and editor
+! Added new feature: Advanced Direct Edit
+
+OpenCms 7.5.4 - March 28, 2011
+! Updated Apache PDFBox to version 1.5.0 and added fontbox-1.5.0
+! The content tool "Change Property Values" now allows more than one placeholder
+! FCKEditor compatible with Internet Explorer 9 and Firefox 4
+- Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
+- Added new optional CmsShell start parameter to load additional commands
+* Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
+* Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values
+* Fixed issue #1895: "All others" entry in permission dialog does not show summary of permissions
+* Fixed issue #1900: Performance Patch for OpenCms
+* Fixed issue #1901: Workplace login page security issue
+* Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
+* Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
+* Fixed issue #1910: An ISO-8859-1 to UTF-8 change in htmlmsg.properties
+* Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js
+* Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
+* Fixed issue #1941: CmsObjectWrapper.needUtf8Marker makes wrong Resource ContentSize
+* Fixed issue #1942: Publish scheduled jobs are missing after server restart
+* Fixed issue #1945: Avoid reflected XSS on some authenticated resources (provided by Michele Orru)
+* Fixed issue #1949: Database size does not decrease after (completely) deleting resources
+* Fixed issue when creating a new user or editing an existing user using an Oracle database
+* Fixed issue using delete and lock resource when called without path parameter
+* Fixed issue setting the configuration values of the MemoryMonitor to 0
+* Fixed issue in galleries: Broken layout with long item file names or titles
+* Fixed issue: Error when searching with the group field in the Module Management when at least one module without configured group name exists
+* Fixed premature publish thread interruption within CmsShell
+
+OpenCms 7.5.3 - August 18, 2010
+! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
+! New workplace content tool to update the structure of XML contents without changing the modification date
+! New XML content element type "CmsXmlPlainTextStringValue" that removes HTML code for the search results
+! The workplace content tool "Change Property Values" now allows to use wildcards in the old and new value
+- In the workplace content tool "Change Property Values" if "Include all subfolders" is checked, also the properties of the folder itself are changed
+- Added new CmsShell command to import resources with a third parameter to control if permissions should be kept
+- Improved localized text for undo changes dialog
+- A new created search index in the workplace is now checked for invalid characters in the index name
+- Remove validations for XML content element actions: add, remove, move up, move down
+- Renamed context menu entry "Comment content" in "Edit metadata"
+- It is now possible to "Undo changes" after changing the availability of a resource
+- Improved user driver, additional infos are now stored in the database in a more efficient way
+- Improved user driver, during user login only the last login date is written to database
+- Updated Apache Commons Email to version 1.2
+* Fixed issue #1870: JS calendar generated by DateTimeWidget does not show up if lithuanian (lt) locale is selected in workplace
+* Fixed issue #1872: Anchor of URL being encoded incorrectly
+* Fixed issue #1886: Error when displaying historic version after a resource has been moved
+* Fixed issue #1889: Keep browser based authentication text when rewriting the opencms-system.xml
+* Fixed issue #1890: History version functionality also works for files with expired date now
+* Fixed issue #1891: Bug in Flex Cache: Cache-Directive "ports" works with list of ports like ports=(8080,8081)
+* Fixed issue with broken dialog when trying to edit a group that is part of an organizational unit
+* Fixed issue with displaying HTML in "Title" "and NavText" column of explorer view
+* Fixed with the locale calculation in the publish scheduled procedure
+* Fixed issue with malformed encoding in workplace property files
+
+OpenCms 7.5.2 - January 20, 2010
+- Added additional MIME types
+- Updated EditArea syntax highlighting editor to version 0.8.2
+- Updated Apache Commons Pool to version 1.5.4
+* Fixed issue with cached CmsResource lists are not cleared after publishing a project
+* Fixed issue that if an error occured while changing the user password in the preferences, it was not possible to close the error message
+* Fixed incorrect Lucene search result score
+* Fixed list search filter caching problem in OpenCms Administration view
+* Fixed 'go up' button in Account management view
+* Fixed access to indirect group users
+* Fixed double explorer action execution
+* Fixed not working resource type "xmlpage" in extended mode in WebDAV
+* Fixed issue with selected versions in the resource history
+* Fixed issue that error occured when changing field structure in XSD from simple data type to optional nested content
+* Fixed issue with wrong roles for indirect group users when updating OpenCms from version 6 to version 7
+* Fixed issue with JSP repository not being purged automatically after module import
+* Fixed issue #1542: Links to exported files containing anchors are not resolved correctly
+* Fixed issue #1782: Publish dialog in Project overview list hangs
+* Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
+* Fixed issue #1791: Template Two content external link check fails for two resources
+* Fixed issue #1800: Still not released resources are indexed
+* Fixed issue #1803: Template Two Demo Article links with target="_blank"
+* Fixed issue #1802: CmsShell does not work in Linux with Tomcat 6
+* Fixed issue #1807: CmsImportVersion7 contains a counter error in INFO log level
+* Fixed issue #1808: OpenCms.getLinkManager().getOnlineLink(CmsObject, link) does not work
+* Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
+* Fixed issue #1815: Aborted publish job goes on before resources are finally initialized when OpenCms restarts
+* Fixed issue #1817: Fail to load Download/HTML/Link/Table Gallery from HTMLWidget on Websphere 6.1
+* Fixed issue #1819: FCKeditor does not work with newer Firefox versions
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date

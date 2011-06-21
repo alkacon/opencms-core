@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2011/06/07 14:02:16 $
- * Version: $Revision: 1.17 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,10 +57,6 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 /**
  * Wrapper for GWT services served through OpenCms.<p>
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */

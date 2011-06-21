@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,10 +46,6 @@ import org.apache.commons.logging.Log;
  * Stores static Strings to generate HTML output parts for the template in a Map.<p>
  * 
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
- * 
- * @author Andreas Zahner 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

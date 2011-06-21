@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2011/05/03 10:48:46 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,12 +46,6 @@ import java.util.List;
  * resources optionally to a second set of history database tables while resources
  * get published. A unique publish tag ID is used to identify a set of resource that 
  * were saved during one publish process.<p>
- * 
- * @author Michael Emmerich 
- * @author Thomas Weckert
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */

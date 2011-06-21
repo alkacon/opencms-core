@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +33,6 @@ import java.util.Map;
  * Event class for OpenCms for system wide events that are thrown by various 
  * operations (e.g. publishing) and can be caught and processed by 
  * classes that implement the {@link I_CmsEventListener} interface.<p>
- *
- * @author  Alexander Kandzior 
- *
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 

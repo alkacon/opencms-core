@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopyFolderAndLanguageSelectDialog.java,v $
- * Date   : $Date: 2011/05/03 10:49:15 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,11 +58,6 @@ import javax.servlet.jsp.PageContext;
  * Widget dialog that collects the folders and the languages for XML content language node copy operation.
  * <p>
  * 
- * @author Achim Westermann
- * @author Mario Jaeger
- * 
- * @version $Revision: 1.3 $
- * 
  * @since 7.5.1
  */
 public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialog {
@@ -74,9 +65,6 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     /**
      * Settings bean for the dialog.
      * <p>
-     * 
-     * @author Achim Westermann
-     * @author Mario Jaeger
      * 
      */
     public class CmsLanguageCopyFolderAndLanguageSelectDialogSettings {

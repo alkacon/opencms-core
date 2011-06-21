@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileSelectionPanel.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,20 +54,12 @@ import javax.swing.JScrollPane;
  * internal pane for displaying the selectable paths. <p>
  * 
  * This is not reusable. The API is tailored for the upload applet. <p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
  */
 public class FileSelectionPanel extends JPanel {
 
     /**
      * Internal pane to show file selections. 
      * <p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      */
     static class FileSelectionPane extends JPanel {
 
@@ -115,10 +103,6 @@ public class FileSelectionPanel extends JPanel {
 
     /**
      * A single row for path selection with a checkbox and a path.<p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      */
     static class Row extends JPanel {
 

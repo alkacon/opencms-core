@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.9 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -96,13 +92,6 @@ import org.apache.commons.logging.Log;
  * Monitors OpenCms memory consumption.<p>
  * 
  * The memory monitor also provides all kind of caches used in the OpenCms core.<p>
- * 
- * @author Carsten Weinholz 
- * @author Michael Emmerich 
- * @author Alexander Kandzior 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */

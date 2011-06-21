@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDateResourceComparator.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -70,10 +66,6 @@ import java.util.Map;
  * 
  * Serves as {@link java.util.Comparator} for resources and as comparator key for the resource
  * at the same time. Uses lazy initializing of comparator keys for a resource.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */

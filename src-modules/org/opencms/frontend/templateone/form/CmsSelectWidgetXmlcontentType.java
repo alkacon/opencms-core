@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -136,10 +132,6 @@ import org.apache.commons.logging.Log;
  * </ul>
  * </p>
  * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
- * 
  * @since 6.1.3
  * 
  */
@@ -148,10 +140,6 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     /**
      * A {@link CmsSelectWidgetOption} that is bundled with a corresponding resource that may be selected.
      * <p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 
@@ -239,10 +227,6 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Compares two {@link CmsSelectWidgetXmlcontentType.CmsResourceSelectWidgetOption} instances by any resource
      * related value that may be accessed via a {@link CmsMacroResolver} (except message keys).
      * <p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsTemplateLoaderFacade.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,10 +37,6 @@ import org.opencms.file.CmsResource;
  * Depending on the resource type of the template itself, a loader is then selected that 
  * processed the requested resource. The processing itself might start on the template,
  * or on the requested resource (this will depend on the loader and the resource type implementation).<p>
- *
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,11 +41,6 @@ import java.util.List;
  * 
  * To use a filter, either use the static filters provided by this class,
  * or create an instance of {@link org.opencms.test.OpenCmsTestResourceConfigurableFilter}.<p>
- * 
- * @author Alexander Kandzior 
- * @author Michael Emmerich 
- * 
- * @version $Revision: 1.3 $
  */
 public abstract class OpenCmsTestResourceFilter {
 

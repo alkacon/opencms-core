@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/SelectionTree.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,10 +60,6 @@ import javax.swing.tree.TreeSelectionModel;
  * <li> Custom node UI with checkboxes. </li>
  * </ul>
  * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
- * 
  */
 public class SelectionTree extends JTree {
 
@@ -75,10 +67,6 @@ public class SelectionTree extends JTree {
      * 
      * Custom cell renderer that displays a checkbox.
      * <p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 
@@ -116,10 +104,6 @@ public class SelectionTree extends JTree {
      * selected within the tree model itself.
      * <p>
      * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
-     * 
      * @since 6.1.6
      * 
      */
@@ -142,10 +126,6 @@ public class SelectionTree extends JTree {
      * 
      * Custom component containing the default tree cell component along with a checkbox.
      * <p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 

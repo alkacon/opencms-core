@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,10 +57,6 @@ import org.apache.commons.logging.Log;
  * 
  * For example, to scale an image to exact 800x600 pixel with center fitting and a background color of grey, 
  * the following parameter String can be used: <code>w:800,h:600,t:0,c:c0c0c0</code>.<p> 
- * 
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */

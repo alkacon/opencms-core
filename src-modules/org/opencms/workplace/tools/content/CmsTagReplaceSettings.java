@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceSettings.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,10 +55,6 @@ import org.htmlparser.util.ParserException;
  * Bean to hold the settings needed for the operation of replacing HTML Tags of xmlpage resources in
  * the OpenCms VFS.
  * <p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.1.7
  * 

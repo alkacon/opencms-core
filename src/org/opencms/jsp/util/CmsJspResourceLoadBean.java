@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspResourceLoadBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import java.util.List;
 
 /**
  * Allows JSP access to the results of a &lt;cms:resourceload ... &gt; operation using the JSTL and EL.<p>
- * 
- * @author Andreas Zahner
- * 
- * @version $Revision: 1.2 $ 
  * 
  * @since 8.0 
  * 

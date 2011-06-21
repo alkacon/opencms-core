@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2011/05/07 16:54:20 $
- * Version: $Revision: 1.16 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Defines a property name, so that <code>{@link CmsProperty}</code> instances can be created with that name.<p>
- *
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */

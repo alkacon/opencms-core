@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestUrlNameMapping.java,v $
- * Date   : $Date: 2011/05/04 15:29:27 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,10 +42,6 @@ import junit.framework.Test;
 
 /**
  * Tests the URL name mapping facilities of OpenCms.<p>
- * 
- * @author Georg Westenberger 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

@@ -10,10 +10,6 @@ import java.util.ResourceBundle;
 /**
  * A list based resource bundle that with increased visibility of some key methods.<p>
  * 
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.1 $ 
- * 
  * @since 8.0.1 
  * 
  * @see org.opencms.i18n.CmsResourceBundleLoader

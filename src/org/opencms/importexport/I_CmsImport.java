@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,12 +40,6 @@ import org.dom4j.Document;
  * This interface describes a import class which is used to import resources into the VFS.<p>
  * 
  * OpenCms supports different import versions, for each version a own import class must be implemented.<p>
- *
- * @author Michael Emmerich 
- * @author Thomas Weckert  
- * @author Michael Moossen
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

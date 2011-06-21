@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,10 +35,6 @@ import org.apache.log4j.spi.LoggingEvent;
  * Simple extension of the log4j console appender that throws a
  * <code>RuntimeException</code> if an error (or fatal) event is logged,
  * causing the running test to fail.<p> 
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */

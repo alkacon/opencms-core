@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDevice.java,v $
- * Date   : $Date: 2011/05/05 07:14:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,11 +44,7 @@ import org.apache.commons.logging.Log;
  * This class provides a <code>&lt;cms:device type="..."&gt;</code>-Tag 
  * with the attribute <code>type</code> to specify the device.<p>
  * 
- * @author Ruediger Kurz
- * 
  * @since 8.0.0
- * 
- * @version 1.0
  */
 public class CmsJspTagDevice extends BodyTagSupport {
 

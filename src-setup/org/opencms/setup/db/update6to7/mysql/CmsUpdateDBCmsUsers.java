@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update6to7/mysql/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2011/05/03 10:48:46 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,8 +37,6 @@ import java.util.Map;
 /**
  * This class makes an update of the CMS_USERS table splitting it up into CMS_USERS and CMS_USERDATA.<p>
  * Unnecessary colums from CMS_USERS will be deleted and the new column USER_DATECREATED is added.
- * 
- * @author metzler
  */
 public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpdateDBCmsUsers {
 

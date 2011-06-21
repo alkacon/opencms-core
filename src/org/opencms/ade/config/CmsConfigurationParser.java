@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/05/07 16:27:52 $
- * Version: $Revision: 1.13 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -77,10 +73,6 @@ import org.apache.commons.logging.Log;
  * elements.<p> 
  * 
  * TODO: separate the parser from the data it parses 
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */

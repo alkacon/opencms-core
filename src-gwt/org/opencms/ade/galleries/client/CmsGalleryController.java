@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/galleries/client/CmsGalleryController.java,v $
- * Date   : $Date: 2011/06/10 06:57:25 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,11 +74,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * 
  * This class handles the communication between gallery dialog and the server. 
  * It contains the gallery data, but no references to the gallery dialog widget.
- * 
- * @author Polina Smagina
- * @author Ruediger Kurz
- * 
- * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */

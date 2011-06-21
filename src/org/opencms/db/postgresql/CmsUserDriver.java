@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2011/05/31 12:33:49 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import com.google.common.base.Joiner;
 
 /**
  * PostgreSql implementation of the user driver methods.<p>
- * 
- * @author Antonio Core 
- * 
- * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */

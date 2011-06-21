@@ -1,11 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/com/alkacon/opencms/v8/list/CmsCollectorSelectWidget.java,v $
- * Date   : $Date: 2011/05/06 15:43:51 $
- * Version: $Revision: 1.1 $
- *
  * This file is part of the Alkacon OpenCms Add-On Module Package
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * The Alkacon OpenCms Add-On Module Package is free software: 
  * you can redistribute it and/or modify
@@ -48,13 +44,7 @@ import java.util.List;
 /**
  * Creates a select widget that contains all configured collectors.<p>
  * 
- * @author Alexander Kandzior 
- * @author Peter Bonrad
- * @author Michael Moossen
- * 
  * @since 7.6
- * 
- * @version $Revision: 1.1 $ 
  */
 public class CmsCollectorSelectWidget extends CmsSelectWidget {
 

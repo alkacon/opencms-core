@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,10 +39,6 @@ import org.opencms.report.I_CmsReport;
  * A module action class allows to perform special functions on certain 
  * OpenCms lifecycle system events, like {@link #initialize(CmsObject, CmsConfigurationManager, CmsModule)} or 
  * {@link #shutDown(CmsModule)}.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 

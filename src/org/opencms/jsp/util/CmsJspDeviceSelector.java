@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspDeviceSelector.java,v $
- * Date   : $Date: 2011/05/05 07:14:48 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,11 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class provides the detection for different devices, so that the
  * <code>&lt;cms:device type="..."&gt;</code>-Tag can detect which device sends the HTTP request.<p>
  * 
- * @author Ruediger Kurz
- * 
  * @since 8.0.0
- * 
- * @version 1.0
  */
 public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
 

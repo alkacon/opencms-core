@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,10 +54,6 @@ import org.htmlparser.util.ParserException;
  * Implements the <code>&lt;cms:parse&gt;&lt;/cms:parse&gt;</code> tag to allow parsing of nested
  * HTML with the {@link org.opencms.jsp.parse.A_CmsConfiguredHtmlParser}} implementation specified by the "parserClass" attribute.
  * <p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 6.1.3
  */

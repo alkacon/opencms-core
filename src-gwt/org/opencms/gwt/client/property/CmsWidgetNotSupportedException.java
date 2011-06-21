@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/property/CmsWidgetNotSupportedException.java,v $
- * Date   : $Date: 2011/06/10 06:57:18 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,10 +29,6 @@ package org.opencms.gwt.client.property;
 
 /**
  * The exception which is thrown when a widget is not supported in the sitemap entry editor.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */

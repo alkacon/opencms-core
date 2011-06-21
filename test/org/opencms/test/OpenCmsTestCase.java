@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2011/05/05 16:50:07 $
- * Version: $Revision: 1.11 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -102,10 +98,6 @@ import org.dom4j.util.NodeComparator;
  * 
  * To run this test you might have to change the database connection
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */

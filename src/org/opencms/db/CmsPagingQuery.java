@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPagingQuery.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,8 +34,6 @@ package org.opencms.db;
  * 
  * @see "http://troels.arvin.dk/db/rdbms/#select-limit-offset"
  * 
- * @author Georg Westenberger
- * @version $Revision: 1.4 $
  * @since 8.0.0
  */
 public class CmsPagingQuery implements I_CmsQueryFragment {

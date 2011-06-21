@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsMacroWrapperFreeMarker.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,8 +44,6 @@ import org.apache.commons.logging.Log;
  * Wrapper for the FreeMarker template engine containing macros that are used to generate HTML output.<p>
  * 
  * Use this class with caution! It might be moved to the OpenCms core packages in the future.<p>
- * 
- * @author Andreas Zahner
  * 
  * @since 6.2.0
  */

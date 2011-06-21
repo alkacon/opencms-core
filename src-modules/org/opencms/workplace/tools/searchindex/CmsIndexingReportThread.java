@@ -1,15 +1,11 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.3 $
- *
  * This program is part of the Alkacon OpenCms Software library.
  *
  * This license applies to all programs, pages, Java classes, parts and
  * modules of the Alkacon OpenCms Software library published by
  * Alkacon Software GmbH, unless otherwise noted.
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,10 +55,6 @@ import java.util.Map;
 
 /**
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
- * 
- * @author Carsten Weinholz 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

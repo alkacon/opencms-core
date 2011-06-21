@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEventManager.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,10 +43,6 @@ import org.apache.commons.logging.Log;
  * 
  * Events can be used in OpenCms to notify custom event listeners that certain system events have happened.
  * Event listeners have to implement the interface {@link org.opencms.main.I_CmsEventListener}.<p>
- * 
- * @author  Alexander Kandzior 
- *
- * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.0
  * 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsUserDriver.java,v $
- * Date   : $Date: 2011/05/03 10:49:16 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,8 +37,6 @@ import com.google.common.base.Joiner;
 
 /**
  * DB2 implementation of the user driver methods.<p>
- * 
- * @author Michael Moossen
  * 
  * @since 7.0.3
  */

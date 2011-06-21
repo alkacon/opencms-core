@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsSearchExtractor.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,10 +40,6 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * a resource in the OpenCms VFS. This may be from the resource content, for example 
  * from a PDF file, or from the resource properties, for example the Title, Keywords and 
  * Description properties.<p>
- * 
- * @author Carsten Weinholz 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

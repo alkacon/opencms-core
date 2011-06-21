@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,11 +45,6 @@ import org.apache.commons.logging.Log;
  * Messages are cached for faster lookup. If a localized key is contained in more then one resource bundle,
  * it will be used only from the resource bundle where it was first found in. The resource bundle order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a resource bundle.<p>
- * 
- * @author Alexander Kandzior 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

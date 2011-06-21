@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/com/alkacon/opencms/v8/list/CmsListContentMapping.java,v $
- * Date   : $Date: 2011/06/01 07:50:46 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,13 +54,7 @@ import org.apache.commons.logging.Log;
 /**
  * Describes the mapping from an OpenCms XML content to a list entry.<p>
  * 
- * @author Alexander Kandzior 
- * @author Peter Bonrad
- * @author Michael Moossen
- * 
  * @since 7.6
- * 
- * @version $Revision: 1.3 $ 
  */
 public class CmsListContentMapping {
 

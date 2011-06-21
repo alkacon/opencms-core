@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsHtmlConverter.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,8 +36,6 @@ import java.util.List;
  * They can be configured in the configuration file <code>opencms-vfs.xml</code> and triggered when saving
  * XML contents or XML pages. Their behavior is configurable by setting the <code>content-conversion</code> property
  * value on VFS resources.<p>
- * 
- * @author Andreas Zahner
  * 
  * @since 7.5.1
  * 

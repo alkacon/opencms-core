@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.9 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,10 +53,6 @@ import org.apache.commons.logging.Log;
  * from <code>{@link org.opencms.file.CmsRequestContext#getUri()}</code> as argument to obtain a list
  * of all items in the navigation of the current folder. Then use a simple scriptlet to 
  * iterate over these items and create a HTML navigation.<p>
- *
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  * 

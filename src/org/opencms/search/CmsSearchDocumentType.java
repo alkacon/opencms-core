@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,10 +37,6 @@ import java.util.List;
  * The appropriate document factory class gets triggerd while the search index is built
  * for OpenCms documents matching the specified resource type and/or mimetype combination 
  * in a document factory class instance.<p>
- * 
- * @author Thomas Weckert  
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

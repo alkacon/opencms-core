@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionPrompt.java,v $
- * Date   : $Date: 2011/05/03 10:49:12 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +33,6 @@ import javax.swing.UIManager;
  * Ant task for a highly configurable Swing GUI based selection dialog.<p>
  * 
  * Task that prompts user for selection to allow interactive builds.<p>
- * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */

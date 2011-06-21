@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,13 +37,6 @@ import org.opencms.db.CmsResourceState;
  * of access to the VFS. For example, in the "Offline" project 
  * there can be deleted files, by using this filter you can control
  * if deleted files should be included in a result set or not.<p> 
- * 
- * @author Michael Emmerich 
- * @author Alexander Kandzior 
- * @author Carsten Weinholz 
- * @author Jan Baudisch
- * 
- * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */

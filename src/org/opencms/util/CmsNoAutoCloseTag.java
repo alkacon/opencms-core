@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsNoAutoCloseTag.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,10 +38,6 @@ import org.htmlparser.tags.CompositeTag;
  * tags as replacement for the regular ones. And these tags do not extend 
  * <code>{@link CompositeTag}</code>: They are not supposed to have a closing tag and following tags are 
  * not treated as their children but siblings. <p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
  * 
  * @since  7.5.1
  *

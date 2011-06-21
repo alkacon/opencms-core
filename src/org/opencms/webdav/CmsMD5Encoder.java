@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsMD5Encoder.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,11 +52,6 @@ package org.opencms.webdav;
  * The 128 bit MD5 hash is converted into a 32 character long String.
  * Each character of the String is the hexadecimal representation of 4 bits
  * of the digest.
- *
- * @author Remy Maucherat
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.5.6
  */

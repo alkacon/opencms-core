@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/shared/CmsReturnLinkInfo.java,v $
- * Date   : $Date: 2011/06/10 06:57:36 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +33,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This class represents the result of a "return link" lookup, which is what happens if the user
  * clicks the "go to last page" button in the sitemap editor. It contains a link string (possibly null)
  * and a status to indicate possible errors.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */

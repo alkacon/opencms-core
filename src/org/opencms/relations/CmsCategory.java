@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,10 +48,6 @@ import java.io.Serializable;
  * 
  * But a file under <code>/sites/othersite/</code> will only be assignable to
  * categories defined in <code>/system/categories/</code>.<p>
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  */

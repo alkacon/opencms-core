@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -100,10 +96,6 @@ import javax.servlet.jsp.tagext.Tag;
 /**
  * A handler for &lt;param&gt; that accepts attributes as Strings
  * and evaluates them as expressions at runtime.<p>
- *
- * @author Shawn Bayern
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

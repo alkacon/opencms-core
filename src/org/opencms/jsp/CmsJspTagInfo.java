@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -90,10 +86,6 @@ import org.apache.commons.logging.Log;
  * If the given property value does not match a key from the special OpenCms values
  * and also not the system values, a (String) message is returned with a formatted 
  * error message.<p>
- *  
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */

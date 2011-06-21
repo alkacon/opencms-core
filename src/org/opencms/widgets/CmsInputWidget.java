@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsInputWidget.java,v $
- * Date   : $Date: 2011/05/03 10:48:52 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,10 +32,6 @@ import org.opencms.i18n.CmsEncoder;
 
 /**
  * Provides a standard HTML form input widget, for use on a widget dialog.<p>
- *
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

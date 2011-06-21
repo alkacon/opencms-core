@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2011/05/05 07:14:48 $
- * Version: $Revision: 1.20 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,10 +36,6 @@ import java.io.Serializable;
  * classes used by GWT client-side code). If you change this class, either make sure that 
  * your changes are compatible with GWT, or write a separate client version of the class 
  * and put it into super_src.  
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */

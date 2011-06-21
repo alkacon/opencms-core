@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagJQuery.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,8 +44,6 @@ import org.apache.commons.logging.Log;
  * Since OpenCms version 7.0.5, there is a new core module providing JQuery plus some additional plugins.
  * This tag will include the JQuery javascript library depending on the current project. If the current
  * Project is offline the unpacked version is used, if online the packed version will be used.
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.5 
  */

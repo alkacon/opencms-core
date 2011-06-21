@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/persistence/CmsDAOHistoryPropertyDef.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,11 +36,6 @@ import javax.persistence.Table;
 /**
  * This data access object represents a history properties definition entry 
  * inside the table "cms_history_propertydef".<p>
- * 
- * @author Georgi Naplatanov
- * @author Ruediger Kurz
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

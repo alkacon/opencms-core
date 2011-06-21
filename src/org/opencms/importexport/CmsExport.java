@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -87,12 +83,6 @@ import org.xml.sax.SAXException;
  * The ZIP file written will contain a copy of all exported files with their contents.
  * It will also contain a <code>manifest.xml</code> file in which all meta-information 
  * about this files are stored, like permissions etc.<p>
- *
- * @author Alexander Kandzior 
- * @author Michael Emmerich 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

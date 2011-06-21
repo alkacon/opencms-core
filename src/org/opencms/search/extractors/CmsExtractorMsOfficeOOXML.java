@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsOfficeOOXML.java,v $
- * Date   : $Date: 2011/05/13 12:02:33 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,10 +38,6 @@ import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
  * 
  * The OLE 2 format was introduced in Microsoft Office version 97 and was the default format until Office version 2007 
  * and the new XML-based OOXML format.<p> 
- * 
- * @author Alexander Kandzior
- * 
- * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.1 
  */

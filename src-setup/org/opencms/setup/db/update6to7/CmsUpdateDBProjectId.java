@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update6to7/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,10 +54,6 @@ import java.util.Map;
  * For each table using a project id a new column for the UUID is added and the according data is transferred.<p>
  * After that the original indexes and the column for the project id index is dropped and the new column with the
  * project uuid becomes the primary key.<p>
- * 
- * @author Roland Metzler
- * 
- * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.0
  */

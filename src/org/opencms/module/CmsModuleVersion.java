@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,8 +49,6 @@ import org.opencms.util.CmsStringUtil;
  * For any <code>n1 - n4</code>, if <code>n > 0</code> leading zeros are ignored. 
  * So <code>001.002.004.004 = 1.2.3.4</code>. Unrequired leading zeros are automatically
  * stripped from version numbers.<p> 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

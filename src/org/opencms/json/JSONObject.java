@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONObject.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -118,8 +114,6 @@ import java.util.TreeSet;
  *     will be ignored.</li>
  * </ul>
  * 
- * @author JSON.org
- * @version 3
  */
 public class JSONObject {
 
@@ -924,8 +918,6 @@ public class JSONObject {
      * @param deep if to recurse in object values
      * 
      * @throws JSONException if a value is a non-finite number
-     * 
-     * @author Michael Moossen
      * 
      * @since 7.6
      */

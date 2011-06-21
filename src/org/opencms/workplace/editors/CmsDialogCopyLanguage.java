@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogCopyLanguage.java,v $
- * Date   : $Date: 2008/04/14 13:51:36 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,10 +62,6 @@ import org.apache.commons.logging.Log;
  * <li>/jsp/editors/dialogs/copylanguage.html
  * </ul>
  * <p>
- * 
- * @author Carsten Weinholz 
- * 
- * @version $Revision: 1.2 $ 
  * 
  * @since 6.5.6 
  */

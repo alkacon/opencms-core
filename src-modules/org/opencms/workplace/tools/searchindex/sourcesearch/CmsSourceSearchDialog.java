@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchDialog.java,v $
- * Date   : $Date: 2011/05/03 10:48:54 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,10 +59,6 @@ import javax.servlet.jsp.PageContext;
 /**
  * Widget dialog that collects the folders and the search phrase for content search operation.
  * <p>
- * 
- * @author Mario Jaeger
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 7.5.3
  */

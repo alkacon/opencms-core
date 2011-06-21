@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,10 +75,6 @@ import org.apache.commons.logging.Log;
  * 
  * It is possible to create an unchanged access to the resource in the VFS by creating 
  * a new instance of the CmsObjectWrapper with an empty list of resource wrappers.<p>
- *
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 6.2.4
  */

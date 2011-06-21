@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import java.net.URISyntaxException;
  * Splits an URI String into separate components.<p>
  * 
  * An URI is splitted into a <code>prefix</code>, a <code>anchor</code> and a <code>query</code> part.
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.5 $
  */
 public class CmsUriSplitter {
 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPatternLayout.java,v $
- * Date   : $Date: 2008/04/02 09:38:09 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,8 +48,6 @@ import org.apache.log4j.spi.ThrowableInformation;
  * log4j.appender.OC.layout.Filter=org.apache.tomcat,org.apache.catalina,org.apache.coyote<br/>
  * log4j.appender.OC.layout.Exclude=org.opencms.workplace.list.A_CmsListDialog<br/>
  * log4j.appender.OC.layout.MaxLength=5<p>
- * 
- * @author Peter Bonrad
  * 
  * @since 7.0.5
  */

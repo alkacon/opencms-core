@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/05/04 15:21:11 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,10 +43,6 @@ import java.util.Map;
 /**
  * This class uses information from the detail page information stored in the sitemap to find the detail page for 
  * a given resource.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */

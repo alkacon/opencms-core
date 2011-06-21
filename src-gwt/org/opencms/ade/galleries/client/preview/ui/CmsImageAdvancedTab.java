@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/galleries/client/preview/ui/CmsImageAdvancedTab.java,v $
- * Date   : $Date: 2011/06/10 06:57:10 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,10 +36,6 @@ import java.util.Map;
 
 /**
  * Advanced image tag properties tab, use in editor mode only.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */

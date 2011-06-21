@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentOpenOffice.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,10 +39,6 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 /**
  * Lucene document factory class to extract index data from a cms resource 
  * containing Open Document Format data.<p>
- * 
- * @author Dirk Oelkers
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4 
  */

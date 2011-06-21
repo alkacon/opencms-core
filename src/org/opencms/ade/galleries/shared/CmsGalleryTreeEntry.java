@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/galleries/shared/CmsGalleryTreeEntry.java,v $
- * Date   : $Date: 2011/06/10 06:57:19 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +33,6 @@ import java.util.List;
 
 /**
  * Gallery tree entry class. To organize gallery folders as a tree.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.1
  */

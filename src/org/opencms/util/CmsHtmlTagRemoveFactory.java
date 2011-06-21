@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -90,10 +86,6 @@ import org.htmlparser.visitors.NodeVisitor;
  *  </li>
  * </ol>
  * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.3 $
- * 
  * @since 6.1.8
  */
 public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
@@ -106,10 +98,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * generates from the document object model (e.g. HTML code again).<p>
      * 
      * Potential child tags will be visible to visitors (unless they are instances of this class).<p>
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.3 $
      * 
      * @since 6.1.8
      */

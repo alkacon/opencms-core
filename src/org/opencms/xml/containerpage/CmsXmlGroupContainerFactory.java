@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlGroupContainerFactory.java,v $
- * Date   : $Date: 2011/05/05 07:14:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,10 +53,6 @@ import org.xml.sax.EntityResolver;
 
 /**
  * Provides factory methods to unmarshal (read) an group container object.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */

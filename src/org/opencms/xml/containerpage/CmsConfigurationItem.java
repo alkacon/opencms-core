@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationItem.java,v $
- * Date   : $Date: 2011/05/03 10:48:48 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,10 +36,6 @@ import org.opencms.file.CmsResource;
  * content elements, and at which location in the VFS they should be created.<p>
  * 
  * It does not contain a type, since the type is given by the type of the source file.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */

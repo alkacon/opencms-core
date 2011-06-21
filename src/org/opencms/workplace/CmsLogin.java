@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2011/05/04 14:18:37 $
- * Version: $Revision: 1.12 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,10 +67,6 @@ import org.apache.commons.logging.Log;
 
 /**
  * Handles the login of Users to the OpenCms workplace.<p> 
- *
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,12 +328,10 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     } catch (CmsException e) {
                         // unable to set the startup project, bad but not critical
-                        LOG.warn(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
-                                m_username,
-                                settings.getStartProject()),
-                            e);
+                        LOG.warn(Messages.get().getBundle().key(
+                            Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
+                            m_username,
+                            settings.getStartProject()), e);
                     }
                 } else {
                     // there was an error during login
@@ -1174,7 +1164,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2011 Alkacon Software GmbH. ");
+        html.append("&copy; Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 

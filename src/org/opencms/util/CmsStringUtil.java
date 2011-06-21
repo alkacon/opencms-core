@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2011/05/03 10:48:50 $
- * Version: $Revision: 1.13 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,12 +54,6 @@ import org.apache.oro.text.perl.Perl5Util;
 /**
  * Provides String utility functions.<p>
  * 
- * @author  Andreas Zahner 
- * @author  Alexander Kandzior 
- * @author Thomas Weckert  
- * 
- * @version $Revision: 1.13 $ 
- * 
  * @since 6.0.0 
  */
 public final class CmsStringUtil {
@@ -72,8 +62,6 @@ public final class CmsStringUtil {
      * Compares two Strings according to the count of containing slashes.<p>
      * 
      * If both Strings contain the same count of slashes the Strings are compared.<p>
-     * 
-     * @author Ruediger Kurz
      */
     public static class CmsSlashComparator implements Comparator<String> {
 

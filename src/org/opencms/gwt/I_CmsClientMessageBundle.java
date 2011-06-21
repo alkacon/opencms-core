@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/I_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2011/05/04 16:16:13 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Convenient client message bundle interface.<p>
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:10 $
- * Version: $Revision: 1.9 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,10 +48,6 @@ import org.apache.commons.collections.Transformer;
 /**
  * Provides utility methods that allow convenient access to the OpenCms VFS, 
  * indented to be used from a JSP with the JSTL or EL.<p>
- * 
- * @author Alexander Kandzior
- * 
- * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.2
  * 

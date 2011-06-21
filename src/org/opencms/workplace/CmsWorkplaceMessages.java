@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,10 +54,6 @@ import java.util.Set;
  * Workplace messages are cached for faster lookup. If a localized key is contained in more then one module,
  * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
- * 
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2011/05/31 08:41:56 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,10 +63,6 @@ import org.apache.commons.logging.Log;
  * Provides basic methods for building the file editors of OpenCms.<p> 
  * 
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
- *
- * @author  Andreas Zahner 
- * 
- * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/property/CmsVfsModePropertyEditor.java,v $
- * Date   : $Date: 2011/06/10 14:41:01 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,10 +68,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The sitemap entry editor class for the VFS mode.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

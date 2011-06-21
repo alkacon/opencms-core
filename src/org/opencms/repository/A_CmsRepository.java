@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepository.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,10 +38,6 @@ import java.util.TreeMap;
  * 
  * Handles the functionality of basic configuration. This is actually the configuration
  * of param/values and the filters ({@link CmsRepositoryFilter}) to use of the repository.<p>
- * 
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.4
  */

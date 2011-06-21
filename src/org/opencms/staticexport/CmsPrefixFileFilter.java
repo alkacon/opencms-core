@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsPrefixFileFilter.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,10 +32,6 @@ import java.io.FileFilter;
 
 /**
  * Implements the file filter used to guess the right suffix of a deleted jsp file.<p>
- * 
- * @author Ruediger Kurz
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

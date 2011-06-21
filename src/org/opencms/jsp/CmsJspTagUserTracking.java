@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUserTracking.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,10 +63,6 @@ import org.apache.commons.logging.Log;
  * It is also possible to check if single resources are visited/subscribed by the current user.<p>
  * 
  * See also the {@link CmsSubscriptionManager} for more information about subscription or visitation.<p>
- *  
- * @author Andreas Zahner 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 8.0 
  */

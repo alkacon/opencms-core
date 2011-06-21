@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2011/05/03 10:49:00 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,10 +55,6 @@ import javax.servlet.http.HttpServletResponse;
  * The handling of the output written to the response is done by this 
  * dispatcher. The results are then passed back to OpenCms which 
  * will deliver them to the requesting user.<p>
- *
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 

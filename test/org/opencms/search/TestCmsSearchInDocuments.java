@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2011/05/13 15:18:42 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,8 +59,6 @@ import junit.framework.TestSuite;
 /**
  * Unit test for searching in extracted document text.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.4 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 

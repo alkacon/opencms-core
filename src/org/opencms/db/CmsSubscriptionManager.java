@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSubscriptionManager.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,10 +45,6 @@ import java.util.List;
 
 /**
  * Manager that provides methods to subscribe resources to users, read subscribed or unvisited resources and more.<p>
- * 
- * @author Andreas Zahner  
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */

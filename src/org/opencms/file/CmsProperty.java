@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2011/05/25 15:29:23 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -82,10 +78,6 @@ import java.util.RandomAccess;
  * this resource type. It is not a good style to set {@link #setAutoCreatePropertyDefinition(boolean)}
  * on true to make writing properties to the database work in any case, because then you will loose
  * control about which resource types support which property definitions.<p>
- * 
- * @author Thomas Weckert   
- * 
- * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */

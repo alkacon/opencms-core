@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2011/05/05 07:14:48 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,10 +45,6 @@ import java.util.Properties;
  * a servlet context could be located at http://www.mycorp.com/catalog. All
  * requests that begin with the /catalog request path, known as the <b>context path</b>, are
  * routed to the <b>web application</b> associated with the ServletContext.</i><p>   
- * 
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

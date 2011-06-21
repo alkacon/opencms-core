@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/gwt/rebind/CmsClassInitGenerator.java,v $
- * Date   : $Date: 2011/05/03 10:49:16 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,10 +46,6 @@ import com.google.gwt.user.rebind.SourceWriter;
 /**
  * This generator class generates a class with a method which calls all static initClass()
  * methods of classes that implement the {@link org.opencms.gwt.client.I_CmsHasInit} marker interface.<p>
- * 
- *  @author Georg Westenberger
- *  
- *  @version $Revision: 1.2 $
  *  
  *  @since 8.0.0
  */

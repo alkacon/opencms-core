@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,10 +61,6 @@ import javax.servlet.jsp.tagext.Tag;
  * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like 
  * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP 
  * context variable <code>myVarName</code> with an instance of a {@link CmsJspContentLoadBean}.<p>
- * 
- * @author  Alexander Kandzior 
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */

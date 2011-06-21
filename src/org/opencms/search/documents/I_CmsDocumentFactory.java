@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,12 +48,6 @@ import org.apache.lucene.document.Document;
  * the extraction algorithm for MIME types <code>.html</code> and <code>.txt</code> must be different.
  * On the other hand, the MIME type <code>.html</code> in OpenCms can be almost any resource type,
  * like <code>xmlpage</code>, <code>xmlcontent</code> or even <code>jsp</code>.<p> 
- * 
- * @author Carsten Weinholz 
- * @author Thomas Weckert 
- * @author Alexander Kandzior
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

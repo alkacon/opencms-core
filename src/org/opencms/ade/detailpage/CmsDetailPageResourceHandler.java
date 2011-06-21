@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/detailpage/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/06/01 13:00:52 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,10 +47,6 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler for detail-pages.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */

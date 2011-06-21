@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAdvancedLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2011/05/03 10:48:57 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,10 +51,6 @@ import org.apache.commons.logging.Log;
  * Advanced link substitution behavior.<p>
  * You can define additional paths that are always used as external links, even if
  * they point to the same configured site than the OpenCms itself.
- *
- * @author  Michael Emmerich
- *
- * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.0
  * 

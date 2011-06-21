@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.9 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,11 +31,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
- * @author Achim Westermann
- * @author Jan Baudisch 
- * 
- * @version $Revision: 1.9 $
  * 
  * @since 6.0.0 
  */

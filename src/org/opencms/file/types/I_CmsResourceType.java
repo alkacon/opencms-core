@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.17 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,12 +62,6 @@ import java.util.List;
  * object to implementations of this class. Using this object correctly is key to the 
  * resource type operations. Mistakes made in the implementation of a resource type
  * can screw up the system security and the database structure, and make you unhappy. <p> 
- * 
- * @author Alexander Kandzior 
- * @author Thomas Weckert  
- * @author Michael Emmerich 
- * 
- * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */

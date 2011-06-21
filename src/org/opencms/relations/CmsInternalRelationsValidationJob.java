@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalRelationsValidationJob.java,v $
- * Date   : $Date: 2011/05/03 10:49:01 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,10 +56,6 @@ import javax.mail.internet.InternetAddress;
  * <code>subject</code> parameter, should be the subject of the sent email, 
  *            if empty a default subject text will be used, 
  *            a good practice is to use the same job name as subject.<p> 
- *            
- * @author Michael Moossen
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.0 
  * 

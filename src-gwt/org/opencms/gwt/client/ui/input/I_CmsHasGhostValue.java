@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/input/I_CmsHasGhostValue.java,v $
- * Date   : $Date: 2011/06/10 06:57:09 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,10 +31,6 @@ package org.opencms.gwt.client.ui.input;
  * Interface for widgets which can contain a "ghost value".<p>
  * 
  * A ghost value will be displayed, but not reported when asking the widget for its current value.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */

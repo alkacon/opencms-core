@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/06 10:10:38 $
- * Version: $Revision: 1.20 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,10 +63,6 @@ import org.apache.commons.logging.Log;
  * Resource type descriptor for the type "containerpage".<p>
  *
  * It is just a xml content with a fixed schema.<p>
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.20 $ 
  * 
  * @since 7.6 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,11 +75,6 @@ import org.apache.commons.logging.Log;
  *  will get the content produced by <code>{@link org.opencms.jsp.CmsJspActionElement#getContent(String)}</code> 
  * appended after their own output. This allows to use jsp's in the online help template.
  * </ul>
- * 
- * @author Andreas Zahner 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */

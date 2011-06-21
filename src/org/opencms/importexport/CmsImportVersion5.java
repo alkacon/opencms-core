@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2011/05/03 10:48:56 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -77,10 +73,6 @@ import org.dom4j.Element;
  * the import version 5.<p>
  * 
  * This import format is used in OpenCms since 6.3.0.<p>
- *
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 6.3.0 
  * 

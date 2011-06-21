@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/ui/input/I_CmsFormField.java,v $
- * Date   : $Date: 2011/06/10 06:57:09 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,10 +36,6 @@ import java.util.HashMap;
  * 
  * A form field consists of a widget for entering values, some metadata like a label text/description,
  * and a set of validators for validating the field.
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0 
  * 

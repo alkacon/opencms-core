@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2011/06/08 08:45:02 $
- * Version: $Revision: 1.6 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,11 +69,6 @@ import org.apache.commons.logging.Log;
  * in case of an image (or another static resource) this will be returned by the <code>{@link org.opencms.loader.CmsDumpLoader}</code>
  * etc.
  * </li></ol>
- *
- * @author Alexander Kandzior 
- * @author Michael Emmerich 
- * 
- * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxImageGallery.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,11 +52,6 @@ import org.apache.commons.logging.Log;
 /**
  * Provides the specific constants, members and helper methods to generate the content of the image gallery dialog 
  * used in the XML content editors, WYSIWYG editors and context menu.<p>  
- *
- * @author Andreas Zahner  
- * @author Polina Smagina
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.0 
  */

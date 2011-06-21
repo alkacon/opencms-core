@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,10 +58,6 @@ import org.apache.commons.logging.Log;
  * 
  * Provides methods to determine if a multi-resource operation has to be done and helper methods,
  * e.g. to get the list of resources to work with.<p>
- *
- * @author  Andreas Zahner 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */

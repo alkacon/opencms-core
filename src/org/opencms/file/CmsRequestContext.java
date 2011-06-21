@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/05/05 16:14:49 $
- * Version: $Revision: 1.10 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,11 +40,6 @@ import java.util.Map;
 /**
  * Stores the information about the current users OpenCms context,
  * for example the requested URI, the current project, the selected site and more.<p>  
- *
- * @author Alexander Kandzior 
- * @author Michael Emmerich
- *
- * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */

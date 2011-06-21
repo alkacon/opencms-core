@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/A_CmsRfsFileWidgetDialog.java,v $
- * Date   : $Date: 2011/05/03 10:49:03 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,10 +47,6 @@ import javax.servlet.jsp.PageContext;
  * 
  * Here the support for the init / commit lifecycle of this RFS file access is 
  * added transparently.<p>
- *  
- * @author  Achim Westermann 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

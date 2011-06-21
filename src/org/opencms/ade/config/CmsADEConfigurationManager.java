@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/config/CmsADEConfigurationManager.java,v $
- * Date   : $Date: 2011/05/05 19:22:08 $
- * Version: $Revision: 1.9 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,10 +48,6 @@ import com.google.common.collect.Maps;
 
 /**
  * A class which can be used to access the configuration data for the container page editor and sitemap editor.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */

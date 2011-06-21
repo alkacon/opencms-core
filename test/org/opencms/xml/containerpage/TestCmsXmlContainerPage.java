@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/20 13:47:22 $
- * Version: $Revision: 1.10 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,10 +47,6 @@ import junit.framework.TestSuite;
 
 /**
  * Tests the OpenCms XML container pages.<p>
- *
- * @author Michael Moossen
- *  
- * @version $Revision: 1.10 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 

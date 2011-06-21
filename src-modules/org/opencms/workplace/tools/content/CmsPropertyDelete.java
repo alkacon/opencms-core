@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2011/05/03 10:48:55 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,11 +52,6 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for the delete property definition dialog.<p> 
- *
- * @author  Andreas Zahner 
- * @author  Armen Markarian 
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */

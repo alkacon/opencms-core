@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2011/05/17 13:54:06 $
- * Version: $Revision: 1.45 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -104,11 +100,6 @@ import org.dom4j.Element;
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
  * provide their own handler.<p>
- * 
- * @author Alexander Kandzior 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */

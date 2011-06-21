@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2011/05/03 10:48:47 $
- * Version: $Revision: 1.7 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,11 +61,6 @@ import org.apache.commons.logging.Log;
  * (project publish or direct publish).
  * After this, use <code>{@link org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)}</code>
  * to fill the actual values of the publish list.<p>
- * 
- * @author Alexander Kandzior
- * @author Thomas Weckert 
- * 
- * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  * 

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/util/CmsMoveAnimation.java,v $
- * Date   : $Date: 2011/06/10 06:57:21 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,10 +34,6 @@ import com.google.gwt.user.client.Command;
 /**
  * Move animation. Moving the given element from it's start to it's end position
  * and executing the given call-back on complete.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */

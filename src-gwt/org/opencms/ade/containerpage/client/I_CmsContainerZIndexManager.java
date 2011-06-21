@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/ade/containerpage/client/I_CmsContainerZIndexManager.java,v $
- * Date   : $Date: 2011/06/10 06:57:07 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,10 +35,6 @@ import com.google.gwt.dom.client.Element;
  * We need this interface only because IE7's z index management doesn't work right,
  * so we need to manually change around z indices during container page drag and drop
  * operations.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  * 

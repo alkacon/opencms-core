@@ -1,12 +1,8 @@
 /*
- * File   : $Source $
- * Date   : $Date $
- * Version: $Revision $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,10 +40,6 @@ import java.util.Locale;
  * 
  * This is provided so that the user can see a full picture of all the issues that have been caused in an operation,
  * rather then only one (usually the first) issue.
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 2.0.0 
  */

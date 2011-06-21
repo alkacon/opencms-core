@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2011/05/20 13:47:00 $
- * Version: $Revision: 1.23 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -77,10 +73,6 @@ import org.xml.sax.EntityResolver;
  * Implementation of a object used to access and manage the xml data of a container page.<p>
  * 
  * In addition to the XML content interface. It also provides access to more comfortable beans. 
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.23 $ 
  * 
  * @since 7.5.2
  * 

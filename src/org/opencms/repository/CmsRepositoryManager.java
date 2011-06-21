@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryManager.java,v $
- * Date   : $Date: 2011/05/03 10:49:13 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,10 +43,6 @@ import java.util.Map;
  *
  * The configuration of the repositories is done in the configuration file
  * <code>opencms-importexport.xml</code>.<p>
- *
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.4
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesOverview.java,v $
- * Date   : $Date: 2011/05/03 10:48:58 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,12 +47,6 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Class to show the module dependencies overview.<p>
- * 
- * @author Michael Emmerich 
- * 
- * @version $Revision: 1.3 $
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,7 +260,7 @@ public class CmsDependenciesOverview extends CmsWidgetDialog {
 
         List dependencies = module.getDependencies();
         m_dependency = new CmsModuleDependency();
-        if (dependencies != null && dependencies.size() > 0) {
+        if ((dependencies != null) && (dependencies.size() > 0)) {
             Iterator i = dependencies.iterator();
             while (i.hasNext()) {
                 CmsModuleDependency dependency = (CmsModuleDependency)i.next();

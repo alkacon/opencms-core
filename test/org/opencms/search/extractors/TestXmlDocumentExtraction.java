@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestXmlDocumentExtraction.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,8 +46,6 @@ import junit.framework.TestSuite;
 /**
  * Tests the text extraction for <code>xmlpage</code> and <code>xmlcontent</code> resources.<p>
  * 
- * @author Alexander Kandzior
- * @version $Revision: 1.3 $
  */
 public class TestXmlDocumentExtraction extends OpenCmsTestCase {
 

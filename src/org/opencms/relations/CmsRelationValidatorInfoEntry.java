@@ -6,10 +6,6 @@ import java.util.List;
 /**
  * Relation validator entry information bean.<p> 
  * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.2.8.1 $ 
- * 
  * @since 6.5.5
  */
 public final class CmsRelationValidatorInfoEntry {

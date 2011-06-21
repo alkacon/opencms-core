@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-gwt/org/opencms/gwt/client/rpc/CmsRpcAction.java,v $
- * Date   : $Date: 2011/06/10 06:57:22 $
- * Version: $Revision: 1.1 $
- * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,10 +41,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Consistently manages RPCs errors and 'loading' state.<p>
  * 
  * @param <T> The type of the expected return value
- * 
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.1 $ 
  * 
  * @since 8.0
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChflags.java,v $
- * Date   : $Date: 2011/05/03 10:48:59 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,8 +38,6 @@ import junit.framework.TestSuite;
 /**
  * Unit test for the "chflags" method of the CmsObject.<p>
  * 
- * @author Thomas Weckert  
- * @version $Revision: 1.4 $
  * @since 6.0 alpha 2
  */
 public class TestChflags extends OpenCmsTestCase {

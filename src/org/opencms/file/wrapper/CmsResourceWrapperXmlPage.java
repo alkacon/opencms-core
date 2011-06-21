@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,10 +67,6 @@ import java.util.Locale;
  * the elements for that locale as files. The files have the names of the elements with the
  * extension "html". Additionaly there is a file in the root folder of that xml page that
  * contains the controlcode of the xml page. This file has the name "controlcode.xml".<p>
- *
- * @author Peter Bonrad
- * 
- * @version $Revision: 1.5 $
  * 
  * @since 6.5.6
  */

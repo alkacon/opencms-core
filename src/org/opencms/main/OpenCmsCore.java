@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2011/05/05 14:56:05 $
- * Version: $Revision: 1.33 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -145,10 +141,6 @@ import org.apache.commons.logging.Log;
  * this core class. This means that in the default configuration, where 
  * OpenCms is accessed through a servlet context, there will be only one instance of 
  * the core in that servlet context.<p>
- * 
- * @author  Alexander Kandzior 
- *
- * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */

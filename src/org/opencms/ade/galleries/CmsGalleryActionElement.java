@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/ade/galleries/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2011/06/10 06:57:30 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,10 +47,6 @@ import javax.servlet.jsp.PageContext;
  * Gallery action used to generate the gallery dialog.<p>
  * 
  * see jsp file <tt>/system/modules/org.opencms.ade.galleries/testVfs.jsp</tt>.<p>
- * 
- * @author Polina Smagina 
- * 
- * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */

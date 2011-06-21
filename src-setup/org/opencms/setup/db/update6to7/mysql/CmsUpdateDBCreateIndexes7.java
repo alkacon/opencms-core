@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/update6to7/mysql/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2011/05/03 10:48:46 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,8 +33,6 @@ import java.io.IOException;
 
 /**
  * This class creates all the indexes that are used in the database version 7.<p>
- * 
- * @author metzler
  */
 public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.CmsUpdateDBCreateIndexes7 {
 

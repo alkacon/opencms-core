@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsPersistenceUnitConfiguration.java,v $
- * Date   : $Date: 2011/05/03 10:49:07 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,11 +44,6 @@ import org.w3c.dom.NodeList;
  * Persistence configuration class.<p>
  * 
  * This class allow to be managed (reading and writing) JPA  persistence.xml configuration file.<p>
- * 
- * @author Georgi Naplatanov
- * @author Ruediger Kurz 
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */

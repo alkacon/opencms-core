@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsPermalinkResourceHandler.java,v $
- * Date   : $Date: 2011/05/03 10:49:02 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,10 +44,6 @@ import org.apache.commons.logging.Log;
  * 
  * for example:<br>
  * <code>/opencms/opencms/permalink/a7b5d298-b3ab-11d8-b3e3-514d35713fed.html</code><p>
- *
- * @author Michael Moossen 
- * 
- * @version $Revision: 1.4 $
  * 
  * @since 6.3 
  */

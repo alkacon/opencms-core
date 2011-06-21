@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
- * Date   : $Date: 2011/05/03 10:48:49 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,10 +42,6 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * The class is useful for example to have images appear in the search result if the title of the image 
  * matched the search query. It's also used if no specific extraction method is available for a binary document type.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2011/05/11 12:52:04 $
- * Version: $Revision: 1.10 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,10 +60,6 @@ import org.apache.lucene.document.Fieldable;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
- * 
- * @author Alexander Kandzior 
- * 
- * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.0 
  */

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2011/05/03 10:49:11 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,10 +52,6 @@ import junit.framework.TestSuite;
  * This test suite performs way more set-up than is required for the amount of testing that is done.
  * However, there is probably value in demonstrating how to set up a test case to access flex cache resources
  * so that more robust unit tests can be developed here.<p>
- * 
- * @author Jason Trump
- *  
- * @version $Revision: 1.4 $
  * 
  * @since 6.0.1
  */

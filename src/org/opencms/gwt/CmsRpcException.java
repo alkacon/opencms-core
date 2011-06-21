@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsRpcException.java,v $
- * Date   : $Date: 2011/05/03 10:49:14 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,11 +34,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * As of the current state of exception serialization within GWT,
  * details of the original throwable are kept to be available on the client.<p>
- * 
- * @author Michael Moossen
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */

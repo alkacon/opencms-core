@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/updatexml/CmsUpdateXmlDialog.java,v $
- * Date   : $Date: 2011/05/03 10:49:09 $
- * Version: $Revision: 1.2 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,10 +52,6 @@ import javax.servlet.jsp.PageContext;
 /**
  * Widget dialog that sets the settings to replace HTML Tags in pages below a folder.
  * <p>
- * 
- * @author Mario Jaeger
- * 
- * @version $Revision: 1.2 $
  * 
  * @since 7.0.5
  */

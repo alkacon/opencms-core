@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2011/05/05 10:31:44 $
- * Version: $Revision: 1.5 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,10 +56,6 @@ import javax.servlet.jsp.PageContext;
  * 
  * Also - for accessing search functionality a member <code>{@link #m_searchManager}</code> 
  * is accessible for implementations. <p>
- * 
- * @author Achim Westermann
- * 
- * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */

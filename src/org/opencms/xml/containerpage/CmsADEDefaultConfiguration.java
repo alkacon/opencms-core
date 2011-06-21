@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/06/01 13:01:59 $
- * Version: $Revision: 1.33 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,10 +56,6 @@ import org.apache.commons.logging.Log;
  * New elements are read from a configuration file read by property.<p>
  * 
  * Search types are the same as the new elements.<p>
- * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.33 $ 
  * 
  * @since 7.6 
  */

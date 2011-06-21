@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchFieldConfigurationList.java,v $
- * Date   : $Date: 2011/05/03 10:49:05 $
- * Version: $Revision: 1.3 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,10 +74,6 @@ import org.apache.commons.logging.Log;
  * This list is stand-alone displayable (not to embed in another dialog) and 
  * offers single actions within the rows related to the current selected field configuration 
  * which has to be found by the <b>request parameter <code></code></b>.
- * 
- * @author Raphael Schnuck 
- * 
- * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */

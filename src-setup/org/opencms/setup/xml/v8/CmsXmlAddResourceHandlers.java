@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddResourceHandlers.java,v $
- * Date   : $Date: 2011/05/03 10:49:08 $
- * Version: $Revision: 1.4 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2011 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,10 +42,6 @@ import org.dom4j.Node;
 
 /**
  * Adds the new init resource handler classes, from 7.5.x to 8.0.0.<p>
- * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
