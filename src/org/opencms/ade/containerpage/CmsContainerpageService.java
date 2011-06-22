@@ -67,6 +67,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -223,8 +224,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getRequest(),
                 getResponse(),
                 new Locale(locale));
-            CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
-            CmsContainerElementBean elementBean = createElement(serverId, settings);
+            CmsContainerElementBean elementBean = getCachedElement(clientId);
+            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
+                elementBean.getResource(),
+                settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -441,21 +444,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Creates a new container element from a resource id and a map of settings.<p> 
+     * Converts the given setting values according to the setting configuration of the given resource.<p>
      * 
-     * @param resourceId the resource id 
-     * @param settings the map of settings 
+     * @param resource the resource
+     * @param the settings to convert
      * 
-     * @return the new container element bean 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @return the converted settings
      */
-    private CmsContainerElementBean createElement(CmsUUID resourceId, Map<String, String> settings) throws CmsException {
+    private Map<String, String> convertSettingValues(CmsResource resource, Map<String, String> settings)
+    throws CmsException {
 
-        CmsObject cms = getCmsObject();
         Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(
-            cms,
-            cms.readResource(resourceId));
+            getCmsObject(),
+            resource);
 
         Map<String, String> changedSettings = new HashMap<String, String>();
         if (settings != null) {
@@ -463,12 +464,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
                 changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    cms,
+                    getCmsObject(),
                     settingType,
-                    settings.get(settingName)));
+                    entry.getValue()));
             }
         }
-        return new CmsContainerElementBean(resourceId, null, changedSettings, false);
+        return changedSettings;
     }
 
     /**
@@ -783,11 +784,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, getRequest(), getResponse(), locale);
-        CmsContainerElementBean elementBean = CmsContainerElementBean.createElementForResourceType(
-            cms,
-            OpenCms.getResourceManager().getResourceType(resourceTypeName),
-            "/",
-            locale);
+        CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(resourceTypeName);
+        if (elementBean == null) {
+            elementBean = CmsContainerElementBean.createElementForResourceType(
+                cms,
+                OpenCms.getResourceManager().getResourceType(resourceTypeName),
+                "/",
+                Collections.<String, String> emptyMap(),
+                locale);
+            getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
+        }
         return elemUtil.getElementData(elementBean, containers);
     }
 

@@ -731,7 +731,7 @@ public final class CmsContainerpageController {
      */
     public void getNewElement(final String resourceType, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        if (m_newElements.containsKey(resourceType)) {
+        if (m_elements.containsKey(resourceType)) {
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 /**
@@ -739,7 +739,7 @@ public final class CmsContainerpageController {
                  */
                 public void execute() {
 
-                    callback.execute(m_newElements.get(resourceType));
+                    callback.execute(m_elements.get(resourceType));
 
                 }
             });
@@ -757,7 +757,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(CmsContainerElementData result) {
 
-                    m_newElements.put(resourceType, result);
+                    m_elements.put(result.getClientId(), result);
                     callback.execute(result);
                 }
             };

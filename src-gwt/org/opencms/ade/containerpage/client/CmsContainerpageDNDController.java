@@ -291,7 +291,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         containerElement = m_controller.getContainerpageUtil().createElement(
-                            m_controller.getCachedNewElement(draggable.getId()),
+                            m_controller.getCachedElement(draggable.getId()),
                             container);
                         containerElement.setNewType(draggable.getId());
                     } else {

@@ -57,7 +57,7 @@ public class CmsContainerElementBean {
     private final boolean m_createNew;
 
     /** The client ADE editor hash. */
-    private final transient String m_editorHash;
+    private transient String m_editorHash;
 
     /** The element's structure id. */
     private final CmsUUID m_elementId;
@@ -100,12 +100,7 @@ public class CmsContainerElementBean {
         ? new HashMap<String, String>()
         : individualSettings);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        String editorHash = m_elementId.toString();
-        if (!m_individualSettings.isEmpty()) {
-            int hash = m_individualSettings.toString().hashCode();
-            editorHash += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
-        }
-        m_editorHash = editorHash;
+        m_editorHash = m_elementId.toString() + getSettingsHash();
         m_createNew = createNew;
     }
 
@@ -116,6 +111,7 @@ public class CmsContainerElementBean {
      * @param cms the CMS context 
      * @param resourceType the resource type
      * @param targetFolder the parent folder of the resource
+     * @param individualSettings the element settings as a map of name/value pairs
      * @param locale the locale to use
      * 
      * @return the created element bean
@@ -126,6 +122,7 @@ public class CmsContainerElementBean {
         CmsObject cms,
         I_CmsResourceType resourceType,
         String targetFolder,
+        Map<String, String> individualSettings,
         Locale locale) throws CmsException {
 
         if (!(resourceType instanceof CmsResourceTypeXmlContent)) {
@@ -134,9 +131,10 @@ public class CmsContainerElementBean {
         CmsContainerElementBean elementBean = new CmsContainerElementBean(
             CmsUUID.getNullUUID(),
             null,
-            Collections.<String, String> emptyMap(),
+            individualSettings,
             true);
         elementBean.m_inMemoryOnly = true;
+        elementBean.m_editorHash = resourceType.getTypeName() + elementBean.getSettingsHash();
         byte[] content = new byte[0];
         String schema = ((CmsResourceTypeXmlContent)resourceType).getSchema();
         if (schema != null) {
@@ -174,6 +172,35 @@ public class CmsContainerElementBean {
             0,
             content);
         return elementBean;
+    }
+
+    /**
+     * Clones the given element bean with a different set of settings.<p>
+     * 
+     * @param source the element to clone
+     * @param settings the new settings
+     * 
+     * @return the element bean
+     */
+    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
+
+        CmsContainerElementBean result = new CmsContainerElementBean(
+            source.m_elementId,
+            source.m_formatterId,
+            settings,
+            source.m_createNew);
+        result.m_resource = source.m_resource;
+        result.m_sitePath = source.m_sitePath;
+        result.m_inMemoryOnly = source.m_inMemoryOnly;
+        if (result.m_inMemoryOnly) {
+            String editorHash = source.m_editorHash;
+            if (editorHash.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
+            }
+            editorHash += result.getSettingsHash();
+            result.m_editorHash = editorHash;
+        }
+        return result;
     }
 
     /**
@@ -337,5 +364,14 @@ public class CmsContainerElementBean {
     public String toString() {
 
         return editorHash();
+    }
+
+    private String getSettingsHash() {
+
+        if (!m_individualSettings.isEmpty()) {
+            int hash = m_individualSettings.toString().hashCode();
+            return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
+        }
+        return "";
     }
 }
