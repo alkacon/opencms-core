@@ -47,7 +47,19 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
     public CmsAddToFavoritesButton(CmsContainerpageHandler handler) {
 
         super(I_CmsButton.ButtonData.ADD_TO_FAVORITES, handler);
+    }
 
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    @Override
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
+
+        CmsElementOptionButton button = super.createOptionForElement(element);
+        if (element.isNew()) {
+            button.disable("Can not add empty element to favorites.");
+        }
+        return button;
     }
 
     /**
