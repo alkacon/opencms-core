@@ -309,10 +309,14 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * @param title the Title String to use for the property values
      * @return the List of initialized property objects
      */
-    protected static List createResourceProperties(CmsObject cms, String resourceName, String resTypeName, String title) {
+    protected static List<CmsProperty> createResourceProperties(
+        CmsObject cms,
+        String resourceName,
+        String resTypeName,
+        String title) {
 
         // create property values
-        List properties = new ArrayList(3);
+        List<CmsProperty> properties = new ArrayList<CmsProperty>(3);
 
         // get explorer type settings for the resource type
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
@@ -327,10 +331,10 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
 
             // calculate the new navigation position for the resource
-            List navList = new CmsJspNavBuilder(cms).getNavigationForFolder(resourceName);
+            List<CmsJspNavElement> navList = new CmsJspNavBuilder(cms).getNavigationForFolder(resourceName);
             float navPos = 1;
             if (navList.size() > 0) {
-                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
+                CmsJspNavElement nav = navList.get(navList.size() - 1);
                 navPos = nav.getNavPosition() + 1;
             }
             // add the NavPos property
@@ -351,6 +355,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @throws JspException if including an element fails
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         if (isCreateIndexMode()) {
@@ -358,7 +363,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             // set the current explorer resource to the new created folder
             String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
             getSettings().setExplorerResource(updateFolder, getCms());
-            List folderList = new ArrayList(1);
+            List<String> folderList = new ArrayList<String>(1);
             if (updateFolder != null) {
                 folderList.add(updateFolder);
             }
@@ -383,7 +388,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
             // create the Title and Navigation properties if configured
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
-            List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
+            List<CmsProperty> properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
 
             // create the resource            
             getCms().createResource(fullResourceName, resType.getTypeId(), null, properties);
@@ -400,6 +405,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         super.actionDialog();
@@ -502,6 +508,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @return the button row 
      */
+    @Override
     public String dialogButtons() {
 
         return dialogButtonsAdvancedNextCancel(
@@ -627,6 +634,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      *
      * @return the paramPage
      */
+    @Override
     public String getParamPage() {
 
         return m_paramPage;
@@ -678,6 +686,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         String resourceName = getParamResource();
@@ -766,6 +775,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      *
      * @param paramPage the paramPage to set
      */
+    @Override
     public void setParamPage(String paramPage) {
 
         m_paramPage = paramPage;
@@ -836,7 +846,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * @param title the Title String to use for the property values
      * @return the List of initialized property objects
      */
-    protected List createResourceProperties(String resourceName, String resTypeName, String title) {
+    protected List<CmsProperty> createResourceProperties(String resourceName, String resTypeName, String title) {
 
         return createResourceProperties(getCms(), resourceName, resTypeName, title);
     }
@@ -844,6 +854,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -875,6 +886,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         attribute = appendDelimiter(attribute);
@@ -895,24 +907,25 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-        Iterator i;
+        Iterator<CmsExplorerTypeSettings> i;
         if (m_limitedRestypes) {
 
             // available resource types limited, create list iterator of given limited types
-            List newResTypes;
+            List<String> newResTypes;
             if (m_availableResTypes.indexOf(DELIM_PROPERTYVALUES) > -1) {
                 newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES, true);
             } else {
                 newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER, true);
             }
-            Iterator k = newResTypes.iterator();
-            List settings = new ArrayList(newResTypes.size());
+            Iterator<String> k = newResTypes.iterator();
+            List<CmsExplorerTypeSettings> settings = new ArrayList<CmsExplorerTypeSettings>(newResTypes.size());
             while (k.hasNext()) {
-                String resType = (String)k.next();
+                String resType = k.next();
 
                 // get settings for resource type
                 CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType);
@@ -940,7 +953,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         }
 
         while (i.hasNext()) {
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            CmsExplorerTypeSettings settings = i.next();
 
             if (!m_limitedRestypes) {
 
@@ -1014,6 +1027,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -1104,6 +1118,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);

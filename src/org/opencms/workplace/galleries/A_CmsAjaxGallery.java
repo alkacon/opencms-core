@@ -238,7 +238,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             }
         }
         // get the gallery class name for the type
-        A_CmsAjaxGallery template = (A_CmsAjaxGallery)OpenCms.getWorkplaceManager().getGalleries().get(galleryTypeName);
+        A_CmsAjaxGallery template = OpenCms.getWorkplaceManager().getGalleries().get(galleryTypeName);
 
         if (template == null) {
             // requested gallery type is not configured
@@ -1232,5 +1232,4 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
-
 }

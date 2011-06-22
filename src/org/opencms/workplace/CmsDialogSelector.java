@@ -102,8 +102,7 @@ public class CmsDialogSelector {
                 getParamResource()));
         }
         // get the handler class from the OpenCms runtime property
-        I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(
-            getHandler());
+        I_CmsDialogHandler dialogClass = OpenCms.getWorkplaceManager().getDialogHandler(getHandler());
         if (dialogClass == null) {
             // error getting the dialog class, return to file list
             return CmsWorkplace.FILE_EXPLORER_FILELIST;

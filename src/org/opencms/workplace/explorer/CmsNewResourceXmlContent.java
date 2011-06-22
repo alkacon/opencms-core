@@ -28,7 +28,9 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -119,12 +121,12 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * @param newResourceTypeName the resource type name for the new resource to create
      * @return the possible model files for the new resource
      */
-    public static List getModelFiles(CmsObject cms, String currentFolder, String newResourceTypeName) {
+    public static List<CmsResource> getModelFiles(CmsObject cms, String currentFolder, String newResourceTypeName) {
 
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(newResourceTypeName);
             // get the schema for the resource type to create
-            String schema = (String)resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+            String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
             // get the content handler for the resource type to create
             I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
@@ -135,11 +137,11 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
                 return cms.readResources(masterFolder, filter, false);
             } else {
                 // no master folder found
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         } catch (Throwable t) {
             // error determining resource type, should never happen
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -148,6 +150,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -159,7 +162,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             fullResourceName = appendSuffixHtml(fullResourceName, false);
             // create the Title and Navigation properties if configured
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
-            List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
+            List<CmsProperty> properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
 
             // set request context attribute for model file if file was selected
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())
@@ -183,6 +186,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      *  
      * @return the http URI of the current dialog
      */
+    @Override
     public String getDialogUri() {
 
         if (!useNewStyle()) {
@@ -197,7 +201,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * 
      * @return the possible model files for the new resource
      */
-    protected List getModelFiles() {
+    protected List<CmsResource> getModelFiles() {
 
         return getModelFiles(getCms(), getSettings().getExplorerResource(), getParamNewResourceType());
     }
@@ -225,6 +229,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

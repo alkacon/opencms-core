@@ -584,8 +584,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      */
     protected boolean isHideButtonAdvanced() {
 
-        I_CmsDialogHandler handler = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(
-            getDialogHandler());
+        I_CmsDialogHandler handler = OpenCms.getWorkplaceManager().getDialogHandler(getDialogHandler());
         MultiValueMap handlerParams = (MultiValueMap)handler.getConfiguration();
         if ((handlerParams != null) && handlerParams.containsKey(PARAM_HIDEADVANCED)) {
             // checks if "hideadvanced" is set to true
@@ -750,5 +749,4 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }
         }
     }
-
 }
