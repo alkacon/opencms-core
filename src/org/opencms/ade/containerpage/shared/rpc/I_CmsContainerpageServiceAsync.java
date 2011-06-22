@@ -131,6 +131,24 @@ public interface I_CmsContainerpageServiceAsync {
     Collection<CmsContainer> containers, String locale, AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
+     * Returns new container element data for the given resource type name.<p>
+     * 
+     * @param  pageStructureId the container page structure id
+     * @param reqParams optional request parameters
+     * @param resourceType the requested element resource type name
+     * @param containers the containers of the current page
+     * @param locale the content locale
+     * @param callback the call-back executed on response
+     */
+    void getNewElementData(
+        CmsUUID pageStructureId,
+        String reqParams,
+        String resourceType,
+        Collection<CmsContainer> containers,
+        String locale,
+        AsyncCallback<CmsContainerElementData> callback);
+
+    /**
      * Requests the container element data of the recent list.<p>
      * 
      * @param pageStructureId the container page structure id 

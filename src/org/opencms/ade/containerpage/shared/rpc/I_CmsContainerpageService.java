@@ -140,6 +140,26 @@ public interface I_CmsContainerpageService extends RemoteService {
         String locale) throws CmsRpcException;
 
     /**
+     * Returns new container element data for the given resource type name.<p>
+     * 
+     * @param  pageStructureId the container page structure id
+     * @param reqParams optional request parameters
+     * @param resourceType the requested element resource type name
+     * @param containers the containers of the current page
+     * @param locale the content locale
+     * 
+     * @return the element data
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    CmsContainerElementData getNewElementData(
+        CmsUUID pageStructureId,
+        String reqParams,
+        String resourceType,
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
+
+    /**
      * Returns the container element data of the recent list.<p>
      * 
      * @param pageStructureId the container page structure id

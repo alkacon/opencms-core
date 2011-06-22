@@ -237,28 +237,18 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
 
-        m_dragInfos.put(
-            target,
-            new DragInfo(
-                handler.getDragHelper(),
-                handler.getPlaceholder(),
-                handler.getCursorOffsetX(),
-                handler.getCursorOffsetY()));
+        m_dragInfos.put(target, new DragInfo(
+            handler.getDragHelper(),
+            handler.getPlaceholder(),
+            handler.getCursorOffsetX(),
+            handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
             CmsDebugLog.getInstance().printLine("draggable has no id, canceling drop");
             return false;
         }
-        if (isNewId(clientId)) {
-            // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            clientId = m_controller.getNewResourceId(clientId);
-            m_isNew = true;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
-                return false;
-            }
-        }
-        m_controller.getElement(clientId, new I_CmsSimpleCallback<CmsContainerElementData>() {
+        I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
 
             /**
              * Execute on success.<p>
@@ -269,7 +259,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 prepareHelperElements(arg, handler);
             }
-        });
+        };
+        if (isNewId(clientId)) {
+            // for new content elements dragged from the gallery menu, the given id contains the resource type name
+            //clientId = m_controller.getNewResourceId(clientId);
+            m_isNew = true;
+            m_controller.getNewElement(clientId, callback);
+        } else {
+            m_controller.getElement(clientId, callback);
+        }
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
             CmsContainerpageEditor.getZIndexManager().start(id);
@@ -293,7 +291,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         containerElement = m_controller.getContainerpageUtil().createElement(
-                            m_controller.getCachedElement(m_controller.getNewResourceId(draggable.getId())),
+                            m_controller.getCachedNewElement(draggable.getId()),
                             container);
                         containerElement.setNewType(draggable.getId());
                     } else {

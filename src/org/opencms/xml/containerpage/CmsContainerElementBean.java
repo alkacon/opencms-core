@@ -27,15 +27,23 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,11 +68,14 @@ public class CmsContainerElementBean {
     /** The configured properties. */
     private final Map<String, String> m_individualSettings;
 
-    /** The settings of this element containing also default values. */
-    private transient Map<String, String> m_settings;
+    /** Indicates whether the represented resource is in memory only and not in the VFS. */
+    private boolean m_inMemoryOnly;
 
     /** The resource of this element. */
     private transient CmsResource m_resource;
+
+    /** The settings of this element containing also default values. */
+    private transient Map<String, String> m_settings;
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
@@ -89,13 +100,80 @@ public class CmsContainerElementBean {
         ? new HashMap<String, String>()
         : individualSettings);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        String clientId = m_elementId.toString();
+        String editorHash = m_elementId.toString();
         if (!m_individualSettings.isEmpty()) {
             int hash = m_individualSettings.toString().hashCode();
-            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
+            editorHash += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
-        m_editorHash = clientId;
+        m_editorHash = editorHash;
         m_createNew = createNew;
+    }
+
+    /**
+     * Creates an element bean for the given resource type.<p>
+     * <b>The represented resource will be in memory only and not in the VFS!!!.</b><p>
+     * 
+     * @param cms the CMS context 
+     * @param resourceType the resource type
+     * @param targetFolder the parent folder of the resource
+     * @param locale the locale to use
+     * 
+     * @return the created element bean
+     * @throws CmsException 
+     * @throws IllegalArgumentException if the resource type not instance of {@link org.opencms.file.types.CmsResourceTypeXmlContent}
+     */
+    public static CmsContainerElementBean createElementForResourceType(
+        CmsObject cms,
+        I_CmsResourceType resourceType,
+        String targetFolder,
+        Locale locale) throws CmsException {
+
+        if (!(resourceType instanceof CmsResourceTypeXmlContent)) {
+            throw new IllegalArgumentException();
+        }
+        CmsContainerElementBean elementBean = new CmsContainerElementBean(
+            CmsUUID.getNullUUID(),
+            null,
+            Collections.<String, String> emptyMap(),
+            true);
+        elementBean.m_inMemoryOnly = true;
+        byte[] content = new byte[0];
+        String schema = ((CmsResourceTypeXmlContent)resourceType).getSchema();
+        if (schema != null) {
+            // must set URI of OpenCms user context to parent folder of created resource, 
+            // in order to allow reading of properties for default values
+            CmsObject newCms = OpenCms.initCmsObject(cms);
+            newCms.getRequestContext().setUri(targetFolder);
+            // unmarshal the content definition for the new resource
+            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+            CmsXmlContent xmlContent = CmsXmlContentFactory.createDocument(
+                newCms,
+                locale,
+                OpenCms.getSystemInfo().getDefaultEncoding(),
+                contentDefinition);
+            content = xmlContent.marshal();
+        }
+
+        elementBean.m_resource = new CmsFile(
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            targetFolder + "~",
+            resourceType.getTypeId(),
+            0,
+            cms.getRequestContext().getCurrentProject().getUuid(),
+            CmsResource.STATE_NEW,
+            0,
+            cms.getRequestContext().getCurrentUser().getId(),
+            0,
+            cms.getRequestContext().getCurrentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            content.length,
+            0,
+            0,
+            content);
+        return elementBean;
     }
 
     /**
@@ -165,6 +243,17 @@ public class CmsContainerElementBean {
     }
 
     /**
+     * Returns the element settings including default values for settings not set.<p>
+     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
+     * 
+     * @return the element settings
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
+    }
+
+    /**
      * Returns the site path of the resource of this element.<p>
      * 
      * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
@@ -227,19 +316,18 @@ public class CmsContainerElementBean {
      */
     public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
-        CmsResource resource = cms.readResource(m_elementId);
-        return resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
+        initResource(cms);
+        return m_resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
     }
 
     /**
-     * Returns the element settings including default values for settings not set.<p>
-     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
+     * Returns if the represented resource is in memory only and not persisted in the VFS.<p>
      * 
-     * @return the element settings
+     * @return <code>true</code> if the represented resource is in memory only and not persisted in the VFS
      */
-    public Map<String, String> getSettings() {
+    public boolean isInMemoryOnly() {
 
-        return m_settings;
+        return m_inMemoryOnly;
     }
 
     /**

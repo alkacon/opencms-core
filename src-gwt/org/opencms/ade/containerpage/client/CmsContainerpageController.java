@@ -309,6 +309,9 @@ public final class CmsContainerpageController {
     /** The container element data. All requested elements will be cached here.*/
     protected Map<String, CmsContainerElementData> m_elements;
 
+    /** The new element data by resource type name. */
+    protected Map<String, CmsContainerElementData> m_newElements;
+
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
@@ -585,6 +588,21 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the data for the requested element, or <code>null</code> if the element has not been cached yet.<p>
+     * 
+     * @param resourceTypeName the element resource type
+     * 
+     * @return the element data
+     */
+    public CmsContainerElementData getCachedNewElement(String resourceTypeName) {
+
+        if (m_newElements.containsKey(resourceTypeName)) {
+            return m_newElements.get(resourceTypeName);
+        }
+        return null;
+    }
+
+    /**
      * Returns the container data of container with the given name.
      * 
      * @param containerName the container name
@@ -701,6 +719,48 @@ public final class CmsContainerpageController {
             });
         } else {
             SingleElementAction action = new SingleElementAction(clientId, callback);
+            action.execute();
+        }
+    }
+
+    /**
+     * Returns the element data for a resource type representing a new element.<p>
+     * 
+     * @param resourceType the resource type name
+     * @param callback the callback to execute with the new element data
+     */
+    public void getNewElement(final String resourceType, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        if (m_newElements.containsKey(resourceType)) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    callback.execute(m_newElements.get(resourceType));
+
+                }
+            });
+        } else {
+            CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+                @Override
+                public void execute() {
+
+                    getContainerpageService().getNewElementData(CmsCoreProvider.get().getStructureId(),
+
+                    getRequestParams(), resourceType, m_containerBeans, getLocale(), this);
+                }
+
+                @Override
+                protected void onResponse(CmsContainerElementData result) {
+
+                    m_newElements.put(resourceType, result);
+                    callback.execute(result);
+                }
+            };
             action.execute();
         }
     }
@@ -830,6 +890,7 @@ public final class CmsContainerpageController {
         m_cntDndController = m_dndHandler.getController();
 
         m_elements = new HashMap<String, CmsContainerElementData>();
+        m_newElements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
 
@@ -1766,5 +1827,4 @@ public final class CmsContainerpageController {
         }
         return result;
     }
-
 }

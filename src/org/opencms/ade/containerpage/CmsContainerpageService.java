@@ -258,6 +258,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, java.lang.String)
+     */
+    public CmsContainerElementData getNewElementData(
+        CmsUUID pageStructureId,
+        String reqParams,
+        String resourceType,
+        Collection<CmsContainer> containers,
+        String localeName) throws CmsRpcException {
+
+        CmsContainerElementData result = null;
+        try {
+            ensureSession();
+            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+            String containerpageUri = getCmsObject().getSitePath(pageResource);
+            Locale locale = new Locale(localeName);
+            result = getNewElement(resourceType, containerpageUri, containers, locale);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(org.opencms.util.CmsUUID, java.util.Collection, java.lang.String)
      */
     public List<CmsContainerElementData> getRecentList(
@@ -738,6 +761,34 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the element data for a new element not existing in the VFS yet.<p>
+     * 
+     * @param resourceTypeName the resource type name
+     * @param uriParam the request parameters
+     * @param containers the containers of the template
+     * @param locale the current locale
+     * 
+     * @return the element data
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsContainerElementData getNewElement(
+        String resourceTypeName,
+        String uriParam,
+        Collection<CmsContainer> containers,
+        Locale locale) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, getRequest(), getResponse(), locale);
+        CmsContainerElementBean elementBean = CmsContainerElementBean.createElementForResourceType(
+            cms,
+            OpenCms.getResourceManager().getResourceType(resourceTypeName),
+            "/",
+            locale);
+        return elemUtil.getElementData(elementBean, containers);
     }
 
     /**

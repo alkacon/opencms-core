@@ -236,6 +236,16 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * Returns the configured xsd schema uri.<p>
+     * 
+     * @return the configured xsd schema uri, or <code>null</code> if not set
+     */
+    public String getSchema() {
+
+        return m_schema;
+    }
+
+    /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
@@ -333,16 +343,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         // now write the file
         return super.writeFile(cms, securityManager, resource);
-    }
-
-    /**
-     * Returns the configured xsd schema uri.<p>
-     * 
-     * @return the configured xsd schema uri, or <code>null</code> if not set
-     */
-    protected String getSchema() {
-
-        return m_schema;
     }
 
     /**

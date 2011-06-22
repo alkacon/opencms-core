@@ -221,7 +221,8 @@ public class CmsListConfiguration extends CmsJspActionElement {
             CmsFile file = null;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(configPath)) {
                 CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
-                file = cms.readFile(cms.readResource(element.getId()));
+                element.initResource(cms);
+                file = cms.readFile(element.getResource());
             } else {
                 file = cms.readFile(configPath);
             }

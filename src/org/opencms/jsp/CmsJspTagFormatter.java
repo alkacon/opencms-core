@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -36,7 +37,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Locale;
 
@@ -197,7 +200,13 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             }
 
             // load content and store it
-            CmsJspContentAccessBean bean = new CmsJspContentAccessBean(m_cms, m_locale, m_element.getResource());
+            CmsJspContentAccessBean bean;
+            if (m_element.isInMemoryOnly() && (m_element.getResource() instanceof CmsFile)) {
+                I_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(m_cms, (CmsFile)m_element.getResource());
+                bean = new CmsJspContentAccessBean(m_cms, m_locale, xmlContent);
+            } else {
+                bean = new CmsJspContentAccessBean(m_cms, m_locale, m_element.getResource());
+            }
             storeAttribute(getVar(), bean);
 
             if (m_value != null) {

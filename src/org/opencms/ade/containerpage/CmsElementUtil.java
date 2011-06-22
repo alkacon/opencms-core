@@ -223,8 +223,10 @@ public class CmsElementUtil {
             CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
         String noEditReason = "";
         if (CmsResourceTypeXmlContent.isXmlContent(element.getResource())) {
-            noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-                m_cms)));
+            if (!element.isInMemoryOnly()) {
+                noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                    m_cms)));
+            }
         } else {
             noEditReason = org.opencms.jsp.Messages.get().getBundle().key(
                 org.opencms.jsp.Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
