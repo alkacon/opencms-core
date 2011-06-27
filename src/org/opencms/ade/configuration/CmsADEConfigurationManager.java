@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -255,15 +251,19 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
                     CmsUUID publishId = new CmsUUID(publishIdStr);
                     try {
                         List<CmsPublishedResource> publishedResources = m_onlineCms.readPublishedResources(publishId);
-                        for (CmsPublishedResource res : publishedResources) {
-                            if (res.getState().isDeleted()) {
-                                m_onlineCache.remove(res);
-                            } else {
-                                m_onlineCache.update(res);
+                        if (publishedResources.isEmpty()) {
+                            // normally, the list of published resources should not be empty.
+                            // If it is, the publish event is not coming from a normal publish process,
+                            // so we re-initialize the whole cache to be on the safe side.
+                            m_onlineCache.initialize();
+                        } else {
+                            for (CmsPublishedResource res : publishedResources) {
+                                if (res.getState().isDeleted()) {
+                                    m_onlineCache.remove(res);
+                                } else {
+                                    m_onlineCache.update(res);
+                                }
                             }
-                            //    String state = "" + res.getState().getAbbreviation();
-                            //    String path = res.getRootPath();
-                            //    System.out.print(" " + state + "(" + path + ")");
                         }
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
@@ -339,6 +339,32 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
             throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
         }
         return element;
+    }
+
+    /**
+     * Gets the detail page for a content element.<p>
+     * 
+     * @param cms the CMS context 
+     * @param pageRootPath the element's root path 
+     * @param originPath the path in which the the detail page is being requested 
+     * 
+     * @return the detail page for the content element 
+     */
+    public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
+
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
+        String resType = cache.getParentFolderType(pageRootPath);
+        if (resType == null) {
+            return null;
+        }
+        String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
+        CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
+        List<CmsDetailPageInfo> pageInfo = configData.getDetailPagesForType(resType);
+        if ((pageInfo == null) || pageInfo.isEmpty()) {
+            return null;
+        }
+        return pageInfo.get(0).getUri();
     }
 
     /**
@@ -713,41 +739,6 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
             result = cache.getModuleConfiguration();
         }
         return result;
-    }
-
-    /**
-     * Helper method for translating event type ids to readable names.<p>
-     * 
-     * @param type the event type id
-     *  
-     * @return the readable event name 
-     */
-    private String getEventName(int type) {
-
-        switch (type) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-                return "EVENT_RESOURCE_AND_PROPERTIES_MODIFIED";
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                return "EVENT_RESOURCE_MODIFIED";
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                return "EVENT_RESOURCES_AND_PROPERTIES_MODIFIED";
-            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                return "EVENT_RESOURCE_MOVED";
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-                return "EVENT_RESOURCE_DELETED";
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                return "EVENT_RESOURCES_MODIFIED";
-            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-                return "EVENT_CLEAR_ONLINE_CACHES";
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                return "EVENT_PUBLISH_PROJECT";
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                return "EVENT_CLEAR_CACHES";
-            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                return "EVENT_CLEAR_OFFLINE_CACHES";
-            default:
-                return "EVENT_???_" + type;
-        }
     }
 
 }

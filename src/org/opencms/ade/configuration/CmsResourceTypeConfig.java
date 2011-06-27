@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -90,7 +86,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     public boolean checkCreatable(CmsObject cms) throws CmsException {
 
         String folderPath = getFolderPath(cms);
-        createFolder(m_owner.getCmsObject(), folderPath);
+        CmsObject createCms = OpenCms.initCmsObject(m_owner.getCmsObject());
+        createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
+        createFolder(createCms, folderPath);
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("");
         try {
@@ -169,6 +167,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         for (String parent : parents) {
             try {
                 cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                cms.unlockResource(parent);
             } catch (CmsVfsResourceAlreadyExistsException e) {
                 // nop 
             }

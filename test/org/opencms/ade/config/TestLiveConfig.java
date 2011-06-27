@@ -105,6 +105,27 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    public void testDetailPage1() throws Exception {
+
+        // root site 
+
+        CmsObject cms = rootCms();
+        String detailPage = OpenCms.getADEConfigurationManager().getDetailPageFinder().getDetailPage(
+            cms,
+            "/sites/default/.content/a1/blarg.html",
+            "/sites/default/today/news");
+        assertEquals("/sites/default/", detailPage);
+
+        // default site
+
+        cms = getCmsObject();
+        detailPage = OpenCms.getADEConfigurationManager().getDetailPageFinder().getDetailPage(
+            cms,
+            "/sites/default/.content/a1/blarg.html",
+            "/today/news");
+        assertEquals("/sites/default/", detailPage);
+    }
+
     public void testFormatters() throws Exception {
 
         CmsObject cms = rootCms();

@@ -1,12 +1,9 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,15 +48,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * This is the internal cache class used for storing configuration data.<p>
+ * This is the internal cache class used for storing configuration data. It is not public because it is only meant
+ * for internal use.<p>
  * 
  * It stores an instance of {@link CmsADEConfigData} for each active configuration file in the sitemap,
  * and a single instance which represents the merged configuration from all the modules. When a sitemap configuration
  * file is updated, only the single instance for that configuration file is updated, whereas if a module configuration file
  * is changed, the configuration of all modules will be read again.<p>
- *  
  */
-public class CmsConfigurationCache {
+class CmsConfigurationCache {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
@@ -84,6 +81,9 @@ public class CmsConfigurationCache {
 
     /** The resource type for module configurations. */
     protected I_CmsResourceType m_moduleConfigType;
+
+    /** The cached content types for folders. */
+    private Map<String, String> m_folderTypes = new HashMap<String, String>();
 
     /** 
      * Creates a new cache instance.<p>
@@ -139,9 +139,28 @@ public class CmsConfigurationCache {
      * Gets the merged module configuration.<p>
      * @return the merged module configuration instance
      */
-    protected CmsADEConfigData getModuleConfiguration() {
+    protected synchronized CmsADEConfigData getModuleConfiguration() {
 
         return m_moduleConfiguration;
+    }
+
+    /**
+     * Helper method to retrieve the parent folder type.<p>
+     * 
+     * @param rootPath the path of a resource 
+     * @return the parent folder content type 
+     */
+    protected synchronized String getParentFolderType(String rootPath) {
+
+        String parent = CmsResource.getParentFolder(rootPath);
+        if (parent == null) {
+            return null;
+        }
+        String type = m_folderTypes.get(parent);
+        if (type == null) {
+            return null;
+        }
+        return type;
     }
 
     /**
@@ -156,7 +175,7 @@ public class CmsConfigurationCache {
      * @param path a root path  
      * @return the configuration data for the given path, or null if none was found 
      */
-    protected CmsADEConfigData getSiteConfigData(String path) {
+    protected synchronized CmsADEConfigData getSiteConfigData(String path) {
 
         if (path == null) {
             return null;
@@ -180,7 +199,7 @@ public class CmsConfigurationCache {
     /**
      * Initializes the cache by reading in all the configuration files.<p>
      */
-    protected void initialize() {
+    protected synchronized void initialize() {
 
         m_siteConfigurations.clear();
         try {
@@ -196,6 +215,30 @@ public class CmsConfigurationCache {
             LOG.error(e.getLocalizedMessage(), e);
         }
         refreshModuleConfiguration();
+        try {
+            initializeFolderTypes();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+    }
+
+    /**
+     * Initializes the cached folder types.<p>
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected synchronized void initializeFolderTypes() throws CmsException {
+
+        m_folderTypes.clear();
+        for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+            Map<String, String> folderTypes = configData.getFolderTypes();
+            m_folderTypes.putAll(folderTypes);
+        }
+        if (m_moduleConfiguration != null) {
+            Map<String, String> folderTypes = m_moduleConfiguration.getFolderTypes();
+            m_folderTypes.putAll(folderTypes);
+        }
     }
 
     /**
@@ -237,7 +280,7 @@ public class CmsConfigurationCache {
     /**
      * Reloads the module configuration.<p>
      */
-    protected void refreshModuleConfiguration() {
+    protected synchronized void refreshModuleConfiguration() {
 
         CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
         m_moduleConfiguration = reader.readModuleConfigurations();
@@ -276,14 +319,27 @@ public class CmsConfigurationCache {
         if (CmsResource.isTemporaryFileName(rootPath)) {
             return;
         }
-
+        try {
+            updateFolderTypes(rootPath);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         m_pathCache.remove(structureId);
         if (isSitemapConfiguration(rootPath, type)) {
-            m_siteConfigurations.remove(getBasePath(rootPath));
-            LOG.info("Removing config file from cache: " + rootPath);
+            synchronized (this) {
+                m_siteConfigurations.remove(getBasePath(rootPath));
+                LOG.info("Removing config file from cache: " + rootPath);
+            }
         } else if (isModuleConfiguration(rootPath, type)) {
             refreshModuleConfiguration();
+            try {
+                initializeFolderTypes();
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
         }
+
     }
 
     /**
@@ -328,17 +384,45 @@ public class CmsConfigurationCache {
         if (CmsResource.isTemporaryFileName(rootPath)) {
             return;
         }
-        m_pathCache.remove(structureId);
+
+        try {
+            updateFolderTypes(rootPath);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        synchronized (m_pathCache) {
+            m_pathCache.remove(structureId);
+            m_pathCache.put(structureId, rootPath);
+        }
         if (isSitemapConfiguration(rootPath, type)) {
-            CmsConfigurationReader configReader = new CmsConfigurationReader(m_cms);
-            String basePath = getBasePath(rootPath);
-            CmsResource configRes = m_cms.readResource(rootPath);
-            CmsADEConfigData configData = configReader.parseSitemapConfiguration(getBasePath(rootPath), configRes);
-            configData.initialize(m_cms);
-            m_siteConfigurations.put(basePath, configData);
-            LOG.info("Updating configuration file " + rootPath);
+            synchronized (this) {
+                CmsConfigurationReader configReader = new CmsConfigurationReader(m_cms);
+                String basePath = getBasePath(rootPath);
+                CmsResource configRes = m_cms.readResource(rootPath);
+                CmsADEConfigData configData = configReader.parseSitemapConfiguration(getBasePath(rootPath), configRes);
+                configData.initialize(m_cms);
+                m_siteConfigurations.put(basePath, configData);
+                LOG.info("Updating configuration file " + rootPath);
+                initializeFolderTypes();
+            }
         } else if (isModuleConfiguration(rootPath, type)) {
             refreshModuleConfiguration();
+            initializeFolderTypes();
+        }
+    }
+
+    /**
+     * Updates the cached folder types.<p>
+     * 
+     * @param rootPath the folder root path 
+     * @throws CmsException if something goes wrong 
+     */
+    protected synchronized void updateFolderTypes(String rootPath) throws CmsException {
+
+        if (m_folderTypes.containsKey(rootPath)) {
+            synchronized (this) {
+                initializeFolderTypes();
+            }
         }
     }
 
