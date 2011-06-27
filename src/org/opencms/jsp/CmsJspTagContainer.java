@@ -809,7 +809,6 @@ public class CmsJspTagContainer extends TagSupport {
      * @throws CmsException if something goes wrong reading the resources
      * @throws IOException if something goes wrong writing to the response
      */
-    @SuppressWarnings("unchecked")
     private void renderContainerElement(
         CmsObject cms,
         CmsJspStandardContextBean standardContext,
@@ -877,7 +876,7 @@ public class CmsJspTagContainer extends TagSupport {
                             locale,
                             false,
                             isOnline,
-                            req.getParameterMap(),
+                            null,
                             CmsRequestUtil.getAtrributeMap(req),
                             req,
                             res);
@@ -912,7 +911,7 @@ public class CmsJspTagContainer extends TagSupport {
                     locale,
                     false,
                     isOnline,
-                    req.getParameterMap(),
+                    null,
                     CmsRequestUtil.getAtrributeMap(req),
                     req,
                     res);

@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -92,8 +93,11 @@ public class CmsElementUtil {
     /** The cms context. */
     private CmsObject m_cms;
 
-    /** The actual container page uri. */
-    private String m_cntPageUri;
+    /** The current page uri. */
+    private String m_currentPageUri;
+
+    /** The request parameters to use while rendering the elements. */
+    private Map<String, Object> m_parameterMap;
 
     /** The content locale. */
     private Locale m_locale;
@@ -110,7 +114,7 @@ public class CmsElementUtil {
      * Creates a new instance.<p>
      * 
      * @param cms the cms context
-     * @param cntPageUri the container page uri
+     * @param currentPageUri the current page uri
      * @param req the http request
      * @param res the http response
      * @param locale the content locale
@@ -119,7 +123,7 @@ public class CmsElementUtil {
      */
     public CmsElementUtil(
         CmsObject cms,
-        String cntPageUri,
+        String currentPageUri,
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
@@ -127,18 +131,75 @@ public class CmsElementUtil {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
+
         m_res = res;
-        m_cntPageUri = cntPageUri;
+        m_currentPageUri = currentPageUri;
         m_locale = locale;
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
         CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
             cms,
-            m_cms.readResource(cntPageUri),
+            m_cms.readResource(currentPageUri),
             req);
         CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms, m_locale);
         m_standardContext.setPage(containerPage);
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param cms the cms context
+     * @param currentPageUri the current page uri
+     * @param requestParameters the request parameters to use while rendering the elements
+     * @param req the http request
+     * @param res the http response
+     * @param locale the content locale
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsElementUtil(
+        CmsObject cms,
+        String currentPageUri,
+        String requestParameters,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        Locale locale)
+    throws CmsException {
+
+        this(cms, currentPageUri, req, res, locale);
+        m_parameterMap = parseRequestParameters(requestParameters);
+    }
+
+    /**
+     * Parses the given request parameters string into a parameter map.<p>
+     * 
+     * @param requestParameters the request parameters to parse
+     * 
+     * @return the parameter map
+     */
+    private Map<String, Object> parseRequestParameters(String requestParameters) {
+
+        Map<String, Object> parameterMap;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(requestParameters)) {
+            parameterMap = new HashMap<String, Object>();
+            String[] params = requestParameters.split("&");
+            for (int i = 0; i < params.length; i++) {
+                int position = params[i].indexOf("=");
+                if (position >= 0) {
+                    String key = params[i].substring(0, position);
+                    String value = params[i].substring(position + 1);
+                    if (value.contains(",")) {
+                        parameterMap.put(key, value.split(","));
+                    } else {
+                        parameterMap.put(key, value);
+                    }
+                }
+            }
+        } else {
+            parameterMap = Collections.<String, Object> emptyMap();
+        }
+        return parameterMap;
     }
 
     /**
@@ -148,16 +209,14 @@ public class CmsElementUtil {
      * @param containers the containers the element appears in
      *  
      * @return a map from container names to rendered page contents
-     *  
-     * @throws CmsException if something goes wrong
      */
     public Map<String, String> getContentsByContainerName(
         CmsContainerElementBean element,
-        Collection<CmsContainer> containers) throws CmsException {
+        Collection<CmsContainer> containers) {
 
         CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
             m_cms,
-            m_cms.getRequestContext().addSiteRoot(m_cntPageUri));
+            m_cms.getRequestContext().addSiteRoot(m_currentPageUri));
         CmsFormatterConfiguration configs = adeConfig.getFormatters(element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
@@ -311,7 +370,7 @@ public class CmsElementUtil {
 
         String oldUri = m_cms.getRequestContext().getUri();
         try {
-            m_cms.getRequestContext().setUri(m_cntPageUri);
+            m_cms.getRequestContext().setUri(m_currentPageUri);
             CmsContainerBean containerBean = null;
             if ((m_standardContext.getPage() != null)
                 && m_standardContext.getPage().getContainers().containsKey(container.getName())) {
@@ -334,7 +393,10 @@ public class CmsElementUtil {
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
+
             String encoding = m_res.getCharacterEncoding();
+
+            // TODO: find a way to add parameter map to request
             return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
