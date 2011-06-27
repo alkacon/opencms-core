@@ -28,7 +28,9 @@
 package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,36 +73,19 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException {
 
-        return null;
-
-        //        String folder = CmsResource.getFolderPath(rootPath);
-        //        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
-        //            // exclude these for performance reasons 
-        //            return null;
-        //        }
-        //        if (folder == null) {
-        //            return null;
-        //        }
-        //        Map<String, String> folderTypes = OpenCms.getADEConfigurationManager().getFolderTypes(cms);
-        //        String folderType = folderTypes.get(folder);
-        //        if (folderType == null) {
-        //            return null;
-        //        }
-        //        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
-        //        String rootLinkSource = cms.getRequestContext().addSiteRoot(linkSource);
-        //        CmsSitemapConfigurationData sitemapConf = confManager.getSitemapConfiguration(cms, rootLinkSource);
-        //        String typeName = folderType;
-        //        CmsADEConfigData configData = OpenCms.getADEConfigurationManagerV2().lookupConfiguration(cms, rootLinkSource);
-        //        List<CmsDetailPageInfo> pageInfos = configData.getDetailPagesForType(typeName);
-        //        if ((pageInfos == null) || pageInfos.isEmpty()) {
-        //            return null;
-        //        }
-        //        CmsDetailPageInfo info = pageInfos.get(0);
-        //        String detailPageUri = info.getUri();
-        //        if (!CmsResource.isFolder(detailPageUri)) {
-        //            detailPageUri = CmsResource.getFolderPath(detailPageUri);
-        //        }
-        //        return detailPageUri;
+        String folder = CmsResource.getFolderPath(rootPath);
+        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
+            // exclude these for performance reasons 
+            return null;
+        }
+        String result = OpenCms.getADEConfigurationManager().getDetailPage(cms, rootPath, linkSource);
+        if (result == null) {
+            return null;
+        }
+        if (!CmsResource.isFolder(result)) {
+            result = CmsResource.getFolderPath(result);
+        }
+        return result;
     }
 
 }

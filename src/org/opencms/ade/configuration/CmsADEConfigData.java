@@ -47,9 +47,11 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -285,7 +287,6 @@ public class CmsADEConfigData {
     public CmsModelPageConfig getDefaultModelPage() {
 
         checkInitialized();
-        CmsModelPageConfig result = null;
         for (CmsModelPageConfig modelPageConfig : getModelPages()) {
             if (modelPageConfig.isDefault()) {
                 return modelPageConfig;
@@ -601,6 +602,37 @@ public class CmsADEConfigData {
                 result.put(type, new ArrayList<CmsDetailPageInfo>());
             }
             result.get(type).add(detailpage);
+        }
+        return result;
+    }
+
+    /**
+     * Collects the folder types in a map.<p>
+     * 
+     * @return the map of folder types
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected Map<String, String> getFolderTypes() throws CmsException {
+
+        Map<String, String> result = new HashMap<String, String>();
+        CmsObject cms = OpenCms.initCmsObject(m_cms);
+        if (m_isModuleConfig) {
+            Set<String> siteRoots = OpenCms.getSiteManager().getSiteRoots();
+            for (String siteRoot : siteRoots) {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+                for (CmsResourceTypeConfig config : getResourceTypes()) {
+                    String typeName = config.getTypeName();
+                    String folderPath = config.getFolderPath(cms);
+                    result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                }
+            }
+        } else {
+            for (CmsResourceTypeConfig config : getResourceTypes()) {
+                String typeName = config.getTypeName();
+                String folderPath = config.getFolderPath(m_cms);
+                result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+            }
         }
         return result;
     }

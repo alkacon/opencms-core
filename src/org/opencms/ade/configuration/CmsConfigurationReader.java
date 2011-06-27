@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -91,6 +87,8 @@ public class CmsConfigurationReader {
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
+
+    private boolean m_isModuleConfiguration;
 
     /** 
      * Creates a new configuration reader.<p>
@@ -265,6 +263,7 @@ public class CmsConfigurationReader {
         LOG.info("Parsing configuration " + configRes.getRootPath());
         CmsFile configFile = m_cms.readFile(configRes);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, configFile);
+        m_isModuleConfiguration = true;
         return parseConfiguration(basePath, content);
     }
 
