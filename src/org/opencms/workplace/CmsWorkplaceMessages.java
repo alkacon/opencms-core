@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -140,6 +141,9 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
         // try to find the localized key
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getInfo();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(key)) {
+            return "";
+        }
         return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
     }
 
@@ -188,18 +192,18 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
      * 
      * @return an initialized set of module messages
      */
-    private static List collectModuleMessages(Locale locale) {
+    private static List<CmsMessages> collectModuleMessages(Locale locale) {
 
         // create a new list and add the base bundle
-        ArrayList result = new ArrayList();
+        ArrayList<CmsMessages> result = new ArrayList<CmsMessages>();
 
         //////////// iterate over all registered modules ////////////////        
-        Set names = OpenCms.getModuleManager().getModuleNames();
+        Set<String> names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names
-            Iterator i = names.iterator();
+            Iterator<String> i = names.iterator();
             while (i.hasNext()) {
-                String modName = (String)i.next();
+                String modName = i.next();
                 //////////// collect the workplace.properties ////////////////
                 // this should result in a name like "my.module.name.workplace"
                 String bundleName = modName + PREFIX_BUNDLE_WORKPLACE;
@@ -234,6 +238,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -250,6 +255,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getLocale().hashCode();
