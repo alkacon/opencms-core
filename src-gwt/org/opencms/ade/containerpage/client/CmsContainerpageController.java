@@ -92,14 +92,14 @@ public final class CmsContainerpageController {
      * A type which indicates the locking status of the currently edited container page.<p>
      */
     enum LockStatus {
-        /** Locking the resource has not been tried. */
-        unknown,
+        /** Locking the resource failed. */
+        failed,
 
         /** The resource could be successfully locked. */
         locked,
 
-        /** Locking the resource failed. */
-        failed
+        /** Locking the resource has not been tried. */
+        unknown
     }
 
     /**
@@ -345,17 +345,17 @@ public final class CmsContainerpageController {
     /** The currently edited group-container element. */
     private CmsGroupContainerElement m_editingGroupcontainer;
 
+    /** The lock error message. */
+    private String m_lockErrorMessage;
+
+    /** The current lock status for the page. */
+    private LockStatus m_lockStatus = LockStatus.unknown;
+
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
     /** The drag targets within this page. */
     private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
-
-    /** The current lock status for the page. */
-    private LockStatus m_lockStatus = LockStatus.unknown;
-
-    /** The lock error message. */
-    private String m_lockErrorMessage;
 
     /**
      * Constructor.<p>
@@ -818,19 +818,6 @@ public final class CmsContainerpageController {
             };
             action.execute();
         }
-    }
-
-    /**
-     * Returns the new resource client id for the given resource type.
-     * Returns <code>null</code>, if the type is can not be created.<p>
-     * 
-     * @param resourceType the resource type name
-     * 
-     * @return the new resource id
-     */
-    public String getNewResourceId(String resourceType) {
-
-        return getData().getNewTypes().get(resourceType);
     }
 
     /**
