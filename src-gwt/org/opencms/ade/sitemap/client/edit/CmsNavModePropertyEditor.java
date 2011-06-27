@@ -81,8 +81,10 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
         String entryId = m_handler.getId().toString();
         String defaultFileId = toStringOrNull(m_handler.getDefaultFileId());
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        keys.remove(PROP_NAVTEXT);
-        keys.add(0, PROP_NAVTEXT);
+        if (keys.contains(PROP_NAVTEXT)) {
+            keys.remove(PROP_NAVTEXT);
+            keys.add(0, PROP_NAVTEXT);
+        }
         for (String propName : keys) {
             buildSimpleField(entryId, defaultFileId, ownProps, defaultFileProps, propName);
         }
