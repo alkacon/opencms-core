@@ -59,12 +59,6 @@ import org.apache.commons.logging.Log;
  */
 class CmsConfigurationCache {
 
-    /** The path for sitemap configuration files relative from the base path. */
-    public static final String CONFIG_SUFFIX = "/"
-        + CmsADEManager.CONFIG_FOLDER_NAME
-        + "/"
-        + CmsADEManager.CONFIG_FOLDER_NAME;
-
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
 
@@ -133,7 +127,7 @@ class CmsConfigurationCache {
      */
     protected String getBasePath(String siteConfigFile) {
 
-        if (siteConfigFile.endsWith(CONFIG_SUFFIX)) {
+        if (siteConfigFile.endsWith(CmsADEManager.CONFIG_SUFFIX)) {
             return CmsResource.getParentFolder(CmsResource.getParentFolder(siteConfigFile));
         }
         return siteConfigFile;
@@ -296,7 +290,7 @@ class CmsConfigurationCache {
      */
     protected boolean isSitemapConfiguration(String rootPath, int type) {
 
-        return rootPath.endsWith(CONFIG_SUFFIX) && (type == m_configType.getTypeId());
+        return rootPath.endsWith(CmsADEManager.CONFIG_SUFFIX) && (type == m_configType.getTypeId());
     }
 
     /**
