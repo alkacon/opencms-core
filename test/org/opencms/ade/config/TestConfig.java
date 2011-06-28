@@ -209,6 +209,52 @@ public class TestConfig extends OpenCmsTestCase {
         assertTrue(files.get(1).getName().startsWith("file_"));
     }
 
+    public void testDefaultFolderName() throws Exception {
+
+        CmsFolderOrName folder = null;
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)", null);
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/somefolder/somesubfolder",
+            list(typeConf1),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config1.setIsModuleConfig(true);
+        config1.initialize(rootCms());
+        typeConf1 = config1.getResourceType("foo");
+        CmsFolderOrName folderOrName = typeConf1.getFolderOrName();
+        String folderPath = typeConf1.getFolderPath(getCmsObject());
+        assertPathEquals("/sites/default/.content/foo", folderPath);
+    }
+
+    public void testDefaultFolderName2() throws Exception {
+
+        CmsFolderOrName folder = null;
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)", null);
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/somefolder/somesubfolder",
+            list(typeConf1),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config1.setIsModuleConfig(true);
+        config1.initialize(rootCms());
+
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "patternx_%(number)", null);
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/blah",
+            list(typeConf2),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config2.setParent(config1);
+        config2.initialize(rootCms());
+
+        typeConf2 = config2.getResourceType("foo");
+        String folderPath = typeConf2.getFolderPath(getCmsObject());
+        assertPathEquals("/sites/default/.content/foo", folderPath);
+    }
+
     public void testDetailPages1() throws Exception {
 
         CmsDetailPageInfo a1 = new CmsDetailPageInfo(getId("/sites/default/a1"), "/sites/default/a1", "a");

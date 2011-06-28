@@ -4,7 +4,6 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
-
     <xsd:element name="SitemapConfigurationsV2" type="OpenCmsSitemapConfigurationsV2" />
 
     <xsd:complexType name="OpenCmsSitemapConfigurationsV2">

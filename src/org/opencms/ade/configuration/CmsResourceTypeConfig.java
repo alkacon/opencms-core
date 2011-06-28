@@ -165,7 +165,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsResourceTypeConfig copy() {
 
-        return new CmsResourceTypeConfig(m_typeName, m_disabled, m_folderOrName, m_namePattern, m_formatterConfig);
+        return new CmsResourceTypeConfig(m_typeName, m_disabled, getFolderOrName(), m_namePattern, m_formatterConfig);
     }
 
     /**
