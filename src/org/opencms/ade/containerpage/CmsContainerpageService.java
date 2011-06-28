@@ -45,7 +45,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -187,19 +186,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             ensureSession();
             CmsObject cms = getCmsObject();
             CmsResource pageResource = cms.readResource(pageStructureId);
-            String containerpageUri = cms.getSitePath(pageResource);
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 getCmsObject(),
                 pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceType);
             CmsResource newResource = typeConfig.createNewElement(getCmsObject());
-
-            //            CmsResource newResource = OpenCms.getADEManager().createNewElement(
-            //                getCmsObject(),
-            //                containerpageUri,
-            //                getRequest(),
-            //                resourceType,
-            //                new Locale(locale));
             CmsContainerElementBean bean = getCachedElement(clientId);
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
@@ -384,7 +375,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
-
             CmsResource containerpage = cms.readResource(pageStructureId);
             String containerpageUri = cms.getSitePath(containerpage);
             Locale contentLocale = new Locale(locale);
@@ -432,20 +422,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String resourceName = groupContainer.getSitePath();
             CmsResource pageResource = getCmsObject().readResource(pageStructureId);
             if (groupContainer.isNew()) {
-
-                //                CmsResource groupContainerResource = OpenCms.getADEManager().createNewElement(
-                //                    getCmsObject(),
-                //                    cms.getSitePath(pageResource),
-                //                    getRequest(),
-                //                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
-                //                    new Locale(locale));
-
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                     getCmsObject(),
                     pageResource.getRootPath());
                 CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
                 CmsResource groupContainerResource = typeConfig.createNewElement(getCmsObject());
-
                 resourceName = cms.getSitePath(groupContainerResource);
                 groupContainer.setSitePath(resourceName);
                 groupContainer.setClientId(groupContainerResource.getStructureId().toString());
@@ -502,9 +483,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsException {
 
         CmsObject cms = getCmsObject();
-        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(
-            cms,
-            resource);
+        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(cms, resource);
         Map<String, String> changedSettings = new HashMap<String, String>();
         if (settings != null) {
             for (Map.Entry<String, String> entry : settings.entrySet()) {
@@ -597,9 +576,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
 
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                    cms,
-                    containerpage.getRootPath());
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
                 CmsFormatterConfiguration formatters = config.getFormatters(resource);
                 String containerType = null;
                 if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
@@ -856,7 +833,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private Map<String, String> getNewTypes(CmsObject cms, HttpServletRequest request) throws CmsRpcException {
 
         Map<String, String> result = new LinkedHashMap<String, String>();
-        CmsResourceManager resourceManager = OpenCms.getResourceManager();
         CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
