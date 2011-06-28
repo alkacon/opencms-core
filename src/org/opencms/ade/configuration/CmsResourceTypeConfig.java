@@ -159,16 +159,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * Creates a shallow copy of this resource type configuration object.<p>
-     * 
-     * @return a copy of the resource type configuration object 
-     */
-    public CmsResourceTypeConfig copy() {
-
-        return new CmsResourceTypeConfig(m_typeName, m_disabled, getFolderOrName(), m_namePattern, m_formatterConfig);
-    }
-
-    /**
      * Creates a folder and its parent folders if they don't exist.<p>
      * 
      * @param cms the CMS context to use 
@@ -221,18 +211,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * Returns the folder bean from the configuration.<p>
-     * 
-     * Normally, you should use getFolderPath() instead.<p>
-     * 
-     * @return the folder bean from the configuration 
-     */
-    public CmsFolderOrName getFolderOrName() {
-
-        return m_folderOrName;
-    }
-
-    /**
      * Computes the folder path for this resource type.<p>
      * 
      * @param cms the cms context to use 
@@ -258,16 +236,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     public String getKey() {
 
         return m_typeName;
-    }
-
-    /**
-     * Gets the configured name pattern.<p>
-     * 
-     * @return the configured name pattern 
-     */
-    public String getNamePattern() {
-
-        return m_namePattern;
     }
 
     /**
@@ -342,6 +310,28 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Creates a shallow copy of this resource type configuration object.<p>
+     * 
+     * @return a copy of the resource type configuration object 
+     */
+    protected CmsResourceTypeConfig copy() {
+
+        return new CmsResourceTypeConfig(m_typeName, m_disabled, getFolderOrName(), m_namePattern, m_formatterConfig);
+    }
+
+    /**
+     * Returns the folder bean from the configuration.<p>
+     * 
+     * Normally, you should use getFolderPath() instead.<p>
+     * 
+     * @return the folder bean from the configuration 
+     */
+    protected CmsFolderOrName getFolderOrName() {
+
+        return m_folderOrName;
+    }
+
+    /**
      * Gets the formatter configuration of this resource type.<p>
      * 
      * @return the formatter configuration of this resource type 
@@ -349,6 +339,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     protected CmsFormatterConfiguration getFormatterConfiguration() {
 
         return m_formatterConfig;
+    }
+
+    /**
+     * Gets the configured name pattern.<p>
+     * 
+     * @return the configured name pattern 
+     */
+    protected String getNamePattern() {
+
+        return m_namePattern;
     }
 
     /**
