@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -369,6 +370,8 @@ class CmsConfigurationCache {
             update(res.getStructureId(), res.getRootPath(), res.getType(), res.getState());
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        } catch (CmsRuntimeException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -382,6 +385,8 @@ class CmsConfigurationCache {
         try {
             update(res.getStructureId(), res.getRootPath(), res.getTypeId(), res.getState());
         } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        } catch (CmsRuntimeException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }

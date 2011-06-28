@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
@@ -87,9 +88,6 @@ public class CmsConfigurationReader {
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
-
-    /** True if this is a module configuration. */
-    private boolean m_isModuleConfiguration;
 
     /** 
      * Creates a new configuration reader.<p>
@@ -264,7 +262,6 @@ public class CmsConfigurationReader {
         LOG.info("Parsing configuration " + configRes.getRootPath());
         CmsFile configFile = m_cms.readFile(configRes);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, configFile);
-        m_isModuleConfiguration = true;
         return parseConfiguration(basePath, content);
     }
 
@@ -288,6 +285,8 @@ public class CmsConfigurationReader {
                 // ignore 
             } catch (CmsException e) {
                 // errors while parsing configuration
+                LOG.error(e.getLocalizedMessage(), e);
+            } catch (CmsRuntimeException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
