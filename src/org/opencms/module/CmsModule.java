@@ -427,9 +427,14 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_authorName;
     }
 
+    /**
+     * Gets the module configuration path.<p>
+     * 
+     * @return the module configuration path
+     */
     public String getConfigurationPath() {
 
-        String parameter = getParameter("sitemap.config");
+        String parameter = getParameter("config.sitemap");
         if (parameter != null) {
             return parameter;
         } else {
