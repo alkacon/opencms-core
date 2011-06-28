@@ -41,9 +41,21 @@
 				</copy-resources>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="14">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="16">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
 			</type>
 		</resourcetypes>
