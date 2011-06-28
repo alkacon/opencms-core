@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Tue, 28 Jun 2011 14:58:27 GMT</createdate>
+		<createdate>Fri, 06 May 2011 08:15:47 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -29,7 +29,6 @@
 			<resource uri="/system/workplace/resources/filetypes/v8login.png"/>
 			<resource uri="/system/workplace/resources/filetypes/v8login_big.png"/>
 		</resources>
-		<parameters/>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8login" id="150">
 				<param name="schema">/system/modules/com.alkacon.opencms.v8.login/schemas/login.xsd</param>
@@ -48,10 +47,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>3f542e44-a172-11e0-9d54-8f2a539630cb</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 10:34:48 GMT</datelastmodified>
+			<uuidstructure>c8d53ed5-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 07:23:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 10:34:48 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 07:23:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -70,10 +69,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>3fecc500-a172-11e0-9d54-8f2a539630cb</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 10:34:49 GMT</datelastmodified>
+			<uuidstructure>c979e384-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
+			<datelastmodified>Fri, 06 May 2011 07:23:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 10:34:49 GMT</datecreated>
+			<datecreated>Fri, 06 May 2011 07:23:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -102,13 +101,15 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+				
 		<file>
 			<source>system/modules/com.alkacon.opencms.v8.login/.config</source>
 			<destination>system/modules/com.alkacon.opencms.v8.login/.config</destination>
 			<type>module_config</type>
 			<uuidstructure>7a01ded1-3352-4a9f-af48-8807a6a28d08</uuidstructure>
 			<uuidresource>7a01ded1-3352-4a9f-af48-8807a6a28d09</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 11:02:22 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 May 2011 14:14:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -117,6 +118,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
 		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.login/classes</destination>
 			<type>folder</type>
@@ -299,6 +301,85 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/com.alkacon.opencms.v8.login/config</destination>
+			<type>folder</type>
+			<uuidstructure>768a9108-759e-11e0-805c-9fb8cca40b28</uuidstructure>
+			<datelastmodified>Tue, 03 May 2011 16:00:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 16:00:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Type configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.login/config/sitemap.config</source>
+			<destination>system/modules/com.alkacon.opencms.v8.login/config/sitemap.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>7691bcfd-759e-11e0-805c-9fb8cca40b28</uuidstructure>
+			<uuidresource>7691bcfe-759e-11e0-805c-9fb8cca40b28</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 07:56:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 16:00:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Type config for login]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/com.alkacon.opencms.v8.login/config/models</destination>
+			<type>folder</type>
+			<uuidstructure>768d020b-759e-11e0-805c-9fb8cca40b28</uuidstructure>
+			<datelastmodified>Tue, 03 May 2011 16:00:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 16:00:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.login/config/models/loginbox.html</source>
+			<destination>system/modules/com.alkacon.opencms.v8.login/config/models/loginbox.html</destination>
+			<type>v8login</type>
+			<uuidstructure>2b08c655-759f-11e0-805c-9fb8cca40b28</uuidstructure>
+			<uuidresource>2b08c656-759f-11e0-805c-9fb8cca40b28</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 09:34:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 16:05:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Login]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.login/elements</destination>
 			<type>folder</type>
 			<uuidstructure>ed6ad694-70b8-11e0-ba21-91706a02fba1</uuidstructure>
@@ -350,7 +431,7 @@
 			<type>plain</type>
 			<uuidstructure>7badcb6c-70ba-11e0-ba21-91706a02fba1</uuidstructure>
 			<uuidresource>7badcb6d-70ba-11e0-ba21-91706a02fba1</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 14:46:43 GMT</datelastmodified>
+			<datelastmodified>Wed, 27 Apr 2011 11:01:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Apr 2011 10:38:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -367,7 +448,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -410,7 +491,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -423,7 +504,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
