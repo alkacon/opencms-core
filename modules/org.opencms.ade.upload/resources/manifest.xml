@@ -134,39 +134,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.upload/lib</destination>
-      <type>folder</type>
-      <uuidstructure>23dc44b5-45b5-11e0-a256-05acfbef835b</uuidstructure>
-      <datelastmodified>Thu, 03 Mar 2011 16:41:51 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 03 Mar 2011 16:41:51 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.upload/lib/org.opencms.ade.upload.jar</source>
-      <destination>system/modules/org.opencms.ade.upload/lib/org.opencms.ade.upload.jar</destination>
-      <type>binary</type>
-      <uuidstructure>456f3d3c-45b5-11e0-a256-05acfbef835b</uuidstructure>
-      <uuidresource>456f3d3d-45b5-11e0-a256-05acfbef835b</uuidresource>
-      <datelastmodified>Thu, 03 Mar 2011 16:42:47 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 03 Mar 2011 16:42:47 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.upload]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/modules/org.opencms.ade.upload/resources</destination>
       <type>folder</type>
       <uuidstructure>fd5d002c-40df-11e0-b044-e756eface22e</uuidstructure>

@@ -1098,39 +1098,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.galleries/lib</destination>
-      <type>folder</type>
-      <uuidstructure>4a23167a-5f2b-11df-8c60-716c971ea2c7</uuidstructure>
-      <datelastmodified>Fri, 14 May 2010 07:35:37 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:35:37 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.galleries/lib/org.opencms.ade.galleries.jar</source>
-      <destination>system/modules/org.opencms.ade.galleries/lib/org.opencms.ade.galleries.jar</destination>
-      <type>binary</type>
-      <uuidstructure>bf477dc2-5f2b-11df-8c60-716c971ea2c7</uuidstructure>
-      <uuidresource>bf477dc3-5f2b-11df-8c60-716c971ea2c7</uuidresource>
-      <datelastmodified>Fri, 14 May 2010 07:38:54 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:38:54 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.galleries]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/workplace</destination>
       <type>folder</type>
       <uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>

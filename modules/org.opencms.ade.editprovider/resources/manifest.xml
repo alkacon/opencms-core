@@ -103,19 +103,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.editprovider/lib</destination>
-      <type>folder</type>
-      <uuidstructure>c8bc30a7-6a71-11e0-96bd-b5cb1f655547</uuidstructure>
-      <datelastmodified>Tue, 19 Apr 2011 10:42:55 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 19 Apr 2011 10:42:55 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <source>system/modules/org.opencms.ade.editprovider/resources/</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/</destination>
       <type>folder</type>
@@ -1024,26 +1011,6 @@
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.editprovider/lib/org.opencms.ade.editprovider.jar</source>
-      <destination>system/modules/org.opencms.ade.editprovider/lib/org.opencms.ade.editprovider.jar</destination>
-      <type>binary</type>
-      <uuidstructure>afe50dbf-0b9c-4d84-99bd-e3de86a79162</uuidstructure>
-      <uuidresource>8492ac93-a2c6-4e4c-86a2-8574bdb23095</uuidresource>
-      <datelastmodified>Fri, 14 May 2010 07:05:40 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:05:40 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.containerpage]]></value>
-        </property>
-      </properties>
       <relations/>
       <accesscontrol/>
     </file>

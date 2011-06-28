@@ -260,39 +260,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.sitemap/lib</destination>
-      <type>folder</type>
-      <uuidstructure>ef8a55d0-7734-11e0-89e5-d14bc4448678</uuidstructure>
-      <datelastmodified>Thu, 05 May 2011 16:30:06 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 05 May 2011 16:30:06 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.sitemap/lib/org.opencms.ade.sitemap.jar</source>
-      <destination>system/modules/org.opencms.ade.sitemap/lib/org.opencms.ade.sitemap.jar</destination>
-      <type>binary</type>
-      <uuidstructure>36ef7725-7735-11e0-89e5-d14bc4448678</uuidstructure>
-      <uuidresource>36ef7726-7735-11e0-89e5-d14bc4448678</uuidresource>
-      <datelastmodified>Thu, 05 May 2011 16:32:05 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 05 May 2011 16:32:05 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.sitemap]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/modules/org.opencms.ade.sitemap/pages</destination>
       <type>folder</type>
       <uuidstructure>e9bf555e-7734-11e0-89e5-d14bc4448678</uuidstructure>

@@ -340,39 +340,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.containerpage/lib</destination>
-      <type>folder</type>
-      <uuidstructure>9bcb9387-5f26-11df-8c60-716c971ea2c7</uuidstructure>
-      <datelastmodified>Fri, 14 May 2010 07:02:07 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:02:07 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.containerpage/lib/org.opencms.ade.containerpage.jar</source>
-      <destination>system/modules/org.opencms.ade.containerpage/lib/org.opencms.ade.containerpage.jar</destination>
-      <type>binary</type>
-      <uuidstructure>1b3a68da-5f27-11df-8c60-716c971ea2c7</uuidstructure>
-      <uuidresource>1b3a68db-5f27-11df-8c60-716c971ea2c7</uuidresource>
-      <datelastmodified>Fri, 14 May 2010 07:05:40 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Fri, 14 May 2010 07:05:40 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.containerpage]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/modules/org.opencms.ade.containerpage/resources</destination>
       <type>folder</type>
       <uuidstructure>15f8a302-2cf5-11df-a5f1-2393f34d19cc</uuidstructure>
