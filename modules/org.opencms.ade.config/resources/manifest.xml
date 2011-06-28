@@ -46,6 +46,11 @@
 						<name>locale-available</name>
 						<value><![CDATA[en]]></value>
 					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
 			</type>
@@ -55,6 +60,11 @@
 						<name>locale-available</name>
 						<value><![CDATA[en]]></value>
 					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
 			</type>
