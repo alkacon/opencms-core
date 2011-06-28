@@ -29,12 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.config;
+package org.opencms.ade.configuration;
 
-import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsModelPageConfig;
-import org.opencms.ade.configuration.CmsPropertyConfig;
-import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 
 import java.util.List;
