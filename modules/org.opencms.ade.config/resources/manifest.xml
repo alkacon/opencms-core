@@ -35,43 +35,27 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="configfolder" id="24">
-				<properties>
-					<property>
-						<name>search.exclude</name>
-						<value><![CDATA[all]]></value>
-					</property>
-				</properties>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="content_folder" id="24">
 				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
+					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/.config" type="new"/>
 				</copy-resources>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_configV2" id="2223">
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="14">
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="2224">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="16">
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
 			<explorertype name="configfolder" key="fileicon.configfolder" icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=configfolder" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="sitemap_configV2" key="fileicon.sitemap_configV2" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_configV2" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+			<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -360,21 +344,6 @@
 			<source>system/modules/org.opencms.ade.config/schemas/field.xsd</source>
 			<destination>system/modules/org.opencms.ade.config/schemas/field.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>ada1a813-b5cd-11df-ba36-33b5cd6a7f43</uuidstructure>
-			<uuidresource>ada1a814-b5cd-11df-ba36-33b5cd6a7f43</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 10:41:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 01 Sep 2010 13:34:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/field2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/field2.xsd</destination>
-			<type>plain</type>
 			<uuidstructure>8bbd30f9-9330-11e0-9452-8f51174189b7</uuidstructure>
 			<uuidresource>8bbd30fa-9330-11e0-9452-8f51174189b7</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2011 12:18:54 GMT</datelastmodified>
@@ -465,21 +434,6 @@
 			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
 			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>b4d6aa2d-83df-45e6-a1a9-455033293638</uuidstructure>
-			<uuidresource>b4d6aa2e-83df-45e6-a1a9-455033293638</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 10:41:36 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd</destination>
-			<type>plain</type>
 			<uuidstructure>36239e62-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
 			<uuidresource>36239e63-92b3-11e0-8f0f-8f51174189b7</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2011 12:04:33 GMT</datelastmodified>
@@ -495,41 +449,11 @@
 			<source>system/modules/org.opencms.ade.config/schemas/type.xsd</source>
 			<destination>system/modules/org.opencms.ade.config/schemas/type.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
-			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 09:41:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type2.xsd</destination>
-			<type>plain</type>
 			<uuidstructure>36285954-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
 			<uuidresource>36285955-92b3-11e0-8f0f-8f51174189b7</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2011 12:05:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type_destination.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type_destination.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
-			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 14 Oct 2009 07:02:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties/>

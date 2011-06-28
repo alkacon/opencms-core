@@ -171,7 +171,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String filename = "/system/modules/org.opencms.ade.config/.config";
         try {
             String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-                + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd\">\r\n"
+                + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"
                 + "  <SitemapConfigurationV2 language=\"en\">\r\n"
                 + "      <ResourceType>\r\n"
                 + "      <TypeName><![CDATA[m]]></TypeName>\r\n"
@@ -216,9 +216,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             cms.lockResource("/sites/default/modelpage1.html");
             String newPath = "/sites/default/.content/blah.html";
             cms.moveResource("/sites/default/modelpage1.html", newPath);
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                "/sites/default/today");
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, "/sites/default/today");
             List<CmsDetailPageInfo> detailPages = configData.getDetailPagesForType("foo");
             CmsDetailPageInfo page = detailPages.get(0);
             assertEquals("/sites/default/.content/blah.html", page.getUri());

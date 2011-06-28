@@ -313,7 +313,7 @@
 		<file>
 			<source>sites/default/.content/.config</source>
 			<destination>sites/default/.content/.config</destination>
-			<type>sitemap_configV2</type>
+			<type>sitemap_config</type>
 			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
@@ -327,7 +327,7 @@
 		<file>
 			<source>sites/default/today/news/.content/.config</source>
 			<destination>sites/default/today/news/.content/.config</destination>
-			<type>sitemap_configV2</type>
+			<type>sitemap_config</type>
 			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
@@ -341,7 +341,7 @@
 		<file>
 			<source>sites/default/today/events/.content/.config</source>
 			<destination>sites/default/today/events/.content/.config</destination>
-			<type>sitemap_configV2</type>
+			<type>sitemap_config</type>
 			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
@@ -717,21 +717,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/field2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/field2.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>8bbd30f9-9330-11e0-9452-8f51174189b7</uuidstructure>
-			<uuidresource>8bbd30fa-9330-11e0-9452-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:18:54 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2011 07:09:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</source>
 			<destination>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</destination>
 			<type>plain</type>
@@ -822,8 +807,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config2.xsd</destination>
+			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
 			<type>plain</type>
 			<uuidstructure>36239e62-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
 			<uuidresource>36239e63-92b3-11e0-8f0f-8f51174189b7</uuidresource>
@@ -845,36 +830,6 @@
 			<datelastmodified>Fri, 10 Jun 2011 09:41:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type2.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type2.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>36285954-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
-			<uuidresource>36285955-92b3-11e0-8f0f-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:05:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type_destination.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type_destination.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
-			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 14 Oct 2009 07:02:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties/>
@@ -966,129 +921,9 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/configfolder.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder.png</destination>
-			<type>image</type>
-			<uuidstructure>22e6582d-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>22e6582e-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 13:42:15 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 13:42:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/configfolder_big.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d05e83de-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d05e83df-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage_config.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_config.png</destination>
-			<type>image</type>
-			<uuidstructure>44c4ee36-293f-11e0-8ccb-c98e62b28e6c</uuidstructure>
-			<uuidresource>44c4ee37-293f-11e0-8ccb-c98e62b28e6c</uuidresource>
-			<datelastmodified>Wed, 26 Jan 2011 11:27:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Jan 2011 11:27:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_config_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d06a6ac6-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d06a6ac7-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config.png</destination>
-			<type>image</type>
-			<uuidstructure>231864b1-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>231864b2-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 13:42:20 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 13:42:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d0afb15e-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d0afb15f-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>sites/default/test.config</source>
 			<destination>sites/default/test.config</destination>
-			<type>sitemap_configV2</type>
+			<type>sitemap_config</type>
 			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>

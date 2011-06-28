@@ -118,7 +118,7 @@ public class CmsADEManager implements I_CmsEventListener {
         + CmsADEManager.CONFIG_FILE_NAME;
 
     /** The name of the sitemap configuration file type. */
-    public static final String CONFIG_TYPE = "sitemap_configV2";
+    public static final String CONFIG_TYPE = "sitemap_config";
 
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";

@@ -1,32 +1,29 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_destination.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_choice.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_formatter.xsd" />
  
-    <xsd:element name="ADETypes" type="OpenCmsADETypes" />
+    <xsd:element name="ADETypesV2" type="OpenCmsADETypesV2" />
     
-    <xsd:complexType name="OpenCmsADETypes">
+    <xsd:complexType name="OpenCmsADETypesV2">
         <xsd:sequence>
-            <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ADETypeV2" type="OpenCmsADETypeV2" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="OpenCmsADEType">
+    <xsd:complexType name="OpenCmsADETypeV2">
         <xsd:sequence>    
-        	<xsd:element name="IsDefault" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="Source" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
-            <xsd:element name="Destination" type="OpenCmsADETypeDestination" minOccurs="1" maxOccurs="1" />
-            <xsd:element name="Formatter" type="OpenCmsADETypeFormatter" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Disabled" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />
+      	<xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
+     	<xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+      	<xsd:element name="Formatter" type="OpenCmsADETypeFormatter" minOccurs="0" maxOccurs="unbounded"  />     	
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-    
-    <xsd:annotation>
+      <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<relations>
-				<relation element="Source" type="strong" invalidate="false" />
-			</relations>
 	        <layouts/>
         </xsd:appinfo>
     </xsd:annotation>
