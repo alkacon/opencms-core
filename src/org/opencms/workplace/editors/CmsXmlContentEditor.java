@@ -1909,8 +1909,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     // check if a tab should be preselected for an added, removed or moved up/down element
                     if ((m_currentTab != null) && CmsStringUtil.isNotEmpty(getParamElementName())) {
                         // an element was modified, add JS to preselect tab
-                        if (key.startsWith(getParamElementName())
-                            && getParamElementIndex().equals(String.valueOf(value.getIndex()))) {
+                        if (key.startsWith(getParamElementName()) && (selectedTabScript.length() == 0)) {
                             selectedTabScript.append("<script type=\"text/javascript\">\n\txmlSelectedTab = ").append(
                                 m_currentTabIndex).append(";\n</script>\n");
                         }
