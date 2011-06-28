@@ -145,7 +145,7 @@ public final class CmsADECache extends CmsVfsCache {
             }
         }
         if (retValue != null) {
-            System.out.println("got cached page: " + retValue.getFile().getRootPath());
+            //System.out.println("got cached page: " + retValue.getFile().getRootPath());
         }
         return retValue;
     }
@@ -215,7 +215,7 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void setCacheContainerPage(String key, CmsXmlContainerPage containerPage, boolean online) {
 
-        System.out.println("caching page:" + containerPage.getFile().getRootPath());
+        //System.out.println("caching page:" + containerPage.getFile().getRootPath());
 
         if (online) {
             m_containerPagesOnline.put(key, containerPage);
@@ -316,7 +316,7 @@ public final class CmsADECache extends CmsVfsCache {
         }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // remove the resource cached by it's structure ID
-            System.out.println("uncaching page: " + resource.getRootPath());
+            //System.out.println("uncaching page: " + resource.getRootPath());
             uncacheContainerPage(resource.getStructureId(), false);
         } else {
             uncacheGroupContainer(resource.getStructureId(), false);
