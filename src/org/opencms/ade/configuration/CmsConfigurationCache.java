@@ -59,23 +59,14 @@ import org.apache.commons.logging.Log;
  */
 class CmsConfigurationCache {
 
+    /** The path for sitemap configuration files relative from the base path. */
+    public static final String CONFIG_SUFFIX = "/"
+        + CmsADEManager.CONFIG_FOLDER_NAME
+        + "/"
+        + CmsADEManager.CONFIG_FOLDER_NAME;
+
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
-
-    /** The CMS context used for reading configuration data. */
-    private CmsObject m_cms;
-
-    /** The configurations from the sitemap / VFS. */
-    private Map<String, CmsADEConfigData> m_siteConfigurations = new HashMap<String, CmsADEConfigData>();
-
-    /** The merged configuration from all the modules. */
-    private CmsADEConfigData m_moduleConfiguration;
-
-    /** A cache which stores resources' paths by their structure IDs. */
-    private Map<CmsUUID, String> m_pathCache = Collections.synchronizedMap(new HashMap<CmsUUID, String>());
-
-    /** The path for sitemap configuration files relative from the base path. */
-    protected static final String CONFIG_SUFFIX = "/.content/.config";
 
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
@@ -83,8 +74,20 @@ class CmsConfigurationCache {
     /** The resource type for module configurations. */
     protected I_CmsResourceType m_moduleConfigType;
 
+    /** The CMS context used for reading configuration data. */
+    private CmsObject m_cms;
+
     /** The cached content types for folders. */
     private Map<String, String> m_folderTypes = new HashMap<String, String>();
+
+    /** The merged configuration from all the modules. */
+    private CmsADEConfigData m_moduleConfiguration;
+
+    /** A cache which stores resources' paths by their structure IDs. */
+    private Map<CmsUUID, String> m_pathCache = Collections.synchronizedMap(new HashMap<CmsUUID, String>());
+
+    /** The configurations from the sitemap / VFS. */
+    private Map<String, CmsADEConfigData> m_siteConfigurations = new HashMap<String, CmsADEConfigData>();
 
     /** 
      * Creates a new cache instance.<p>
@@ -293,7 +296,7 @@ class CmsConfigurationCache {
      */
     protected boolean isSitemapConfiguration(String rootPath, int type) {
 
-        return rootPath.endsWith("/.content/.config") && (type == m_configType.getTypeId());
+        return rootPath.endsWith(CONFIG_SUFFIX) && (type == m_configType.getTypeId());
     }
 
     /**

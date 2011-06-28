@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
@@ -150,34 +151,28 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             ensureSession();
             CmsResource subSitemapFolder = cms.readResource(path);
             ensureLock(subSitemapFolder);
-            String folderName = CmsStringUtil.joinPaths("/", "_config");
-            String sitemapConfigName = CmsStringUtil.joinPaths(folderName, "sitemap_"
-                + subSitemapFolder.getName()
-                + ".config");
+            String folderName = CmsStringUtil.joinPaths(path, CmsADEManager.CONFIG_FOLDER_NAME + "/");
+            String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
                 tryUnlock(cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId()));
             }
+            I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
             if (cms.existsResource(sitemapConfigName)) {
-                sitemapConfigName = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
-                    cms,
-                    CmsStringUtil.joinPaths(folderName, "sitemap_" + subSitemapFolder.getName() + "_%(number).config"),
-                    2);
+                CmsResource configFile = cms.readResource(sitemapConfigName);
+                if (configFile.getTypeId() != configType.getTypeId()) {
+                    throw new CmsException(Messages.get().container(
+                        Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
+                        sitemapConfigName,
+                        CmsADEManager.CONFIG_TYPE));
+                }
+            } else {
+                cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
+                    CmsADEManager.CONFIG_TYPE).getTypeId());
             }
-            tryUnlock(cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
-                "sitemap_config").getTypeId()));
-
-            List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
-            propertyObjects.add(new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP,
-                sitemapConfigName,
-                sitemapConfigName));
-            cms.writePropertyObjects(path, propertyObjects);
             subSitemapFolder.setType(getEntryPointType());
             cms.writeResource(subSitemapFolder);
             tryUnlock(subSitemapFolder);
-
             CmsSitemapClipboardData clipboard = getClipboardData();
-
             CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
                 cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
@@ -257,9 +252,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String subSitemapPath = CmsResource.getFolderPath(path);
             CmsResource subSitemapFolder = cms.readResource(subSitemapPath);
             ensureLock(subSitemapFolder);
-            List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
-            propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONFIG_SITEMAP, "", ""));
-            cms.writePropertyObjects(subSitemapPath, propertyObjects);
             subSitemapFolder.setType(OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             tryUnlock(subSitemapFolder);

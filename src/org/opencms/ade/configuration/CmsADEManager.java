@@ -105,6 +105,12 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The client id separator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
 
+    /** The configuration file name. */
+    public static final String CONFIG_FILE_NAME = ".config";
+
+    /** The content folder name. */
+    public static final String CONFIG_FOLDER_NAME = ".content";
+
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_TYPE = "sitemap_configV2";
 

@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_TITLE_MUST_NOT_BE_EMPTY_0 = "ERR_TITLE_MUST_NOT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
