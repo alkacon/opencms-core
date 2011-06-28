@@ -19,6 +19,12 @@ OpenCms 8.0.1 - June 29, 2011
 ! Added development demo module and content
 * Fixed CSS layout issues for Template III
 - Added German demo content for Template III
+* Fixed issue in the new property dialog in the sitemap, where the "inherited" or "shared" value remained visible and changeable.
+* Fixed issue in the sitemap and D&D mechanism for safe editing in a multi-user scenario.
+* Fixed issue in the sitemap. Detail pages now have resource type icon of detail resource, not container page icon.
+* Fixed issue in the property dialog so the available screen space gets used best and all "used" elements are visible.
+* Fixed issue, so all core modules display the correct version number.
+* Fixed issue in ADE, so new pages can be created by page models and the standard "new" mechanism.
 
 OpenCms 8.0.0 - May 8, 2011
 ! The "Advanced Direct Edit" mode allows to create page content by drag & drop.
