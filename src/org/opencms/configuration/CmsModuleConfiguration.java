@@ -62,7 +62,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
     private CmsModuleManager m_moduleManager;
 
     /** The configured list of module descriptions. */
-    private List m_modules;
+    private List<CmsModule> m_modules;
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -81,12 +81,12 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
      */
     public Element generateXml(Element parent) {
 
-        List modules;
+        List<CmsModule> modules;
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            modules = new ArrayList();
-            Iterator names = OpenCms.getModuleManager().getModuleNames().iterator();
+            modules = new ArrayList<CmsModule>();
+            Iterator<String> names = OpenCms.getModuleManager().getModuleNames().iterator();
             while (names.hasNext()) {
-                CmsModule module = OpenCms.getModuleManager().getModule((String)names.next());
+                CmsModule module = OpenCms.getModuleManager().getModule(names.next());
                 if (module != null) {
                     modules.add(module);
                 }
@@ -102,7 +102,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
 
         for (int i = 0; i < modules.size(); i++) {
             // append all configured modules
-            CmsModule module = (CmsModule)modules.get(i);
+            CmsModule module = modules.get(i);
             Element moduleNode = CmsModuleXmlHandler.generateXml(module);
             modulesNode.add(moduleNode);
         }
@@ -159,7 +159,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
     protected void initMembers() {
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_modules = new ArrayList();
+        m_modules = new ArrayList<CmsModule>();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MODULE_CONFIG_INIT_0));
         }

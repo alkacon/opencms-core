@@ -128,10 +128,10 @@ public class CmsSetupDb extends Object {
                 int requiredMaxAllowdPacket = 16;
                 if (maxAllowedPacket < (requiredMaxAllowdPacket * megabyte)) {
                     m_errors.add("<p><b>Your <code>'max_allowed_packet'</code> variable is set to less than "
-                        + requiredMaxAllowdPacket
-                        + "MB ("
                         + (requiredMaxAllowdPacket * megabyte)
-                        + ").</b></p>\n"
+                        + " Byte ("
+                        + requiredMaxAllowdPacket
+                        + "MB).</b></p>\n"
                         + "<p>The required value for running OpenCms is at least "
                         + requiredMaxAllowdPacket
                         + "MB."

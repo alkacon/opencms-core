@@ -45,6 +45,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -246,6 +247,24 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#initialize(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void initialize(CmsObject cms) {
+
+        super.initialize(cms);
+        if (m_schema != null) {
+            // unmarshal the XML schema, this is required to update the resource bundle cache
+            try {
+                CmsXmlContentDefinition.unmarshal(cms, m_schema);
+            } catch (CmsXmlException e) {
+                // unable to unmarshal the XML schema configured
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
@@ -261,9 +280,11 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {

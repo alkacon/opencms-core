@@ -5,7 +5,7 @@
 	<classpathentry excluding="org/opencms/gwt/client/super_src/" kind="src" path="src-gwt"/>
 	<classpathentry kind="src" path="src-modules"/>
 	<classpathentry kind="src" path="src-setup"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" path="test"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant-contrib-1.0b1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant-opencms-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant.jar"/>
@@ -88,6 +88,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08-gwt.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (3)"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
