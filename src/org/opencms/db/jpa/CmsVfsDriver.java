@@ -458,7 +458,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         if (filter.getLocale() != null) {
-            sqlConditions.add("I_CmsDAO%(PROJECT)UrlNameMappings.m_locale = ? ");
+            sqlConditions.add("T_CmsDAO%(PROJECT)UrlNameMappings.m_locale = ? ");
             parameters.add(new CmsQueryStringParameter(filter.getLocale()));
         }
 
