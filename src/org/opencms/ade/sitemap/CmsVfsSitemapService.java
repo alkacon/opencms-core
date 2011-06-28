@@ -154,7 +154,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String folderName = CmsStringUtil.joinPaths(path, CmsADEManager.CONFIG_FOLDER_NAME + "/");
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
-                tryUnlock(cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId()));
+                cms.createResource(folderName, OpenCms.getResourceManager().getResourceType(
+                    CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
             }
             I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
             if (cms.existsResource(sitemapConfigName)) {

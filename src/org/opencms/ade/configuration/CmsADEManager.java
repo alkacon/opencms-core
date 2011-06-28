@@ -111,6 +111,9 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The content folder name. */
     public static final String CONFIG_FOLDER_NAME = ".content";
 
+    /** The name of the sitemap configuration file type. */
+    public static final String CONFIG_FOLDER_TYPE = "content_folder";
+
     /** The path for sitemap configuration files relative from the base path. */
     public static final String CONFIG_SUFFIX = "/"
         + CmsADEManager.CONFIG_FOLDER_NAME
