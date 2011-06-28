@@ -122,25 +122,25 @@ public class CmsSetupDb extends Object {
                     html.append("<p>MySQL system variable <code>'max_allowed_packet'</code> is set to ");
                     html.append(maxAllowedPacket);
                     html.append(" Byte (");
-                    html.append(maxAllowedPacket / megabyte + "MB).</p>\n");
+                    html.append((maxAllowedPacket / megabyte) + "MB).</p>\n");
                 }
                 html.append("<p>Please note that it will not be possible for OpenCms to handle files bigger than this value in the VFS.</p>\n");
-                int requiredMaxAllowdPacket = 33;
-                if (maxAllowedPacket < requiredMaxAllowdPacket * megabyte) {
+                int requiredMaxAllowdPacket = 16;
+                if (maxAllowedPacket < (requiredMaxAllowdPacket * megabyte)) {
                     m_errors.add("<p><b>Your <code>'max_allowed_packet'</code> variable is set to less than "
                         + requiredMaxAllowdPacket
                         + "MB ("
-                        + maxAllowedPacket
+                        + (requiredMaxAllowdPacket * megabyte)
                         + ").</b></p>\n"
                         + "<p>The required value for running OpenCms is at least "
                         + requiredMaxAllowdPacket
                         + "MB."
-                        + "Please change your MySQL configuration (in the <code>mi.ini</code> or <code>my.cnf</code> file).</p>\n");
+                        + "Please change your MySQL configuration (in the <code>my.ini</code> or <code>my.cnf</code> file).</p>\n");
                 }
             } else {
                 html.append("<p><i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i></p>\n");
                 html.append("<p>Please note that it will not be possible for OpenCms to handle files bigger than this value.</p>\n");
-                html.append("<p><b>The recommended value for running OpenCms is 16Mb, please set it in your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b></p>\n");
+                html.append("<p><b>The recommended value for running OpenCms is 16MB, please set it in your MySQL configuration (in your <code>my.ini</code> or <code>my.cnf</code> file).</b></p>\n");
                 html.append(CmsException.getStackTraceAsString(exception));
             }
         }
