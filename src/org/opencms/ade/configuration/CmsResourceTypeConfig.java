@@ -182,7 +182,14 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         for (String parent : parents) {
             try {
                 cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
-                cms.unlockResource(parent);
+                try {
+                    cms.unlockResource(parent);
+                } catch (CmsException e) {
+                    // may happen if parent folder is locked also
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
+                    }
+                }
             } catch (CmsVfsResourceAlreadyExistsException e) {
                 // nop 
             }
