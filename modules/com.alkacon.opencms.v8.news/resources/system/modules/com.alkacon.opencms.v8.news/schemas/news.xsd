@@ -27,7 +27,16 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.news.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.news.workplace.xml">
+				<bundle locale="EN">
+					<resource key="v8.news.default.Title">New news</resource>
+					<resource key="v8.news.default.Text">Please edit the news text.</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="v8.news.default.Title">Neue Nachricht</resource>
+					<resource key="v8.news.default.Text">Bitte bearbeiten Sie den Nachrichtentext.</resource>
+				</bundle>						
+			</resourcebundle>
 			<tabs>
 				<tab element="Title" collapse="false" name="General" />
 				<tab element="Author" collapse="false" name="Author" /> 
@@ -45,6 +54,8 @@
 			</layouts>				
 			<validationrules/>
 			<defaults>
+				<default element="Title" value="%(key.v8.news.default.Title)" />
+				<default element="Paragraph/Text" value="%(key.v8.news.default.Text)" />
 				<default element="Date" value="%(currenttime)"/>
 				<default element="Author" value="%(currentuser.firstname) %(currentuser.lastname)"/>
 				<default element="AuthorMail" value="%(currentuser.email)"/>

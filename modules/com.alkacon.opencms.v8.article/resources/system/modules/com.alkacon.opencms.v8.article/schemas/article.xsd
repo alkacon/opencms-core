@@ -22,16 +22,70 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.article.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.article.workplace.xml">
+				<bundle locale="EN">
+					<resource key="label.V8Article.Title">Title</resource>
+					<resource key="label.V8Article.Title.help">The title of the article.</resource>
+					<resource key="label.V8Article.Paragraph">Paragraph</resource>
+					<resource key="label.V8Article.Category">Category</resource>
+					<resource key="label.V8Article.Category.help">Assigns categories to the article.</resource>
+					<resource key="label.V8ArticleParagraph.Headline">Headline</resource>
+					<resource key="label.V8ArticleParagraph.Headline.help">The optional headline of the paragraph.</resource>
+					<resource key="label.V8ArticleParagraph.Text">Text</resource>
+					<resource key="label.V8ArticleParagraph.Text.help">The paragraph text.</resource>
+					<resource key="label.V8ArticleParagraph.Image">Image</resource>
+					<resource key="label.V8ArticleImage.Image">Image URI</resource>
+					<resource key="label.V8ArticleImage.Image.help">The absolute path to the image to use.</resource>
+					<resource key="label.V8ArticleImage.Align">Align</resource>
+					<resource key="label.V8ArticleImage.Align.help">Select the alignment of the image.</resource>
+					<resource key="label.V8ArticleImage.Title">Title</resource>
+					<resource key="label.V8ArticleImage.Title.help">The image title is displayed when hovering the image.</resource>
+					<resource key="v8.article.image.top">Top</resource>
+					<resource key="v8.article.image.lefthl">Left of headline</resource>
+					<resource key="v8.article.image.righthl">Right of headline</resource>
+					<resource key="v8.article.image.left">Left of text</resource>
+					<resource key="v8.article.image.right">Right of text</resource>
+					<resource key="v8.article.default.Title">New article</resource>
+					<resource key="v8.article.default.Text">Please edit the article text.</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="label.V8Article.Title">Titel</resource>
+					<resource key="label.V8Article.Title.help">Der Titel des Artikels.</resource>
+					<resource key="label.V8Article.Paragraph">Absatz</resource>
+					<resource key="label.V8Article.Category">Kategorie</resource>
+					<resource key="label.V8Article.Category.help">Ordnet dem Artikel Kategorien zu.</resource>
+					<resource key="label.V8ArticleParagraph.Headline">Überschrift</resource>
+					<resource key="label.V8ArticleParagraph.Headline.help">Die optionale Überschrift des Absatzes.</resource>
+					<resource key="label.V8ArticleParagraph.Text">Text</resource>
+					<resource key="label.V8ArticleParagraph.Text.help">Der Absatztext.</resource>
+					<resource key="label.V8ArticleParagraph.Image">Bild</resource>
+					<resource key="label.V8ArticleImage.Image">Bild URI</resource>
+					<resource key="label.V8ArticleImage.Image.help">Der absolute Pfad des anzuzeigenden Bildes.</resource>
+					<resource key="label.V8ArticleImage.Align">Anordnung</resource>
+					<resource key="label.V8ArticleImage.Align.help">Wählen Sie die Anordnung des Bildes relativ zum Text.</resource>
+					<resource key="label.V8ArticleImage.Title">Titel</resource>
+					<resource key="label.V8ArticleImage.Title.help">Der Bildtitel wird beim Überfahren des Bildes mit der Maus gezeigt.</resource>
+					<resource key="v8.article.image.top">Oben</resource>
+					<resource key="v8.article.image.lefthl">Links der Überschrift</resource>
+					<resource key="v8.article.image.righthl">Rechts der Überschrift</resource>
+					<resource key="v8.article.image.left">Links vom Text</resource>
+					<resource key="v8.article.image.right">Rechts vom Text</resource>
+					<resource key="v8.article.default.Title">Neuer Artikel</resource>
+					<resource key="v8.article.default.Text">Bitte bearbeiten Sie den Artikeltext.</resource>
+				</bundle>						
+			</resourcebundle>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Title" mapto="urlName" />
 			</mappings>
+			<defaults>
+				<default element="Title" value="%(key.v8.article.default.Title)" />
+				<default element="Paragraph/Text" value="%(key.v8.article.default.Text)" />
+			</defaults>
 			<layouts>
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
 			</layouts>
 			<validationrules/>
-			<defaults/>
 			<relations>
 				<relation element="Paragraph/Image/Image" invalidate="parent" />
 			</relations>

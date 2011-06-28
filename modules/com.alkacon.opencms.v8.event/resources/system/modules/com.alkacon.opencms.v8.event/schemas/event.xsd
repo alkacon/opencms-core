@@ -26,7 +26,16 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.event.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.event.workplace.xml">
+				<bundle locale="EN">
+					<resource key="v8.event.default.Title">New event</resource>
+					<resource key="v8.event.default.Text">Please edit the event text.</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="v8.event.default.Title">Neue Veranstaltung</resource>
+					<resource key="v8.event.default.Text">Bitte bearbeiten Sie den Veranstaltungstext.</resource>
+				</bundle>						
+			</resourcebundle>
 			<tabs>
 				<tab element="Title" collapse="false" name="General" />
 				<tab element="EventDates" collapse="true" name="EventData" /> 
@@ -45,6 +54,8 @@
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false"/>
 			</layouts>
 			<defaults>
+				<default element="Title" value="%(key.v8.event.default.Title)" />
+				<default element="Paragraph/Text" value="%(key.v8.event.default.Text)" />
 				<default element="EventDates/EventStartDate" value="%(currenttime)" />
 				<default element="EventDates/EventEndDate" value="%(currenttime + 86400000)" />
 				<default element="Availability/Release" value="%(currenttime)" />

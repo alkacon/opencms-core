@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Mon, 30 May 2011 08:08:36 GMT</createdate>
+		<createdate>Tue, 28 Jun 2011 14:59:29 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -63,10 +63,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>4106e7ee-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 07:41:39 GMT</datelastmodified>
+			<uuidstructure>3f542e44-a172-11e0-9d54-8f2a539630cb</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 10:34:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 07:41:39 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 10:34:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -85,10 +85,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>419f7daa-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
-			<datelastmodified>Mon, 30 May 2011 07:41:40 GMT</datelastmodified>
+			<uuidstructure>3fecc500-a172-11e0-9d54-8f2a539630cb</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 10:34:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 30 May 2011 07:41:40 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 10:34:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -111,6 +111,21 @@
 			<datelastmodified>Wed, 20 Apr 2011 07:11:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 07:11:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3/.config</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>6e992d0d-a176-11e0-9d54-8f2a539630cb</uuidstructure>
+			<uuidresource>6e992d0e-a176-11e0-9d54-8f2a539630cb</uuidresource>
+			<datelastmodified>Tue, 28 Jun 2011 11:06:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Jun 2011 11:04:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -811,7 +826,7 @@
 			<type>plain</type>
 			<uuidstructure>62ae359b-70cf-11e0-af5a-5de1afb8a118</uuidstructure>
 			<uuidresource>62ae359c-70cf-11e0-af5a-5de1afb8a118</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 13:49:23 GMT</datelastmodified>
+			<datelastmodified>Tue, 28 Jun 2011 14:47:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Apr 2011 13:08:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -901,7 +916,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>440448d6-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
+			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -944,7 +959,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>440692ce-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
+			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -957,7 +972,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>440903d0-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
+			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

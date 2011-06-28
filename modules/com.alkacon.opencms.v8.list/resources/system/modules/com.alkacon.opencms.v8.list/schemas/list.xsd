@@ -19,7 +19,7 @@
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" minOccurs="0" />
 			<xsd:element name="TextBottom" type="OpenCmsHtml" minOccurs="0" />
-			<xsd:element name="Collector" type="OpenCmsString" default="allInFolder" />
+			<xsd:element name="Collector" type="OpenCmsString" />
 			<xsd:element name="Parameter" type="OpenCmsString" />
 			<xsd:element name="Links" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="10" />
 			<xsd:element name="More" type="OpenCmsString" />
@@ -35,7 +35,14 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.list.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.list.workplace.xml">
+				<bundle locale="EN">
+					<resource key="v8.list.default.Title">New list</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="v8.list.default.Title">Neue Liste</resource>
+				</bundle>						
+			</resourcebundle>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>			
@@ -49,6 +56,10 @@
 				<layout element="PositionDate" widget="SelectorWidget" configuration="top:%(key.v8.list.position.top)|bottom:%(key.v8.list.position.bottom)"  />
 				<layout element="PositionImage" widget="SelectorWidget" configuration="left:%(key.v8.list.position.left)|right:%(key.v8.list.position.right)|top:%(key.v8.list.position.top)" />
 			</layouts>
+			<defaults>
+				<default element="Title" value="%(key.v8.list.default.Title)" />
+				<default element="Collector" value="allInFolder" />
+			</defaults>
 			<tabs>
 				<tab element="Title" name="TabGeneral" collapse="false" />
 				<tab element="PositionAuthor" name="TabMappings" collapse="false" />

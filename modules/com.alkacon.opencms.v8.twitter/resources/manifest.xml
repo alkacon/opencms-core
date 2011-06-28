@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Fri, 06 May 2011 08:16:08 GMT</createdate>
+		<createdate>Tue, 28 Jun 2011 14:59:37 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -29,9 +29,7 @@
 			<resource uri="/system/workplace/resources/filetypes/v8twitter.png"/>
 			<resource uri="/system/workplace/resources/filetypes/v8twitter_big.png"/>
 		</resources>
-		<parameters>
-			<param name="config.sitemap">/system/modules/com.alkacon.opencms.v8.twitter/config/sitemap.config</param>
-		</parameters>
+		<parameters/>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8twitter" id="138">
 				<param name="schema">/system/modules/com.alkacon.opencms.v8.twitter/schemas/twitter.xsd</param>
@@ -50,10 +48,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>c8d53ed5-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:48 GMT</datelastmodified>
+			<uuidstructure>3f542e44-a172-11e0-9d54-8f2a539630cb</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 10:34:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:48 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 10:34:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -72,10 +70,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>c979e384-77b1-11e0-b8e8-f3b88e7755c4</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 07:23:49 GMT</datelastmodified>
+			<uuidstructure>3fecc500-a172-11e0-9d54-8f2a539630cb</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 10:34:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 07:23:49 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 10:34:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -104,14 +102,13 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
 		<file>
 			<source>system/modules/com.alkacon.opencms.v8.twitter/.config</source>
 			<destination>system/modules/com.alkacon.opencms.v8.twitter/.config</destination>
 			<type>module_config</type>
 			<uuidstructure>f25abbeb-e062-4f3b-a989-9460793cf255</uuidstructure>
 			<uuidresource>f25abbeb-e062-4f3b-a989-9460793cf256</uuidresource>
-			<datelastmodified>Tue, 03 May 2011 14:14:12 GMT</datelastmodified>
+			<datelastmodified>Tue, 28 Jun 2011 11:07:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -120,7 +117,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
 		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.twitter/classes</destination>
 			<type>folder</type>
@@ -279,85 +275,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/config</destination>
-			<type>folder</type>
-			<uuidstructure>895a8bbd-759e-11e0-805c-9fb8cca40b28</uuidstructure>
-			<datelastmodified>Tue, 03 May 2011 16:00:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 16:00:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Type configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.twitter/config/sitemap.config</source>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/config/sitemap.config</destination>
-			<type>sitemap_config</type>
-			<uuidstructure>8961b7b2-759e-11e0-805c-9fb8cca40b28</uuidstructure>
-			<uuidresource>8961b7b3-759e-11e0-805c-9fb8cca40b28</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 08:03:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 16:00:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Type config for twitter]]></value>
-				</property>
-				<property>
-					<name>locale</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/config/models</destination>
-			<type>folder</type>
-			<uuidstructure>895cfcc0-759e-11e0-805c-9fb8cca40b28</uuidstructure>
-			<datelastmodified>Tue, 03 May 2011 16:00:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 16:00:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.twitter/config/models/twitterbox.html</source>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/config/models/twitterbox.html</destination>
-			<type>v8twitter</type>
-			<uuidstructure>de727e6b-759f-11e0-805c-9fb8cca40b28</uuidstructure>
-			<uuidresource>de727e6c-759f-11e0-805c-9fb8cca40b28</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 09:36:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 May 2011 16:10:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New twitter box]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.twitter/elements</destination>
 			<type>folder</type>
 			<uuidstructure>431a6eb4-7176-11e0-9840-1f597a2c805d</uuidstructure>
@@ -459,7 +376,7 @@
 			<type>plain</type>
 			<uuidstructure>74e1f589-7176-11e0-9840-1f597a2c805d</uuidstructure>
 			<uuidresource>74e1f58a-7176-11e0-9840-1f597a2c805d</uuidresource>
-			<datelastmodified>Mon, 02 May 2011 09:28:45 GMT</datelastmodified>
+			<datelastmodified>Tue, 28 Jun 2011 14:47:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 28 Apr 2011 09:04:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -476,7 +393,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -519,7 +436,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -532,7 +449,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

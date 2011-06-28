@@ -22,12 +22,20 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.twitter.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.twitter.workplace.xml">
+				<bundle locale="EN">
+					<resource key="v8.twitter.default.Title">New Twitter Feed</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="v8.twitter.default.Title">Neuer Twitter Feed</resource>
+				</bundle>						
+			</resourcebundle>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Title" mapto="urlName" />
 			</mappings>
 			<defaults>
+				<default element="Title" value="%(key.v8.twitter.default.Title)" />
 				<default element="BackgroundColor" value="#003082" />
 				<default element="LinksColor" value="#B31B34" />
 			</defaults>

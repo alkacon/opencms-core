@@ -24,8 +24,19 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.search.workplace"/>
+			<resourcebundle name="com.alkacon.opencms.v8.search.workplace.xml">
+				<bundle locale="EN">
+					<resource key="v8.search.default.Title">New search</resource>
+					<resource key="v8.search.default.Text">Please edit the search text.</resource>
+				</bundle> 
+				<bundle locale="DE">
+					<resource key="v8.search.default.Title">Neue Suche</resource>
+					<resource key="v8.search.default.Text">Bitte bearbeiten Sie den Text.</resource>
+				</bundle>						
+			</resourcebundle>
 			<defaults>
+				<default element="Title" value="%(key.v8.search.default.Title)" />
+				<default element="Text" value="%(key.v8.search.default.Text)" />
 				<default element="Config/Matches" value="10" />
 			</defaults>
 			<mappings>
