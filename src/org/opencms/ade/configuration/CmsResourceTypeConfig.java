@@ -74,9 +74,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The configuration data object to which this resource type belongs. */
     private CmsADEConfigData m_owner;
 
-    /** The base path for the configuration. */
-    private String m_basePath;
-
     /** 
      * Creates a new resource type configuration.<p>
      * 
