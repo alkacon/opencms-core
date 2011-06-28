@@ -1320,24 +1320,28 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         // get the default locale for the resource
         List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource());
         if (m_content != null) {
-            try {
-                // to copy anything we need at least one locale
-                if ((m_content.getLocales().size() > 0) && !m_content.hasLocale(locale)) {
-                    // required locale not available, check if an existing default locale should be copied as "template"
-                    try {
-                        // a list of possible default locales has been set as property, try to find a match                    
-                        m_content.copyLocale(locales, locale);
+            if (!m_content.hasLocale(locale)) {
+                try {
 
-                    } catch (CmsException e) {
+                    // to copy anything we need at least one locale
+                    if ((m_content.getLocales().size() > 0)) {
+                        // required locale not available, check if an existing default locale should be copied as "template"
+                        try {
+                            // a list of possible default locales has been set as property, try to find a match                    
+                            m_content.copyLocale(locales, locale);
+
+                        } catch (CmsException e) {
+                            m_content.addLocale(getCms(), locale);
+                        }
+
+                    } else {
                         m_content.addLocale(getCms(), locale);
                     }
 
-                } else {
-                    m_content.addLocale(getCms(), locale);
+                    writeContent();
+                } catch (CmsException e) {
+                    LOG.error(e.getMessageContainer(), e);
                 }
-                writeContent();
-            } catch (CmsException e) {
-                LOG.error(e.getMessageContainer(), e);
             }
             if (!m_content.hasLocale(locale)) {
                 // value may have changed because of the copy operation
