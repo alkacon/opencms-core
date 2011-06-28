@@ -24,6 +24,9 @@
 @sprite .cmsMenuItem .properties{
     gwt-image: "icons.propertyIconActive";
 }
+@sprite .cmsMenuItem .logout{
+    gwt-image: "icons.logoutIconActive";
+}
 @sprite .cmsMenuItem .refresh{
     gwt-image: "icons.refreshIcon";
 }

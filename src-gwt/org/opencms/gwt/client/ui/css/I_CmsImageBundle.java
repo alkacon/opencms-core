@@ -95,6 +95,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String logout();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String mergeSitemap();
 
         /** Access method.<p>

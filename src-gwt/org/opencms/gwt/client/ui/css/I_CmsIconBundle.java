@@ -174,6 +174,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/icons/logoutIconActive.png")
+    ImageResource logoutIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/icons/mergeSitemapIcon.png")
     ImageResource mergeSitemapIcon();
 
