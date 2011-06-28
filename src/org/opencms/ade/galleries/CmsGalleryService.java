@@ -796,7 +796,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 resourceTypes = new ArrayList<I_CmsResourceType>();
                 creatableTypes = new ArrayList<String>();
                 try {
-                    CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                    CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
                     for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {

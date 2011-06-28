@@ -88,6 +88,7 @@ public class CmsConfigurationReader {
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
+    /** True if this is a module configuration. */
     private boolean m_isModuleConfiguration;
 
     /** 
@@ -139,7 +140,7 @@ public class CmsConfigurationReader {
             m_modelPageConfigs);
         result.setResource(content.getFile());
         if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
-            CmsADEConfigurationManager.MODULE_CONFIG_TYPE)) {
+            CmsADEManager.MODULE_CONFIG_TYPE)) {
             result.setIsModuleConfig(true);
         }
         return result;

@@ -122,7 +122,7 @@ public class CmsFolderOrName {
 
         if (m_folder != null) {
             try {
-                return OpenCms.getADEConfigurationManager().getRootPath(
+                return OpenCms.getADEManager().getRootPath(
                     m_folder.getStructureId(),
                     cms.getRequestContext().getCurrentProject().isOnlineProject());
             } catch (CmsException e) {

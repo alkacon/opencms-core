@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.ade.configuration.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
@@ -164,9 +164,14 @@ public final class OpenCms {
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
     }
 
-    public static CmsADEConfigurationManager getADEConfigurationManager() {
+    /**
+     * Gets the initialized ADE manager.<p>
+     * 
+     * @return the initialized ADE manager
+     */
+    public static CmsADEManager getADEManager() {
 
-        return OpenCmsCore.getInstance().getADEConfigurationManager();
+        return OpenCmsCore.getInstance().getADEManager();
     }
 
     /**

@@ -75,7 +75,7 @@ public final class CmsADESessionCache {
 
         // ADE recent lists
         int maxElems = 10;
-        maxElems = OpenCms.getADEConfigurationManager().getRecentListMaxSize(cms.getRequestContext().getCurrentUser());
+        maxElems = OpenCms.getADEManager().getRecentListMaxSize(cms.getRequestContext().getCurrentUser());
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_recentLists = Collections.synchronizedList(adeRecentList);

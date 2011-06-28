@@ -66,6 +66,7 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public CmsPropertyConfig clone() {
 
         return new CmsPropertyConfig(m_propData, m_disabled);

@@ -789,7 +789,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         result.setFolder(resource.isFolder());
         result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
         String sitePath = cms.getSitePath(resource);
-        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             resource.getRootPath()).getPropertyConfigurationAsMap();
         result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));

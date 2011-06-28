@@ -219,7 +219,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
         try {
             if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri());
 

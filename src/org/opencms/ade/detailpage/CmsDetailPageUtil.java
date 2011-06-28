@@ -72,7 +72,7 @@ public final class CmsDetailPageUtil {
     public static List<String> getAllDetailPagesWithUrlName(CmsObject cms, CmsResource res) throws CmsException {
 
         List<String> result = new ArrayList<String>();
-        Collection<String> detailPages = OpenCms.getADEConfigurationManager().getDetailPageFinder().getAllDetailPages(
+        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
             cms,
             res.getTypeId());
         if (detailPages.isEmpty()) {

@@ -148,7 +148,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             } else {
                 rootVfsName = vfsName;
             }
-            I_CmsDetailPageFinder finder = OpenCms.getADEConfigurationManager().getDetailPageFinder();
+            I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
             detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
             if (detailPage != null) {
                 if (detailPage.startsWith(targetSiteRoot)) {

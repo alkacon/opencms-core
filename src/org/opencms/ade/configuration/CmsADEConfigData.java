@@ -511,10 +511,10 @@ public class CmsADEConfigData {
             return null;
         }
         String parentPath = CmsResource.getParentFolder(m_basePath);
-        if (OpenCms.getADEConfigurationManager() == null) {
+        if (OpenCms.getADEManager() == null) {
             return null;
         }
-        CmsADEConfigData result = OpenCms.getADEConfigurationManager().internalLookupConfiguration(m_cms, parentPath);
+        CmsADEConfigData result = OpenCms.getADEManager().internalLookupConfiguration(m_cms, parentPath);
         return result;
     }
 
@@ -725,7 +725,7 @@ public class CmsADEConfigData {
         for (CmsDetailPageInfo page : detailPages) {
             CmsUUID structureId = page.getId();
             try {
-                String rootPath = OpenCms.getADEConfigurationManager().getRootPath(
+                String rootPath = OpenCms.getADEManager().getRootPath(
                     structureId,
                     m_cms.getRequestContext().getCurrentProject().isOnlineProject());
                 CmsDetailPageInfo correctedPage = new CmsDetailPageInfo(structureId, rootPath, page.getType());
@@ -736,5 +736,4 @@ public class CmsADEConfigData {
         }
         return result;
     }
-
 }

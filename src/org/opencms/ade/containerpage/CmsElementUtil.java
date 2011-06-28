@@ -214,7 +214,7 @@ public class CmsElementUtil {
         CmsContainerElementBean element,
         Collection<CmsContainer> containers) {
 
-        CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             m_cms,
             m_cms.getRequestContext().addSiteRoot(m_currentPageUri));
         CmsFormatterConfiguration configs = adeConfig.getFormatters(element.getResource());

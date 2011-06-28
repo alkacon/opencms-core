@@ -290,7 +290,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 openPath = "/";
             }
             openPath = cms.getRequestContext().addSiteRoot(openPath);
-            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(cms, openPath);
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, openPath);
             Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                 configData.getPropertyConfigurationAsMap());
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(configData.getBasePath());
@@ -300,7 +300,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean isSecure = site.hasSecureServer();
             String parentSitemap = null;
             if (configData.getBasePath() != null) {
-                CmsADEConfigData parentConfigData = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                CmsADEConfigData parentConfigData = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     CmsResource.getParentFolder(configData.getBasePath()));
                 parentSitemap = parentConfigData.getBasePath();
@@ -492,7 +492,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry changedEntry = null;
         // lock the config file first, to avoid half done changes
         if (change.hasDetailPageInfos()) {
-            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().addSiteRoot(entryPoint));
             if (!configData.isModuleConfiguration() && (configData.getResource() != null)) {

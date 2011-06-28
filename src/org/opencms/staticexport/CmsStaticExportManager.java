@@ -1208,7 +1208,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsResource vfsRes = null;
             try {
                 vfsRes = cms.readResource(vfsName);
-                I_CmsDetailPageFinder finder = OpenCms.getADEConfigurationManager().getDetailPageFinder();
+                I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
                 String detailPage = finder.getDetailPage(cms, vfsRes.getRootPath(), cms.getRequestContext().getUri());
                 if (detailPage != null) {
                     vfsName = CmsStringUtil.joinPaths(detailPage, CmsDetailPageUtil.getBestUrlName(

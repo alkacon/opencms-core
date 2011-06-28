@@ -27,6 +27,7 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -48,37 +49,28 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public Collection<String> getAllDetailPages(CmsObject cms, int resType) throws CmsException {
 
-        return new ArrayList<String>();
-
-        //        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
-        //        String typeName = OpenCms.getResourceManager().getResourceType(resType).getTypeName();
-        //        Map<String, List<CmsDetailPageInfo>> bestDetailPagesByType = confManager.getAllDetailPages(cms);
-        //        List<CmsDetailPageInfo> pageInfos = bestDetailPagesByType.get(typeName);
-        //        if (pageInfos == null) {
-        //            return Collections.<String> emptyList();
-        //        }
-        //        List<String> result = new ArrayList<String>();
-        //        for (CmsDetailPageInfo pageInfo : pageInfos) {
-        //            String uri = pageInfo.getUri();
-        //            if (!CmsResource.isFolder(uri)) {
-        //                uri = CmsResource.getFolderPath(uri);
-        //            }
-        //            result.add(uri);
-        //        }
-        //        return result;
+        if (!OpenCms.getADEManager().isInitialized()) {
+            return new ArrayList<String>();
+        }
+        String typeName = OpenCms.getResourceManager().getResourceType(resType).getTypeName();
+        return OpenCms.getADEManager().getDetailPages(cms, typeName);
     }
 
     /**
      * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException {
+    public String getDetailPage(CmsObject cms, String rootPath, String linkSource) {
 
-        String folder = CmsResource.getFolderPath(rootPath);
+        CmsADEManager manager = OpenCms.getADEManager();
+        if (!manager.isInitialized()) {
+            return null;
+        }
+
         if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
             // exclude these for performance reasons 
             return null;
         }
-        String result = OpenCms.getADEConfigurationManager().getDetailPage(cms, rootPath, linkSource);
+        String result = manager.getDetailPage(cms, rootPath, linkSource);
         if (result == null) {
             return null;
         }

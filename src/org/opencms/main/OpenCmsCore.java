@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.ade.configuration.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
@@ -265,7 +265,7 @@ public final class OpenCmsCore {
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
 
-    private CmsADEConfigurationManager m_adeConfigurationManager;
+    private CmsADEManager m_adeManager;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
@@ -363,10 +363,15 @@ public final class OpenCmsCore {
         }
     }
 
-    protected CmsADEConfigurationManager getADEConfigurationManager() {
+    /**
+     * Gets the ADE manager, and makes sure it is initialized.<p>
+     * 
+     * @return the initialized ADE manager
+     */
+    protected CmsADEManager getADEManager() {
 
-        m_adeConfigurationManager.initialize();
-        return m_adeConfigurationManager;
+        m_adeManager.initialize();
+        return m_adeManager;
     }
 
     /**
@@ -1229,7 +1234,7 @@ public final class OpenCmsCore {
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_adeConfigurationManager = new CmsADEConfigurationManager(adminCms, m_memoryMonitor, systemConfiguration);
+            m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1723,8 +1728,8 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_adeConfigurationManager != null) {
-                        m_adeConfigurationManager.shutdown();
+                    if (m_adeManager != null) {
+                        m_adeManager.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(

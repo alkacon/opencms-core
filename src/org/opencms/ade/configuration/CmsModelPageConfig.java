@@ -63,6 +63,10 @@ public class CmsModelPageConfig implements I_CmsConfigurationObject<CmsModelPage
         m_isDisabled = isDisabled;
     }
 
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
     public CmsModelPageConfig clone() {
 
         return new CmsModelPageConfig(m_resource, m_isDefault, m_isDisabled);

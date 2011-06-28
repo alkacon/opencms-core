@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
 public final class CmsXmlGroupContainerFactory {
 
     /** The ADE cache. */
-    private static CmsADECache m_cache = OpenCms.getADEConfigurationManager().getCache();
+    private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
 
     /**
      * No instances of this class should be created.<p> 

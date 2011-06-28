@@ -39,7 +39,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
@@ -50,11 +49,18 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 
+/**
+ * The configuration for a single resource type.<p>
+ */
 public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResourceTypeConfig> {
 
-    private CmsUUID m_origin;
+    /** The name of the resource type. */
     private String m_typeName;
+
+    /** A reference to a folder of folder name. */
     private CmsFolderOrName m_folderOrName;
+
+    /** True if this is a disabled configuration. */
     private boolean m_disabled;
     /** The name pattern .*/
     private String m_namePattern;
@@ -62,13 +68,24 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The formatter configuration. */
     private CmsFormatterConfiguration m_formatterConfig;
 
+    /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
     /** The configuration data object to which this resource type belongs. */
     private CmsADEConfigData m_owner;
 
+    /** The base path for the configuration. */
     private String m_basePath;
 
+    /** 
+     * Creates a new resource type configuration.<p>
+     * 
+     * @param typeName the resource type name 
+     * @param disabled true if this is a disabled configuration 
+     * @param folder the folder reference 
+     * @param pattern the name pattern 
+     * @param formatterConfig the formatter configuration 
+     */
     public CmsResourceTypeConfig(
         String typeName,
         boolean disabled,
@@ -83,6 +100,14 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_formatterConfig = formatterConfig;
     }
 
+    /** 
+     * Checks if this resource type is creatable.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return true if the resource type is creatable 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public boolean checkCreatable(CmsObject cms) throws CmsException {
 
         String folderPath = getFolderPath(cms);
@@ -261,16 +286,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return m_typeName + "_%(number).html";
         }
         return null;
-    }
-
-    /**
-     * Gets the origin structure id.<p>
-     * 
-     * @return the origin structure id 
-     */
-    public CmsUUID getOriginStructureId() {
-
-        return m_origin;
     }
 
     /**

@@ -32,7 +32,7 @@
 package org.opencms.ade.config;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
@@ -110,7 +110,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         // root site 
 
         CmsObject cms = rootCms();
-        String detailPage = OpenCms.getADEConfigurationManager().getDetailPageFinder().getDetailPage(
+        String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
             "/sites/default/today/news");
@@ -119,7 +119,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         // default site
 
         cms = getCmsObject();
-        detailPage = OpenCms.getADEConfigurationManager().getDetailPageFinder().getDetailPage(
+        detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
             "/today/news");
@@ -129,7 +129,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testFormatters() throws Exception {
 
         CmsObject cms = rootCms();
-        CmsADEConfigurationManager manager = OpenCms.getADEConfigurationManager();
+        CmsADEManager manager = OpenCms.getADEManager();
         CmsADEConfigData config = manager.lookupConfiguration(cms, "/sites/default");
         CmsFormatterConfiguration formatterConfig = config.getFormatters("a");
         assertNotNull(formatterConfig);
@@ -142,7 +142,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         CmsObject offlineCms = getCmsObject();
         CmsObject onlineCms = onlineCms();
-        OpenCms.getADEConfigurationManager().refresh();
+        OpenCms.getADEManager().refresh();
         checkResourceTypes(offlineCms, "/sites/default", "foldername", "a1", "b1", "c1");
         checkResourceTypes(onlineCms, "/sites/default", "foldername", "a1", "b1", "c1");
         checkResourceTypes(offlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
@@ -153,7 +153,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         CmsObject offlineCms = getCmsObject();
         CmsObject onlineCms = onlineCms();
-        OpenCms.getADEConfigurationManager().refresh();
+        OpenCms.getADEManager().refresh();
         checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2", "a1", "c1");
         checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2", "a1", "c1");
         checkResourceTypes(onlineCms, "/sites/default/today/events/", "foldername", "d2", "a1", "c1");
@@ -185,7 +185,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 + "</SitemapConfigurationsV2>\r\n";
             cms.createResource(
                 filename,
-                OpenCms.getADEConfigurationManager().getModuleConfigurationType().getTypeId(),
+                OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
             checkResourceTypes(cms, "/sites/default", "foldername", "a1", "b1", "c1", "m0");
@@ -212,11 +212,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         CmsObject cms = rootCms();
         try {
-            OpenCms.getADEConfigurationManager().refresh();
+            OpenCms.getADEManager().refresh();
             cms.lockResource("/sites/default/modelpage1.html");
             String newPath = "/sites/default/.content/blah.html";
             cms.moveResource("/sites/default/modelpage1.html", newPath);
-            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 "/sites/default/today");
             List<CmsDetailPageInfo> detailPages = configData.getDetailPagesForType("foo");
@@ -231,7 +231,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testNoConfiguration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
-        OpenCms.getADEConfigurationManager().refresh();
+        OpenCms.getADEManager().refresh();
         checkResourceTypes(offlineCms, "/", "foldername");
         checkResourceTypes(offlineCms, "/sites", "foldername");
         checkResourceTypes(offlineCms, "/system", "foldername");
@@ -275,7 +275,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         try {
 
-            CmsADEConfigurationManager manager = OpenCms.getADEConfigurationManager();
+            CmsADEManager manager = OpenCms.getADEManager();
             CmsObject cms = rootCms();
             CmsResource page1 = cms.readResource("/sites/default/today");
             CmsResource page2 = cms.readResource("/sites/default/today/events");
@@ -311,7 +311,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     protected void checkResourceTypes(CmsObject cms, String path, String attr, String... expected) {
 
-        CmsADEConfigurationManager configManager = OpenCms.getADEConfigurationManager();
+        CmsADEManager configManager = OpenCms.getADEManager();
         CmsADEConfigData data = configManager.lookupConfiguration(cms, path);
         List<CmsResourceTypeConfig> types = data.getResourceTypes();
         List<String> actualValues = new ArrayList<String>();

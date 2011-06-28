@@ -28,7 +28,7 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -121,9 +121,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            List<CmsContainerElementBean> list = OpenCms.getADEConfigurationManager().getFavoriteList(getCmsObject());
+            List<CmsContainerElementBean> list = OpenCms.getADEManager().getFavoriteList(getCmsObject());
             updateFavoriteRecentList(clientId, list);
-            OpenCms.getADEConfigurationManager().saveFavoriteList(getCmsObject(), list);
+            OpenCms.getADEManager().saveFavoriteList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
         }
@@ -136,9 +136,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            List<CmsContainerElementBean> list = OpenCms.getADEConfigurationManager().getRecentList(getCmsObject());
+            List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
             updateFavoriteRecentList(clientId, list);
-            OpenCms.getADEConfigurationManager().saveRecentList(getCmsObject(), list);
+            OpenCms.getADEManager().saveRecentList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
         }
@@ -162,8 +162,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         String serverId = id;
         try {
-            if (serverId.contains(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR)) {
-                serverId = serverId.substring(0, serverId.indexOf(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR));
+            if (serverId.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+                serverId = serverId.substring(0, serverId.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
             }
             return new CmsUUID(serverId);
         } catch (NumberFormatException e) {
@@ -188,7 +188,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsObject cms = getCmsObject();
             CmsResource pageResource = cms.readResource(pageStructureId);
             String containerpageUri = cms.getSitePath(pageResource);
-            CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 getCmsObject(),
                 pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceType);
@@ -289,7 +289,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource containerpage = getCmsObject().readResource(pageStructureId);
             String containerpageUri = getCmsObject().getSitePath(containerpage);
             result = getListElementsData(
-                OpenCms.getADEConfigurationManager().getFavoriteList(getCmsObject()),
+                OpenCms.getADEManager().getFavoriteList(getCmsObject()),
                 containerpageUri,
                 containers,
                 new Locale(locale));
@@ -336,7 +336,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource containerpage = getCmsObject().readResource(pageStructureId);
             String containerpageUri = getCmsObject().getSitePath(containerpage);
             result = getListElementsData(
-                OpenCms.getADEConfigurationManager().getRecentList(getCmsObject()),
+                OpenCms.getADEManager().getRecentList(getCmsObject()),
                 containerpageUri,
                 containers,
                 new Locale(locale));
@@ -363,7 +363,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cms.getSitePath(cntPage),
                 getNoEditReason(cms, cntPage),
                 CmsRequestUtil.encodeParams(request),
-                CmsADEConfigurationManager.PATH_SITEMAP_EDITOR_JSP,
+                CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
                 cntPageUri,
                 CmsDetailPageResourceHandler.getDetailId(getRequest()),
                 getNewTypes(cms, request),
@@ -410,7 +410,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            OpenCms.getADEConfigurationManager().saveFavoriteList(getCmsObject(), getCachedElements(clientIds));
+            OpenCms.getADEManager().saveFavoriteList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
         }
@@ -440,7 +440,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 //                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
                 //                    new Locale(locale));
 
-                CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                     getCmsObject(),
                     pageResource.getRootPath());
                 CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
@@ -475,7 +475,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             ensureSession();
-            OpenCms.getADEConfigurationManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
+            OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
         }
@@ -502,7 +502,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsException {
 
         CmsObject cms = getCmsObject();
-        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEConfigurationManager().getElementSettings(
+        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(
             cms,
             resource);
         Map<String, String> changedSettings = new HashMap<String, String>();
@@ -534,8 +534,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         if (element != null) {
             return element;
         }
-        if (id.contains(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR)) {
-            id = id.substring(0, id.indexOf(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR));
+        if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+            id = id.substring(0, id.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
             element = getSessionCache().getCacheContainerElement(id);
             if (element != null) {
                 return element;
@@ -597,7 +597,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
 
-                CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     containerpage.getRootPath());
                 CmsFormatterConfiguration formatters = config.getFormatters(resource);
@@ -857,7 +857,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         Map<String, String> result = new LinkedHashMap<String, String>();
         CmsResourceManager resourceManager = OpenCms.getResourceManager();
-        CmsADEConfigData configData = OpenCms.getADEConfigurationManager().lookupConfiguration(
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
         try {

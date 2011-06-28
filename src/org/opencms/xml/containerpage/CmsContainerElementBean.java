@@ -27,7 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.ade.configuration.CmsADEConfigurationManager;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -104,7 +104,7 @@ public class CmsContainerElementBean {
         String clientId = m_elementId.toString();
         if (!m_individualSettings.isEmpty()) {
             int hash = m_individualSettings.toString().hashCode();
-            clientId += CmsADEConfigurationManager.CLIENT_ID_SEPERATOR + hash;
+            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         m_editorHash = clientId;
         m_createNew = createNew;
@@ -130,8 +130,8 @@ public class CmsContainerElementBean {
         result.m_inMemoryOnly = source.m_inMemoryOnly;
         if (result.m_inMemoryOnly) {
             String editorHash = source.m_editorHash;
-            if (editorHash.contains(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR)) {
-                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEConfigurationManager.CLIENT_ID_SEPERATOR));
+            if (editorHash.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
             }
             editorHash += result.getSettingsHash();
             result.m_editorHash = editorHash;
@@ -376,7 +376,7 @@ public class CmsContainerElementBean {
 
         if (!m_individualSettings.isEmpty()) {
             int hash = m_individualSettings.toString().hashCode();
-            return CmsADEConfigurationManager.CLIENT_ID_SEPERATOR + hash;
+            return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";
     }

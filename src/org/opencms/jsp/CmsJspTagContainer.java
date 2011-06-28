@@ -588,7 +588,7 @@ public class CmsJspTagContainer extends TagSupport {
         if (elementBean.isCreateNew()) {
             String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
             result.append(" newType='").append(typeName).append("'");
-            CmsResourceTypeConfig typeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().getRootUri()).getResourceType(typeName);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
@@ -666,7 +666,7 @@ public class CmsJspTagContainer extends TagSupport {
         if (detailContent != null) {
             // get the right formatter
 
-            CmsADEConfigData config = OpenCms.getADEConfigurationManager().lookupConfiguration(
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(detailContent);
@@ -846,7 +846,7 @@ public class CmsJspTagContainer extends TagSupport {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
                     getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
-                    CmsADEConfigData adeConfig = OpenCms.getADEConfigurationManager().lookupConfiguration(
+                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
                         cms,
                         cms.getRequestContext().getRootUri());
                     CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(subelement.getResource());

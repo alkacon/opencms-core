@@ -28,6 +28,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
@@ -133,6 +134,24 @@ class CmsConfigurationCache {
             return CmsResource.getParentFolder(CmsResource.getParentFolder(siteConfigFile));
         }
         return siteConfigFile;
+    }
+
+    /**
+     * Gets all the detail pages for a given type.<p>
+     * 
+     * @param type the name of the type 
+     * 
+     * @return the detail pages for that type 
+     */
+    protected synchronized List<String> getDetailPages(String type) {
+
+        List<String> result = new ArrayList<String>();
+        for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+            for (CmsDetailPageInfo pageInfo : configData.getDetailPagesForType(type)) {
+                result.add(pageInfo.getUri());
+            }
+        }
+        return result;
     }
 
     /**

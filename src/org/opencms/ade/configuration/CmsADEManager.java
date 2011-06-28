@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * This is the main class used to access the ADE configuration and also accomplish some other related tasks
  * like loading/saving favorite and recent lists.<p>
  */
-public class CmsADEConfigurationManager implements I_CmsEventListener {
+public class CmsADEManager implements I_CmsEventListener {
 
     /** JSON property name constant. */
     protected enum FavListProp {
@@ -145,7 +145,7 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
     protected static final String ADDINFO_ADE_RECENT_LIST = "ADE_RECENT_LIST";
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADEConfigurationManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
 
     /** The online CMS context. */
     private CmsObject m_onlineCms;
@@ -169,10 +169,7 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsADEConfigurationManager(
-        CmsObject adminCms,
-        CmsMemoryMonitor memoryMonitor,
-        CmsSystemConfiguration systemConfiguration) {
+    public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
         // initialize the ade cache
         CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();
@@ -378,6 +375,21 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the main detail pages for a type in all of the VFS tree.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param type the resource type name 
+     * @return a list of detail page root paths 
+     */
+    public List<String> getDetailPages(CmsObject cms, String type) {
+
+        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? m_onlineCache
+        : m_offlineCache;
+        return cache.getDetailPages(type);
+    }
+
+    /**
      * Returns the element settings for a given resource.<p>
      * 
      * @param cms the current cms context
@@ -537,6 +549,16 @@ public class CmsADEConfigurationManager implements I_CmsEventListener {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Checks whether the ADE manager is initialized (this should usually be the case except during the setup).<p>
+     * 
+     * @return true if the ADE manager is initialized 
+     */
+    public boolean isInitialized() {
+
+        return m_initStatus == Status.initialized;
     }
 
     /**
