@@ -571,7 +571,7 @@ Each job can have an optional list of parameters.
 <!--
 # The advanced direct edit settings. 
 -->		
-<!ELEMENT ade (configuration,
+<!ELEMENT ade (configuration?,
 			   ade-cache)>								   
 
 <!--
