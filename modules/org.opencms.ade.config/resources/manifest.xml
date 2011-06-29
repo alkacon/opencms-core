@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.0.0</opencms_version>
-		<createdate>Fri, 10 Jun 2011 15:22:56 GMT</createdate>
+		<opencms_version>8.0.1</opencms_version>
+		<createdate>Wed, 29 Jun 2011 08:58:42 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -26,10 +26,10 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.ade.config/"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage_config_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/configfolder.png"/>
 			<resource uri="/system/workplace/resources/filetypes/configfolder_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/module_config.png"/>
+			<resource uri="/system/workplace/resources/filetypes/module_config_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png"/>
 			<resource uri="/system/workplace/resources/filetypes/sitemap_config_big.png"/>
 		</resources>
@@ -50,10 +50,6 @@
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
 					</property>
-					<property>
-						<name>search.exclude</name>
-						<value>all</value>
-					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
 			</type>
@@ -66,10 +62,6 @@
 					<property>
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
-					</property>
-					<property>
-						<name>search.exclude</name>
-						<value>all</value>
 					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
@@ -88,8 +80,8 @@
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="module_config" key="fileicon.module_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=module_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+			<explorertype name="module_config" key="fileicon.module_config" icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=module_config" order="22" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -100,10 +92,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>6a6cbc40-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidstructure>d0ae7320-a228-11e0-9ff0-afd4b35f6004</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:21:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2011 07:52:23 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:21:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -122,10 +114,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>6b2b789c-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Fri, 03 Jun 2011 07:52:24 GMT</datelastmodified>
+			<uuidstructure>d157abac-a228-11e0-9ff0-afd4b35f6004</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:21:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2011 07:52:24 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:21:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -289,10 +281,10 @@
 					<value><![CDATA[Resource type configuration]]></value>
 				</property>
 				<property>
-                     <name>locale</name>
-                     <value><![CDATA[en]]></value>
-                </property>
-                <property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
 					<name>locale-available</name>
 					<value><![CDATA[en]]></value>
 				</property>
@@ -613,14 +605,14 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/containerpage_config.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_config.png</destination>
+			<source>system/workplace/resources/filetypes/module_config.png</source>
+			<destination>system/workplace/resources/filetypes/module_config.png</destination>
 			<type>image</type>
-			<uuidstructure>44c4ee36-293f-11e0-8ccb-c98e62b28e6c</uuidstructure>
-			<uuidresource>44c4ee37-293f-11e0-8ccb-c98e62b28e6c</uuidresource>
-			<datelastmodified>Wed, 26 Jan 2011 11:27:33 GMT</datelastmodified>
+			<uuidstructure>7f364afd-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
+			<uuidresource>7f364afe-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Jan 2011 11:27:33 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -633,14 +625,14 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/containerpage_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_config_big.png</destination>
+			<source>system/workplace/resources/filetypes/module_config_big.png</source>
+			<destination>system/workplace/resources/filetypes/module_config_big.png</destination>
 			<type>image</type>
-			<uuidstructure>d06a6ac6-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d06a6ac7-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<uuidstructure>7f3b05f1-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
+			<uuidresource>7f3b05f2-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
