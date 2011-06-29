@@ -81,7 +81,7 @@ public class TestUndelete extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
             }
 
             @Override

@@ -82,7 +82,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
                 // this test causes issues that are written to the error log channel
                 OpenCmsTestLogAppender.setBreakOnError(false);
             }

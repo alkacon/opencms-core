@@ -167,7 +167,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
                 try {
                     initSchemas();
                 } catch (IOException e) {

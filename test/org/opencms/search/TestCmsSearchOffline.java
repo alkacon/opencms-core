@@ -84,7 +84,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
                 OpenCms.getSearchManager().setOfflineUpdateFrequency(1000);
             }
 

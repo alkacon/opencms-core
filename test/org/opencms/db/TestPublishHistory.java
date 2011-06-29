@@ -90,7 +90,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
             }
 
             @Override

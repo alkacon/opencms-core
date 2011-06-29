@@ -61,7 +61,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         CmsObject cms;
 
         // setup OpenCms using the base test class
-        cms = setupOpenCms("simpletest", "/sites/default/");
+        cms = setupOpenCms("simpletest", "/");
         // check the returned CmsObject
         assertEquals(cms.getRequestContext().getCurrentUser(), cms.readUser("Admin"));
         assertEquals(cms.getRequestContext().getCurrentProject(), cms.readProject("Offline"));

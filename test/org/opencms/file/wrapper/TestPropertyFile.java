@@ -75,7 +75,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
             }
 
             @Override
@@ -108,7 +108,8 @@ public class TestPropertyFile extends OpenCmsTestCase {
 
         // create the property file
         CmsResource res = getCmsObject().readResource(resourcename);
-        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
+        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath()
+            + ".properties");
 
         String content = CmsEncoder.createString(propFile.getContents(), CmsEncoder.ENCODING_UTF_8);
 
@@ -141,7 +142,8 @@ public class TestPropertyFile extends OpenCmsTestCase {
 
         // create the property file
         CmsResource res = getCmsObject().readResource(resourcename);
-        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
+        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath()
+            + ".properties");
 
         String content = CmsEncoder.createString(propFile.getContents(), CmsEncoder.ENCODING_UTF_8);
 

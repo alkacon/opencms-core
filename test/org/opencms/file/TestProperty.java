@@ -96,7 +96,7 @@ public class TestProperty extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
             }
 
             @Override
@@ -231,7 +231,7 @@ public class TestProperty extends OpenCmsTestCase {
         // set the value to a simple key/value list
         prop.setValue("a=1|b=2", CmsProperty.TYPE_INDIVIDUAL);
         assertEquals(2, prop.getStructureValueMap().size());
-        assertEquals("1", (String)prop.getStructureValueMap().get("a"));
+        assertEquals("1", prop.getStructureValueMap().get("a"));
 
         // now set the title as a map        
         Map map = new HashMap(3);
@@ -248,9 +248,9 @@ public class TestProperty extends OpenCmsTestCase {
 
         // check the created map
         assertEquals(3, prop2.getStructureValueMap().size());
-        assertEquals("v1", (String)prop2.getStructureValueMap().get("k1"));
-        assertEquals("v2|=", (String)prop2.getStructureValueMap().get("k2"));
-        assertEquals("v3", (String)prop2.getStructureValueMap().get("k3"));
+        assertEquals("v1", prop2.getStructureValueMap().get("k1"));
+        assertEquals("v2|=", prop2.getStructureValueMap().get("k2"));
+        assertEquals("v3", prop2.getStructureValueMap().get("k3"));
         assertNull(prop.getResourceValueMap());
 
     }

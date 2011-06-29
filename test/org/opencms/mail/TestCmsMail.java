@@ -87,7 +87,7 @@ public class TestCmsMail extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
                 // start SMTP server
                 m_server = SimpleSmtpServer.start(SMTP_PORT);
 

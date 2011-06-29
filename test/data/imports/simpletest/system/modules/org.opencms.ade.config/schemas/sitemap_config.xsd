@@ -1,0 +1,46 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
+
+    <xsd:element name="SitemapConfigurationsV2" type="OpenCmsSitemapConfigurationsV2" />
+
+    <xsd:complexType name="OpenCmsSitemapConfigurationsV2">
+        <xsd:sequence>
+            <xsd:element name="SitemapConfigurationV2" type="OpenCmsSitemapConfigurationV2" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsSitemapConfigurationV2">
+        <xsd:sequence>
+            <xsd:element name="ResourceType" type="OpenCmsADETypeV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Property" type="OpenCmsADEFieldV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    <xsd:annotation>
+        <xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<tabs>
+				<tab element="ResourceType" name="Resource Types" collapse="false" />
+				<tab element="ModelPage" name="Page Models" collapse="false" />
+				<tab element="Property" name="Property Configuration" collapse="false" />
+				<tab element="DetailPage" name="Detail Pages" collapse="false" />
+			</tabs><!--
+			<relations>
+				<relation element="DetailPage/Page" type="strong" invalidate="parent" />
+				<relation element="ResourceType/Source" type="strong" invalidate="parent" />
+				<relation element="PageModel/Source" type="strong" invalidate="parent" />
+			</relations>-->
+			 
+        </xsd:appinfo>        
+    </xsd:annotation>
+    
+</xsd:schema>
+
+
+		

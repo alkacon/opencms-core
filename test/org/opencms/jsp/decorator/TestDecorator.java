@@ -107,8 +107,8 @@ public class TestDecorator extends OpenCmsTestCase {
         String inputText4 = "This is a test German Umlaute: TÜV is fine, but does T&UumlV work as well?";
         String resultText4 = "This is a test German Umlaute: <abbr title=\"Technischer Überwachungsverein\">TÜV</abbr> is fine, but does <abbr>TÜV</abbr> work as well?";
 
-        String inputText5 = "The CMS has a nice user interface, the so called CMS-UI. This must not be mixed up with the CMS-IU!";
-        String resultText5 = "The <abbr>CMS</abbr> has a nice user interface, the so called <abbr title=\"Content Management System User Interface\">CMS-UI</abbr>. This must not be mixed up with the <abbr>CMS</abbr>-IU!";
+        String inputText5 = "The CMS has a nice user interface, the so called CMS-UI . This must not be mixed up with the CMS-IU!";
+        String resultText5 = "The <abbr>CMS</abbr> has a nice user interface, the so called <abbr title=\"Content Management System User Interface\">CMS-UI</abbr> . This must not be mixed up with the <abbr>CMS</abbr>-IU!";
 
         String inputText6 = "Does it work to use a '?' as a delimiter for the CMS?";
         String resultText6 = "Does it work to use a '?' as a delimiter for the <abbr>CMS</abbr>?";

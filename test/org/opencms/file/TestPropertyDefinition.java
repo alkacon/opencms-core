@@ -61,6 +61,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
@@ -69,13 +70,13 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         suite.addTest(new TestPropertyDefinition("testCreatePropertyDefinition"));
         suite.addTest(new TestPropertyDefinition("testCreateReadDeletePropertyDefinition"));
         suite.addTest(new TestPropertyDefinition("testGetResourcesWithProperty"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/");
+                setupOpenCms("simpletest", "/");
             }
 
             @Override
@@ -87,7 +88,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
     /**
      * Test the createPropertyDefintion method.<p>
      * @param tc the OpenCmsTestCase
@@ -101,9 +102,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         // get all propertydefintions
         List allPropertydefintions = cms.readAllPropertyDefinitions();
         // create a property defintion with a dummy id value (the real id is created by db)
-        CmsPropertyDefinition prop = new CmsPropertyDefinition(
-            CmsUUID.getNullUUID(),
-            propertyDefiniton1);
+        CmsPropertyDefinition prop = new CmsPropertyDefinition(CmsUUID.getNullUUID(), propertyDefiniton1);
 
         cms.createPropertyDefinition(propertyDefiniton1);
 
@@ -148,7 +147,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
         CmsPropertyDefinition propertyDefinition = null;
         String propertyDefinitionName = "locale-available";
-                
+
         // 1) create a property definition
 
         try {
@@ -162,7 +161,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         assertEquals(propertyDefinition.getName(), propertyDefinitionName);
 
         // 2) read the created property definition
-        
+
         try {
             // read the created property definition
             propertyDefinition = null;
@@ -175,7 +174,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         assertEquals(propertyDefinition.getName(), propertyDefinitionName);
 
         // 3) check if the new created property is contained in the list of all property definitions
-        
+
         List allPropertyDefinitions = null;
         try {
             // read all property definitions
@@ -192,11 +191,11 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
                 break;
             }
         }
-        
+
         if (!found) {
             fail("Property definition " + propertyDefinitionName + " is not in the list of all property definitions");
         }
-        
+
         // 4) delete the new property definition again
 
         try {
@@ -205,7 +204,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         } catch (CmsException e) {
             fail("Error deleting property definition " + propertyDefinitionName + ", " + e.toString());
         }
-        
+
         // 5) re-read the delete property definition to check that it is not found
 
         try {
@@ -217,9 +216,9 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         }
 
         assertNull(propertyDefinition);
-        
+
         // 6) re-read the list of all property definitions to check that it is not contained
-        
+
         allPropertyDefinitions = null;
         try {
             // read all property definitions
@@ -235,12 +234,12 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
                 found = true;
                 break;
             }
-        }  
+        }
 
         if (found) {
             fail("Property definition " + propertyDefinitionName + " is still in the list of all property definitions");
         }
-        
+
     }
 
     /**
@@ -249,15 +248,15 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     public void testGetResourcesWithProperty() throws Exception {
-        
-        echo("Testing reading all resources with a specific property");        
+
+        echo("Testing reading all resources with a specific property");
         CmsObject cms = getCmsObject();
         List result;
-        
+
         result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_TITLE);
         assertEquals(63, result.size());
         result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE);
         assertEquals(25, result.size());
     }
-    
+
 }
