@@ -252,7 +252,7 @@ public class TestConfig extends OpenCmsTestCase {
         assertPathEquals("/sites/default/.content/foo", folderPath);
     }
 
-    public void testDetailPages1() throws Exception {
+    public void testDetailPages2() throws Exception {
 
         CmsDetailPageInfo a1 = new CmsDetailPageInfo(getId("/sites/default/a1"), "/sites/default/a1", "a");
         CmsDetailPageInfo a2 = new CmsDetailPageInfo(getId("/sites/default/a2"), "/sites/default/a2", "a");
@@ -438,6 +438,72 @@ public class TestConfig extends OpenCmsTestCase {
         List<CmsResourceTypeConfig> resourceTypeConfig = config2.getResourceTypes();
         assertEquals(typeConf1.getTypeName(), resourceTypeConfig.get(1).getTypeName());
         assertEquals(typeConf2.getTypeName(), resourceTypeConfig.get(0).getTypeName());
+    }
+
+    public void testModelPages1() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        CmsModelPageConfig a1 = new CmsModelPageConfig(cms.readResource("/a1"), false, false);
+        CmsModelPageConfig a2 = new CmsModelPageConfig(cms.readResource("/a2"), false, false);
+
+        CmsModelPageConfig b1 = new CmsModelPageConfig(cms.readResource("/b1"), false, false);
+        CmsModelPageConfig b2 = new CmsModelPageConfig(cms.readResource("/b2"), false, false);
+
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/sites/default",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            list(a1, a2));
+        config1.initialize(rootCms());
+
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/sites/default/foo",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            list(b1, b2));
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+
+        List<CmsModelPageConfig> modelpages = config2.getModelPages();
+        assertEquals(b1.getResource().getStructureId(), modelpages.get(0).getResource().getStructureId());
+        assertEquals(b2.getResource().getStructureId(), modelpages.get(1).getResource().getStructureId());
+        assertEquals(a1.getResource().getStructureId(), modelpages.get(2).getResource().getStructureId());
+        assertEquals(a2.getResource().getStructureId(), modelpages.get(3).getResource().getStructureId());
+        assertEquals(b1.getResource().getStructureId(), config2.getDefaultModelPage().getResource().getStructureId());
+    }
+
+    public void testModelPages2() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        CmsModelPageConfig a1 = new CmsModelPageConfig(cms.readResource("/a1"), false, false);
+        CmsModelPageConfig a2 = new CmsModelPageConfig(cms.readResource("/a2"), false, false);
+
+        CmsModelPageConfig b1 = new CmsModelPageConfig(cms.readResource("/b1"), false, false);
+        CmsModelPageConfig b2 = new CmsModelPageConfig(cms.readResource("/b2"), true, false);
+
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/sites/default",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            list(a1, a2));
+        config1.initialize(rootCms());
+
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/sites/default/foo",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            list(b1, b2));
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+
+        List<CmsModelPageConfig> modelpages = config2.getModelPages();
+        assertEquals(b2.getResource().getStructureId(), config2.getDefaultModelPage().getResource().getStructureId());
     }
 
     public void testOverrideResourceType() throws Exception {
