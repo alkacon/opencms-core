@@ -22,8 +22,25 @@
 	</xsd:complexType>
 
 	<xsd:annotation>
-		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace"/>			
+		<xsd:appinfo>			
+			<resourcebundle name="org.opencms.dev.demo.workplace.xml">
+                <bundle locale="EN">
+                    <resource key="label.DevDemoArticle.Title">Title</resource>                    
+                    <resource key="label.DevDemoArticle.Title.help">The title of the Dev Demo Article.</resource>
+                    <resource key="dev.demo.ddarticle.default.Title">New article for Dev Demo template</resource>
+                    <resource key="label.DevDemoArticle.Text">Text</resource>
+                    <resource key="label.DevDemoArticle.Text.help">The content of the Dev Demo article.</resource>
+                    <resource key="dev.demo.ddarticle.default.Text">Please edit the article.</resource>
+                    <resource key="label.DevDemoArticle.Image">Image</resource>
+                    <resource key="label.DevDemoArticle.Image.help">The image for the Dev Demo article.</resource>
+                    <resource key="label.DevDemoArticle.Script">Script</resource>
+                    
+                    <resource key="label.DevDemoScript.Script">Script</resource>
+                    <resource key="label.DevDemoScript.Script.help">Please paste the neccessary script that should be inserted into page html.</resource>
+                    <resource key="label.DevDemoScript.NoScript">No Script</resource>
+                    <resource key="label.DevDemoScript.NoScript.help">Please insert special text or html, that should be displayed after the element habe been edited.</resource>
+                </bundle>                                    
+            </resourcebundle> 
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<!-- Enables nice url name for detail pages -->
@@ -34,7 +51,10 @@
 				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:false}" />				
 			</layouts>
 			<validationrules/>
-			<defaults/>
+			<defaults>
+                <default element="Title" value="%(key.dev.demo.ddarticle.default.Title)" />
+                <default element="Text" value="%(key.dev.demo.ddarticle.default.Text)" />
+            </defaults> 
 			<relations/>
 			<formatters>				
 				<formatter maxwidth="250" uri="/system/modules/org.opencms.dev.demo/elements/article/side.jsp" searchcontent="false"/>

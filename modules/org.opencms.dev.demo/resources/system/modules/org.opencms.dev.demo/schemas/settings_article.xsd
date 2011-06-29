@@ -22,7 +22,23 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace"/>			
+			<resourcebundle name="org.opencms.dev.demo.workplace.xml">
+                <bundle locale="EN">
+                    <resource key="label.DevDemoSettingsArticle.Title">Title</resource>                    
+                    <resource key="label.DevDemoSettingsArticle.Title.help">The title of the Dev Demo Settings Article.</resource>
+                    <resource key="dev.demo.ddsettingsarticle.default.Title">New settings demo</resource>
+                    <resource key="label.DevDemoSettingsArticle.Options">Text options</resource>                    
+                    <resource key="label.DevDemoSettingsArticle.Image">Image</resource>
+                    <resource key="label.DevDemoSettingsArticle.Image.help">The image for the Dev Demo Settings article.</resource>
+                    
+                    <resource key="label.DevDemoTextOption.Text">Input field</resource>
+                    <resource key="label.DevDemoTextOption.Text.help">The one line field.</resource>                    
+                    <resource key="label.DevDemoTextOption.Html">Html</resource>
+                    <resource key="label.DevDemoTextOption.Html.help">The html field.</resource>                    
+                    <resource key="label.DevDemoTextOption.Link">Link</resource>
+                    <resource key="label.DevDemoTextOption.Link.help">A link field.</resource>                    
+                </bundle>                                    
+            </resourcebundle> 		
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<!-- Enables nice url name for detail pages -->
@@ -32,7 +48,9 @@
 				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:false}" />				
 			</layouts>
 			<validationrules/>
-			<defaults/>
+			<defaults>
+                <default element="Title" value="%(key.dev.demo.ddsettingsarticle.default.Title)" />
+            </defaults>
 			<relations/>
 			<formatters>				
 				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/elements/settings_article/settings.jsp" searchcontent="false"/>

@@ -20,7 +20,18 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace"/>
+			<resourcebundle name="org.opencms.dev.demo.workplace.xml">
+                <bundle locale="EN">
+                    <resource key="label.DevDemoContainerVariable.Title">Title</resource>                    
+                    <resource key="label.DevDemoContainerVariable.Title.help">The title of the Dev Demo Container Variables Element.</resource>
+                    <resource key="dev.demo.ddcontainervars.default.Title">New container variables demo</resource>
+                    <resource key="label.DevDemoContainerVariable.Content">Content</resource>
+                    <resource key="label.DevDemoContainerVariable.Content.help">The content of the Dev Demo Container Variables Element.</resource>                  
+                </bundle>                                    
+            </resourcebundle> 
+            <defaults>
+                <default element="Title" value="%(key.dev.demo.ddcontainervars.default.Title)" />
+            </defaults> 			
 			<formatters>
 				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/elements/container_vars/containervar.jsp" searchcontent="false"/>
 			</formatters>

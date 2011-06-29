@@ -39,10 +39,14 @@
 	    		<div id="main">
 	    			<div>
 	    				<h2>Container page demo with different formatters.</h2>
-	    				<p> Use the Dev Demo Article for this demo. The xsd file for the Dev Demo Article resource: <i>/system/modules/org.opencms.dev.demo/schemas/article.xsd</i></p>
-	    				<p> The template file for this containerpage: <i>/system/modules/org.opencms.dev.demo/templates/formatter_demo.jsp<cms:property name="template" file="uri" /></i></p>
-					<p> The formatters for this example: <i>/system/modules/org.opencms.dev.demo/elements/article/</i></p>
-					
+	    				<br/>
+	    				<p> Use the Dev Demo Article for this demo. The xsd file for the Dev Demo Article content type: <br/><i>/system/modules/org.opencms.dev.demo/schemas/article.xsd</i></p>	    				
+	    				<br/>
+	    				<p> The template file for this containerpage: <br/><i>/system/modules/org.opencms.dev.demo/templates/formatter_demo.jsp</i></p>
+						<br/>
+						<p> The formatters for this example: <br/><i>/system/modules/org.opencms.dev.demo/elements/article/formatter_demo/</i></p>
+						<br/>
+						<p> The used formatter for this example are configured in the sub sitemap configuration of this example: <br/><i>/sites/default/dev_demo/formatter_demo/.content/.config</i></p>					
 				</div>
 				<div>&nbsp;</div>
 				<div class="container-description narrow">Container with width="200" attribute set in the template file.</div>				

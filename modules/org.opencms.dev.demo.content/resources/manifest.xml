@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Tue, 31 May 2011 13:00:59 GMT</createdate>
+		<createdate>Wed, 29 Jun 2011 12:18:52 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -34,10 +34,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>7d49d64d-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
-			<datelastmodified>Tue, 31 May 2011 09:43:50 GMT</datelastmodified>
+			<uuidstructure>4bbe75d4-a19f-11e0-be17-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 15:57:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 15:57:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -47,30 +47,13 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>7d4eb84f-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
+			<uuidstructure>4bc0e6d6-a19f-11e0-be17-31bf300cc6c9</uuidstructure>
 			<datelastmodified>Mon, 30 May 2011 08:22:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 15:57:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 8 Demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_restype.config]]></value>
-				</property>
-				<property>
-					<name>style.layout</name>
-					<value><![CDATA[/_config/style]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp]]></value>
-				</property>
-			</properties>
+			<properties/>				
 			<relations/>
 			<accesscontrol>
 				<accessentry>
@@ -87,7 +70,7 @@
 			<destination>sites/default/dev_demo</destination>
 			<type>subsitemap</type>
 			<uuidstructure>9067a898-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 10:22:13 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:24:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 09:45:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -103,11 +86,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Formatter demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/_config/sitemap_restype.config]]></value>
+					<value><![CDATA[Dev Demo]]></value>
 				</property>
 				<property>
 					<name>locale</name>
@@ -137,38 +116,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>b79f7beb-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 09:46:29 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>783e9a90-a1a1-11e0-b2d8-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:13:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 09:46:29 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 16:12:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/.content/.config</source>
+			<destination>sites/default/dev_demo/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>b7a1c5de-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
-			<uuidresource>b7a1c5df-77c5-11e0-bf39-cde485e16fbf</uuidresource>
-			<datelastmodified>Wed, 18 May 2011 08:58:12 GMT</datelastmodified>
+			<uuidstructure>95e4ce8d-a223-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>95e4ce8e-a223-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:17:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 09:46:29 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 07:44:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -183,117 +166,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_config/models</destination>
+			<destination>sites/default/dev_demo/.content/.new</destination>
 			<type>folder</type>
-			<uuidstructure>b7b9bab3-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 09:46:29 GMT</datelastmodified>
+			<uuidstructure>5e2a8ebc-a222-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 07:35:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 09:46:29 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 07:35:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_config/models/article.html</source>
-			<destination>sites/default/dev_demo/_config/models/article.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>b9de2b7c-77f6-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<uuidresource>b9de2b7d-77f6-11e0-b1d0-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 08:11:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:37:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New article for Dev Demo template]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/_config/models/group_container.html</source>
-			<destination>sites/default/dev_demo/_config/models/group_container.html</destination>
-			<type>groupcontainer</type>
-			<uuidstructure>55ecf5a6-7f87-11e0-87dc-1df1339be1a9</uuidstructure>
-			<uuidresource>55ecf5a7-7f87-11e0-87dc-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 06:42:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 06:40:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New Group Container for Demo Template]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/_config/models/settings_article.html</source>
-			<destination>sites/default/dev_demo/_config/models/settings_article.html</destination>
-			<type>ddsettingsarticle</type>
-			<uuidstructure>5e2797f1-7981-11e0-934b-1df1339be1a9</uuidstructure>
-			<uuidresource>5e2797f2-7981-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Sun, 08 May 2011 14:42:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sun, 08 May 2011 14:42:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New setting demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>b7bc04a6-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 09:46:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 09:46:29 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/_config/models/pages/default.html</source>
-			<destination>sites/default/dev_demo/_config/models/pages/default.html</destination>
+			<source>sites/default/dev_demo/.content/.new/default.html</source>
+			<destination>sites/default/dev_demo/.content/.new/default.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>cb7c0499-77c5-11e0-bf39-cde485e16fbf</uuidstructure>
 			<uuidresource>cb7c049a-77c5-11e0-bf39-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 07:59:15 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 10:26:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 09:47:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[Test Test]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dev Demo Default Model Containerpage]]></value>
@@ -303,8 +199,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_config/models/pages/default_with_article.html</source>
-			<destination>sites/default/dev_demo/_config/models/pages/default_with_article.html</destination>
+			<source>sites/default/dev_demo/.content/.new/default_with_article.html</source>
+			<destination>sites/default/dev_demo/.content/.new/default_with_article.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>0e5933e1-7cb0-11e0-8bbd-1df1339be1a9</uuidstructure>
 			<uuidresource>0e5933e2-7cb0-11e0-8bbd-1df1339be1a9</uuidresource>
@@ -327,8 +223,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_config/models/pages/default_with_groupcontainer.html</source>
-			<destination>sites/default/dev_demo/_config/models/pages/default_with_groupcontainer.html</destination>
+			<source>sites/default/dev_demo/.content/.new/default_with_groupcontainer.html</source>
+			<destination>sites/default/dev_demo/.content/.new/default_with_groupcontainer.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>7c3420b9-812c-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>7c3420ba-812c-11e0-8d0a-0ffe1353a061</uuidresource>
@@ -347,20 +243,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content</destination>
-			<type>folder</type>
-			<uuidstructure>e7d9746e-77c7-11e0-a695-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 10:02:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 10:02:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/_content/articles</destination>
+			<destination>sites/default/dev_demo/.content/article</destination>
 			<type>folder</type>
 			<uuidstructure>edee4f20-77c7-11e0-a695-cde485e16fbf</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 10:02:19 GMT</datelastmodified>
@@ -373,12 +256,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00001.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00001.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00001.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>a4852c3e-812c-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>a4852c3f-812c-11e0-8d0a-0ffe1353a061</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:18:03 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:08:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 18 May 2011 08:55:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -393,12 +276,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00002.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00002.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00002.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>115a723f-7803-11e0-aa6b-cde485e16fbf</uuidstructure>
 			<uuidresource>115a7240-7803-11e0-aa6b-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 13:07:33 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:30:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 17:05:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -413,8 +296,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00003.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00003.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00003.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00003.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>55694ad4-812d-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>55694ad5-812d-11e0-8d0a-0ffe1353a061</uuidresource>
@@ -433,8 +316,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00004.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00004.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00004.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00004.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>1bfbb9d3-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>1bfbb9d4-8130-11e0-8d0a-0ffe1353a061</uuidresource>
@@ -453,8 +336,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00005.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00005.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00005.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00005.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>3a1e43bd-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>3a1e43be-8130-11e0-8d0a-0ffe1353a061</uuidresource>
@@ -473,8 +356,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/articles/a_00011.html</source>
-			<destination>sites/default/dev_demo/_content/articles/a_00011.html</destination>
+			<source>sites/default/dev_demo/.content/article/a_00011.html</source>
+			<destination>sites/default/dev_demo/.content/article/a_00011.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>2f7b1e0d-7f94-11e0-91cd-1df1339be1a9</uuidstructure>
 			<uuidresource>2f7b1e0e-7f94-11e0-91cd-1df1339be1a9</uuidresource>
@@ -493,7 +376,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/group_containers</destination>
+			<destination>sites/default/dev_demo/.content/group_container</destination>
 			<type>folder</type>
 			<uuidstructure>6d2d9b89-7f88-11e0-87dc-1df1339be1a9</uuidstructure>
 			<datelastmodified>Mon, 16 May 2011 06:47:54 GMT</datelastmodified>
@@ -506,8 +389,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/group_containers/gc_00001.html</source>
-			<destination>sites/default/dev_demo/_content/group_containers/gc_00001.html</destination>
+			<source>sites/default/dev_demo/.content/group_container/gc_00001.html</source>
+			<destination>sites/default/dev_demo/.content/group_container/gc_00001.html</destination>
 			<type>groupcontainer</type>
 			<uuidstructure>e0e1b884-812f-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>e0e1b885-812f-11e0-8d0a-0ffe1353a061</uuidresource>
@@ -530,12 +413,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/group_containers/gc_00002.html</source>
-			<destination>sites/default/dev_demo/_content/group_containers/gc_00002.html</destination>
+			<source>sites/default/dev_demo/.content/group_container/gc_00002.html</source>
+			<destination>sites/default/dev_demo/.content/group_container/gc_00002.html</destination>
 			<type>groupcontainer</type>
 			<uuidstructure>f29609f8-812f-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>f29609f9-812f-11e0-8d0a-0ffe1353a061</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:18:06 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:08:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 18 May 2011 09:19:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -554,7 +437,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/images</destination>
+			<destination>sites/default/dev_demo/.content/images</destination>
 			<type>folder</type>
 			<uuidstructure>09a9e40c-77cb-11e0-ad4b-cde485e16fbf</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 10:24:34 GMT</datelastmodified>
@@ -567,7 +450,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/images/a-i</destination>
+			<destination>sites/default/dev_demo/.content/images/a-i</destination>
 			<type>imagegallery</type>
 			<uuidstructure>b7adb7bb-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<datelastmodified>Thu, 05 May 2011 14:55:29 GMT</datelastmodified>
@@ -585,8 +468,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/allamanda.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/allamanda.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/allamanda.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/allamanda.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7b272ae-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7b272af-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -613,8 +496,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/arnica.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/arnica.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/arnica.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/arnica.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7b99ea3-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7b99ea4-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -641,8 +524,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/artichoke.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/artichoke.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/artichoke.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/artichoke.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7c0ca98-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7c0ca99-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -669,8 +552,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/azalea.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/azalea.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/azalea.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/azalea.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7c5858d-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7c5858e-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -697,8 +580,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/bougainvillea.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/bougainvillea.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/bougainvillea.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/bougainvillea.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7ccb182-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7ccb183-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -725,8 +608,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/brugmansia.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/brugmansia.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/brugmansia.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/brugmansia.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7d3dd77-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7d3dd78-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -753,8 +636,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/cacao.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/cacao.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/cacao.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/cacao.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7dfc45c-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7dfc45d-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -781,8 +664,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/calendula.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/calendula.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/calendula.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/calendula.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7e4a661-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7e4a662-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -809,8 +692,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/chaenomeles.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/chaenomeles.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/chaenomeles.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/chaenomeles.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7ebab46-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7ebab47-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -837,8 +720,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/chamomile.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/chamomile.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/chamomile.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/chamomile.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7f2d73b-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7f2d73c-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -865,8 +748,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/chrysanthemum.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/chrysanthemum.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/chrysanthemum.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/chrysanthemum.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7f7b940-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7f7b941-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -893,8 +776,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/coltsfoot.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/coltsfoot.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/coltsfoot.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/coltsfoot.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b7febe25-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b7febe26-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -921,8 +804,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/common_yarrow.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/common_yarrow.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/common_yarrow.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/common_yarrow.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b803a02a-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b803a02b-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -949,8 +832,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/cornflower.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/cornflower.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/cornflower.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/cornflower.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8085b1f-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8085b20-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -977,8 +860,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/crocus.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/crocus.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/crocus.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/crocus.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b80d1614-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b80d1615-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1005,8 +888,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/crown_imperial.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/crown_imperial.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/crown_imperial.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/crown_imperial.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8144209-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b814420a-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1033,8 +916,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/dahlia.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/dahlia.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/dahlia.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/dahlia.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b818fcfe-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b818fcff-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1061,8 +944,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/daisy.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/daisy.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/daisy.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/daisy.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b81ddf03-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b81ddf04-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1089,8 +972,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/dandelion.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/dandelion.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/dandelion.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/dandelion.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b82754e8-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b82754e9-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1117,8 +1000,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/eggplant.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/eggplant.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/eggplant.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/eggplant.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b82c0fdd-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b82c0fde-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1145,8 +1028,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/gerbera.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/gerbera.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/gerbera.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/gerbera.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8333bd2-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8333bd3-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1173,8 +1056,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/gillenia.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/gillenia.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/gillenia.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/gillenia.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b837f6c7-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b837f6c8-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1201,8 +1084,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/hibiscus.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/hibiscus.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/hibiscus.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/hibiscus.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b83cd8cc-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b83cd8cd-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1229,8 +1112,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/hollyhock.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/hollyhock.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/hollyhock.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/hollyhock.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b84193c1-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b84193c2-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1257,8 +1140,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/a-i/hoya.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/a-i/hoya.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/a-i/hoya.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/a-i/hoya.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8464eb6-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8464eb7-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1285,7 +1168,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/images/j-q</destination>
+			<destination>sites/default/dev_demo/.content/images/j-q</destination>
 			<type>imagegallery</type>
 			<uuidstructure>b84d7aab-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<datelastmodified>Thu, 05 May 2011 14:55:30 GMT</datelastmodified>
@@ -1303,8 +1186,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/jerusalem_artichoke.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/jerusalem_artichoke.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/jerusalem_artichoke.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/jerusalem_artichoke.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b84febae-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b84febaf-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1331,8 +1214,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/kerria.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/kerria.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/kerria.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/kerria.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b85717a3-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b85717a4-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1359,8 +1242,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/lily.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/lily.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/lily.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/lily.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b85bd298-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b85bd299-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1387,8 +1270,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/malva.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/malva.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/malva.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/malva.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8608d8d-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8608d8e-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1415,8 +1298,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/mandevilla.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/mandevilla.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/mandevilla.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/mandevilla.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8654882-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8654883-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1443,8 +1326,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/meadowsweet.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/meadowsweet.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/meadowsweet.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/meadowsweet.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b86a2a87-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b86a2a88-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1471,8 +1354,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/mirabilis.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/mirabilis.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/mirabilis.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/mirabilis.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8712f6c-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8712f6d-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1499,8 +1382,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/mountain_avens.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/mountain_avens.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/mountain_avens.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/mountain_avens.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8761171-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8761172-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1527,8 +1410,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/oleander.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/oleander.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/oleander.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/oleander.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b87acc66-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b87acc67-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1555,8 +1438,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/orchid.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/orchid.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/orchid.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/orchid.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b881f85b-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b881f85c-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1583,8 +1466,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/j-q/potato.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/j-q/potato.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/j-q/potato.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/j-q/potato.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b886b350-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b886b351-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1611,7 +1494,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/images/r-z</destination>
+			<destination>sites/default/dev_demo/.content/images/r-z</destination>
 			<type>imagegallery</type>
 			<uuidstructure>b88ddf45-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<datelastmodified>Thu, 05 May 2011 14:55:30 GMT</datelastmodified>
@@ -1629,8 +1512,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/radnor_lily.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/radnor_lily.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/radnor_lily.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/radnor_lily.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8929a38-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8929a39-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1657,8 +1540,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/rhododendron.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/rhododendron.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/rhododendron.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/rhododendron.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b899c62d-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b899c62e-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1685,8 +1568,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/rose.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/rose.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/rose.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/rose.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b89e8022-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b89e8023-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1713,8 +1596,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/snakes_head_fritillary.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/snakes_head_fritillary.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/snakes_head_fritillary.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/snakes_head_fritillary.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8a36227-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8a36228-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1741,8 +1624,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/stapelia.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/stapelia.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/stapelia.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/stapelia.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8aa670c-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8aa670d-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1769,8 +1652,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/strawberry.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/strawberry.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/strawberry.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/strawberry.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8af4911-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8af4912-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1797,8 +1680,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/sunflower.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/sunflower.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/sunflower.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/sunflower.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8b40406-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8b40407-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1825,8 +1708,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/tulip.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/tulip.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/tulip.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/tulip.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8bd79eb-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8bd79ec-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1853,8 +1736,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/vanilla.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/vanilla.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/vanilla.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/vanilla.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8c25bf0-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8c25bf1-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1881,8 +1764,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/_content/images/r-z/vinca.jpg</source>
-			<destination>sites/default/dev_demo/_content/images/r-z/vinca.jpg</destination>
+			<source>sites/default/dev_demo/.content/images/r-z/vinca.jpg</source>
+			<destination>sites/default/dev_demo/.content/images/r-z/vinca.jpg</destination>
 			<type>image</type>
 			<uuidstructure>b8c716e5-7727-11e0-a2f4-eda16dd9314c</uuidstructure>
 			<uuidresource>b8c716e6-7727-11e0-a2f4-eda16dd9314c</uuidresource>
@@ -1909,7 +1792,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/_content/settings_article</destination>
+			<destination>sites/default/dev_demo/.content/settings_article</destination>
 			<type>folder</type>
 			<uuidstructure>b385c043-77e8-11e0-a0b7-cde485e16fbf</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 13:56:54 GMT</datelastmodified>
@@ -1925,7 +1808,7 @@
 			<destination>sites/default/dev_demo/container_vars</destination>
 			<type>subsitemap</type>
 			<uuidstructure>bf2dd0fa-78a6-11e0-88e3-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:41:50 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:14:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 12:37:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1942,15 +1825,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Container variables demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/container_vars/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_container_vars.config]]></value>
-				</property>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1976,38 +1851,38 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/container_vars/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>099758b6-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:39:23 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/container_vars/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>9859c8f0-a227-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:13:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:39:23 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:12:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/container_vars/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/container_vars/.content/.config</source>
+			<destination>sites/default/dev_demo/container_vars/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>0999c9b9-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<uuidresource>0999c9ba-78a7-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 12:42:44 GMT</datelastmodified>
+			<uuidstructure>1f839284-a229-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>1f839285-a229-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:25:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:39:23 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:23:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -2022,63 +1897,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/container_vars/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>09a33f9e-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:39:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:39:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/container_vars/_config/models/container_vars.html</source>
-			<destination>sites/default/dev_demo/container_vars/_config/models/container_vars.html</destination>
-			<type>ddcontainervars</type>
-			<uuidstructure>296c9bb6-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<uuidresource>296c9bb7-78a7-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 12:40:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:40:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New container variables demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/container_vars/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>09a5b0a1-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:39:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:39:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/container_vars/_content</destination>
+			<destination>sites/default/dev_demo/container_vars/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>0fc1b744-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 12:39:34 GMT</datelastmodified>
@@ -2091,12 +1910,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/_content/cv_00001.html</source>
-			<destination>sites/default/dev_demo/container_vars/_content/cv_00001.html</destination>
+			<source>sites/default/dev_demo/container_vars/.content/content/cv_00001.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00001.html</destination>
 			<type>ddcontainervars</type>
 			<uuidstructure>e4489b82-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
 			<uuidresource>e4489b83-78a7-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:03:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:58:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 12:45:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2111,12 +1930,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/_content/cv_00002.html</source>
-			<destination>sites/default/dev_demo/container_vars/_content/cv_00002.html</destination>
+			<source>sites/default/dev_demo/container_vars/.content/content/cv_00002.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00002.html</destination>
 			<type>ddcontainervars</type>
 			<uuidstructure>c59843af-7980-11e0-934b-1df1339be1a9</uuidstructure>
 			<uuidresource>c59843b0-7980-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:03:29 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:58:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sun, 08 May 2011 14:37:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2131,12 +1950,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/_content/cv_00003.html</source>
-			<destination>sites/default/dev_demo/container_vars/_content/cv_00003.html</destination>
+			<source>sites/default/dev_demo/container_vars/.content/content/cv_00003.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00003.html</destination>
 			<type>ddcontainervars</type>
 			<uuidstructure>f900f860-7980-11e0-934b-1df1339be1a9</uuidstructure>
 			<uuidresource>f900f861-7980-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:03:15 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:58:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sun, 08 May 2011 14:39:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2171,15 +1990,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Formatter demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/formatter_demo/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_formatter_demo.config]]></value>
-				</property>
+				</property>				
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.dev.demo/templates/formatter_demo.jsp]]></value>
@@ -2209,38 +2020,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/formatter_demo/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>a3f0f291-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 10:13:23 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/formatter_demo/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>de46698e-a229-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:29:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 10:13:23 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:29:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/formatter_demo/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/.config</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>a3f33c84-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
-			<uuidresource>a3f33c85-7892-11e0-8d7a-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 13:17:53 GMT</datelastmodified>
+			<uuidstructure>2350830d-a22a-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>2350830e-a22a-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:25:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 10:13:23 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:31:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -2255,63 +2070,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/formatter_demo/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>a3ff2369-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 10:13:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 10:13:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/formatter_demo/_config/models/formatter_article.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_config/models/formatter_article.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>d18c35d1-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
-			<uuidresource>d18c35d2-7892-11e0-8d7a-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 10:29:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 10:14:39 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New formatter demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/formatter_demo/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>a404056c-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 10:13:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 10:13:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/formatter_demo/_content</destination>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>b727773f-7892-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 10:13:55 GMT</datelastmodified>
@@ -2324,8 +2083,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00001.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00001.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00001.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>51b8a33e-7895-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<uuidresource>51b8a33f-7895-11e0-8d7a-e3fff2a64270</uuidresource>
@@ -2344,8 +2103,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00002.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00002.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00002.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>68e938e8-7895-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<uuidresource>68e938e9-7895-11e0-8d7a-e3fff2a64270</uuidresource>
@@ -2364,8 +2123,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00003.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00003.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00003.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00003.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>8012c9b2-7895-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<uuidresource>8012c9b3-7895-11e0-8d7a-e3fff2a64270</uuidresource>
@@ -2384,8 +2143,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00004.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00004.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00004.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00004.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>945b81ac-7895-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<uuidresource>945b81ad-7895-11e0-8d7a-e3fff2a64270</uuidresource>
@@ -2404,8 +2163,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00005.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00005.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00005.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00005.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>19a23de4-7898-11e0-8d7a-e3fff2a64270</uuidstructure>
 			<uuidresource>19a23de5-7898-11e0-8d7a-e3fff2a64270</uuidresource>
@@ -2424,8 +2183,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00006.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00006.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00006.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00006.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>a8f8c7cc-78a8-11e0-88e3-e3fff2a64270</uuidstructure>
 			<uuidresource>a8f8c7cd-78a8-11e0-88e3-e3fff2a64270</uuidresource>
@@ -2444,8 +2203,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00007.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00007.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00007.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00007.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>c1f96b32-7983-11e0-934b-1df1339be1a9</uuidstructure>
 			<uuidresource>c1f96b33-7983-11e0-934b-1df1339be1a9</uuidresource>
@@ -2464,8 +2223,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/formatter_demo/_content/fa_00008.html</source>
-			<destination>sites/default/dev_demo/formatter_demo/_content/fa_00008.html</destination>
+			<source>sites/default/dev_demo/formatter_demo/.content/content/fa_00008.html</source>
+			<destination>sites/default/dev_demo/formatter_demo/.content/content/fa_00008.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>d556157c-7983-11e0-934b-1df1339be1a9</uuidstructure>
 			<uuidresource>d556157d-7983-11e0-934b-1df1339be1a9</uuidresource>
@@ -2534,73 +2293,62 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/model_containerpage/_config</destination>
-			<type>subsitemap</type>
-			<uuidstructure>92d94819-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 08:29:10 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/model_containerpage/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>c62287f5-a22b-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:42:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 08:29:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/model_containerpage/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/model_containerpage/_config/sitemap_restype.config</destination>
-			<type>sitemap_config</type>
-			<uuidstructure>b0be7adb-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>b0be7adc-7f96-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 09:30:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 08:30:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/model_containerpage/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>ccb17a8f-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 08:30:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 08:30:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/model_containerpage/_config/models/article.html</source>
-			<destination>sites/default/dev_demo/model_containerpage/_config/models/article.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>fd560628-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
-			<uuidresource>fd560629-7f96-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 16 May 2011 09:13:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 08:32:09 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:42:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New article for demo template]]></value>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/model_containerpage/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>d2c3e441-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 08:30:57 GMT</datelastmodified>
+			<source>sites/default/dev_demo/model_containerpage/.content/.config</source>
+			<destination>sites/default/dev_demo/model_containerpage/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>de77ee9d-a22b-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>de77ee9e-a22b-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 10:32:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 May 2011 08:30:57 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:43:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/model_containerpage/.content/.new</destination>
+			<type>folder</type>
+			<uuidstructure>741f6537-a22c-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:47:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2011 08:47:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2608,8 +2356,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage/_config/models/pages/default_with_article.html</source>
-			<destination>sites/default/dev_demo/model_containerpage/_config/models/pages/default_with_article.html</destination>
+			<source>sites/default/dev_demo/model_containerpage/.content/.new/default_with_article.html</source>
+			<destination>sites/default/dev_demo/model_containerpage/.content/.new/default_with_article.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>df673673-7f96-11e0-91cd-1df1339be1a9</uuidstructure>
 			<uuidresource>df673674-7f96-11e0-91cd-1df1339be1a9</uuidresource>
@@ -2628,7 +2376,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/model_containerpage/_content</destination>
+			<destination>sites/default/dev_demo/model_containerpage/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>32e6a3ea-7f97-11e0-91cd-1df1339be1a9</uuidstructure>
 			<datelastmodified>Mon, 16 May 2011 08:33:39 GMT</datelastmodified>
@@ -2641,12 +2389,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage/_content/a_00001.html</source>
-			<destination>sites/default/dev_demo/model_containerpage/_content/a_00001.html</destination>
+			<source>sites/default/dev_demo/model_containerpage/.content/content/a_00001.html</source>
+			<destination>sites/default/dev_demo/model_containerpage/.content/content/a_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>782371b8-7f98-11e0-91cd-1df1339be1a9</uuidstructure>
 			<uuidresource>782371b9-7f98-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 12:01:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 10:59:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 16 May 2011 08:42:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2654,19 +2402,19 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[How to use the model container page?]]></value>
+					<value><![CDATA[How to use the page model?]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage/_content/a_00002.html</source>
-			<destination>sites/default/dev_demo/model_containerpage/_content/a_00002.html</destination>
+			<source>sites/default/dev_demo/model_containerpage/.content/content/a_00002.html</source>
+			<destination>sites/default/dev_demo/model_containerpage/.content/content/a_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>7cf1a8ee-7f9d-11e0-91cd-1df1339be1a9</uuidstructure>
 			<uuidresource>7cf1a8ef-7f9d-11e0-91cd-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 12:17:38 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 11:05:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 16 May 2011 09:18:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2674,7 +2422,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Article added to Model Containerpage]]></value>
+					<value><![CDATA[Article added to the page model]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2793,15 +2541,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Model Containerpage Demo II]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/model_containerpage_group/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_model_containerpage_group.config]]></value>
-				</property>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2827,38 +2567,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/model_containerpage_group/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>af0bbca5-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
-			<datelastmodified>Wed, 18 May 2011 09:24:51 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/model_containerpage_group/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>dac6ff7f-a22c-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:50:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2011 09:24:51 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:50:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage_group/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/model_containerpage_group/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/model_containerpage_group/.content/.config</source>
+			<destination>sites/default/dev_demo/model_containerpage_group/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>af0e2da8-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
-			<uuidresource>af0e2da9-8130-11e0-8d0a-0ffe1353a061</uuidresource>
-			<datelastmodified>Wed, 18 May 2011 09:26:07 GMT</datelastmodified>
+			<uuidstructure>f0de5c07-a22c-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>f0de5c08-a22c-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:26:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2011 09:24:51 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:51:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -2873,63 +2617,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/model_containerpage_group/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>af15599d-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
-			<datelastmodified>Wed, 18 May 2011 09:24:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2011 09:24:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/model_containerpage_group/_config/models/article.html</source>
-			<destination>sites/default/dev_demo/model_containerpage_group/_config/models/article.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>c9707b45-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
-			<uuidresource>c9707b46-8130-11e0-8d0a-0ffe1353a061</uuidresource>
-			<datelastmodified>Wed, 18 May 2011 09:28:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2011 09:25:35 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New article for Dev Demo template]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/model_containerpage_group/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>af1c5e80-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
-			<datelastmodified>Wed, 18 May 2011 09:24:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2011 09:24:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/model_containerpage_group/_content</destination>
+			<destination>sites/default/dev_demo/model_containerpage_group/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>be8b05b3-8130-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<datelastmodified>Wed, 18 May 2011 09:25:17 GMT</datelastmodified>
@@ -2942,12 +2630,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage_group/_content/a_00001.html</source>
-			<destination>sites/default/dev_demo/model_containerpage_group/_content/a_00001.html</destination>
+			<source>sites/default/dev_demo/model_containerpage_group/.content/content/a_00001.html</source>
+			<destination>sites/default/dev_demo/model_containerpage_group/.content/content/a_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>27415bac-8131-11e0-8d0a-0ffe1353a061</uuidstructure>
 			<uuidresource>27415bad-8131-11e0-8d0a-0ffe1353a061</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 12:45:41 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:10:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 18 May 2011 09:28:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2962,12 +2650,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/model_containerpage_group/_content/a_00002.html</source>
-			<destination>sites/default/dev_demo/model_containerpage_group/_content/a_00002.html</destination>
+			<source>sites/default/dev_demo/model_containerpage_group/.content/content/a_00002.html</source>
+			<destination>sites/default/dev_demo/model_containerpage_group/.content/content/a_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>4dcc5953-8abb-11e0-a3d4-eda89ab1c2d4</uuidstructure>
 			<uuidresource>4dcc5954-8abb-11e0-a3d4-eda89ab1c2d4</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 13:10:05 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:12:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 30 May 2011 12:49:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2985,7 +2673,7 @@
 			<destination>sites/default/dev_demo/no_script</destination>
 			<type>subsitemap</type>
 			<uuidstructure>29e4c266-77f7-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 15:47:50 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 12:16:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 15:40:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3000,13 +2688,9 @@
 					<value><![CDATA[Paste script Demo]]></value>
 				</property>
 				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/no_script/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_no_script.config]]></value>
-				</property>
+					<name>Title</name>
+					<value><![CDATA[Paste script Demo]]></value>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -3017,7 +2701,7 @@
 			<type>containerpage</type>
 			<uuidstructure>29e97d5a-77f7-11e0-b1d0-cde485e16fbf</uuidstructure>
 			<uuidresource>29e97d5b-77f7-11e0-b1d0-cde485e16fbf</uuidresource>
-			<datelastmodified>Tue, 31 May 2011 12:59:43 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 08:58:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 15:40:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3027,38 +2711,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/no_script/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>14a950a2-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 15:47:00 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/no_script/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>7aa75712-a22d-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:55:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:47:00 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:55:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/no_script/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/no_script/.content/.config</source>
+			<destination>sites/default/dev_demo/no_script/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>14ab9a95-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<uuidresource>14ab9a96-77f8-11e0-b1d0-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:30:48 GMT</datelastmodified>
+			<uuidstructure>8bf063aa-a22d-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>8bf063ab-a22d-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:26:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:47:00 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:55:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -3073,63 +2761,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/no_script/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>14b2c68a-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 15:47:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:47:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/no_script/_config/models/article.html</source>
-			<destination>sites/default/dev_demo/no_script/_config/models/article.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>4f120359-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<uuidresource>4f12035a-77f8-11e0-b1d0-cde485e16fbf</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 17:12:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:48:38 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New No Script Demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/no_script/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>14b7817d-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
-			<datelastmodified>Fri, 06 May 2011 15:47:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 15:47:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/no_script/_content</destination>
+			<destination>sites/default/dev_demo/no_script/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>80f3a2e5-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
 			<datelastmodified>Fri, 06 May 2011 15:50:02 GMT</datelastmodified>
@@ -3142,8 +2774,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_content/ns_00001.html</source>
-			<destination>sites/default/dev_demo/no_script/_content/ns_00001.html</destination>
+			<source>sites/default/dev_demo/no_script/.content/content/ns_00001.html</source>
+			<destination>sites/default/dev_demo/no_script/.content/content/ns_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>6acd5b29-77f9-11e0-8ad9-cde485e16fbf</uuidstructure>
 			<uuidresource>6acd5b2a-77f9-11e0-8ad9-cde485e16fbf</uuidresource>
@@ -3162,8 +2794,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_content/ns_00002.html</source>
-			<destination>sites/default/dev_demo/no_script/_content/ns_00002.html</destination>
+			<source>sites/default/dev_demo/no_script/.content/content/ns_00002.html</source>
+			<destination>sites/default/dev_demo/no_script/.content/content/ns_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>5e9c877b-77fe-11e0-84ea-cde485e16fbf</uuidstructure>
 			<uuidresource>5e9c877c-77fe-11e0-84ea-cde485e16fbf</uuidresource>
@@ -3182,8 +2814,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_content/ns_00003.html</source>
-			<destination>sites/default/dev_demo/no_script/_content/ns_00003.html</destination>
+			<source>sites/default/dev_demo/no_script/.content/content/ns_00003.html</source>
+			<destination>sites/default/dev_demo/no_script/.content/content/ns_00003.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>b9649be7-7806-11e0-9411-cde485e16fbf</uuidstructure>
 			<uuidresource>b9649be8-7806-11e0-9411-cde485e16fbf</uuidresource>
@@ -3202,12 +2834,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_content/ns_00004.html</source>
-			<destination>sites/default/dev_demo/no_script/_content/ns_00004.html</destination>
+			<source>sites/default/dev_demo/no_script/.content/content/ns_00004.html</source>
+			<destination>sites/default/dev_demo/no_script/.content/content/ns_00004.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>4f06017a-7808-11e0-9411-cde485e16fbf</uuidstructure>
 			<uuidresource>4f06017b-7808-11e0-9411-cde485e16fbf</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 10:32:46 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 10:13:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 17:43:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3222,8 +2854,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/no_script/_content/ns_00005.html</source>
-			<destination>sites/default/dev_demo/no_script/_content/ns_00005.html</destination>
+			<source>sites/default/dev_demo/no_script/.content/content/ns_00005.html</source>
+			<destination>sites/default/dev_demo/no_script/.content/content/ns_00005.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>73926655-7caf-11e0-8bbd-1df1339be1a9</uuidstructure>
 			<uuidresource>73926656-7caf-11e0-8bbd-1df1339be1a9</uuidresource>
@@ -3262,15 +2894,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image scale demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/scale_image/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_scale_image.config]]></value>
-				</property>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -3296,38 +2920,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/scale_image/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>1123572b-788f-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:47:48 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/scale_image/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>2550c3a4-a22e-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 08:59:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:47:48 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 08:59:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/scale_image/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/scale_image/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/scale_image/.content/.config</source>
+			<destination>sites/default/dev_demo/scale_image/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>1125a11e-788f-11e0-a908-e3fff2a64270</uuidstructure>
-			<uuidresource>1125a11f-788f-11e0-a908-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 09:51:01 GMT</datelastmodified>
+			<uuidstructure>3f2ffe9c-a22e-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>3f2ffe9d-a22e-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:27:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:47:48 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 09:00:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -3342,63 +2970,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/scale_image/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>112ccd13-788f-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:47:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:47:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/scale_image/_config/models/image_scale.html</source>
-			<destination>sites/default/dev_demo/scale_image/_config/models/image_scale.html</destination>
-			<type>ddarticle</type>
-			<uuidstructure>601610a8-788f-11e0-a908-e3fff2a64270</uuidstructure>
-			<uuidresource>601610a9-788f-11e0-a908-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 09:50:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:50:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New image scale demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/scale_image/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>11318806-788f-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:47:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:47:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/scale_image/_content</destination>
+			<destination>sites/default/dev_demo/scale_image/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>46f56acb-788f-11e0-a908-e3fff2a64270</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 09:49:18 GMT</datelastmodified>
@@ -3411,8 +2983,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/scale_image/_content/is_00001.html</source>
-			<destination>sites/default/dev_demo/scale_image/_content/is_00001.html</destination>
+			<source>sites/default/dev_demo/scale_image/.content/content/is_00001.html</source>
+			<destination>sites/default/dev_demo/scale_image/.content/content/is_00001.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>cefa209d-788f-11e0-a908-e3fff2a64270</uuidstructure>
 			<uuidresource>cefa209e-788f-11e0-a908-e3fff2a64270</uuidresource>
@@ -3431,12 +3003,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/scale_image/_content/is_00002.html</source>
-			<destination>sites/default/dev_demo/scale_image/_content/is_00002.html</destination>
+			<source>sites/default/dev_demo/scale_image/.content/content/is_00002.html</source>
+			<destination>sites/default/dev_demo/scale_image/.content/content/is_00002.html</destination>
 			<type>ddarticle</type>
 			<uuidstructure>cef6ae47-78a3-11e0-88e3-e3fff2a64270</uuidstructure>
 			<uuidresource>cef6ae48-78a3-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:49:16 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:51:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 12:16:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3471,15 +3043,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Settings demo]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/settings/_config/sitemap_restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_settings.config]]></value>
-				</property>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -3505,38 +3069,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/settings/_config</destination>
-			<type>configfolder</type>
-			<uuidstructure>599a8fbc-7890-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:56:59 GMT</datelastmodified>
+			<destination>sites/default/dev_demo/settings/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>cbca1af8-a22e-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Wed, 29 Jun 2011 09:04:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:56:59 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 09:04:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/settings/_config/sitemap_restype.config</source>
-			<destination>sites/default/dev_demo/settings/_config/sitemap_restype.config</destination>
+			<source>sites/default/dev_demo/settings/.content/.config</source>
+			<destination>sites/default/dev_demo/settings/.content/.config</destination>
 			<type>sitemap_config</type>
-			<uuidstructure>599cd9af-7890-11e0-a908-e3fff2a64270</uuidstructure>
-			<uuidresource>599cd9b0-7890-11e0-a908-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 09:58:36 GMT</datelastmodified>
+			<uuidstructure>de6a7930-a22e-11e0-8a44-31bf300cc6c9</uuidstructure>
+			<uuidresource>de6a7931-a22e-11e0-8a44-31bf300cc6c9</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 09:27:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:56:59 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2011 09:05:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
+			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
 				</property>
 				<property>
 					<name>locale-available</name>
@@ -3551,63 +3119,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/dev_demo/settings/_config/models</destination>
-			<type>folder</type>
-			<uuidstructure>59a405a4-7890-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:56:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:56:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/dev_demo/settings/_config/models/settings.html</source>
-			<destination>sites/default/dev_demo/settings/_config/models/settings.html</destination>
-			<type>ddsettingsarticle</type>
-			<uuidstructure>65d02c0a-7890-11e0-a908-e3fff2a64270</uuidstructure>
-			<uuidresource>65d02c0b-7890-11e0-a908-e3fff2a64270</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 09:57:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:57:20 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New settings demo]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/settings/_config/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>59a8e7a7-7890-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 09:56:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 09:56:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/dev_demo/settings/_content</destination>
+			<destination>sites/default/dev_demo/settings/.content/content</destination>
 			<type>folder</type>
 			<uuidstructure>7773dbb4-7890-11e0-a908-e3fff2a64270</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 09:57:49 GMT</datelastmodified>
@@ -3620,8 +3132,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/settings/_content/se_00001.html</source>
-			<destination>sites/default/dev_demo/settings/_content/se_00001.html</destination>
+			<source>sites/default/dev_demo/settings/.content/content/se_00001.html</source>
+			<destination>sites/default/dev_demo/settings/.content/content/se_00001.html</destination>
 			<type>ddsettingsarticle</type>
 			<uuidstructure>b1dd78c3-7890-11e0-a908-e3fff2a64270</uuidstructure>
 			<uuidresource>b1dd78c4-7890-11e0-a908-e3fff2a64270</uuidresource>
@@ -3640,12 +3152,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/settings/_content/se_00002.html</source>
-			<destination>sites/default/dev_demo/settings/_content/se_00002.html</destination>
+			<source>sites/default/dev_demo/settings/.content/content/se_00002.html</source>
+			<destination>sites/default/dev_demo/settings/.content/content/se_00002.html</destination>
 			<type>ddsettingsarticle</type>
 			<uuidstructure>c774d614-78a3-11e0-88e3-e3fff2a64270</uuidstructure>
 			<uuidresource>c774d615-78a3-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 09:53:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:55:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 12:16:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3660,12 +3172,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/settings/_content/se_00003.html</source>
-			<destination>sites/default/dev_demo/settings/_content/se_00003.html</destination>
+			<source>sites/default/dev_demo/settings/.content/content/se_00003.html</source>
+			<destination>sites/default/dev_demo/settings/.content/content/se_00003.html</destination>
 			<type>ddsettingsarticle</type>
 			<uuidstructure>5a827dcd-7984-11e0-934b-1df1339be1a9</uuidstructure>
 			<uuidresource>5a827dce-7984-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Mon, 30 May 2011 14:53:45 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 09:57:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sun, 08 May 2011 15:03:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3682,10 +3194,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>7c9e2cc7-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
-			<datelastmodified>Tue, 31 May 2011 09:43:49 GMT</datelastmodified>
+			<uuidstructure>4b2d0b0e-a19f-11e0-be17-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 15:57:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2011 09:43:49 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 15:57:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -3704,10 +3216,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>7d582e33-8b6a-11e0-bfdd-3731e06b3104</uuidstructure>
-			<datelastmodified>Tue, 31 May 2011 09:43:50 GMT</datelastmodified>
+			<uuidstructure>4bc5a1ca-a19f-11e0-be17-31bf300cc6c9</uuidstructure>
+			<datelastmodified>Tue, 28 Jun 2011 15:57:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2011 09:43:50 GMT</datecreated>
+			<datecreated>Tue, 28 Jun 2011 15:57:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

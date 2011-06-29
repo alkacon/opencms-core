@@ -6,7 +6,7 @@
 			<p>${value.Content}</p>
 			<span>&nbsp;</span>			
 			<h4>Current container</h4>
-			<p>Following container attributes are set in the template file:</p>
+			<p>Following container attributes are defined in template:</p>
 			<b>Name:</b> ${cms.container.name}<br/>
 			<b>Type:</b> ${cms.container.type}<br/>
 			<b>Width:</b> ${cms.container.width}<br/>
