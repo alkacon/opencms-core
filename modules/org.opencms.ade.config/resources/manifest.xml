@@ -232,26 +232,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</source>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>6ed3603d-70db-11e0-8f1f-91706a02fba1</uuidstructure>
-			<uuidresource>6ed3603e-70db-11e0-8f1f-91706a02fba1</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 14:35:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 14:34:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.ade.config/copyresources</destination>
 			<type>folder</type>
 			<uuidstructure>9d49825f-70d5-11e0-9709-91706a02fba1</uuidstructure>
