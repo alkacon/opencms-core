@@ -61,6 +61,9 @@ import junit.framework.Test;
 
 import com.google.common.collect.Lists;
 
+/**
+ * Lightweight tests for the ADE configuration mechanism which mostly do not read the configuration data from the VFS.<p>
+ */
 public class TestConfig extends OpenCmsTestCase {
 
     protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
@@ -640,10 +643,6 @@ public class TestConfig extends OpenCmsTestCase {
             throw new ComparisonFailure("comparison failure", path1, path2);
         }
         assertEquals(CmsStringUtil.joinPaths("/", path1, "/"), CmsStringUtil.joinPaths("/", path2, "/"));
-    }
-
-    protected void checkTypeConfig(CmsObject cms, String path, String... typeNames) {
-
     }
 
     protected CmsPropertyConfig createDisabledPropertyConfig(String name) {

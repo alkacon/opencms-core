@@ -59,6 +59,9 @@ import java.util.Set;
 import junit.framework.ComparisonFailure;
 import junit.framework.Test;
 
+/**
+ * Tests for the ADE configuration mechanism which read the configuration data from the VFS.
+ */
 public class TestLiveConfig extends OpenCmsTestCase {
 
     protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
@@ -312,10 +315,6 @@ public class TestLiveConfig extends OpenCmsTestCase {
             actualValues.add(getAttribute(typeConfig, attr));
         }
         assertEquals(Arrays.asList(expected), actualValues);
-    }
-
-    protected void checkTypeConfig(CmsObject cms, String path, String... typeNames) {
-
     }
 
     protected CmsPropertyConfig createDisabledPropertyConfig(String name) {

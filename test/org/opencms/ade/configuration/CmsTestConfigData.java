@@ -36,12 +36,22 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import java.util.List;
 
 /**
- * fasfasdf.<p>
+ * A configuration data class whose parent can be set directly for test purposes.<p>
  */
 public class CmsTestConfigData extends CmsADEConfigData {
 
+    /** The parent configuration object. */
     public CmsADEConfigData m_parent;
 
+    /**
+     * Creates a new configuration data object.<p>
+     * 
+     * @param basePath the base path 
+     * @param resourceTypeConfig the resource type configuration
+     * @param propertyConfig the  property configuration 
+     * @param detailPageInfos the detail page configuration 
+     * @param modelPages the model page configuration 
+     */
     public CmsTestConfigData(
         String basePath,
         List<CmsResourceTypeConfig> resourceTypeConfig,
@@ -52,11 +62,20 @@ public class CmsTestConfigData extends CmsADEConfigData {
         super(basePath, resourceTypeConfig, propertyConfig, detailPageInfos, modelPages);
     }
 
+    /**
+     * @see org.opencms.ade.configuration.CmsADEConfigData#parent()
+     */
+    @Override
     public CmsADEConfigData parent() {
 
         return m_parent;
     }
 
+    /**
+     * Sets the parent configuration object.<p>
+     * 
+     * @param parent the parent configuration object 
+     */
     public void setParent(CmsADEConfigData parent) {
 
         m_parent = parent;
