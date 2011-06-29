@@ -6,12 +6,15 @@
     <Paragraph>
       <Text name="Text0">
         <links>
-          <link name="link0" internal="true" type="A">
+          <link name="link2" internal="false" type="A">
+            <target><![CDATA[http://bugzilla.opencms.org/]]></target>
+          </link>
+          <link name="link0" internal="false" type="A">
+            <target><![CDATA[https://github.com/alkacon/opencms-core]]></target>
+          </link>
+          <link name="link1" internal="true" type="A">
             <target><![CDATA[/sites/default/release/Mailing_list/index.html]]></target>
             <uuid>8fed4658-7722-11e0-bfd0-1797e684fbbe</uuid>
-          </link>
-          <link name="link1" internal="false" type="A">
-            <target><![CDATA[http://bugzilla.opencms.org/]]></target>
           </link>
         </links>
         <content><![CDATA[<p>June 29, 2011: This is the release of OpenCms 8.0.1. With OpenCms 8.0.1, a number of  issues that persisted in the 8.0.0  release have been fixed. Some new  features have been added as well.</p>
@@ -29,43 +32,37 @@
 </ul>
 <h2>New features and improvements in OpenCms 8.0.1</h2>
 <ul>
-    <li>Added development demo module and content</li>
-    <li>Added german demo content for Template III</li>
-    <li>New ADE configuration parser / manager.</li>
-    <li>New icon for context menu &quot;Logout&quot; entry</li>
-    <li>XML Content editor in ADE now has a clse (x) symbol at the top right corner so editor can be closed if it does not work properly.</li>
-    <li>Added a logout option to ADE Menu.</li>
-    <li>Added a &quot;Show last page&quot; option to the toolbar in the sitemap editor, redirecting the user to the last map he was on before he entered the sitemap.</li>
-    <li>Container page service methods now use ids rather than paths.</li>
-    <li>&nbsp;</li>
+    <li>The sitemap and ADE configuration has been greatly simplified and improved.</li>
+    <li>The properties of a page can now be modified directly in the ADE editor.</li>
+    <li>The full text search now also works on MS Office Open XML based documents (.docx, .xlsx, .pptx).</li>
+    <li>German content was added to the Template III flower showcase to demonstrate a possible multi language setup.</li>
+    <li>A &quot;log out&quot; option has been added to the menu in the ADE editor.</li>
+    <li>In the sitemap editor there is a new option to go back to the last page viewed in the ADE editor.</li>
+    <li>The sitemap editor now displays the lock status of pages and sub-pages and handles lock conflicts.</li>
+    <li>A dialog in the sitemap editor allows to display and change the lock status of all sub-pages of a page.</li>
+    <li>The sitemap editor now shows different icons for container pages and detail pages.</li>
+    <li>The boundaries of a group container are now highlighted when the elements in the group are edited.</li>
+    <li>Modules can now automatically add new resource types to the sitemap configuration with default settings.</li>
+    <li>It's now possible to disable selected resource types in the configuration of sub-sitemaps.</li>
+    <li>A development demo (dev.demo) module and content has been added to document the new OpenCms 8 features for developers.</li>
+    <li>Container element settings are accessible in a formatter JSP using the EL with ${cms.element.settings}.</li>
+    <li>Localization strings can now be directly added to an XSD schema for an XML content document.</li>
+    <li>The model files for new XML content elements have been replaced by the XSD schema based creation with default values.</li>
+    <li>The full text search extraction is now based on the Apache Tika library.</li>
+    <li>GWT has been updated to version 2.3.</li>
 </ul>
 <h2>Fixed issues in OpenCms 8.0.1</h2>
 <ul>
-    <li>Fixed issue in the new property dialog in the sitemap, where the &quot;inherited&quot; or &quot;shared&quot; value remained visible and changeable.</li>
-    <li>Fixed issue in the sitemap and D&amp;D mechanism for safe editing in a multi-user scenario.</li>
-    <li>Fixed issue in the sitemap. Detail pages now have resource type icon of detail resource, not container page icon.</li>
-    <li>Fixed issue in the property dialog so the available screen space gets used best and all &quot;used&quot; elements are visible.</li>
-    <li>Fixed issue, so all core modules display the correct version number.</li>
-    <li>Fixed issue in ADE, so new pages can be created by page models and the standard &quot;new&quot; mechanism.</li>
-    <li>&nbsp;</li>
-    <li>[+++++ NEW +++++]</li>
-    <li>&nbsp;</li>
-    <li>Fixed issue in Sitemap Configuration: Simpler mechanism to find the configuration file</li>
-    <li>Fixed issue in module installation, so new resource types are directly available by default on all sitemaps.</li>
-    <li>Fixed issue that request parameters get duplicated when a container element is rendered.</li>
-    <li>Fixed issue in ADE new dialog so resource types with no description defined get shown.</li>
-    <li>Fixed issue that with FireFox 4 sometimes new pages show wrong content.</li>
-    <li>Fixed issue in ADE, so new pages can be created by page models and the standard &quot;new&quot; mechanism in workplace.</li>
-    <li>Fixed issue with wrong icon after creating a new page in the sitemap editor</li>
-    <li>Fixed issue in the sitemap and D&amp;D mechanism for safe editing in a multi-user scenario.</li>
-    <li>Fixed issue so detail pages have the correct icon in the sitemap.</li>
-    <li>Fixed issue in the new property dialog in the sitemap, where the &quot;inherited&quot; or &quot;shared&quot; value remained visible and changeable.</li>
-    <li>Fixed issue in the property dialog so the available screen space gets used best and all &quot;used&quot; elements are visible.</li>
-    <li>Fixed issue, so all core modules display the correct version number.</li>
-    <li>Fixed issue where a css background image was used making entries unreadable while storing an item in clipboard.</li>
-    <li>Fixed issue #1981 (Static export after publish fails on exporting template resources with parameters)</li>
-    <li>Fixed issue so &quot;old&quot; Direct Edit works the same way as in OpenCms 7.5 without Overlay Window.<br />
-    &nbsp;</li>
+    <li>Fixed issue with the ADE editor overlay that sometimes crashed and / or could not be closed.</li>
+    <li>Fixed issue with group containers not being properly saved after editing.</li>
+    <li>Fixed issue where an idle user's browser session expired even if the ADE editor was open.</li>
+    <li>Fixed issue where two users that open a page in the ADE editor concurrently could overwrite each other's work.</li>
+    <li>Fixed issue with concurrent lock states in the sitemap editor.</li>
+    <li>Fixed issue with recent list not being properly updated if the individual settings where edited.</li>
+    <li>Fixed issue in the new property dialog where an inherited or shared value remained visible and changeable.</li>
+    <li>Fixed issue with full text extraction of MS PowerPoint (.ppt) documents.</li>
+    <li>Fixed issue with the CSS layout for Template III.</li>
+    <li>Fixed issue #1981: Static export after publish fails on exporting template resources with parameters.</li>
 </ul>
 <h2>Features of OpenCms in General</h2>
 <ul>
@@ -95,12 +92,11 @@
 <p>We have tested this release on the Tomcat servlet engine. OpenCms works &quot;out of the box&quot; with Tomcat 6.0, which we recommend. Others have reported deploying OpenCms successfully on other servlet containers like JBoss, BEA, Websphere, Glassfish and Resin Professional. We appreciate any feedback regarding other servlet containers.</p>
 <p>On the database side, we have tested with MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x, MS SQL Server 2000 / 2003, DB2 9.1 and HSQLDB 1.8.0. The  automatic update wizard for OpenCms 8 supports MySQL, Oracle and PostgreSQL.</p>
 <h2>Regarding version numbers and build tags</h2>
-<p>We are currently migrating the OpenCms repository from CVS to Git. 
-The &quot;blessed&quot; Git repository will be made available from Github at <a href="https://github.com/alkacon/opencms-core">github.com/alkacon/opencms-core</a>.</p>
+<p>We are currently migrating the OpenCms repository from CVS to Git.  The &quot;blessed&quot; Git repository will be made available from Github at <a href="%(link0)">github.com/alkacon/opencms-core</a>.</p>
 <p>In case you want to check out OpenCms from Git, please keep the following in mind: The tag numbers for all OpenCms 8.0 final releases  are &quot;build_8_0_x&quot;, so the 8.0.1 release is tagged &quot;build_8_0_1&quot;.</p>
 <h2>How you can help</h2>
-<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)">http://bugzilla.opencms.org/<br />
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link1)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link2)">http://bugzilla.opencms.org/<br />
 </a></p>
 <p>&nbsp;</p>
 <p>Thank you for using OpenCms and have fun with OpenCms 8 :-)</p>]]></content>
