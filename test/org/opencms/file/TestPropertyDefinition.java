@@ -146,7 +146,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
     public static void createReadDeletePropertyDefinition(CmsObject cms) throws Throwable {
 
         CmsPropertyDefinition propertyDefinition = null;
-        String propertyDefinitionName = "locale-available";
+        String propertyDefinitionName = "new-unknown-property";
 
         // 1) create a property definition
 
