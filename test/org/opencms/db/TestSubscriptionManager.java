@@ -251,14 +251,14 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
 
         filter = new CmsVisitedByFilter(cms);
         visitedUserResources = subMan.readResourcesVisitedBy(cms, filter);
-        assertEquals(5, visitedUserResources.size());
+        assertEquals(6, visitedUserResources.size());
 
         filter.setToDate(storedTime);
         visitedUserResources = subMan.readResourcesVisitedBy(cms, filter);
-        assertEquals(1, visitedUserResources.size());
+        assertEquals(2, visitedUserResources.size());
 
         assertNotSame(Long.valueOf(0L), Long.valueOf(subMan.getDateLastVisitedBy(cms, user, "/folder1/page2.html")));
-        assertSame(Long.valueOf(0L), Long.valueOf(subMan.getDateLastVisitedBy(cms, user, "/folder1/index.html")));
+        assertNotSame(Long.valueOf(0L), Long.valueOf(subMan.getDateLastVisitedBy(cms, user, "/folder1/index.html")));
         assertSame(Long.valueOf(0L), Long.valueOf(subMan.getDateLastVisitedBy(cms, user, "/index.html")));
 
         filter.setToDate(Long.MAX_VALUE);
