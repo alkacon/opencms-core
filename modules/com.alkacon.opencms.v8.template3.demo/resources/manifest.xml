@@ -7282,10 +7282,6 @@
 					<name>config.sitemap</name>
 					<value><![CDATA[/_config/sitemap_flower_en.config]]></value>
 				</property>
-				<property type="shared">
-					<name>config.sitemap</name>
-					<value><![CDATA[/_config/sitemap_flower_en.config]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
