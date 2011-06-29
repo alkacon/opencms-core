@@ -53,7 +53,7 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="16">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="28">
 				<properties>
 					<property>
 						<name>locale-available</name>

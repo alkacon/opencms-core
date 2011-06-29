@@ -85,10 +85,10 @@
                         <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
                     </copy-resources>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="2223">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="14">
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="2224">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="28">
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
                 </type>
             </resourcetypes>
