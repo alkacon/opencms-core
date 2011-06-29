@@ -11,6 +11,7 @@
   <module>
     <name>org.opencms.ade.upload</name>
     <nicename><![CDATA[OpenCms 8 ADE Upload]]></nicename>
+    <group>OpenCms ADE</group>
     <class/>
     <description><![CDATA[<p>Gwt based upload dialog for OpenCms 8</p>
 					 <p><i>(c) 2010 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
