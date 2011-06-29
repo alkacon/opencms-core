@@ -71,7 +71,7 @@
 		</c:if>
 		
 		<%-- Entries of the list box --%>
-		<c:if test="${!listbox.value['Collector'].isEmptyOrWhitespaceOnly}">
+		<c:if test="${listbox.value['Parameter'].isSet && not cms.element.inMemoryOnly}">
 			<cms:contentload collector="${listbox.value['Collector']}" param="${list.parameter}" preload="true" >
 			
 				<cms:contentinfo var="info" />			
