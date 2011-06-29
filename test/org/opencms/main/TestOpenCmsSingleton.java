@@ -29,12 +29,17 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestServletRequest;
 import org.opencms.test.OpenCmsTestServletResponse;
+import org.opencms.util.CmsMacroResolver;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -107,9 +112,32 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         String systemEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         String workplaceEncoding = OpenCms.getWorkplaceManager().getEncoding();
 
+        // get content encoding default property from the JSP resource type
+        CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeJsp.getJSPTypeId());
         // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
+        List defaultProperties = jsp.getConfiguredDefaultProperties();
+        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());
+        Iterator i = defaultProperties.iterator();
+        String jspEncoding = null;
+        while (i.hasNext()) {
+            CmsProperty property = (CmsProperty)i.next();
+            if (CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
+                jspEncoding = property.getValue();
+                assertEquals(
+                    "Test configuration has property value '${opencms.default.encoding}' configured for JSP",
+                    2,
+                    defaultProperties.size());
+                // resolve the macro
+                CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
+                break;
+            }
+        }
+
         assertEquals("ISO-8859-1", systemEncoding);
         assertEquals(systemEncoding, workplaceEncoding);
+        assertEquals(systemEncoding, jspEncoding);
     }
 
     /**
