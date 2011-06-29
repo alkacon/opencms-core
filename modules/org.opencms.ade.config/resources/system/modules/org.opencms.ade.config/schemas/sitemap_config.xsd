@@ -4,19 +4,19 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
-    <xsd:element name="SitemapConfigurationsV2" type="OpenCmsSitemapConfigurationsV2" />
+    <xsd:element name="SitemapConfigurations" type="OpenCmsSitemapConfigurations" />
 
-    <xsd:complexType name="OpenCmsSitemapConfigurationsV2">
+    <xsd:complexType name="OpenCmsSitemapConfigurations">
         <xsd:sequence>
-            <xsd:element name="SitemapConfigurationV2" type="OpenCmsSitemapConfigurationV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="SitemapConfiguration" type="OpenCmsSitemapConfiguration" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="OpenCmsSitemapConfigurationV2">
+    <xsd:complexType name="OpenCmsSitemapConfiguration">
         <xsd:sequence>
-            <xsd:element name="ResourceType" type="OpenCmsADETypeV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="Property" type="OpenCmsADEFieldV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
