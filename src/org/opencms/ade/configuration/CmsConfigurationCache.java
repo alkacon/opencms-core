@@ -371,7 +371,8 @@ class CmsConfigurationCache {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         } catch (CmsRuntimeException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            // may happen during import of org.opencms.ade.configuration module
+            LOG.warn(e.getLocalizedMessage(), e);
         }
     }
 
@@ -387,7 +388,8 @@ class CmsConfigurationCache {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         } catch (CmsRuntimeException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            // may happen during import of org.opencms.ade.configuration module
+            LOG.warn(e.getLocalizedMessage(), e);
         }
     }
 
