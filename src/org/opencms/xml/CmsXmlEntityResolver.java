@@ -433,6 +433,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     private boolean isSchemaDefinitionInPublishList(CmsUUID publishHistoryId) {
 
+        if (m_cms == null) {
+            // CmsObject not available, assume there may be a schema definition in the publish history
+            return true;
+        }
         try {
             List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishHistoryId);
             for (CmsPublishedResource cmsPublishedResource : publishedResources) {
