@@ -102,6 +102,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_ADVANCED_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_AVAILABILITY_0 = "GUI_EXPLORER_CONTEXT_AVAILABILITY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -148,6 +151,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_LOCKS_0 = "GUI_EXPLORER_CONTEXT_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_LOGOUT_0 = "GUI_EXPLORER_CONTEXT_LOGOUT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_MOVE_0 = "GUI_EXPLORER_CONTEXT_MOVE_0";
