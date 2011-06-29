@@ -16,15 +16,34 @@ Legend:
 - General comment
 
 OpenCms 8.0.1 - June 29, 2011
-! Added development demo module and content
-* Fixed CSS layout issues for Template III
-- Added German demo content for Template III
-* Fixed issue in the new property dialog in the sitemap, where the "inherited" or "shared" value remained visible and changeable.
-* Fixed issue in the sitemap and D&D mechanism for safe editing in a multi-user scenario.
-* Fixed issue in the sitemap. Detail pages now have resource type icon of detail resource, not container page icon.
-* Fixed issue in the property dialog so the available screen space gets used best and all "used" elements are visible.
-* Fixed issue, so all core modules display the correct version number.
-* Fixed issue in ADE, so new pages can be created by page models and the standard "new" mechanism.
+! The sitemap and ADE configuration has been greatly simplified and improved.
+! The properties of a page can now be modified directly in the ADE editor.
+! The full text search now also works on MS Office Open XML based documents (.docx, .xlsx, .pptx).
+! German content was added to the Template III flower showcase to demonstrate a possible multi language setup.
+! A "log out" option has been added to the menu in the ADE editor.
+! In the sitemap editor there is a new option to go back to the last page viewed in the ADE editor.
+! The sitemap editor now displays the lock status of pages and sub-pages and handles lock conflicts.
+! A dialog in the sitemap editor allows to display and change the lock status of all sub-pages of a page. 
+! The sitemap editor now shows different icons for container pages and detail pages.
+! The boundaries of a group container are now highlighted when the elements in the group are edited.
+! Modules can now automatically add new resource types to the sitemap configuration with default settings.
+! It's now possible to disable selected resource types in the configuration of sub-sitemaps.
+! A development demo (dev.demo) module and content has been added to document the new OpenCms 8 features for developers.
+! Container element settings are accessible in a formatter JSP using the EL with ${cms.element.settings}.
+! Localization strings can now be directly added to an XSD schema for an XML content document. 
+* Fixed issue with the ADE editor overlay that sometimes crashed and / or could not be closed.
+* Fixed issue with group containers not being properly saved after editing.
+* Fixed issue where an idle users browser session expired even if the ADE editor was open.
+* Fixed issue where two users that open a page in the ADE editor concurrently could overwrite each others work.  
+* Fixed issue with concurrent lock states in the sitemap editor.
+* Fixed issue with recent list not being properly updated if the individual settings where edited.
+* Fixed issue in the new property dialog where an inherited or shared value remained visible and changeable.
+* Fixed issue with full text extraction of MS PowerPoint (.ppt) documents.
+* Fixed issue with the CSS layout for Template III.
+* Fixed issue #1981: Static export after publish fails on exporting template resources with parameters.
+- The model files for new XML content elements have been replaced by the XSD schema based creation with default values.
+- The full text search extraction is now based on the Apache Tika library.
+- GWT has been updated to version 2.3.
 
 OpenCms 8.0.0 - May 8, 2011
 ! The "Advanced Direct Edit" mode allows to create page content by drag & drop.
