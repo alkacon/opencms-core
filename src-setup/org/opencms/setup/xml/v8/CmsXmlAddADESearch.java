@@ -368,6 +368,12 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ooxml");
             } else if (xpath.equals(getXPathsToUpdate().get(13))) {
                 CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
+            } else if (xpath.equals(getXPathsToUpdate().get(20))) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ole2");
+            } else if (xpath.equals(getXPathsToUpdate().get(21))) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ooxml");
+            } else if (xpath.equals(getXPathsToUpdate().get(22))) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
             }
             return true;
         } else {
@@ -378,6 +384,15 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 CmsSetupXmlHelper.setValue(document, xpath, null);
                 return true;
             } else if (xpath.equals(getXPathsToUpdate().get(16))) {
+                CmsSetupXmlHelper.setValue(document, xpath, null);
+                return true;
+            } else if (xpath.equals(getXPathsToUpdate().get(17))) {
+                CmsSetupXmlHelper.setValue(document, xpath, null);
+                return true;
+            } else if (xpath.equals(getXPathsToUpdate().get(18))) {
+                CmsSetupXmlHelper.setValue(document, xpath, null);
+                return true;
+            } else if (xpath.equals(getXPathsToUpdate().get(19))) {
                 CmsSetupXmlHelper.setValue(document, xpath, null);
                 return true;
             }
@@ -527,6 +542,14 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msword")); // (14)
             m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msexcel")); // (15)
             m_xpaths.add(buildXpathForIndexedDocumentType("source1", "mspowerpoint")); // (16)
+
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msword")); // (17)
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msexcel")); // (18)
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "mspowerpoint")); // (19)
+
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msoffice-ole2")); // (20) 
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msoffice-ooxml")); // (21)
+            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "openoffice")); // (22)
 
         }
         return m_xpaths;
