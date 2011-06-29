@@ -2263,11 +2263,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Model Containerpage Demo I]]></value>
-				</property>
-				<property>
-					<name>config.sitemap</name>
-					<value><![CDATA[/dev_demo/model_containerpage/_config/sitemap_restype.config]]></value>
-				</property>
+				</property>				
 			</properties>
 			<relations/>
 			<accesscontrol/>
