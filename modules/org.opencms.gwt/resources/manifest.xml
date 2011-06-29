@@ -22,9 +22,7 @@
 		<userinstalled />
 		<dateinstalled />
 		<dependencies />
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.gwt/lib/" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
 			<resource uri="/system/modules/org.opencms.gwt/" />
 		</resources>
@@ -122,34 +120,6 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.gwt/lib</destination>
-			<type>folder</type>
-			<uuidstructure>c0adf2a2-1a47-11db-34ab-fdb4e480b6c9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
-			<source>system/modules/org.opencms.gwt/lib/org.opencms.gwt.jar</source>
-			<destination>system/modules/org.opencms.gwt/lib/org.opencms.gwt.jar</destination>
-			<type>binary</type>
-			<uuidstructure>d081f2c8-1bd7-11df-9674-654568e12d92</uuidstructure>
-			<uuidresource>d081f2c9-1bd7-11df-9674-654568123d92</uuidresource>
-			<datelastmodified>Wed, 03 Mar 2010 13:49:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Feb 2010 15:19:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations />
-			<accesscontrol />
 		</file>
 	</files>
 </export>
