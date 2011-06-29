@@ -28,11 +28,13 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -40,7 +42,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,7 +215,31 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         createFolder(m_owner.getCmsObject(), folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, destination, 5);
-        CmsResource createdResource = cms.createResource(creationPath, getType().getTypeId());
+
+        // make sure the content is created for the current locale
+        byte[] content = null;
+        if (getType() instanceof CmsResourceTypeXmlContent) {
+            String schema = ((CmsResourceTypeXmlContent)getType()).getSchema();
+            if (schema != null) {
+                // must set URI of OpenCms context to parent folder of created resource, 
+                // in order to allow reading of properties for default values
+                CmsObject newCms = OpenCms.initCmsObject(cms);
+                newCms.getRequestContext().setUri(folderPath);
+                // unmarshal the content definition for the new resource
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+                CmsXmlContent xmlContent = CmsXmlContentFactory.createDocument(
+                    newCms,
+                    userCms.getRequestContext().getLocale(),
+                    OpenCms.getSystemInfo().getDefaultEncoding(),
+                    contentDefinition);
+                content = xmlContent.marshal();
+            }
+        }
+        CmsResource createdResource = cms.createResource(
+            creationPath,
+            getType().getTypeId(),
+            content,
+            new ArrayList<CmsProperty>(0));
         return createdResource;
     }
 

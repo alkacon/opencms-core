@@ -186,11 +186,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             ensureSession();
             CmsObject cms = getCmsObject();
             CmsResource pageResource = cms.readResource(pageStructureId);
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                getCmsObject(),
-                pageResource.getRootPath());
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceType);
-            CmsResource newResource = typeConfig.createNewElement(getCmsObject());
+            CmsObject cloneCms = OpenCms.initCmsObject(cms);
+            cloneCms.getRequestContext().setLocale(new Locale(locale));
+            CmsResource newResource = typeConfig.createNewElement(cloneCms);
             CmsContainerElementBean bean = getCachedElement(clientId);
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
@@ -201,7 +201,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
             element.setClientId(newClientId);
-            element.setSitePath(getCmsObject().getSitePath(newResource));
+            element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);
         } catch (CmsException e) {
             error(e);
