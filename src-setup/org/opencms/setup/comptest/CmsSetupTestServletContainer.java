@@ -50,6 +50,7 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             {"Apache Tomcat/4.1", null},
             {"Apache Tomcat/5", null},
             {"Apache Tomcat/6", null},
+            {"Apache Tomcat/7", null},
             {"WebLogic Server 9", null},
             {
                 "Resin/3",
@@ -61,8 +62,7 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             {
                 "GlassFish/v3",
                 "GlassFish/v3 is not a stable release and subject to major changes. Please prefer a stable release."},
-            {"JBoss Web/2.1.3.GA", null}    
-        };
+            {"JBoss Web/2.1.3.GA", null}};
 
         String[][] unsupportedContainers = {
             {"Tomcat Web Server/3", "Tomcat 3.x is no longer supported. Please use at least Tomcat 4.1 instead."},
