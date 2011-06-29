@@ -37,32 +37,23 @@ work.</p>
 <h2>
 <a id="a1" name="a1"></a>Install the Java 2 SDK, version 1.5 or newer</h2>
 
-<p>Install the Java 2 SDK, version 5 or newer (from SUN 
+<p>Install the Java JDK, version 5 or newer (from Oracle 
 <code>
-<a  href="http://java.sun.com/products/j2se/" target="_blank" 
-title="External link, opens in new window">http://java.sun.com/products/j2se/</a></code>). For details on how to install these components on your operating system, see the
+<a  href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" 
+title="External link, opens in new window">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code>). For details on how to install these components on your operating system, see the
 documentation that comes with them. You must install the Java 
-<em>SDK</em>, not the 
-<em>JRE</em> (Java Runtime Environment) that is also available from SUN. The JRE is 
+<em>JDK</em> (Java Development Kit), not the 
+<em>JRE</em> (Java Runtime Environment) that is also available from Oracle. The JRE is 
 <em>not</em> sufficient to run OpenCms!</p>
 <p>
 <strong>Important</strong>: OpenCms 8.0.1 was tested with Java 5 (1.5) and 6 (1.6).</p>
 
-<p>
-<strong>Please note:</strong> FreeBSD users may need to setup new entropy sources in the O/S using 
-<code>rndcontrol</code>. Otherwise the installation process may hang. For example, on a machine
-with a network interface card on IRQs 9, you can execute</p>
-<p>
-<code>rndcontrol -s 9</code>
-</p>
 <h2>
 <a id="a2" name="a2"></a>Install Tomcat</h2>
-<p>OpenCms 8.0.1 requires a Servlet 2.4 / JSP 2.0 standards compliant container. Tomcat 5 is the
-reference implementation of this Standard. This release was tested with Tomcat 5.0.x, Tomcat
-5.5.x and Tomcat 6.0.x. Older versions of Tomcat (4.x and earlier) do not support this newer standard and are thus
-not usable for OpenCms 8.0.1.</p>
-<p>Install Tomcat from 
+<p>OpenCms 8.0.1 requires a Servlet 2.4 / JSP 2.0 standards compliant container. 
+This release was tested with Tomcat 5.5.x, Tomcat 6.0.x. and Tomcat 7.0.x.</p>
 
+<p>Install Tomcat from 
 <code>
 <a href="http://tomcat.apache.org"
 target="_blank" title="External link, opens in new window">http://tomcat.apache.org</a>
@@ -101,8 +92,7 @@ On Windows-based systems MySQL has to be installed on the
 <code>C:\</code> drive and should be registered as service using 
 <code>%MYSQL_HOME%/bin/mysqld -install</code>.</p>
 
-<p>OpenCms can be used with MySQL 4.0, 4.1 and 5.0. For performance reasons we recommend MySQL
-5.0.</p>
+<p>OpenCms can be used with MySQL 5.0, 5.1 and 5.5.</p>
 <p>Start the MySQL server by running the service (WIN32) or executing 
 <code>%MYSQL_HOME%/bin/mysqld</code> (UNIX).</p>
 <p>Check that MySQL is running before you continue by starting the MySQL monitor (execute 
@@ -113,8 +103,8 @@ step.</p>
 <strong>Important:</strong> You will have to increase the MySQL configuration variable 
 <code>max_allowed_packet</code> located in the MySQL configuration file (usually called 
 
-<code>my.ini</code>). For OpenCms, the limit should be as high as possible, a setting of 
-<code>max_allowed_packet=32M</code> is recommended.</p>
+<code>my.ini</code>). For OpenCms, the limit should be as high as possible, a setting of at least 
+<code>max_allowed_packet=16M</code> is recommended.</p>
 <h2>
 <a id="a4" name="a4"></a>Deploy the 
 <code>opencms.war</code> file</h2>
