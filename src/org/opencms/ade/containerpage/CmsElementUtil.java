@@ -276,11 +276,13 @@ public class CmsElementUtil {
             element.getIndividualSettings(),
             settingConfig));
         elementBean.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
-        elementBean.setViewPermission(m_cms.hasPermissions(
-            element.getResource(),
-            CmsPermissionSet.ACCESS_VIEW,
-            false,
-            CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
+        // no need to check permissions for in memory resources
+        elementBean.setViewPermission(element.isInMemoryOnly()
+            || m_cms.hasPermissions(
+                element.getResource(),
+                CmsPermissionSet.ACCESS_VIEW,
+                false,
+                CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
         String noEditReason = "";
         if (CmsResourceTypeXmlContent.isXmlContent(element.getResource())) {
             if (!element.isInMemoryOnly()) {
