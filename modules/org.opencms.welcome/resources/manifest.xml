@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.1</opencms_version>
-		<createdate>Wed, 29 Jun 2011 11:59:09 GMT</createdate>
+		<createdate>Wed, 29 Jun 2011 16:23:12 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -398,7 +398,7 @@
 			<type>v8article</type>
 			<uuidstructure>f00ce372-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>f00ce373-7720-11e0-bfd0-1797e684fbbe</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 14:04:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 05 May 2011 14:06:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -578,7 +578,7 @@
 			<type>v8article</type>
 			<uuidstructure>f9f0fe11-a19e-11e0-b12f-df452125cf28</uuidstructure>
 			<uuidresource>f9f0fe12-a19e-11e0-b12f-df452125cf28</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 11:00:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2011 16:21:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 28 Jun 2011 15:54:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
