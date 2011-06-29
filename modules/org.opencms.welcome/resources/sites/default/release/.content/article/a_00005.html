@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<V8Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/com.alkacon.opencms.v8.article/schemas/article.xsd">
+  <V8Article language="en">
+    <Title><![CDATA[Release Notes for OpenCms 7.5]]></Title>
+    <Paragraph>
+      <Text name="Text0">
+        <links>
+          <link name="link0" internal="true" type="A">
+            <target><![CDATA[/sites/default/release/Mailing_list/index.html]]></target>
+            <uuid>8fed4658-7722-11e0-bfd0-1797e684fbbe</uuid>
+          </link>
+          <link name="link1" internal="false" type="A">
+            <target><![CDATA[http://bugzilla.opencms.org/]]></target>
+          </link>
+        </links>
+        <content><![CDATA[<p>June 15, 2009: This is the first release of OpenCms 7.5 (7.5.0).  OpenCms 7.5 is an incremental update for OpenCms 7.0 with a focus on  backward compatibility. With OpenCms 7.5, several new features have been  added and a lot of issues and security problems&nbsp;that persisted in the  7.0.5 release have been fixed.</p>
+<h2>Main new features of OpenCms 7.5</h2>
+<ul>
+    <li>Support for image cropping in image gallery</li>
+    <li>New galleries with advanced AJAX features available in structured content and free page editor</li>
+    <li>Galleries dialog now also support grouping of elements by category</li>
+    <li>Support for tabs in the XML content editor</li>
+    <li>Offline search indexing without publishing  in the Lucene based full text search</li>
+    <li>New demo content &quot;Wonderful World of Flowers&quot;</li>
+    <li>Updated external editor components to latest stable versions</li>
+</ul>
+<h2>Further improvements in OpenCms 7.5</h2>
+<ul>
+    <li>Added support for decentralized categories</li>
+    <li>Added event which is fired after a user was modified</li>
+    <li>CmsTimeFrameCategoryCollector now allows line breaks and whitespaces in param attribute</li>
+    <li>Undo changes operation now shows an additional warning dialog with option to cancel in case siblings are found</li>
+    <li>Extended authorization configuration and handling in order to allow support of alternative mechanisms</li>
+    <li>Improved exception handling on login of disabled users</li>
+    <li>Added support for alternative lib folder structure of tomcat on windows for cmsshell</li>
+    <li>Extended dialog for cleaning historical versions with an option to clean all versions of deleted files</li>
+    <li>New feature in EL XML Content wrapper allows accessing the raw XML of a value using .xmlText(...)</li>
+    <li>Added definition of exclude links for internal link check - internal links defined this way are handled like external links</li>
+    <li>New scheduled job to delete expired resources</li>
+    <li>Removed 2GB size limit for average and maximum flex cache size</li>
+    <li>Added support for new Microsoft document types to upload applet</li>
+    <li>Improved handling of secure site configuration errors</li>
+</ul>
+<h2>Fixed issues and other changes in OpenCms 7.5</h2>
+<ul>
+    <li>Fixed issue #1016: JSP send mail example out of order</li>
+    <li>Fixed issue #1122: JSTL Examples do not work in the Alkacon Documentation</li>
+    <li>Fixed issue #1173: Misuse of saveSiteRoot causes synchronizing to fail but is wider problem</li>
+    <li>Fixed issue #1125: Admin user in Guest Group causes issues</li>
+    <li>Fixed issue #1144: Prevent jsp files to be cached in setup</li>
+    <li>Fixed issue #1177: Language selector in editor shows too much entries for certain locales</li>
+    <li>Fixed issue #1181: Change Element Locale - Content Tool does not display country locale variants</li>
+    <li>Fixed issue #1182: Import of pure user data fails</li>
+    <li>Fixed issue #1209: Webusers should be able to delete themselves from the system</li>
+    <li>Fixed issue #1210: Changing ACL to a resource does not set the &quot;last modified&quot; date</li>
+    <li>Fixed issue #1220: CmsJspTagContentLoad cannot be constructed with PageIndex nor PageSize</li>
+    <li>Fixed issue #1231: Blocking scenario for simultaneous content editing using direct edit</li>
+    <li>Fixed issue #1232: Intermittent template JSP compile error</li>
+    <li>Fixed issue #1258: No logging if secure page is requested without a secure site configured</li>
+    <li>Fixed issue #1665: CmsExtractorPdf does not remove control characters</li>
+    <li>Fixed issue #1268: Trouble getting AdditionalInfo for user</li>
+    <li>Fixed issue #1269: FileChooser manipulation replaces servleturl AND path</li>
+    <li>Fixed issue #1270: Can not embed Flash animation for Firefox</li>
+    <li>Fixed issue #1277: Problem with MIME type settings</li>
+    <li>Fixed issue #1281: CmsUser.isSystemUser() fails to identify system user</li>
+    <li>Fixed issue #1282: Problem with duplicate &quot;exportname&quot; properties</li>
+    <li>Fixed issue #1283: Link button missing in FCK widget</li>
+    <li>Fixed issue #1284: Use short name by default in Admin view</li>
+    <li>Fixed issue #1285/1310: Scroll position lost in XML content editor (IE)</li>
+    <li>Fixed issue #1295: Gallery widgets should not allow specifying target in XML editor</li>
+    <li>Fixed issue #1297: Rendering of top bar in XML editor can fail</li>
+    <li>Fixed issue #1298: Tab key in FCK widget behaves badly in IE</li>
+    <li>Fixed issue #1311: editoptions in opencms-modules.xml inhibits the import</li>
+    <li>Fixed issue #1696: Categories collector throws unexpected nullpointer exception</li>
+    <li>Fixed issue #1697: Fixed incompatibility of templateone form with OpenJDK 1.6 (Fedora 10)</li>
+    <li>Fixed issue #1728: Fixed direct edit problems with Internet Explorer 8</li>
+    <li>Fixed issue #1738: CmsShellCommands.uploadFile(...) not working</li>
+    <li>Fixed issue with HTML-decorator when tagging the second level</li>
+    <li>Fixed issue with security in the history handler</li>
+    <li>Fixed issue with JSP hard includes when using site relative paths</li>
+    <li>Fixed issue with performance when serving JSP pages</li>
+    <li>Fixed issue with SQL query not running on MS SQL server</li>
+    <li>Fixed issue with cleaning up threads for publish progress dialog</li>
+    <li>Fixed issue with &amp;lt; and &amp;gt; in extended HTML import</li>
+    <li>Fixed issue with deleting historical versions when date is specified</li>
+    <li>Fixed issue with cmsshell commands that have arguments of type long not working</li>
+    <li>Fixed issue with historical versions of deleted files never being deleted</li>
+    <li>Fixed issue with VFS driver where a file like &quot;xy.html&quot; could be read like a folder &quot;xy.html/&quot;</li>
+    <li>Fixed issue with &lt;cms:jquery&gt; not working for authenticated web users</li>
+    <li>Fixed issue with wrong redirect for http - requests to https secured resources</li>
+    <li>Fixed issue with object other than String in user.additionalInfo causing the csv export to fail.</li>
+    <li>Fixed issue with publish queue hanging up if the connection to the database is lost</li>
+    <li>Fixed issue with moved files where the previous folder was deleted</li>
+    <li>Fixed issue with advanced properties</li>
+    <li>Fixed issue with CmsMultiselectWidget keeping previous values when trying to unselect every entry</li>
+    <li>Fixed issue with copy locale dialog of XML content editor being too small for Internet Explorer on Vista</li>
+    <li>Fixed issue with failing database export in case of deleted relation / category</li>
+    <li>Fixed issue with rendering of template two in webkit based browsers (Konqueror, Chrome, ...)</li>
+    <li>Fixed issue with duplicate openoffice document type in opencms-search.xml</li>
+</ul>
+<h2>Backward compatibility with version 7.0</h2>
+<p>We recommend everyone who uses OpenCms to update to the 7.5 release.</p>
+<p>OpenCms 7.5&nbsp; is fully backward compatible to all prior 7.0.x  versions. Most templates and other OpenCms developed code from version 7  should work &quot;out of the box&quot; with version 7.5.</p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 7.5 has been written and tested using Java 1.5 / 1.6. We have  tested only with SUNs version of the JDK. However, OpenCms has no  dependencies to sun.* packages so it should in theory run with all  compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine. OpenCms  works &quot;out of the box&quot; with Tomcat 5.5, which we recommend. Others have  reported deploying OpenCms successfully on other servlet containers like  JBoss, BEA, Websphere and Resin Professional. We appreciate any  feedback regarding other servlet containers.</p>
+<p>On the database side, we have tested with MySQL 4.0.x, MySQL 4.1,  MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x and  7.4.x, MS SQL Server 2000 / 2003, DB2 9.1 and HSQLDB 1.8.0. The  automatic update wizard for OpenCms 7 supports MySQL, Oracle and  PostgreSQL.</p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the  following in mind: The CVS tag numbers for all OpenCms 7.5 final  releases are &quot;build_7_5_x&quot;, so the 7.5.0 release is tagged  &quot;build_7_5_0&quot;. Development of maintenance releases is currently done in  CVS HEAD.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)">http://bugzilla.opencms.org/<br />
+</a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 7.5 :-)</p>]]></content>
+      </Text>
+    </Paragraph>
+  </V8Article>
+</V8Articles>
