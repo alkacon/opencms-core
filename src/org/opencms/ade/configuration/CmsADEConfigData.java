@@ -287,13 +287,16 @@ public class CmsADEConfigData {
     public CmsModelPageConfig getDefaultModelPage() {
 
         checkInitialized();
+        List<CmsModelPageConfig> modelPages = getModelPages();
         for (CmsModelPageConfig modelPageConfig : getModelPages()) {
             if (modelPageConfig.isDefault()) {
                 return modelPageConfig;
             }
         }
-        return null;
-
+        if (modelPages.isEmpty()) {
+            return null;
+        }
+        return modelPages.get(0);
     }
 
     /**
