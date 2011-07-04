@@ -84,11 +84,17 @@ public class CmsClientProperty implements IsSerializable {
     /** The default-file property name. */
     public static final String PROPERTY_DEFAULTFILE = "default-file";
 
+    /** The Description property name. */
+    public static final String PROPERTY_DESCRIPTION = "Description";
+
     /** The NavPos property name. */
     public static final String PROPERTY_NAVPOS = "NavPos";
 
     /** The NavText property name. */
     public static final String PROPERTY_NAVTEXT = "NavText";
+
+    /** The Title property name. */
+    public static final String PROPERTY_TITLE = "Title";
 
     /** The name of the property. */
     private String m_name;

@@ -54,15 +54,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
-    /** The NavText property name. */
-    public static final String PROP_NAVTEXT = "NavText";
-
     /**
-     * Creates a new instance.<p>
-     *
-     * @param propertyConfig the property configuration 
-     * @param handler the entry editor handler 
-     */
+    * Creates a new instance.<p>
+    *
+    * @param propertyConfig the property configuration 
+    * @param handler the entry editor handler 
+    */
     public CmsNavModePropertyEditor(
         Map<String, CmsXmlContentProperty> propertyConfig,
         I_CmsPropertyEditorHandler handler) {
@@ -81,10 +78,9 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
         String entryId = m_handler.getId().toString();
         String defaultFileId = toStringOrNull(m_handler.getDefaultFileId());
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        if (keys.contains(PROP_NAVTEXT)) {
-            keys.remove(PROP_NAVTEXT);
-            keys.add(0, PROP_NAVTEXT);
-        }
+        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
+        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
+        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
         for (String propName : keys) {
             buildSimpleField(entryId, defaultFileId, ownProps, defaultFileProps, propName);
         }
@@ -120,7 +116,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
         CmsClientProperty fileProp = defaultFileProps == null ? null : defaultFileProps.get(propName);
         CmsClientProperty ownProp = ownProps.get(propName);
         CmsPathValue pathValue;
-        if (!CmsClientProperty.isPropertyEmpty(fileProp)) {
+        if ((fileProp != null) && !CmsClientProperty.isPropertyEmpty(fileProp)) {
             pathValue = fileProp.getPathValue().prepend(defaultFileId + "/" + propName);
         } else if (!CmsClientProperty.isPropertyEmpty(ownProp)) {
             pathValue = ownProp.getPathValue().prepend(entryId + "/" + propName);
@@ -170,6 +166,20 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
             field.getLayoutData().put("info", message);
         }
         m_form.addField(m_form.getWidget().getDefaultGroup(), field, initialValue);
+    }
+
+    /**
+     * Moves the given property name to the top of the keys if present.<p>
+     * 
+     * @param keys the list of keys
+     * @param propertyName the property name to move
+     */
+    private void moveToTop(List<String> keys, String propertyName) {
+
+        if (keys.contains(propertyName)) {
+            keys.remove(propertyName);
+            keys.add(0, propertyName);
+        }
     }
 
     /**
