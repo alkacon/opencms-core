@@ -642,7 +642,7 @@
 		</defaultfiles>
 		<translations>
 			<filetranslations enabled="true">
-				<translation>s#[\s]+#_#g</translation>
+				<translation>s#[\s]+#-#g</translation>
 				<translation>s#\\#/#g</translation>
 				<translation>s#ä#ae#g</translation>
 				<translation>s#Ä#Ae#g</translation>

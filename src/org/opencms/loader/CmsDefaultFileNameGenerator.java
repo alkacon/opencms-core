@@ -148,7 +148,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
         CmsResource sibling) {
 
         String translatedTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(
-            value.getStringValue(cms)).replace("/", "_");
+            value.getStringValue(cms)).replace("/", "-");
         return new CmsNumberSuffixNameSequence(translatedTitle);
     }
 
