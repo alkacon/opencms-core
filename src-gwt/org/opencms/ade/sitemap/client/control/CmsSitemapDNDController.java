@@ -31,7 +31,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
-import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
@@ -271,26 +270,32 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         CmsNewResourceInfo typeInfo = createItem.getResourceTypeInfo();
         CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
-        entry.setName(uniqueName);
-        entry.setSitePath(m_insertPath + uniqueName + "/");
         entry.setNew(true);
         entry.setVfsPath(null);
         entry.setPosition(m_insertIndex);
         entry.setInNavigation(true);
-        createItem.getResourceTypeInfo().getTypeName();
-        //TODO: handle redirects specially 
-        entry.setResourceTypeName("folder");
-
         entry.setDefaultFileProperties(Collections.<String, CmsClientProperty> emptyMap());
-        if (NewEntryType.detailpage == createItem.getNewEntryType()) {
-            entry.setDetailpageTypeName(typeInfo.getTypeName());
-        }
-        if (NewEntryType.redirect == createItem.getNewEntryType()) {
-            entry.setEntryType(EntryType.redirect);
-            entry.setSitePath(m_insertPath + uniqueName);
-        } else {
-            entry.setSitePath(m_insertPath + uniqueName + "/");
+        String uniqueName = null;
+        switch (createItem.getNewEntryType()) {
+            case detailpage:
+                uniqueName = m_controller.ensureUniqueName(parent, typeInfo.getTypeName());
+                entry.setName(uniqueName);
+                entry.setSitePath(m_insertPath + uniqueName + "/");
+                entry.setDetailpageTypeName(typeInfo.getTypeName());
+                entry.setResourceTypeName("folder");
+                break;
+            case redirect:
+                uniqueName = m_controller.ensureUniqueName(parent, typeInfo.getTypeName());
+                entry.setName(uniqueName);
+                entry.setEntryType(EntryType.redirect);
+                entry.setSitePath(m_insertPath + uniqueName);
+                entry.setResourceTypeName(typeInfo.getTypeName());
+                break;
+            default:
+                uniqueName = m_controller.ensureUniqueName(parent, CmsSitemapController.NEW_ENTRY_NAME);
+                entry.setName(uniqueName);
+                entry.setSitePath(m_insertPath + uniqueName + "/");
+                entry.setResourceTypeName("folder");
         }
         m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
     }
@@ -310,7 +315,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (isChangedPosition(sitemapEntry, target, true)) {
             // moving a tree entry around
             CmsClientSitemapEntry entry = m_controller.getEntry((sitemapEntry).getSitePath());
-            String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
+            String uniqueName = m_controller.ensureUniqueName(parent, entry.getName());
             if (!uniqueName.equals(entry.getName()) && isChangedPosition(sitemapEntry, target, false)) {
                 m_controller.editAndChangeName(
                     entry,
@@ -371,7 +376,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             return true;
         }
         // if the new index is not next to the old one, the position has changed
-        if (!((target.getPlaceholderIndex() == m_originalIndex + 1) || (target.getPlaceholderIndex() == m_originalIndex))
+        if (!((target.getPlaceholderIndex() == (m_originalIndex + 1)) || (target.getPlaceholderIndex() == m_originalIndex))
             && strict) {
             return true;
         }

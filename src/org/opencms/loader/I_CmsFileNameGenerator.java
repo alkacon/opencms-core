@@ -28,11 +28,8 @@
 package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.PrintfFormat;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Iterator;
 
@@ -63,10 +60,21 @@ public interface I_CmsFileNameGenerator {
      * 
      * @throws CmsException in case something goes wrong
      */
-    public abstract String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException;
+    String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException;
 
     /**
-     * Returns a sequence of URL name candidates for the given XML content value as an iterator.<p>
+     * Returns a unique filename for the given base name and the parent folder.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param parentFolder the parent folder of the file
+     * @param baseName the proposed file name
+     * 
+     * @return the unique file name
+     */
+    String getUniqueFileName(CmsObject cms, String parentFolder, String baseName);
+
+    /**
+     * Returns a sequence of URL name candidates for the given base name as an iterator.<p>
      * 
      * This is used by the <code>urlName</code> mapping of XML contents which enable SEO friendly URLs 
      * automatically generated for example from the resource title.<p>
@@ -74,18 +82,11 @@ public interface I_CmsFileNameGenerator {
      * Usually the first URL name from this sequence which does not already exist for a different 
      * resource will be used for the URL name mapping.<p>
      * 
-     * @param cms the CMS context 
-     * @param content the XML content 
-     * @param value the content value from which the URL name should be generated 
-     * @param sibling the sibling to which the URL name should be mapped 
+     * @param baseName the base name
      * 
      * @return the sequence of URL name candidates
      *  
      * @throws CmsException if something goes wrong 
      */
-    Iterator<String> getUrlNameSequence(
-        CmsObject cms,
-        CmsXmlContent content,
-        I_CmsXmlContentValue value,
-        CmsResource sibling) throws CmsException;
+    Iterator<String> getUrlNameSequence(String baseName) throws CmsException;
 }

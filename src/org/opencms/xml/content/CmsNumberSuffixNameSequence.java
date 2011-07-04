@@ -70,7 +70,7 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
         String result = m_baseName;
         if (m_counter > 0) {
             String numberSuffix = I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(m_counter);
-            result = m_baseName + "_" + numberSuffix;
+            result = m_baseName + "-" + numberSuffix;
         }
         m_counter += 1;
         return result;

@@ -114,6 +114,18 @@ public interface I_CmsCoreServiceAsync {
     void getResourceState(CmsUUID structureId, AsyncCallback<CmsResourceState> callback);
 
     /**
+     * Returns a unique filename for the given base name and the parent folder.<p>
+     * 
+     * This is executed in a synchronized request.<p>
+     * 
+     * @param parentFolder the parent folder of the file
+     * @param baseName the proposed file name
+     * @param callback the callback which receives the result  
+     */
+    @SynchronizedRpcRequest
+    void getUniqueFileName(String parentFolder, String baseName, AsyncCallback<String> callback);
+
+    /**
      * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      * 
@@ -181,14 +193,6 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the call-back executed on response
      */
     void setToolbarVisible(boolean visible, AsyncCallback<Void> callback);
-
-    /**
-     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
-     * 
-     * @param urlName the url name to be translated
-     * @param callback the async callback 
-     */
-    void translateUrlName(String urlName, AsyncCallback<String> callback);
 
     /**
      * Unlocks the given resource.<p>

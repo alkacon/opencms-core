@@ -52,13 +52,6 @@ public interface I_CmsSitemapController {
     Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id);
 
     /**
-     * Initializes the sitemap entry.<p>
-     * 
-     * @param entry the sitemap entry to initialize
-     */
-    void initialize(CmsClientSitemapEntry entry);
-
-    /**
      * This method is used to establish a unique property map object for each id, but replaces the contents of the 
      * map object with new values for each call.<p>
      * 

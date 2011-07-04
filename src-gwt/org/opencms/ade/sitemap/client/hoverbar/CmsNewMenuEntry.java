@@ -31,7 +31,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
@@ -61,16 +60,7 @@ public class CmsNewMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-        CmsClientSitemapEntry root = controller.getData().getRoot();
-        String rootRelativePath = entry.getSitePath().substring(root.getSitePath().length());
-        int numSlashes = rootRelativePath.replaceAll("[^/]", "").length();
-        if (numSlashes < controller.getData().getMaxDepth() - 1) {
-            controller.createSubEntry(entry);
-        } else {
-            String title = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_TITLE_0);
-            String message = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_MESSAGE_0);
-            (new CmsAlertDialog(title, message)).center();
-        }
+        controller.createSubEntry(entry);
     }
 
     /**

@@ -129,6 +129,18 @@ public interface I_CmsCoreService extends RemoteService {
     CmsResourceState getResourceState(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Returns a unique filename for the given base name and the parent folder.<p>
+     * 
+     * @param parentFolder the parent folder of the file
+     * @param baseName the proposed file name
+     * 
+     * @return the unique file name
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getUniqueFileName(String parentFolder, String baseName) throws CmsRpcException;
+
+    /**
      * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      * 
@@ -207,17 +219,6 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException
      */
     void setToolbarVisible(boolean visible) throws CmsRpcException;
-
-    /**
-     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
-     * 
-     * @param urlName the url name to be translated
-     *  
-     * @return the translated URL name
-     *  
-     * @throws CmsRpcException if something goes wrong 
-     */
-    String translateUrlName(String urlName) throws CmsRpcException;
 
     /**
      * Unlocks the given resource.<p>

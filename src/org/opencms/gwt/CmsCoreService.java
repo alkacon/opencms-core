@@ -352,6 +352,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getUniqueFileName(java.lang.String, java.lang.String)
+     */
+    public String getUniqueFileName(String parentFolder, String baseName) {
+
+        return OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(getCmsObject(), parentFolder, baseName);
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID)
      */
     public String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException {
@@ -555,7 +563,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public String translateUrlName(String urlName) {
 
         String result = getCmsObject().getRequestContext().getFileTranslator().translateResource(urlName);
-        result = result.replace('/', '_');
+        result = result.replace('/', '-');
         return result;
     }
 

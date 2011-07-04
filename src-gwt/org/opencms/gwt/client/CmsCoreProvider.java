@@ -359,38 +359,6 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
-     * Translates an url name to a form containing no illegal characters.<p>
-     * 
-     * @param urlname the url name which should be translated 
-     * @param callback the callback which should be called with the translated url name 
-     */
-    public void translateUrlName(final String urlname, final AsyncCallback<String> callback) {
-
-        // do not stop/start since we do not want to give any feedback to the user
-        CmsRpcAction<String> action = new CmsRpcAction<String>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getService().translateUrlName(urlname, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(String result) {
-
-                callback.onSuccess(result);
-            }
-        };
-        action.execute();
-    }
-
-    /**
      * Unlocks the current resource.<p>
      * 
      * @return <code>true</code> if succeeded

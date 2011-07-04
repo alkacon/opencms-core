@@ -403,7 +403,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_ownProperties = controller.replaceProperties(m_id, m_ownProperties);
         m_defaultFileProperties = controller.replaceProperties(m_defaultFileId, m_defaultFileProperties);
-        controller.initialize(this);
     }
 
     /**

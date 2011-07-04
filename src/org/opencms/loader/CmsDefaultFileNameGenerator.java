@@ -33,11 +33,10 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,19 +135,29 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /**
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getUniqueFileName(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public String getUniqueFileName(CmsObject cms, String parentFolder, String baseName) {
+
+        Iterator<String> nameIterator = getUrlNameSequence(baseName);
+        String result = nameIterator.next();
+        while (cms.existsResource(CmsStringUtil.joinPaths(parentFolder, result))) {
+            result = nameIterator.next();
+        }
+        return result;
+    }
+
+    /**
      * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case 
      * of a collision of names.<p>
      * 
-     * @see org.opencms.loader.I_CmsFileNameGenerator#getUrlNameSequence(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.file.CmsResource)
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getUrlNameSequence(java.lang.String)
      */
-    public Iterator<String> getUrlNameSequence(
-        CmsObject cms,
-        CmsXmlContent content,
-        I_CmsXmlContentValue value,
-        CmsResource sibling) {
+    public Iterator<String> getUrlNameSequence(String baseName) {
 
-        String translatedTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(
-            value.getStringValue(cms)).replace("/", "-");
+        String translatedTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(baseName).replace(
+            "/",
+            "-");
         return new CmsNumberSuffixNameSequence(translatedTitle);
     }
 

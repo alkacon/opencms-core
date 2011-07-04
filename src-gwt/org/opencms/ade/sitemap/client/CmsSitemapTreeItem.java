@@ -38,7 +38,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.property.CmsReloadMode;
-import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
@@ -169,7 +168,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     return;
                 }
                 String oldTitle = m_entry.getTitle();
-
                 if (!oldTitle.equals(newTitle)) {
                     CmsPropertyModification propMod = new CmsPropertyModification(
                         m_entry.getId(),
@@ -177,55 +175,22 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         newTitle,
                         true);
                     final List<CmsPropertyModification> propChanges = Collections.<CmsPropertyModification> singletonList(propMod);
-
-                    if (m_entry.isNew()) {
-                        CmsRpcAction<String> action = new CmsRpcAction<String>() {
-
-                            /**
-                             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-                             */
-                            @Override
-                            public void execute() {
-
-                                start(0, false);
-                                CmsCoreProvider.getService().translateUrlName(newTitle, this);
-                            }
-
-                            /**
-                             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-                             */
-                            @Override
-                            protected void onResponse(String result) {
-
-                                stop(false);
-                                String newUrlName = result;
-                                if (!m_entry.isRoot()) {
-                                    String parentPath = CmsResource.getParentFolder(m_entry.getSitePath());
-                                    CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(
-                                        parentPath);
-                                    newUrlName = CmsSitemapController.ensureUniqueName(parent, result);
-                                }
-                                CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
-                                newEntry.setName(newUrlName);
-                                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                                controller.editAndChangeName(
-                                    m_entry,
-                                    newUrlName,
-                                    m_entry.getVfsPath(),
-                                    propChanges,
-                                    false,
-                                    CmsReloadMode.none);
-                            }
-
-                        };
-                        action.execute();
+                    CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                    if (m_entry.isNew() && !m_entry.isRoot()) {
+                        String urlName = controller.ensureUniqueName(
+                            CmsResource.getParentFolder(m_entry.getSitePath()),
+                            newTitle);
+                        controller.editAndChangeName(
+                            m_entry,
+                            urlName,
+                            m_entry.getVfsPath(),
+                            propChanges,
+                            false,
+                            CmsReloadMode.none);
                     } else {
-                        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
                         controller.edit(m_entry, m_entry.getVfsPath(), propChanges, false);
                     }
-
                 }
-
                 titleLabel.setVisible(true);
             }
         });
@@ -351,7 +316,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             public boolean execute() {
 
                 boolean finish = m_counter > blinkCount;
-                highlight((m_counter % 2 == 0) && !finish);
+                highlight(((m_counter % 2) == 0) && !finish);
                 m_counter += 1;
                 return !finish;
             }

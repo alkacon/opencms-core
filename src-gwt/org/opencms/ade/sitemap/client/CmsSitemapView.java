@@ -473,7 +473,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                m_controller.getChildren(target.getSitePath(), true);
+                m_controller.getChildren(target.getSitePath(), true, null);
             }
 
             /**
