@@ -84,6 +84,7 @@ class CmsConfigurationCache {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigData> m_siteConfigurations = new HashMap<String, CmsADEConfigData>();
 
+    /** The configuration files which have been changed but not read yet. */
     private Map<String, CmsUUID> m_configurationsToRead = new HashMap<String, CmsUUID>();
 
     /** 
@@ -252,6 +253,7 @@ class CmsConfigurationCache {
      */
     protected synchronized void initializeFolderTypes() throws CmsException {
 
+        LOG.info("Computing folder types for detail pages...");
         m_folderTypes.clear();
         for (CmsADEConfigData configData : m_siteConfigurations.values()) {
             Map<String, String> folderTypes = configData.getFolderTypes();
@@ -304,6 +306,7 @@ class CmsConfigurationCache {
      */
     protected synchronized void refreshModuleConfiguration() {
 
+        LOG.info("Refreshing module configuration.");
         CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
         m_moduleConfiguration = reader.readModuleConfigurations();
         m_moduleConfiguration.initialize(m_cms);
@@ -354,11 +357,12 @@ class CmsConfigurationCache {
                 LOG.info("Removing config file from cache: " + rootPath);
             }
         } else if (isModuleConfiguration(rootPath, type)) {
+            LOG.info("Removing module configuration " + rootPath);
             refreshModuleConfiguration();
             try {
                 initializeFolderTypes();
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.warn(e.getLocalizedMessage(), e);
             }
 
         }
@@ -428,9 +432,11 @@ class CmsConfigurationCache {
                 // Do not update the configuration right now, because reading configuration files while handling 
                 // an event may lead to cache problems. Instead, the configuration file is read when the configuration
                 // is queried.
+                LOG.info("Changed configuration file " + rootPath + "(" + structureId + "), will be read later");
                 m_configurationsToRead.put(rootPath, structureId);
             }
         } else if (isModuleConfiguration(rootPath, type)) {
+            LOG.info("Changed module configuration file " + rootPath + "(" + structureId + ")");
             refreshModuleConfiguration();
             initializeFolderTypes();
         }
@@ -445,26 +451,32 @@ class CmsConfigurationCache {
     protected synchronized void updateFolderTypes(String rootPath) throws CmsException {
 
         if (m_folderTypes.containsKey(rootPath)) {
+            LOG.info("Updating folder types because of a change at " + rootPath);
             synchronized (this) {
                 initializeFolderTypes();
             }
         }
     }
 
+    /**
+     * Reads the configuration files which have changed but not been read yet.<p>
+     */
     private synchronized void readRemainingConfigurations() {
 
         if (m_configurationsToRead.isEmpty()) {
-            // do no initialize folder types if there were no changes!
+            // do not initialize folder types if there were no changes!
             return;
         }
         for (Map.Entry<String, CmsUUID> entry : m_configurationsToRead.entrySet()) {
             String rootPath = entry.getKey();
             CmsUUID structureId = entry.getValue();
             try {
-                // remove the original entry first so it will  not still be there if reading the configuration fails 
+                // remove the original entry first, so that the configuration will be gone if reading the 
+                // configuration file fails.
                 m_siteConfigurations.remove(rootPath);
                 CmsResource configRes = m_cms.readResource(structureId);
                 CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+                LOG.info("Reading configuration file " + rootPath + "(" + structureId + ")");
                 String basePath = getBasePath(rootPath);
                 CmsADEConfigData configData = reader.parseSitemapConfiguration(basePath, configRes);
                 configData.initialize(m_cms);
@@ -476,6 +488,9 @@ class CmsConfigurationCache {
             }
         }
         m_configurationsToRead.clear();
+        // Methods which recursively call this method must be called after this point,
+        // because it will lead to an infinite recursion otherwise.
+
         try {
             initializeFolderTypes();
         } catch (CmsException e) {
@@ -485,6 +500,11 @@ class CmsConfigurationCache {
         }
     }
 
+    /**
+     * Remove a sitemap configuration from the cache by its base path.<p>
+     * 
+     * @param rootPath the base path for the sitemap configuration 
+     */
     private void removePath(String rootPath) {
 
         m_configurationsToRead.remove(rootPath);
