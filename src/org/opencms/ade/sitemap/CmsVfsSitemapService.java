@@ -66,6 +66,7 @@ import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -205,7 +206,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         REDIRECT_LINK_TARGET_XPATH,
                         getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
                     Map<String, String> additional = new HashMap<String, String>();
-                    additional.put(Messages.get().container(Messages.GUI_REDIRECT_TARGET_LABEL_0).key(), link);
+                    additional.put(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.GUI_REDIRECT_TARGET_LABEL_0), link);
                     result.setAdditional(additional);
                 }
             } catch (CmsVfsResourceNotFoundException ne) {
@@ -319,7 +321,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 newResourceInfos = getNewResourceInfos(cms, configData);
             }
             if (isOnlineProject) {
-                noEdit = Messages.get().getBundle().key(Messages.GUI_SITEMAP_NO_EDIT_ONLINE_0);
+                noEdit = Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_SITEMAP_NO_EDIT_ONLINE_0);
             }
             List<String> allPropNames = getPropertyNames(cms);
 
@@ -548,7 +550,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
                 continue;
             }
-            if (i == targetPosition - 1) {
+            if (i == (targetPosition - 1)) {
                 previous = element.getNavPosition();
             }
             if (i == targetPosition) {
@@ -556,7 +558,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 break;
             }
         }
-        return previous + (following - previous) / 2;
+        return previous + ((following - previous) / 2);
     }
 
     /**
@@ -707,10 +709,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private CmsNewResourceInfo createResourceTypeInfo(I_CmsResourceType resType, CmsResource copyResource) {
 
         String name = resType.getTypeName();
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
-        if (locale == null) {
-            locale = new Locale("en");
-        }
+        Locale locale = getWorkplaceLocale();
         if (copyResource != null) {
             return new CmsNewResourceInfo(copyResource.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
                 locale,
@@ -1090,6 +1089,23 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         return result;
     }
 
+    /**
+     * Returns the workplace locale for the current user.<p>
+     * 
+     * @return the workplace locale
+     */
+    private Locale getWorkplaceLocale() {
+
+        Locale result = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        if (result == null) {
+            result = CmsLocaleManager.getDefaultLocale();
+        }
+        if (result == null) {
+            result = Locale.getDefault();
+        }
+        return result;
+    }
+
     private boolean hasDefaultFileChanges(CmsSitemapChange change) {
 
         return (change.getDefaultFileId() != null) && !change.isNew();
@@ -1410,8 +1426,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsLock folderLock = cms.getLock(entryFolder);
             clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()
                 && !folderLock.isOwnedBy(cms.getRequestContext().getCurrentUser()));
-            List<CmsResource> blockingChildren = cms.getBlockingLockedResources(entryFolder);
-            clientEntry.setBlockingLockedChildren((blockingChildren != null) && !blockingChildren.isEmpty());
+            if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                List<CmsResource> blockingChildren = cms.getBlockingLockedResources(entryFolder);
+                clientEntry.setBlockingLockedChildren((blockingChildren != null) && !blockingChildren.isEmpty());
+            }
         } else {
             entryPage = navElement.getResource();
             clientEntry.setName(entryPage.getName());
