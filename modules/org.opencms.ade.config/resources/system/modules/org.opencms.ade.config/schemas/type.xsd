@@ -24,7 +24,9 @@
       <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-	        <layouts/>
+			<layouts>
+				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  /> 
+			</layouts>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>
