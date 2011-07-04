@@ -59,7 +59,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages) {
 
-        super(basePath, resourceTypeConfig, false, propertyConfig, false, detailPageInfos, modelPages, false);
+        super(basePath, resourceTypeConfig, false, propertyConfig, false, detailPageInfos, modelPages, false, false);
     }
 
     /**
@@ -71,16 +71,41 @@ public class CmsTestConfigData extends CmsADEConfigData {
         return m_parent;
     }
 
-    public void setDiscardInheritedModelPages(boolean discardInheritedModelPages) {
+    /**
+     * Sets the "create contents locally" flag.<p>
+     * 
+     * @param createContentsLocally the flag to control whether contents from inherited resource types are stored in the local .content folder 
+     */
+    public void setCreateContentsLocally(boolean createContentsLocally) {
 
-        m_discardInheritedModelPages = discardInheritedModelPages = discardInheritedModelPages;
+        m_createContentsLocally = createContentsLocally;
     }
 
+    /**
+     * Sets the "discard inherited model pages" flag.<p>
+     *  
+     * @param discardInheritedModelPages the flag to control whether inherited model pages are discarded 
+    */
+    public void setDiscardInheritedModelPages(boolean discardInheritedModelPages) {
+
+        m_discardInheritedModelPages = discardInheritedModelPages;
+    }
+
+    /**
+     * Sets the "discard inherited properties" flag.<p>
+     * 
+     * @param discardInheritedProperties the flag to control whether inherited properties are discarded 
+     */
     public void setDiscardInheritedProperties(boolean discardInheritedProperties) {
 
         m_discardInheritedProperties = discardInheritedProperties;
     }
 
+    /**
+     * Sets the "discard inherited types" flag.<p>
+     * 
+     * @param discardInheritedTypes the flag to control whether inherited types are discarded 
+     */
     public void setIsDiscardInheritedTypes(boolean discardInheritedTypes) {
 
         m_discardInheritedTypes = discardInheritedTypes;

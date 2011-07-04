@@ -96,6 +96,9 @@ public class CmsADEConfigData {
     /** Should inherited model pages be discarded? */
     protected boolean m_discardInheritedModelPages;
 
+    /** The "create contents locally" flag. */
+    protected boolean m_createContentsLocally;
+
     /** True if this is a module configuration, not a normal sitemap configuration. */
     private boolean m_isModuleConfig;
 
@@ -117,10 +120,14 @@ public class CmsADEConfigData {
      * Creates a new configuration data instance.<p>
      * 
      * @param basePath the base path 
-     * @param resourceTypeConfig the resource type configuration 
-     * @param propertyConfig the property configuration 
-     * @param detailPageInfos the detail page configuration 
-     * @param modelPages the model page configuration 
+     * @param resourceTypeConfig the resource type configuration
+     * @param discardInheritedTypes the "discard inherited types" flag  
+     * @param propertyConfig the property configuration
+     * @param discardInheritedProperties the "discard inherited properties" flag  
+     * @param detailPageInfos the detail page configuration
+     * @param modelPages the model page configuration
+     * @param discardInheritedModelPages the "discard  inherited model pages" flag 
+     * @param createContentsLocally the "create contents locally" flag 
      */
     public CmsADEConfigData(
         String basePath,
@@ -130,7 +137,8 @@ public class CmsADEConfigData {
         boolean discardInheritedProperties,
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages,
-        boolean discardInheritedModelPages) {
+        boolean discardInheritedModelPages,
+        boolean createContentsLocally) {
 
         m_basePath = basePath;
         m_ownResourceTypes = resourceTypeConfig;
@@ -141,6 +149,7 @@ public class CmsADEConfigData {
         m_discardInheritedTypes = discardInheritedTypes;
         m_discardInheritedProperties = discardInheritedProperties;
         m_discardInheritedModelPages = discardInheritedModelPages;
+        m_createContentsLocally = createContentsLocally;
     }
 
     /**
@@ -479,7 +488,7 @@ public class CmsADEConfigData {
 
         List<CmsResourceTypeConfig> result = internalGetResourceTypes();
         for (CmsResourceTypeConfig config : result) {
-            config.initialize(this);
+            config.initialize(m_cms);
         }
         return result;
     }
@@ -506,16 +515,50 @@ public class CmsADEConfigData {
         m_initialized = true;
     }
 
+    /**
+     * Returns the value of the "create contents locally" flag.<p>
+     * 
+     * If this flag is set, contents of types configured in a super-sitemap will be created in the sub-sitemap (if the user
+     * creates them from the sub-sitemap).
+     *   
+     * @return the "create contents locally" flag 
+     */
+    public boolean isCreateContentsLocally() {
+
+        return m_createContentsLocally;
+    }
+
+    /**
+     * Returns the value of the "discard inherited model pages" flag.<p>
+     * 
+     * If this flag is set, inherited model pages will be discarded for this sitemap.<p>
+     * 
+     * @return the "discard inherited model pages" flag 
+     */
     public boolean isDiscardInheritedModelPages() {
 
         return m_discardInheritedModelPages;
     }
 
+    /**
+     * Returns the value of the "discard inherited properties" flag.<p>
+     * 
+     * If this is flag is set, inherited property definitions will be discarded for this sitemap.<p>
+     * 
+     * @return the "discard inherited properties" flag.<p>
+     */
     public boolean isDiscardInheritedProperties() {
 
         return m_discardInheritedProperties;
     }
 
+    /**
+     * Returns the value of the "discard inherited types" flag.<p>
+     * 
+     * If this flag is set, inherited resource types from a super-sitemap will be discarded for this sitemap.<p>
+     * 
+     * @return the "discard inherited types" flag 
+     */
     public boolean isDiscardInheritedTypes() {
 
         return m_discardInheritedTypes;
@@ -686,10 +729,17 @@ public class CmsADEConfigData {
         if ((parentData == null) || m_discardInheritedTypes) {
             parentResourceTypes = Lists.newArrayList();
         } else {
-            parentResourceTypes = parentData.internalGetResourceTypes();
+            parentResourceTypes = Lists.newArrayList();
+            for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes()) {
+                parentResourceTypes.add(typeConfig.copy());
+            }
         }
         List<CmsResourceTypeConfig> result = combineConfigurationElements(parentResourceTypes, m_ownResourceTypes);
-
+        if (m_createContentsLocally) {
+            for (CmsResourceTypeConfig typeConfig : result) {
+                typeConfig.updateBasePath(CmsStringUtil.joinPaths(m_basePath, ".content"));
+            }
+        }
         return result;
     }
 

@@ -135,6 +135,8 @@ public class CmsConfigurationReader {
         boolean discardInheritedProperties = getBoolean(root, "DiscardProperties");
         boolean discardInheritedModelPages = getBoolean(root, "DiscardModelPages");
 
+        boolean createContentsLocally = getBoolean(root, "CreateContentsLocally");
+
         CmsADEConfigData result = new CmsADEConfigData(
             basePath,
             m_resourceTypeConfigs,
@@ -143,7 +145,8 @@ public class CmsConfigurationReader {
             discardInheritedProperties,
             m_detailPageConfigs,
             m_modelPageConfigs,
-            discardInheritedModelPages);
+            discardInheritedModelPages,
+            createContentsLocally);
         result.setResource(content.getFile());
         if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE)) {
@@ -302,6 +305,15 @@ public class CmsConfigurationReader {
         return mergeConfigurations(configurations);
     }
 
+    /**
+     * Helper method to read a boolean value from the XML.<p>
+     * 
+     * If the element is not found in the XML, false is returned.<p>
+     * 
+     * @param parent the parent node 
+     * @param name the name of the XML content value 
+     * @return the boolean value
+     */
     protected boolean getBoolean(I_CmsXmlContentLocation parent, String name) {
 
         I_CmsXmlContentValueLocation location = parent.getSubValue(name);

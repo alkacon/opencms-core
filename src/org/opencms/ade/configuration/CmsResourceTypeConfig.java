@@ -76,8 +76,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
-    /** The configuration data object to which this resource type belongs. */
-    private CmsADEConfigData m_owner;
+    /** The CMS object used for VFS operations. */
+    protected CmsObject m_cms;
 
     /** 
      * Creates a new resource type configuration.<p>
@@ -112,8 +112,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean checkCreatable(CmsObject cms) throws CmsException {
 
+        checkInitialized();
         String folderPath = getFolderPath(cms);
-        CmsObject createCms = OpenCms.initCmsObject(m_owner.getCmsObject());
+        CmsObject createCms = OpenCms.initCmsObject(m_cms);
         createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         createFolder(createCms, folderPath);
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
@@ -144,7 +145,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     */
     public void checkInitialized() {
 
-        if (m_owner == null) {
+        if (m_cms == null) {
             throw new IllegalStateException();
         }
     }
@@ -212,7 +213,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkInitialized();
         CmsObject cms = rootCms(userCms);
         String folderPath = getFolderPath(userCms);
-        createFolder(m_owner.getCmsObject(), folderPath);
+        createFolder(m_cms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, destination, 5);
 
@@ -314,11 +315,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /**
      * Initializes this instance.<p>
      * 
-     * @param owner the parent configuration data object 
+     * @param cms the CMS context to use  
      */
-    public void initialize(CmsADEConfigData owner) {
+    public void initialize(CmsObject cms) {
 
-        m_owner = owner;
+        m_cms = cms;
+
     }
 
     /**
@@ -396,6 +398,18 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsObject result = OpenCms.initCmsObject(cms);
         result.getRequestContext().setSiteRoot("");
         return result;
+    }
+
+    /**
+     * Updates the base path for the folder information.<p>
+     * 
+     * @param basePath the new base path 
+     */
+    protected void updateBasePath(String basePath) {
+
+        if ((m_folderOrName != null) && m_folderOrName.isName()) {
+            m_folderOrName = new CmsFolderOrName(basePath, m_folderOrName.getFolderName());
+        }
     }
 
 }
