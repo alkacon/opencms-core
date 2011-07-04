@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.ComparisonFailure;
@@ -164,9 +165,9 @@ public class TestConfig extends OpenCmsTestCase {
 
         creatableTypes = config1.getCreatableTypes(cms);
         assertEquals(2, creatableTypes.size());
-        assertEquals(set("plain", "binary"), set(
-            creatableTypes.get(0).getTypeName(),
-            creatableTypes.get(1).getTypeName()));
+        assertEquals(
+            set("plain", "binary"),
+            set(creatableTypes.get(0).getTypeName(), creatableTypes.get(1).getTypeName()));
 
     }
 
@@ -284,14 +285,86 @@ public class TestConfig extends OpenCmsTestCase {
 
         List<CmsDetailPageInfo> pages = config2.getAllDetailPages(false);
         //assertEquals(4, pages.size());
-        assertEquals(set(a3.getUri(), a4.getUri(), b1.getUri(), b2.getUri()), set(
-            pages.get(0).getUri(),
-            pages.get(1).getUri(),
-            pages.get(2).getUri(),
-            pages.get(3).getUri()));
-        assertEquals(list(a3.getUri(), a4.getUri()), list(
-            config2.getDetailPagesForType("a").get(0).getUri(),
-            config2.getDetailPagesForType("a").get(1).getUri()));
+        assertEquals(
+            set(a3.getUri(), a4.getUri(), b1.getUri(), b2.getUri()),
+            set(pages.get(0).getUri(), pages.get(1).getUri(), pages.get(2).getUri(), pages.get(3).getUri()));
+        assertEquals(
+            list(a3.getUri(), a4.getUri()),
+            list(config2.getDetailPagesForType("a").get(0).getUri(), config2.getDetailPagesForType("a").get(1).getUri()));
+    }
+
+    public void testDiscardInheritedModelPages() throws Exception {
+
+        CmsModelPageConfig m1 = new CmsModelPageConfig(rootCms().readResource("/sites/default/a1"), true, false);
+        CmsModelPageConfig m2 = new CmsModelPageConfig(rootCms().readResource("/sites/default/a2"), true, false);
+        CmsModelPageConfig m3 = new CmsModelPageConfig(rootCms().readResource("/sites/default/a3"), true, false);
+
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            list(m1, m2, m3));
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/blah",
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config1.initialize(rootCms());
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+        config2.setDiscardInheritedModelPages(true);
+        assertEquals(0, config2.getModelPages().size());
+
+    }
+
+    public void testDiscardInheritedProperties() throws Exception {
+
+        CmsPropertyConfig foo = createPropertyConfig("foo", "foo1");
+        CmsPropertyConfig bar = createPropertyConfig("bar", "bar1");
+        CmsPropertyConfig baz = createPropertyConfig("baz", "baz1");
+
+        CmsTestConfigData config1 = new CmsTestConfigData("/", NO_TYPES, list(foo, bar), NO_DETAILPAGES, NO_MODEL_PAGES);
+        CmsTestConfigData config2 = new CmsTestConfigData("/blah", NO_TYPES, list(baz), NO_DETAILPAGES, NO_MODEL_PAGES);
+        config2.setDiscardInheritedProperties(true);
+        config1.initialize(rootCms());
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+        Map<String, CmsXmlContentProperty> result = config2.getPropertyConfigurationAsMap();
+        assertEquals(1, result.size());
+        assertNotNull(result.get("baz"));
+    }
+
+    public void testDiscardInheritedTypes() throws Exception {
+
+        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+            "/.content",
+            "foldername2"), "pattern2_%(number)", null);
+        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah", null);
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/",
+            list(typeConf1, typeConf2, typeConf3),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/",
+            list(typeConf3.copy()),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+
+        config2.setIsDiscardInheritedTypes(true);
+        config1.initialize(rootCms());
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+        List<CmsResourceTypeConfig> resourceTypeConfig = config2.getResourceTypes();
+        assertEquals(1, resourceTypeConfig.size());
+        assertEquals("baz", resourceTypeConfig.get(0).getTypeName());
     }
 
     public void testInheritedFolderName1() throws Exception {
@@ -316,8 +389,9 @@ public class TestConfig extends OpenCmsTestCase {
         config2.initialize(rootCms());
         config2.setParent(config1);
 
-        assertPathEquals("/somefolder/.content/blah", config2.getResourceType(typeConf1.getTypeName()).getFolderPath(
-            getCmsObject()));
+        assertPathEquals(
+            "/somefolder/.content/blah",
+            config2.getResourceType(typeConf1.getTypeName()).getFolderPath(getCmsObject()));
     }
 
     public void testInheritedFolderName2() throws Exception {

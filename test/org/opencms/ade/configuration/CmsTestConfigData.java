@@ -59,7 +59,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages) {
 
-        super(basePath, resourceTypeConfig, propertyConfig, detailPageInfos, modelPages);
+        super(basePath, resourceTypeConfig, false, propertyConfig, false, detailPageInfos, modelPages, false);
     }
 
     /**
@@ -69,6 +69,21 @@ public class CmsTestConfigData extends CmsADEConfigData {
     public CmsADEConfigData parent() {
 
         return m_parent;
+    }
+
+    public void setDiscardInheritedModelPages(boolean discardInheritedModelPages) {
+
+        m_discardInheritedModelPages = discardInheritedModelPages = discardInheritedModelPages;
+    }
+
+    public void setDiscardInheritedProperties(boolean discardInheritedProperties) {
+
+        m_discardInheritedProperties = discardInheritedProperties;
+    }
+
+    public void setIsDiscardInheritedTypes(boolean discardInheritedTypes) {
+
+        m_discardInheritedTypes = discardInheritedTypes;
     }
 
     /**

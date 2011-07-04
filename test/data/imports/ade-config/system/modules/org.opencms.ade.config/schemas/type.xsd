@@ -3,15 +3,15 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_choice.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_formatter.xsd" />
  
-    <xsd:element name="ADETypesV2" type="OpenCmsADETypesV2" />
+    <xsd:element name="ADETypes" type="OpenCmsADETypes" />
     
-    <xsd:complexType name="OpenCmsADETypesV2">
+    <xsd:complexType name="OpenCmsADETypes">
         <xsd:sequence>
-            <xsd:element name="ADETypeV2" type="OpenCmsADETypeV2" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="OpenCmsADETypeV2">
+    <xsd:complexType name="OpenCmsADEType">
         <xsd:sequence>    
         <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         <xsd:element name="Disabled" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />

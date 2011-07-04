@@ -130,12 +130,20 @@ public class CmsConfigurationReader {
         for (I_CmsXmlContentLocation node : root.getSubValues("DetailPage")) {
             parseDetailPage(node);
         }
+
+        boolean discardInheritedTypes = getBoolean(root, "DiscardTypes");
+        boolean discardInheritedProperties = getBoolean(root, "DiscardProperties");
+        boolean discardInheritedModelPages = getBoolean(root, "DiscardModelPages");
+
         CmsADEConfigData result = new CmsADEConfigData(
             basePath,
             m_resourceTypeConfigs,
+            discardInheritedTypes,
             m_propertyConfigs,
+            discardInheritedProperties,
             m_detailPageConfigs,
-            m_modelPageConfigs);
+            m_modelPageConfigs,
+            discardInheritedModelPages);
         result.setResource(content.getFile());
         if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE)) {
@@ -294,6 +302,16 @@ public class CmsConfigurationReader {
         return mergeConfigurations(configurations);
     }
 
+    protected boolean getBoolean(I_CmsXmlContentLocation parent, String name) {
+
+        I_CmsXmlContentValueLocation location = parent.getSubValue(name);
+        if (location == null) {
+            return false;
+        }
+        String value = location.getValue().getStringValue(m_cms);
+        return Boolean.parseBoolean(value);
+    }
+
     /**
      * Gets the string value of an XML content location.<p>
      * 
@@ -321,7 +339,7 @@ public class CmsConfigurationReader {
         if (configurations.isEmpty()) {
             return new CmsADEConfigData();
         }
-        for (int i = 0; i < configurations.size() - 1; i++) {
+        for (int i = 0; i < (configurations.size() - 1); i++) {
             configurations.get(i + 1).mergeParent(configurations.get(i));
         }
         return configurations.get(configurations.size() - 1);

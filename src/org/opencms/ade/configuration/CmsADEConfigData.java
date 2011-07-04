@@ -87,6 +87,15 @@ public class CmsADEConfigData {
     /** The base path of this configuration. */
     private String m_basePath;
 
+    /** Should inherited types be discarded? */
+    protected boolean m_discardInheritedTypes;
+
+    /** Should inherited properties be discard? */
+    protected boolean m_discardInheritedProperties;
+
+    /** Should inherited model pages be discarded? */
+    protected boolean m_discardInheritedModelPages;
+
     /** True if this is a module configuration, not a normal sitemap configuration. */
     private boolean m_isModuleConfig;
 
@@ -116,15 +125,22 @@ public class CmsADEConfigData {
     public CmsADEConfigData(
         String basePath,
         List<CmsResourceTypeConfig> resourceTypeConfig,
+        boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
+        boolean discardInheritedProperties,
         List<CmsDetailPageInfo> detailPageInfos,
-        List<CmsModelPageConfig> modelPages) {
+        List<CmsModelPageConfig> modelPages,
+        boolean discardInheritedModelPages) {
 
         m_basePath = basePath;
         m_ownResourceTypes = resourceTypeConfig;
         m_ownPropertyConfigurations = propertyConfig;
         m_ownModelPageConfig = modelPages;
         m_ownDetailPages = detailPageInfos;
+
+        m_discardInheritedTypes = discardInheritedTypes;
+        m_discardInheritedProperties = discardInheritedProperties;
+        m_discardInheritedModelPages = discardInheritedModelPages;
     }
 
     /**
@@ -384,11 +400,12 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parentData = parent();
         List<CmsModelPageConfig> parentModelPages;
-        if (parentData != null) {
+        if ((parentData != null) && !m_discardInheritedModelPages) {
             parentModelPages = parentData.getModelPages();
         } else {
             parentModelPages = Collections.emptyList();
         }
+
         List<CmsModelPageConfig> result = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
         return result;
     }
@@ -402,7 +419,7 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parentData = parent();
         List<CmsPropertyConfig> parentProperties;
-        if (parentData != null) {
+        if ((parentData != null) && !m_discardInheritedProperties) {
             parentProperties = parentData.getPropertyConfiguration();
         } else {
             parentProperties = Collections.emptyList();
@@ -489,6 +506,21 @@ public class CmsADEConfigData {
         m_initialized = true;
     }
 
+    public boolean isDiscardInheritedModelPages() {
+
+        return m_discardInheritedModelPages;
+    }
+
+    public boolean isDiscardInheritedProperties() {
+
+        return m_discardInheritedProperties;
+    }
+
+    public boolean isDiscardInheritedTypes() {
+
+        return m_discardInheritedTypes;
+    }
+
     /**
      * Returns true if this is a module configuration instead of a normal sitemap configuration.<p>
      * 
@@ -573,8 +605,9 @@ public class CmsADEConfigData {
         if (!isModuleConfiguration()) {
             String contentFolder = getContentFolderPath();
             if (!m_cms.existsResource(contentFolder)) {
-                m_cms.createResource(contentFolder, OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                m_cms.createResource(
+                    contentFolder,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
             }
         }
     }
@@ -650,12 +683,13 @@ public class CmsADEConfigData {
         checkInitialized();
         CmsADEConfigData parentData = parent();
         List<CmsResourceTypeConfig> parentResourceTypes = null;
-        if (parentData == null) {
+        if ((parentData == null) || m_discardInheritedTypes) {
             parentResourceTypes = Lists.newArrayList();
         } else {
             parentResourceTypes = parentData.internalGetResourceTypes();
         }
         List<CmsResourceTypeConfig> result = combineConfigurationElements(parentResourceTypes, m_ownResourceTypes);
+
         return result;
     }
 
