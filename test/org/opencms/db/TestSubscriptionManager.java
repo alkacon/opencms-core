@@ -48,6 +48,9 @@ import junit.framework.TestSuite;
  */
 public class TestSubscriptionManager extends OpenCmsTestCase {
 
+    /** Time to wait for a database operation to finish. */
+    private static final long WAIT_FOR_DB_MILLIS = 100;
+
     /**
      * Default JUnit constructor.<p>
      * 
@@ -127,7 +130,7 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
         assertEquals(2, subscribedUserResources.size());
 
         subMan.markResourceAsVisitedBy(cms, "/folder2/page1.html", user);
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         filter.setMode(CmsSubscriptionReadMode.VISITED);
         subscribedUserResources = subMan.readSubscribedResources(cms, filter);
         assertEquals(1, subscribedUserResources.size());
@@ -137,7 +140,7 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
         assertEquals(1, subscribedUserResources.size());
 
         long beforeChangeTime = System.currentTimeMillis();
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         cms.lockResource("/folder2/page1.html");
         CmsFile file = cms.readFile("/folder2/page1.html");
         cms.writeFile(file);
@@ -222,9 +225,9 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
         assertEquals("/folder1/index.html", cms.getSitePath(visitedUserResources.get(0)));
 
         // wait between operations to be able to perform time based tests
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         long storedTime = System.currentTimeMillis();
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         subMan.markResourceAsVisitedBy(cms, "/folder1/page1.html", user);
         visitedUserResources = subMan.readResourcesVisitedBy(cms, filter);
         assertEquals(2, visitedUserResources.size());
@@ -234,19 +237,19 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
         assertEquals(1, visitedUserResources.size());
         assertEquals("/folder1/page1.html", cms.getSitePath(visitedUserResources.get(0)));
 
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         storedTime = System.currentTimeMillis();
         filter.setFromDate(storedTime);
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         visitedUserResources = subMan.readResourcesVisitedBy(cms, filter);
         assertEquals(0, visitedUserResources.size());
 
         subMan.markResourceAsVisitedBy(cms, "/folder1/page2.html", user);
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         subMan.markResourceAsVisitedBy(cms, "/folder1/page3.html", user);
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         subMan.markResourceAsVisitedBy(cms, "/folder1/subfolder11/page1.html", user);
-        Thread.sleep(20);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         subMan.markResourceAsVisitedBy(cms, "/folder1/subfolder11/page2.html", user);
 
         filter = new CmsVisitedByFilter(cms);
