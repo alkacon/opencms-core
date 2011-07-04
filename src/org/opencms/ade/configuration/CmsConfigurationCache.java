@@ -84,6 +84,8 @@ class CmsConfigurationCache {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigData> m_siteConfigurations = new HashMap<String, CmsADEConfigData>();
 
+    private Map<String, CmsUUID> m_configurationsToRead = new HashMap<String, CmsUUID>();
+
     /** 
      * Creates a new cache instance.<p>
      * 
@@ -143,6 +145,7 @@ class CmsConfigurationCache {
      */
     protected synchronized List<String> getDetailPages(String type) {
 
+        readRemainingConfigurations();
         List<String> result = new ArrayList<String>();
         for (CmsADEConfigData configData : m_siteConfigurations.values()) {
             for (CmsDetailPageInfo pageInfo : configData.getDetailPagesForType(type)) {
@@ -169,6 +172,7 @@ class CmsConfigurationCache {
      */
     protected synchronized String getParentFolderType(String rootPath) {
 
+        readRemainingConfigurations();
         String parent = CmsResource.getParentFolder(rootPath);
         if (parent == null) {
             return null;
@@ -197,6 +201,7 @@ class CmsConfigurationCache {
         if (path == null) {
             return null;
         }
+        readRemainingConfigurations();
         String normalizedPath = CmsStringUtil.joinPaths("/", path, "/");
         List<String> prefixes = new ArrayList<String>();
         for (String key : m_siteConfigurations.keySet()) {
@@ -344,7 +349,8 @@ class CmsConfigurationCache {
         m_pathCache.remove(structureId);
         if (isSitemapConfiguration(rootPath, type)) {
             synchronized (this) {
-                m_siteConfigurations.remove(getBasePath(rootPath));
+                String basePath = getBasePath(rootPath);
+                removePath(basePath);
                 LOG.info("Removing config file from cache: " + rootPath);
             }
         } else if (isModuleConfiguration(rootPath, type)) {
@@ -419,14 +425,10 @@ class CmsConfigurationCache {
         }
         if (isSitemapConfiguration(rootPath, type)) {
             synchronized (this) {
-                CmsConfigurationReader configReader = new CmsConfigurationReader(m_cms);
-                String basePath = getBasePath(rootPath);
-                CmsResource configRes = m_cms.readResource(rootPath);
-                CmsADEConfigData configData = configReader.parseSitemapConfiguration(getBasePath(rootPath), configRes);
-                configData.initialize(m_cms);
-                m_siteConfigurations.put(basePath, configData);
-                LOG.info("Updating configuration file " + rootPath);
-                initializeFolderTypes();
+                // Do not update the configuration right now, because reading configuration files while handling 
+                // an event may lead to cache problems. Instead, the configuration file is read when the configuration
+                // is queried.
+                m_configurationsToRead.put(rootPath, structureId);
             }
         } else if (isModuleConfiguration(rootPath, type)) {
             refreshModuleConfiguration();
@@ -435,11 +437,11 @@ class CmsConfigurationCache {
     }
 
     /**
-     * Updates the cached folder types.<p>
-     * 
-     * @param rootPath the folder root path 
-     * @throws CmsException if something goes wrong 
-     */
+    * Updates the cached folder types.<p>
+    * 
+    * @param rootPath the folder root path 
+    * @throws CmsException if something goes wrong 
+    */
     protected synchronized void updateFolderTypes(String rootPath) throws CmsException {
 
         if (m_folderTypes.containsKey(rootPath)) {
@@ -447,6 +449,46 @@ class CmsConfigurationCache {
                 initializeFolderTypes();
             }
         }
+    }
+
+    private synchronized void readRemainingConfigurations() {
+
+        if (m_configurationsToRead.isEmpty()) {
+            // do no initialize folder types if there were no changes!
+            return;
+        }
+        for (Map.Entry<String, CmsUUID> entry : m_configurationsToRead.entrySet()) {
+            String rootPath = entry.getKey();
+            CmsUUID structureId = entry.getValue();
+            try {
+                // remove the original entry first so it will  not still be there if reading the configuration fails 
+                m_siteConfigurations.remove(rootPath);
+                CmsResource configRes = m_cms.readResource(structureId);
+                CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+                String basePath = getBasePath(rootPath);
+                CmsADEConfigData configData = reader.parseSitemapConfiguration(basePath, configRes);
+                configData.initialize(m_cms);
+                m_siteConfigurations.put(basePath, configData);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            } catch (CmsRuntimeException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        m_configurationsToRead.clear();
+        try {
+            initializeFolderTypes();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        } catch (CmsRuntimeException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+    }
+
+    private void removePath(String rootPath) {
+
+        m_configurationsToRead.remove(rootPath);
+        m_siteConfigurations.remove(rootPath);
     }
 
 }
