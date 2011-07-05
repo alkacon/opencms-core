@@ -63,6 +63,9 @@ class CmsConfigurationCache {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
 
+    /** The key that is used for the map entry which indicates that the module configuration needs to be read. */
+    private static final String MODULE_CONFIG_KEY = "__MODULE_CONFIG_KEY__";
+
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
 
@@ -358,13 +361,9 @@ class CmsConfigurationCache {
             }
         } else if (isModuleConfiguration(rootPath, type)) {
             LOG.info("Removing module configuration " + rootPath);
-            refreshModuleConfiguration();
-            try {
-                initializeFolderTypes();
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+            synchronized (this) {
+                m_configurationsToRead.put(MODULE_CONFIG_KEY, CmsUUID.getNullUUID());
             }
-
         }
 
     }
@@ -378,8 +377,6 @@ class CmsConfigurationCache {
 
         try {
             update(res.getStructureId(), res.getRootPath(), res.getType(), res.getState());
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         } catch (CmsRuntimeException e) {
             // may happen during import of org.opencms.ade.configuration module
             LOG.warn(e.getLocalizedMessage(), e);
@@ -395,8 +392,6 @@ class CmsConfigurationCache {
 
         try {
             update(res.getStructureId(), res.getRootPath(), res.getTypeId(), res.getState());
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         } catch (CmsRuntimeException e) {
             // may happen during import of org.opencms.ade.configuration module
             LOG.warn(e.getLocalizedMessage(), e);
@@ -410,9 +405,8 @@ class CmsConfigurationCache {
      * @param rootPath the root path of the resource 
      * @param type the type id of the resource 
      * @param state the state of the resource 
-     * @throws CmsException if something goes wrong 
      */
-    protected void update(CmsUUID structureId, String rootPath, int type, CmsResourceState state) throws CmsException {
+    protected void update(CmsUUID structureId, String rootPath, int type, CmsResourceState state) {
 
         if (CmsResource.isTemporaryFileName(rootPath)) {
             return;
@@ -437,8 +431,9 @@ class CmsConfigurationCache {
             }
         } else if (isModuleConfiguration(rootPath, type)) {
             LOG.info("Changed module configuration file " + rootPath + "(" + structureId + ")");
-            refreshModuleConfiguration();
-            initializeFolderTypes();
+            synchronized (this) {
+                m_configurationsToRead.put(MODULE_CONFIG_KEY, CmsUUID.getNullUUID());
+            }
         }
     }
 
@@ -470,21 +465,25 @@ class CmsConfigurationCache {
         for (Map.Entry<String, CmsUUID> entry : m_configurationsToRead.entrySet()) {
             String rootPath = entry.getKey();
             CmsUUID structureId = entry.getValue();
-            try {
-                // remove the original entry first, so that the configuration will be gone if reading the 
-                // configuration file fails.
-                m_siteConfigurations.remove(rootPath);
-                CmsResource configRes = m_cms.readResource(structureId);
-                CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
-                LOG.info("Reading configuration file " + rootPath + "(" + structureId + ")");
-                String basePath = getBasePath(rootPath);
-                CmsADEConfigData configData = reader.parseSitemapConfiguration(basePath, configRes);
-                configData.initialize(m_cms);
-                m_siteConfigurations.put(basePath, configData);
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            } catch (CmsRuntimeException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+            if (rootPath.equals(MODULE_CONFIG_KEY)) {
+                refreshModuleConfiguration();
+            } else {
+                try {
+                    // remove the original entry first, so that the configuration will be gone if reading the 
+                    // configuration file fails.
+                    m_siteConfigurations.remove(rootPath);
+                    CmsResource configRes = m_cms.readResource(structureId);
+                    CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+                    LOG.info("Reading configuration file " + rootPath + "(" + structureId + ")");
+                    String basePath = getBasePath(rootPath);
+                    CmsADEConfigData configData = reader.parseSitemapConfiguration(basePath, configRes);
+                    configData.initialize(m_cms);
+                    m_siteConfigurations.put(basePath, configData);
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                } catch (CmsRuntimeException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
         }
         m_configurationsToRead.clear();
