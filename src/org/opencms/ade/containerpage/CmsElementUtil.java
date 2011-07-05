@@ -33,7 +33,6 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagHeadIncludes;
@@ -297,7 +296,7 @@ public class CmsElementUtil {
         elementBean.setStatus(resUtil.getStateAbbreviation());
 
         Map<String, String> contents = new HashMap<String, String>();
-        if (element.getResource().getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+        if (element.isGroupContainer(m_cms)) {
             Set<String> types = new HashSet<String>();
             Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
             for (CmsContainer container : containers) {

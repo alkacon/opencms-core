@@ -68,14 +68,8 @@ import org.apache.commons.logging.Log;
  */
 public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
-    /** The configuration resource type id. */
-    public static final int CONFIGURATION_TYPE_ID = 14;
-
     /** The configuration resource type name. */
     public static final String CONFIGURATION_TYPE_NAME = "sitemap_config";
-
-    /** The group container resource type id. */
-    public static final int GROUP_CONTAINER_TYPE_ID = 17;
 
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";

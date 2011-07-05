@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONArray;
@@ -656,11 +655,8 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @param cms the CMS context
      * @param allElems the list to which the element should be added
-     *  
-     * @throws CmsException if something goes wrong 
      */
-    private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent)
-    throws CmsException {
+    private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent) {
 
         CmsContainerElementBean element = null;
         if (detailContent != null) {
@@ -823,7 +819,7 @@ public class CmsJspTagContainer extends TagSupport {
         element.initResource(cms);
         // writing elements to the session cache to improve performance of the container-page editor
         getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
-        if (element.getResource().getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+        if (element.isGroupContainer(cms)) {
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                 cms,
                 element.getResource(),

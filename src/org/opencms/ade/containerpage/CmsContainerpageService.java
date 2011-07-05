@@ -579,7 +579,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
                 CmsFormatterConfiguration formatters = config.getFormatters(resource);
                 String containerType = null;
-                if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID) {
+                if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
+                    resource).getTypeName())) {
                     // always reference the preview formatter for group containers
                     containerType = CmsFormatterBean.PREVIEW_TYPE;
                 } else {

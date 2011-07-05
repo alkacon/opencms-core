@@ -350,7 +350,8 @@ public class CmsContainerElementBean {
     public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
         initResource(cms);
-        return m_resource.getTypeId() == CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_ID;
+        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
+            m_resource).getTypeName());
     }
 
     /**
