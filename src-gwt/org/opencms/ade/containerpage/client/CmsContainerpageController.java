@@ -49,8 +49,8 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -61,8 +61,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -73,9 +73,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -1174,6 +1174,10 @@ public final class CmsContainerpageController {
             }
         } else {
             // only set changed if not editing a group container
+            String id = dragElement.getId();
+            if (id != null) {
+                addToRecentList(id);
+            }
             setPageChanged();
         }
     }
