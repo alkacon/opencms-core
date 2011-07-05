@@ -231,7 +231,7 @@ public class CmsJspNavigationBean {
 
         if (m_items == null) {
             switch (m_type) {
-                // calculate the results based on the given parameters
+            // calculate the results based on the given parameters
                 case forFolder:
                     if (m_startLevel == Integer.MIN_VALUE) {
                         // no start level set
@@ -253,7 +253,7 @@ public class CmsJspNavigationBean {
                     if (m_resource == null) {
                         m_items = m_builder.getSiteNavigation();
                     } else {
-                        m_items = m_builder.getSiteNavigation(m_resource, m_startLevel);
+                        m_items = m_builder.getSiteNavigation(m_resource, m_endLevel);
                     }
                     break;
                 case breadCrumb:
