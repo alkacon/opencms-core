@@ -301,9 +301,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        element.getSitePath()), e);
                 }
             }
         }
@@ -313,17 +313,15 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        standardContext.getDetailContentId()),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                    standardContext.getDetailContentId()), e);
             }
         }
         for (String cssUri : cssIncludes) {
             pageContext.getOut().print(
                 "<link href=\""
-                    + OpenCms.getLinkManager().getOnlineLink(cms, cssUri)
+                    + CmsJspTagLink.linkTagAction(cssUri, req)
                     + generateReqParams()
                     + "\" rel=\"stylesheet\" type=\"text/css\">");
         }
@@ -356,9 +354,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        element.getSitePath()), e);
                 }
             }
         }
@@ -368,17 +366,15 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        standardContext.getDetailContentId()),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                    standardContext.getDetailContentId()), e);
             }
         }
-        for (String cssUri : jsIncludes) {
+        for (String jsUri : jsIncludes) {
             pageContext.getOut().print(
                 "<script type=\"text/javascript\" src=\""
-                    + CmsJspTagLink.linkTagAction(cssUri, req)
+                    + CmsJspTagLink.linkTagAction(jsUri, req)
                     + generateReqParams()
                     + "\"></script>");
         }
