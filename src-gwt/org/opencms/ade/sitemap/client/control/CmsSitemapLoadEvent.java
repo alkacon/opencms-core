@@ -46,9 +46,6 @@ public class CmsSitemapLoadEvent extends GwtEvent<I_CmsSitemapLoadHandler> {
     /** The loaded sitemap entry. */
     private CmsClientSitemapEntry m_entry;
 
-    /** The entry's original path, in case if moved or renamed. */
-    private String m_originalPath;
-
     /** Flag to indicate if the entry should be opened. */
     private boolean m_setOpen;
 
@@ -56,13 +53,11 @@ public class CmsSitemapLoadEvent extends GwtEvent<I_CmsSitemapLoadHandler> {
      * Constructor.<p>
      * 
      * @param entry the entry that loaded its children
-     * @param originalPath the entry's original path, in case if moved or renamed
      * @param setOpen if the entry should be opened
      */
-    public CmsSitemapLoadEvent(CmsClientSitemapEntry entry, String originalPath, boolean setOpen) {
+    public CmsSitemapLoadEvent(CmsClientSitemapEntry entry, boolean setOpen) {
 
         m_entry = entry;
-        m_originalPath = originalPath;
         m_setOpen = setOpen;
     }
 
@@ -93,16 +88,6 @@ public class CmsSitemapLoadEvent extends GwtEvent<I_CmsSitemapLoadHandler> {
     public CmsClientSitemapEntry getEntry() {
 
         return m_entry;
-    }
-
-    /**
-     * Returns the entry's original path, in case if moved or renamed.<p>
-     *
-     * @return the entry's original path
-     */
-    public String getOriginalPath() {
-
-        return m_originalPath;
     }
 
     /**

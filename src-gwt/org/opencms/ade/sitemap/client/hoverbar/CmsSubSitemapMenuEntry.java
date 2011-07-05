@@ -63,13 +63,13 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        final String sitePath = getHoverbar().getSitePath();
+        String sitePath = getHoverbar().getSitePath();
         final CmsSitemapController controller = getHoverbar().getController();
         String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
         String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
         CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
 
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        final CmsClientSitemapEntry entry = controller.getEntry(sitePath);
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
@@ -100,7 +100,7 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void onOk() {
 
-                controller.createSubSitemap(sitePath);
+                controller.createSubSitemap(entry.getId());
             }
         });
         confirmDialog.center();

@@ -478,6 +478,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateInNavigation(entry);
         m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
+        if (entry.isSubSitemapType() || entry.isLeafType()) {
+            hideOpeners();
+        } else {
+            showOpeners();
+        }
     }
 
     /**

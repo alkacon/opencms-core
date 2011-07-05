@@ -60,8 +60,9 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        final String sitePath = getHoverbar().getSitePath();
+        String sitePath = getHoverbar().getSitePath();
         final CmsSitemapController controller = getHoverbar().getController();
+        final CmsClientSitemapEntry entry = controller.getEntry(sitePath);
         String confirmTitle = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TITLE_0);
         String confirmMessage = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TEXT_0);
         CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
@@ -80,7 +81,7 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void onOk() {
 
-                controller.mergeSubSitemap(sitePath);
+                controller.mergeSubSitemap(entry.getId());
             }
         });
         confirmDialog.center();

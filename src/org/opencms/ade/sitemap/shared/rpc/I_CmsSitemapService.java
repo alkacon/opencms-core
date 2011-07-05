@@ -53,16 +53,15 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsSitemapService extends RemoteService {
 
     /**
-     * Creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
      * 
-     * @param sitemapUri the URI of the parent sitemap 
-     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
+     * @param entryId the structure id of the sitemap entry to create a sub sitemap of
      * 
      * @return the sub-sitemap creation result 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsSubSitemapInfo createSubSitemap(String sitemapUri, String path) throws CmsRpcException;
+    CmsSubSitemapInfo createSubSitemap(CmsUUID entryId) throws CmsRpcException;
 
     /**
      * Returns additional sitemap entry information.<p>
@@ -89,16 +88,16 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getChildren(String entryPointUri, String root, int levels) throws CmsRpcException;
 
     /**
-     * Merges one of its sub-sitemaps into it.<p>
+     * Merges a sub-sitemap into it's parent sitemap.<p>
      * 
      * @param entryPoint the sitemap entry point
-     * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
+     * @param subSitemapId the structure id of the sub sitemap folder
      * 
      * @return the result of the merge operation
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, String path) throws CmsRpcException;
+    CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException;
 
     /**
      * Returns the initialization data for the given sitemap.<p>

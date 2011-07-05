@@ -52,13 +52,12 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsSitemapServiceAsync {
 
     /**
-     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
      * 
-     * @param sitemapUri the URI of the parent sitemap 
-     * @param path the path in the parent sitemap from which the sub-sitemap should be created
+     * @param entryId the structure id of the sitemap entry to create a sub sitemap of
      * @param callback the async callback  
      */
-    void createSubSitemap(String sitemapUri, String path, AsyncCallback<CmsSubSitemapInfo> callback);
+    void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSubSitemapInfo> callback);
 
     /**
      * Returns additional sitemap entry information.<p>
@@ -79,14 +78,14 @@ public interface I_CmsSitemapServiceAsync {
     void getChildren(String entryPointUri, String root, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
-     * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
+     * Merges a sub-sitemap into it's parent sitemap.<p>
      * 
      * @param entryPoint the sitemap entry point
-     * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
+     * @param subSitemapId the structure id of the sub sitemap folder
      * 
      * @param callback the async callback
      */
-    void mergeSubSitemap(String entryPoint, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
+    void mergeSubSitemap(String entryPoint, CmsUUID subSitemapId, AsyncCallback<CmsSitemapMergeInfo> callback);
 
     /**
      * Returns the initialization data for the given sitemap.<p>

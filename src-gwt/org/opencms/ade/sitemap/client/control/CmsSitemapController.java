@@ -321,11 +321,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Creates a sub-sitemap from the subtree of the current sitemap starting at a given path.<p>
+     * Creates a sub-sitemap from the subtree of the current sitemap starting at the given entry.<p>
      * 
-     * @param path the path whose subtree should be converted to a sub-sitemap 
+     * @param entryId the id of the entry
      */
-    public void createSubSitemap(final String path) {
+    public void createSubSitemap(final CmsUUID entryId) {
 
         CmsRpcAction<CmsSubSitemapInfo> subSitemapAction = new CmsRpcAction<CmsSubSitemapInfo>() {
 
@@ -336,7 +336,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                getService().createSubSitemap(getEntryPoint(), path, this);
+                getService().createSubSitemap(entryId, this);
             }
 
             /**
@@ -346,7 +346,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(CmsSubSitemapInfo result) {
 
                 stop(false);
-                onCreateSubSitemap(path, result);
+                onCreateSubSitemap(entryId, result);
             }
         };
         subSitemapAction.execute();
@@ -550,9 +550,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 target.initializeAll(CmsSitemapController.this);
 
                 item.updateEntry(target);
-                m_eventBus.fireEventFromSource(
-                    new CmsSitemapLoadEvent(target, sitePath, setOpen),
-                    CmsSitemapController.this);
+                m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, setOpen), CmsSitemapController.this);
                 stop(false);
                 if (callback != null) {
                     callback.onSuccess(result);
@@ -952,11 +950,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-    * Merges a subsitemap at the given path back into this sitemap.<p>
+    * Merges a subsitemap at the given id back into this sitemap.<p>
     * 
-    * @param path the path at which the sitemap should be merged into the current sitemap 
+    * @param entryId the id of the sub sitemap entry 
     */
-    public void mergeSubSitemap(final String path) {
+    public void mergeSubSitemap(final CmsUUID entryId) {
 
         CmsRpcAction<CmsSitemapMergeInfo> mergeAction = new CmsRpcAction<CmsSitemapMergeInfo>() {
 
@@ -967,7 +965,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                getService().mergeSubSitemap(getEntryPoint(), path, this);
+                getService().mergeSubSitemap(getEntryPoint(), entryId, this);
             }
 
             /**
@@ -977,8 +975,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(CmsSitemapMergeInfo result) {
 
                 stop(false);
-                CmsClientSitemapEntry target = getEntry(path);
-                I_CmsClientSitemapChange change = new CmsClientSitemapChangeMergeSitemap(path, target, result);
+                CmsClientSitemapEntry target = getEntryById(entryId);
+                I_CmsClientSitemapChange change = new CmsClientSitemapChangeMergeSitemap(target, result);
                 executeChange(change);
 
             }
@@ -1266,13 +1264,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
     /**
      * Internal method which is called when a new sub-sitemap has been successfully created.<p>
      * 
-     * @param path the path in the current sitemap at which the sub-sitemap has been created
+     * @param entryId the id of the created sub-sitemap entry
      * @param info the info bean which is the result of the sub-sitemap creation  
     
      */
-    protected void onCreateSubSitemap(String path, CmsSubSitemapInfo info) {
+    protected void onCreateSubSitemap(CmsUUID entryId, CmsSubSitemapInfo info) {
 
-        CmsClientSitemapEntry entry = getEntry(path);
+        CmsClientSitemapEntry entry = getEntryById(entryId);
         CmsClientSitemapChangeCreateSubSitemap change = new CmsClientSitemapChangeCreateSubSitemap(entry, info);
         executeChange(change);
     }

@@ -52,24 +52,18 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     /** The result of the merge operation. */
     private CmsSitemapMergeInfo m_mergeInfo;
 
-    /** The path at which the sitemap has been merged into the parent sitemap. */
-    private String m_path;
-
     /**
      * Constructor.<p>
      * 
-     * @param path the path at which the sub-sitemap should be merged into the parent sitemap
      * @param entry the entry which references the sub-sitemap
      * @param mergeInfo the result of the server-side merge operation 
      */
-    public CmsClientSitemapChangeMergeSitemap(String path, CmsClientSitemapEntry entry, CmsSitemapMergeInfo mergeInfo) {
+    public CmsClientSitemapChangeMergeSitemap(CmsClientSitemapEntry entry, CmsSitemapMergeInfo mergeInfo) {
 
-        m_path = path;
         m_entry = entry;
         m_mergeInfo = mergeInfo;
         m_entry.setEntryType(EntryType.folder);
-        CmsClientSitemapEntry changedEntry = new CmsClientSitemapEntry(m_entry);
-        m_internalChange = new CmsClientSitemapChangeEdit(m_entry, changedEntry, false);
+        m_internalChange = new CmsClientSitemapChangeEdit(m_entry, mergeInfo.getMergedEntry(), false);
     }
 
     /**
@@ -96,7 +90,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     public void applyToView(CmsSitemapView view) {
 
         m_internalChange.applyToView(view);
-        view.onLoad(new CmsSitemapLoadEvent(m_entry, m_path, true));
+        view.onLoad(new CmsSitemapLoadEvent(m_entry, true));
     }
 
     /**

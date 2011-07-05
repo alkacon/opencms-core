@@ -143,16 +143,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubSitemap(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubSitemap(org.opencms.util.CmsUUID)
      */
-    public CmsSubSitemapInfo createSubSitemap(String entryPoint, String path) throws CmsRpcException {
+    public CmsSubSitemapInfo createSubSitemap(CmsUUID entryId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
-            CmsResource subSitemapFolder = cms.readResource(path);
+            CmsResource subSitemapFolder = cms.readResource(entryId);
             ensureLock(subSitemapFolder);
-            String folderName = CmsStringUtil.joinPaths(path, CmsADEManager.CONFIG_FOLDER_NAME + "/");
+            String sitePath = cms.getSitePath(subSitemapFolder);
+            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/");
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
                 cms.createResource(folderName, OpenCms.getResourceManager().getResourceType(
@@ -175,11 +176,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.writeResource(subSitemapFolder);
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(sitePath), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
-            return new CmsSubSitemapInfo(path, System.currentTimeMillis());
+
+            return new CmsSubSitemapInfo(entry, System.currentTimeMillis());
         } catch (Exception e) {
             error(e);
         }
@@ -245,25 +246,34 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubSitemap(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubSitemap(java.lang.String, org.opencms.util.CmsUUID)
      */
-    public CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, String path) throws CmsRpcException {
+    public CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
-            String subSitemapPath = CmsResource.getFolderPath(path);
-            CmsResource subSitemapFolder = cms.readResource(subSitemapPath);
+            CmsResource subSitemapFolder = cms.readResource(subSitemapId);
             ensureLock(subSitemapFolder);
             subSitemapFolder.setType(OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
+            cms.writeResource(subSitemapFolder);
+            String sitePath = cms.getSitePath(subSitemapFolder);
+            String sitemapConfigName = CmsStringUtil.joinPaths(
+                sitePath,
+                CmsADEManager.CONFIG_FOLDER_NAME,
+                CmsADEManager.CONFIG_FILE_NAME);
+            if (cms.existsResource(sitemapConfigName)) {
+                cms.deleteResource(sitemapConfigName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            }
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
             CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
                 cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
-            return new CmsSitemapMergeInfo(getChildren(entryPoint, subSitemapPath, 1), System.currentTimeMillis());
+
+            return new CmsSitemapMergeInfo(getChildren(entryPoint, sitePath, 1), System.currentTimeMillis());
         } catch (Exception e) {
             error(e);
         }
@@ -1422,6 +1432,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             if (!isRoot && isSubSitemap(navElement)) {
                 clientEntry.setEntryType(EntryType.subSitemap);
+                clientEntry.setDefaultFileType(null);
             }
             CmsLock folderLock = cms.getLock(entryFolder);
             clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()

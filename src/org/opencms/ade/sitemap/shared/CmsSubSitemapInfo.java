@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CmsSubSitemapInfo implements IsSerializable {
 
     /** The path of the newly created sitemap. */
-    private String m_sitemapPath;
+    private CmsClientSitemapEntry m_entry;
 
     /** The 'last modified' time of the parent sitemap. */
     private long m_timestamp;
@@ -46,13 +46,13 @@ public class CmsSubSitemapInfo implements IsSerializable {
     /**
      * Constructor.<p>
      * 
-     * @param sitemapPath the path of the newly created sitemap
+     * @param entry the entry of the newly created sub sitemap
      * @param timestamp the 'last modified' time of the parent sitemap 
      */
-    public CmsSubSitemapInfo(String sitemapPath, long timestamp) {
+    public CmsSubSitemapInfo(CmsClientSitemapEntry entry, long timestamp) {
 
         m_timestamp = timestamp;
-        m_sitemapPath = sitemapPath;
+        m_entry = entry;
     }
 
     /**
@@ -64,13 +64,13 @@ public class CmsSubSitemapInfo implements IsSerializable {
     }
 
     /**
-     * Returns the path of the newly created sitemap.<p>
+     * Returns the entry of the newly created sitemap.<p>
      * 
-     * @return the path of the newly created sitemap
+     * @return the entry of the newly created sitemap
      */
-    public String getSitemapPath() {
+    public CmsClientSitemapEntry getEntry() {
 
-        return m_sitemapPath;
+        return m_entry;
     }
 
     /**
