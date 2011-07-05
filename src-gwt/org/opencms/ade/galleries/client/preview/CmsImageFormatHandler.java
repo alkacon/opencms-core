@@ -272,16 +272,30 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         if (m_currentFormat == m_formats.get(formatKey)) {
             return;
         }
+
         // setting the selected format restriction
         m_currentFormat = m_formats.get(formatKey);
         m_currentFormat.adjustCroppingParam(m_croppingParam);
         // in case of a locked or fixed image ratio height and width need to be reset
-        m_formatForm.setHeightInput(m_croppingParam.getTargetHeight() == -1
-        ? m_croppingParam.getOrgHeight()
-        : m_croppingParam.getTargetHeight());
-        m_formatForm.setWidthInput(m_croppingParam.getTargetWidth() == -1
-        ? m_croppingParam.getOrgWidth()
-        : m_croppingParam.getTargetWidth());
+        int height = m_croppingParam.getOrgHeight();
+        int width = m_croppingParam.getOrgWidth();
+        if (m_croppingParam.isScaled()) {
+            if (m_croppingParam.getTargetHeight() == -1) {
+                height = (int)Math.floor(((1.00 * m_croppingParam.getOrgHeight()) / m_croppingParam.getOrgWidth())
+                    * m_croppingParam.getTargetWidth());
+            } else {
+                height = m_croppingParam.getTargetHeight();
+            }
+            if (m_croppingParam.getTargetWidth() == -1) {
+                width = (int)Math.floor(((1.00 * m_croppingParam.getOrgWidth()) / m_croppingParam.getOrgHeight())
+                    * m_croppingParam.getTargetHeight());
+            } else {
+                width = m_croppingParam.getTargetWidth();
+            }
+
+        }
+        m_formatForm.setHeightInput(height);
+        m_formatForm.setWidthInput(width);
         // enabling/disabling ratio lock button
         if (m_currentFormat.isFixedRatio()) {
             m_formatForm.setRatioButton(false, false, Messages.get().key(Messages.GUI_PRIVIEW_BUTTON_RATIO_FIXED_0));
@@ -319,7 +333,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         }
         m_croppingParam.setTargetHeight(value);
         if (m_ratioLocked) {
-            m_croppingParam.setTargetWidth(value * m_originalWidth / m_originalHeight);
+            m_croppingParam.setTargetWidth((value * m_originalWidth) / m_originalHeight);
             m_formatForm.setWidthInput(m_croppingParam.getTargetWidth());
         }
         fireValueChangedEvent();
@@ -374,7 +388,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         }
         m_croppingParam.setTargetWidth(value);
         if (m_ratioLocked) {
-            m_croppingParam.setTargetHeight(value * m_originalHeight / m_originalWidth);
+            m_croppingParam.setTargetHeight((value * m_originalHeight) / m_originalWidth);
             m_formatForm.setHeightInput(m_croppingParam.getTargetHeight());
         }
         fireValueChangedEvent();

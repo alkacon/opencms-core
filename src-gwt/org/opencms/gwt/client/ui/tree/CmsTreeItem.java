@@ -430,14 +430,6 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Shows the open/close icons for this tree item and its descendants.<p>
-     */
-    public void showOpeners() {
-
-        removeStyleName(CSS.listTreeItemNoOpeners());
-    }
-
-    /**
      * Inserts the given item at the given position.<p>
      * 
      * @param item the item to insert
@@ -739,6 +731,14 @@ public class CmsTreeItem extends CmsListItem {
                 ((CmsTreeItem)widget).setTree(tree);
             }
         }
+    }
+
+    /**
+     * Shows the open/close icons for this tree item and its descendants.<p>
+     */
+    public void showOpeners() {
+
+        removeStyleName(CSS.listTreeItemNoOpeners());
     }
 
     /**

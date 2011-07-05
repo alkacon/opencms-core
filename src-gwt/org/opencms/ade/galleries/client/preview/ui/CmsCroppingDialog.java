@@ -170,16 +170,12 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
                     m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
                 } else {
                     m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
-                    m_heightDisplay.setText(String.valueOf((int)Math.floor(100.00
-                        * m_croppingParam.getTargetWidth()
-                        * m_croppingParam.getCropHeight()
+                    m_heightDisplay.setText(String.valueOf((int)Math.floor((1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
                         / m_croppingParam.getCropWidth())));
                 }
             } else if (m_croppingParam.getTargetHeight() > 0) {
                 m_heightDisplay.setText(String.valueOf(m_croppingParam.getTargetHeight()));
-                m_widthDisplay.setText(String.valueOf((int)Math.floor(100.00
-                    * m_croppingParam.getTargetHeight()
-                    * m_croppingParam.getCropWidth()
+                m_widthDisplay.setText(String.valueOf((int)Math.floor((1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
                     / m_croppingParam.getCropHeight())));
             } else {
                 m_heightDisplay.setText(String.valueOf(m_croppingParam.getCropHeight()));
@@ -188,13 +184,11 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
             String scale = "100%";
             if (m_croppingParam.getTargetHeight() > 0) {
-                scale = String.valueOf((int)Math.floor(100.00
-                    * m_croppingParam.getCropHeight()
+                scale = String.valueOf((int)Math.floor((100.00 * m_croppingParam.getCropHeight())
                     / m_croppingParam.getTargetHeight()))
                     + "%";
             } else if (m_croppingParam.getTargetWidth() > 0) {
-                scale = String.valueOf((int)Math.floor(100.00
-                    * m_croppingParam.getCropWidth()
+                scale = String.valueOf((int)Math.floor((100.00 * m_croppingParam.getCropWidth())
                     / m_croppingParam.getTargetWidth()))
                     + "%";
             }
@@ -227,12 +221,11 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_image.setUrl(m_imagePath + "?" + m_displayCropping.toString());
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);
         if ((targetParam.getTargetHeight() > 0) && (targetParam.getTargetWidth() > 0)) {
-            m_croppingPanel.setRatio(1.00 * targetParam.getTargetHeight() / targetParam.getTargetWidth());
+            m_croppingPanel.setRatio((1.00 * targetParam.getTargetHeight()) / targetParam.getTargetWidth());
         }
 
-        m_heightRatio = 1.00 * m_croppingParam.getOrgHeight() / m_displayCropping.getTargetHeight();
-        m_widthRatio = 1.00 * m_croppingParam.getOrgWidth() / m_displayCropping.getTargetWidth();
-
+        m_heightRatio = (1.00 * m_croppingParam.getOrgHeight()) / m_displayCropping.getTargetHeight();
+        m_widthRatio = (1.00 * m_croppingParam.getOrgWidth()) / m_displayCropping.getTargetWidth();
         if (m_croppingParam.isCropped()) {
             m_croppingPanel.setAreaPosition(true, calculateSelectPosition());
         } else {
@@ -261,14 +254,10 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
         if (!((m_croppingParam.getTargetWidth() > 0) && (m_croppingParam.getTargetHeight() > 0))) {
             if (m_croppingParam.getTargetWidth() > 0) {
-                m_croppingParam.setTargetHeight((int)Math.floor(100.00
-                    * m_croppingParam.getTargetWidth()
-                    * m_croppingParam.getCropHeight()
+                m_croppingParam.setTargetHeight((int)Math.floor((1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
                     / m_croppingParam.getCropWidth()));
             } else if (m_croppingParam.getTargetHeight() > 0) {
-                m_croppingParam.setTargetWidth((int)Math.floor(100.00
-                    * m_croppingParam.getTargetHeight()
-                    * m_croppingParam.getCropWidth()
+                m_croppingParam.setTargetWidth((int)Math.floor((1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
                     / m_croppingParam.getCropHeight()));
             } else {
                 m_croppingParam.setTargetHeight(m_croppingParam.getCropHeight());
@@ -292,6 +281,11 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_croppingParam.setCropX((int)Math.round(m_widthRatio * position.getLeft()));
     }
 
+    /**
+     * Calculates the select area position for the current cropping parameter.<p>
+     * 
+     * @return the select area position
+     */
     private CmsPositionBean calculateSelectPosition() {
 
         CmsPositionBean result = new CmsPositionBean();
