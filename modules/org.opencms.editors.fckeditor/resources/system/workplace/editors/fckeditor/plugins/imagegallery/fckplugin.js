@@ -35,8 +35,8 @@ dialogCommand.prototype.GetState = function() {
  */
 dialogCommand.prototype.Execute = function() {
 	var command=new FCKDialogCommand(
-			"OcmsImageGallery",
-			"<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />",
+			'OcmsImageGallery',
+			'<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
 			imageGalleryDialogUrl(),
 			685,
 			573
@@ -51,7 +51,7 @@ FCKCommands.RegisterCommand(
 
 //create the "OcmsImageGallery" toolbar button
 //syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
-var opencmsImageGalleryItem = new FCKToolbarButton("OcmsImageGallery", "<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />", "<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />", null, false, true);
+var opencmsImageGalleryItem = new FCKToolbarButton('OcmsImageGallery', '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', null, false, true);
 opencmsImageGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-imagegallery.gif";
 
 //"OcmsImageGallery" is the name that is used in the toolbar configuration

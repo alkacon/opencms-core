@@ -9,7 +9,7 @@
 	pageContext.setAttribute("locale", dialog.getLocale().toString());
     String itemResType = CmsResourceTypeBinary.getStaticTypeName();
 %><fmt:setLocale value="${locale}" />
-<fmt:bundle basename="org.opencms.ade.galleries.Messages">
+<fmt:bundle basename="org.opencms.ade.galleries.messages">
 // nesting a FCKDialogCommand to use dynamic the dialog URLs
 
 /**
@@ -35,8 +35,8 @@ dialogCommand.prototype.GetState = function() {
  */
 dialogCommand.prototype.Execute = function() {
 	var command=new FCKDialogCommand(
-			"OcmsDownloadGallery",
-			"<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />",
+			'OcmsDownloadGallery',
+			'<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
 			downloadGalleryDialogUrl(),
 			685,
 			573
@@ -51,7 +51,7 @@ FCKCommands.RegisterCommand(
 
 //create the "OcmsDownloadGallery" toolbar button
 //syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
-var opencmsDownloadGalleryItem = new FCKToolbarButton("OcmsDownloadGallery", "<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />", "<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />", null, false, true);
+var opencmsDownloadGalleryItem = new FCKToolbarButton('OcmsDownloadGallery', '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />', '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />', null, false, true);
 opencmsDownloadGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-downloadgallery.gif";
 
 //"OcmsDownloadGallery" is the name that is used in the toolbar configuration
