@@ -32,6 +32,8 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.user.client.Window;
+
 /**
  * Sitemap context menu goto parent sitemap entry.<p>
  * 
@@ -57,10 +59,14 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitemapLocation = CmsCoreProvider.get().getUri()
+        String uri = CmsCoreProvider.get().getUri()
             + "?path="
             + getHoverbar().getController().getData().getParentSitemap();
-        getHoverbar().getController().leaveEditor(sitemapLocation);
+        final String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
+        if ((returnCode != null) && (returnCode.length() != 0)) {
+            uri += "&returncode=" + returnCode;
+        }
+        getHoverbar().getController().leaveEditor(uri);
     }
 
     /**

@@ -33,6 +33,8 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.user.client.Window;
+
 /**
  * Sitemap context menu goto sub sitemap entry.<p>
  * 
@@ -63,8 +65,12 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
             sitePath += "/";
         }
         CmsSitemapController controller = getHoverbar().getController();
-        String sitemapLocation = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
-        controller.leaveEditor(sitemapLocation);
+        String uri = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
+        final String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
+        if ((returnCode != null) && (returnCode.length() != 0)) {
+            uri += "&returncode=" + returnCode;
+        }
+        controller.leaveEditor(uri);
     }
 
     /**
