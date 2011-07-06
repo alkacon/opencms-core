@@ -45,7 +45,7 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
     private Map<String, CmsZIndexChain> m_chains = new HashMap<String, CmsZIndexChain>();
 
     /** The constant which should be added to the bumped z index. */
-    public static final int BUMP_OFFSET = 9999;
+    public static final int BUMP_OFFSET = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.constants().css().zIndexHighlighting() + 1;
 
     /** The maximum z index found in the container ancestors. */
     private int m_maxZIndex;

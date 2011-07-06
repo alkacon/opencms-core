@@ -4,14 +4,16 @@
 	background: transparent;
 }
 
+
+/** Opacity filter somehow hides the hightlighting in IE7 and IE8, will not use it for now. */
 @if user.agent ie6 {
-	.highlightBox {
+/*	.highlightBox {
 		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=60, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
-	}
+	}  */
 } @elif user.agent ie8 {
-	.highlightBox {
+/*	.highlightBox {
 		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=60, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
-	}
+	}  */
 } @else {
 	.highlightBox {
 		opacity: 0.6;
