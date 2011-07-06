@@ -35,6 +35,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -45,6 +46,8 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
@@ -61,6 +64,9 @@ public final class CmsJspStandardContextBean {
 
     /** The attribute name of the standard JSP context bean. */
     public static final String ATTRIBUTE_NAME = "cms";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspStandardContextBean.class);
 
     /** OpenCms user context. */
     private CmsObject m_cms;
@@ -269,6 +275,39 @@ public final class CmsJspStandardContextBean {
             m_vfsBean = CmsJspVfsAccessBean.create(m_cms);
         }
         return m_vfsBean;
+    }
+
+    /**
+     * Checks whether a detail page is available for the container element.<p>
+     * 
+     * @return true if there is a detail page for the container element
+     */
+    public boolean isDetailPageAvailable() {
+
+        if (m_cms == null) {
+            return false;
+        }
+        CmsContainerElementBean element = getElement();
+        if (element == null) {
+            return false;
+        }
+        if (element.isInMemoryOnly()) {
+            return false;
+        }
+        CmsResource res = element.getResource();
+        if (res == null) {
+            return false;
+        }
+        try {
+            String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+                m_cms,
+                res.getRootPath(),
+                m_cms.getRequestContext().getUri());
+            return detailPage != null;
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return false;
+        }
     }
 
     /**

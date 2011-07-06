@@ -6,7 +6,7 @@
 	<c:set var="formlink"><cms:link>${content.filename}</cms:link></c:set>
 	<div class="box ${cms.element.settings.boxschema}">
 	<c:choose>
-		<c:when test="${fn:endsWith(formlink, content.filename)}">
+		<c:when test="${!cms.detailPageAvailable}">
 			<h4>Search Error</h4>
 			<div class="boxbody">No detail page for the search has been defined in the sitemap.</div>
 		</c:when>
