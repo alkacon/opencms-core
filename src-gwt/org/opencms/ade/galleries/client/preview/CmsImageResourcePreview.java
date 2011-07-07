@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -133,6 +134,7 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
      */
     public boolean setDataInEditor() {
 
+        CmsDebugLog.getInstance().printLine("Setting data");
         if (m_controller == null) {
             return true;
         }

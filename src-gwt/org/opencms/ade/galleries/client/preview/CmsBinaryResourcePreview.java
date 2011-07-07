@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -112,6 +113,7 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
         // initialize the controller and controller handler
         m_controller = new CmsBinaryPreviewController(new CmsBinaryPreviewHandler(previewDialog, this, parentElementId));
         exportRemovePreview(parentElementId);
+        CmsPreviewUtil.exportFunctions(getPreviewName(), this);
         parentPanel.add(previewDialog);
         parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         //load preview data
@@ -132,6 +134,7 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      */
     public boolean setDataInEditor() {
 
+        CmsDebugLog.getInstance().printLine("Setting data");
         if (m_controller == null) {
             return true;
         }

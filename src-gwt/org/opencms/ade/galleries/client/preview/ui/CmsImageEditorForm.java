@@ -216,10 +216,7 @@ public class CmsImageEditorForm extends Composite {
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = entry.getValue().getFormValueAsString();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(val)) {
-                if (attributes.containsKey(entry.getKey().name())) {
-                    continue;
-                }
-                val = null;
+                continue;
             }
             attributes.put(entry.getKey().name(), val);
             // put the same value in 'alt' and 'title' attribute

@@ -69,6 +69,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
                 break;
             case editor:
                 CmsPreviewUtil.setLink(resourcePath, title, null);
+                CmsPreviewUtil.closeDialog();
                 break;
             case ade:
             case view:
