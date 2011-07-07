@@ -51,10 +51,10 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsPropertyDefinition.CmsPropertyType;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsPropertyDefinition.CmsPropertyType;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryFolder;
 import org.opencms.file.history.CmsHistoryPrincipal;
@@ -72,6 +72,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
@@ -272,7 +273,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             }
 
-            if (maxVersion - versionsToKeep <= 0) {
+            if ((maxVersion - versionsToKeep) <= 0) {
                 // nothing to delete
                 internalCleanup(dbc, resource);
                 return 0;
@@ -282,7 +283,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             int minStrPublishTagToKeep = -1;
             q = m_sqlManager.createQuery(dbc, C_HISTORY_READ_MAXTAG_FOR_VERSION);
             q.setParameter(1, resource.getStructureId().toString());
-            q.setParameter(2, Integer.valueOf(1 + maxVersion - versionsToKeep));
+            q.setParameter(2, Integer.valueOf((1 + maxVersion) - versionsToKeep));
             try {
                 minStrPublishTagToKeep = CmsDataTypeUtil.numberToInt((Number)q.getSingleResult());
             } catch (NoResultException e) {
@@ -564,7 +565,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             for (int i = 0; i < historyResources.size(); i++) {
                 I_CmsHistoryResource histRes = historyResources.get(i);
                 result.add(histRes);
-                if (i < historyResources.size() - 1) {
+                if (i < (historyResources.size() - 1)) {
                     // this is one older direct version than histRes (histRes.getPublishTag() > histRes2.getPublishTag())
                     I_CmsHistoryResource histRes2 = historyResources.get(i + 1);
 
@@ -1316,14 +1317,19 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                                 false,
                                 true);
                         } else {
-                            // put the content definitively in the history if no sibling is left
-                            m_driverManager.getVfsDriver(dbc).createOnlineContent(
-                                dbc,
-                                resource.getResourceId(),
-                                ((CmsFile)resource).getContents(),
-                                publishTag,
-                                true,
-                                false);
+                            @SuppressWarnings("unchecked")
+                            Set<CmsUUID> changedAndDeleted = (Set<CmsUUID>)dbc.getAttribute(CmsDriverManager.KEY_CHANGED_AND_DELETED);
+                            if ((changedAndDeleted == null) || !changedAndDeleted.contains(resource.getResourceId())) {
+
+                                // put the content definitively in the history if no sibling is left
+                                m_driverManager.getVfsDriver(dbc).createOnlineContent(
+                                    dbc,
+                                    resource.getResourceId(),
+                                    ((CmsFile)resource).getContents(),
+                                    publishTag,
+                                    true,
+                                    false);
+                            }
                         }
                     }
                 }

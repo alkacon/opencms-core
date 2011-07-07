@@ -215,6 +215,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** "driver.history" string in the configuration-file. */
     public static final String CONFIGURATION_HISTORY = "driver.history";
 
+    /** DBC attribute key needed to fix publishing behavior involving siblings. */
+    public static final String KEY_CHANGED_AND_DELETED = "changedAndDeleted";
+
     /** "driver.project" string in the configuration-file. */
     public static final String CONFIGURATION_PROJECT = "driver.project";
 

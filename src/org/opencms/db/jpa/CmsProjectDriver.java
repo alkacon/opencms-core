@@ -115,6 +115,8 @@ import javax.persistence.Query;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Sets;
+
 /**
  * JPA database server implementation of the project driver methods.<p>
  * 
@@ -1671,6 +1673,18 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     Messages.get().container(Messages.RPT_PUBLISH_FILES_BEGIN_0),
                     I_CmsReport.FORMAT_HEADLINE);
             }
+
+            Set<CmsUUID> deletedResourceIds = new HashSet<CmsUUID>();
+            Set<CmsUUID> changedResourceIds = new HashSet<CmsUUID>();
+            for (CmsResource res : publishList.getFileList()) {
+                if (res.getState().isDeleted()) {
+                    deletedResourceIds.add(res.getResourceId());
+                } else {
+                    changedResourceIds.add(res.getResourceId());
+                }
+            }
+            Set<CmsUUID> changedAndDeletedResourceIds = Sets.intersection(deletedResourceIds, changedResourceIds);
+            dbc.setAttribute(CmsDriverManager.KEY_CHANGED_AND_DELETED, changedAndDeletedResourceIds);
 
             Iterator<CmsResource> itFiles = publishList.getFileList().iterator();
             while (itFiles.hasNext()) {

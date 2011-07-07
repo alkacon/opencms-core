@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -171,7 +172,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             }
 
-            if (maxVersion - versionsToKeep <= 0) {
+            if ((maxVersion - versionsToKeep) <= 0) {
                 // nothing to delete
                 internalCleanup(dbc, resource);
                 return 0;
@@ -182,7 +183,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
             stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, 1 + maxVersion - versionsToKeep);
+            stmt.setInt(2, (1 + maxVersion) - versionsToKeep);
             res = stmt.executeQuery();
             if (res.next()) {
                 minStrPublishTagToKeep = res.getInt(1);
@@ -502,7 +503,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             for (int i = 0; i < historyResources.size(); i++) {
                 I_CmsHistoryResource histRes = (I_CmsHistoryResource)historyResources.get(i);
                 result.add(histRes);
-                if (i < historyResources.size() - 1) {
+                if (i < (historyResources.size() - 1)) {
                     // this is one older direct version than histRes (histRes.getPublishTag() > histRes2.getPublishTag())
                     I_CmsHistoryResource histRes2 = (I_CmsHistoryResource)historyResources.get(i + 1);
 
@@ -1484,14 +1485,19 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                                 false,
                                 true);
                         } else {
-                            // put the content definitively in the history if no sibling is left
-                            m_driverManager.getVfsDriver(dbc).createOnlineContent(
-                                dbc,
-                                resource.getResourceId(),
-                                ((CmsFile)resource).getContents(),
-                                publishTag,
-                                true,
-                                false);
+                            @SuppressWarnings("unchecked")
+                            Set<CmsUUID> changedAndDeleted = (Set<CmsUUID>)dbc.getAttribute(CmsDriverManager.KEY_CHANGED_AND_DELETED);
+                            if ((changedAndDeleted == null) || !changedAndDeleted.contains(resource.getResourceId())) {
+                                // put the content definitively in the history if no sibling is left
+                                // (unless another sibling with status "changed" or "new" is published)
+                                m_driverManager.getVfsDriver(dbc).createOnlineContent(
+                                    dbc,
+                                    resource.getResourceId(),
+                                    ((CmsFile)resource).getContents(),
+                                    publishTag,
+                                    true,
+                                    false);
+                            }
                         }
                     }
                 }
