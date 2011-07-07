@@ -79,6 +79,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -888,6 +889,8 @@ public final class CmsContainerpageController {
             m_containers.put(container.getName(), container);
         }
         m_containerBeans = createEmptyContainerBeans();
+        // ensure any embedded flash players are set opaque so UI elements may be placed above them
+        CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
             Element elem = DOM.getElementById(cont.getContainerId());

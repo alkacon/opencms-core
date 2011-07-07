@@ -52,9 +52,9 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 /**
  * Utility class to access the HTML DOM.<p>
@@ -391,6 +391,9 @@ public final class CmsDomUtil {
         /** HTML Tag. */
         h4,
 
+        /** HTML-Tag. */
+        iframe,
+
         /** HTML Tag. */
         li,
 
@@ -649,21 +652,21 @@ public final class CmsDomUtil {
      * @param styleSheetLink the style-sheet link
      */
     public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
-      var styles = $wnd.document.styleSheets;
-      for ( var i = 0; i < styles.length; i++) {
-         if (styles[i].href != null
-               && styles[i].href.indexOf(styleSheetLink) >= 0) {
-            // style-sheet is present
-            return;
-         }
-      }
-      // include style-sheet into head
-      var headID = $wnd.document.getElementsByTagName("head")[0];
-      var cssNode = $wnd.document.createElement('link');
-      cssNode.type = 'text/css';
-      cssNode.rel = 'stylesheet';
-      cssNode.href = styleSheetLink;
-      headID.appendChild(cssNode);
+        var styles = $wnd.document.styleSheets;
+        for ( var i = 0; i < styles.length; i++) {
+            if (styles[i].href != null
+                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
+                // style-sheet is present
+                return;
+            }
+        }
+        // include style-sheet into head
+        var headID = $wnd.document.getElementsByTagName("head")[0];
+        var cssNode = $wnd.document.createElement('link');
+        cssNode.type = 'text/css';
+        cssNode.rel = 'stylesheet';
+        cssNode.href = styleSheetLink;
+        headID.appendChild(cssNode);
     }-*/;
 
     /**
@@ -683,7 +686,7 @@ public final class CmsDomUtil {
             realOffset += element.getOffsetTop();
             item = item.getOffsetParent();
         }
-        final int endScrollTop = realOffset - containerElement.getOffsetHeight() / 2;
+        final int endScrollTop = realOffset - (containerElement.getOffsetHeight() / 2);
 
         if (animationTime <= 0) {
             // no animation
@@ -703,6 +706,87 @@ public final class CmsDomUtil {
             }
         }).run(animationTime);
     }
+
+    /**
+     * Ensures any embedded flash players are set opaque so UI elements may be placed above them.<p>
+     * 
+     * @param element the element to work on
+     */
+    public static native void fixFlashZindex(Element element)/*-{
+
+        var embeds = element.getElementsByTagName('embed');
+        for (i = 0; i < embeds.length; i++) {
+            embed = embeds[i];
+            var new_embed;
+            // everything but Firefox & Konqueror
+            if (embed.outerHTML) {
+                var html = embed.outerHTML;
+                // replace an existing wmode parameter
+                if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
+                    new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i,
+                            "wmode='transparent'");
+                // add a new wmode parameter
+                else
+                    new_embed = html.replace(/<embed\s/i,
+                            "<embed wmode='transparent' ");
+                // replace the old embed object with the fixed version
+                embed.insertAdjacentHTML('beforeBegin', new_embed);
+                embed.parentNode.removeChild(embed);
+            } else {
+                // cloneNode is buggy in some versions of Safari & Opera, but works fine in FF
+                new_embed = embed.cloneNode(true);
+                if (!new_embed.getAttribute('wmode')
+                        || new_embed.getAttribute('wmode').toLowerCase() == 'window')
+                    new_embed.setAttribute('wmode', 'transparent');
+                embed.parentNode.replaceChild(new_embed, embed);
+            }
+        }
+        // loop through every object tag on the site
+        var objects = element.getElementsByTagName('object');
+        for (i = 0; i < objects.length; i++) {
+            object = objects[i];
+            var new_object;
+            // object is an IE specific tag so we can use outerHTML here
+            if (object.outerHTML) {
+                var html = object.outerHTML;
+                // replace an existing wmode parameter
+                if (html
+                        .match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
+                    new_object = html
+                            .replace(
+                                    /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
+                                    "<param name='wmode' value='transparent' />");
+                // add a new wmode parameter
+                else
+                    new_object = html
+                            .replace(/<\/object\>/i,
+                                    "<param name='wmode' value='transparent' />\n</object>");
+                // loop through each of the param tags
+                var children = object.childNodes;
+                for (j = 0; j < children.length; j++) {
+                    try {
+                        if (children[j] != null) {
+                            var theName = children[j].getAttribute('name');
+                            if (theName != null && theName.match(/flashvars/i)) {
+                                new_object = new_object
+                                        .replace(
+                                                /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
+                                                "<param name='flashvars' value='"
+                                                        + children[j]
+                                                                .getAttribute('value')
+                                                        + "' />");
+                            }
+                        }
+                    } catch (err) {
+                    }
+                }
+                // replace the old embed object with the fixed versiony
+                object.insertAdjacentHTML('beforeBegin', new_object);
+                object.parentNode.removeChild(object);
+            }
+        }
+
+    }-*/;
 
     /**
      * Generates a form element with hidden input fields.<p>
@@ -864,12 +948,12 @@ public final class CmsDomUtil {
                 result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
                 ? siblingPos.getTop()
                 : result.getTop());
-                result.setHeight((result.getTop() + result.getHeight() > siblingPos.getTop() + siblingPos.getHeight())
+                result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
                 ? result.getHeight()
-                : siblingPos.getTop() + siblingPos.getHeight() - result.getTop());
-                result.setWidth((result.getLeft() + result.getWidth() > siblingPos.getLeft() + siblingPos.getWidth())
+                : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
+                result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
                 ? result.getWidth()
-                : siblingPos.getLeft() + siblingPos.getWidth() - result.getLeft());
+                : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
             }
             sibling = sibling.getNextSiblingElement();
         }
@@ -1025,7 +1109,8 @@ public final class CmsDomUtil {
      */
     public static int getRelativeX(int x, Element target) {
 
-        return x - target.getAbsoluteLeft() + /* target.getScrollLeft() + */target.getOwnerDocument().getScrollLeft();
+        return (x - target.getAbsoluteLeft())
+            + /* target.getScrollLeft() + */target.getOwnerDocument().getScrollLeft();
     }
 
     /**
@@ -1040,7 +1125,7 @@ public final class CmsDomUtil {
      */
     public static int getRelativeY(int y, Element target) {
 
-        return y - target.getAbsoluteTop() + /* target.getScrollTop() +*/target.getOwnerDocument().getScrollTop();
+        return (y - target.getAbsoluteTop()) + /* target.getScrollTop() +*/target.getOwnerDocument().getScrollTop();
     }
 
     /**
@@ -1055,7 +1140,7 @@ public final class CmsDomUtil {
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
     /*-{
-      return "" + style.zIndex;
+        return "" + style.zIndex;
     }-*/;
 
     /**
@@ -1180,8 +1265,8 @@ public final class CmsDomUtil {
         int myY = elem.getAbsoluteTop();
         int refX = referenceElement.getAbsoluteLeft();
         int refY = referenceElement.getAbsoluteTop();
-        int newX = refX - myX + dx;
-        int newY = refY - myY + dy;
+        int newX = (refX - myX) + dx;
+        int newY = (refY - myY) + dy;
         style.setLeft(newX, Unit.PX);
         style.setTop(newY, Unit.PX);
     }
@@ -1260,7 +1345,7 @@ public final class CmsDomUtil {
             }
             if ((y == -1) || floatSort) {
                 boolean insertBefore = false;
-                if (left < width / 2) {
+                if (left < (width / 2)) {
                     if (!(floatSort && "right".equals(floating))) {
                         insertBefore = true;
                     }
@@ -1273,17 +1358,17 @@ public final class CmsDomUtil {
                     return currentIndex;
                 } else {
                     parent.insertAfter(element, child);
-                    currentIndex = index + 1 - indexCorrection;
+                    currentIndex = (index + 1) - indexCorrection;
                     return currentIndex;
                 }
             }
-            if (top < height / 2) {
+            if (top < (height / 2)) {
                 parent.insertBefore(element, child);
                 currentIndex = index - indexCorrection;
                 return currentIndex;
             } else {
                 parent.insertAfter(element, child);
-                currentIndex = index + 1 - indexCorrection;
+                currentIndex = (index + 1) - indexCorrection;
                 return currentIndex;
             }
 
@@ -1296,7 +1381,7 @@ public final class CmsDomUtil {
         }
         int top = CmsDomUtil.getRelativeY(y, parent);
         int offsetHeight = parent.getOffsetHeight();
-        if ((top >= offsetHeight / 2)) {
+        if ((top >= (offsetHeight / 2))) {
             // over top half, insert as first child
             parent.insertFirst(element);
             currentIndex = 0;
@@ -1354,8 +1439,8 @@ public final class CmsDomUtil {
      */
     public static native String removeScriptTags(String source)/*-{
 
-      var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
-      return source.replace(matchTag, "");
+        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+        return source.replace(matchTag, "");
     }-*/;
 
     /**

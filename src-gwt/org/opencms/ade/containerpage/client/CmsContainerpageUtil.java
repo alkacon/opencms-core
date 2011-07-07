@@ -263,6 +263,8 @@ public class CmsContainerpageUtil {
         boolean hasProps = !containerElement.getSettingConfig().isEmpty();
         com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
             container.getContainerId()));
+        // ensure any embedded flash players are set opaque so UI elements may be placed above them
+        CmsDomUtil.fixFlashZindex(element);
         return createElement(
             element,
             container,

@@ -31,6 +31,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -77,6 +78,9 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
 
     /** The CSS class to be assigned to each option-bar. */
     private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
+
+    /** The calculated panel width. */
+    private int m_calculatedWidth;
 
     /** The parent container element. */
     private CmsContainerPageElement m_containerElement;
@@ -139,6 +143,8 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     public void add(CmsElementOptionButton w) {
 
         m_panel.add(w);
+        m_calculatedWidth = m_panel.getWidgetCount() * 20;
+        getElement().getStyle().setWidth(m_calculatedWidth, Unit.PX);
     }
 
     /**
@@ -164,6 +170,17 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     public void clear() {
 
         m_panel.clear();
+        m_calculatedWidth = 0;
+    }
+
+    /**
+     * Returns the calculated width of the widget.<p>
+     * 
+     * @return the calculated width
+     */
+    public int getCalculatedWidth() {
+
+        return m_calculatedWidth;
     }
 
     /**

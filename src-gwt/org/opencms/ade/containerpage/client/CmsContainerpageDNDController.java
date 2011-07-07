@@ -435,6 +435,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 try {
                     String htmlContent = elementData.getContents().get(groupContainer.getContainerId());
                     helper = CmsDomUtil.createElement(htmlContent);
+                    // ensure any embedded flash players are set opaque so UI elements may be placed above them
+                    CmsDomUtil.fixFlashZindex(helper);
                     placeholder = CmsDomUtil.clone(helper);
                     placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                 } catch (Exception e) {
@@ -468,6 +470,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         }
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
                             helper.setInnerHTML(content);
+                            // ensure any embedded flash players are set opaque so UI elements may be placed above them
+                            CmsDomUtil.fixFlashZindex(helper);
                         } else {
                             helper.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                         }
@@ -476,6 +480,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         try {
                             String htmlContent = elementData.getContents().get(container.getContainerId());
                             helper = CmsDomUtil.createElement(htmlContent);
+                            // ensure any embedded flash players are set opaque so UI elements may be placed above them
+                            CmsDomUtil.fixFlashZindex(helper);
                             placeholder = CmsDomUtil.clone(helper);
                             placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                         } catch (Exception e) {
@@ -524,7 +530,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         // if the new index is not next to the old one, the position has changed
         if ((target != m_initialDropTarget)
-            || !((target.getPlaceholderIndex() == m_originalIndex + 1) || (target.getPlaceholderIndex() == m_originalIndex))) {
+            || !((target.getPlaceholderIndex() == (m_originalIndex + 1)) || (target.getPlaceholderIndex() == m_originalIndex))) {
             return true;
         }
         return false;

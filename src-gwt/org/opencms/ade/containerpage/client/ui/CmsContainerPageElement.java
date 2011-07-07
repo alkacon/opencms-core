@@ -34,14 +34,15 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -347,8 +348,14 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         if ((m_elementOptionBar != null) && (getWidgetIndex(m_elementOptionBar) >= 0)) {
             m_elementOptionBar.removeFromParent();
         }
-        add(elementOptionBar);
         m_elementOptionBar = elementOptionBar;
+        insert(m_elementOptionBar, 0);
+        if (isOptionbarIFrameCollision()) {
+            m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
+            int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
+            m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+        }
+
     }
 
     /**
@@ -431,6 +438,16 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        resetOptionbar();
+    }
+
+    /**
      * Removes all styling done during drag and drop.<p>
      */
     private void clearDrag() {
@@ -444,14 +461,44 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * Returns if the option bar position collides with any iframe child elements.<p>
+     * 
+     * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
+     */
+    private boolean isOptionbarIFrameCollision() {
+
+        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            int elementTop = getElement().getAbsoluteTop();
+            NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
+            for (int i = 0; i < frames.getLength(); i++) {
+
+                if ((frames.getItem(i).getAbsoluteTop() - elementTop) < 25) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
      * Use to avoid mouse-over and mouse-down malfunction.<p> 
      */
     private void resetOptionbar() {
 
         if (m_elementOptionBar != null) {
-            m_elementOptionBar.removeFromParent();
-            add(m_elementOptionBar);
+            if (getWidgetIndex(m_elementOptionBar) >= 0) {
+                m_elementOptionBar.removeFromParent();
+            }
+            if (isOptionbarIFrameCollision()) {
+                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
+                int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
+                m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearPosition();
+                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
+            }
+            insert(m_elementOptionBar, 0);
         }
     }
 }
