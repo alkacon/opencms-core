@@ -1,0 +1,19 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+    <xsd:element name="DynamicFunctions" type="OpenCmsDynamicFunctions" />
+    <xsd:complexType name="OpenCmsDynamicFunctions">
+        <xsd:sequence>
+            <xsd:element name="DynamicFunction" type="OpenCmsDynamicFunction" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OpenCmsDynamicFunction">
+        <xsd:sequence>
+        	<xsd:element name="FunctionProvider" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    <xsd:annotation>
+        <xsd:appinfo>
+        </xsd:appinfo>        
+    </xsd:annotation>
+</xsd:schema>
