@@ -1820,9 +1820,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     result.append("<div id=\"xmltabs\" class=\"ui-tabs\">\n<ul>\n");
                     for (Iterator<CmsXmlContentTab> i = contentDefinition.getContentHandler().getTabs().iterator(); i.hasNext();) {
                         CmsXmlContentTab tab = i.next();
-                        result.append("\t<li id=\"OcmsTabTab").append(tab.getStartName()).append(
-                            "\"><a href=\"#OcmsTab");
-                        result.append(tab.getStartName());
+                        result.append("\t<li id=\"OcmsTabTab").append(tab.getIdName()).append("\"><a href=\"#OcmsTab");
+                        result.append(tab.getIdName());
                         result.append("\"><span>");
                         result.append(keyDefault(A_CmsWidget.LABEL_PREFIX
                             + contentDefinition.getInnerName()
@@ -1857,7 +1856,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                                 result.append("</table>\n</div>\n");
                             }
                             result.append("<div id=\"OcmsTab");
-                            result.append(checkTab.getStartName());
+                            result.append(checkTab.getIdName());
                             result.append("\" class=\"ui-tabs-hide\">\n");
                             // set necessary values
                             tabOpened = true;
@@ -2053,13 +2052,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 for (Iterator<CmsXmlContentTab> i = m_warningTabs.iterator(); i.hasNext();) {
                     CmsXmlContentTab checkTab = i.next();
                     if (!m_errorTabs.contains(checkTab)) {
-                        result.append("\txmlWarningTabs[xmlWarningTabs.length] = \"").append(checkTab.getStartName()).append(
+                        result.append("\txmlWarningTabs[xmlWarningTabs.length] = \"").append(checkTab.getIdName()).append(
                             "\";\n");
                     }
                 }
                 for (Iterator<CmsXmlContentTab> i = m_errorTabs.iterator(); i.hasNext();) {
                     CmsXmlContentTab checkTab = i.next();
-                    result.append("\txmlErrorTabs[xmlErrorTabs.length] = \"").append(checkTab.getStartName()).append(
+                    result.append("\txmlErrorTabs[xmlErrorTabs.length] = \"").append(checkTab.getIdName()).append(
                         "\";\n");
                 }
                 result.append("</script>\n");

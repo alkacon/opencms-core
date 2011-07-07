@@ -27,6 +27,8 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.util.CmsStringUtil;
+
 /**
  * Represents a configured tab to be used in the XML content editor for better usability.<p>
  */
@@ -34,6 +36,9 @@ public class CmsXmlContentTab {
 
     /** Indicates if the first level of left labels should be shown in the editor. */
     private boolean m_collapsed;
+
+    /** The name for the tab ID, generated from the start name. */
+    private String m_idName;
 
     /** The XML element name where this tab starts. */
     private String m_startName;
@@ -80,6 +85,24 @@ public class CmsXmlContentTab {
             return ((CmsXmlContentTab)obj).getStartName().equals(getStartName());
         }
         return false;
+    }
+
+    /**
+     * Returns the name for the tab ID, generated from the start name.<p>
+     * 
+     * @return the name for the tab ID, generated from the start name
+     */
+    public String getIdName() {
+
+        if (m_idName == null) {
+            m_idName = getStartName();
+            // remove special characters causing problems in ID attributes
+            m_idName = CmsStringUtil.substitute(m_idName, ".", "-");
+            m_idName = CmsStringUtil.substitute(m_idName, ":", "-");
+            m_idName = CmsStringUtil.substitute(m_idName, "_", "-");
+
+        }
+        return m_idName;
     }
 
     /**
