@@ -85,7 +85,7 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
             @Override
             public void execute() {
 
-                start(300, false);
+                start(0, true);
                 CmsCoreProvider.getVfsService().getPageInfo(infoId, this);
             }
 
