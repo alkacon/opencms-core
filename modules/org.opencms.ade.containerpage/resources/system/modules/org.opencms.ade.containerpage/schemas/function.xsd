@@ -21,6 +21,7 @@
     <xsd:annotation>
         <xsd:appinfo>
           <handler class="org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler" />
+          	<resourcebundle name="org.opencms.xml.containerpage.messages"/>
     		<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>

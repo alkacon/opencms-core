@@ -14,4 +14,10 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+   <xsd:annotation>
+        <xsd:appinfo>
+          	<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+        </xsd:appinfo>        
+    </xsd:annotation>
+    
 </xsd:schema>
