@@ -89,7 +89,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             @Override
             public void execute() {
 
-                start(300, false);
+                start(0, true);
                 CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
             }
 
