@@ -145,7 +145,6 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         super(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_TITLE_0), 439);
         setModal(true);
         setGlassEnabled(true);
-        catchNotifications();
     }
 
     /**
@@ -351,6 +350,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         // add the main panel and center the popup
         add(m_panel);
         center();
+        catchNotifications();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {
