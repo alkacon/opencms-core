@@ -492,8 +492,10 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
             }
             if (isOptionbarIFrameCollision()) {
                 m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
-                int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
-                m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
+                if (marginLeft > 0) {
+                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+                }
             } else {
                 m_elementOptionBar.getElement().getStyle().clearPosition();
                 m_elementOptionBar.getElement().getStyle().clearMarginLeft();
