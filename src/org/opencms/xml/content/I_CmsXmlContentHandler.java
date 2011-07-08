@@ -30,6 +30,7 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
@@ -120,13 +121,14 @@ public interface I_CmsXmlContentHandler {
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
-     * Returns the container page element formatter configuration for this handler.<p>
+     * Returns the container page element formatter configuration for a given resource.<p>
      * 
      * @param cms the current users OpenCms context, used for selecting the right project
+     * @param res the resource for which the formatter configuration should be retrieved
      * 
      * @return the container page element formatter configuration for this handler
      */
-    CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms);
+    CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource res);
 
     /**
      * Returns the java-script resources to include into the html-page head.<p>
@@ -143,17 +145,6 @@ public interface I_CmsXmlContentHandler {
      * @return the mapping defined for the given element xpath
      */
     List<String> getMappings(String elementName);
-
-    /**
-     * Returns the "Title" mapping set for the given XML content document in the given Locale.<p> 
-     * 
-     * @param cms the current OpenCms user context
-     * @param document the XML content to get the title mapping for (this must be of a type that uses this handler)
-     * @param locale the locale to get the title mapping for
-     * 
-     * @return the "Title" mapping set for the given XML content document in the given Locale
-     */
-    String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 
@@ -226,6 +217,17 @@ public interface I_CmsXmlContentHandler {
      * @return the tabs to be displayed in the editor
      */
     List<CmsXmlContentTab> getTabs();
+
+    /**
+     * Returns the "Title" mapping set for the given XML content document in the given Locale.<p> 
+     * 
+     * @param cms the current OpenCms user context
+     * @param document the XML content to get the title mapping for (this must be of a type that uses this handler)
+     * @param locale the locale to get the title mapping for
+     * 
+     * @return the "Title" mapping set for the given XML content document in the given Locale
+     */
+    String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
      * Returns the editor widget that should be used for the given XML content value.<p>

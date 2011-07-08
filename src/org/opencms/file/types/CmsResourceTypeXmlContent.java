@@ -214,7 +214,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsXmlContentDefinition cd = null;
         try {
             cd = CmsXmlContentDefinition.getContentDefinitionForResource(cms, resource);
-            result = cd.getContentHandler().getFormatterConfiguration(cms);
+            result = cd.getContentHandler().getFormatterConfiguration(cms, resource);
         } catch (CmsException e) {
             // no content definition found, use the preview formatter
         }

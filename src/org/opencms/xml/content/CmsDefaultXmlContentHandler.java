@@ -487,9 +487,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration(CmsObject)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
-    public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms) {
+    public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource resource) {
 
         if (m_formatterConfiguration == null) {
             m_formatterConfiguration = CmsFormatterConfiguration.create(cms, m_formatters);
@@ -2257,8 +2257,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
             if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
                 if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
-                    errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                        Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                    errorHandler.addError(
+                        value,
+                        Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                 }
             }
         } catch (CmsDataAccessException e) {
@@ -2267,8 +2268,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+            errorHandler.addError(
+                value,
+                Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
         } catch (CmsException e) {
             // unexpected error
             if (LOG.isErrorEnabled()) {
@@ -2315,15 +2317,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (!res.isReleased(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
                 } else if (res.isExpired(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                     }
                     return true;
                 }
@@ -2331,8 +2337,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }

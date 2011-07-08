@@ -289,7 +289,7 @@ public class CmsFormatterBean {
     /**
      * Indicates if this formatter is to be used as preview in the ADE gallery GUI.
      * 
-     * @return <true>code</true> if this formatter is to be used as preview in the ADE gallery GUI
+     * @return <code>true</code> if this formatter is to be used as preview in the ADE gallery GUI
      */
     public boolean isPreviewFormatter() {
 

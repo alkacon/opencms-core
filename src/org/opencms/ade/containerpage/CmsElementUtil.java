@@ -171,37 +171,6 @@ public class CmsElementUtil {
     }
 
     /**
-     * Parses the given request parameters string into a parameter map.<p>
-     * 
-     * @param requestParameters the request parameters to parse
-     * 
-     * @return the parameter map
-     */
-    private Map<String, Object> parseRequestParameters(String requestParameters) {
-
-        Map<String, Object> parameterMap;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(requestParameters)) {
-            parameterMap = new HashMap<String, Object>();
-            String[] params = requestParameters.split("&");
-            for (int i = 0; i < params.length; i++) {
-                int position = params[i].indexOf("=");
-                if (position >= 0) {
-                    String key = params[i].substring(0, position);
-                    String value = params[i].substring(position + 1);
-                    if (value.contains(",")) {
-                        parameterMap.put(key, value.split(","));
-                    } else {
-                        parameterMap.put(key, value);
-                    }
-                }
-            }
-        } else {
-            parameterMap = Collections.<String, Object> emptyMap();
-        }
-        return parameterMap;
-    }
-
-    /**
      * Returns the rendered element content for all the given containers.
      *  
      * @param element the element to render
@@ -394,13 +363,41 @@ public class CmsElementUtil {
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-
             String encoding = m_res.getCharacterEncoding();
-
-            // TODO: find a way to add parameter map to request
             return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
+    }
+
+    /**
+     * Parses the given request parameters string into a parameter map.<p>
+     * 
+     * @param requestParameters the request parameters to parse
+     * 
+     * @return the parameter map
+     */
+    private Map<String, Object> parseRequestParameters(String requestParameters) {
+
+        Map<String, Object> parameterMap;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(requestParameters)) {
+            parameterMap = new HashMap<String, Object>();
+            String[] params = requestParameters.split("&");
+            for (int i = 0; i < params.length; i++) {
+                int position = params[i].indexOf("=");
+                if (position >= 0) {
+                    String key = params[i].substring(0, position);
+                    String value = params[i].substring(position + 1);
+                    if (value.contains(",")) {
+                        parameterMap.put(key, value.split(","));
+                    } else {
+                        parameterMap.put(key, value);
+                    }
+                }
+            }
+        } else {
+            parameterMap = Collections.<String, Object> emptyMap();
+        }
+        return parameterMap;
     }
 }

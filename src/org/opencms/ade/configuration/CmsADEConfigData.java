@@ -35,6 +35,8 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -43,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -342,46 +345,23 @@ public class CmsADEConfigData {
         return result;
     }
 
-    /**
-     * Gets the formatters for a given resource.<p>
-     * 
-     * @param resource a resource 
-     *  
-     * @return the formatter configuration for that resource 
-     */
-    public CmsFormatterConfiguration getFormatters(CmsResource resource) {
+    public CmsFormatterConfiguration getFormatters(CmsResource res) {
 
-        String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        return getFormatters(resType);
-    }
-
-    /**
-     * Gets the formatter configuration for a given type.<p>
-     * 
-     * @param type the type for which to get the formatters 
-     * 
-     * @return the formatter configuration for that type 
-     */
-    public CmsFormatterConfiguration getFormatters(String type) {
-
-        CmsResourceTypeConfig typeConfig = getResourceType(type);
-        if ((typeConfig == null)
-            || (typeConfig.getFormatterConfiguration() == null)
-            || (typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty())) {
-            try {
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForType(
-                    m_cms,
-                    type);
-                if (contentDefinition == null) {
-                    return null;
-                }
-                return contentDefinition.getContentHandler().getFormatterConfiguration(m_cms);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                return null;
+        int resTypeId = res.getTypeId();
+        try {
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resTypeId);
+            String typeName = resType.getTypeName();
+            CmsResourceTypeConfig typeConfig = getResourceType(typeName);
+            if ((typeConfig != null)
+                && (typeConfig.getFormatterConfiguration() != null)
+                && !typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty()) {
+                return typeConfig.getFormatterConfiguration();
             }
+            return getFormattersFromSchema(res);
+        } catch (CmsLoaderException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
         }
-        return typeConfig.getFormatterConfiguration();
     }
 
     /**
@@ -714,6 +694,47 @@ public class CmsADEConfigData {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the formatter configuration for a given type.<p>
+     * 
+     * @param type the type for which to get the formatters 
+     * 
+     * @return the formatter configuration for that type 
+     */
+    protected CmsFormatterConfiguration getFormatters(String type) {
+
+        CmsResourceTypeConfig typeConfig = getResourceType(type);
+        if ((typeConfig == null)
+            || (typeConfig.getFormatterConfiguration() == null)
+            || (typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty())) {
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForType(
+                    m_cms,
+                    type);
+                if (contentDefinition == null) {
+                    return null;
+                }
+                return contentDefinition.getContentHandler().getFormatterConfiguration(m_cms, null);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
+        return typeConfig.getFormatterConfiguration();
+    }
+
+    protected CmsFormatterConfiguration getFormattersFromSchema(CmsResource res) {
+
+        try {
+            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, res);
+            return contentHandler.getFormatterConfiguration(m_cms, res);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
+
     }
 
     /**

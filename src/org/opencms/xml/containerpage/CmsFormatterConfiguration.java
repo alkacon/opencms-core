@@ -137,6 +137,11 @@ public final class CmsFormatterConfiguration {
         }
     }
 
+    /**
+     * Gets a list of all defined formatters.<p>
+     * 
+     * @return the list of all formatters 
+     */
     public List<CmsFormatterBean> getAllFormatters() {
 
         return new ArrayList<CmsFormatterBean>(m_allFormatters);
