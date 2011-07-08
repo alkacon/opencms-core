@@ -415,6 +415,18 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Forces mouse out on self and contained buttons.<p>
+     */
+    public void forceMouseOut() {
+
+        for (Widget w : m_buttonPanel) {
+            CmsDomUtil.ensureMouseOut(w);
+        }
+        CmsDomUtil.ensureMouseOut(this);
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+    }
+
+    /**
      * Returns the button at the given position.<p>
      * 
      * @param index the button index

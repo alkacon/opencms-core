@@ -29,8 +29,8 @@ package org.opencms.gwt.client.dnd;
 
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsMoveAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.gwt.client.util.CmsMoveAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -219,6 +219,9 @@ public class CmsDNDHandler implements MouseDownHandler {
                 case Event.ONMOUSEWHEEL:
                     onMouseWheelScroll(nativeEvent);
                     break;
+                case Event.ONMOUSEOUT:
+                    // allow mouse out events to avoid leaving hovered buttons etc. around
+                    return;
                 default:
                     // do nothing
             }
@@ -468,8 +471,8 @@ public class CmsDNDHandler implements MouseDownHandler {
             // source is no drag handle, wrong DNDHandler assignment ignore
             return;
         }
-        m_draggable = ((I_CmsDragHandle)source).getDraggable();
-
+        I_CmsDragHandle handle = (I_CmsDragHandle)source;
+        m_draggable = handle.getDraggable();
         if (m_draggable == null) {
             // cancel dragging
             return;
@@ -859,7 +862,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         int windowHeight = Window.getClientHeight();
         int bodyHeight = body.getClientHeight();
         if (windowHeight < bodyHeight) {
-            if ((windowHeight - m_clientY < offset) && (Window.getScrollTop() < bodyHeight - windowHeight)) {
+            if (((windowHeight - m_clientY) < offset) && (Window.getScrollTop() < (bodyHeight - windowHeight))) {
                 return Direction.down;
             }
             if ((m_clientY < offset) && (Window.getScrollTop() > 0)) {
@@ -870,7 +873,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         int windowWidth = Window.getClientWidth();
         int bodyWidth = body.getClientWidth();
         if (windowWidth < bodyWidth) {
-            if ((windowWidth - m_clientX < offset) && (Window.getScrollLeft() < bodyWidth - windowWidth)) {
+            if (((windowWidth - m_clientX) < offset) && (Window.getScrollLeft() < (bodyWidth - windowWidth))) {
                 return Direction.right;
             }
             if ((m_clientX < offset) && (Window.getScrollLeft() > 0)) {

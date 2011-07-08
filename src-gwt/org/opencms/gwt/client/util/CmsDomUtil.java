@@ -49,6 +49,8 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -620,6 +622,19 @@ public final class CmsDomUtil {
 
         NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
         element.dispatchEvent(nativeEvent);
+    }
+
+    /**
+     * Triggers a mouse-out event for the given target.<p>
+     * 
+     * Useful in case something is capturing all events.<p>
+     * 
+     * @param target the target to use
+     */
+    public static void ensureMouseOut(HasHandlers target) {
+
+        NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        DomEvent.fireNativeEvent(nativeEvent, target);
     }
 
     /**

@@ -180,17 +180,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         initContent(widget);
     }
 
-    /** 
-     * Wrapping constructor.<p>
-     * 
-     * @param element the element to wrap 
-     */
-    public CmsListItem(Element element) {
-
-        m_panel = new CmsFlowPanel(element);
-        initWidget(m_panel);
-    }
-
     /**
      * @see org.opencms.gwt.client.ui.I_CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
@@ -276,6 +265,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
 
         }
+        // ensure mouse out
+        if (m_listItemWidget != null) {
+            m_listItemWidget.forceMouseOut();
+        }
+        CmsDomUtil.ensureMouseOut(this);
         return m_helper;
     }
 
@@ -463,7 +457,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         assert m_listItemWidget == null;
         if (widget instanceof CmsListItemWidget) {
             m_listItemWidget = (CmsListItemWidget)widget;
-            // TODO: add style for list item widget here 
         }
         m_mainWidget = widget;
     }
