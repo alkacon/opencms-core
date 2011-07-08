@@ -44,6 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -112,6 +113,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean checkCreatable(CmsObject cms) throws CmsException {
 
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            return false;
+        }
+        if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(m_typeName)) {
+            return false;
+        }
         checkInitialized();
         String folderPath = getFolderPath(cms);
         CmsObject createCms = OpenCms.initCmsObject(m_cms);
