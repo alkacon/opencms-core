@@ -473,7 +473,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
+        Map<String, Object> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {

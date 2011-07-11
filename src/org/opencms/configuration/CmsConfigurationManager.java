@@ -242,7 +242,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @see #setConfiguration(ExtendedProperties)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getConfiguration() {
 
         return m_propertyConfiguration;
     }

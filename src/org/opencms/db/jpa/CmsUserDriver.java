@@ -40,13 +40,13 @@ import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.db.generic.CmsUserQueryBuilder;
 import org.opencms.db.jpa.persistence.CmsDAOGroupUsers;
+import org.opencms.db.jpa.persistence.CmsDAOGroupUsers.CmsDAOGroupUsersPK;
 import org.opencms.db.jpa.persistence.CmsDAOGroups;
 import org.opencms.db.jpa.persistence.CmsDAOOfflineAccessControl;
 import org.opencms.db.jpa.persistence.CmsDAOOnlineAccessControl;
 import org.opencms.db.jpa.persistence.CmsDAOUserData;
 import org.opencms.db.jpa.persistence.CmsDAOUsers;
 import org.opencms.db.jpa.persistence.I_CmsDAOAccessControl;
-import org.opencms.db.jpa.persistence.CmsDAOGroupUsers.CmsDAOGroupUsersPK;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -1017,7 +1017,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
+        Map<String, Object> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {

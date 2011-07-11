@@ -165,6 +165,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /** The gallery preview provider. */
     private String m_galleryPreviewProvider;
 
+    /** The default image preview provider. */
     private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsImagePreviewProvider";
 
     /** The log object for this class. */
@@ -306,10 +307,12 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     public String getGalleryPreviewProvider() {
 
         if (m_galleryPreviewProvider == null) {
-            m_galleryPreviewProvider = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
-            if (m_galleryPreviewProvider == null) {
+            Object configParam = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
+            if (configParam == null) {
                 // this is the default preview provider
                 m_galleryPreviewProvider = GALLERY_PREVIEW_PROVIDER;
+            } else {
+                m_galleryPreviewProvider = String.valueOf(configParam);
             }
         }
         return m_galleryPreviewProvider;

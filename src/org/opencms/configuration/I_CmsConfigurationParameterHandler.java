@@ -69,7 +69,7 @@ public interface I_CmsConfigurationParameterHandler {
      * 
      * @return the configuration of this resource loader, or <code>null</code>
      */
-    Map<String, String> getConfiguration();
+    Map<String, Object> getConfiguration();
 
     /**
      * Initializes a configuration after all parameters have been added.<p>

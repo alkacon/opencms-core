@@ -112,7 +112,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected String m_className;
 
     /** Configuration parameters. */
-    protected Map<String, String> m_configuration;
+    protected Map<String, Object> m_configuration;
 
     /** The list of resources to copy. */
     protected List<CmsConfigurationCopyResource> m_copyResources;
@@ -156,7 +156,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_mappings = new ArrayList<String>();
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new TreeMap<String, Object>();
     }
 
     /**
@@ -436,7 +436,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
@@ -488,10 +488,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getGalleryPreviewProvider() {
 
         if (m_galleryPreviewProvider == null) {
-            m_galleryPreviewProvider = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
-            if (m_galleryPreviewProvider == null) {
+            Object configParam = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
+            if (configParam == null) {
                 // this is the default preview provider
                 m_galleryPreviewProvider = DEFAULT_GALLERY_PREVIEW_PROVIDER;
+            } else {
+                m_galleryPreviewProvider = String.valueOf(configParam);
             }
         }
         return m_galleryPreviewProvider;

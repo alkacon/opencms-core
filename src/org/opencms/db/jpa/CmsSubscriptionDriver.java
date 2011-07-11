@@ -229,7 +229,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         // TODO: Auto-generated method stub
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
+        Map<String, Object> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {

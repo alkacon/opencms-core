@@ -67,13 +67,13 @@ public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended 
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
+        Map<String, Object> result = new TreeMap<String, Object>();
         if (CmsStringUtil.isNotEmpty(getFolderContentTypes())) {
             result.put(CONFIGURATION_FOLDER_CONTENT_TYPES, getFolderContentTypes());
         }
-        Map<String, String> additional = super.getConfiguration();
+        Map<String, Object> additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }

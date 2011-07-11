@@ -78,16 +78,16 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
+        Map<String, Object> result = new TreeMap<String, Object>();
         if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
             result.put(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
         }
         if (CmsStringUtil.isNotEmpty(getFolderClassParams())) {
             result.put(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
         }
-        Map<String, String> additional = super.getConfiguration();
+        Map<String, Object> additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }

@@ -67,14 +67,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     private static long m_clientCacheMaxAge;
 
     /** The resource loader configuration. */
-    private Map<String, String> m_configuration;
+    private Map<String, Object> m_configuration;
 
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new TreeMap<String, Object>();
     }
 
     /**
@@ -140,7 +140,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
         // return the configuration in an immutable form
         return Collections.unmodifiableMap(m_configuration);
@@ -171,11 +171,11 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        String maxAge = m_configuration.get("client.cache.maxage");
+        Object maxAge = m_configuration.get("client.cache.maxage");
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {
-            m_clientCacheMaxAge = Long.parseLong(maxAge);
+            m_clientCacheMaxAge = Long.parseLong(String.valueOf(maxAge));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {

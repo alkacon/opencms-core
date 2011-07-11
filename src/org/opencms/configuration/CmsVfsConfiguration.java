@@ -382,10 +382,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add optional parameters
-                Map<String, String> prop = resType.getConfiguration();
+                Map<String, Object> prop = resType.getConfiguration();
                 if (prop != null) {
                     if ((resType instanceof CmsResourceTypeXmlContainerPage)) {
-                        prop = new HashMap<String, String>(prop);
+                        prop = new HashMap<String, Object>(prop);
                         prop.remove(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
                     }
                     List<String> sortedRuntimeProperties = new ArrayList<String>(prop.keySet());

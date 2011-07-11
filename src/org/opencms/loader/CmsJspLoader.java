@@ -182,7 +182,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private CmsFlexCache m_cache;
 
     /** The resource loader configuration. */
-    private Map<String, String> m_configuration;
+    private Map<String, Object> m_configuration;
 
     /** Flag to indicate if error pages are marked as "committed". */
     // TODO: This is a hack, investigate this issue with different runtime environments
@@ -202,7 +202,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public CmsJspLoader() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new TreeMap<String, Object>();
         OpenCms.addCmsEventListener(this, new int[] {
             EVENT_CLEAR_CACHES,
             EVENT_CLEAR_OFFLINE_CACHES,
@@ -333,7 +333,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
         // return the configuration in an immutable form
         return Collections.unmodifiableMap(m_configuration);
@@ -931,9 +931,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     HttpServletRequest req = controller.getTopRequest();
                     if (req.getHeader(CmsRequestUtil.HEADER_OPENCMS_EXPORT) != null) {
                         // this is a non "on-demand" static export request, don't write to the response stream
-                        req.setAttribute(
-                            CmsRequestUtil.HEADER_OPENCMS_EXPORT,
-                            new Long(controller.getDateLastModified()));
+                        req.setAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT, new Long(
+                            controller.getDateLastModified()));
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
@@ -1078,11 +1077,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             content = new String(byteContent, encoding);
         } catch (UnsupportedEncodingException e) {
             // encoding property is not set correctly 
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_UNSUPPORTED_ENC_1,
-                    controller.getCurrentRequest().getElementUri()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_UNSUPPORTED_ENC_1,
+                controller.getCurrentRequest().getElementUri()), e);
             try {
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                 content = new String(byteContent, encoding);

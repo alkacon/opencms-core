@@ -199,10 +199,10 @@ public class CmsPointerLoader extends CmsDumpLoader {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
-        Map<String, String> config = super.getConfiguration();
-        SortedMap<String, String> result = new TreeMap<String, String>();
+        Map<String, Object> config = super.getConfiguration();
+        SortedMap<String, Object> result = new TreeMap<String, Object>();
         if (config != null) {
             result.putAll(config);
         }

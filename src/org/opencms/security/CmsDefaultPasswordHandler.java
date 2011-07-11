@@ -62,7 +62,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     private static SecureRandom m_secureRandom;
 
     /** The configuration of the password handler. */
-    private SortedMap<String, String> m_configuration;
+    private SortedMap<String, Object> m_configuration;
 
     /** The digest type used. */
     private String m_digestType = DIGEST_TYPE_MD5;
@@ -75,7 +75,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public CmsDefaultPasswordHandler() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new TreeMap<String, Object>();
     }
 
     /**
@@ -161,7 +161,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
         return m_configuration;
     }

@@ -1452,7 +1452,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
+        Map<String, Object> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {
@@ -1462,8 +1462,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             config.putAll(configuration);
         }
 
-        String poolUrl = configuration.get("db.vfs.pool");
-        String classname = configuration.get("db.vfs.sqlmanager");
+        String poolUrl = String.valueOf(configuration.get("db.vfs.pool"));
+        String classname = String.valueOf(configuration.get("db.vfs.sqlmanager"));
 
         m_sqlManager = this.initSqlManager(classname);
 
