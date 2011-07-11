@@ -268,7 +268,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         CmsXmlContentDefinition contentDef = null;
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         String schema = String.valueOf(resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA));
-        if (schema != null) {
+        if (!schema.equals("null")) {
             try {
                 // this wont in most cases read the file content because of caching
                 contentDef = unmarshal(cms, schema);
