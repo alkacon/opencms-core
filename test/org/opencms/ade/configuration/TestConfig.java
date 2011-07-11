@@ -143,6 +143,7 @@ public class TestConfig extends OpenCmsTestCase {
         cms.chacc(binaryDir, I_CmsPrincipal.PRINCIPAL_USER, username, "+r+v+w");
 
         CmsObject dummyUserCms = rootCms();
+        dummyUserCms.getRequestContext().setSiteRoot("/sites/default");
         cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupUsers());
         dummyUserCms.loginUser(username, "password");
         dummyUserCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -164,7 +165,12 @@ public class TestConfig extends OpenCmsTestCase {
         assertEquals(binary, creatableTypes.get(0).getTypeName());
 
         creatableTypes = config1.getCreatableTypes(cms);
-        assertEquals(2, creatableTypes.size());
+        // because we're in the root site 
+        assertEquals(0, creatableTypes.size());
+
+        cms.getRequestContext().setSiteRoot("/sites/default");
+        creatableTypes = config1.getCreatableTypes(cms);
+
         assertEquals(
             set("plain", "binary"),
             set(creatableTypes.get(0).getTypeName(), creatableTypes.get(1).getTypeName()));
