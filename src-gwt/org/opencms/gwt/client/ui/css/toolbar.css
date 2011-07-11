@@ -63,10 +63,6 @@
 	width:value("constants.css.toolbarWidth");
 	margin:2px auto;
 }
-.toolbarPlaceholder {
-	height: 50px;
-}
-
 .toolbarButtonsLeft>div{
 	margin-right: 5px;
 }

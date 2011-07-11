@@ -41,6 +41,7 @@ import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -353,7 +354,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 defaultNewInfo,
                 newResourceInfos,
                 createResourceTypeInfo(OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT), null),
-                OpenCms.getSiteManager().getCurrentSite(cms).getTitle(),
+                getSitemapInfo(configData.getBasePath()),
                 parentSitemap,
                 getRootEntry(configData.getBasePath()),
                 getRequest().getParameter("path"),
@@ -1102,6 +1103,37 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             result.setSubEntries(getChildren(sitePath, 1));
         }
         return result;
+    }
+
+    /**
+     * Returns the sitemap info for the given base path.<p>
+     * 
+     * @param basePath the base path
+     * 
+     * @return the sitemap info
+     * 
+     * @throws CmsException if something goes wrong reading the resources
+     */
+    private CmsSitemapInfo getSitemapInfo(String basePath) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource baseFolder = cms.readResource(cms.getRequestContext().removeSiteRoot(basePath));
+        CmsResource defaultFile = cms.readDefaultFile(baseFolder);
+        String title = cms.readPropertyObject(baseFolder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = cms.readPropertyObject(defaultFile, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        }
+        String description = cms.readPropertyObject(baseFolder, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+            description = cms.readPropertyObject(defaultFile, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
+        }
+        return new CmsSitemapInfo(
+            cms.getRequestContext().getCurrentProject().getName(),
+            description,
+            OpenCms.getLocaleManager().getDefaultLocale(cms, baseFolder).toString(),
+            OpenCms.getSiteManager().getCurrentSite(cms).getUrl()
+                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, basePath),
+            title);
     }
 
     /**

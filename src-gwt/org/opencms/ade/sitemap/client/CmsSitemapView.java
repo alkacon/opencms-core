@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
+import org.opencms.ade.sitemap.client.ui.CmsSitemapHeader;
 import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
@@ -48,11 +49,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -63,6 +62,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -137,6 +137,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         infoBean.setTitle(entry.getTitle());
         infoBean.setSubTitle(entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
+        CmsClientProperty titleProperty = entry.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE);
+        if ((titleProperty != null) && !titleProperty.isEmpty()) {
+            infoBean.addAdditionalInfo(
+                Messages.get().key(Messages.GUI_TITLE_PROPERTY_0),
+                titleProperty.getEffectiveValue());
+        }
         String shownPath = entry.getVfsPath();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(shownPath)) {
             shownPath = "-";
@@ -421,14 +427,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         RootPanel rootPanel = RootPanel.get();
         m_editorMode = EditorMode.navigation;
         // init
-        I_CmsSitemapLayoutBundle.INSTANCE.rootCss().ensureInjected();
-        I_CmsSitemapLayoutBundle.INSTANCE.pageCss().ensureInjected();
+        I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().ensureInjected();
         I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().ensureInjected();
         I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
         I_CmsSitemapLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
-        rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.rootCss().root());
+        rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().root());
 
         // controller 
         m_controller = new CmsSitemapController();
@@ -438,16 +443,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
         rootPanel.add(m_toolbar);
-        rootPanel.add(new CmsToolbarPlaceHolder());
 
-        // hoverbar
-        //  m_hoverbar = new CmsSitemapHoverbar(m_controller);
-
-        // title
-        CmsHeader title = new CmsHeader(
-            Messages.get().key(Messages.GUI_EDITOR_TITLE_0),
-            m_controller.getData().getSiteName());
-        title.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.rootCss().pageCenter());
+        // header
+        CmsSitemapHeader title = new CmsSitemapHeader(m_controller.getData().getSitemapInfo());
+        title.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
         rootPanel.add(title);
 
         // content page

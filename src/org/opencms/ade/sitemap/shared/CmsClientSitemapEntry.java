@@ -342,11 +342,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public String getTitle() {
 
-        CmsClientProperty navtext = m_ownProperties.get("NavText");
+        CmsClientProperty navtext = m_ownProperties.get(CmsClientProperty.PROPERTY_NAVTEXT);
         if (!CmsClientProperty.isPropertyEmpty(navtext)) {
             return navtext.getEffectiveValue();
         }
-        CmsClientProperty title = m_ownProperties.get("Title");
+        CmsClientProperty title = m_ownProperties.get(CmsClientProperty.PROPERTY_TITLE);
         if (!CmsClientProperty.isPropertyEmpty(title)) {
             return title.getEffectiveValue();
         }

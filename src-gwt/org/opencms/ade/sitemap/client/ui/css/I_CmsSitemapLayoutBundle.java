@@ -59,24 +59,26 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
         String menuTabContainer();
     }
 
-    /** Page CSS. */
-    interface I_CmsPageCss extends CssResource {
+    /** Root CSS. */
+    interface I_CmsSitemapCss extends CssResource {
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         String page();
-    }
-
-    /** Root CSS. */
-    interface I_CmsRootCss extends CssResource {
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         String pageCenter();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String header();
 
         /** Access method.<p>
          * 
@@ -113,18 +115,10 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
     /**
      * Access method.<p>
      * 
-     * @return the page CSS
-     */
-    @Source("page.css")
-    I_CmsPageCss pageCss();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the root CSS
      */
-    @Source("root.css")
-    I_CmsRootCss rootCss();
+    @Source("sitemap.css")
+    I_CmsSitemapCss sitemapCss();
 
     /**
      * Access method.<p>

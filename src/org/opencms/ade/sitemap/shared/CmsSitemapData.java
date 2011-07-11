@@ -103,8 +103,18 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
-    /** The name of the current site. */
-    private String m_siteName;
+    /** The sitemap info. */
+    private CmsSitemapInfo m_sitemapInfo;
+
+    /**
+     * Returns the sitemap info.<p>
+     *
+     * @return the sitemap info
+     */
+    public CmsSitemapInfo getSitemapInfo() {
+
+        return m_sitemapInfo;
+    }
 
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
@@ -132,7 +142,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param defaultNewElementInfo the type of the container page resource
      * @param newElementInfos the new element information
      * @param newRedirectElementInfo the new redirect element info
-     * @param siteName the name of the current site
+     * @param sitemapInfo
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
@@ -154,7 +164,7 @@ public class CmsSitemapData implements IsSerializable {
         CmsNewResourceInfo defaultNewElementInfo,
         List<CmsNewResourceInfo> newElementInfos,
         CmsNewResourceInfo newRedirectElementInfo,
-        String siteName,
+        CmsSitemapInfo sitemapInfo,
         String parentSitemap,
         CmsClientSitemapEntry root,
         String openPath,
@@ -169,7 +179,7 @@ public class CmsSitemapData implements IsSerializable {
         m_noEditReason = noEditReason;
         m_displayToolbar = displayToolbar;
         m_defaultNewElementInfo = defaultNewElementInfo;
-        m_siteName = siteName;
+        m_sitemapInfo = sitemapInfo;
         m_parentSitemap = parentSitemap;
         m_parentProperties = parentProperties;
         m_root = root;
@@ -354,16 +364,6 @@ public class CmsSitemapData implements IsSerializable {
     public CmsClientSitemapEntry getRoot() {
 
         return m_root;
-    }
-
-    /**
-     * Returns the name of the current site.<p>
-     *
-     * @return the name of the current site
-     */
-    public String getSiteName() {
-
-        return m_siteName;
     }
 
     /**

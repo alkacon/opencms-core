@@ -116,6 +116,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (m_insertPath.equals(m_originalPath) && (m_insertIndex > m_originalIndex)) {
             // new position has the same path and is below the original position, adjust insert index
             m_insertIndex -= 1;
+            if (m_insertIndex == m_originalIndex) {
+                return false;
+            }
         }
         if (m_insertIndex == -1) {
             return false;

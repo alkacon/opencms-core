@@ -25,35 +25,64 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.ade.sitemap.client.ui;
+
+import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.dom.client.ParagraphElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provides a place holder for the tool-bar.<p>
+ * A title element.<p>
  * 
  * @since 8.0.0
  */
-public class CmsToolbarPlaceHolder extends Composite {
+public class CmsSitemapHeader extends Composite {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    interface I_CmsToolbarPlaceHolderUiBinder extends UiBinder<Widget, CmsToolbarPlaceHolder> {
+    protected interface I_CmsSitemapHeaderUiBinder extends UiBinder<Widget, CmsSitemapHeader> {
         // GWT interface, nothing to do here
     }
 
     /** The ui-binder instance for this class. */
-    private static I_CmsToolbarPlaceHolderUiBinder uiBinder = GWT.create(I_CmsToolbarPlaceHolderUiBinder.class);
+    private static I_CmsSitemapHeaderUiBinder uiBinder = GWT.create(I_CmsSitemapHeaderUiBinder.class);
+
+    /** The title element. */
+    @UiField
+    protected HeadingElement m_title;
+
+    /** The description element. */
+    @UiField
+    protected ParagraphElement m_description;
+
+    /** The site host element. */
+    @UiField
+    protected SpanElement m_siteHost;
+
+    /** The locale cell. */
+    @UiField
+    protected SpanElement m_locale;
 
     /**
      * Constructor.<p>
+     * 
+     * @param info the sitemap info to display 
      */
-    public CmsToolbarPlaceHolder() {
+    public CmsSitemapHeader(CmsSitemapInfo info) {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_title.setInnerText(info.getTitle());
+        m_description.setInnerText(info.getDescription());
+        m_siteHost.setInnerText(info.getSiteHost());
+        m_locale.setInnerText("[" + info.getSiteLocale() + "]");
     }
+
 }

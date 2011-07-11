@@ -627,6 +627,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     protected void animateCancel(final I_CmsDraggable draggable, final I_CmsDNDController controller) {
 
+        CmsDebugLog.getInstance().printLine("canceling drop");
         controller.onAnimationStart(draggable, null, this);
         stopDragging();
         Command callback = new Command() {
@@ -641,22 +642,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clear();
             }
         };
-        if (!isAnimationEnabled()) {
-            callback.execute();
-            return;
-        }
-        Element parentElement;
-        if (m_dragHelper != null) {
-            parentElement = m_dragHelper.getParentElement();
-        } else {
-            return;
-        }
-        int endTop = m_startTop - parentElement.getAbsoluteTop();
-        int endLeft = m_startLeft - parentElement.getAbsoluteLeft();
-        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
-        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
-        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
-        m_currentAnimation.run(300);
+        showEndAnimation(callback, m_startTop, m_startLeft);
     }
 
     /**
@@ -686,19 +672,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clear();
             }
         };
-        if (!isAnimationEnabled()) {
-            callback.execute();
-            return;
-        }
-        Element parentElement = m_dragHelper.getParentElement();
-
-        int endTop = m_placeholder.getAbsoluteTop() - parentElement.getAbsoluteTop();
-        int endLeft = m_placeholder.getAbsoluteLeft() - parentElement.getAbsoluteLeft();
-        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
-        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
-        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
-        m_currentAnimation.run(300);
-
+        showEndAnimation(callback, m_placeholder.getAbsoluteTop(), m_placeholder.getAbsoluteLeft());
     }
 
     /**
@@ -791,7 +765,6 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
         if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
-
             cancel();
         } else {
             drop();
@@ -902,6 +875,28 @@ public class CmsDNDHandler implements MouseDownHandler {
 
             m_scrollDirection = direction;
         }
+    }
+
+    /**
+     * Shows the end animation on drop or cancel. Executes the given callback afterwards.<p>
+     * 
+     * @param callback the callback to execute
+     * @param top absolute top of the animation end position
+     * @param left absolute left of the animation end position
+     */
+    private void showEndAnimation(Command callback, int top, int left) {
+
+        if (!isAnimationEnabled() || (m_dragHelper == null)) {
+            callback.execute();
+            return;
+        }
+        Element parentElement = m_dragHelper.getParentElement();
+        int endTop = top - parentElement.getAbsoluteTop();
+        int endLeft = left - parentElement.getAbsoluteLeft();
+        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
+        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
+        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
+        m_currentAnimation.run(300);
     }
 
     /**

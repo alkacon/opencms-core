@@ -1,0 +1,50 @@
+.pageCenter {
+	padding: 0px;
+	position: relative;
+	width: 930px;
+	margin: 0 auto;
+}
+
+@sprite .root {
+	gwt-image: "backgrounds.sitemapBackground";
+	font-family: value("constants.css.fontFamily");
+	position: relative;
+	margin: 0;
+	overflow: auto;
+	height: 100%;
+}
+
+@if user.agent ie6 {
+	.root * {
+		zoom: 1; 
+	}
+}
+
+.page {
+	background-color: value("constants.css.backgroundColorDialog");
+	border: 2px solid value("constants.css.borderColor");
+	padding: 10px;
+}
+
+div.header{
+	border: 2px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorListItem");
+	padding: 10px;
+	width: 930px;
+	margin: 45px auto 10px;
+}
+
+div.header h2{
+	font-size: value("constants.css.fontSizeBig");
+	font-weight: bold;
+	margin: 0px;
+}
+
+div.header div{
+	font-size: value("constants.css.fontSize");
+	margin: 0px;
+}
+div.header p{
+	font-size: value("constants.css.fontSize");
+	margin: 8px 0px;
+}
