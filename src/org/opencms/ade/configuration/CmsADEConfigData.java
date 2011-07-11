@@ -732,9 +732,8 @@ public class CmsADEConfigData {
             return contentHandler.getFormatterConfiguration(m_cms, res);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
-            return null;
+            return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
-
     }
 
     /**
