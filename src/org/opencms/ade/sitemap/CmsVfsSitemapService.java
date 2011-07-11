@@ -156,8 +156,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/");
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
-                cms.createResource(folderName, OpenCms.getResourceManager().getResourceType(
-                    CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+                cms.createResource(
+                    folderName,
+                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
             }
             I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
             if (cms.existsResource(sitemapConfigName)) {
@@ -169,8 +170,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         CmsADEManager.CONFIG_TYPE));
                 }
             } else {
-                cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
-                    CmsADEManager.CONFIG_TYPE).getTypeId());
+                cms.createResource(
+                    sitemapConfigName,
+                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
             }
             subSitemapFolder.setType(getEntryPointType());
             cms.writeResource(subSitemapFolder);
@@ -207,8 +209,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         REDIRECT_LINK_TARGET_XPATH,
                         getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
                     Map<String, String> additional = new HashMap<String, String>();
-                    additional.put(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_REDIRECT_TARGET_LABEL_0), link);
+                    additional.put(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_REDIRECT_TARGET_LABEL_0),
+                        link);
                     result.setAdditional(additional);
                 }
             } catch (CmsVfsResourceNotFoundException ne) {
@@ -268,8 +271,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
 
@@ -651,10 +655,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(entryFolderPath, OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeFolder.getStaticTypeName()).getTypeId(), null, generateInheritProperties(
-                    change,
-                    entryFolder));
+                entryFolder = cms.createResource(
+                    entryFolderPath,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId(),
+                    null,
+                    generateInheritProperties(change, entryFolder));
                 if (idWasNull) {
                     change.setEntryId(entryFolder.getStructureId());
                 }
@@ -723,7 +728,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (copyResource != null) {
             return new CmsNewResourceInfo(copyResource.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
                 locale,
-                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), null);
+                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), copyResource.getStructureId());
         } else {
             return new CmsNewResourceInfo(resType.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
                 locale,
