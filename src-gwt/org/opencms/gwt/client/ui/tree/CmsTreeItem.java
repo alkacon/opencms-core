@@ -381,6 +381,19 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
+     */
+    @Override
+    public void onDragCancel() {
+
+        CmsTreeItem parent = getParentItem();
+        if (parent != null) {
+            parent.insertChild(this, parent.getItemPosition(this));
+        }
+        super.onDragCancel();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.CmsListItem#getParentTarget()
      */
     @Override
