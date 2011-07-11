@@ -421,7 +421,7 @@ public class CmsADEManager implements I_CmsEventListener {
             Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
             Map<String, CmsXmlContentProperty> settings = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                resource).getSettings();
+                resource).getSettings(cms, resource);
             result.putAll(settings);
             return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
         }

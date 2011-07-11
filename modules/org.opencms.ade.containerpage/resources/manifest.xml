@@ -47,17 +47,7 @@
         <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd</param>
       </type>
       <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21"/>
-      <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="function" id="2227">
-        <properties>
-          <property>
-            <name>locale-available</name>
-            <value><![CDATA[en]]></value>
-          </property>
-          <property>
-            <name>locale</name>
-            <value><![CDATA[en]]></value>
-          </property>
-        </properties>
+      <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="function" id="22">
         <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd</param>
       </type>
     </resourcetypes>
@@ -128,9 +118,10 @@
         </accesscontrol>
       </explorertype>
       <explorertype name="function" key="fileicon.function" icon="function.png" bigicon="function_big.png" reference="xmlcontent">
-        <newresource uri="newresource_xmlcontent.jsp?newresourcetype=function" order="27" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+        <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
         <accesscontrol>
-          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
+          <accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
       <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage_template.png" bigicon="containerpage_template_big.png" reference="jsp">
@@ -350,10 +341,10 @@
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties>
-		<property>
-			<name>cache</name>
-			<value><![CDATA[container-element]]></value>
-		</property>
+        <property>
+          <name>cache</name>
+          <value><![CDATA[container-element;locale]]></value>
+        </property>
       </properties>
       <relations/>
       <accesscontrol/>
@@ -477,6 +468,21 @@
       <type>plain</type>
       <uuidstructure>0b8abf04-0f4d-4233-8c0e-8eae1f8a79bd</uuidstructure>
       <uuidresource>0b8abf04-0f4d-4233-8c0e-8eae1f8a79be</uuidresource>
+      <datelastmodified>Wed, 14 Oct 2009 07:02:06 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>512</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.containerpage/schemas/setting_config.xsd</source>
+      <destination>system/modules/org.opencms.ade.containerpage/schemas/setting_config.xsd</destination>
+      <type>plain</type>
+      <uuidstructure>f4961c82-3e99-466a-864c-b49cf0d6e831</uuidstructure>
+      <uuidresource>f4961c82-3e99-466a-864c-b49cf0d6e832</uuidresource>
       <datelastmodified>Wed, 14 Oct 2009 07:02:06 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>

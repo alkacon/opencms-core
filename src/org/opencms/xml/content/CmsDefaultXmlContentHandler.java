@@ -606,9 +606,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSettings()
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSettings(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
-    public Map<String, CmsXmlContentProperty> getSettings() {
+    public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource) {
 
         return Collections.unmodifiableMap(m_settings);
     }

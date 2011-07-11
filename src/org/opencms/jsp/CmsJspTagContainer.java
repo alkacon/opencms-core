@@ -768,7 +768,7 @@ public class CmsJspTagContainer extends TagSupport {
         }
         Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
-            resource).getSettings();
+            resource).getSettings(cms, resource);
         return !propConfig.isEmpty();
     }
 
@@ -878,10 +878,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
                     }
@@ -913,10 +915,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        elementFormatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            elementFormatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             }

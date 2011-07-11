@@ -207,9 +207,12 @@ public interface I_CmsXmlContentHandler {
     /**
      * Returns the element settings defined for the container page formatters.<p>
      * 
+     * @param cms the current CMS context
+     * @param resource the resource for which to get the setting definitions 
+     * 
      * @return the element settings defined for the container page formatters
      */
-    Map<String, CmsXmlContentProperty> getSettings();
+    Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource);
 
     /**
      * Returns the tabs to be displayed in the editor.<p>

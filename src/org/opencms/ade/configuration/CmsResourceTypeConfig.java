@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -113,11 +114,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean checkCreatable(CmsObject cms) throws CmsException {
 
-        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()
+            || "".equals(cms.getRequestContext().getSiteRoot())) {
             return false;
         }
         if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(m_typeName)) {
-            return false;
+            return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
         }
         checkInitialized();
         String folderPath = getFolderPath(cms);
