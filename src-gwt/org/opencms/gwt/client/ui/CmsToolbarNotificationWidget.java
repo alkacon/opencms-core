@@ -149,6 +149,9 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void setClassForType(Type type) {
 
+        if (type == null) {
+            return;
+        }
         // set the right class
         getElement().addClassName(classForType(type));
     }
@@ -171,6 +174,9 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
      */
     private String classForType(Type type) {
 
+        if (type == null) {
+            return null;
+        }
         switch (type) {
             case ERROR:
                 return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationError();

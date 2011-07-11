@@ -71,24 +71,68 @@ div.notificationContainer {
 div.notificationMessage, span.notificationMessage {
 	font-weight: bold; 
 	padding: 2px 10px; 
-	word-spacing: nowrap; 
 	line-height: 16px; 
 	display: inline-block; 
+	margin-top: 8px;
+	max-height: 300px;
+    max-width: 830px;
+    min-width: 415px;
+    overflow: auto;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+}
+
+.popup div.notificationMessage, .popup span.notificationMessage {
+	max-width: 80%;
+	min-width: 40%;
 }
 
 .blocking .notificationContainer .notificationMessage {
 	background: transparent;
+	border: none;
+}
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.blocking .notificationContainer .notificationMessage{
+		-moz-box-shadow: none;
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.blocking .notificationContainer .notificationMessage{
+		-webkit-box-shadow: none;
+	}
+} @elif user.agent opera ie9 {
+	/** opera, ie9 */
+	.blocking .notificationContainer .notificationMessage{
+		box-shadow: none;
+	}
+} @elif user.agent ie6 {
+	.blocking .notificationContainer .notificationMessage{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
+		filter: none;
+	}
+} @elif user.agent ie8 {
+	/** ie7, ie8 **/
+	.blocking .notificationContainer .notificationMessage{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
+		-ms-filter: none; 
+	}
 }
 
 .notificationError .notificationMessage { 
 	background-color: value("constants.css.notificationErrorBg"); 
 	color: value("constants.css.notificationErrorColor"); 
+	border-color: value("constants.css.notificationErrorBorder"); 
 }
 .notificationNormal .notificationMessage { 
 	background-color: value("constants.css.notificationNormalBg"); 
 	color: value("constants.css.notificationNormalColor"); 
+	border-color: value("constants.css.notificationNormalBorder"); 
 }
 .notificationWarning .notificationMessage { 
 	background-color: value("constants.css.notificationWarningBg"); 
 	color: value("constants.css.notificationWarningColor"); 
+	border-color: value("constants.css.notificationWarningBorder"); 
 }

@@ -375,6 +375,27 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        String notificationNormalBorder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String notificationWarningBorder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String notificationErrorBorder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         String notificationNormalColor();
 
         /** 
