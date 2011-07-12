@@ -272,9 +272,24 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/elements/config.jsp</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>d7982c48-422b-4e95-b75a-e978ace8f4a6</uuidstructure>
+			<datelastmodified>Wed, 20 Apr 2011 07:11:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 07:11:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>c3b2d43e-70d0-11e0-af5a-5de1afb8a118</uuidstructure>
 			<uuidresource>c3b2d43f-70d0-11e0-af5a-5de1afb8a118</uuidresource>

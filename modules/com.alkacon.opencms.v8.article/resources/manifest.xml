@@ -254,7 +254,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.article/elements</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.article/formatters</destination>
 			<type>folder</type>
 			<uuidstructure>27d83c86-6b3b-11e0-9460-c3baf286301a</uuidstructure>
 			<datelastmodified>Wed, 20 Apr 2011 10:44:23 GMT</datelastmodified>
@@ -267,8 +267,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.article/elements/detail.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.article/elements/detail.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.article/formatters/detail.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.article/formatters/detail.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>cf80815c-6b61-11e0-b1bb-c3baf286301a</uuidstructure>
 			<uuidresource>cf80815d-6b61-11e0-b1bb-c3baf286301a</uuidresource>
@@ -295,8 +295,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.article/elements/side.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.article/elements/side.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.article/formatters/side.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.article/formatters/side.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>c2fc28d8-6b61-11e0-b1bb-c3baf286301a</uuidstructure>
 			<uuidresource>c2fc28d9-6b61-11e0-b1bb-c3baf286301a</uuidresource>

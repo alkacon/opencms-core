@@ -60,7 +60,7 @@ import java.util.Map;
 public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
 
     /** The path of the formatter which calls the JSP. */
-    public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.containerpage/elements/function.jsp";
+    public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.containerpage/formatters/function.jsp";
 
     /** The resource type for dynamic functions. */
     public static final String TYPE_FUNCTION = "function";

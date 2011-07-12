@@ -275,7 +275,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/elements</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.twitter/formatters</destination>
 			<type>folder</type>
 			<uuidstructure>431a6eb4-7176-11e0-9840-1f597a2c805d</uuidstructure>
 			<datelastmodified>Thu, 28 Apr 2011 09:02:36 GMT</datelastmodified>
@@ -288,8 +288,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.twitter/elements/all.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.twitter/elements/all.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.twitter/formatters/all.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.twitter/formatters/all.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>2f8c3293-71ae-11e0-9e3c-1f597a2c805d</uuidstructure>
 			<uuidresource>2f8c3294-71ae-11e0-9e3c-1f597a2c805d</uuidresource>

@@ -44,7 +44,7 @@
 	    				<br/>
 	    				<p> The template file for this containerpage: <br/><i>/system/modules/org.opencms.dev.demo/templates/formatter_demo.jsp</i></p>
 						<br/>
-						<p> The formatters for this example: <br/><i>/system/modules/org.opencms.dev.demo/elements/article/formatter_demo/</i></p>
+						<p> The formatters for this example: <br/><i>/system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/</i></p>
 						<br/>
 						<p> The used formatter for this example are configured in the sub sitemap configuration of this example: <br/><i>/sites/default/dev_demo/formatter_demo/.content/.config</i></p>					
 				</div>

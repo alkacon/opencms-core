@@ -47,7 +47,7 @@
 				<default element="Text" value="%(key.v8.infobox.default.Text)" />
 			</defaults>
 			<formatters>
-				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.infobox/elements/side.jsp" searchcontent="true" />
+				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.infobox/formatters/side.jsp" searchcontent="true" />
 			</formatters>
 			<settings>
 				<setting name="boxschema" nice-name="Box Schema" default="box_schema1" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />

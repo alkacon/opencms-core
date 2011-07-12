@@ -216,8 +216,28 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/article</destination>
+			<destination>system/modules/org.opencms.dev.demo/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>6521b9e0-9fae-4aa9-bfc1-827c02a691bd</uuidstructure>
+			<datelastmodified>Sat, 07 May 2011 09:05:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Apr 2011 08:53:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		<file>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article</destination>
 			<type>folder</type>
 			<uuidstructure>ffe38ad3-7648-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 13:16:39 GMT</datelastmodified>
@@ -235,8 +255,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/center.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/center.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/center.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/center.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>fe5645f7-7646-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<uuidresource>fe5645f8-7646-11e0-a23b-8fedaf1e6b74</uuidresource>
@@ -255,8 +275,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/side.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/side.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/side.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/side.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>e7685ea4-7646-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<uuidresource>e7685ea5-7646-11e0-a23b-8fedaf1e6b74</uuidresource>
@@ -275,7 +295,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo</destination>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo</destination>
 			<type>folder</type>
 			<uuidstructure>f2ff4528-7658-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 13:14:47 GMT</datelastmodified>
@@ -293,8 +313,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/leftbox.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/leftbox.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/leftbox.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/leftbox.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>4cdba5dc-7671-11e0-9a5e-8fedaf1e6b74</uuidstructure>
 			<uuidresource>4cdba5dd-7671-11e0-9a5e-8fedaf1e6b74</uuidresource>
@@ -317,8 +337,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/middle.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/middle.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/middle.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/middle.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>a256a90f-7659-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<uuidresource>a256a910-7659-11e0-a23b-8fedaf1e6b74</uuidresource>
@@ -341,8 +361,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/narrow.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/narrow.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/narrow.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/narrow.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>23a8b2bb-7659-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<uuidresource>23a8b2bc-7659-11e0-a23b-8fedaf1e6b74</uuidresource>
@@ -365,8 +385,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/rightbox.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/rightbox.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/rightbox.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/rightbox.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>6538ad90-7671-11e0-9a5e-8fedaf1e6b74</uuidstructure>
 			<uuidresource>6538ad91-7671-11e0-9a5e-8fedaf1e6b74</uuidresource>
@@ -389,8 +409,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/wide.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/formatter_demo/wide.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/wide.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/formatter_demo/wide.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>d435fe93-7659-11e0-a23b-8fedaf1e6b74</uuidstructure>
 			<uuidresource>d435fe94-7659-11e0-a23b-8fedaf1e6b74</uuidresource>
@@ -413,7 +433,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/no_script</destination>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/no_script</destination>
 			<type>folder</type>
 			<uuidstructure>9a0aabd2-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 09:05:00 GMT</datelastmodified>
@@ -426,8 +446,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/article/no_script/both.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/article/no_script/both.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/article/no_script/both.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/article/no_script/both.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>a7063024-77f8-11e0-b1d0-cde485e16fbf</uuidstructure>
 			<uuidresource>a7063025-77f8-11e0-b1d0-cde485e16fbf</uuidresource>
@@ -446,7 +466,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/container_vars</destination>
+			<destination>system/modules/org.opencms.dev.demo/formatters/container_vars</destination>
 			<type>folder</type>
 			<uuidstructure>83cbe09e-7715-11e0-ae74-eda16dd9314c</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 13:14:56 GMT</datelastmodified>
@@ -464,8 +484,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/container_vars/containervar.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/container_vars/containervar.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>f29754ba-7714-11e0-ae74-eda16dd9314c</uuidstructure>
 			<uuidresource>f29754bb-7714-11e0-ae74-eda16dd9314c</uuidresource>
@@ -484,7 +504,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/elements/settings_article</destination>
+			<destination>system/modules/org.opencms.dev.demo/formatters/settings_article</destination>
 			<type>folder</type>
 			<uuidstructure>5a43edda-77d7-11e0-bb7c-cde485e16fbf</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 13:14:21 GMT</datelastmodified>
@@ -502,8 +522,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.dev.demo/elements/settings_article/settings.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/elements/settings_article/settings.jsp</destination>
+			<source>system/modules/org.opencms.dev.demo/formatters/settings_article/settings.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/formatters/settings_article/settings.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>9038eed2-773f-11e0-af56-eda16dd9314c</uuidstructure>
 			<uuidresource>9038eed3-773f-11e0-af56-eda16dd9314c</uuidresource>

@@ -65,8 +65,8 @@
 				<tab element="PositionAuthor" name="TabMappings" collapse="false" />
 			</tabs>
 			<formatters>
-				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.list/elements/side.jsp" searchcontent="false" />
-				<formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.list/elements/center.jsp" searchcontent="false" />
+				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.list/formatters/side.jsp" searchcontent="false" />
+				<formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.list/formatters/center.jsp" searchcontent="false" />
 			</formatters>
 			<headincludes>
 				<headinclude type="javascript" uri="/system/modules/org.opencms.jquery/resources/packed/jquery.js" />

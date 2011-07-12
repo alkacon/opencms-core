@@ -240,7 +240,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.infobox/elements</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.infobox/formatters</destination>
 			<type>folder</type>
 			<uuidstructure>1e407fcb-82c0-11e0-ad58-c1b6fb5574d7</uuidstructure>
 			<datelastmodified>Fri, 20 May 2011 09:04:07 GMT</datelastmodified>
@@ -253,8 +253,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.infobox/elements/side.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.infobox/elements/side.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.infobox/formatters/side.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.infobox/formatters/side.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>1403bb8b-82c2-11e0-ad58-c1b6fb5574d7</uuidstructure>
 			<uuidresource>1403bb8c-82c2-11e0-ad58-c1b6fb5574d7</uuidresource>
