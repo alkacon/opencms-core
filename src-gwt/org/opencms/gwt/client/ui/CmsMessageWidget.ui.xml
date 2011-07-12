@@ -11,10 +11,14 @@
 			vertical-align: middle;
 			padding: 0px;
 			width: 60px;
+			float: none;
+			display: table-cell;
 		}
 		table.main td.message{
 			vertical-align: middle;
 			padding: 15px 15px 15px 0px;
+			overflow: auto;
+			position: relative;
 		}
 		table.main td.message > p:first-child {
 			margin-top: 0px;
