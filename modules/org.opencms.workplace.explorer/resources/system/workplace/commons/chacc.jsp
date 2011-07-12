@@ -44,12 +44,7 @@ break;
 }
 
 if (displayForm) {
-    if (wp.getAction()==CmsDialog.ACTION_DEFAULT) { %>
-    <%= wp.buildLockDialog() %>
-    <%  return;
-    }  %>
-
-<%= wp.htmlStart() %>
+%><%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
 

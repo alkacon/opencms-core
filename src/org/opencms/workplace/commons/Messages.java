@@ -125,6 +125,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PARSE_TIMESTAMP_1 = "ERR_PARSE_TIMESTAMP_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PERMISSION_BLOCKING_LOCKS_0 = "ERR_PERMISSION_BLOCKING_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PERMISSION_SELECT_TYPE_0 = "ERR_PERMISSION_SELECT_TYPE_0";
 
     /** Message constant for key in the resource bundle. */

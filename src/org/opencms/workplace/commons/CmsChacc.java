@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -930,7 +931,11 @@ public class CmsChacc extends CmsDialog {
         if ((!getCms().getRequestContext().getCurrentProject().isOnlineProject() && getCms().isInsideCurrentProject(
             resName))
             && (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER) || (((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0) && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
-            setEditable(true);
+            if (isBlockingLocked()) {
+                m_errorMessages.add(key(Messages.ERR_PERMISSION_BLOCKING_LOCKS_0));
+            } else {
+                setEditable(true);
+            }
         }
     }
 
@@ -1245,7 +1250,7 @@ public class CmsChacc extends CmsDialog {
             // get all possible entry types
             ArrayList options = new ArrayList();
             ArrayList optionValues = new ArrayList();
-            for (int i = 0; i < getTypes(false).length - 1 * (isRoleEditable() ? 0 : 1); i++) {
+            for (int i = 0; i < (getTypes(false).length - (1 * (isRoleEditable() ? 0 : 1))); i++) {
                 options.add(getTypesLocalized()[i]);
                 optionValues.add(Integer.toString(i));
             }
@@ -1848,6 +1853,27 @@ public class CmsChacc extends CmsDialog {
 
             // close white box
             result.append(dialogWhiteBox(HTML_END));
+        }
+        return result;
+    }
+
+    /**
+     * Returns if the requested resource if blocking locked.<p>
+     * 
+     * @return <code>true</code> if the resource is blocking locked
+     */
+    private boolean isBlockingLocked() {
+
+        boolean result = true;
+        CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
+        blockingFilter = blockingFilter.filterNotLockableByUser(getCms().getRequestContext().getCurrentUser());
+        try {
+            List<String> blocking = getCms().getLockedResources(getParamResource(), blockingFilter);
+            result = blocking.size() > 0;
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
         return result;
     }
