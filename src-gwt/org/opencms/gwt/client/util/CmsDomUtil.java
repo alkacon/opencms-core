@@ -1439,7 +1439,8 @@ public final class CmsDomUtil {
     public static Element removeScriptTags(Element element) {
 
         NodeList<Element> scriptTags = element.getElementsByTagName(Tag.script.name());
-        for (int i = 0; i < scriptTags.getLength(); i++) {
+        // iterate backwards over list to ensure all tags get removed
+        for (int i = scriptTags.getLength() - 1; i >= 0; i--) {
             scriptTags.getItem(i).removeFromParent();
         }
         return element;
