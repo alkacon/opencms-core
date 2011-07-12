@@ -95,6 +95,9 @@ public class CmsModule implements Comparable<CmsModule> {
     /** Flag to create the elements folder when creating the module. */
     private boolean m_createElementsFolder;
 
+    /** Flag to create the formatters folder when creating the module. */
+    private boolean m_createFormattersFolder;
+
     /** Flag to create the lib folder when creating the module. */
     private boolean m_createLibFolder;
 
@@ -344,6 +347,7 @@ public class CmsModule implements Comparable<CmsModule> {
         result.setCreateResourcesFolder(m_createResourcesFolder);
         result.setCreateSchemasFolder(m_createSchemasFolder);
         result.setCreateTemplateFolder(m_createTemplateFolder);
+        result.setCreateFormattersFolder(m_createFormattersFolder);
 
         result.setResources(new ArrayList<String>(m_resources));
         result.setExportPoints(new ArrayList<CmsExportPoint>(m_exportPoints));
@@ -639,6 +643,16 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Returns the createFormattersFolder flag.<p>
+     * 
+     * @return the createFormattersFolder flag 
+     */
+    public boolean isCreateFormattersFolder() {
+
+        return m_createFormattersFolder;
+    }
+
+    /**
      * Returns the createLibFolder flag.<p>
      *
      * @return the createLibFolder flag
@@ -807,6 +821,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public void setCreateElementsFolder(boolean createElementsFolder) {
 
         m_createElementsFolder = createElementsFolder;
+    }
+
+    /**
+     * Sets the createFormattersFolder flag.<p>
+     * 
+     * @param createFormattersFolder the createFormattersFolder flag to set
+     */
+    public void setCreateFormattersFolder(boolean createFormattersFolder) {
+
+        m_createFormattersFolder = createFormattersFolder;
     }
 
     /**

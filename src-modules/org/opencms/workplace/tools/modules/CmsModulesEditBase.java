@@ -82,6 +82,8 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /** Template folder within the module. */
     public static final String PATH_TEMPLATES = "templates/";
 
+    public static final String PATH_FORMATTERS = "formatters/";
+
     /** The module object that is edited on this dialog. */
     protected CmsModule m_module;
 
@@ -283,7 +285,8 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
             || module.isCreateLibFolder()
             || module.isCreateResourcesFolder()
             || module.isCreateSchemasFolder()
-            || module.isCreateTemplateFolder()) {
+            || module.isCreateTemplateFolder()
+            || module.isCreateFormattersFolder()) {
             module.setCreateModuleFolder(true);
         }
 
@@ -305,6 +308,11 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         // check if we have to create the elements folder
         if (module.isCreateElementsFolder()) {
             String path = modulePath + PATH_ELEMENTS;
+            getCms().createResource(path, folderId);
+        }
+
+        if (module.isCreateFormattersFolder()) {
+            String path = modulePath + PATH_FORMATTERS;
             getCms().createResource(path, folderId);
         }
 

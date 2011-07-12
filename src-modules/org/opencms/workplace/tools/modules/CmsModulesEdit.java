@@ -135,6 +135,11 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             addWidget(new CmsWidgetDialogParameter(m_module, "createModuleFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createTemplateFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createElementsFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(
+                m_module,
+                "createFormattersFolder",
+                PAGES[0],
+                new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createResourcesFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createSchemasFolder", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_module, "createClassesFolder", PAGES[0], new CmsCheckboxWidget()));
