@@ -14,10 +14,12 @@
 	cursor: pointer;
 }
 
-.dragging iframe{
-	visibility: hidden;
+@if user.agent safari {
+/* in chrome or safari iframes with embedded flash will leak through overlay, so hide them */
+	.dragging iframe{
+		visibility: hidden !important;
+	}
 }
-
 .dragStarted, .dragPlaceholder{}
 
 
@@ -61,6 +63,19 @@
 	height: 100%;
 	width: 100%;
 	background: transparent;
+}
+@if user.agent ie6 {
+	.dragOverlay {
+		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=0, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
+	}
+} @elif user.agent ie8 {
+	.dragOverlay {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=0, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
+	}
+} @else {
+	.dragOverlay{
+		opacity: 0;
+	}
 }
 
 @sprite .placeholderOverlay{
