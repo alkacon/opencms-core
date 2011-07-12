@@ -22,8 +22,8 @@
         <xsd:appinfo>
 		<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<tabs>
-				<tab element="ResourceType" name="Resource Types" collapse="false" />
-				<tab element="Property" name="Property Configuration" collapse="false" />
+				<tab element="ResourceType" name="TabResourceTypes" collapse="false" />
+				<tab element="Property" name="TabPropertyConfiguration" collapse="false" />
 			</tabs>  			 
         </xsd:appinfo>        
     </xsd:annotation>

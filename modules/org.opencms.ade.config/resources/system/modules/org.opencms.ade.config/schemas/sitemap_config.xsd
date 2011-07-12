@@ -29,10 +29,10 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<tabs>
-				<tab element="DiscardTypes" name="Resource Types" collapse="false" />
-				<tab element="DiscardModelPages" name="Page Models" collapse="false" />
-				<tab element="DiscardProperties" name="Property Configuration" collapse="false" />
-				<tab element="DetailPage" name="Detail Pages" collapse="false" />
+				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
+				<tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
+				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
+				<tab element="DetailPage" name="TabDetailPages" collapse="false" />
 			</tabs>
         </xsd:appinfo>        
     </xsd:annotation>

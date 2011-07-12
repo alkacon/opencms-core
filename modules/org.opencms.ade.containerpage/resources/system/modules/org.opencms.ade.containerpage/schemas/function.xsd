@@ -29,8 +29,8 @@
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
 			<tabs>
-				<tab element="Title" name="Main parameters" collapse="false" />
-				<tab element="SettingConfig" name="Element Settings" collapse="false" />
+				<tab element="Title" name="TabGeneral" collapse="false" />
+				<tab element="SettingConfig" name="TabSettings" collapse="false" />
 			</tabs>
         </xsd:appinfo>        
     </xsd:annotation>
