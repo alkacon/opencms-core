@@ -32,7 +32,6 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.util.CmsDateTimeUtil;
 import org.opencms.gwt.client.util.CmsDateTimeUtil.Format;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -100,7 +99,7 @@ public class CmsBinaryPreviewContent extends Composite {
         m_listItemWidget = createListItem(info);
         initWidget(uiBinder.createAndBindUi(this));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(info.getPreviewContent())) {
-            m_previewContent.setHTML(CmsDomUtil.removeScriptTags(info.getPreviewContent()));
+            m_previewContent.setHTML(info.getPreviewContent());
         }
     }
 

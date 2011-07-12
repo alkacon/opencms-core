@@ -72,6 +72,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -95,11 +97,11 @@ public class CmsElementUtil {
     /** The current page uri. */
     private String m_currentPageUri;
 
-    /** The request parameters to use while rendering the elements. */
-    private Map<String, Object> m_parameterMap;
-
     /** The content locale. */
     private Locale m_locale;
+
+    /** The request parameters to use while rendering the elements. */
+    private Map<String, Object> m_parameterMap;
 
     /** The http request. */
     private HttpServletRequest m_req;
@@ -198,6 +200,7 @@ public class CmsElementUtil {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
                 if (content != null) {
+                    content = removeScriptTags(content);
                     result.put(name, content);
                 }
             }
@@ -399,5 +402,19 @@ public class CmsElementUtil {
             parameterMap = Collections.<String, Object> emptyMap();
         }
         return parameterMap;
+    }
+
+    /** 
+     * Removes all script tags from given input.<p>
+     * 
+     * @param input the input to remove script tags from
+     * 
+     * @return the cleaned input
+     */
+    private String removeScriptTags(String input) {
+
+        Pattern removePattern = Pattern.compile("<script[^>]*?>[\\s\\S]*?<\\/script>");
+        Matcher match = removePattern.matcher(input);
+        return match.replaceAll("");
     }
 }

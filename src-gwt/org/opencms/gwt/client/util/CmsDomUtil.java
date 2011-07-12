@@ -529,7 +529,6 @@ public final class CmsDomUtil {
     public static com.google.gwt.user.client.Element createElement(String html) throws Exception {
 
         com.google.gwt.user.client.Element wrapperDiv = DOM.createDiv();
-        html = removeScriptTags(html);
         wrapperDiv.setInnerHTML(html);
         com.google.gwt.user.client.Element elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
         DOM.removeChild(wrapperDiv, elementRoot);
