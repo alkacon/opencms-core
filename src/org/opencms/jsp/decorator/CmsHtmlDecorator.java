@@ -64,6 +64,8 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         ")",
         "'",
         "?",
+        "/",
+        "\u00A7",
         "\"",
         "&nbsp;",
         "&quot;",
@@ -96,7 +98,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         "&sect;"};
 
     /** Steps for forward lookup in workd list. */
-    private static final int FORWARD_LOOKUP = 7;
+    private static final int FORWARD_LOOKUP = 10;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlDecorator.class);
@@ -110,11 +112,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /** Decoration bundle to be used by the decorator. */
     CmsDecorationBundle m_decorations;
 
-    /** decorate flag. */
-    private boolean m_decorate;
-
     /** the CmsObject. */
     private CmsObject m_cms;
+
+    /** decorate flag. */
+    private boolean m_decorate;
 
     /**
      * Constructor, creates a new, empty CmsHtmlDecorator.<p>
@@ -331,7 +333,9 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 // if not, we must test if the word itself consists of several parts divided by
                 // second level delimiters
                 //if ((decObj == null)) {
-                if (recursive && hasDelimiter(word, DELIMITERS_SECOND_LEVEL)) {
+                if (recursive
+                    && hasDelimiter(word, DELIMITERS_SECOND_LEVEL)
+                    && !startsWithDelimiter(word, DELIMITERS_SECOND_LEVEL)) {
                     // add the following symbol if possible to allow the second level decoration
                     // test to make a forward lookup as well
                     String secondLevel = word;
@@ -352,7 +356,13 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                             }
                         }
                     }
+                    // check if the result is modified by any second level decoration
+                    int sizeBefore = m_result.length();
                     appendText(secondLevel, DELIMITERS_SECOND_LEVEL, false);
+                    if (sizeBefore != m_result.length()) {
+                        alreadyDecorated = true;
+                    }
+
                 } else {
                     // make a forward lookup to the next elements of the word list to check
                     // if the combination of word and delimiter can be found as a decoration key
@@ -452,7 +462,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         }
         return delim;
     }
-
+    
     /**
      * Checks if a word must be decoded.<p>
      * 
@@ -486,6 +496,25 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             }
         }
         return decode;
+    }
+
+    /** 
+     * Checks if a word starts with a given delimiter.<p>
+     * 
+     * @param word the word to test
+     * @param delimiters array of delimiter strings
+     * @return true if the word starts with the delimiter, false otherwiese
+     */
+    private boolean startsWithDelimiter(String word, String[] delimiters) {
+
+        boolean delim = false;
+        for (int i = 0; i < delimiters.length; i++) {
+            if (word.startsWith(delimiters[i])) {
+                delim = true;
+                break;
+            }
+        }
+        return delim;
     }
 
 }
