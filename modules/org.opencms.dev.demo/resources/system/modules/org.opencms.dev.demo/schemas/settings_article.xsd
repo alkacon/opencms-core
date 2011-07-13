@@ -22,7 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace.xml">
+			<resourcebundle name="org.opencms.dev.demo.workplace.ddsettingsarticle">
                 <bundle locale="EN">
                     <resource key="label.DevDemoSettingsArticle.Title">Title</resource>                    
                     <resource key="label.DevDemoSettingsArticle.Title.help">The title of the Dev Demo Settings Article.</resource>
@@ -53,7 +53,7 @@
             </defaults>
 			<relations/>
 			<formatters>				
-				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/elements/settings_article/settings.jsp" searchcontent="false"/>
+				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/formatters/settings_article/settings.jsp" searchcontent="false"/>
 			</formatters>
 			<settings>
 				<setting name="boxschema" nice-name="Box Color" type="string" widget="select" widget-config="box_schema1:blue|box_schema2:grey" />

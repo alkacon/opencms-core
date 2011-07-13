@@ -14,7 +14,7 @@
 		<group>OpenCms 8 dev demo</group>
 		<class/>
 		<description><![CDATA[The Content for the Dev Demo Module in OpenCms 8]]></description>
-		<version>8.0.1</version>
+		<version>8.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -2243,6 +2243,135 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>sites/default/dev_demo/headinclude_demo</destination>
+			<type>subsitemap</type>
+			<uuidstructure>499b0166-ad57-11e0-863c-87a56edf3321</uuidstructure>
+			<datelastmodified>Wed, 13 Jul 2011 15:35:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 13:52:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.65625]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Headinclude tag demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Headinclude tag demo]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/headinclude_demo/index.html</source>
+			<destination>sites/default/dev_demo/headinclude_demo/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>49b0853b-ad57-11e0-863c-87a56edf3321</uuidstructure>
+			<uuidresource>49b0853c-ad57-11e0-863c-87a56edf3321</uuidresource>
+			<datelastmodified>Wed, 13 Jul 2011 15:22:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 13:52:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo for the <headinclude> tag]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/headinclude_demo/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>59858f5e-ad57-11e0-863c-87a56edf3321</uuidstructure>
+			<datelastmodified>Wed, 13 Jul 2011 15:37:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 13:52:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Contents and configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/headinclude_demo/.content/.config</source>
+			<destination>sites/default/dev_demo/headinclude_demo/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>5993e740-ad57-11e0-863c-87a56edf3321</uuidstructure>
+			<uuidresource>5993e741-ad57-11e0-863c-87a56edf3321</uuidresource>
+			<datelastmodified>Wed, 13 Jul 2011 14:00:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 13:52:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource type configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/headinclude_demo/.content/content</destination>
+			<type>folder</type>
+			<uuidstructure>8a301924-ad58-11e0-863c-87a56edf3321</uuidstructure>
+			<datelastmodified>Wed, 13 Jul 2011 14:01:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 14:01:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/headinclude_demo/.content/content/ahi_00001.html</source>
+			<destination>sites/default/dev_demo/headinclude_demo/.content/content/ahi_00001.html</destination>
+			<type>ddheadincludearticle</type>
+			<uuidstructure>93e217c6-ad58-11e0-863c-87a56edf3321</uuidstructure>
+			<uuidresource>93e217c7-ad58-11e0-863c-87a56edf3321</uuidresource>
+			<datelastmodified>Wed, 13 Jul 2011 14:30:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2011 14:01:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Article using headinclude tag.]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/dev_demo/model_containerpage</destination>
 			<type>subsitemap</type>
 			<uuidstructure>b6d98c87-7f95-11e0-91cd-1df1339be1a9</uuidstructure>
@@ -2873,7 +3002,7 @@
 			<destination>sites/default/dev_demo/scale_image</destination>
 			<type>subsitemap</type>
 			<uuidstructure>d4162db7-788d-11e0-a908-e3fff2a64270</uuidstructure>
-			<datelastmodified>Mon, 16 May 2011 07:34:09 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Jul 2011 15:35:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 09:38:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2881,7 +3010,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.15625]]></value>
+					<value><![CDATA[0.09765625]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -2890,7 +3019,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image scale demo]]></value>
-				</property>				
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>

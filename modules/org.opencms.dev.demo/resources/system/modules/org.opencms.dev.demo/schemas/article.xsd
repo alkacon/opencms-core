@@ -23,7 +23,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>			
-			<resourcebundle name="org.opencms.dev.demo.workplace.xml">
+			<resourcebundle name="org.opencms.dev.demo.workplace.ddarticle">
                 <bundle locale="EN">
                     <resource key="label.DevDemoArticle.Title">Title</resource>                    
                     <resource key="label.DevDemoArticle.Title.help">The title of the Dev Demo Article.</resource>
@@ -57,8 +57,8 @@
             </defaults> 
 			<relations/>
 			<formatters>				
-				<formatter maxwidth="250" uri="/system/modules/org.opencms.dev.demo/elements/article/side.jsp" searchcontent="false"/>
-				<formatter minwidth="250" uri="/system/modules/org.opencms.dev.demo/elements/article/center.jsp" searchcontent="false"/>				
+				<formatter minwidth="1" maxwidth="250" uri="/system/modules/org.opencms.dev.demo/formatters/article/side.jsp" searchcontent="false"/>
+				<formatter minwidth="250" uri="/system/modules/org.opencms.dev.demo/formatters/article/center.jsp" searchcontent="false"/>				
 			</formatters>									
 		</xsd:appinfo>
 	</xsd:annotation>  
