@@ -18,8 +18,8 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /** Indicated to append or store the next line breaks. */
     private boolean m_appendBr;
 
-    /** Map of stored attributes that must bw written to the output when the tag closes. */
-    private Map m_attributeMap;
+    /** Map of stored attributes that must be written to the output when the tag closes. */
+    private Map<Tag, String> m_attributeMap;
 
     /** The last appended line break count. */
     private int m_brCount;
@@ -46,7 +46,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
         m_result = new StringBuffer(512);
         m_maxLineLength = 100;
-        m_attributeMap = new HashMap(16);
+        m_attributeMap = new HashMap<Tag, String>(16);
     }
 
     /**
@@ -69,11 +69,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         m_appendBr = false;
         appendLinebreaks(tag, false);
-        String attribute = (String)m_attributeMap.remove(tag.getParent());
+        String attribute = m_attributeMap.remove(tag.getParent());
         if (attribute != null) {
             appendText(attribute);
         }
@@ -82,6 +83,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
      */
+    @Override
     public void visitStringNode(Text text) {
 
         appendText(text.toPlainTextString());
@@ -90,6 +92,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         m_appendBr = true;
@@ -122,7 +125,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         if (tag.getTagName().equals("IMG")) {
             appendText(text);
         } else {
-            String current = (String)m_attributeMap.get(tag);
+            String current = m_attributeMap.get(tag);
             if (current != null) {
                 text = current + text;
             }
@@ -271,10 +274,10 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
             appendIndentation();
             m_brCount = 0;
 
-            List wordList = CmsStringUtil.splitAsList(text, ' ');
-            Iterator i = wordList.iterator();
+            List<String> wordList = CmsStringUtil.splitAsList(text, ' ');
+            Iterator<String> i = wordList.iterator();
             while (i.hasNext()) {
-                String word = (String)i.next();
+                String word = i.next();
                 boolean hasNbsp = ((word.charAt(0) == 160) || (word.charAt(word.length() - 1) == 160));
                 if ((word.length() + 1 + m_lineLength) > m_maxLineLength) {
                     m_appendBr = true;
