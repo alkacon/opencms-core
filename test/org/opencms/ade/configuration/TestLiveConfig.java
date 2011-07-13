@@ -36,42 +36,33 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import junit.framework.ComparisonFailure;
 import junit.framework.Test;
 
 /**
- * Tests for the ADE configuration mechanism which read the configuration data from the VFS.
+ * Tests for the ADE configuration mechanism which read the configuration data from multiple files in the VFS.<p>
+ * 
  */
 public class TestLiveConfig extends OpenCmsTestCase {
 
-    protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
-
-    protected static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
-
-    protected static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
-
-    protected static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
-
+    /**
+     * Test constructor.<p>
+     * 
+     * @param name the name of the test 
+     */
     public TestLiveConfig(String name) {
 
         super(name);
@@ -88,12 +79,16 @@ public class TestLiveConfig extends OpenCmsTestCase {
         return generateSetupTestWrapper(TestLiveConfig.class, "ade-config", "/");
     }
 
+    /**
+     * Tests deletion of configuration files.<p>
+     * 
+     * @throws Exception
+     */
     public void testDeleted() throws Exception {
 
         try {
             delete(getCmsObject().readResource("/.content/.config"));
             CmsObject offlineCms = getCmsObject();
-            CmsObject onlineCms = onlineCms();
             checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/news", "foldername", "c3", "e3");
@@ -103,6 +98,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests finding detail pages.<p>
+     * 
+     * @throws Exception
+     */
     public void testDetailPage1() throws Exception {
 
         // root site 
@@ -124,6 +124,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         assertEquals("/sites/default/", detailPage);
     }
 
+    /**
+     * Tests formatter configuration.<p>
+     * 
+     * @throws Exception
+     */
     public void testFormatters() throws Exception {
 
         CmsObject cms = rootCms();
@@ -136,6 +141,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         assertEquals("blah", formatters.get(0).getContainerType());
     }
 
+    /**
+     * Tests the configuration in top-level sitemaps.<p>
+     * @throws Exception
+     */
     public void testLevel1Configuration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -147,6 +156,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
     }
 
+    /**
+     * Tests the configuration in level 2 subsitemaps.<p>
+     * @throws Exception
+     */
     public void testLevel2Configuration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -163,6 +176,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         checkResourceTypes(offlineCms, "/sites/default/today/news/foo", "foldername", "c3", "e3", "a1", "b1");
     }
 
+    /**
+     * Tests that newly created module configurations are reflected in the configuration objects.<p>
+     * 
+     * @throws Exception
+     */
     public void testModuleConfig1() throws Exception {
 
         CmsObject cms = rootCms();
@@ -193,6 +211,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests that when moving a configuration file, the configuration will be correct.<p>
+     * 
+     * @throws Exception
+     */
     public void testMove1() throws Exception {
 
         try {
@@ -206,6 +229,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests that when detail pages are moved, the configuration will still return the correct URIs.<p>
+     * 
+     * @throws Exception
+     */
     public void testMoveDetailPages() throws Exception {
 
         CmsObject cms = rootCms();
@@ -224,6 +252,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     }
 
+    /**
+     * Tests that the configuration is empty at paths where no configuration is defined.<p>
+     * @throws Exception
+     */
     public void testNoConfiguration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -233,6 +265,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         checkResourceTypes(offlineCms, "/system", "foldername");
     }
 
+    /**
+     * Tests that publishing a changed configuration file updates the online configuration object.<p>
+     * @throws Exception
+     */
     public void testPublish() throws Exception {
 
         CmsObject cms = rootCms();
@@ -250,6 +286,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests that publishing a deleted configuration file changes the online configuration.<p>
+     * 
+     * @throws Exception
+     */
     public void testPublishDeleted() throws Exception {
 
         CmsObject cms = rootCms();
@@ -267,6 +308,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests the saving of detail pages.<p>
+     * @throws Exception
+     */
     public void testSaveDetailPages() throws Exception {
 
         try {
@@ -294,17 +339,14 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
-    protected void assertPathEquals(String path1, String path2) {
-
-        if ((path1 == null) && (path2 == null)) {
-            return;
-        }
-        if ((path1 == null) || (path2 == null)) {
-            throw new ComparisonFailure("comparison failure", path1, path2);
-        }
-        assertEquals(CmsStringUtil.joinPaths("/", path1, "/"), CmsStringUtil.joinPaths("/", path2, "/"));
-    }
-
+    /**
+     * Helper method to compare attributes of configured resource types with a list of expected values.<p>
+     * 
+     * @param cms the CMS context 
+     * @param path the path used to access the configuration 
+     * @param attr the attribute which should be retrieved from the configured resource types
+     * @param expected
+     */
     protected void checkResourceTypes(CmsObject cms, String path, String attr, String... expected) {
 
         CmsADEManager configManager = OpenCms.getADEManager();
@@ -315,23 +357,6 @@ public class TestLiveConfig extends OpenCmsTestCase {
             actualValues.add(getAttribute(typeConfig, attr));
         }
         assertEquals(Arrays.asList(expected), actualValues);
-    }
-
-    protected CmsPropertyConfig createDisabledPropertyConfig(String name) {
-
-        CmsXmlContentProperty prop = createXmlContentProperty(name, null);
-        return new CmsPropertyConfig(prop, true);
-    }
-
-    protected CmsPropertyConfig createPropertyConfig(String name, String description) {
-
-        CmsXmlContentProperty prop = createXmlContentProperty(name, description);
-        return new CmsPropertyConfig(prop, false);
-    }
-
-    protected CmsXmlContentProperty createXmlContentProperty(String name, String description) {
-
-        return new CmsXmlContentProperty(name, "string", "string", "", "", "", "", "", description, null, null);
     }
 
     /**
@@ -353,26 +378,13 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
-    protected void dumpTree() throws CmsException {
-
-        CmsObject cms = rootCms();
-        CmsResource root = cms.readResource("/");
-        dumpTree(cms, root, 0);
-    }
-
-    protected void dumpTree(CmsObject cms, CmsResource res, int indentation) throws CmsException {
-
-        writeIndentation(indentation);
-        System.out.println(res.getName());
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
-        if (resType.isFolder()) {
-            List<CmsResource> children = cms.getResourcesInFolder(res.getRootPath(), CmsResourceFilter.ALL);
-            for (CmsResource child : children) {
-                dumpTree(cms, child, indentation + 6);
-            }
-        }
-    }
-
+    /**
+     * Gets an attribute from a resource type configuration object.<p>
+     * 
+     * @param typeConfig the type configuration object 
+     * @param attr the attribute name  
+     * @return the attribute from the resource type configuration object  
+     */
     protected String getAttribute(CmsResourceTypeConfig typeConfig, String attr) {
 
         if ("type".equals(attr)) {
@@ -386,6 +398,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
         return null;
     }
 
+    /**
+     * Helper method for creating a list of given elements.<p>
+     * 
+     * @param elems the elements
+     * @return a list containing the elements 
+     */
     protected <X> List<X> list(X... elems) {
 
         List<X> result = new ArrayList<X>();
@@ -395,6 +413,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
         return result;
     }
 
+    /**
+     * Helper method for creating a CMS context in the Online Project.<p>
+     * 
+     * @return the CMS context 
+     * @throws Exception
+     */
     protected CmsObject onlineCms() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -413,6 +437,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
+    /**
+     * Helper method to re-create the original test data in the VFS.<p>
+     * @throws Exception
+     */
     protected void restoreFiles() throws Exception {
 
         System.out.println("Restoring test data...");
@@ -432,6 +460,13 @@ public class TestLiveConfig extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Helper method for getting a CMS object in the root site.<p>
+     * 
+     * @return a CMS context in the root site 
+     * 
+     * @throws CmsException 
+     */
     protected CmsObject rootCms() throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -439,19 +474,4 @@ public class TestLiveConfig extends OpenCmsTestCase {
         return cms;
     }
 
-    protected <X> Set<X> set(X... elems) {
-
-        Set<X> result = new HashSet<X>();
-        for (X x : elems) {
-            result.add(x);
-        }
-        return result;
-    }
-
-    protected void writeIndentation(int indent) {
-
-        for (int i = 0; i < indent; i++) {
-            System.out.print(" ");
-        }
-    }
 }
