@@ -115,6 +115,18 @@ public final class CmsResourceBundleLoader {
         }
 
         /**
+         * Checks if the f´given base name is identical to the base name of this bundle key.<p>
+         * 
+         * @param baseName the base name to compate
+         * 
+         * @return <code>true</code> if the f´given base name is identical to the base name of this bundle key
+         */
+        public boolean isSameBase(String baseName) {
+
+            return m_baseName.equals(baseName);
+        }
+
+        /**
          * @see java.lang.Object#toString()
          */
         @Override
@@ -138,7 +150,7 @@ public final class CmsResourceBundleLoader {
     }
 
     /**  The resource bundle cache. */
-    private static Map<BundleKey, Object> m_bundleCache;
+    private static Map<BundleKey, ResourceBundle> m_bundleCache;
 
     /** The last default Locale we saw, if this ever changes then we have to reset our caches. */
     private static Locale m_lastDefaultLocale;
@@ -150,7 +162,7 @@ public final class CmsResourceBundleLoader {
     private static Map<String, CmsListResourceBundle> m_permanentCache;
 
     /** Singleton cache entry to represent previous failed lookups. */
-    private static final Object NULL_ENTRY = new Object();
+    private static final ResourceBundle NULL_ENTRY = new CmsListResourceBundle();
 
     /**
      * Hides the public constructor.<p>
@@ -161,7 +173,7 @@ public final class CmsResourceBundleLoader {
     }
 
     /**
-     * Adds the specified resource bundle to the cache.<p>
+     * Adds the specified resource bundle to the permanent cache.<p>
      * 
      * @param baseName the raw bundle name, without locale qualifiers
      * @param locale the locale
@@ -177,7 +189,7 @@ public final class CmsResourceBundleLoader {
     }
 
     /**
-     * Flushes the resource bundle cache.<p>
+     * Flushes the complete resource bundle cache.<p>
      */
     public static synchronized void flushBundleCache() {
 
@@ -193,6 +205,44 @@ public final class CmsResourceBundleLoader {
         // stuck with "old" resource bundles that require a server restart. 
 
         // m_permanentCache.clear();
+    }
+
+    /**
+     * Flushes all variations for the provided bundle from the cache.<p>
+     * 
+     * @param baseName the bundle base name to flush the variations for
+     */
+    public static synchronized void flushBundleCache(String baseName) {
+
+        if (baseName != null) {
+            // first check and clear the bundle cache
+            HashMap<BundleKey, ResourceBundle> bundleCacheNew = new HashMap<BundleKey, ResourceBundle>(
+                m_bundleCache.size());
+            for (Map.Entry<BundleKey, ResourceBundle> entry : m_bundleCache.entrySet()) {
+                if (!entry.getKey().isSameBase(baseName)) {
+                    // entry has a different base name, keep it
+                    bundleCacheNew.put(entry.getKey(), entry.getValue());
+                }
+            }
+            if (bundleCacheNew.size() < m_bundleCache.size()) {
+                // switch caches if only if at least one entry was removed
+                m_bundleCache = bundleCacheNew;
+            }
+            // now check and clear the permanent cache
+            HashMap<String, CmsListResourceBundle> permanentCacheNew = new HashMap<String, CmsListResourceBundle>(
+                m_permanentCache.size());
+            for (Map.Entry<String, CmsListResourceBundle> entry : m_permanentCache.entrySet()) {
+                String key = entry.getKey();
+                if (!(key.startsWith(baseName) && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
+                    // entry has a different base name, keep it
+                    permanentCacheNew.put(entry.getKey(), entry.getValue());
+                }
+            }
+            if (permanentCacheNew.size() < m_permanentCache.size()) {
+                // switch caches if only if at least one entry was removed
+                m_permanentCache = permanentCacheNew;
+            }
+        }
     }
 
     /**
@@ -241,7 +291,7 @@ public final class CmsResourceBundleLoader {
         // all cache entries are invalidated.
         Locale defaultLocale = Locale.getDefault();
         if (defaultLocale != m_lastDefaultLocale) {
-            m_bundleCache = new HashMap<BundleKey, Object>();
+            m_bundleCache = new HashMap<BundleKey, ResourceBundle>();
             m_lastDefaultLocale = defaultLocale;
             if (m_permanentCache == null) {
                 // the permanent cache is not cleared after the default locale changes

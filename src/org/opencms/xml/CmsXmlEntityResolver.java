@@ -387,6 +387,37 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
+     * Removes a cached entry for a system id (filename) from the internal offline temporary and content definition caches.<p>
+     * 
+     * The online resources cached for the online project are only flushed when a project is published.<p>
+     * 
+     * @param systemId the system id (filename) to remove from the cache
+     */
+    public void uncacheSystemId(String systemId) {
+
+        Object o;
+        o = m_cacheTemporary.remove(getCacheKey(systemId, false));
+        if (null != o) {
+            // if an object was removed from the temporary cache, all XML content definitions must be cleared
+            // because this may be a nested subschema 
+            m_cacheContentDefinitions.clear();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ERR_UNCACHED_SYS_ID_1,
+                    getCacheKey(systemId, false)));
+            }
+        } else {
+            // check if a cached content definition has to be removed based on the system id
+            o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
+            if ((null != o) && LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ERR_UNCACHED_CONTENT_DEF_1,
+                    getCacheKey(systemId, false)));
+            }
+        }
+    }
+
+    /**
      * Returns a cache key for the given system id (filename) based on the status 
      * of the given project flag.<p>
      * 
@@ -453,36 +484,5 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             LOG.warn(e.getMessage(), e);
         }
         return false;
-    }
-
-    /**
-     * Uncaches a system id (filename) from the internal offline temporary and content defintions caches.<p>
-     * 
-     * The online resources cached for the online project are only flushed when a project is published.<p>
-     * 
-     * @param systemId the system id (filename) to uncache
-     */
-    private void uncacheSystemId(String systemId) {
-
-        Object o;
-        o = m_cacheTemporary.remove(getCacheKey(systemId, false));
-        if (null != o) {
-            // if an object was removed from the temporary cache, all XML content definitions must be cleared
-            // because this may be a nested subschema 
-            m_cacheContentDefinitions.clear();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ERR_UNCACHED_SYS_ID_1,
-                    getCacheKey(systemId, false)));
-            }
-        } else {
-            // check if a cached content definition has to be removed based on the system id
-            o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
-            if ((null != o) && LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ERR_UNCACHED_CONTENT_DEF_1,
-                    getCacheKey(systemId, false)));
-            }
-        }
     }
 }

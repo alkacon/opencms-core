@@ -27,8 +27,8 @@
 			<resourcebundle name="org.opencms.xml.content.testmessages.UPDATE">
 				<bundle locale="EN">
 					<resource key="label.author" value="The author is NOW" />
-					<resource key="label.default.one" value="This is some text ONE" />
-					<resource key="label.default.two" value="This is some text TWO" />
+					<resource key="label.default.one" value="This is some text NEW ONE" />
+					<resource key="label.default.two" value="This is some text NEW TWO" />
 					<resource key="editor.xmlcontent.optionalelement">(Click on the "New" button on the right side to activate this element)</resource>
 					<resource key="editor.xmlcontent.validation.error.title">The following errors occurred when validating the form:</resource>
 					<resource key="editor.xmlcontent.validation.error">Invalid value "{0}" according to rule {1}</resource>
@@ -36,8 +36,8 @@
 				</bundle> 
 				<bundle locale="DE">
 					<resource key="label.author" value="Der Autor ist JETZT" />
-					<resource key="label.default.one" value="Dies ist etwas Text EINS äöüÄÖÜß€" />
-					<resource key="label.default.two" value="Dies ist etwas Text ZWEI äöüÄÖÜß€" />
+					<resource key="label.default.one" value="Dies ist etwas Text EINS NEU äöüÄÖÜß€" />
+					<resource key="label.default.two" value="Dies ist etwas Text ZWEI NEU äöüÄÖÜß€" />
 				</bundle>				
 				<bundle locale="DE_de">
 					<resource key="label.default.two" value="Dies ist etwas Text DREI" />

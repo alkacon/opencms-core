@@ -1859,6 +1859,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         m_messageBundleName = name;
 
+        // clear the cached resource bundles for this module
+        CmsResourceBundleLoader.flushBundleCache(m_messageBundleName);
+
         // get an iterator for all "bundle" subnodes
         Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(root, APPINFO_BUNDLE);
         while (bundles.hasNext()) {

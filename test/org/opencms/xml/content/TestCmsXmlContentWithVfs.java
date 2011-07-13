@@ -87,6 +87,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
     private static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
     private static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1L3 = "http://www.opencms.org/test1_localized3.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -134,6 +135,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXml"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXmlWithDefault"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
         suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
@@ -1564,10 +1566,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now lock the "DE" sibling
         cms.changeLock(resourcenameDe);
         // add the "DE" locale property to the german version
-        cms.writePropertyObject(resourcenameDe, new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_LOCALE,
-            Locale.GERMAN.toString(),
-            null));
+        cms.writePropertyObject(
+            resourcenameDe,
+            new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.GERMAN.toString(), null));
 
         CmsFile file = cms.readFile(resourcenameDe);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
@@ -1766,19 +1767,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertNotNull(messagesEN.getResourceBundle());
 
         assertEquals("The author is", messagesEN.key("label.author"));
-        assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
-            "editor.xmlcontent.validation.warning",
-            "Arg0",
-            "Arg1"));
+        assertEquals(
+            "Bad value \"Arg0\" according to rule Arg1",
+            messagesEN.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         CmsMessages messagesDE = contentHandler.getMessages(Locale.GERMAN);
         assertNotNull(messagesDE.getResourceBundle());
 
         assertEquals("Der Autor ist", messagesDE.key("label.author"));
-        assertEquals("Bad value \"Arg0\" according to rule Arg1", messagesDE.key(
-            "editor.xmlcontent.validation.warning",
-            "Arg0",
-            "Arg1"));
+        assertEquals(
+            "Bad value \"Arg0\" according to rule Arg1",
+            messagesDE.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         // get a Locale / language variation and see if this works
         CmsMessages messagesDEde = contentHandler.getMessages(Locale.GERMANY);
@@ -1806,19 +1805,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertNotNull(messagesEN.getResourceBundle());
 
         assertEquals("The author is NOW", messagesEN.key("label.author"));
-        assertEquals("VERY Bad value \"Arg0\" according to rule Arg1", messagesEN.key(
-            "editor.xmlcontent.validation.warning",
-            "Arg0",
-            "Arg1"));
+        assertEquals(
+            "VERY Bad value \"Arg0\" according to rule Arg1",
+            messagesEN.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         messagesDE = contentHandler.getMessages(Locale.GERMAN);
         assertNotNull(messagesDE.getResourceBundle());
 
         assertEquals("Der Autor ist JETZT", messagesDE.key("label.author"));
-        assertEquals("VERY Bad value \"Arg0\" according to rule Arg1", messagesDE.key(
-            "editor.xmlcontent.validation.warning",
-            "Arg0",
-            "Arg1"));
+        assertEquals(
+            "VERY Bad value \"Arg0\" according to rule Arg1",
+            messagesDE.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         // get a Locale / language variation and see if this works
         messagesDEde = contentHandler.getMessages(Locale.GERMANY);
@@ -1827,10 +1824,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // from DE_de locale
         assertEquals("Der Autor ist JETZT", messagesDEde.key("label.author"));
         // from DE locale
-        assertEquals("ECHT schlechter Wert \"Arg0\" wegen Regel Arg1", messagesDEde.key(
-            "editor.xmlcontent.validation.warning",
-            "Arg0",
-            "Arg1"));
+        assertEquals(
+            "ECHT schlechter Wert \"Arg0\" wegen Regel Arg1",
+            messagesDEde.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
         // from EN locale
         assertEquals(
             "The following errors occurred when validating the form:",
@@ -1861,6 +1857,72 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         messagesDEde = article.getHandler().getMessages(Locale.GERMANY);
         assertNotNull(messagesDEde);
         assertEquals("Lokalisierung im XML Schema", messagesDEde.key("from.xml"));
+    }
+
+    /**
+     * Test the resource bundles defined in XML content with default values.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testResourceBundleFromXmlWithDefault() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing resource bundles defined in XML content with default values");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContentDefinition definition;
+        I_CmsXmlContentHandler contentHandler;
+
+        // unmarshal content definition with localization in XML only
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1_localized2.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // create the content definition
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L2, resolver);
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        // store content definition in entity resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1L2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        CmsXmlContent xmlcontentDE = CmsXmlContentFactory.createDocument(cms, Locale.GERMAN, content, definition);
+
+        assertEquals("Dies ist etwas Text EINS ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
+        assertEquals("Dies ist etwas Text ZWEI ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
+
+        CmsXmlContent xmlcontentEN = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, definition);
+
+        assertEquals("This is some text ONE", xmlcontentEN.getStringValue(cms, "StringOne", Locale.ENGLISH));
+        assertEquals("This is some text TWO", xmlcontentEN.getStringValue(cms, "StringTwo", Locale.ENGLISH));
+
+        // now try to "change" the XSD 
+        // unmarshal content definition with localization in XML only
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1_localized3.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+
+        // clear the caches of the XML entity resolver
+        resolver.uncacheSystemId(SCHEMA_SYSTEM_ID_1L2);
+        // create the content definition USING EXISTING SCHEMA NAME!!!        
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L2, resolver);
+        // store content definition in entity resolver USING EXISTING SCHEMA NAME!!!
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1L2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        xmlcontentDE = CmsXmlContentFactory.createDocument(cms, Locale.GERMAN, content, definition);
+
+        assertEquals(
+            "Dies ist etwas Text EINS NEU ‰ˆ¸ƒ÷‹ﬂÄ",
+            xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
+        assertEquals(
+            "Dies ist etwas Text ZWEI NEU ‰ˆ¸ƒ÷‹ﬂÄ",
+            xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
+
+        xmlcontentEN = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, definition);
+
+        assertEquals("This is some text NEW ONE", xmlcontentEN.getStringValue(cms, "StringOne", Locale.ENGLISH));
+        assertEquals("This is some text NEW TWO", xmlcontentEN.getStringValue(cms, "StringTwo", Locale.ENGLISH));
     }
 
     /**
@@ -2066,8 +2128,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(1, errorHandler.getErrors(Locale.ENGLISH).size());
 
         // test custom error message
-        assertEquals("A valid HTML color value (e.g. #ffffff) is required", errorHandler.getErrors(Locale.ENGLISH).get(
-            value.getPath()));
+        assertEquals(
+            "A valid HTML color value (e.g. #ffffff) is required",
+            errorHandler.getErrors(Locale.ENGLISH).get(value.getPath()));
 
         value.setStringValue(cms, "#ffffff");
         xmlcontent.validateXmlStructure(resolver);
