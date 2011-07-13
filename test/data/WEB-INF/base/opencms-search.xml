@@ -277,7 +277,7 @@
 			</indexsource>     
 		</indexsources>		
 		<fieldconfigurations>		
-			<fieldconfiguration>
+			<fieldconfiguration class="org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories">
 				<name>standard</name>
 				<description>The standard OpenCms search index field configuration.</description>
 				<fields>
