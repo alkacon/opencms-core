@@ -60,11 +60,48 @@ function confirmDeleteLocale() {
 	formFrame.confirmDeleteLocale();
 }
 
+function checkHideCloseButton() {
+	var w = window.parent
+	var par = w;
+	while (true) {
+		if (w.__hideEditorCloseButton) {
+			return true;
+		}
+		par = w.parent;
+		if (par === w || !par) {
+			break;
+		}
+		w = par;
+	}
+	return false; 
+}
+
+function disableExitButton() {
+	var marker= 	document.getElementById("exitbuttonmarker");
+	if (marker) {
+		var exitbutton = marker.nextSibling
+		if (exitbutton) {
+			exitbutton.parentNode.removeChild(exitbutton)
+		}
+	}
+}
+
+function onLoad() {
+	var hideClose = checkHideCloseButton()
+	if (hideClose) {
+		disableExitButton();
+	}
+}
+
+
+
+
+
 //-->
 </script>
 
 </head>
-<body class="buttons-head" unselectable="on">
+<body onload="onLoad()" class="buttons-head" unselectable="on">
 
 <%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
@@ -102,9 +139,7 @@ if (wp.isPreviewEnabled()) {
 
 %>
 
-<td width="100%">&nbsp;</td>
-		
-<%= wp.button("javascript:confirmExit();", null, "exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
+<td id="exitbuttonmarker" width="100%">&nbsp;</td><%= wp.button("javascript:confirmExit();", null, "exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
 
 </form>
 
