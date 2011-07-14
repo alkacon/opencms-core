@@ -53,7 +53,8 @@
 				<formatter minwidth="250" uri="/system/modules/org.opencms.dev.demo/formatters/article_with_headincludes/center.jsp" searchcontent="false"/>				
 			</formatters>			
 			<headincludes>				
-				<headinclude type="javascript" uri="/system/modules/org.opencms.dev.demo/resources/js/headinclude_script.js" />											
+				<headinclude type="javascript" uri="/system/modules/org.opencms.dev.demo/resources/js/headinclude_script.js" />
+				<headinclude type="css" uri="/system/modules/org.opencms.dev.demo/resources/css/headinclude_css.css" />											
 			</headincludes>									
 		</xsd:appinfo>
 	</xsd:annotation>  

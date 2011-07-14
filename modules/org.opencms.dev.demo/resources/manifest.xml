@@ -777,6 +777,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.dev.demo/resources/css/headinclude_css.css</source>
+			<destination>system/modules/org.opencms.dev.demo/resources/css/headinclude_css.css</destination>
+			<type>plain</type>
+			<uuidstructure>ecf84d37-ae2a-11e0-8ba2-87a56edf3321</uuidstructure>
+			<uuidresource>ecf84d38-ae2a-11e0-8ba2-87a56edf3321</uuidresource>
+			<datelastmodified>Thu, 14 Jul 2011 15:10:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Jul 2011 15:07:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.dev.demo/resources/css/nav_left.css</source>
 			<destination>system/modules/org.opencms.dev.demo/resources/css/nav_left.css</destination>
 			<type>plain</type>
