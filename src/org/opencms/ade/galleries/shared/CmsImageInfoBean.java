@@ -50,7 +50,7 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     private int m_width;
 
     /**
-     * Returns the image copyright information.<p>
+     * Returns the image copyright  information.<p>
      *
      * @return the image copyright information
      */

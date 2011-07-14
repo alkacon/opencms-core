@@ -27,6 +27,8 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,6 +59,9 @@ public class CmsResourceInfoBean implements IsSerializable {
 
     /** The resource type name. */
     private String m_resourceType;
+
+    /** The structure id of the resource. */
+    private CmsUUID m_structureId;
 
     /** The file size. */
     private String m_size;
@@ -143,6 +148,15 @@ public class CmsResourceInfoBean implements IsSerializable {
     }
 
     /**
+     * Gets the structure id of the resource.<p>
+     * @return the structure id of the resource 
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
      * Returns the title of the resource.<p>
      *
      * @return the title
@@ -220,6 +234,16 @@ public class CmsResourceInfoBean implements IsSerializable {
     public void setSize(String size) {
 
         m_size = size;
+    }
+
+    /**
+     * Sets the resource structure id.<p>
+     * 
+     * @param structureId the resource structure id 
+     */
+    public void setStructureId(CmsUUID structureId) {
+
+        m_structureId = structureId;
     }
 
     /**

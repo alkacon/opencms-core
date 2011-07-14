@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,9 +46,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
 
+    /** The preview instance. */
     private static CmsBinaryResourcePreview m_instance;
 
+    /** The preview controller. */
     private CmsBinaryPreviewController m_controller;
+
+    /** The drag-and-drop handler to use for resource list items in the preview. */
+    protected CmsDNDHandler m_dndHandler;
 
     /**
      * Constructor.<p>
@@ -64,6 +70,17 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
 
         CmsBinaryResourcePreview instance = getInstance();
         CmsPreviewUtil.exportFunctions(instance.getPreviewName(), instance);
+    }
+
+    /** 
+     * Sets the drag-and-drop handler to use.<p>
+     * 
+     * 
+     * @param dndHandler the drag-and-drop handler 
+     */
+    public static void setDNDHandler(CmsDNDHandler dndHandler) {
+
+        getInstance().m_dndHandler = dndHandler;
     }
 
     /**
@@ -107,6 +124,7 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
 
         CmsBinaryPreviewDialog previewDialog = new CmsBinaryPreviewDialog(
             mode,
+            m_dndHandler,
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
 
@@ -147,9 +165,9 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      * @param parentId the previews parent element id
      */
     private native void exportRemovePreview(String parentId) /*-{
-        $wnd["removePreview" + parentId] = function() {
-            @org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
-        };
+      $wnd["removePreview" + parentId] = function() {
+         @org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
+      };
     }-*/;
 
     /**

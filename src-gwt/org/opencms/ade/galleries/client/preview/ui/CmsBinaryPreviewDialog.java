@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,16 +50,21 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     /** The properties tab. */
     private CmsPropertiesTab m_propertiesTab;
 
+    /**  The drag-and-drop handler to use for the resource list items in the preview. */
+    protected CmsDNDHandler m_dndHandler;
+
     /**
      * The constructor.<p>
      * 
      * @param dialogMode the dialog mode
+     * @param dndHandler the drag-and-drop handler to use for the resource list items in the preview 
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
      */
-    public CmsBinaryPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsBinaryPreviewDialog(GalleryMode dialogMode, CmsDNDHandler dndHandler, int dialogHeight, int dialogWidth) {
 
         super(dialogMode, dialogHeight, dialogWidth);
+        m_dndHandler = dndHandler;
     }
 
     /**
@@ -79,7 +85,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
      */
     public void fillPreviewPanel(CmsResourceInfoBean infoBean) {
 
-        m_previewPanel.setWidget(new CmsBinaryPreviewContent(infoBean));
+        m_previewPanel.setWidget(new CmsBinaryPreviewContent(infoBean, m_dndHandler));
     }
 
     /**

@@ -18,7 +18,7 @@
 		
 	</ui:style>
 	<g:HTMLPanel styleName="{m_style.panel}">
-		<cms:CmsListItemWidget ui:field="m_listItemWidget" />
+		<cms:CmsList ui:field="m_list" />
 		<g:HTML ui:field="m_previewContent" styleName="{m_style.previewContent}" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

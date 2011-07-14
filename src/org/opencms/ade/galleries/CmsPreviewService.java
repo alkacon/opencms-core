@@ -143,12 +143,13 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
 
         resInfo.setTitle(resource.getName());
+        resInfo.setStructureId(resource.getStructureId());
         resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
             type.getTypeName()));
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
-        resInfo.setSize(resource.getLength() / 1024 + " kb");
+        resInfo.setSize((resource.getLength() / 1024) + " kb");
         resInfo.setLastModified(new Date(resource.getDateLastModified()));
 
         // reading default explorer-type properties
