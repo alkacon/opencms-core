@@ -67,14 +67,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     private static long m_clientCacheMaxAge;
 
     /** The resource loader configuration. */
-    private Map<String, Object> m_configuration;
+    private Map<String, String> m_configuration;
 
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
 
-        m_configuration = new TreeMap<String, Object>();
+        m_configuration = new TreeMap<String, String>();
     }
 
     /**
@@ -140,7 +140,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // return the configuration in an immutable form
         return Collections.unmodifiableMap(m_configuration);

@@ -1399,8 +1399,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             for (I_CmsDAOResourceRelations rr : res) {
                 CmsRelation rel = internalReadRelation(rr);
                 try {
-                    ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
-                        CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                    ous.add(m_driverManager.readOrganizationalUnit(
+                        dbc,
+                        rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {
@@ -1452,7 +1453,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, Object> configuration = configurationManager.getConfiguration();
+        Map<String, String> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {

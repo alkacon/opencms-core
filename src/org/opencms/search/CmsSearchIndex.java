@@ -659,9 +659,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> result = new TreeMap<String, String>();
         if (getPriority() > 0) {
             result.put(PRIORITY, String.valueOf(m_priority));
         }

@@ -159,7 +159,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         return null;
     }

@@ -197,12 +197,11 @@ public class CmsPointerLoader extends CmsDumpLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> config = super.getConfiguration();
-        SortedMap<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> config = super.getConfiguration();
+        SortedMap<String, String> result = new TreeMap<String, String>();
         if (config != null) {
             result.putAll(config);
         }

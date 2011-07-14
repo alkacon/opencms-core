@@ -194,13 +194,13 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     private boolean m_fileTranslationEnabled;
 
     /** The list of file translations. */
-    private List m_fileTranslations;
+    private List<String> m_fileTranslations;
 
     /** Controls if folder translation is enabled. */
     private boolean m_folderTranslationEnabled;
 
     /** The list of folder translations. */
-    private List m_folderTranslations;
+    private List<String> m_folderTranslations;
 
     /** The configured resource manager. */
     private CmsResourceManager m_resourceManager;
@@ -336,12 +336,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                 resourceType.addAttribute(A_NAME, resType.getTypeName());
                 resourceType.addAttribute(A_ID, String.valueOf(resType.getTypeId()));
                 // add resource mappings
-                List mappings = resType.getConfiguredMappings();
+                List<String> mappings = resType.getConfiguredMappings();
                 if ((mappings != null) && (mappings.size() > 0)) {
                     Element mappingsNode = resourceType.addElement(N_MAPPINGS);
                     for (int j = 0; j < mappings.size(); j++) {
                         Element mapping = mappingsNode.addElement(N_MAPPING);
-                        mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
+                        mapping.addAttribute(A_SUFFIX, mappings.get(j));
                     }
                 }
                 // add default properties
@@ -365,12 +365,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add copy resources
-                List copyRes = resType.getConfiguredCopyResources();
+                List<CmsConfigurationCopyResource> copyRes = resType.getConfiguredCopyResources();
                 if ((copyRes != null) && (copyRes.size() > 0)) {
                     Element copyResNode = resourceType.addElement(N_COPY_RESOURCES);
-                    Iterator p = copyRes.iterator();
+                    Iterator<CmsConfigurationCopyResource> p = copyRes.iterator();
                     while (p.hasNext()) {
-                        CmsConfigurationCopyResource cRes = (CmsConfigurationCopyResource)p.next();
+                        CmsConfigurationCopyResource cRes = p.next();
                         Element cNode = copyResNode.addElement(N_COPY_RESOURCE);
                         cNode.addAttribute(A_SOURCE, cRes.getSource());
                         if (!cRes.isTargetWasNull()) {
@@ -382,10 +382,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add optional parameters
-                Map<String, Object> prop = resType.getConfiguration();
+                Map<String, String> prop = resType.getConfiguration();
                 if (prop != null) {
                     if ((resType instanceof CmsResourceTypeXmlContainerPage)) {
-                        prop = new HashMap<String, Object>(prop);
+                        prop = new HashMap<String, String>(prop);
                         prop.remove(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
                     }
                     List<String> sortedRuntimeProperties = new ArrayList<String>(prop.keySet());
@@ -597,19 +597,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add resource loader
         Element resourceloadersElement = resources.addElement(N_RESOURCELOADERS);
-        List loaders = m_resourceManager.getLoaders();
-        for (int i = 0; i < loaders.size(); i++) {
-            I_CmsResourceLoader loader = (I_CmsResourceLoader)loaders.get(i);
+        for (I_CmsResourceLoader loader : m_resourceManager.getLoaders()) {
             // add the loader node
             Element loaderNode = resourceloadersElement.addElement(N_LOADER);
             loaderNode.addAttribute(A_CLASS, loader.getClass().getName());
-            Map loaderConfiguration = loader.getConfiguration();
+            Map<String, String> loaderConfiguration = loader.getConfiguration();
             if (loaderConfiguration != null) {
-                Iterator it = loaderConfiguration.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it = loaderConfiguration.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String name = (String)entry.getKey();
-                    String value = (String)entry.getValue();
+                    Map.Entry<String, String> entry = it.next();
+                    String name = entry.getKey();
+                    String value = entry.getValue();
                     Element paramNode = loaderNode.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -619,7 +617,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add resource types
         Element resourcetypesElement = resources.addElement(N_RESOURCETYPES);
-        List resourceTypes = new ArrayList();
+        List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
         if (m_resourceManager.getResTypeUnknownFolder() != null) {
             resourceTypes.add(m_resourceManager.getResTypeUnknownFolder());
         }
@@ -631,9 +629,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add VFS content collectors
         Element collectorsElement = resources.addElement(N_COLLECTORS);
-        Iterator it = m_resourceManager.getRegisteredContentCollectors().iterator();
-        while (it.hasNext()) {
-            I_CmsResourceCollector collector = (I_CmsResourceCollector)it.next();
+        for (I_CmsResourceCollector collector : m_resourceManager.getRegisteredContentCollectors()) {
             collectorsElement.addElement(N_COLLECTOR).addAttribute(A_CLASS, collector.getClass().getName()).addAttribute(
                 A_ORDER,
                 String.valueOf(collector.getOrder()));
@@ -641,14 +637,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         Element namegeneratorElement = resources.addElement(N_NAMEGENERATOR);
         String nameGeneratorClass = m_resourceManager.getNameGenerator().getClass().getName();
-
         namegeneratorElement.addAttribute(A_CLASS, nameGeneratorClass);
 
         // add MIME types
         Element mimeTypesElement = resources.addElement(N_MIMETYPES);
-        it = m_resourceManager.getMimeTypes().iterator();
-        while (it.hasNext()) {
-            CmsMimeType type = (CmsMimeType)it.next();
+        for (CmsMimeType type : m_resourceManager.getMimeTypes()) {
             mimeTypesElement.addElement(N_MIMETYPE).addAttribute(A_EXTENSION, type.getExtension()).addAttribute(
                 A_TYPE,
                 type.getType());
@@ -656,9 +649,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add relation types
         Element relationTypesElement = resources.addElement(N_RELATIONTYPES);
-        it = m_resourceManager.getRelationTypes().iterator();
-        while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+        for (CmsRelationType type : m_resourceManager.getRelationTypes()) {
             relationTypesElement.addElement(N_RELATIONTYPE).addAttribute(A_NAME, type.getName()).addAttribute(
                 A_TYPE,
                 type.getType());
@@ -666,8 +657,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // HTML converter configuration
         boolean writeConfig = false;
-        for (it = m_resourceManager.getHtmlConverters().iterator(); it.hasNext();) {
-            CmsHtmlConverterOption converter = (CmsHtmlConverterOption)it.next();
+        for (CmsHtmlConverterOption converter : m_resourceManager.getHtmlConverters()) {
             if (!converter.isDefault()) {
                 // found a non default converter configuration, set flag to write configuration
                 writeConfig = true;
@@ -677,8 +667,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         if (writeConfig) {
             // configuration is written because non default options were found
             Element htmlConvertersElement = resources.addElement(N_HTML_CONVERTERS);
-            for (it = m_resourceManager.getHtmlConverters().iterator(); it.hasNext();) {
-                CmsHtmlConverterOption converter = (CmsHtmlConverterOption)it.next();
+            for (CmsHtmlConverterOption converter : m_resourceManager.getHtmlConverters()) {
                 Element converterElement = htmlConvertersElement.addElement(N_HTML_CONVERTER).addAttribute(
                     A_NAME,
                     converter.getName());
@@ -688,9 +677,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add default file names
         Element defaultFileElement = vfs.addElement(N_DEFAULTFILES);
-        it = m_defaultFiles.iterator();
-        while (it.hasNext()) {
-            defaultFileElement.addElement(N_DEFAULTFILE).addAttribute(A_NAME, (String)it.next());
+        for (String element : m_defaultFiles) {
+            defaultFileElement.addElement(N_DEFAULTFILE).addAttribute(A_NAME, element);
         }
 
         // add translation rules
@@ -700,18 +688,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         Element fileTransElement = translationsElement.addElement(N_FILETRANSLATIONS).addAttribute(
             A_ENABLED,
             String.valueOf(m_fileTranslationEnabled));
-        it = m_fileTranslations.iterator();
-        while (it.hasNext()) {
-            fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
+        for (String translation : m_fileTranslations) {
+            fileTransElement.addElement(N_TRANSLATION).setText(translation);
         }
 
         // folder translation rules
         Element folderTransElement = translationsElement.addElement(N_FOLDERTRANSLATIONS).addAttribute(
             A_ENABLED,
             String.valueOf(m_folderTranslationEnabled));
-        it = m_folderTranslations.iterator();
-        while (it.hasNext()) {
-            folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
+        for (String translation : m_folderTranslations) {
+            folderTransElement.addElement(N_TRANSLATION).setText(translation);
         }
 
         // XML content configuration
@@ -719,9 +705,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // XML widgets
         Element xmlWidgetsElement = xmlContentsElement.addElement(N_WIDGETS);
-        it = m_xmlContentTypeManager.getRegisteredWidgetNames().iterator();
-        while (it.hasNext()) {
-            String widget = (String)it.next();
+        for (String widget : m_xmlContentTypeManager.getRegisteredWidgetNames()) {
             Element widgetElement = xmlWidgetsElement.addElement(N_WIDGET).addAttribute(A_CLASS, widget);
             String alias = m_xmlContentTypeManager.getRegisteredWidgetAlias(widget);
             if (alias != null) {
@@ -735,9 +719,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // XML content types 
         Element xmlSchemaTypesElement = xmlContentsElement.addElement(N_SCHEMATYPES);
-        it = m_xmlContentTypeManager.getRegisteredSchemaTypes().iterator();
-        while (it.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();
+        for (I_CmsXmlSchemaType type : m_xmlContentTypeManager.getRegisteredSchemaTypes()) {
             I_CmsWidget widget = m_xmlContentTypeManager.getWidgetDefault(type.getTypeName());
             xmlSchemaTypesElement.addElement(N_SCHEMATYPE).addAttribute(A_CLASS, type.getClass().getName()).addAttribute(
                 A_DEFAULTWIDGET,
@@ -776,7 +758,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         String[] array = m_fileTranslationEnabled ? new String[m_fileTranslations.size()] : new String[0];
         for (int i = 0; i < m_fileTranslations.size(); i++) {
-            array[i] = (String)m_fileTranslations.get(i);
+            array[i] = m_fileTranslations.get(i);
         }
         return new CmsResourceTranslator(array, true);
     }
@@ -791,7 +773,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         String[] array = m_folderTranslationEnabled ? new String[m_folderTranslations.size()] : new String[0];
         for (int i = 0; i < m_folderTranslations.size(); i++) {
-            array[i] = (String)m_folderTranslations.get(i);
+            array[i] = m_folderTranslations.get(i);
         }
         return new CmsResourceTranslator(array, false);
     }
@@ -890,9 +872,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     protected void initMembers() {
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_fileTranslations = new ArrayList();
-        m_folderTranslations = new ArrayList();
-        m_defaultFiles = new ArrayList();
+        m_fileTranslations = new ArrayList<String>();
+        m_folderTranslations = new ArrayList<String>();
+        m_defaultFiles = new ArrayList<String>();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_INIT_0));
         }

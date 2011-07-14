@@ -551,9 +551,13 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
-                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
-                        null), 0, null, "/");
+                    createOrganizationalUnit(
+                        dbc,
+                        "",
+                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
+                        0,
+                        null,
+                        "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -694,9 +698,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
+                    m_driverManager.deleteProject(
                         dbc,
-                        organizationalUnit.getProjectId()));
+                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -1017,7 +1021,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, Object> configuration = configurationManager.getConfiguration();
+        Map<String, String> configuration = configurationManager.getConfiguration();
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {
@@ -2088,8 +2092,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription})
-        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
+            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
+            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
+            null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);

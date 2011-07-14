@@ -120,7 +120,7 @@ public class CmsResourceManager {
          */
         protected void addResourceType(I_CmsResourceType type) {
 
-            m_resourceTypeIdMap.put(new Integer(type.getTypeId()), type);
+            m_resourceTypeIdMap.put(Integer.valueOf(type.getTypeId()), type);
             m_resourceTypeNameMap.put(type.getTypeName(), type);
             m_resourceTypeList.add(type);
         }
@@ -160,7 +160,7 @@ public class CmsResourceManager {
          */
         protected I_CmsResourceType getResourceTypeById(int typeId) {
 
-            return m_resourceTypeIdMap.get(new Integer(typeId));
+            return m_resourceTypeIdMap.get(Integer.valueOf(typeId));
         }
 
         /**

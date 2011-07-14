@@ -191,13 +191,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> result = new TreeMap<String, String>();
         if (m_schema != null) {
             result.put(CONFIGURATION_SCHEMA, m_schema);
         }
-        Map<String, Object> additional = super.getConfiguration();
+        Map<String, String> additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
         }
@@ -280,9 +280,11 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {

@@ -68,7 +68,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // simple default configuration does not support parameters
         if (LOG.isDebugEnabled()) {

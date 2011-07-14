@@ -69,7 +69,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     protected CmsObject m_cms;
 
     /** The parameters form the configuration. */
-    protected Map<String, Object> m_configurationParameters;
+    protected Map<String, String> m_configurationParameters;
 
     /** The editor button style to use. */
     protected int m_editButtonStyle;
@@ -92,7 +92,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         if (m_configurationParameters == null) {
-            m_configurationParameters = new TreeMap<String, Object>();
+            m_configurationParameters = new TreeMap<String, String>();
         }
         m_configurationParameters.put(paramName, paramValue);
     }
@@ -100,7 +100,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         if (m_configurationParameters == null) {
             // configuration parameters are usually null if the constructor has been used

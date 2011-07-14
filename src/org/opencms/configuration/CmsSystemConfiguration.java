@@ -1208,12 +1208,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
             contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
             contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
-            Map<String, Object> jobParameters = jobInfo.getConfiguration();
+            Map<String, String> jobParameters = jobInfo.getConfiguration();
             if ((jobParameters != null) && (jobParameters.size() > 0)) {
                 Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                Iterator<Map.Entry<String, Object>> it = jobParameters.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it = jobParameters.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry<String, Object> entry = it.next();
+                    Map.Entry<String, String> entry = it.next();
                     Element paramNode = parameterElement.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, entry.getKey());
                     paramNode.addText(String.valueOf(entry.getValue()));
@@ -1256,11 +1256,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             m_passwordHandler.getClass().getName());
         passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
-        Map<String, Object> handlerParameters = m_passwordHandler.getConfiguration();
+        Map<String, String> handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator<Map.Entry<String, Object>> it = handlerParameters.entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = handlerParameters.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<String, Object> entry = it.next();
+                Map.Entry<String, String> entry = it.next();
                 Element paramNode = passwordhandlerElement.addElement(N_PARAM);
                 paramNode.addAttribute(A_NAME, entry.getKey());
                 paramNode.addText(String.valueOf(entry.getValue()));
@@ -1597,9 +1597,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                m_authorizationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                    m_authorizationHandler),
+                t);
             return new CmsDefaultAuthorizationHandler();
         }
     }
@@ -1885,9 +1887,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
-                m_sessionStorageProvider), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                    m_sessionStorageProvider),
+                t);
             return new CmsDefaultSessionStorageProvider();
         }
     }
@@ -1945,9 +1949,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return validationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
-                m_validationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1, m_validationHandler),
+                t);
             return new CmsDefaultValidationHandler();
         }
     }

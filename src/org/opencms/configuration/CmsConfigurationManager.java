@@ -243,7 +243,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     @SuppressWarnings("unchecked")
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         return m_propertyConfiguration;
     }
@@ -441,8 +441,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         if (configuration.getDtdSystemLocation() != null) {
             try {
-                String file = CmsFileUtil.readFile(configuration.getDtdSystemLocation()
-                    + configuration.getDtdFilename(), CmsEncoder.ENCODING_UTF_8);
+                String file = CmsFileUtil.readFile(
+                    configuration.getDtdSystemLocation() + configuration.getDtdFilename(),
+                    CmsEncoder.ENCODING_UTF_8);
                 CmsXmlEntityResolver.cacheSystemId(
                     configuration.getDtdUrlPrefix() + configuration.getDtdFilename(),
                     file.getBytes(CmsEncoder.ENCODING_UTF_8));
@@ -456,9 +457,11 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                             + configuration.getDtdFilename()));
                 }
             } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1,
-                    configuration.getDtdSystemLocation() + configuration.getDtdFilename()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1,
+                        configuration.getDtdSystemLocation() + configuration.getDtdFilename()),
+                    e);
             }
         }
     }

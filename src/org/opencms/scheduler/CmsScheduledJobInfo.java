@@ -504,7 +504,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // this configuration does not support parameters
         if (LOG.isDebugEnabled()) {
@@ -513,7 +513,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
                 this));
         }
 
-        return Collections.<String, Object> unmodifiableMap(getParameters());
+        return Collections.<String, String> unmodifiableMap(getParameters());
     }
 
     /**

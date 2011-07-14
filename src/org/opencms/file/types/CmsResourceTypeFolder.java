@@ -108,13 +108,13 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> result = new TreeMap<String, String>();
         if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
             result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
         }
-        Map<String, Object> additional = super.getConfiguration();
+        Map<String, String> additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }

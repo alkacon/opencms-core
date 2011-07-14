@@ -247,10 +247,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     @Override
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> config = super.getConfiguration();
-        Map<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> config = super.getConfiguration();
+        Map<String, String> result = new TreeMap<String, String>();
         if (config != null) {
             result.putAll(config);
         }

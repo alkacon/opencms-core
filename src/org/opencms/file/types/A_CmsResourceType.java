@@ -112,7 +112,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected String m_className;
 
     /** Configuration parameters. */
-    protected Map<String, Object> m_configuration;
+    protected Map<String, String> m_configuration;
 
     /** The list of resources to copy. */
     protected List<CmsConfigurationCopyResource> m_copyResources;
@@ -156,7 +156,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_mappings = new ArrayList<String>();
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
-        m_configuration = new TreeMap<String, Object>();
+        m_configuration = new TreeMap<String, String>();
     }
 
     /**
@@ -436,7 +436,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
@@ -1047,11 +1047,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // log the error and continue with the other copy resources
                 if (LOG.isDebugEnabled()) {
                     // log stack trace in debug level only
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_PROCESS_COPY_RESOURCES_3,
-                        resourcename,
-                        copyResource,
-                        target), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_PROCESS_COPY_RESOURCES_3,
+                            resourcename,
+                            copyResource,
+                            target),
+                        e);
                 } else {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,
