@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.util.CmsUUID;
 
@@ -51,7 +52,7 @@ public class OpenCmsTestResourceStorageEntry {
     protected int m_length;
 
     /** The ccess control list entries. */
-    private List m_accessControlEntries;
+    private List<CmsAccessControlEntry> m_accessControlEntries;
 
     /** The access control list. */
     private CmsAccessControlList m_accessControlList;
@@ -93,7 +94,7 @@ public class OpenCmsTestResourceStorageEntry {
     private CmsUUID m_projectLastModified;
 
     /** The properties of the resource. */
-    private List m_properties;
+    private List<CmsProperty> m_properties;
 
     /** The ID of the resource database record. */
     private CmsUUID m_resourceId;
@@ -159,11 +160,11 @@ public class OpenCmsTestResourceStorageEntry {
             m_contents = null;
         }
 
-        m_properties = new ArrayList();
-        List properties = cms.readPropertyObjects(resourceName, false);
-        Iterator i = properties.iterator();
+        m_properties = new ArrayList<CmsProperty>();
+        List<CmsProperty> properties = cms.readPropertyObjects(resourceName, false);
+        Iterator<CmsProperty> i = properties.iterator();
         while (i.hasNext()) {
-            CmsProperty prop = (CmsProperty)i.next();
+            CmsProperty prop = i.next();
             m_properties.add(prop.clone());
         }
 
@@ -176,7 +177,7 @@ public class OpenCmsTestResourceStorageEntry {
      *
      * @return  the access control entries of the resource
      */
-    public List getAccessControlEntries() {
+    public List<CmsAccessControlEntry> getAccessControlEntries() {
 
         return m_accessControlEntries;
     }
@@ -337,7 +338,7 @@ public class OpenCmsTestResourceStorageEntry {
      *
      * @return  the properties of the resource
      */
-    public List getProperties() {
+    public List<CmsProperty> getProperties() {
 
         return m_properties;
     }

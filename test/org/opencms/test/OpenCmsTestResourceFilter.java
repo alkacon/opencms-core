@@ -189,18 +189,21 @@ public abstract class OpenCmsTestResourceFilter {
      * @param exclude the exclude list
      * @return list of not matching properties
      */
-    public static List compareProperties(List source, List target, List exclude) {
+    public static List<CmsProperty> compareProperties(
+        List<CmsProperty> source,
+        List<CmsProperty> target,
+        List<CmsProperty> exclude) {
 
-        List result = new ArrayList();
-        List targetClone = new ArrayList(target);
-        Iterator i = source.iterator();
+        List<CmsProperty> result = new ArrayList<CmsProperty>();
+        List<CmsProperty> targetClone = new ArrayList<CmsProperty>(target);
+        Iterator<CmsProperty> i = source.iterator();
         while (i.hasNext()) {
             boolean found = false;
-            CmsProperty sourceProperty = (CmsProperty)i.next();
-            Iterator j = targetClone.iterator();
+            CmsProperty sourceProperty = i.next();
+            Iterator<CmsProperty> j = targetClone.iterator();
             CmsProperty targetProperty = null;
             while (j.hasNext()) {
-                targetProperty = (CmsProperty)j.next();
+                targetProperty = j.next();
                 if (sourceProperty.isIdentical(targetProperty)) {
                     found = true;
                     break;
@@ -215,9 +218,9 @@ public abstract class OpenCmsTestResourceFilter {
 
         // finally match the result list with the exclude list
         if (exclude != null) {
-            Iterator l = exclude.iterator();
+            Iterator<CmsProperty> l = exclude.iterator();
             while (l.hasNext()) {
-                CmsProperty excludeProperty = (CmsProperty)l.next();
+                CmsProperty excludeProperty = l.next();
                 if (result.contains(excludeProperty)) {
                     result.remove(excludeProperty);
                 }

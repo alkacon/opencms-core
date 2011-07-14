@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -56,6 +57,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDateUtil;
@@ -173,7 +175,7 @@ public class OpenCmsTestCase extends TestCase {
     public static String m_indexTablespace;
 
     /** The internal storages. */
-    public static HashMap m_resourceStorages;
+    public static HashMap<String, OpenCmsTestResourceStorage> m_resourceStorages;
 
     /** Name of the temporary tablespace (oracle only). */
     public static String m_tempTablespace;
@@ -200,7 +202,7 @@ public class OpenCmsTestCase extends TestCase {
     private static CmsShell m_shell;
 
     /** The list of paths to the additional test data files. */
-    private static List m_testDataPath;
+    private static List<String> m_testDataPath;
 
     /** The current resource storage. */
     public OpenCmsTestResourceStorage m_currentResourceStrorage;
@@ -226,7 +228,7 @@ public class OpenCmsTestCase extends TestCase {
         if (initialize) {
             OpenCmsTestLogAppender.setBreakOnError(false);
             if (m_resourceStorages == null) {
-                m_resourceStorages = new HashMap();
+                m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
             }
 
             // initialize configuration
@@ -322,7 +324,7 @@ public class OpenCmsTestCase extends TestCase {
         for (int i = 0; i < width; i++) {
             // generate folder
             String vfsName = vfsFolder + generateName(fileNameLength) + i;
-            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
+            List<CmsProperty> props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
             cms.createResource(vfsName, CmsResourceTypeFolder.getStaticTypeId(), new byte[0], props);
             cms.unlockResource(vfsName);
 
@@ -388,19 +390,22 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @throws CmsException if something goes wrong
      */
-    public static List generateProperties(CmsObject cms, int maxProps, int propValueLength, double propertyDistribution)
-    throws CmsException {
+    public static List<CmsProperty> generateProperties(
+        CmsObject cms,
+        int maxProps,
+        int propValueLength,
+        double propertyDistribution) throws CmsException {
 
-        List propList = cms.readAllPropertyDefinitions();
+        List<CmsPropertyDefinition> propList = cms.readAllPropertyDefinitions();
 
-        List props = new ArrayList();
+        List<CmsProperty> props = new ArrayList<CmsProperty>();
         if (maxProps > propList.size()) {
             maxProps = propList.size();
         }
         Random rnd = new Random();
         int propN = rnd.nextInt(maxProps) + 1;
         for (int j = 0; j < propN; j++) {
-            CmsPropertyDefinition propDef = (CmsPropertyDefinition)propList.get((int)(Math.random() * propList.size()));
+            CmsPropertyDefinition propDef = propList.get((int)(Math.random() * propList.size()));
             propList.remove(propDef);
             if (Math.random() < propertyDistribution) {
                 // only resource prop
@@ -454,7 +459,7 @@ public class OpenCmsTestCase extends TestCase {
             if (rfsName.lastIndexOf('.') > 0) {
                 vfsName += rfsName.substring(rfsName.lastIndexOf('.'));
             }
-            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
+            List<CmsProperty> props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
             try {
                 OpenCmsTestCase.importTestResource(cms, rfsName, vfsName, type, props);
                 writtenFiles++;
@@ -553,9 +558,14 @@ public class OpenCmsTestCase extends TestCase {
         return m_dbProduct;
     }
 
+    /**
+     * Does a database import from the given RFS folder to the given VFS folder.<p>
+     * 
+     * @param importFolder the RFS folder to import from
+     * @param targetFolder the VFS folder to import into
+     */
     public static void importData(String importFolder, String targetFolder) {
 
-        String configFolder = getTestDataPath("WEB-INF/config." + m_dbProduct + "/");
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
@@ -622,7 +632,7 @@ public class OpenCmsTestCase extends TestCase {
     public static synchronized void initTestDataPath() {
 
         if (m_testDataPath == null) {
-            m_testDataPath = new ArrayList(4);
+            m_testDataPath = new ArrayList<String>(4);
 
             // test wether we are instantiated within the 
             // AllTest suite and therefore the OpenCmsTestProperties are 
@@ -806,7 +816,7 @@ public class OpenCmsTestCase extends TestCase {
         boolean publish) {
 
         // intialize a new resource storage
-        m_resourceStorages = new HashMap();
+        m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
 
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
@@ -933,8 +943,8 @@ public class OpenCmsTestCase extends TestCase {
 
         if (!setupDb.noErrors()) {
             List<String> errors = setupDb.getErrors();
-            for (Iterator i = errors.iterator(); i.hasNext();) {
-                String error = (String)i.next();
+            for (Iterator<String> i = errors.iterator(); i.hasNext();) {
+                String error = i.next();
                 System.out.println(error);
             }
             fail(setupDb.getErrors().get(0));
@@ -948,9 +958,9 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @return an initialized replacer map
      */
-    protected static Map getReplacer(ConnectionData connectionData) {
+    protected static Map<String, String> getReplacer(ConnectionData connectionData) {
 
-        Map replacer = new HashMap();
+        Map<String, String> replacer = new HashMap<String, String>();
         replacer.put("${database}", connectionData.m_dbName);
         replacer.put("${user}", connectionData.m_userName);
         replacer.put("${password}", connectionData.m_userPassword);
@@ -1025,7 +1035,7 @@ public class OpenCmsTestCase extends TestCase {
 
         for (int i = 0; i < m_testDataPath.size(); i++) {
 
-            String path = (String)m_testDataPath.get(i);
+            String path = m_testDataPath.get(i);
             File file = new File(path + filename);
             if (file.exists()) {
                 if (file.isDirectory()) {
@@ -1077,7 +1087,7 @@ public class OpenCmsTestCase extends TestCase {
         String rfsPath,
         String vfsPath,
         int type,
-        List properties) throws Exception {
+        List<CmsProperty> properties) throws Exception {
 
         byte[] content = CmsFileUtil.readFile(rfsPath);
         CmsResource result = cms.createResource(vfsPath, type, content, properties);
@@ -1226,12 +1236,12 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List excludeList) throws CmsException {
+        List<CmsProperty> excludeList) throws CmsException {
 
         String noMatches = "";
-        List storedProperties = storedResource.getProperties();
-        List properties = cms.readPropertyObjects(resourceName, false);
-        List unmatchedProperties;
+        List<CmsProperty> storedProperties = storedResource.getProperties();
+        List<CmsProperty> properties = cms.readPropertyObjects(resourceName, false);
+        List<CmsProperty> unmatchedProperties;
         unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
         if (unmatchedProperties.size() > 0) {
             noMatches += "[Properies missing " + unmatchedProperties.toString() + "]\n";
@@ -1296,7 +1306,7 @@ public class OpenCmsTestCase extends TestCase {
 
         try {
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsAccessControlEntry> excludeList = new ArrayList<CmsAccessControlEntry>();
             if (ace != null) {
                 excludeList.add(ace);
             }
@@ -1310,11 +1320,11 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             if (ace != null) {
-                List resAces = cms.getAccessControlEntries(resourceName);
+                List<CmsAccessControlEntry> resAces = cms.getAccessControlEntries(resourceName);
                 boolean notFound = true;
-                Iterator i = resAces.iterator();
+                Iterator<CmsAccessControlEntry> i = resAces.iterator();
                 while (i.hasNext()) {
-                    CmsAccessControlEntry resAce = (CmsAccessControlEntry)i.next();
+                    CmsAccessControlEntry resAce = i.next();
                     if (resAce.getPrincipal().equals(ace.getPrincipal())
                         && (resAce.getResource().equals(ace.getResource()))) {
                         notFound = false;
@@ -1346,7 +1356,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
 
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsUUID> excludeList = new ArrayList<CmsUUID>();
             if (permission != null) {
                 excludeList.add(principal);
             }
@@ -1367,8 +1377,8 @@ public class OpenCmsTestCase extends TestCase {
             if (permission != null) {
                 CmsAccessControlList resAcls = cms.getAccessControlList(resourceName);
 
-                Map permissionMap = resAcls.getPermissionMap();
-                CmsPermissionSet resPermission = (CmsPermissionSet)permissionMap.get(principal);
+                Map<CmsUUID, CmsPermissionSetCustom> permissionMap = resAcls.getPermissionMap();
+                CmsPermissionSet resPermission = permissionMap.get(principal);
                 if (resPermission != null) {
                     if (!resPermission.equals(permission)) {
                         fail("[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
@@ -1400,20 +1410,20 @@ public class OpenCmsTestCase extends TestCase {
 
         try {
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsUUID> excludeList = new ArrayList<CmsUUID>();
             if (permission != null) {
                 excludeList.add(principal);
             }
 
             // TODO: This is the code to recalculate the permission set if necessary. Its not completed yet!
 
-            Map parents = getParents(cms, resourceName);
-            List aceList = cms.getAccessControlEntries(resourceName);
-            Iterator i = aceList.iterator();
+            Map<CmsUUID, String> parents = getParents(cms, resourceName);
+            List<CmsAccessControlEntry> aceList = cms.getAccessControlEntries(resourceName);
+            Iterator<CmsAccessControlEntry> i = aceList.iterator();
             while (i.hasNext()) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+                CmsAccessControlEntry ace = i.next();
                 if (ace.getPrincipal().equals(principal)) {
-                    String parent = (String)parents.get(ace.getResource());
+                    String parent = parents.get(ace.getResource());
                     if ((!parent.equals(modifiedResource)) && (parent.length() > modifiedResource.length())) {
                         permission = new CmsPermissionSet(ace.getAllowedPermissions(), ace.getDeniedPermissions());
                     }
@@ -1435,8 +1445,8 @@ public class OpenCmsTestCase extends TestCase {
             if (permission != null) {
                 CmsAccessControlList resAcls = cms.getAccessControlList(resourceName);
 
-                Map permissionMap = resAcls.getPermissionMap();
-                CmsPermissionSet resPermission = (CmsPermissionSet)permissionMap.get(principal);
+                Map<CmsUUID, CmsPermissionSetCustom> permissionMap = resAcls.getPermissionMap();
+                CmsPermissionSet resPermission = permissionMap.get(principal);
                 if (resPermission != null) {
                     if (!resPermission.equals(permission)) {
                         fail("[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
@@ -2236,7 +2246,7 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // read all available versions
-        List versions = cms.readAllAvailableVersions(resourcename);
+        List<I_CmsHistoryResource> versions = cms.readAllAvailableVersions(resourcename);
 
         // new files have no historical entry despite the version number may be greater than 1 for siblings
         if (res.getState().isNew()) {
@@ -2249,7 +2259,7 @@ public class OpenCmsTestCase extends TestCase {
         // the list is sorted descending, ie. last version is first in list
         int count = versionCount - (unchanged ? 0 : 1);
 
-        Iterator i = versions.iterator();
+        Iterator<I_CmsHistoryResource> i = versions.iterator();
         while (i.hasNext()) {
             // walk through the list and read all version files
             CmsResource hRes = (CmsResource)i.next();
@@ -2290,14 +2300,14 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // read all available versions
-        List versions = cms.readAllAvailableVersions(resourcename);
+        List<I_CmsHistoryResource> versions = cms.readAllAvailableVersions(resourcename);
 
         // if the resource has not been published yet, the available versions will be one less
         boolean unchanged = res.getState().isUnchanged();
         // the list is sorted descending, ie. last version is first in list
         int count = versionCount - (unchanged ? 0 : 1);
 
-        Iterator i = versions.iterator();
+        Iterator<I_CmsHistoryResource> i = versions.iterator();
         while (i.hasNext()) {
             // walk through the list and read all version files
             CmsResource hRes = (CmsResource)i.next();
@@ -2489,9 +2499,9 @@ public class OpenCmsTestCase extends TestCase {
         I_CmsPrincipal principal,
         String permissionString) throws CmsException {
 
-        Iterator it = cms.getAccessControlEntries(resourceName).iterator();
+        Iterator<CmsAccessControlEntry> it = cms.getAccessControlEntries(resourceName).iterator();
         while (it.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)it.next();
+            CmsAccessControlEntry ace = it.next();
             if (ace.getPrincipal().equals(principal.getId())) {
                 assertEquals(permissionString, ace.getPermissions().getPermissionString()
                     + ace.getInheritingString()
@@ -2540,7 +2550,7 @@ public class OpenCmsTestCase extends TestCase {
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
 
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsProperty> excludeList = new ArrayList<CmsProperty>();
             excludeList.add(property);
 
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);
@@ -2551,7 +2561,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the property was already in the stored result
-            List storedProperties = storedResource.getProperties();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
             if (!storedProperties.contains(property)) {
                 fail("property not found in stored value: " + property);
             }
@@ -2573,7 +2583,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
      */
-    public void assertPropertyChanged(CmsObject cms, String resourceName, List excludeList) {
+    public void assertPropertyChanged(CmsObject cms, String resourceName, List<CmsProperty> excludeList) {
 
         try {
             // get the stored resource
@@ -2591,10 +2601,10 @@ public class OpenCmsTestCase extends TestCase {
 
             String propertyNoMatches = "";
             String storedNotFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties = storedResource.getProperties();
+            Iterator<CmsProperty> i = excludeList.iterator();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
             while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty property = i.next();
                 CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
                 // test if the property has the same value
                 if (!resourceProperty.isIdentical(property)) {
@@ -2647,11 +2657,14 @@ public class OpenCmsTestCase extends TestCase {
      * @param propertyDefintions the list of propertydefintions 
      * @param exclude the exclude propertydefinition
      */
-    public void assertPropertydefinitions(CmsObject cms, List propertyDefintions, CmsPropertyDefinition exclude) {
+    public void assertPropertydefinitions(
+        CmsObject cms,
+        List<CmsPropertyDefinition> propertyDefintions,
+        CmsPropertyDefinition exclude) {
 
         try {
             String noMatches = "";
-            List allPropertydefintions = cms.readAllPropertyDefinitions();
+            List<CmsPropertyDefinition> allPropertydefintions = cms.readAllPropertyDefinitions();
             noMatches += comparePropertydefintions(propertyDefintions, allPropertydefintions, exclude);
             noMatches += comparePropertydefintions(allPropertydefintions, propertyDefintions, exclude);
             if (noMatches.length() > 0) {
@@ -2699,7 +2712,7 @@ public class OpenCmsTestCase extends TestCase {
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
 
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsProperty> excludeList = new ArrayList<CmsProperty>();
             excludeList.add(property);
 
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);
@@ -3241,7 +3254,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void switchStorage(String name) throws CmsException {
 
-        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        OpenCmsTestResourceStorage storage = m_resourceStorages.get(name);
         if (storage != null) {
             m_currentResourceStrorage = storage;
         } else {
@@ -3316,7 +3329,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     protected void removeStorage(String name) {
 
-        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        OpenCmsTestResourceStorage storage = m_resourceStorages.get(name);
         if (storage != null) {
             m_resourceStorages.remove(name);
             storage = null;
@@ -3555,20 +3568,20 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to get the parent map from
      * @return HashMap of parent resources
      */
-    private Map getParents(CmsObject cms, String resourceName) {
+    private Map<CmsUUID, String> getParents(CmsObject cms, String resourceName) {
 
-        HashMap parents = new HashMap();
-        List parentResources = new ArrayList();
+        HashMap<CmsUUID, String> parents = new HashMap<CmsUUID, String>();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
         try {
             // get all parent folders of the current file
             parentResources = cms.readPath(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // ignore
         }
-        Iterator k = parentResources.iterator();
+        Iterator<CmsResource> k = parentResources.iterator();
         while (k.hasNext()) {
             // add the current folder to the map
-            CmsResource curRes = (CmsResource)k.next();
+            CmsResource curRes = k.next();
             parents.put(curRes.getResourceId(), curRes.getRootPath());
         }
         return parents;

@@ -51,13 +51,13 @@ public class OpenCmsTestResourceStorage {
     private String m_name;
 
     /** storeage for precalculation of states. **/
-    private Map m_precalcState;
+    private Map<String, CmsResourceState> m_precalcState;
 
     /** Strings for mapping the filename. */
     private String m_sourceNameMapping;
 
     /** internal storage. */
-    private Map m_storage;
+    private Map<String, OpenCmsTestResourceStorageEntry> m_storage;
 
     /** Prefix mapping for target name. */
     private String m_targetNameMapping;
@@ -69,8 +69,8 @@ public class OpenCmsTestResourceStorage {
      */
     public OpenCmsTestResourceStorage(String name) {
 
-        m_storage = new HashMap();
-        m_precalcState = new HashMap();
+        m_storage = new HashMap<String, OpenCmsTestResourceStorageEntry>();
+        m_precalcState = new HashMap<String, CmsResourceState>();
         m_sourceNameMapping = null;
         m_targetNameMapping = null;
         m_name = name;
@@ -102,7 +102,7 @@ public class OpenCmsTestResourceStorage {
         String mappedResourceName = mapResourcename(resourceName);
 
         OpenCmsTestResourceStorageEntry entry = null;
-        entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
+        entry = m_storage.get(mappedResourceName);
 
         if (entry == null) {
             throw new Exception("resource "
@@ -140,14 +140,16 @@ public class OpenCmsTestResourceStorage {
      * Gets an precalculate resource state from the storage.<p>
      * 
      * @param resourceName the name of the resource to get  the state
+     * 
      * @return precalculated resource state
+     * 
      * @throws Exception in case something goes wrong
      */
     public CmsResourceState getPreCalculatedState(String resourceName) throws Exception {
 
         String mappedResourceName = mapResourcename(resourceName);
 
-        CmsResourceState state = (CmsResourceState)m_precalcState.get(mappedResourceName);
+        CmsResourceState state = m_precalcState.get(mappedResourceName);
         if (state == null) {
             throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
