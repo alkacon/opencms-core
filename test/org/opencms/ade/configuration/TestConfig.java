@@ -344,6 +344,42 @@ public class TestConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the creation of local contents when no folder name has been defined anywhere.<p>
+     * 
+     * @throws Exception
+     */
+    public void testCreateContentsLocally4() throws Exception {
+
+        String typename = "plain";
+        String baseDirectory = "/sites/default";
+        String contentDirectory = baseDirectory + "/.content";
+
+        String baseDirectory2 = "/sites/default/foo";
+
+        CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, null, "file_%(number)", null);
+
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            baseDirectory,
+            list(typeConf1),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config1.initialize(rootCms());
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            baseDirectory2,
+            NO_TYPES,
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+        config2.setCreateContentsLocally(true);
+        config2.setParent(config1);
+        config2.initialize(rootCms());
+        String folderPath = config2.getResourceType("plain").getFolderPath(getCmsObject());
+        assertPathEquals("/sites/default/foo/.content/plain", folderPath);
+    }
+
+    /**
      * Tests the creation of new contents by the CmsResourceTypeConfig class.<p>
      * 
      * @throws Exception

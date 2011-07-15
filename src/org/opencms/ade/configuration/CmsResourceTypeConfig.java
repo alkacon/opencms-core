@@ -416,9 +416,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     protected void updateBasePath(String basePath) {
 
-        if ((m_folderOrName != null) && m_folderOrName.isName()) {
-            m_folderOrName = new CmsFolderOrName(basePath, m_folderOrName.getFolderName());
+        if (m_folderOrName != null) {
+            if (m_folderOrName.isName()) {
+                m_folderOrName = new CmsFolderOrName(basePath, m_folderOrName.getFolderName());
+            }
+        } else {
+            m_folderOrName = new CmsFolderOrName(basePath, m_typeName);
         }
     }
-
 }
