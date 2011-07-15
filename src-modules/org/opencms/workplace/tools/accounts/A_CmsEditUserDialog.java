@@ -558,7 +558,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             } else {
-                row = 12;
+                row = 10;
             }
             row++;
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
