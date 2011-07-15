@@ -294,8 +294,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         CmsUploadButton uploadButton = new CmsUploadButton();
         uploadButton.setTargetFolder(target);
-        uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
         uploadButton.setText(null);
+        uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
         uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
         return uploadButton;
