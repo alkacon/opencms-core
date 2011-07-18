@@ -12,6 +12,7 @@
 	margin: 0;
 	overflow: auto;
 	height: 100%;
+	padding-top: 45px;
 }
 
 @if user.agent ie6 {
@@ -31,7 +32,7 @@ div.header{
 	background: value("constants.css.backgroundColorListItem");
 	padding: 10px;
 	width: 930px;
-	margin: 45px auto 10px;
+	margin: 0px auto 10px;
 }
 
 div.header h2{
