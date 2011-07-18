@@ -120,9 +120,13 @@ public class CmsBinaryPreviewContent extends Composite {
      */
     public CmsBinaryPreviewContent(CmsResourceInfoBean info, CmsBinaryPreviewHandler previewHandler) {
 
-        m_listItemWidget = createListItem(info);
+        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
+        CmsDNDHandler dndHandler = null;
+        if (galleryDialog != null) {
+            dndHandler = galleryDialog.getResultsTab().getDNDHandler();
+        }
+        m_listItem = createListItem(info, dndHandler);
         m_binaryPreviewHandler = previewHandler;
-        m_listItem = new CmsListItem(m_listItemWidget);
         initWidget(uiBinder.createAndBindUi(this));
         CmsUUID structureId = info.getStructureId();
 
@@ -134,14 +138,6 @@ public class CmsBinaryPreviewContent extends Composite {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(info.getPreviewContent())) {
             m_previewContent.setHTML(info.getPreviewContent());
         }
-        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
-        if (galleryDialog != null) {
-            CmsDNDHandler dndHandler2 = galleryDialog.getResultsTab().getDNDHandler();
-            if (dndHandler2 != null) {
-                m_listItem.initMoveHandle(dndHandler2);
-            }
-
-        }
     }
 
     /**
@@ -150,7 +146,7 @@ public class CmsBinaryPreviewContent extends Composite {
      * @param resourceInfo the resource information bean
      * @return the list item widget 
      */
-    private CmsListItemWidget createListItem(CmsResourceInfoBean resourceInfo) {
+    private CmsListItem createListItem(CmsResourceInfoBean resourceInfo, CmsDNDHandler dndHandler) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(resourceInfo.getTitle());
@@ -167,10 +163,13 @@ public class CmsBinaryPreviewContent extends Composite {
                 Messages.get().key(Messages.GUI_PREVIEW_LABEL_DATEMODIFIED_0),
                 CmsDateTimeUtil.getDate(resourceInfo.getLastModified(), Format.MEDIUM));
         }
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
+        CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
+        CmsListItem result = new CmsListItem(itemWidget);
 
         CmsPushButton button = CmsResultListItem.createDeleteButton();
-
+        if (dndHandler != null) {
+            result.initMoveHandle(dndHandler);
+        }
         CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
         if (galleryDialog != null) {
             CmsResultsTab resultsTab = galleryDialog.getResultsTab();
@@ -184,7 +183,7 @@ public class CmsBinaryPreviewContent extends Composite {
                 }
             };
             button.addClickHandler(handler);
-            result.addButton(button);
+            itemWidget.addButton(button);
         }
 
         return result;

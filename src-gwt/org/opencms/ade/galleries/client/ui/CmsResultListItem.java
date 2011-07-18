@@ -90,12 +90,20 @@ public class CmsResultListItem extends CmsListItem {
                 addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
             }
         }
+        // add delete button
+        m_deleteButton = createDeleteButton();
+        if (!resultItem.isEditable()) {
+            m_deleteButton.disable(resultItem.getNoEditReson());
+        }
+        resultItemWidget.addButton(m_deleteButton);
+
         // add  preview button
         m_previewButton = new CmsPushButton();
         m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
         m_previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         resultItemWidget.addButton(m_previewButton);
+
         m_selectButton = new CmsPushButton();
         // TODO: use different icon
         m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
@@ -104,12 +112,6 @@ public class CmsResultListItem extends CmsListItem {
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
-        // add delete button
-        m_deleteButton = createDeleteButton();
-        if (!resultItem.isEditable()) {
-            m_deleteButton.disable(resultItem.getNoEditReson());
-        }
-        resultItemWidget.addButton(m_deleteButton);
         // add file icon
         resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
 

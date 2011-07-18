@@ -872,13 +872,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param categoryList the category list
      * @param entries the tree entries
      */
-    private void categoryTreeToList(List<CmsCategoryBean> categoryList, List<CmsCategoryTreeEntry> treeEntry) {
+    private void categoryTreeToList(List<CmsCategoryBean> categoryList, List<CmsCategoryTreeEntry> entries) {
 
-        if (treeEntry == null) {
+        if (entries == null) {
             return;
         }
         // skipping the root tree entry where the path property is empty
-        for (CmsCategoryTreeEntry entry : treeEntry) {
+        for (CmsCategoryTreeEntry entry : entries) {
             CmsCategoryBean bean = new CmsCategoryBean(entry);
             categoryList.add(bean);
             categoryTreeToList(categoryList, entry.getChildren());
@@ -1063,6 +1063,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
      * @param title the resource title
+     * 
+     * @return an error message if an error occurred
      */
     private native String selectResource(String previewName, String galleryMode, String resourcePath, String title)/*-{
       var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
