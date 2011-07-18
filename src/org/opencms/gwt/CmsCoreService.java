@@ -59,6 +59,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -297,7 +298,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             } catch (Throwable e) {
                 error(e);
             }
-            if ((settings == null) || !settings.isEditable(cms, resUtil[0].getResource())) {
+            if ((settings == null) || !isEditable(cms, resUtil[0].getResource())) {
                 // the user has no access to this resource type
                 // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
                 return Collections.<CmsContextMenuEntryBean> emptyList();
@@ -558,16 +559,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#translateUrlName(java.lang.String)
-     */
-    public String translateUrlName(String urlName) {
-
-        String result = getCmsObject().getRequestContext().getFileTranslator().translateResource(urlName);
-        result = result.replace('/', '-');
-        return result;
-    }
-
-    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(org.opencms.util.CmsUUID)
      */
     public String unlock(CmsUUID structureId) throws CmsRpcException {
@@ -825,6 +816,23 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     itemRules.add(rule);
                 }
             }
+        }
+    }
+
+    /**
+     * Checks if the current user has write permissions on the given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> if the current user has write permissions on the given resource
+     */
+    private boolean isEditable(CmsObject cms, CmsResource resource) {
+
+        try {
+            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+        } catch (CmsException e) {
+            return false;
         }
     }
 

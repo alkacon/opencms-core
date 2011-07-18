@@ -897,7 +897,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private boolean isEditable(CmsObject cms, CmsResource resource) {
 
         try {
-            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE);
+            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             return false;
         }
