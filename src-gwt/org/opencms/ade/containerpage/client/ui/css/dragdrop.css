@@ -14,12 +14,10 @@
 	cursor: pointer;
 }
 
-@if user.agent safari {
-/* in chrome or safari iframes with embedded flash will leak through overlay, so hide them */
-	.dragging iframe{
+.dragging iframe{
 		visibility: hidden !important;
-	}
 }
+
 .dragStarted, .dragPlaceholder{}
 
 

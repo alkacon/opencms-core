@@ -295,8 +295,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void onDragCancel() {
 
-        resetOptionbar();
         clearDrag();
+        resetOptionbar();
     }
 
     /**

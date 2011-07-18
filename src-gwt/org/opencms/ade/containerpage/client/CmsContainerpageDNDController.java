@@ -167,10 +167,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The original position of the draggable. */
     private int m_originalIndex;
 
+    /** Overlay iFrame. */
+    private IFrameElement m_overlayIFrame;
+
     /** Objects for restoring the min. heights of containers. */
     private List<CmsStyleSaver> m_savedMinHeights = new ArrayList<CmsStyleSaver>();
-
-    private IFrameElement m_overlayIFrame;
 
     /**
      * Constructor.<p>
@@ -521,6 +522,28 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Installs the drag overlay to avoid any mouse over issues or similar.<p>
+     */
+    private void installDragOverlay() {
+
+        if (m_overlayIFrame != null) {
+            m_overlayIFrame.removeFromParent();
+        }
+        m_overlayIFrame = IFrameElement.as(DOM.createIFrame());
+        m_overlayIFrame.setSrc("javascript:'<html></html>';");
+        m_overlayIFrame.setAttribute("width", "100%");
+        m_overlayIFrame.setAttribute("height", "100%");
+        m_overlayIFrame.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
+        Document.get().getBody().appendChild(m_overlayIFrame);
+        if (m_dragOverlay != null) {
+            m_dragOverlay.removeFromParent();
+        }
+        m_dragOverlay = DOM.createDiv();
+        m_dragOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
+        Document.get().getBody().appendChild(m_dragOverlay);
+    }
+
+    /**
      * Checks whether the current placeholder position represents a change to the original draggable position within the tree.<p>
      * 
      * @param target the current drop target
@@ -621,6 +644,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         targetContainer.getElement().insertBefore(placeholder, draggable.getElement());
         draggable.getElement().getStyle().setDisplay(Display.NONE);
         targetContainer.highlightContainer();
+    }
+
+    /**
+     * Removes the drag overlay.<p>
+     */
+    private void removeDragOverlay() {
+
+        if (m_overlayIFrame != null) {
+            m_overlayIFrame.removeFromParent();
+            m_overlayIFrame = null;
+        }
+        if (m_dragOverlay != null) {
+            m_dragOverlay.removeFromParent();
+            m_dragOverlay = null;
+        }
     }
 
     /**
@@ -728,43 +766,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if (target instanceof I_CmsDropContainer) {
                 ((I_CmsDropContainer)target).refreshHighlighting();
             }
-        }
-    }
-
-    /**
-     * Installs the drag overlay to avoid any mouse over issues or similar.<p>
-     */
-    private void installDragOverlay() {
-
-        if (m_overlayIFrame != null) {
-            m_overlayIFrame.removeFromParent();
-        }
-        m_overlayIFrame = IFrameElement.as(DOM.createIFrame());
-        m_overlayIFrame.setSrc("javascript:'<html></html>';");
-        m_overlayIFrame.setAttribute("width", "100%");
-        m_overlayIFrame.setAttribute("height", "100%");
-        m_overlayIFrame.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
-        Document.get().getBody().appendChild(m_overlayIFrame);
-        if (m_dragOverlay != null) {
-            m_dragOverlay.removeFromParent();
-        }
-        m_dragOverlay = DOM.createDiv();
-        m_dragOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
-        Document.get().getBody().appendChild(m_dragOverlay);
-    }
-
-    /**
-     * Removes the drag overlay.<p>
-     */
-    private void removeDragOverlay() {
-
-        if (m_overlayIFrame != null) {
-            m_overlayIFrame.removeFromParent();
-            m_overlayIFrame = null;
-        }
-        if (m_dragOverlay != null) {
-            m_dragOverlay.removeFromParent();
-            m_dragOverlay = null;
         }
     }
 }

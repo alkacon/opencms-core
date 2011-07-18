@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.dnd;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
@@ -219,9 +218,6 @@ public class CmsDNDHandler implements MouseDownHandler {
                 case Event.ONMOUSEWHEEL:
                     onMouseWheelScroll(nativeEvent);
                     break;
-                case Event.ONMOUSEOUT:
-                    // allow mouse out events to avoid leaving hovered buttons etc. around
-                    return;
                 default:
                     // do nothing
             }
@@ -627,7 +623,6 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     protected void animateCancel(final I_CmsDraggable draggable, final I_CmsDNDController controller) {
 
-        CmsDebugLog.getInstance().printLine("canceling drop");
         controller.onAnimationStart(draggable, null, this);
         stopDragging();
         Command callback = new Command() {
@@ -778,7 +773,6 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         if (m_dragHelper == null) {
             // should never happen
-            CmsDebugLog.getInstance().printLine("drag helper can not be positioned, as it is null");
             return;
         }
         Element parentElement = m_dragHelper.getParentElement();
