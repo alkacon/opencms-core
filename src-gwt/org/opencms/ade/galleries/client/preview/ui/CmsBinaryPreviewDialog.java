@@ -85,7 +85,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
      */
     public void fillPreviewPanel(CmsResourceInfoBean infoBean) {
 
-        m_previewPanel.setWidget(new CmsBinaryPreviewContent(infoBean, m_dndHandler));
+        m_previewPanel.setWidget(new CmsBinaryPreviewContent(infoBean, m_handler));
     }
 
     /**

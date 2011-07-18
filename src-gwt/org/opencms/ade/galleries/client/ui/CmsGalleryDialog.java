@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
+import org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -179,6 +180,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
+        CmsBinaryResourcePreview.getInstance().setGalleryDialog(this);
         addResizeHandler(this);
     }
 

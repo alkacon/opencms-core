@@ -41,8 +41,10 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -64,6 +66,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /** The reference to the gallery dialog. */
     protected CmsGalleryDialog m_galleryDialog;
+
+    private I_CmsGalleryProviderConstants.GalleryMode m_mode;
 
     /**
      * Constructor.<p>
@@ -180,8 +184,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         // do nothing
     }
 
-    private I_CmsGalleryProviderConstants.GalleryMode m_mode;
-
     /**
      * Will be triggered when the initial search is performed.<p>
      *  
@@ -224,6 +226,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         m_galleryDialog.fillTabs(m_mode.getTabs(), controller);
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
+            Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
         }
         if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
@@ -253,6 +256,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                     public void execute() {
 
                         controller.openPreview(searchObj.getResourcePath(), searchObj.getResourceType());
+
                     }
                 });
             }
@@ -278,17 +282,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
-     * Will be triggered when the tree is selected.<p>
-     * 
-     * @param categoryTreeEntry the category root entry
-     * @param selectedCategories the selected categories
-     */
-    public void onUpdateCategoriesTree(List<CmsCategoryTreeEntry> categoryTreeEntry, List<String> selectedCategories) {
-
-        m_galleryDialog.getCategoriesTab().updateContentTree(categoryTreeEntry, selectedCategories);
-    }
-
-    /**
      * Will be triggered when categories list is sorted.<p>
      *  
      * @param categoriesList the updated categories list
@@ -297,6 +290,17 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     public void onUpdateCategoriesList(List<CmsCategoryBean> categoriesList, List<String> selectedCategories) {
 
         m_galleryDialog.getCategoriesTab().updateContentList(categoriesList, selectedCategories);
+    }
+
+    /**
+     * Will be triggered when the tree is selected.<p>
+     * 
+     * @param categoryTreeEntry the category root entry
+     * @param selectedCategories the selected categories
+     */
+    public void onUpdateCategoriesTree(List<CmsCategoryTreeEntry> categoryTreeEntry, List<String> selectedCategories) {
+
+        m_galleryDialog.getCategoriesTab().updateContentTree(categoryTreeEntry, selectedCategories);
     }
 
     /**
@@ -400,7 +404,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 

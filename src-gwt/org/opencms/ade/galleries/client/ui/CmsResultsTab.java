@@ -68,6 +68,34 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsResultsTab extends A_CmsListTab {
 
     /**
+     * Click-handler for the delete button.<p>
+     */
+    public class DeleteHandler implements ClickHandler {
+
+        /** The resource path of the selected item. */
+        protected String m_resourcePath;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param resourcePath the item resource path 
+         */
+        protected DeleteHandler(String resourcePath) {
+
+            m_resourcePath = resourcePath;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            getTabHandler().deleteResource(m_resourcePath);
+        }
+
+    }
+
+    /**
      * Scroll handler which executes an action when the user has scrolled to the bottom.<p>
      * 
      * @since 8.0.0
@@ -106,40 +134,12 @@ public class CmsResultsTab extends A_CmsListTab {
             Widget child = scrollPanel.getWidget();
             int childHeight = child.getOffsetHeight();
             int ownHeight = scrollPanel.getOffsetHeight();
-            boolean isBottom = scrollPos + ownHeight >= childHeight - DEFAULT_SCROLL_THRESHOLD;
+            boolean isBottom = (scrollPos + ownHeight) >= (childHeight - DEFAULT_SCROLL_THRESHOLD);
             if (isBottom) {
                 getTabHandler().onScrollToBottom();
                 setScrollPosition(scrollPos);
             }
         }
-    }
-
-    /**
-     * Click-handler for the delete button.<p>
-     */
-    protected class DeleteHandler implements ClickHandler {
-
-        /** The resource path of the selected item. */
-        protected String m_resourcePath;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param resourcePath the item resource path 
-         */
-        public DeleteHandler(String resourcePath) {
-
-            m_resourcePath = resourcePath;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            getTabHandler().deleteResource(m_resourcePath);
-        }
-
     }
 
     /**
@@ -290,6 +290,11 @@ public class CmsResultsTab extends A_CmsListTab {
         showUpload(searchObj);
     }
 
+    public CmsDNDHandler getDNDHandler() {
+
+        return m_dndHandler;
+    }
+
     /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
@@ -298,6 +303,11 @@ public class CmsResultsTab extends A_CmsListTab {
 
         // not available for this tab
         return null;
+    }
+
+    public DeleteHandler makeDeleteHandler(String resourcePath) {
+
+        return new DeleteHandler(resourcePath);
     }
 
     /**
@@ -554,4 +564,5 @@ public class CmsResultsTab extends A_CmsListTab {
         }
 
     }
+
 }

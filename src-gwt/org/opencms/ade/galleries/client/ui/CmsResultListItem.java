@@ -105,10 +105,7 @@ public class CmsResultListItem extends CmsListItem {
         resultItemWidget.addButton(m_selectButton);
 
         // add delete button
-        m_deleteButton = new CmsPushButton();
-        m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        m_deleteButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_deleteButton.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
+        m_deleteButton = createDeleteButton();
         if (!resultItem.isEditable()) {
             m_deleteButton.disable(resultItem.getNoEditReson());
         }
@@ -116,6 +113,15 @@ public class CmsResultListItem extends CmsListItem {
         // add file icon
         resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
 
+    }
+
+    public static CmsPushButton createDeleteButton() {
+
+        CmsPushButton result = new CmsPushButton();
+        result.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
+        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
+        return result;
     }
 
     /**

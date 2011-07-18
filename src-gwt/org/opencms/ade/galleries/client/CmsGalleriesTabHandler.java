@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.client;
 
+
 /**
  * The galleries(folders) tab handler.<p>
  * 

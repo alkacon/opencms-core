@@ -1018,43 +1018,42 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         String galleryMode,
         String resourcePath,
         String parentElementId)/*-{
-        try {
-            var openPreview = null;
-            var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-            if (providerList) {
-                var provider = providerList[previewName];
-                if (provider) {
-                    openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
-                    var removePrevious = $wnd["removePreview" + parentElementId];
-                    if (removePrevious != null
-                            && typeof (removePrevious) == 'function') {
-                        try {
-                            removePrevious();
-                            $wnd["removePreview" + parentElementId] = null;
-                        } catch (err) {
-                            // should not happen, ignore
-                        }
-                    }
-                    if (openPreview && typeof (openPreview) == 'function') {
-                        try {
-                            openPreview(galleryMode, resourcePath,
-                                    parentElementId);
-                        } catch (err) {
-                            return "ERROR: " + err.description;
-                        }
-                        return null;
-                    } else {
-                        return "Open function not available";
-                    }
-                } else {
-                    return "Provider " + previewName + " not available";
-                }
+      try {
+         var openPreview = null;
+         var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+         if (providerList) {
+            var provider = providerList[previewName];
+            if (provider) {
+               openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
+               var removePrevious = $wnd["removePreview" + parentElementId];
+               if (removePrevious != null
+                     && typeof (removePrevious) == 'function') {
+                  try {
+                     removePrevious();
+                     $wnd["removePreview" + parentElementId] = null;
+                  } catch (err) {
+                     // should not happen, ignore
+                  }
+               }
+               if (openPreview && typeof (openPreview) == 'function') {
+                  try {
+                     openPreview(galleryMode, resourcePath, parentElementId);
+                  } catch (err) {
+                     return "ERROR: " + err.description;
+                  }
+                  return null;
+               } else {
+                  return "Open function not available";
+               }
             } else {
-                return "Provider list not available";
+               return "Provider " + previewName + " not available";
             }
-        } catch (err) {
-            return err.description;
-        }
+         } else {
+            return "Provider list not available";
+         }
+      } catch (err) {
+         return err.description;
+      }
     }-*/;
 
     /**
@@ -1066,26 +1065,26 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param title the resource title
      */
     private native String selectResource(String previewName, String galleryMode, String resourcePath, String title)/*-{
-        var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-        if (providerList) {
-            var provider = providerList[previewName];
-            if (provider) {
-                var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
-                if (selectResource) {
-                    try {
-                        selectResource(galleryMode, resourcePath, title);
-                    } catch (err) {
-                        return err.description;
-                    }
-                    return null;
-                } else {
-                    return "Select function not available";
-                }
+      var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+      if (providerList) {
+         var provider = providerList[previewName];
+         if (provider) {
+            var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
+            if (selectResource) {
+               try {
+                  selectResource(galleryMode, resourcePath, title);
+               } catch (err) {
+                  return err.description;
+               }
+               return null;
             } else {
-                return "Provider " + previewName + " not available";
+               return "Select function not available";
             }
-        } else {
-            return "Provider list not available";
-        }
+         } else {
+            return "Provider " + previewName + " not available";
+         }
+      } else {
+         return "Provider list not available";
+      }
     }-*/;
 }

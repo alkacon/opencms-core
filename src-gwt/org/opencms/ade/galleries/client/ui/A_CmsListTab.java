@@ -81,13 +81,11 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
 
         /**
-         * Returns the check box.<p>
-         * 
-         * @return the check box
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
-        protected CmsCheckBox getCheckBox() {
+        public void onClick(ClickEvent event) {
 
-            return m_checkBox;
+            onSelectionChange();
         }
 
         /**
@@ -103,11 +101,13 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         * Returns the check box.<p>
+         * 
+         * @return the check box
          */
-        public void onClick(ClickEvent event) {
+        protected CmsCheckBox getCheckBox() {
 
-            onSelectionChange();
+            return m_checkBox;
         }
 
         /**
@@ -173,7 +173,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         super(tabId);
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
-
         CmsGalleryDialog.initCss();
 
         List<CmsPair<String, String>> sortList = getSortList();
@@ -212,35 +211,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if (event.getSource() == m_sortSelectBox) {
             getTabHandler().onSort(event.getValue());
         }
-    }
-
-    /**
-     * Searches in the categories tree or list the item and returns it.<p>
-     * 
-     * @param list the list of items to start from
-     * @param categoryPath the category id to search
-     * @return the category item widget
-     */
-    protected CmsTreeItem searchTreeItem(CmsList<? extends I_CmsListItem> list, String categoryPath) {
-
-        CmsTreeItem resultItem = (CmsTreeItem)list.getItem(categoryPath);
-        // item is not in this tree level
-        if (resultItem == null) {
-            // if list is not empty
-            for (int i = 0; i < list.getWidgetCount(); i++) {
-                CmsTreeItem listItem = (CmsTreeItem)list.getWidget(i);
-                if (listItem.getChildCount() == 0) {
-                    continue;
-                }
-                // continue search in children
-                resultItem = searchTreeItem(listItem.getChildren(), categoryPath);
-                // break the search if result item is found
-                if (resultItem != null) {
-                    break;
-                }
-            }
-        }
-        return resultItem;
     }
 
     /**
@@ -307,4 +277,33 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * @return list of sort order value/text pairs
      */
     protected abstract List<CmsPair<String, String>> getSortList();
+
+    /**
+     * Searches in the categories tree or list the item and returns it.<p>
+     * 
+     * @param list the list of items to start from
+     * @param categoryPath the category id to search
+     * @return the category item widget
+     */
+    protected CmsTreeItem searchTreeItem(CmsList<? extends I_CmsListItem> list, String categoryPath) {
+
+        CmsTreeItem resultItem = (CmsTreeItem)list.getItem(categoryPath);
+        // item is not in this tree level
+        if (resultItem == null) {
+            // if list is not empty
+            for (int i = 0; i < list.getWidgetCount(); i++) {
+                CmsTreeItem listItem = (CmsTreeItem)list.getWidget(i);
+                if (listItem.getChildCount() == 0) {
+                    continue;
+                }
+                // continue search in children
+                resultItem = searchTreeItem(listItem.getChildren(), categoryPath);
+                // break the search if result item is found
+                if (resultItem != null) {
+                    break;
+                }
+            }
+        }
+        return resultItem;
+    }
 }

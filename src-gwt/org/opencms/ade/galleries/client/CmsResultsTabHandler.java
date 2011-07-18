@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.client;
 
+
 /**
  * The results tab handler.<p>
  * 

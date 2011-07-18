@@ -55,12 +55,28 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
     /** The drag-and-drop handler to use for resource list items in the preview. */
     protected CmsDNDHandler m_dndHandler;
 
+    /** The gallery dialog in which this preview is displayed. */
+    private CmsGalleryDialog m_galleryDialog;
+
     /**
      * Constructor.<p>
      */
     private CmsBinaryResourcePreview() {
 
         // hiding constructor
+    }
+
+    /**
+     * Returns the resource preview instance.<p>
+     * 
+     * @return the resource preview instance
+     */
+    public static CmsBinaryResourcePreview getInstance() {
+
+        if (m_instance == null) {
+            m_instance = new CmsBinaryResourcePreview();
+        }
+        return m_instance;
     }
 
     /**
@@ -84,24 +100,21 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
     }
 
     /**
-     * Returns the resource preview instance.<p>
-     * 
-     * @return the resource preview instance
-     */
-    private static CmsBinaryResourcePreview getInstance() {
-
-        if (m_instance == null) {
-            m_instance = new CmsBinaryResourcePreview();
-        }
-        return m_instance;
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#clear()
      */
     public void clear() {
 
         m_controller = null;
+    }
+
+    /**
+     * Gets the gallery dialog in which this preview is displayed.<p>
+     * 
+     * @return the gallery dialog  
+     */
+    public CmsGalleryDialog getGalleryDialog() {
+
+        return m_galleryDialog;
     }
 
     /**
@@ -157,6 +170,16 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
             return true;
         }
         return m_controller.closeGalleryDialog();
+    }
+
+    /**
+     * Sets the gallery dialog in which the preview is being displayed.<p>
+     *  
+     * @param galleryDialog the gallery dialog  
+     */
+    public void setGalleryDialog(CmsGalleryDialog galleryDialog) {
+
+        m_galleryDialog = galleryDialog;
     }
 
     /**

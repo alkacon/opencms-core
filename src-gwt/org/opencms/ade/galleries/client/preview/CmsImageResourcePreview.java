@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
 
+    /** The preview instance. */
     private static CmsImageResourcePreview m_instance;
 
     /** The preview controller. */
@@ -109,7 +110,6 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
             mode,
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
-
         // initialize the controller and controller handler
         m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId));
         exportRemovePreview(parentElementId);
@@ -147,9 +147,9 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
      * @param parentId the previews parent element id
      */
     private native void exportRemovePreview(String parentId) /*-{
-        $wnd["removePreview" + parentId] = function() {
-            @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
-        };
+      $wnd["removePreview" + parentId] = function() {
+         @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
+      };
     }-*/;
 
     /**

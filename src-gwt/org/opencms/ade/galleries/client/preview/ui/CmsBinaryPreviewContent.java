@@ -27,12 +27,19 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.preview.CmsBinaryPreviewHandler;
+import org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.client.ui.CmsResultListItem;
+import org.opencms.ade.galleries.client.ui.CmsResultsTab;
+import org.opencms.ade.galleries.client.ui.CmsResultsTab.DeleteHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsDateTimeUtil;
 import org.opencms.gwt.client.util.CmsDateTimeUtil.Format;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -40,6 +47,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -100,28 +109,23 @@ public class CmsBinaryPreviewContent extends Composite {
     @UiField
     protected HTML m_previewContent;
 
-    /**
-     * Constructor.<p>
-     * 
-     * @param info the resource info to display
-     */
-    public CmsBinaryPreviewContent(CmsResourceInfoBean info) {
-
-        this(info, null);
-    }
+    /** The preview handler. */
+    protected CmsBinaryPreviewHandler m_binaryPreviewHandler;
 
     /**
      * Constructor.<p>
      * 
      * @param info the resource info to display
-     * @param dndHandler the drag-and-drop handler to use for the list item for the resource 
+     * @param previewHandler the preview handler  
      */
-    public CmsBinaryPreviewContent(CmsResourceInfoBean info, CmsDNDHandler dndHandler) {
+    public CmsBinaryPreviewContent(CmsResourceInfoBean info, CmsBinaryPreviewHandler previewHandler) {
 
         m_listItemWidget = createListItem(info);
+        m_binaryPreviewHandler = previewHandler;
         m_listItem = new CmsListItem(m_listItemWidget);
         initWidget(uiBinder.createAndBindUi(this));
         CmsUUID structureId = info.getStructureId();
+
         if (structureId != null) {
             m_listItem.setId(structureId.toString());
         }
@@ -130,8 +134,13 @@ public class CmsBinaryPreviewContent extends Composite {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(info.getPreviewContent())) {
             m_previewContent.setHTML(info.getPreviewContent());
         }
-        if (dndHandler != null) {
-            m_listItem.initMoveHandle(dndHandler);
+        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
+        if (galleryDialog != null) {
+            CmsDNDHandler dndHandler2 = galleryDialog.getResultsTab().getDNDHandler();
+            if (dndHandler2 != null) {
+                m_listItem.initMoveHandle(dndHandler2);
+            }
+
         }
     }
 
@@ -159,6 +168,25 @@ public class CmsBinaryPreviewContent extends Composite {
                 CmsDateTimeUtil.getDate(resourceInfo.getLastModified(), Format.MEDIUM));
         }
         CmsListItemWidget result = new CmsListItemWidget(infoBean);
+
+        CmsPushButton button = CmsResultListItem.createDeleteButton();
+
+        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
+        if (galleryDialog != null) {
+            CmsResultsTab resultsTab = galleryDialog.getResultsTab();
+            final DeleteHandler deleteHandler = resultsTab.makeDeleteHandler(resourceInfo.getResourcePath());
+            ClickHandler handler = new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    deleteHandler.onClick(event);
+                    m_binaryPreviewHandler.closePreview();
+                }
+            };
+            button.addClickHandler(handler);
+            result.addButton(button);
+        }
+
         return result;
     }
 }
