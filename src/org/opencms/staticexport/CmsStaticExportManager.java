@@ -868,7 +868,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
             // check if we have an export link, 
             // only return the data object if we really should export the resource
-            if (isExportLink(cms, cms.getRequestContext().removeSiteRoot(data.getVfsName()))) {
+            if ((data != null) && isExportLink(cms, cms.getRequestContext().removeSiteRoot(data.getVfsName()))) {
                 // if we have an export link return the export data object
                 return data;
             } else {
@@ -1484,12 +1484,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                 }
             }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        return null;
+        throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+            org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+            rfsName));
     }
 
     /**
@@ -2277,7 +2277,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                     // get the vfs base name, which is later used to read the resource in the vfs
                     data = getVfsNameInternal(cms, rfsBaseName);
-                    data.setParameters(parameters);
+                    if (data != null) {
+                        data.setParameters(parameters);
+                    }
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 if (LOG.isDebugEnabled()) {
