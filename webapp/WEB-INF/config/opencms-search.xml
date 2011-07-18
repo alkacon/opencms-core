@@ -320,18 +320,18 @@
 				<name>gallery_fields</name>
 				<description>The OpenCms gallery search index field configuration.</description>
 				<fields>
-					<field name="content" store="compress" index="true" excerpt="true">
-						<mapping type="content" />
-					</field>	
-					<field name="title-key" store="true" index="untokenized" boost="0.0">
-						<mapping type="property">Title</mapping>
-					</field>	
-					<field name="title" store="false" index="true">
-						<mapping type="property">Title</mapping>
-					</field>
-					<field name="description" store="true" index="true">
-						<mapping type="property">Description</mapping>
-					</field>						
+					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
+                        <mapping type="content"/>
+                    </field>
+                    <field name="title-key" store="true" index="untokenized" boost="0.0">
+                        <mapping type="property">Title</mapping>
+                    </field>
+                    <field name="title" display="%(key.field.title)" store="false" index="true">
+                        <mapping type="property">Title</mapping>
+                    </field>
+                    <field name="description" display="%(key.field.description)" store="true" index="true">
+                        <mapping type="property">Description</mapping>
+                    </field>						
 					<field name="meta" store="false" index="true">
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Description</mapping>
