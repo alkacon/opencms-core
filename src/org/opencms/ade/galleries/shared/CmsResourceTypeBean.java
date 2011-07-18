@@ -61,6 +61,9 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** The resource type name as a unique id. */
     private String m_type;
 
+    /** The resource type id. */
+    private int m_typeId;
+
     /**
      * Returns the description.<p>
      *
@@ -119,6 +122,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns the resource type id.<p>
+     *
+     * @return the resource type id
+     */
+    public int getTypeId() {
+
+        return m_typeId;
     }
 
     /**
@@ -189,5 +202,15 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setType(String type) {
 
         m_type = type;
+    }
+
+    /**
+     * Sets the resource type id.<p>
+     *
+     * @param typeId the resource type id to set
+     */
+    public void setTypeId(int typeId) {
+
+        m_typeId = typeId;
     }
 }

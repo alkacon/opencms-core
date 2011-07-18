@@ -36,8 +36,11 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,6 +76,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             m_galleryMode = GalleryMode.valueOf(getRequest().getParameter(ReqParam.dialogmode.name()).trim());
         } catch (Exception e) {
             m_galleryMode = GalleryMode.view;
+        }
+        // ensure workplace settings attribute is set
+        if (req.getSession().getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS) == null) {
+            // creating any instance of {@link org.opencms.workplace.CmsWorkplace} will do
+            new CmsToolDialog(new CmsJspActionElement(context, req, res));
         }
     }
 

@@ -51,6 +51,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The category tree entry to display as tree. */
     private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
 
+    /** The current element. */
+    private String m_currentElement;
+
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
@@ -63,6 +66,15 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The gallery mode. */
     private GalleryMode m_mode;
 
+    /** 
+     * The gallery reference site-path. 
+     * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.
+     */
+    private String m_referenceSitePath;
+
+    /** The start gallery folder. */
+    private String m_startGallery;
+
     /** The start up tab id. */
     private GalleryTabId m_startTab;
 
@@ -72,12 +84,6 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
-    /** 
-     * The gallery reference site-path. 
-     * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.
-     */
-    private String m_referenceSitePath;
-
     /**
      * Returns the categories.<p>
      *
@@ -86,6 +92,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsCategoryTreeEntry> getCategories() {
 
         return m_categoryTreeEntry;
+    }
+
+    /**
+     * Returns the current element.<p>
+     *
+     * @return the current element
+     */
+    public String getCurrentElement() {
+
+        return m_currentElement;
     }
 
     /**
@@ -141,6 +157,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Returns the start gallery folder.<p>
+     *
+     * @return the start gallery folder
+     */
+    public String getStartGallery() {
+
+        return m_startGallery;
+    }
+
+    /**
      * Returns the start tab.<p>
      *
      * @return the startTab
@@ -178,6 +204,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setCategories(List<CmsCategoryTreeEntry> categories) {
 
         m_categoryTreeEntry = categories;
+    }
+
+    /**
+     * Sets the current element.<p>
+     *
+     * @param currentElement the current element to set
+     */
+    public void setCurrentElement(String currentElement) {
+
+        m_currentElement = currentElement;
     }
 
     /**
@@ -229,6 +265,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setReferenceSitePath(String referenceSitePath) {
 
         this.m_referenceSitePath = referenceSitePath;
+    }
+
+    /**
+     * Sets the start gallery folder.<p>
+     *
+     * @param startGallery the start gallery folder to set
+     */
+    public void setStartGallery(String startGallery) {
+
+        m_startGallery = startGallery;
     }
 
     /**
