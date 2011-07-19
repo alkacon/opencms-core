@@ -30,10 +30,10 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8subscriptionbox" id="3ß1">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8subscriptionbox" id="301">
 				<param name="schema">/system/modules/com.alkacon.opencms.v8.subscription/schemas/subscription_box.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8editsub" id="3ß2">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8editsub" id="302">
 				<param name="schema">/system/modules/com.alkacon.opencms.v8.subscription/schemas/subscription_editor.xsd</param>
 			</type>
 		</resourcetypes>
