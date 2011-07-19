@@ -317,6 +317,12 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         if (value == null) {
             value = "";
         }
+        if (!"".equals(value) && !m_selectCells.containsKey(value)) {
+            OPTION option = createUnknownOption((String)value);
+            if (option != null) {
+                addOption(option);
+            }
+        }
         if (value instanceof String) {
             String strValue = (String)value;
             this.onValueSelect(strValue);
@@ -371,6 +377,15 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     }
 
     /**
+     * Internal method to create a select option for an unknown value.<p>
+     * 
+     * @param value the value for which to create the option 
+     * 
+     * @return the new option
+     */
+    protected abstract OPTION createUnknownOption(String value);
+
+    /**
      * Handle clicks on the opener.<p>
      * 
      * @param e the click event
@@ -413,7 +428,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         int panelTop = m_panel.getElement().getAbsoluteTop();
         int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
         int popupHeight = m_popup.getOffsetHeight();
-        if ((Window.getClientHeight() - (panelTop + openerHeight) < popupHeight) && (panelTop > popupHeight)) {
+        if (((Window.getClientHeight() - (panelTop + openerHeight)) < popupHeight) && (panelTop > popupHeight)) {
             CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, -(popupHeight - 2));
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());

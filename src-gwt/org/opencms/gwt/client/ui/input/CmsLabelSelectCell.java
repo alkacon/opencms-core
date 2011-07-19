@@ -62,6 +62,7 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
         m_text = text;
         initWidget(m_label);
         m_label.setText(m_text);
+        m_label.setTitle(m_text);
     }
 
     /**
@@ -91,10 +92,10 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     public void setText(String text) {
 
         m_label.setText(text);
+        m_label.setTitle(text);
         m_text = text;
         if (m_textMetricsKey != null) {
             truncate(m_textMetricsKey, m_labelWidth);
-
         }
 
     }

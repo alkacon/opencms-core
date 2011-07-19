@@ -267,6 +267,17 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#createUnknownOption(java.lang.String)
+     */
+    @Override
+    protected CmsLabelSelectCell createUnknownOption(String value) {
+
+        CmsLabelSelectCell cell = new CmsLabelSelectCell(value, value);
+        return cell;
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#initOpener()
      */
     @Override
@@ -286,5 +297,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
         CmsLabel label = m_openerWidget;
         CmsLabelSelectCell cell = m_selectCells.get(newValue);
         label.setText(cell.getText());
+        label.setTitle(cell.getText());
     }
+
 }

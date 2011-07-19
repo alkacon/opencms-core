@@ -32,6 +32,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.input.CmsDefaultStringModel;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
@@ -43,9 +44,11 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -327,14 +330,18 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
         if (m_handler.useAdeTemplates()) {
 
-            CmsTemplateSelectBox result = new CmsTemplateSelectBox(m_handler.getPossibleTemplates());
+            CmsSelectBox selectBox = new CmsSelectBox(new ArrayList<CmsPair<String, String>>());
+            Map<String, String> values = new LinkedHashMap<String, String>();
             for (Map.Entry<String, CmsClientTemplateBean> templateEntry : m_handler.getPossibleTemplates().entrySet()) {
                 CmsClientTemplateBean template = templateEntry.getValue();
-                CmsTemplateSelectCell selectCell = new CmsTemplateSelectCell();
-                selectCell.setTemplate(template);
-                result.addOption(selectCell);
+                String title = template.getTitle();
+                if ((title == null) || (title.length() == 0)) {
+                    title = template.getSitePath();
+                }
+                values.put(template.getSitePath(), title);
             }
-            return result;
+            selectBox = new CmsSelectBox(values, true);
+            return selectBox;
         } else {
             CmsTextBox textbox = new CmsTextBox();
             return textbox;

@@ -137,6 +137,15 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#createUnknownOption(java.lang.String)
+     */
+    @Override
+    protected CmsTemplateSelectCell createUnknownOption(String value) {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#initOpener()
      */
     @Override
