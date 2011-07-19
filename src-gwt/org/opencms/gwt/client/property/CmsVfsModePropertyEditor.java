@@ -243,7 +243,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         CmsXmlContentProperty propDef = m_propertyConfig.get(propName);
 
         if (propDef == null) {
-            String widget = "template".equals(propName) ? "template" : "string";
+            String widget = CmsClientProperty.PROPERTY_TEMPLATE.equals(propName) ? "template" : "string";
             propDef = new CmsXmlContentProperty(
                 propName,
                 "string",
@@ -271,9 +271,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            Collections.singletonMap(
-                CmsSelectBox.NO_SELECTION_TEXT,
-                Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
+                Messages.GUI_SELECTBOX_UNSELECTED_1)),
             true);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
