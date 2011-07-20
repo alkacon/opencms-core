@@ -290,6 +290,11 @@ public class CmsResultsTab extends A_CmsListTab {
         showUpload(searchObj);
     }
 
+    /**
+     * Returns the drag and drop handler.<p>
+     * 
+     * @return the drag and drop handler
+     */
     public CmsDNDHandler getDNDHandler() {
 
         return m_dndHandler;
@@ -305,6 +310,13 @@ public class CmsResultsTab extends A_CmsListTab {
         return null;
     }
 
+    /**
+     * Returns the delete handler.<p>
+     * 
+     * @param resourcePath the resource path of the resource
+     * 
+     * @return the delete handler
+     */
     public DeleteHandler makeDeleteHandler(String resourcePath) {
 
         return new DeleteHandler(resourcePath);

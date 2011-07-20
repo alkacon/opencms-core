@@ -117,6 +117,11 @@ public class CmsResultListItem extends CmsListItem {
 
     }
 
+    /**
+     * Creates the delete button for this item.<p>
+     * 
+     * @return the delete button
+     */
     public static CmsPushButton createDeleteButton() {
 
         CmsPushButton result = new CmsPushButton();

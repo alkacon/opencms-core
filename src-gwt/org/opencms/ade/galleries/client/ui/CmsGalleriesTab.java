@@ -278,6 +278,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
             }
         }));
         m_tabHandler = tabHandler;
+        m_galleries = new HashMap<String, CmsGalleryFolderBean>();
     }
 
     /**
@@ -288,16 +289,13 @@ public class CmsGalleriesTab extends A_CmsListTab {
      */
     public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
 
-        if (m_galleries == null) {
-            m_galleries = new HashMap<String, CmsGalleryFolderBean>();
+        m_galleries.clear();
+        for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
+            m_galleries.put(galleryInfo.getPath(), galleryInfo);
         }
         m_selectedGalleries = selectedGalleries;
         m_itemIterator = new ListItemGenerator(galleryInfos);
-        m_galleries.clear();
         loadMoreItems();
-        //        for (CmsGalleryFolderBean galleryItem : galleryInfos) {
-        //            addWidgetToList(createTreeItem(galleryItem, m_selectedGalleries, false));
-        //        }
     }
 
     /**
@@ -398,9 +396,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void updateTreeContent(List<CmsGalleryTreeEntry> galleryTreeEntries, List<String> selectedGalleries) {
 
         clearList();
-        if (m_galleries == null) {
-            m_galleries = new HashMap<String, CmsGalleryFolderBean>();
-        }
         m_itemIterator = new TreeItemGenerator(galleryTreeEntries);
         loadMoreItems();
     }
@@ -446,7 +441,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
             galleryInfo.getTitle(),
             galleryInfo.getPath(),
             null));
-        m_galleries.put(galleryInfo.getPath(), galleryInfo);
         listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryInfo.getType(), false));
         CmsCheckBox checkBox = new CmsCheckBox();
         SelectionHandler selectionHandler = new SelectionHandler(galleryInfo.getPath(), checkBox);
