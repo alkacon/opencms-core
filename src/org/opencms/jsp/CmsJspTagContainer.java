@@ -142,9 +142,6 @@ public class CmsJspTagContainer extends TagSupport {
     /** The name attribute value. */
     private String m_name;
 
-    /** The element session cache. */
-    private CmsADESessionCache m_sessionCache;
-
     /** The tag attribute value. */
     private String m_tag;
 
@@ -738,17 +735,15 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private CmsADESessionCache getSessionCache(CmsObject cms) {
 
-        if (m_sessionCache == null) {
-            m_sessionCache = (CmsADESessionCache)((HttpServletRequest)pageContext.getRequest()).getSession().getAttribute(
-                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-            if (m_sessionCache == null) {
-                m_sessionCache = new CmsADESessionCache(cms);
-                ((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(
-                    CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
-                    m_sessionCache);
-            }
+        CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)pageContext.getRequest()).getSession().getAttribute(
+            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+        if (sessionCache == null) {
+            sessionCache = new CmsADESessionCache(cms);
+            ((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
+                sessionCache);
         }
-        return m_sessionCache;
+        return sessionCache;
     }
 
     /**
