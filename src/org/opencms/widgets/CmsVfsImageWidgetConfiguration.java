@@ -93,13 +93,13 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
     public static final String TYPE_GALLERY = "gallery";
 
     /** The list of image format values matching the options for the format select box. */
-    private List m_formatValues;
+    private List<String> m_formatValues;
 
     /** The scale parameters to apply to a scaled image (e.g. quality, type). */
     private String m_scaleParams;
 
     /** The list of select options for the format select box, must contain {@link CmsSelectWidgetOption} objects. */
-    private List m_selectFormat;
+    private List<CmsSelectWidgetOption> m_selectFormat;
 
     /** The select options for the format select box as String. */
     private String m_selectFormatString;
@@ -133,7 +133,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * 
      * @return the list of image format values matching the options for the format select box
      */
-    public List getFormatValues() {
+    public List<String> getFormatValues() {
 
         return m_formatValues;
     }
@@ -153,7 +153,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * 
      * @return the list of select options for the format select box
      */
-    public List getSelectFormat() {
+    public List<CmsSelectWidgetOption> getSelectFormat() {
 
         return m_selectFormat;
     }
@@ -198,6 +198,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * @param param the widget parameter to generate the widget for
      * @param configuration the widget configuration string
      */
+    @Override
     protected void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
 
         if (configuration == null) {
@@ -234,7 +235,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
             // get the corresponding format values as well
             JSONArray formatValues = jsonObj.optJSONArray(CONFIG_KEY_FORMATVALUES);
             if (formatValues != null) {
-                List formatValueList = new ArrayList(formatValues.length());
+                List<String> formatValueList = new ArrayList<String>(formatValues.length());
                 for (int i = 0; i < formatValues.length(); i++) {
                     formatValueList.add(formatValues.optString(i));
                 }
@@ -262,7 +263,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * 
      * @param formatValues the list of image format values matching the options for the format select box
      */
-    private void setFormatValues(List formatValues) {
+    private void setFormatValues(List<String> formatValues) {
 
         m_formatValues = formatValues;
     }
@@ -282,7 +283,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * 
      * @param selectFormat the list of select options for the format select box
      */
-    private void setSelectFormat(List selectFormat) {
+    private void setSelectFormat(List<CmsSelectWidgetOption> selectFormat) {
 
         m_selectFormat = selectFormat;
     }

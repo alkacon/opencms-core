@@ -186,7 +186,7 @@ public class CmsSelectWidgetOption {
      * 
      * @return a select widget configuration String created from the given list of select options
      */
-    public static String createConfigurationString(List options) {
+    public static String createConfigurationString(List<CmsSelectWidgetOption> options) {
 
         if ((options == null) || (options.size() == 0)) {
             return "";
@@ -194,15 +194,13 @@ public class CmsSelectWidgetOption {
         StringBuffer result = new StringBuffer(256);
         boolean first = true;
         for (int i = 0; i < options.size(); i++) {
-            Object o = options.get(i);
-            if (o instanceof CmsSelectWidgetOption) {
-                if (!first) {
-                    result.append(CmsSelectWidgetOption.INPUT_DELIMITER);
-                } else {
-                    first = false;
-                }
-                result.append(o.toString());
+            CmsSelectWidgetOption o = options.get(i);
+            if (!first) {
+                result.append(CmsSelectWidgetOption.INPUT_DELIMITER);
+            } else {
+                first = false;
             }
+            result.append(o.toString());
         }
         return result.toString();
     }
@@ -218,7 +216,7 @@ public class CmsSelectWidgetOption {
      * 
      * @return the default option from the given list of select options, or <code>null</code> in case there is no default option
      */
-    public static CmsSelectWidgetOption getDefaultOption(List options) {
+    public static CmsSelectWidgetOption getDefaultOption(List<CmsSelectWidgetOption> options) {
 
         if ((options == null) || (options.size() == 0)) {
             return null;
@@ -245,9 +243,9 @@ public class CmsSelectWidgetOption {
      * 
      * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects 
      */
-    public static List getDefaultOptions(List options) {
+    public static List<CmsSelectWidgetOption> getDefaultOptions(List<CmsSelectWidgetOption> options) {
 
-        List defaults = new ArrayList();
+        List<CmsSelectWidgetOption> defaults = new ArrayList<CmsSelectWidgetOption>();
         if ((options == null) || (options.size() == 0)) {
             return defaults;
         }
@@ -275,16 +273,16 @@ public class CmsSelectWidgetOption {
      * 
      * @return a List of <code>{@link CmsSelectWidgetOption}</code> elements
      */
-    public static List parseOptions(String input) {
+    public static List<CmsSelectWidgetOption> parseOptions(String input) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(input)) {
             // default result for empty input
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         // cut along the delimiter
         String[] parts = CmsStringUtil.splitAsArray(input, INPUT_DELIMITER);
-        List result = new ArrayList();
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
 
         // indicates if a default of 'true' was already set in this result list
         boolean foundDefault = false;
@@ -440,6 +438,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsSelectWidgetOption)) {
@@ -512,6 +511,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_hashcode == 0) {
@@ -541,6 +541,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

@@ -61,12 +61,12 @@ public interface I_CmsImageWidgetDynamicConfiguration {
      * @param formatValues the list of predefined format values for the widget
      * @return  the matching format values for the given format select options
      */
-    List getFormatValues(
+    List<String> getFormatValues(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param,
-        List selectFormat,
-        List formatValues);
+        List<CmsSelectWidgetOption> selectFormat,
+        List<String> formatValues);
 
     /**
      * Returns the required information for the initial image list to load.<p>
