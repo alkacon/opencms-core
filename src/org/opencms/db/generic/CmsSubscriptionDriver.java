@@ -28,6 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
@@ -67,7 +68,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -155,27 +155,23 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    @SuppressWarnings("unchecked")
     public void init(
         CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        // TODO: Auto-generated method stub
+        Map<String, String> configuration = configurationManager.getConfiguration();
 
-        Map configuration = configurationManager.getConfiguration();
-
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
+        CmsConfigurationParameter config;
+        if (configuration instanceof CmsConfigurationParameter) {
+            config = (CmsConfigurationParameter)configuration;
         } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
+            config = new CmsConfigurationParameter(configuration);
         }
 
-        String poolUrl = config.get("db.subscription.pool").toString();
-        String classname = config.get("db.subscription.sqlmanager").toString();
+        String poolUrl = config.getString("db.subscription.pool");
+        String classname = config.getString("db.subscription.sqlmanager");
         m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsSubscriptionDriver.DRIVER_TYPE_ID, poolUrl);
 

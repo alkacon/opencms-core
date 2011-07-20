@@ -29,6 +29,7 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsPersistenceUnitConfiguration;
@@ -61,7 +62,6 @@ import org.opencms.setup.comptest.I_CmsSetupTest;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
@@ -75,7 +75,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +95,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -296,7 +294,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private List<String> m_errors;
 
     /** Contains the properties of "opencms.properties". */
-    private ExtendedProperties m_extProperties;
+    private CmsConfigurationParameter m_extProperties;
 
     /** The full key of the selected database including the "_jpa" or "_sql" information. */
     private String m_fullDatabaseKey;
@@ -1034,7 +1032,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return the extended properties  
      */
-    public ExtendedProperties getProperties() {
+    public CmsConfigurationParameter getProperties() {
 
         return m_extProperties;
     }
@@ -1324,7 +1322,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
             if (CmsStringUtil.isNotEmpty(webAppRfsPath)) {
                 // workaround for JUnit test cases, this must not be executed in a test case
-                m_extProperties = loadProperties(m_configRfsPath + CmsSystemInfo.FILE_PROPERTIES);
+                m_extProperties = new CmsConfigurationParameter(m_configRfsPath + CmsSystemInfo.FILE_PROPERTIES);
                 readDatabaseConfig();
             }
 
@@ -1447,7 +1445,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             if (dependencies != null) {
                 for (int j = 0; j < dependencies.size(); j++) {
                     jsCode.append("\"" + dependencies.get(j) + "\"");
-                    if (j < dependencies.size() - 1) {
+                    if (j < (dependencies.size() - 1)) {
                         jsCode.append(", ");
                     }
                 }
@@ -1478,7 +1476,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             List<String> modules = getComponentModules(component);
             for (int j = 0; j < modules.size(); j++) {
                 jsCode.append(modules.get(j));
-                if (j < modules.size() - 1) {
+                if (j < (modules.size() - 1)) {
                     jsCode.append("|");
                 }
             }
@@ -1529,7 +1527,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             if (dependencies != null) {
                 for (int j = 0; j < dependencies.size(); j++) {
                     jsCode.append("\"" + dependencies.get(j) + "\"");
-                    if (j < dependencies.size() - 1) {
+                    if (j < (dependencies.size() - 1)) {
                         jsCode.append(", ");
                     }
                 }
@@ -1559,18 +1557,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
         jsCode.append("\n\n");
         return jsCode.toString();
-    }
-
-    /**
-     * Loads the default OpenCms properties.<p>
-     * 
-     * @param file the file tp read the properties from
-     * @return the initialized OpenCms properties
-     * @throws IOException in case of IO errors 
-     */
-    public ExtendedProperties loadProperties(String file) throws IOException {
-
-        return CmsPropertyUtils.loadProperties(file);
     }
 
     /**
@@ -1778,7 +1764,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      *  @param file the file to save the properties to
      *  @param backup if true, create a backupfile
      */
-    public void saveProperties(ExtendedProperties properties, String file, boolean backup) {
+    public void saveProperties(CmsConfigurationParameter properties, String file, boolean backup) {
 
         if (new File(m_configRfsPath + file).isFile()) {
             String backupFile = file + CmsConfigurationManager.POSTFIX_ORI;
@@ -1814,7 +1800,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      *  @param backup if true, create a backupfile
      *  @param forceWrite the keys for the properties which should always be written, even if they don't exist in the configuration file 
      */
-    public void saveProperties(ExtendedProperties properties, String file, boolean backup, Set<String> forceWrite) {
+    public void saveProperties(CmsConfigurationParameter properties, String file, boolean backup, Set<String> forceWrite) {
 
         if (new File(m_configRfsPath + file).isFile()) {
             String backupFile = file + CmsConfigurationManager.POSTFIX_ORI;
@@ -2358,7 +2344,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void addComponentsFromPath(String fileName) throws CmsConfigurationException {
 
-        ExtendedProperties configuration;
+        CmsConfigurationParameter configuration;
         try {
             configuration = getComponentsProperties(fileName);
         } catch (FileNotFoundException e) {
@@ -2368,17 +2354,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
             return;
         }
 
-        Iterator<String> it = Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENTS)).iterator();
-        while (it.hasNext()) {
-            String componentId = it.next();
+        for (String componentId : configuration.getList(PROPKEY_COMPONENTS)) {
             CmsSetupComponent componentBean = new CmsSetupComponent();
             componentBean.setId(componentId);
             componentBean.setName(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
             componentBean.setDescription(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_DESCRIPTION));
             componentBean.setModulesRegex(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_MODULES));
-            componentBean.setDependencies(Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENT
-                + componentId
-                + PROPKEY_DEPENDENCIES)));
+            componentBean.setDependencies(configuration.getList(PROPKEY_COMPONENT + componentId + PROPKEY_DEPENDENCIES));
             componentBean.setPosition(configuration.getInteger(
                 PROPKEY_COMPONENT + componentId + PROPKEY_POSITION,
                 DEFAULT_POSITION));
@@ -2397,7 +2379,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * @throws FileNotFoundException if the properties file could not be found 
      * @throws CmsConfigurationException if the something else goes wrong
      */
-    protected ExtendedProperties getComponentsProperties(String location)
+    protected CmsConfigurationParameter getComponentsProperties(String location)
     throws FileNotFoundException, CmsConfigurationException {
 
         InputStream stream = null;
@@ -2426,7 +2408,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 File file = new File(folder, COMPONENTS_PROPERTIES);
                 stream = new FileInputStream(file);
             }
-            return CmsPropertyUtils.loadProperties(stream);
+            return new CmsConfigurationParameter(stream);
         } catch (Throwable ioe) {
             if (stream != null) {
                 try {
@@ -2468,8 +2450,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected String getExtProperty(String key) {
 
-        Object value = m_extProperties.get(key);
-        return (value != null) ? value.toString() : "";
+        return m_extProperties.getString(key, "");
     }
 
     /**
@@ -2794,7 +2775,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
             values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
 
-            buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
+            buf.append("\t" + values[i] + ((i < (values.length - 1)) ? ",\\\n" : ""));
         }
         return buf.toString();
     }
@@ -2854,7 +2835,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * @param target the target file to save the properties to
      * @param forceWrite the keys of the properties which should always be written, even if they don't exist in the configuration file 
      */
-    private void save(ExtendedProperties properties, String source, String target, Set<String> forceWrite) {
+    private void save(CmsConfigurationParameter properties, String source, String target, Set<String> forceWrite) {
 
         try {
             Set<String> alreadyWritten = new HashSet<String>();
@@ -2881,7 +2862,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                     int index = line.indexOf('=');
                     int index1 = line.indexOf("\\=");
-                    if ((line.indexOf('=') > -1) && (index1 != index - 1)) {
+                    if ((line.indexOf('=') > -1) && (index1 != (index - 1))) {
 
                         String key = line.substring(0, line.indexOf('=')).trim();
                         if (alreadyWritten.contains(key)) {
@@ -2890,7 +2871,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                         // write key
                         fw.write((key + "="));
                         try {
-                            Object obj = properties.get(key);
+                            Object obj = properties.getObject(key);
                             if (obj != null) {
                                 String valueToWrite = getPropertyValueToWrite(obj);
                                 fw.write(valueToWrite);
@@ -2909,11 +2890,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
             if (forceWrite != null) {
                 for (String forced : forceWrite) {
-                    if (!alreadyWritten.contains(forced) && properties.containsKey(forced)) {
+                    if (!alreadyWritten.contains(forced) && properties.hasParameter(forced)) {
                         fw.write("\n\n");
                         fw.write(forced + "=");
                         try {
-                            Object obj = properties.get(forced);
+                            Object obj = properties.getObject(forced);
 
                             if (obj != null) {
                                 String valueToWrite = getPropertyValueToWrite(obj);
@@ -2972,7 +2953,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         m_webAppRfsPath = webInfRfsPath;
         if ("".equals(webInfRfsPath)) {
             // required for test cases
-            m_configRfsPath = ""; 
+            m_configRfsPath = "";
             return;
         }
         if (!m_webAppRfsPath.endsWith(File.separator)) {

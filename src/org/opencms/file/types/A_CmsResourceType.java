@@ -29,6 +29,7 @@ package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -128,6 +129,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The module name if this is an additional resource type which is defined in a module. */
     protected String m_moduleName;
+
+    /** Configuration parameter wrapper. */
+    protected CmsConfigurationParameter m_parameters;
 
     /** The configured id of this resource type. */
     protected int m_typeId;
@@ -538,6 +542,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getModuleName() {
 
         return m_moduleName;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getParameters()
+     */
+    public CmsConfigurationParameter getParameters() {
+
+        return m_parameters;
     }
 
     /**

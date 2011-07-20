@@ -27,6 +27,7 @@
 
 package org.opencms.setup.db;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.CmsUpdateBean;
@@ -39,8 +40,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This manager controls the update of the database from OpenCms 6 to OpenCms 7.<p>
@@ -187,7 +186,7 @@ public class CmsUpdateDBManager {
     public void initialize(CmsUpdateBean updateBean) throws Exception {
 
         if (updateBean.isInitialized()) {
-            ExtendedProperties props = updateBean.getProperties();
+            CmsConfigurationParameter props = updateBean.getProperties();
 
             // Initialize the CmsUUID generator.
             CmsUUID.init(props.getString("server.ethernet.address"));

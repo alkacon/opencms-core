@@ -99,7 +99,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
 
         List list = new ArrayList();
         list.add("http://www.deloitte.com/dtt/section_node/0,1042,sid%253D62862,00.html");
-        list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
+        // list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
         list.add("http://www.nbi.dk/%7Enatphil/hug/hug.intro.html");
         list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme og tilskadekomst/Ulykker/Nyhedsbrev.aspx");
         list.add("http://www.mim.dk/Udgivelser/Milj%F8Danmark/");

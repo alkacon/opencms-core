@@ -27,15 +27,14 @@
 
 package org.opencms.db;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
@@ -167,21 +166,13 @@ public final class CmsDbPool {
     /**
      * Creates a JDBC DriverManager based DBCP connection pool.<p>
      * 
-     * @param configuration the configuration (opencms.properties)
+     * @param config the configuration (opencms.properties)
      * @param key the key of the database pool in the configuration
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static PoolingDriver createDriverManagerConnectionPool(Map<String, Object> configuration, String key)
+    public static PoolingDriver createDriverManagerConnectionPool(CmsConfigurationParameter config, String key)
     throws Exception {
-
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
 
         // read the values of the pool configuration specified by the given key
         String jdbcDriver = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_DRIVER);
@@ -365,9 +356,9 @@ public final class CmsDbPool {
      * @param key a db pool configuration key
      * @return the database pool name
      */
-    public static String getDbPoolName(Map configuration, String key) {
+    public static String getDbPoolName(CmsConfigurationParameter configuration, String key) {
 
-        return configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL).toString();
+        return configuration.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
     }
 
     /**
@@ -377,13 +368,13 @@ public final class CmsDbPool {
      * 
      * @return a list of database pool names
      */
-    public static List<String> getDbPoolUrls(ExtendedProperties configuration) {
+    public static List<String> getDbPoolUrls(CmsConfigurationParameter configuration) {
 
         List<String> dbPoolNames = new ArrayList<String>();
-        String[] driverPoolNames = configuration.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
+        List<String> driverPoolNames = configuration.getList(CmsDriverManager.CONFIGURATION_DB + ".pools");
 
-        for (int i = 0; i < driverPoolNames.length; i++) {
-            dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));
+        for (String driverPoolName : driverPoolNames) {
+            dbPoolNames.add(getDbPoolName(configuration, driverPoolName));
         }
         return dbPoolNames;
     }

@@ -27,13 +27,13 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.FileDescriptor;
@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * A command line interface to access OpenCms functions which 
@@ -115,9 +113,6 @@ public class CmsShell {
          * @return true if a method was executed, false otherwise
          */
         protected boolean executeMethod(String command, List<String> parameters) {
-
-            // TODO: ensure that publishmanager, oumanager and rolemanager methods are accessible
-            int todo;
 
             // build the method lookup
             String lookup = buildMethodLookup(command, parameters.size());
@@ -446,7 +441,7 @@ public class CmsShell {
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
             System.out.println(m_messages.key(Messages.GUI_SHELL_CONFIG_FILE_1, propertyPath));
             System.out.println();
-            ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath);
+            CmsConfigurationParameter configuration = new CmsConfigurationParameter(propertyPath);
 
             // now upgrade to runlevel 2
             m_opencms = m_opencms.upgradeRunlevel(configuration);
@@ -774,7 +769,7 @@ public class CmsShell {
             StringBuffer commandMsg = new StringBuffer(command).append("(");
             for (int j = 0; j < parameters.size(); j++) {
                 commandMsg.append("value");
-                if (j < parameters.size() - 1) {
+                if (j < (parameters.size() - 1)) {
                     commandMsg.append(", ");
                 }
             }

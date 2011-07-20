@@ -45,7 +45,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 
@@ -113,7 +112,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private Digester m_digester;
 
     /** The configuration based on <code>opencms.properties</code>. */
-    private ExtendedProperties m_propertyConfiguration;
+    private CmsConfigurationParameter m_propertyConfiguration;
 
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -237,15 +236,14 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /**
      * Returns the properties read from <code>opencms.properties</code>.<p> 
      * 
-     * This is assured to be an instance of {@link org.apache.commons.collections.ExtendedProperties}.<p>
+     * This is assured to be an instance of {@link org.opencms.configuration.CmsConfigurationParameter}.<p>
      *
-     * @see #setConfiguration(ExtendedProperties)
+     * @see #setConfiguration(CmsConfigurationParameter)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    @SuppressWarnings("unchecked")
     public Map<String, String> getConfiguration() {
 
-        return m_propertyConfiguration;
+        return m_propertyConfiguration.getParameterMap();
     }
 
     /**
@@ -351,7 +349,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * 
      * @see #getConfiguration()
      */
-    public void setConfiguration(ExtendedProperties propertyConfiguration) {
+    public void setConfiguration(CmsConfigurationParameter propertyConfiguration) {
 
         m_propertyConfiguration = propertyConfiguration;
     }

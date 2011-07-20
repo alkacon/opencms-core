@@ -242,6 +242,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1 = "LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_CLASS_INIT_FAILURE_1 = "LOG_CLASS_INIT_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CONFIG_BASE_FOLDER_1 = "LOG_CONFIG_BASE_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -258,6 +261,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_GET_CONFIGURATION_1 = "LOG_GET_CONFIGURATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_GET_PARAMETERS_1 = "LOG_GET_PARAMETERS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIGURATION_1 = "LOG_INIT_CONFIGURATION_1";
@@ -285,9 +291,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESOURCE_INIT_FAILURE_1 = "LOG_RESOURCE_INIT_FAILURE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CLASS_INIT_FAILURE_1 = "LOG_CLASS_INIT_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_CONFIG_SUCCESS_2 = "LOG_WRITE_CONFIG_SUCCESS_2";

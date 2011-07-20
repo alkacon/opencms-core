@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -83,7 +84,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Splitter;
@@ -395,11 +395,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
-    @SuppressWarnings("unchecked")
     public void initConfiguration() {
 
-        ExtendedProperties config = new ExtendedProperties();
-        config.putAll(m_configuration);
+        CmsConfigurationParameter config = new CmsConfigurationParameter(m_configuration);
 
         m_jspRepository = config.getString(PARAM_JSP_REPOSITORY);
         if (m_jspRepository == null) {

@@ -28,6 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -98,7 +99,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -1023,16 +1023,15 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
         Map<String, String> configuration = configurationManager.getConfiguration();
 
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
+        CmsConfigurationParameter config;
+        if (configuration instanceof CmsConfigurationParameter) {
+            config = (CmsConfigurationParameter)configuration;
         } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
+            config = new CmsConfigurationParameter(configuration);
         }
 
-        String poolUrl = config.get("db.user.pool").toString();
-        String classname = config.get("db.user.sqlmanager").toString();
+        String poolUrl = config.getString("db.user.pool");
+        String classname = config.getString("db.user.sqlmanager");
 
         m_sqlManager = initSqlManager(classname);
 
@@ -1676,8 +1675,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             q.setMaxResults(searchParams.getPageSize());
             q.setFirstResult(searchParams.getPageSize() * (searchParams.getPage() - 1));
 
-            @SuppressWarnings("unchecked")
-            List res = q.getResultList();
+            List<?> res = q.getResultList();
             // create new Cms group objects
             for (Object singleRes : res) {
                 CmsDAOUsers daoUser = null;

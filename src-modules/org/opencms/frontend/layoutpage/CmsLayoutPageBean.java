@@ -27,6 +27,7 @@
 
 package org.opencms.frontend.layoutpage;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -50,7 +51,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -149,6 +149,15 @@ public class CmsLayoutPageBean {
     /** Default VFS path to the html snippet files to include to render the layout paragraphs. */
     public static final String VFS_PATH_LAYOUTELEMENTS = CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/layouts/";
 
+    /** Name of the file link node. */
+    protected static final String KEY_HEADLINE = "headline";
+
+    /** Name of the file link node. */
+    protected static final String KEY_IMGURI = "imgUri";
+
+    /** Name of the file link node. */
+    protected static final String KEY_TEXTVALUE = "textValue";
+
     /** Name of the align node. */
     protected static final String NODE_ALIGN = "Align";
 
@@ -157,6 +166,9 @@ public class CmsLayoutPageBean {
 
     /** Name of the description node. */
     protected static final String NODE_DESCRIPTION = "Description";
+
+    /** Name of the file link node. */
+    protected static final String NODE_FILELINK = "Filelink";
 
     /** Name of the headline node. */
     protected static final String NODE_HEADLINE = "Headline";
@@ -172,18 +184,6 @@ public class CmsLayoutPageBean {
 
     /** Name of the text node. */
     protected static final String NODE_TEXT = "Text";
-
-    /** Name of the file link node. */
-    protected static final String NODE_FILELINK = "Filelink";
-
-    /** Name of the file link node. */
-    protected static final String KEY_HEADLINE = "headline";
-
-    /** Name of the file link node. */
-    protected static final String KEY_TEXTVALUE = "textValue";
-
-    /** Name of the file link node. */
-    protected static final String KEY_IMGURI = "imgUri";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLayoutPageBean.class);
@@ -315,7 +315,7 @@ public class CmsLayoutPageBean {
 
         StringBuffer result = new StringBuffer(16384);
         Locale locale = getCmsObject().getRequestContext().getLocale();
-        
+
         m_typeMappings = new HashMap();
 
         // first calculate the column width
@@ -368,8 +368,8 @@ public class CmsLayoutPageBean {
 
             // check if a file has to be integrated
             boolean hasFileLink = m_content.hasValue(xPath + NODE_FILELINK, locale);
-            
-            ExtendedProperties xmlElementsProperties = null;
+
+            CmsConfigurationParameter xmlElementsProperties = null;
             CmsFile linkToFile = null;
             CmsXmlContent xmlContentFileLink = null;
             if (hasFileLink) {
@@ -385,7 +385,7 @@ public class CmsLayoutPageBean {
                     hasFileLink = false;
                 }
             }
-            
+
             // get the optional headline
             String headline = "";
             if (m_content.hasValue(xPath + NODE_HEADLINE, locale)) {
@@ -408,10 +408,7 @@ public class CmsLayoutPageBean {
                             + m_jspActionElement.link(m_content.getStringValue(
                                 getCmsObject(),
                                 xPath + NODE_FILELINK,
-                                locale))
-                            + "\" target=\"_self\">"
-                            + titleValue
-                            + "</a>";
+                                locale)) + "\" target=\"_self\">" + titleValue + "</a>";
                     } else {
                         headline = "";
                     }
@@ -422,7 +419,7 @@ public class CmsLayoutPageBean {
 
             // get the paragraph text value
             String textValue = m_content.getStringValue(getCmsObject(), xPath + NODE_TEXT, locale);
-            
+
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(textValue)) {
                 if (hasFileLink) {
                     String text = getPropertiesValue(xmlElementsProperties, KEY_TEXTVALUE, xmlContentFileLink, locale);
@@ -435,10 +432,7 @@ public class CmsLayoutPageBean {
                             + m_jspActionElement.link(m_content.getStringValue(
                                 getCmsObject(),
                                 xPath + NODE_FILELINK,
-                                locale))
-                            + "\" target=\"_self\">&gt; "
-                            + messages.keyDefault("link.more", "")
-                            + "</a>";
+                                locale)) + "\" target=\"_self\">&gt; " + messages.keyDefault("link.more", "") + "</a>";
                     } else {
                         textValue = "";
                     }
@@ -459,7 +453,7 @@ public class CmsLayoutPageBean {
             if (m_content.hasValue(xPath, locale)) {
                 // image node found, check VFS presence by reading image size property
                 String imgUri = m_content.getStringValue(getCmsObject(), xPath + NODE_IMAGE, locale);
-                
+
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(imgUri)) {
                     if (hasFileLink) {
                         String imgValue = getPropertiesValue(
@@ -476,7 +470,7 @@ public class CmsLayoutPageBean {
                         imgUri = "";
                     }
                 }
-                
+
                 String imgSize = null;
                 try {
                     imgSize = getCmsObject().readPropertyObject(
@@ -944,19 +938,19 @@ public class CmsLayoutPageBean {
 
         if (imgWidthVariant.equals(IMG_WIDTH_LARGE)) {
             // large image
-            if (isFixedImageSize() && getImgWidthLarge() > 0) {
+            if (isFixedImageSize() && (getImgWidthLarge() > 0)) {
                 return getImgWidthLarge();
             }
             return getColumnWidth();
         } else if (imgWidthVariant.equals(IMG_WIDTH_SMALL)) {
             // small image
-            if (isFixedImageSize() && getImgWidthSmall() > 0) {
+            if (isFixedImageSize() && (getImgWidthSmall() > 0)) {
                 return getImgWidthSmall();
             }
             return (getColumnWidth() / 4);
         } else {
             // medium image
-            if (isFixedImageSize() && getImgWidthMedium() > 0) {
+            if (isFixedImageSize() && (getImgWidthMedium() > 0)) {
                 return getImgWidthMedium();
             }
             return (int)Math.round(getColumnWidth() / 2.3);
@@ -1065,7 +1059,7 @@ public class CmsLayoutPageBean {
         }
         return new CmsMacroWrapperFreeMarker(getCmsObject(), fileName);
     }
-    
+
     /**
      * Returns the String value of the xml content defined by the value(s) inside the given extended properties.<p>
      * 
@@ -1076,12 +1070,12 @@ public class CmsLayoutPageBean {
      * @return the String value of the xml content defined by the value(s) inside the given map.
      */
     protected String getPropertiesValue(
-        ExtendedProperties xmlElements,
+        CmsConfigurationParameter xmlElements,
         String key,
         CmsXmlContent xmlContentFileLink,
         Locale locale) {
 
-        Object value = xmlElements.get(key);
+        Object value = xmlElements.getObject(key);
         String result = "";
         if (value != null) {
             if (value instanceof String) {
@@ -1095,9 +1089,8 @@ public class CmsLayoutPageBean {
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(xmlContentFileLink.getStringValue(
                         getCmsObject(),
                         next,
-                        locale))
-                        && !xmlContentFileLink.getStringValue(getCmsObject(), next, locale).equals("(none)")) {
-                        if (result.length() > 1 && result.lastIndexOf(",") != result.length()) {
+                        locale)) && !xmlContentFileLink.getStringValue(getCmsObject(), next, locale).equals("(none)")) {
+                        if ((result.length() > 1) && (result.lastIndexOf(",") != result.length())) {
                             // only append ',' if the result String is already in use
                             result += ",";
                         }
@@ -1119,9 +1112,9 @@ public class CmsLayoutPageBean {
      * @return an instance of ExtendedProperties with key-value pairs which define the elements to use inside
      *         an integrated xml content, e.g. to build the headline
      */
-    protected ExtendedProperties getXmlElementsProperties(CmsFile linkToFile) {
+    protected CmsConfigurationParameter getXmlElementsProperties(CmsFile linkToFile) {
 
-        ExtendedProperties properties = new ExtendedProperties();
+        CmsConfigurationParameter properties = new CmsConfigurationParameter();
         try {
             // get the type name for the integrated file
             // type name is used as key for m_typeMappings
@@ -1134,7 +1127,7 @@ public class CmsLayoutPageBean {
                 m_typeMappings.put(typeName, properties);
             } else {
                 // if typeName is already used inside m_typeProperties get properties from this map
-                properties = (ExtendedProperties)m_typeMappings.get(typeName);
+                properties = (CmsConfigurationParameter)m_typeMappings.get(typeName);
             }
         } catch (Exception e) {
             // ignore

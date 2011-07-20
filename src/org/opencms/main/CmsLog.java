@@ -27,13 +27,13 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.net.URL;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -95,7 +95,7 @@ public final class CmsLog {
                 File tldFile = new File(tldFilePath);
                 if (tldFile.exists()) {
                     // assume this is a default OpenCms log configuration                
-                    ExtendedProperties configuration = new ExtendedProperties(path);
+                    CmsConfigurationParameter configuration = new CmsConfigurationParameter(path);
                     // check if OpenCms should set the log file environment variable
                     boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
                     if (setLogFile) {

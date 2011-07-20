@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.tools.database;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -77,7 +78,6 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 
@@ -98,25 +98,6 @@ public class CmsHtmlImport {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlImport.class);
-
-    /**
-     * This function creates a folder in the temporary-directory.<p>
-     * 
-     * @param name the name of the folder
-     * 
-     * @return the folder file
-     * 
-     * @throws Exception if the folder can not create
-     */
-    public static File createTempFolder(String name) throws Exception {
-
-        File folder = null;
-        folder = File.createTempFile(name, "", null);
-        folder.delete();
-        folder.mkdirs();
-        folder.deleteOnExit();
-        return folder;
-    }
 
     /** the CmsObject to use. */
     private CmsObject m_cmsObject;
@@ -207,6 +188,25 @@ public class CmsHtmlImport {
 
         this();
         m_cmsObject = cms;
+    }
+
+    /**
+     * This function creates a folder in the temporary-directory.<p>
+     * 
+     * @param name the name of the folder
+     * 
+     * @return the folder file
+     * 
+     * @throws Exception if the folder can not create
+     */
+    public static File createTempFolder(String name) throws Exception {
+
+        File folder = null;
+        folder = File.createTempFile(name, "", null);
+        folder.delete();
+        folder.mkdirs();
+        folder.deleteOnExit();
+        return folder;
     }
 
     /**
@@ -1041,8 +1041,9 @@ public class CmsHtmlImport {
                                     m_report.print(org.opencms.report.Messages.get().container(
                                         org.opencms.report.Messages.RPT_DOTS_0));
                                 }
-                                m_report.println(org.opencms.report.Messages.get().container(
-                                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                                m_report.println(
+                                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                                    I_CmsReport.FORMAT_OK);
                             }
                         }
                     }
@@ -1231,7 +1232,7 @@ public class CmsHtmlImport {
                 String propertyFileName = foldername + File.separator + META_PROPERTIES;
 
                 boolean metaPropertiesFound = false;
-                ExtendedProperties propertyFile = new ExtendedProperties();
+                CmsConfigurationParameter propertyFile = new CmsConfigurationParameter();
                 try {
                     propertyFile.load(new FileInputStream(new File(propertyFileName)));
                     metaPropertiesFound = true;
@@ -1243,13 +1244,10 @@ public class CmsHtmlImport {
                 // new folder in OpenCms
                 // only do this if we have found a meta.properties file          
                 if (metaPropertiesFound) {
-                    Enumeration enu = propertyFile.keys();
-                    String property = "";
-                    while (enu.hasMoreElements()) {
+                    for (String property : propertyFile.getParameterSet()) {
                         // get property and value
                         try {
-                            property = (String)enu.nextElement();
-                            String propertyvalue = (String)propertyFile.get(property);
+                            String propertyvalue = propertyFile.getString(property);
                             // copy to the properties of the OpenCms folder
                             properties.put(property, propertyvalue);
                         } catch (Exception e2) {
@@ -1282,8 +1280,9 @@ public class CmsHtmlImport {
                     m_cmsObject.lockResource(path + folder);
                 } catch (CmsException e1) {
                     // the folder was not there, so create it
-                    m_cmsObject.createResource(path + folder, OpenCms.getResourceManager().getResourceType(
-                        CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                    m_cmsObject.createResource(
+                        path + folder,
+                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
                 }
                 // create all properties and put them in an ArrayList
                 Enumeration enu = properties.keys();

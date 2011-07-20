@@ -28,6 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -37,7 +38,6 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsVisitEntryFilter;
-import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -91,7 +91,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -99,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 6.0.0 
  */
-public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
+public class CmsUserDriver implements I_CmsUserDriver {
 
     /** The root path for organizational units. */
     public static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
@@ -467,9 +466,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
-                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
-                        null), 0, null, "/");
+                    createOrganizationalUnit(
+                        dbc,
+                        "",
+                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
+                        0,
+                        null,
+                        "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -624,9 +627,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
+                    m_driverManager.deleteProject(
                         dbc,
-                        organizationalUnit.getProjectId()));
+                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -962,16 +965,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         Map configuration = configurationManager.getConfiguration();
 
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
+        CmsConfigurationParameter config;
+        if (configuration instanceof CmsConfigurationParameter) {
+            config = (CmsConfigurationParameter)configuration;
         } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
+            config = new CmsConfigurationParameter(configuration);
         }
 
-        String poolUrl = config.get("db.user.pool").toString();
-        String classname = config.get("db.user.sqlmanager").toString();
+        String poolUrl = config.getString("db.user.pool");
+        String classname = config.getString("db.user.sqlmanager");
         m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsUserDriver.DRIVER_TYPE_ID, poolUrl);
 
@@ -2241,8 +2243,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription})
-        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
+            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
+            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
+            null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);

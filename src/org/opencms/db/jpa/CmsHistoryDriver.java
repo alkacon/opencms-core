@@ -28,6 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -78,7 +79,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -475,16 +475,15 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         Map<String, String> configuration = configurationManager.getConfiguration();
 
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
+        CmsConfigurationParameter config;
+        if (configuration instanceof CmsConfigurationParameter) {
+            config = (CmsConfigurationParameter)configuration;
         } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
+            config = new CmsConfigurationParameter(configuration);
         }
 
-        String poolUrl = config.get("db.history.pool").toString();
-        String classname = config.get("db.history.sqlmanager").toString();
+        String poolUrl = config.getString("db.history.pool");
+        String classname = config.getString("db.history.sqlmanager");
 
         m_sqlManager = initSqlManager(classname);
 

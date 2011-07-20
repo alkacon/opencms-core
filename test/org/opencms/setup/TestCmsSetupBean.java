@@ -27,16 +27,14 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * @since 6.0.0
@@ -74,20 +72,17 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         String outputFile = base + "output.properties";
 
         System.out.println("Reading properties from " + inputFile);
-        ExtendedProperties oldProperties = bean.loadProperties(inputFile);
+        CmsConfigurationParameter oldProperties = new CmsConfigurationParameter(inputFile);
 
         System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
         bean.saveProperties(oldProperties, outputFile, false);
 
         System.out.println("Checking properties from " + outputFile);
-        ExtendedProperties newProperties = bean.loadProperties(outputFile);
+        CmsConfigurationParameter newProperties = new CmsConfigurationParameter(outputFile);
 
-        Iterator it = oldProperties.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry e = (Map.Entry)it.next();
-            String key = (String)e.getKey();
-            Object obj = e.getValue();
+        for (String key : oldProperties.getParameterSet()) {
+            Object obj = oldProperties.getObject(key);
 
             String oldValue = "", newValue = "";
             if (obj instanceof Vector) {
@@ -100,14 +95,14 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
                 oldValue = buf.toString();
 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext();) {
+                for (Iterator j = ((Vector)newProperties.getObject(key)).iterator(); j.hasNext();) {
                     buf.append("[" + (String)j.next() + "]");
                 }
                 newValue = buf.toString();
 
             } else {
                 oldValue = (String)obj;
-                newValue = (String)newProperties.get(key);
+                newValue = newProperties.getString(key);
             }
             System.out.println(key);
             System.out.println(oldValue);

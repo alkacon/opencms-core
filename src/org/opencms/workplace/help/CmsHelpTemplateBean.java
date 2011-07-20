@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.help;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -44,7 +45,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -60,7 +60,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -814,7 +813,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                         // try to read the mappings from the current module
                         String absolutePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
                             resolveMacros(RFS_HELPMAPPINGS));
-                        ExtendedProperties props = CmsPropertyUtils.loadProperties(absolutePath);
+                        CmsConfigurationParameter props = new CmsConfigurationParameter(absolutePath);
 
                         if (wpResource.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                             // remove context from workplace path
@@ -907,7 +906,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             values = (String[])entry.getValue();
             for (int i = 0; i < values.length; i++) {
                 result.append(values[i]);
-                if (i + 1 < values.length) {
+                if ((i + 1) < values.length) {
                     result.append(',');
                 }
             }

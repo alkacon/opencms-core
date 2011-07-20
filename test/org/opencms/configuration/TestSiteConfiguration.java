@@ -128,7 +128,7 @@ public class TestSiteConfiguration extends OpenCmsTestCase {
         CmsResourceManager resourceManager = OpenCms.getResourceManager();
         assertEquals(2, resourceManager.getRelationTypes().size());
 
-        CmsRelationType relationType = (CmsRelationType)resourceManager.getRelationTypes().get(0);
+        CmsRelationType relationType = resourceManager.getRelationTypes().get(0);
         assertFalse(relationType.isDefinedInContent());
         assertFalse(relationType.isInternal());
         assertFalse(relationType.isStrong());
@@ -136,7 +136,7 @@ public class TestSiteConfiguration extends OpenCmsTestCase {
         assertEquals("TESTRELATION1", relationType.getName());
         assertEquals("WEAK", relationType.getType());
 
-        relationType = (CmsRelationType)resourceManager.getRelationTypes().get(1);
+        relationType = resourceManager.getRelationTypes().get(1);
         assertFalse(relationType.isDefinedInContent());
         assertFalse(relationType.isInternal());
         assertTrue(relationType.isStrong());

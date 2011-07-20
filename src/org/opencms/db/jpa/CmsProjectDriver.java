@@ -28,6 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
@@ -112,7 +113,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Sets;
@@ -815,16 +815,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         Map<String, String> configuration = configurationManager.getConfiguration();
 
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
+        CmsConfigurationParameter config;
+        if (configuration instanceof CmsConfigurationParameter) {
+            config = (CmsConfigurationParameter)configuration;
         } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
+            config = new CmsConfigurationParameter(configuration);
         }
 
-        String poolUrl = config.get("db.project.pool").toString();
-        String classname = config.get("db.project.sqlmanager").toString();
+        String poolUrl = config.getString("db.project.pool");
+        String classname = config.getString("db.project.sqlmanager");
 
         m_sqlManager = initSqlManager(classname);
 

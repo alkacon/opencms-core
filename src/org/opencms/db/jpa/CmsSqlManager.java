@@ -27,6 +27,7 @@
 
 package org.opencms.db.jpa;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbException;
@@ -49,7 +50,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
@@ -313,7 +313,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @param config the combined configuration of "opencms.properties" and the "persistence.xml"
      */
-    public static void init(ExtendedProperties config) {
+    public static void init(CmsConfigurationParameter config) {
 
         if (!m_isInitialized) {
             m_isInitialized = true;
@@ -327,7 +327,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
             m_factoryTable = new Hashtable<String, EntityManagerFactory>();
             m_factoryTable.put(JPA_PERSISTENCE_UNIT, m_persistenceFactory);
             CmsPoolEntityManagerFactory entityMan = new CmsPoolEntityManagerFactory(m_persistenceFactory);
-            int entityManagerPoolSize = config.getInt(CmsDbPool.KEY_DATABASE_POOL
+            int entityManagerPoolSize = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
                 + "."
                 + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
                 + "."
@@ -361,7 +361,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @return the connection properties value 
      */
-    private static String buildConnectionPropertiesValue(ExtendedProperties config, String key) {
+    private static String buildConnectionPropertiesValue(CmsConfigurationParameter config, String key) {
 
         StringBuffer propValue = new StringBuffer();
 

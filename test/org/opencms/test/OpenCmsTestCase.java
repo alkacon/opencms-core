@@ -27,6 +27,7 @@
 
 package org.opencms.test;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
@@ -62,7 +63,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -84,7 +84,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import org.dom4j.Document;
@@ -166,7 +165,7 @@ public class OpenCmsTestCase extends TestCase {
     public static final String DB_ORACLE = "oracle";
 
     /** The OpenCms/database configuration. */
-    public static ExtendedProperties m_configuration;
+    public static CmsConfigurationParameter m_configuration;
 
     /** Name of the default tablespace (oracle only). */
     public static String m_defaultTablespace;
@@ -697,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
-        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
+        if ((path != null) && !m_configuration.hasParameter("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("export/");
@@ -3601,7 +3600,7 @@ public class OpenCmsTestCase extends TestCase {
             boolean cont;
             do {
                 cont = false;
-                if (m_configuration.containsKey(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
+                if (m_configuration.hasParameter(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
                     addTestDataPath(m_configuration.getString(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index));
                     cont = true;
                     index++;
@@ -3610,7 +3609,7 @@ public class OpenCmsTestCase extends TestCase {
 
             try {
                 String propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
-                m_configuration = CmsPropertyUtils.loadProperties(propertyFile);
+                m_configuration = new CmsConfigurationParameter(propertyFile);
             } catch (IOException e) {
                 fail(e.toString());
                 return;

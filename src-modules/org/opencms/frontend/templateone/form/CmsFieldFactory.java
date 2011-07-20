@@ -27,6 +27,7 @@
 
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -35,9 +36,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -91,10 +92,10 @@ public final class CmsFieldFactory {
             propertyFile = new File(CUSTOM_FORM_FIELD_PROPERTIES);
             if (propertyFile.exists()) {
 
-                ExtendedProperties fieldProperties = new ExtendedProperties();
+                CmsConfigurationParameter fieldProperties = new CmsConfigurationParameter();
                 fieldProperties.load(new FileInputStream(propertyFile));
 
-                Iterator i = fieldProperties.keySet().iterator();
+                Iterator i = fieldProperties.getParameterSet().iterator();
                 while (i.hasNext()) {
 
                     String key = (String)i.next();
@@ -102,14 +103,13 @@ public final class CmsFieldFactory {
                         continue;
                     }
 
-                    String[] values = fieldProperties.getStringArray(key);
-                    if ((values == null) || (values.length == 0)) {
+                    List<String> values = fieldProperties.getList(key);
+                    if ((values == null) || (values.size() == 0)) {
                         continue;
                     }
 
-                    for (int j = 0, n = values.length; j < n; j++) {
+                    for (String field : values) {
 
-                        String field = values[j];
                         int index = field.indexOf(":");
                         if (index == -1) {
                             continue;

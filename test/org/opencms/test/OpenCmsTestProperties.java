@@ -27,10 +27,10 @@
 
 package org.opencms.test;
 
+import org.opencms.configuration.CmsConfigurationParameter;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsPropertyUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -61,7 +60,7 @@ public final class OpenCmsTestProperties {
     public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
 
     /** The configuration from <code>opencms.properties</code>. */
-    private static ExtendedProperties m_configuration;
+    private static CmsConfigurationParameter m_configuration;
 
     /** The singleton instance. */
     private static OpenCmsTestProperties m_testSingleton;
@@ -176,7 +175,7 @@ public final class OpenCmsTestProperties {
                     "Test property file ('test.properties') could not be found. Context Classloader suggested location: "
                         + testPropPath);
             }
-            m_configuration = CmsPropertyUtils.loadProperties(testPropPath);
+            m_configuration = new CmsConfigurationParameter(testPropPath);
         } catch (IOException e) {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
@@ -194,19 +193,19 @@ public final class OpenCmsTestProperties {
                 allowGetEnv = false;
             }
             if (System.getProperty(PROP_TEST_DATA_PATH) != null) {
-                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
-            } else if (allowGetEnv && System.getenv(PROP_TEST_DATA_PATH) != null) {
-                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
+                m_configuration.setParameter(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
+            } else if (allowGetEnv && (System.getenv(PROP_TEST_DATA_PATH) != null)) {
+                m_configuration.setParameter(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
             }
             if (System.getProperty(PROP_TEST_WEBAPP_PATH) != null) {
-                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
-            } else if (allowGetEnv && System.getenv(PROP_TEST_WEBAPP_PATH) != null) {
-                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
+                m_configuration.setParameter(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
+            } else if (allowGetEnv && (System.getenv(PROP_TEST_WEBAPP_PATH) != null)) {
+                m_configuration.setParameter(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
             }
             if (System.getProperty(PROP_DB_PRODUCT) != null) {
-                m_configuration.setProperty(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
-            } else if (allowGetEnv && System.getenv(PROP_DB_PRODUCT) != null) {
-                m_configuration.setProperty(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
+                m_configuration.setParameter(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
+            } else if (allowGetEnv && (System.getenv(PROP_DB_PRODUCT) != null)) {
+                m_configuration.setParameter(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
             }
         } catch (SecurityException e) {
             // unable to read environment, use only properties from file
@@ -230,7 +229,7 @@ public final class OpenCmsTestProperties {
      * @return the parsed configuration file ('test.properties')
      */
 
-    public ExtendedProperties getConfiguration() {
+    public CmsConfigurationParameter getConfiguration() {
 
         return m_configuration;
     }
