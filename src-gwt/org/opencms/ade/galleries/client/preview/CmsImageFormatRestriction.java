@@ -42,17 +42,22 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
     /** The label. */
     private String m_label;
 
+    /** The format name. */
+    private String m_name;
+
     /** The width. */
     private int m_width;
 
     /**
      * Constructor.<p>
      * 
+     * @param name the format name 
      * @param label the label
      * @param config the configuration
      */
-    public CmsImageFormatRestriction(String label, String config) {
+    public CmsImageFormatRestriction(String name, String label, String config) {
 
+        m_name = name;
         m_label = label;
         parseConfig(config);
     }
@@ -95,7 +100,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
             return orgHeight;
         }
 
-        return (m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? (orgHeight * m_width / orgWidth) : m_height;
+        return (m_height == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? ((orgHeight * m_width) / orgWidth) : m_height;
     }
 
     /**
@@ -104,6 +109,14 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getName()
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**
@@ -116,7 +129,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
             return orgWidth;
         }
 
-        return (m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? (orgWidth * m_height / orgHeight) : m_width;
+        return (m_width == I_CmsFormatRestriction.DIMENSION_NOT_SET) ? ((orgWidth * m_height) / orgHeight) : m_width;
     }
 
     /**

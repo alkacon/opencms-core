@@ -324,6 +324,57 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Returns the scale parameter.<p>
+     * 
+     * @return the scale parameter
+     */
+    public String getScaleParam() {
+
+        if (!isScaled() && !isCropped()) {
+            // the image is not cropped nor scaled, return an empty parameter
+            return "";
+        }
+        StringBuffer result = new StringBuffer();
+        if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
+            int height = 0;
+            int width = 0;
+            if (m_targetHeight > -1) {
+                height = m_targetHeight;
+            } else {
+                height = (int)Math.floor(((1.00 * m_orgHeight) / m_orgWidth) * m_targetWidth);
+            }
+            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(height).append(
+                SCALE_PARAM_DELIMITER);
+
+            if (m_targetWidth > -1) {
+                width = m_targetWidth;
+            } else {
+                width = (int)Math.floor(((1.00 * m_orgWidth) / m_orgHeight) * m_targetHeight);
+            }
+            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(width).append(SCALE_PARAM_DELIMITER);
+
+        }
+        if (m_cropX > -1) {
+            result.append(SCALE_PARAM_CROP_X).append(SCALE_PARAM_COLON).append(m_cropX).append(SCALE_PARAM_DELIMITER);
+        }
+        if (m_cropY > -1) {
+            result.append(SCALE_PARAM_CROP_Y).append(SCALE_PARAM_COLON).append(m_cropY).append(SCALE_PARAM_DELIMITER);
+        }
+        if (m_cropHeight > -1) {
+            result.append(SCALE_PARAM_CROP_HEIGHT).append(SCALE_PARAM_COLON).append(m_cropHeight).append(
+                SCALE_PARAM_DELIMITER);
+        }
+        if (m_cropWidth > -1) {
+            result.append(SCALE_PARAM_CROP_WIDTH).append(SCALE_PARAM_COLON).append(m_cropWidth).append(
+                SCALE_PARAM_DELIMITER);
+        }
+        if (result.length() > 0) {
+            result.deleteCharAt(result.length() - 1);
+        }
+        return result.toString();
+    }
+
+    /**
      * Returns the target height.<p>
      *
      * @return the target height
@@ -351,6 +402,16 @@ public class CmsCroppingParamBean {
     public boolean isCropped() {
 
         return m_cropX > I_CmsFormatRestriction.DIMENSION_NOT_SET;
+    }
+
+    /**
+     * Returns if the given cropping parameters would scale the image.<p>
+     *  
+     * @return <code>true</code> if the image is scaled
+     */
+    public boolean isScaled() {
+
+        return !(((m_targetHeight == m_orgHeight) || (m_targetHeight == -1)) && ((m_targetWidth == m_orgWidth) || (m_targetWidth == -1)));
     }
 
     /**
@@ -452,59 +513,11 @@ public class CmsCroppingParamBean {
     @Override
     public String toString() {
 
-        if (!isScaled() && !isCropped()) {
-            // the image is not cropped nor scaled, return an empty parameter
-            return "";
+        String result = getScaleParam();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+            result = SCALE_PARAM_NAME + SCALE_PARAM_EQ + result;
         }
-        StringBuffer result = new StringBuffer();
-        if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
-            int height = 0;
-            int width = 0;
-            if (m_targetHeight > -1) {
-                height = m_targetHeight;
-            } else {
-                height = (int)Math.floor(((1.00 * m_orgHeight) / m_orgWidth) * m_targetWidth);
-            }
-            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(height).append(
-                SCALE_PARAM_DELIMITER);
-
-            if (m_targetWidth > -1) {
-                width = m_targetWidth;
-            } else {
-                width = (int)Math.floor(((1.00 * m_orgWidth) / m_orgHeight) * m_targetHeight);
-            }
-            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(width).append(SCALE_PARAM_DELIMITER);
-
-        }
-        if (m_cropX > -1) {
-            result.append(SCALE_PARAM_CROP_X).append(SCALE_PARAM_COLON).append(m_cropX).append(SCALE_PARAM_DELIMITER);
-        }
-        if (m_cropY > -1) {
-            result.append(SCALE_PARAM_CROP_Y).append(SCALE_PARAM_COLON).append(m_cropY).append(SCALE_PARAM_DELIMITER);
-        }
-        if (m_cropHeight > -1) {
-            result.append(SCALE_PARAM_CROP_HEIGHT).append(SCALE_PARAM_COLON).append(m_cropHeight).append(
-                SCALE_PARAM_DELIMITER);
-        }
-        if (m_cropWidth > -1) {
-            result.append(SCALE_PARAM_CROP_WIDTH).append(SCALE_PARAM_COLON).append(m_cropWidth).append(
-                SCALE_PARAM_DELIMITER);
-        }
-        if (result.length() > 0) {
-            result.insert(0, SCALE_PARAM_EQ).insert(0, SCALE_PARAM_NAME);
-            result.deleteCharAt(result.length() - 1);
-        }
-        return result.toString();
-    }
-
-    /**
-     * Returns if the given cropping parameters would scale the image.<p>
-     *  
-     * @return <code>true</code> if the image is scaled
-     */
-    public boolean isScaled() {
-
-        return !(((m_targetHeight == m_orgHeight) || (m_targetHeight == -1)) && ((m_targetWidth == m_orgWidth) || (m_targetWidth == -1)));
+        return result;
     }
 
 }

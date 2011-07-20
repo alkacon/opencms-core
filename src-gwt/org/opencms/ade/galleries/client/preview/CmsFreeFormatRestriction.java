@@ -37,14 +37,19 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
     /** The format label. */
     private String m_label;
 
+    /** The format name. */
+    private String m_name;
+
     /**
      * Constructor.<p>
      * 
+     * @param name the format name 
      * @param label the format label
      */
-    public CmsFreeFormatRestriction(String label) {
+    public CmsFreeFormatRestriction(String name, String label) {
 
         m_label = label;
+        m_name = name;
     }
 
     /**
@@ -70,6 +75,14 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#getName()
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**

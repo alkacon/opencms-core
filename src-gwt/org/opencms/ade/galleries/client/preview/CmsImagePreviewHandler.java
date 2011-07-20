@@ -31,7 +31,6 @@ import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -134,12 +133,36 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * Returns the image cropping parameter bean.<p>
+     * 
+     * @return the image cropping parameter bean
+     */
+    public CmsCroppingParamBean getCroppingParam() {
+
+        return m_croppingParam;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getDialog()
      */
     @Override
     public A_CmsPreviewDialog<CmsImageInfoBean> getDialog() {
 
         return m_previewDialog;
+    }
+
+    /**
+     * Returns the name of the currently selected image format.<p>
+     * 
+     * @return the format name
+     */
+    public String getFormatName() {
+
+        String result = "";
+        if ((m_formatHandler != null) && (m_formatHandler.getCurrentFormat() != null)) {
+            result = m_formatHandler.getCurrentFormat().getName();
+        }
+        return result;
     }
 
     /**
@@ -182,20 +205,6 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         restricted.setTargetHeight(CmsImagePreviewDialog.IMAGE_HEIGHT_MAX);
         restricted.setTargetWidth(CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
         return restricted.toString();
-    }
-
-    /**
-     * Returns the image scaling parameter.<p>
-     * 
-     * @return the image scaling parameter
-     */
-    public String getScaleParam() {
-
-        if (m_croppingParam == null) {
-            return "";
-        }
-        String param = m_croppingParam.toString();
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(param) ? "?" + param : "";
     }
 
     /**

@@ -37,7 +37,10 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -47,6 +50,26 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0 
  */
 public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
+
+    /** Enumeration of the gallery open parameters. */
+    public enum GALLERY_PARAM {
+        /** The current element path. */
+        currentelement,
+        /** The dialog mode. */
+        dialogmode,
+        /** The field id. */
+        fieldid,
+        /** The gallery start folder path. */
+        gallerypath,
+        /** The hash id. */
+        hashid,
+        /** The resource being edited. */
+        resource,
+        /** The gallery resource type names. */
+        types
+    }
+
+    private CmsGalleryWidgetConfiguration m_widgetConfiguration;
 
     /** The gallery JSP path. */
     protected static final String PATH_GALLERY_JSP = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
@@ -136,7 +159,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
         JSONObject additional = null;
         try {
-            additional = getAdditionalGalleryInfo(cms, widgetDialog, param, getConfiguration());
+            additional = getAdditionalGalleryInfo(cms, widgetDialog, param);
         } catch (JSONException e) {
             LOG.error("Error parsing widget configuration", e);
         }
@@ -164,16 +187,56 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
-     * @param configurationParam the widget configuration string
      * 
      * @return additional widget information
-     * @throws JSONException 
+     * 
+     * @throws JSONException if something goes wrong generating the JSON object 
      */
     protected abstract JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) throws JSONException;
+
+    /**
+     * Returns the required gallery open parameters.
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * @param hashId the field id hash
+     * 
+     * @return the gallery open parameters
+     */
+    protected Map<String, String> getGalleryOpenParams(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param,
-        String configurationParam) throws JSONException;
+        long hashId) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put(GALLERY_PARAM.dialogmode.name(), A_CmsAjaxGallery.MODE_WIDGET);
+        result.put(GALLERY_PARAM.types.name(), getGalleryTypes());
+        result.put(GALLERY_PARAM.fieldid.name(), param.getId());
+        result.put(GALLERY_PARAM.hashid.name(), "" + hashId);
+        // use javascript to read the current field value
+        result.put(GALLERY_PARAM.currentelement.name(), "'+document.getElementById('"
+            + param.getId()
+            + "').getAttribute('value')+'");
+        // the edited resource
+        if (widgetDialog instanceof CmsDialog) {
+            String paramResource = ((CmsDialog)widgetDialog).getParamResource();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
+                result.put(GALLERY_PARAM.resource.name(), paramResource);
+            }
+        }
+
+        // the start up gallery path
+        CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog, param);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
+            result.put(GALLERY_PARAM.gallerypath.name(), configuration.getStartup());
+        }
+        return result;
+    }
 
     /**
      * Returns the resource type names available within this gallery widget.<p>
@@ -198,23 +261,6 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         I_CmsWidgetParameter param,
         long hashId) {
 
-        // the edited resource
-        String paramResource = "&resource=";
-        if (widgetDialog instanceof CmsDialog) {
-            paramResource += ((CmsDialog)widgetDialog).getParamResource();
-        }
-
-        // the start up gallery path
-        String paramGalleryPath = "&gallerypath=";
-        CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
-            cms,
-            widgetDialog,
-            param,
-            getConfiguration());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-            paramGalleryPath += configuration.getStartup();
-        }
-
         StringBuffer sb = new StringBuffer(128);
         sb.append("javascript:cmsOpenDialog('");
 
@@ -224,8 +270,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         // the gallery path
         sb.append(OpenCms.getSystemInfo().getOpenCmsContext()).append(PATH_GALLERY_JSP);
 
-        // the gallery parameters
-        sb.append("?dialogmode=").append(A_CmsAjaxGallery.MODE_WIDGET).append("&types=").append(getGalleryTypes());
+        // set the content locale
         Locale contentLocale = widgetDialog.getLocale();
         try {
             I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
@@ -233,15 +278,12 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         } catch (Exception e) {
             // may fail if widget is not opened from xml content editor, ignore
         }
+        sb.append("?__locale=").append(contentLocale.toString());
 
-        // set the content locale
-        sb.append("&__locale=").append(contentLocale.toString());
-
-        // the current field value
-        sb.append("&currentelement='+document.getElementById('").append(param.getId());
-        sb.append("').getAttribute('value')+'");
-        sb.append(paramResource).append(paramGalleryPath);
-        sb.append("&fieldid=").append(param.getId()).append("&hashid=").append(hashId);
+        // add other open parameters
+        for (Entry<String, String> paramEntry : getGalleryOpenParams(cms, widgetDialog, param, hashId).entrySet()) {
+            sb.append("&").append(paramEntry.getKey()).append("=").append(paramEntry.getValue());
+        }
         sb.append("', '").append(param.getId()).append("', 488, 650); return false;");
         return sb.toString();
     }
@@ -262,6 +304,26 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         sb.append("', '").append(id);
         sb.append("'); return false;");
         return sb.toString();
+    }
+
+    /**
+     * Returns the widget configuration.<p>
+     *  
+     * @param cms an initialized instance of a CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * 
+     * @return the widget configuration
+     */
+    protected CmsGalleryWidgetConfiguration getWidgetConfiguration(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        if (m_widgetConfiguration == null) {
+            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(cms, widgetDialog, param, getConfiguration());
+        }
+        return m_widgetConfiguration;
     }
 
 }

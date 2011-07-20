@@ -505,25 +505,27 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 if (restrictionType != null) {
                     switch (restrictionType) {
                         case original:
-                            m_formats.put(DefaultRestriction.original.name(), new CmsOriginalFormatRestriction(label));
+                            m_formats.put(DefaultRestriction.original.name(), new CmsOriginalFormatRestriction(
+                                key,
+                                label));
                             break;
                         case user:
-                            m_formats.put(key, new CmsUserFormatRestriction(label));
+                            m_formats.put(key, new CmsUserFormatRestriction(key, label));
                             break;
                         case free:
-                            m_formats.put(key, new CmsFreeFormatRestriction(label));
+                            m_formats.put(key, new CmsFreeFormatRestriction(key, label));
                             break;
                         case small:
-                            m_formats.put(key, new CmsImageFormatRestriction(label, "200x?"));
+                            m_formats.put(key, new CmsImageFormatRestriction(key, label, "200x?"));
                             break;
                         case big:
-                            m_formats.put(key, new CmsImageFormatRestriction(label, "500x?"));
+                            m_formats.put(key, new CmsImageFormatRestriction(key, label, "500x?"));
                             break;
                         default:
                     }
                 } else {
                     if (CmsImageFormatRestriction.isValidConfig(value)) {
-                        m_formats.put(key, new CmsImageFormatRestriction(label, value));
+                        m_formats.put(key, new CmsImageFormatRestriction(key, label, value));
                     }
                 }
             }
@@ -569,10 +571,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                         m_formatNames = DEFAULT_FORMAT_NAMES;
                         m_formatValues = DEFAULT_FORMAT_VALUES;
                     } else {
-                        String temp = CmsPreviewUtil.getFormatNames();
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(temp)) {
-                            m_formatNames = temp.split("|");
-                        }
+                        m_formatNames = CmsPreviewUtil.getFormatNames();
                     }
                 }
                 break;

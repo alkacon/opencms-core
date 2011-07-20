@@ -169,14 +169,29 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     @Override
     public void setResource(GalleryMode galleryMode) {
 
+        CmsCroppingParamBean croppingParam = m_handler.getCroppingParam();
+
         switch (galleryMode) {
             case widget:
-                CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath() + m_handler.getScaleParam());
+                if (CmsPreviewUtil.isAdvancedWidget()) {
+                    CmsPreviewUtil.setVfsImage(
+                        m_infoBean.getResourcePath(),
+                        croppingParam.getScaleParam(),
+                        m_handler.getFormatName(),
+                        ((double)croppingParam.getTargetWidth() / croppingParam.getTargetHeight()) + "");
+                } else {
+                    CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath()
+                        + ((croppingParam.isCropped() || croppingParam.isScaled())
+                        ? "?" + croppingParam.toString()
+                        : ""));
+                }
                 break;
             case editor:
-                CmsPreviewUtil.setImage(
-                    CmsCoreProvider.get().link(m_infoBean.getResourcePath() + m_handler.getScaleParam()),
-                    m_handler.getImageAttributes());
+                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(
+                    m_infoBean.getResourcePath()
+                        + ((croppingParam.isCropped() || croppingParam.isScaled())
+                        ? "?" + croppingParam.toString()
+                        : "")), m_handler.getImageAttributes());
                 break;
             case ade:
             case view:

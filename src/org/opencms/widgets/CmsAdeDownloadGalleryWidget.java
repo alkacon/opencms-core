@@ -78,14 +78,13 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter, java.lang.String)
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
     protected JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param,
-        String configurationParam) {
+        I_CmsWidgetParameter param) {
 
         return null;
     }

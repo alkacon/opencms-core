@@ -63,6 +63,13 @@ public interface I_CmsFormatRestriction {
     String getLabel();
 
     /**
+     * Returns the format name.<p>
+     * 
+     * @return the format name
+     */
+    String getName();
+
+    /**
      * Returns the preset width for this format restriction.<p>
      * 
      * @param orgHeight the original image height

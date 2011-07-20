@@ -30,24 +30,30 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.A_CmsAjaxGallery;
-import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
 
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a widget for an extended image selection using the advanced gallery dialog.<p>
  * 
  * @since 7.5.0 
  */
-public class CmsVfsImageWidget extends A_CmsWidget {
+public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVfsImageWidget.class);
 
     /** Input field prefix for the description field. */
     private static final String PREFIX_DESCRIPTION = "desc.";
@@ -89,6 +95,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject,org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(256);
@@ -97,33 +104,36 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         return result.toString();
     }
 
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
-     */
-    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    //    /**
+    //     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+    //     */
+    //    @Override
+    //    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    //
+    //        return "\tinitVfsImageGallery();\n";
+    //    }
 
-        return "\tinitVfsImageGallery();\n";
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
-     */
-    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-
-        StringBuffer result = new StringBuffer(16);
-        result.append("function initVfsImageGallery() {\n");
-        result.append("\t");
-        result.append("vfsImageGalleryPath = \"");
-        result.append(A_CmsAjaxGallery.PATH_GALLERIES);
-        result.append(CmsAjaxImageGallery.OPEN_URI_SUFFIX);
-        result.append("\";\n");
-        result.append("}\n");
-        return result.toString();
-    }
+    //    /**
+    //     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+    //     */
+    //    @Override
+    //    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    //
+    //        StringBuffer result = new StringBuffer(16);
+    //        result.append("function initVfsImageGallery() {\n");
+    //        result.append("\t");
+    //        result.append("vfsImageGalleryPath = \"");
+    //        result.append(A_CmsAjaxGallery.PATH_GALLERIES);
+    //        result.append(CmsAjaxImageGallery.OPEN_URI_SUFFIX);
+    //        result.append("\";\n");
+    //        result.append("}\n");
+    //        return result.toString();
+    //    }
 
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
@@ -162,11 +172,8 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         result.append(widgetDialog.dialogHorizontalSpacer(10));
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
-        result.append(widgetDialog.button("javascript:openVfsImageGallery('"
-            + id
-            + "', '"
-            + idHash
-            + "');return false;", null, "imagegallery", Messages.getButtonName("image"), widgetDialog.getButtonStyle()));
+        result.append(widgetDialog.button(getOpenGalleryCall(cms, widgetDialog, param, idHash), null, getGalleryName()
+            + "gallery", Messages.getButtonName(getGalleryName()), widgetDialog.getButtonStyle()));
 
         // create preview button
         String previewClass = "hide";
@@ -181,7 +188,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
-            "javascript:previewVfsImage('" + id + "', '" + idHash + "');return false;",
+            getOpenPreviewCall(widgetDialog, param.getId()),
             null,
             "preview.png",
             Messages.GUI_BUTTON_PREVIEW_0,
@@ -191,18 +198,19 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         result.append("</tr></table></td>");
         result.append("</tr>");
 
-        CmsVfsImageWidgetConfiguration configuration = new CmsVfsImageWidgetConfiguration(
-            cms,
-            widgetDialog,
-            param,
-            getConfiguration());
-
-        result.append("\n<script type=\"text/javascript\">");
-        result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-            "\";");
-        result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append("\";");
-        result.append("\n</script>");
-
+        JSONObject additional = null;
+        try {
+            additional = getAdditionalGalleryInfo(cms, widgetDialog, param);
+        } catch (JSONException e) {
+            LOG.error("Error parsing widget configuration", e);
+        }
+        if (additional != null) {
+            result.append("\n<script type=\"text/javascript\">\n");
+            result.append("var cms_additional_").append(idHash).append("=");
+            result.append(additional.toString()).append(";\n");
+            result.append("</script>");
+        }
+        CmsVfsImageWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog, param);
         String format = value.getFormat(cms);
         if (configuration.isShowFormat()) {
             // show the format select box, also create hidden format value field
@@ -228,11 +236,11 @@ public class CmsVfsImageWidget extends A_CmsWidget {
             result.append(">");
 
             // get select box options from default value String
-            List options = configuration.getSelectFormat();
+            List<CmsSelectWidgetOption> options = configuration.getSelectFormat();
             String selected = getSelectedValue(cms, options, format);
             int selectedIndex = 0;
             for (int i = 0; i < options.size(); i++) {
-                CmsSelectWidgetOption option = (CmsSelectWidgetOption)options.get(i);
+                CmsSelectWidgetOption option = options.get(i);
                 // create the option
                 result.append("<option value=\"");
                 result.append(option.getValue());
@@ -248,10 +256,10 @@ public class CmsVfsImageWidget extends A_CmsWidget {
             result.append("</select>");
             result.append("</td>");
             result.append("</tr>");
-            List formatValues = configuration.getFormatValues();
+            List<String> formatValues = configuration.getFormatValues();
             String selectedFormat = "";
             try {
-                selectedFormat = (String)formatValues.get(selectedIndex);
+                selectedFormat = formatValues.get(selectedIndex);
             } catch (Exception e) {
                 // ignore, just didn't find a matching format value
             }
@@ -349,6 +357,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String result = super.getWidgetStringValue(cms, widgetDialog, param);
@@ -356,9 +365,9 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         if (configuration == null) {
             configuration = param.getDefault(cms);
         }
-        List options = CmsSelectWidgetOption.parseOptions(configuration);
+        List<CmsSelectWidgetOption> options = CmsSelectWidgetOption.parseOptions(configuration);
         for (int m = 0; m < options.size(); m++) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)options.get(m);
+            CmsSelectWidgetOption option = options.get(m);
             if (result.equals(option.getValue())) {
                 result = option.getOption();
                 break;
@@ -370,6 +379,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new CmsVfsImageWidget(getConfiguration());
@@ -378,6 +388,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,
@@ -402,6 +413,40 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.CmsAdeImageGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected JSONObject getAdditionalGalleryInfo(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) throws JSONException {
+
+        JSONObject result = super.getAdditionalGalleryInfo(cms, widgetDialog, param);
+        result.put("isAdvancedWidget", true);
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryOpenParams(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter, long)
+     */
+    @Override
+    protected Map<String, String> getGalleryOpenParams(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param,
+        long hashId) {
+
+        Map<String, String> result = super.getGalleryOpenParams(cms, widgetDialog, param, hashId);
+        // the current element value will be read by java-script including the image input field and the scale input field
+        StringBuffer currentElement = new StringBuffer("'+document.getElementById('");
+        currentElement.append(PREFIX_IMAGE).append(param.getId());
+        currentElement.append("').getAttribute('value')+'?__scale='+document.getElementById('");
+        currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
+        result.put(GALLERY_PARAM.currentelement.name(), currentElement.toString());
+        return result;
+    }
+
+    /**
      * Returns the currently selected value of the select widget.<p>
      * 
      * If a value is found in the given parameter, this is used. Otherwise 
@@ -414,7 +459,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
      * 
      * @return the currently selected value of the select widget
      */
-    protected String getSelectedValue(CmsObject cms, List selectOptions, String currentValue) {
+    protected String getSelectedValue(CmsObject cms, List<CmsSelectWidgetOption> selectOptions, String currentValue) {
 
         String paramValue = currentValue;
         if (CmsStringUtil.isEmpty(paramValue)) {
