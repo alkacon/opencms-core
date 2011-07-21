@@ -95,20 +95,7 @@ function getImageInfo(){
         return {};
     }
     var result={};
-    result['alt']=GetAttribute(image, 'alt', null);
-    result['align']=GetAttribute(image, 'align', null);
-    result['clazz']=GetAttribute(image, 'class', null);
-    result['dir']=GetAttribute(image, 'dir', null);
-    result['height']=GetAttribute(image, 'height', null);
-    result['hspace']=GetAttribute(image, 'hspace', null);
-    result['id']=GetAttribute(image, 'id', null);
-    result['lang']=GetAttribute(image, 'lang', null);
-    result['longDesc']=GetAttribute(image, 'longDesc', null);
-    result['style']=GetAttribute(image, 'style', null);
-    result['title']=GetAttribute(image, 'title', null);
-    result['vspace']=GetAttribute(image, 'vspace', null);
-    result['width']=GetAttribute(image, 'width', null);
-    
+    _collectAttributes(image, result);
     if (fckEditor.FCK.Selection.HasAncestorNode("A")) {
         var imageLink=parentDialog.Selection.GetSelection().MoveToAncestorNode("A");
         if (imageLink != null && imageLink.id.substring(0, 5) == LINK_PREFIX){
@@ -128,6 +115,7 @@ function getImageInfo(){
     // image tag already present
     if (fckEditor.FCK.Selection.HasAncestorNode("SPAN")) {
         imageWrap=parentDialog.Selection.GetSelection().MoveToAncestorNode("SPAN");
+        _collectAttributes(imageWrap, result);
         if (imageWrap && imageWrap.id.substring(0, 5) == ENHANCE_PREFIX){
             result['hash']=imageWrap.id.substring(5);
             var child=imageWrap.firstChild;
@@ -138,6 +126,9 @@ function getImageInfo(){
                         result['insertCopyright']="true";
                     }
                     if (child.id.substring(0, 5) == SUB_PREFIX){
+                        var title=_getInnerText(child);
+                        result['title']=title;
+                        result['alt']=title;
                         result['insertSubtitle']="true";
                     }
                 }
@@ -146,9 +137,44 @@ function getImageInfo(){
         }
         fckEditor.FCK.Selection.SelectNode(image);
     }
-    
-    
     return result;
+}
+
+/**
+ * Collects the attributes from the given DOM element and adds them to the given attribute map.<p>
+ */
+function _collectAttributes(element, attributes){
+    var attributeNames = ['alt', 'align', 'clazz', 'dir', 'height', 'hspace', 'id', 'lang', 'longDesc', 'style', 'title', 'vspace', 'width'];
+    var value;
+    for (var i=0; i<attributeNames.length; i++){
+        if (attributeNames[i]!='clazz'){
+            value=GetAttribute(element, attributeNames[i], null);
+        }else{
+            value=GetAttribute(element, 'class', null);
+        }
+        if (value!=null){
+            attributes[attributeNames[i]]=value;
+        }
+    }
+    var align=element.style.cssFloat;
+    if (align==null || align==""){
+        // IE only
+        align=element.style.styleFloat;
+    }
+    if (align=="left" || align=="right"){
+        attributes.align=align;
+    }
+    var vspace=element.style.marginBottom;
+    if (vspace!=null && vspace!=""){
+        attributes.vspace= ""+parseInt(vspace);
+    }
+    var hspace=element.style.marginLeft;
+    if (hspace!=null || hspace!=""){
+        hspace= element.style.marginRight;
+    }
+    if (hspace!=null || hspace!=""){
+        attributes.hspace= ""+parseInt(hspace);
+    }
 }
 
 /**
@@ -348,7 +374,8 @@ function _setAlignmentStyle(insertElement, attributes){
     insertElement.style.width=attributes.width+"px";
     var al = attributes.align;
     if (al == "left" || al == "right") {
-        insertElement.style.setAttribute("float",al);
+        insertElement.style.cssFloat=al;
+        insertElement.style.styleFloat=al;
     }
     var imgVSp = attributes.vspace;
     var imgHSp = attributes.hspace;
