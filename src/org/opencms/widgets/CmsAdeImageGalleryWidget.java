@@ -33,6 +33,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * ADE image gallery widget implementations.<p>
@@ -99,7 +100,11 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
         JSONObject result = new JSONObject();
         result.put(ImageWidgetInfo.useFormats.name(), config.isShowFormat());
         result.put(ImageWidgetInfo.imageFormats.name(), new JSONArray(config.getFormatValues()));
-        String[] formatNames = config.getSelectFormatString().split("\\|");
+        String temp = config.getSelectFormatString();
+        String[] formatNames = new String[0];
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(temp)) {
+            formatNames = config.getSelectFormatString().split("\\|");
+        }
         result.put(ImageWidgetInfo.imageFormatNames.name(), new JSONArray(formatNames));
         return result;
     }

@@ -371,7 +371,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         for (String gallery : galleries) {
             CmsListItem item = searchTreeItem(m_scrollList, gallery);
-            item.getCheckBox().setChecked(false);
+            if (item != null) {
+                item.getCheckBox().setChecked(false);
+            }
         }
     }
 
