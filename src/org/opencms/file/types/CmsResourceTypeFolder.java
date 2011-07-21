@@ -28,12 +28,10 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsNewResourceFolder;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Resource type descriptor for the type "folder".<p>
@@ -108,15 +106,15 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
-        if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
-            result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
-        }
-        Map<String, String> additional = super.getConfiguration();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        CmsParameterConfiguration additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
-            result.putAll(additional);
+            result.merge(additional);
+        }
+        if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
+            result.setParameter(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
         }
         return result;
     }

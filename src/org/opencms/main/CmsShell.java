@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
@@ -441,7 +441,7 @@ public class CmsShell {
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
             System.out.println(m_messages.key(Messages.GUI_SHELL_CONFIG_FILE_1, propertyPath));
             System.out.println();
-            CmsConfigurationParameter configuration = new CmsConfigurationParameter(propertyPath);
+            CmsParameterConfiguration configuration = new CmsParameterConfiguration(propertyPath);
 
             // now upgrade to runlevel 2
             m_opencms = m_opencms.upgradeRunlevel(configuration);

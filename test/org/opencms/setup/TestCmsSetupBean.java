@@ -27,14 +27,14 @@
 
 package org.opencms.setup;
 
-import org.opencms.configuration.CmsConfigurationParameter;
-import org.opencms.main.CmsSystemInfo;
+import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.TestParameterConfiguration;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * @since 6.0.0
@@ -67,35 +67,39 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null, null);
 
-        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "base");
-        String inputFile = base + CmsSystemInfo.FILE_PROPERTIES;
-        String outputFile = base + "output.properties";
+        String testPropPath = "org/opencms/configuration/";
+
+        File input = new File(TestParameterConfiguration.class.getClassLoader().getResource(
+            testPropPath + "opencms-test.properties").getPath());
+
+        String inputFile = input.getAbsolutePath();
+        String outputFile = input.getParent() + "/output.properties";
 
         System.out.println("Reading properties from " + inputFile);
-        CmsConfigurationParameter oldProperties = new CmsConfigurationParameter(inputFile);
+        CmsParameterConfiguration oldProperties = new CmsParameterConfiguration(inputFile);
 
         System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
         bean.saveProperties(oldProperties, outputFile, false);
 
         System.out.println("Checking properties from " + outputFile);
-        CmsConfigurationParameter newProperties = new CmsConfigurationParameter(outputFile);
+        CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);
 
-        for (String key : oldProperties.getParameterSet()) {
+        for (String key : oldProperties.getParameters()) {
             Object obj = oldProperties.getObject(key);
 
             String oldValue = "", newValue = "";
-            if (obj instanceof Vector) {
+            if (obj instanceof List) {
                 StringBuffer buf;
 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)obj).iterator(); j.hasNext();) {
+                for (Iterator j = ((List)obj).iterator(); j.hasNext();) {
                     buf.append("[" + (String)j.next() + "]");
                 }
                 oldValue = buf.toString();
 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)newProperties.getObject(key)).iterator(); j.hasNext();) {
+                for (Iterator j = ((List)newProperties.getObject(key)).iterator(); j.hasNext();) {
                     buf.append("[" + (String)j.next() + "]");
                 }
                 newValue = buf.toString();
@@ -104,15 +108,15 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
                 oldValue = (String)obj;
                 newValue = newProperties.getString(key);
             }
-            System.out.println(key);
-            System.out.println(oldValue);
-            System.out.println(newValue);
+            System.out.println("key  : " + key);
+            System.out.println("read : " + oldValue);
+            System.out.println("wrote: " + newValue);
             System.out.println("---");
             assertEquals(oldValue, newValue);
         }
 
         // clean up - remove generated file
         File output = new File(outputFile);
-        output.delete();
+        // output.delete();
     }
 }

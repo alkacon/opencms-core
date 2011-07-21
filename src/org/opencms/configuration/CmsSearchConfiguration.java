@@ -453,17 +453,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                 sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
             }
             // iterate additional params
-            Map indexConfiguration = searchIndex.getConfiguration();
+            CmsParameterConfiguration indexConfiguration = searchIndex.getConfiguration();
             if (indexConfiguration != null) {
-                Iterator it = indexConfiguration.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String name = entry.getKey().toString();
-                    String value = entry.getValue().toString();
-                    Element paramNode = indexElement.addElement(N_PARAM);
-                    paramNode.addAttribute(A_NAME, name);
-                    paramNode.addText(value);
-                }
+                indexConfiguration.appendToXml(indexElement);
             }
         }
         // </indexes>

@@ -28,6 +28,7 @@
 package org.opencms.workplace.editors.directedit;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -37,15 +38,11 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.Messages;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -69,7 +66,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     protected CmsObject m_cms;
 
     /** The parameters form the configuration. */
-    protected Map<String, String> m_configurationParameters;
+    protected CmsParameterConfiguration m_configurationParameters;
 
     /** The editor button style to use. */
     protected int m_editButtonStyle;
@@ -92,20 +89,16 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         if (m_configurationParameters == null) {
-            m_configurationParameters = new TreeMap<String, String>();
+            m_configurationParameters = new CmsParameterConfiguration();
         }
-        m_configurationParameters.put(paramName, paramValue);
+        m_configurationParameters.addParameter(paramName, paramValue);
     }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        if (m_configurationParameters == null) {
-            // configuration parameters are usually null if the constructor has been used
-            return CmsCollectionsGenericWrapper.map(Collections.EMPTY_MAP);
-        }
         // this implementation ensures that this is an unmodifiable Map in #initConfiguration() 
         return m_configurationParameters;
     }
@@ -197,11 +190,9 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
 
         // we need a Map with a defined order of keys for serializing the configuration
         if (m_configurationParameters == null) {
-            // suppress the compiler warning, this is never true
-            m_configurationParameters = CmsCollectionsGenericWrapper.map(Collections.EMPTY_MAP);
-        } else {
-            m_configurationParameters = Collections.unmodifiableMap(m_configurationParameters);
+            m_configurationParameters = new CmsParameterConfiguration();
         }
+        m_configurationParameters.freeze();
         if (m_configurationParameters == null) {
             // suppress the compiler warning, this is never true
             throw new CmsConfigurationException(null);

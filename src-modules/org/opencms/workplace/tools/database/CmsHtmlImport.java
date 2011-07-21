@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.tools.database;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -1232,7 +1232,7 @@ public class CmsHtmlImport {
                 String propertyFileName = foldername + File.separator + META_PROPERTIES;
 
                 boolean metaPropertiesFound = false;
-                CmsConfigurationParameter propertyFile = new CmsConfigurationParameter();
+                CmsParameterConfiguration propertyFile = new CmsParameterConfiguration();
                 try {
                     propertyFile.load(new FileInputStream(new File(propertyFileName)));
                     metaPropertiesFound = true;
@@ -1244,7 +1244,7 @@ public class CmsHtmlImport {
                 // new folder in OpenCms
                 // only do this if we have found a meta.properties file          
                 if (metaPropertiesFound) {
-                    for (String property : propertyFile.getParameterSet()) {
+                    for (String property : propertyFile.getParameters()) {
                         // get property and value
                         try {
                             String propertyvalue = propertyFile.getString(property);

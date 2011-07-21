@@ -974,34 +974,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 A_CLASS,
                 dialogs.get(name).getClass().getName());
             I_CmsDialogHandler daialogHandlerConfig = (I_CmsDialogHandler)dialogs.get(name);
-            Map handlerParams = daialogHandlerConfig.getConfiguration();
-            if (handlerParams != null) {
-                Iterator it = handlerParams.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    // name attribute of <param> Element
-                    String nameAttr = (String)entry.getKey();
-                    if (List.class.isInstance(entry.getValue())) {
-                        List values = (List)entry.getValue();
-                        for (Iterator iValues = values.listIterator(); iValues.hasNext();) {
-                            // add <param> node
-                            Element paramNode = dialogHandler.addElement(N_PARAM);
-                            // set the name attribute
-                            paramNode.addAttribute(A_NAME, nameAttr);
-                            // set the text of <param> node
-                            String text = (String)iValues.next();
-                            paramNode.addText(text);
-                        }
-                    } else {
-                        Element paramNode = dialogHandler.addElement(N_PARAM);
-                        // set the name attribute
-                        paramNode.addAttribute(A_NAME, nameAttr);
-                        // set the text of <param> node
-                        paramNode.addText(entry.getValue().toString());
-                    }
-                }
+            CmsParameterConfiguration handlerConfig = daialogHandlerConfig.getConfiguration();
+            if (handlerConfig != null) {
+                handlerConfig.appendToXml(dialogHandler);
             }
-
         }
 
         // add miscellaneous editor subnodes
@@ -1037,17 +1013,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         Element deProviderNode = workplaceElement.addElement(N_DIRECTEDITPROVIDER).addAttribute(
             A_CLASS,
             deProvider.getClass().getName());
-        Map deProviderConfig = deProvider.getConfiguration();
+        CmsParameterConfiguration deProviderConfig = deProvider.getConfiguration();
         if (deProviderConfig != null) {
-            Iterator it = deProviderConfig.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String name = (String)entry.getKey();
-                String value = (String)entry.getValue();
-                Element paramNode = deProviderNode.addElement(N_PARAM);
-                paramNode.addAttribute(A_NAME, name);
-                paramNode.addText(value);
-            }
+            deProviderConfig.appendToXml(deProviderNode);
         }
 
         // add <exportpoints> subnode

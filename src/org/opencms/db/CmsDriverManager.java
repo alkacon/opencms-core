@@ -28,7 +28,7 @@
 package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.db.log.CmsLogEntry;
@@ -337,7 +337,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private I_CmsProjectDriver m_projectDriver;
 
     /** The the configuration read from the <code>opencms.properties</code> file. */
-    private CmsConfigurationParameter m_propertyConfiguration;
+    private CmsParameterConfiguration m_propertyConfiguration;
 
     /** the publish engine. */
     private CmsPublishEngine m_publishEngine;
@@ -394,7 +394,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPublishEngine publishEngine) throws CmsInitException {
 
         // read the opencms.properties from the configuration
-        CmsConfigurationParameter config = new CmsConfigurationParameter(configurationManager.getConfiguration());
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
         CmsDriverManager driverManager = null;
         try {
@@ -4316,7 +4316,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the configuration read from the <code>opencms.properties</code> file
      */
-    public CmsConfigurationParameter getPropertyConfiguration() {
+    public CmsParameterConfiguration getPropertyConfiguration() {
 
         return m_propertyConfiguration;
     }
@@ -5717,10 +5717,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return an initialized instance of the driver
      * @throws CmsException if something goes wrong
      */
-    public Object newDriverInstance(CmsConfigurationParameter configuration, String driverName, String driverPoolUrl)
+    public Object newDriverInstance(CmsParameterConfiguration configuration, String driverName, String driverPoolUrl)
     throws CmsException {
 
-        Class<?>[] initParamClasses = {CmsConfigurationParameter.class, String.class, CmsDriverManager.class};
+        Class<?>[] initParamClasses = {CmsParameterConfiguration.class, String.class, CmsDriverManager.class};
         Object[] initParams = {configuration, driverPoolUrl, this};
 
         Class<?> driverClass = null;
@@ -5816,7 +5816,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsInitException if the pools could not be initialized
      */
-    public void newPoolInstance(CmsConfigurationParameter configuration, String poolName) throws CmsInitException {
+    public void newPoolInstance(CmsParameterConfiguration configuration, String poolName) throws CmsInitException {
 
         PoolingDriver driver;
 
@@ -9781,7 +9781,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected Object createDriver(
         CmsDbContext dbc,
         CmsConfigurationManager configManager,
-        CmsConfigurationParameter config,
+        CmsParameterConfiguration config,
         String driverChainKey,
         String suffix) {
 

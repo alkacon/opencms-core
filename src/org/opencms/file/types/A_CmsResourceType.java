@@ -29,7 +29,7 @@ package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -58,8 +58,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -113,7 +111,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected String m_className;
 
     /** Configuration parameters. */
-    protected Map<String, String> m_configuration;
+    protected CmsParameterConfiguration m_configuration;
 
     /** The list of resources to copy. */
     protected List<CmsConfigurationCopyResource> m_copyResources;
@@ -129,9 +127,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The module name if this is an additional resource type which is defined in a module. */
     protected String m_moduleName;
-
-    /** Configuration parameter wrapper. */
-    protected CmsConfigurationParameter m_parameters;
 
     /** The configured id of this resource type. */
     protected int m_typeId;
@@ -160,7 +155,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_mappings = new ArrayList<String>();
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new CmsParameterConfiguration();
     }
 
     /**
@@ -168,7 +163,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.put(paramName, paramValue);
+        m_configuration.addParameter(paramName, paramValue);
         if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
             if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
                 m_internal = Boolean.valueOf(paramValue.trim());
@@ -440,7 +435,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
@@ -492,13 +487,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getGalleryPreviewProvider() {
 
         if (m_galleryPreviewProvider == null) {
-            Object configParam = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
-            if (configParam == null) {
-                // this is the default preview provider
-                m_galleryPreviewProvider = DEFAULT_GALLERY_PREVIEW_PROVIDER;
-            } else {
-                m_galleryPreviewProvider = String.valueOf(configParam);
-            }
+            m_galleryPreviewProvider = getConfiguration().getString(
+                CONFIGURATION_GALLERY_PREVIEW_PROVIDER,
+                DEFAULT_GALLERY_PREVIEW_PROVIDER);
         }
         return m_galleryPreviewProvider;
     }
@@ -542,14 +533,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getModuleName() {
 
         return m_moduleName;
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getParameters()
-     */
-    public CmsConfigurationParameter getParameters() {
-
-        return m_parameters;
     }
 
     /**
@@ -662,7 +645,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);
         m_copyResources = Collections.unmodifiableList(m_copyResources);
         m_mappings = Collections.unmodifiableList(m_mappings);
-        m_configuration = Collections.unmodifiableMap(m_configuration);
+        m_configuration.freeze();
     }
 
     /**

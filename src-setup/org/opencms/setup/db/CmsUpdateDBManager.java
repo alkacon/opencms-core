@@ -27,7 +27,7 @@
 
 package org.opencms.setup.db;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.CmsUpdateBean;
@@ -186,7 +186,7 @@ public class CmsUpdateDBManager {
     public void initialize(CmsUpdateBean updateBean) throws Exception {
 
         if (updateBean.isInitialized()) {
-            CmsConfigurationParameter props = updateBean.getProperties();
+            CmsParameterConfiguration props = updateBean.getProperties();
 
             // Initialize the CmsUUID generator.
             CmsUUID.init(props.getString("server.ethernet.address"));

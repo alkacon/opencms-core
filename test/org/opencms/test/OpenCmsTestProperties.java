@@ -27,7 +27,7 @@
 
 package org.opencms.test;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
@@ -60,7 +60,7 @@ public final class OpenCmsTestProperties {
     public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
 
     /** The configuration from <code>opencms.properties</code>. */
-    private static CmsConfigurationParameter m_configuration;
+    private static CmsParameterConfiguration m_configuration;
 
     /** The singleton instance. */
     private static OpenCmsTestProperties m_testSingleton;
@@ -175,7 +175,7 @@ public final class OpenCmsTestProperties {
                     "Test property file ('test.properties') could not be found. Context Classloader suggested location: "
                         + testPropPath);
             }
-            m_configuration = new CmsConfigurationParameter(testPropPath);
+            m_configuration = new CmsParameterConfiguration(testPropPath);
         } catch (IOException e) {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
@@ -229,7 +229,7 @@ public final class OpenCmsTestProperties {
      * @return the parsed configuration file ('test.properties')
      */
 
-    public CmsConfigurationParameter getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         return m_configuration;
     }

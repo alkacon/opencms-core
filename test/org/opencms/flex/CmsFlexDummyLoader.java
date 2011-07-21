@@ -27,14 +27,13 @@
 
 package org.opencms.flex;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -63,7 +62,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
     protected static CmsFlexCache m_flexCache;
 
     /** Holds the loder configuration. */
-    private HashMap m_config = new HashMap();
+    private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
     /**
      * Allows static access to the internal {@link CmsFlexCache}.<p>
@@ -80,7 +79,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_config.put(paramName, paramValue);
+        m_config.setParameter(paramName, paramValue);
     }
 
     /**
@@ -89,7 +88,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
     public void destroy() {
 
         m_flexCache = null;
-        m_config.clear();
+        m_config = null;
     }
 
     /**
@@ -118,7 +117,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         return m_config;
     }

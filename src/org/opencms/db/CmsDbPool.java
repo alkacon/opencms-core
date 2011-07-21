@@ -27,7 +27,7 @@
 
 package org.opencms.db;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
@@ -171,7 +171,7 @@ public final class CmsDbPool {
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static PoolingDriver createDriverManagerConnectionPool(CmsConfigurationParameter config, String key)
+    public static PoolingDriver createDriverManagerConnectionPool(CmsParameterConfiguration config, String key)
     throws Exception {
 
         // read the values of the pool configuration specified by the given key
@@ -356,7 +356,7 @@ public final class CmsDbPool {
      * @param key a db pool configuration key
      * @return the database pool name
      */
-    public static String getDbPoolName(CmsConfigurationParameter configuration, String key) {
+    public static String getDbPoolName(CmsParameterConfiguration configuration, String key) {
 
         return configuration.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
     }
@@ -368,7 +368,7 @@ public final class CmsDbPool {
      * 
      * @return a list of database pool names
      */
-    public static List<String> getDbPoolUrls(CmsConfigurationParameter configuration) {
+    public static List<String> getDbPoolUrls(CmsParameterConfiguration configuration) {
 
         List<String> dbPoolNames = new ArrayList<String>();
         List<String> driverPoolNames = configuration.getList(CmsDriverManager.CONFIGURATION_DB + ".pools");

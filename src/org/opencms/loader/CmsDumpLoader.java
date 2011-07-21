@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -39,11 +40,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -67,14 +65,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     private static long m_clientCacheMaxAge;
 
     /** The resource loader configuration. */
-    private Map<String, String> m_configuration;
+    private CmsParameterConfiguration m_configuration;
 
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new CmsParameterConfiguration();
     }
 
     /**
@@ -82,7 +80,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.put(paramName, paramValue);
+        m_configuration.setParameter(paramName, paramValue);
     }
 
     /** 
@@ -140,10 +138,10 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         // return the configuration in an immutable form
-        return Collections.unmodifiableMap(m_configuration);
+        return m_configuration;
     }
 
     /**
@@ -171,7 +169,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        Object maxAge = m_configuration.get("client.cache.maxage");
+        Object maxAge = m_configuration.getString("client.cache.maxage");
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {

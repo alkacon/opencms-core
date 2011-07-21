@@ -29,8 +29,6 @@ package org.opencms.configuration;
 
 import org.opencms.main.CmsLog;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 
 /**
@@ -68,7 +66,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         // simple default configuration does not support parameters
         if (LOG.isDebugEnabled()) {

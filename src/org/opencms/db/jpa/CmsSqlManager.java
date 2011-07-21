@@ -27,7 +27,7 @@
 
 package org.opencms.db.jpa;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbException;
@@ -313,7 +313,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @param config the combined configuration of "opencms.properties" and the "persistence.xml"
      */
-    public static void init(CmsConfigurationParameter config) {
+    public static void init(CmsParameterConfiguration config) {
 
         if (!m_isInitialized) {
             m_isInitialized = true;
@@ -361,7 +361,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @return the connection properties value 
      */
-    private static String buildConnectionPropertiesValue(CmsConfigurationParameter config, String key) {
+    private static String buildConnectionPropertiesValue(CmsParameterConfiguration config, String key) {
 
         StringBuffer propValue = new StringBuffer();
 

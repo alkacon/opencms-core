@@ -27,6 +27,7 @@
 
 package org.opencms.search;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -56,7 +57,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
@@ -659,41 +659,41 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
         if (getPriority() > 0) {
-            result.put(PRIORITY, String.valueOf(m_priority));
+            result.setParameter(PRIORITY, String.valueOf(m_priority));
         }
         if (!isCreatingExcerpt()) {
-            result.put(EXCERPT, String.valueOf(m_createExcerpt));
+            result.setParameter(EXCERPT, String.valueOf(m_createExcerpt));
         }
         if (!isExtractingContent()) {
-            result.put(EXTRACT_CONTENT, String.valueOf(m_extractContent));
+            result.setParameter(EXTRACT_CONTENT, String.valueOf(m_extractContent));
         }
         if (!isCheckingPermissions()) {
-            result.put(PERMISSIONS, String.valueOf(m_checkPermissions));
+            result.setParameter(PERMISSIONS, String.valueOf(m_checkPermissions));
         }
         // always write time range check parameter because of logic change in OpenCms 8.0
-        result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
+        result.setParameter(TIME_RANGE, String.valueOf(m_checkTimeRange));
         if (isBackupReindexing()) {
-            result.put(BACKUP_REINDEXING, String.valueOf(m_backupReindexing));
+            result.setParameter(BACKUP_REINDEXING, String.valueOf(m_backupReindexing));
         }
         if (getMaxHits() != MAX_HITS_DEFAULT) {
-            result.put(MAX_HITS, String.valueOf(getMaxHits()));
+            result.setParameter(MAX_HITS, String.valueOf(getMaxHits()));
         }
         // set the index writer parameter if required 
         if (m_luceneMaxMergeDocs != null) {
-            result.put(LUCENE_MAX_MERGE_DOCS, String.valueOf(m_luceneMaxMergeDocs));
+            result.setParameter(LUCENE_MAX_MERGE_DOCS, String.valueOf(m_luceneMaxMergeDocs));
         }
         if (m_luceneMergeFactor != null) {
-            result.put(LUCENE_MERGE_FACTOR, String.valueOf(m_luceneMergeFactor));
+            result.setParameter(LUCENE_MERGE_FACTOR, String.valueOf(m_luceneMergeFactor));
         }
         if (m_luceneRAMBufferSizeMB != null) {
-            result.put(LUCENE_RAM_BUFFER_SIZE_MB, String.valueOf(m_luceneRAMBufferSizeMB));
+            result.setParameter(LUCENE_RAM_BUFFER_SIZE_MB, String.valueOf(m_luceneRAMBufferSizeMB));
         }
         if (m_luceneUseCompoundFile != null) {
-            result.put(LUCENE_USE_COMPOUND_FILE, String.valueOf(m_luceneUseCompoundFile));
+            result.setParameter(LUCENE_USE_COMPOUND_FILE, String.valueOf(m_luceneUseCompoundFile));
         }
         return result;
     }

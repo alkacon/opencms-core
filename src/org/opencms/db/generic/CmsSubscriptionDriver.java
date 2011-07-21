@@ -28,7 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
@@ -65,7 +65,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -161,14 +160,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
-
-        CmsConfigurationParameter config;
-        if (configuration instanceof CmsConfigurationParameter) {
-            config = (CmsConfigurationParameter)configuration;
-        } else {
-            config = new CmsConfigurationParameter(configuration);
-        }
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
         String poolUrl = config.getString("db.subscription.pool");
         String classname = config.getString("db.subscription.sqlmanager");

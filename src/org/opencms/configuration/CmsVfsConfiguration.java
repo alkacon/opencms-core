@@ -48,10 +48,8 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.digester.Digester;
 
@@ -382,21 +380,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add optional parameters
-                Map<String, String> prop = resType.getConfiguration();
-                if (prop != null) {
+                CmsParameterConfiguration configuration = resType.getConfiguration();
+                if (configuration != null) {
+                    List<String> ignore = null;
                     if ((resType instanceof CmsResourceTypeXmlContainerPage)) {
-                        prop = new HashMap<String, String>(prop);
-                        prop.remove(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+                        ignore = new ArrayList<String>(1);
+                        ignore.add(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
                     }
-                    List<String> sortedRuntimeProperties = new ArrayList<String>(prop.keySet());
-                    Collections.sort(sortedRuntimeProperties);
-                    Iterator<String> it = sortedRuntimeProperties.iterator();
-                    while (it.hasNext()) {
-                        String key = it.next();
-                        // create <param name="">value</param> subnodes
-                        Object val = prop.get(key);
-                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(String.valueOf(val));
-                    }
+                    configuration.appendToXml(resourceType, ignore);
                 }
             }
         }
@@ -601,17 +592,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             // add the loader node
             Element loaderNode = resourceloadersElement.addElement(N_LOADER);
             loaderNode.addAttribute(A_CLASS, loader.getClass().getName());
-            Map<String, String> loaderConfiguration = loader.getConfiguration();
+            CmsParameterConfiguration loaderConfiguration = loader.getConfiguration();
             if (loaderConfiguration != null) {
-                Iterator<Map.Entry<String, String>> it = loaderConfiguration.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry<String, String> entry = it.next();
-                    String name = entry.getKey();
-                    String value = entry.getValue();
-                    Element paramNode = loaderNode.addElement(N_PARAM);
-                    paramNode.addAttribute(A_NAME, name);
-                    paramNode.addText(value);
-                }
+                loaderConfiguration.appendToXml(loaderNode);
             }
         }
 

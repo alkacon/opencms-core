@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -51,7 +52,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -585,25 +585,24 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     protected boolean isHideButtonAdvanced() {
 
         I_CmsDialogHandler handler = OpenCms.getWorkplaceManager().getDialogHandler(getDialogHandler());
-        MultiValueMap handlerParams = (MultiValueMap)handler.getConfiguration();
-        if ((handlerParams != null) && handlerParams.containsKey(PARAM_HIDEADVANCED)) {
+        CmsParameterConfiguration handlerParams = handler.getConfiguration();
+        if ((handlerParams != null) && handlerParams.containsParameter(PARAM_HIDEADVANCED)) {
             // checks if "hideadvanced" is set to true
             boolean isHideAdvancedSet = false;
-            List hAdvanced = (List)handlerParams.get(PARAM_HIDEADVANCED);
+            List<String> hAdvanced = handlerParams.getList(PARAM_HIDEADVANCED);
             if (!hAdvanced.isEmpty()) {
-                isHideAdvancedSet = Boolean.valueOf((String)hAdvanced.get(0)).booleanValue();
+                isHideAdvancedSet = Boolean.valueOf(hAdvanced.get(0)).booleanValue();
             }
             if (isHideAdvancedSet) {
                 // if user has the role root admin
                 if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
-                if (handlerParams.containsKey(PARAM_SHOWGROUP)) {
+                if (handlerParams.containsParameter(PARAM_SHOWGROUP)) {
                     // check if user is one of the configured groups
                     CmsUser currentUser = getCms().getRequestContext().getCurrentUser();
-                    List confGroups = (List)handlerParams.get(PARAM_SHOWGROUP);
-                    for (Iterator i = confGroups.iterator(); i.hasNext();) {
-                        String groupName = (String)i.next();
+                    List<String> confGroups = handlerParams.getList(PARAM_SHOWGROUP);
+                    for (String groupName : confGroups) {
                         try {
                             if (getCms().userInGroup(currentUser.getName(), groupName)) {
                                 return false;

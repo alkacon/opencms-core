@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LOAD_CLASS_1 = "ERR_LOAD_CLASS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARAMETER_CONFIG_FROZEN_0 = "ERR_PARAMETER_CONFIG_FROZEN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_CLASS_2 = "ERR_UNKNOWN_RESTYPE_CLASS_2";
 
     /** Message constant for key in the resource bundle. */

@@ -131,7 +131,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 I_CmsResourceType resourceType = i.next();
                 if ((resourceType instanceof CmsResourceTypeXmlContent)
                 // either we need a configured schema, or another class name (which must then contain an inline schema)
-                    && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
+                    && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsParameter(
                         CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA) || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
                     // add the XML content resource type name
                     allTypes.add(resourceType.getTypeName());

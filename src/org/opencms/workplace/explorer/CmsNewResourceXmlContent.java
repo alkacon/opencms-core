@@ -126,8 +126,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(newResourceTypeName);
             // get the schema for the resource type to create
-            String schema = String.valueOf(resType.getConfiguration().get(
-                CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA));
+            String schema = resType.getConfiguration().getString(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
             // get the content handler for the resource type to create
             I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();

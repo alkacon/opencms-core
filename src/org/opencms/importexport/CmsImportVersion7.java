@@ -28,6 +28,7 @@
 package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
@@ -472,9 +473,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             if (m_throwable != null) {
                 // user or group of ACE might not exist in target system, ignore ACE
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
-                        getCms().getRequestContext().removeSiteRoot(m_resource.getRootPath())), m_throwable);
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
+                            getCms().getRequestContext().removeSiteRoot(m_resource.getRootPath())),
+                        m_throwable);
                 }
                 getReport().println(m_throwable);
                 getReport().addError(m_throwable);
@@ -607,9 +610,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             if (m_throwable != null) {
                 // relation data is corrupt, ignore relation
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_RELATION_1,
-                        getCms().getRequestContext().removeSiteRoot(m_resource.getRootPath())), m_throwable);
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_RELATION_1,
+                            getCms().getRequestContext().removeSiteRoot(m_resource.getRootPath())),
+                        m_throwable);
                 }
                 getReport().println(m_throwable);
                 getReport().addError(m_throwable);
@@ -1307,9 +1312,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             digester.parse(stream);
         } catch (Exception ioe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
-                    CmsImportExportManager.EXPORT_MANIFEST), ioe);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
+                        CmsImportExportManager.EXPORT_MANIFEST),
+                    ioe);
             }
             getReport().println(ioe);
         } finally {
@@ -1936,9 +1943,9 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // user does not exist
             }
 
-            Map config = OpenCms.getPasswordHandler().getConfiguration();
-            if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
-                if (Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue()) {
+            CmsParameterConfiguration config = OpenCms.getPasswordHandler().getConfiguration();
+            if ((config != null) && config.containsParameter(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+                if (config.getBoolean(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING, false)) {
                     m_userPassword = convertDigestEncoding(m_userPassword);
                 }
             }
@@ -2199,10 +2206,12 @@ public class CmsImportVersion7 implements I_CmsImport {
         while (it.hasNext()) {
             String resName = it.next();
 
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(i + 1),
-                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(m_parseables.size())),
+                I_CmsReport.FORMAT_NOTE);
 
             report.print(Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, resName), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
@@ -3136,9 +3145,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             } catch (CmsException e) {
                 // resourceNotImmutable will be true 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1,
-                        resourceName), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1,
+                            resourceName),
+                        e);
                 }
             } finally {
                 getCms().getRequestContext().setSiteRoot(storedSiteRoot);
@@ -3159,7 +3170,7 @@ public class CmsImportVersion7 implements I_CmsImport {
         byte[] data = new byte[value.length() / 2];
 
         for (int i = 0; i < data.length; i++) {
-            data[i] = (byte)(Integer.parseInt(value.substring(i * 2, i * 2 + 2), 16) - 128);
+            data[i] = (byte)(Integer.parseInt(value.substring(i * 2, (i * 2) + 2), 16) - 128);
         }
         return new String(Base64.encodeBase64(data));
     }

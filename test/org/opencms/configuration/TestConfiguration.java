@@ -98,9 +98,12 @@ public class TestConfiguration extends OpenCmsTestCase {
             System.out.println(CmsXmlUtils.marshal(outputDoc, CmsEncoder.ENCODING_UTF_8));
             System.out.println("---");
 
-            System.out.println("+++");
-            System.out.println(CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8));
-            System.out.println("+++");
+            // it's better to not output the original doc, since spotting an error is easier
+            // if you compare console output to the original input file in your IDE 
+
+            //            System.out.println("+++");
+            //            System.out.println(CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8));
+            //            System.out.println("+++");
 
             assertEquals(outputDoc, inputDoc);
         }

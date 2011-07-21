@@ -27,6 +27,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -114,7 +115,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        CmsImportParameters params = new CmsImportParameters(importResource != null
+        ? importResource.getAbsolutePath()
         : importZip.getName(), importPath, true);
 
         try {
@@ -183,9 +185,9 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         boolean convert = false;
 
-        Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
-            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
+        CmsParameterConfiguration config = OpenCms.getPasswordHandler().getConfiguration();
+        if ((config != null) && config.containsParameter(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+            convert = config.getBoolean(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING, false);
         }
 
         if (convert) {
@@ -454,9 +456,11 @@ public class CmsImportVersion3 extends A_CmsImport {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }
 
-                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, content, getLocale(
-                        destination,
-                        properties), encoding);
+                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(
+                        m_cms,
+                        content,
+                        getLocale(destination, properties),
+                        encoding);
 
                     content = xmlPage.marshal();
                 }

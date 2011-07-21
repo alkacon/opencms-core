@@ -28,6 +28,7 @@
 package org.opencms.loader;
 
 import org.opencms.cache.CmsVfsNameBasedDiskCache;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -41,7 +42,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -247,15 +247,15 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> config = super.getConfiguration();
-        Map<String, String> result = new TreeMap<String, String>();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        CmsParameterConfiguration config = super.getConfiguration();
         if (config != null) {
-            result.putAll(config);
+            result.merge(config);
         }
-        result.put(CONFIGURATION_SCALING_ENABLED, String.valueOf(m_enabled));
-        result.put(CONFIGURATION_IMAGE_FOLDER, m_imageRepositoryFolder);
+        result.setParameter(CONFIGURATION_SCALING_ENABLED, String.valueOf(m_enabled));
+        result.setParameter(CONFIGURATION_IMAGE_FOLDER, m_imageRepositoryFolder);
         return result;
     }
 

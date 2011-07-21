@@ -28,7 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -473,14 +473,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
-
-        CmsConfigurationParameter config;
-        if (configuration instanceof CmsConfigurationParameter) {
-            config = (CmsConfigurationParameter)configuration;
-        } else {
-            config = new CmsConfigurationParameter(configuration);
-        }
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
         String poolUrl = config.getString("db.history.pool");
         String classname = config.getString("db.history.sqlmanager");

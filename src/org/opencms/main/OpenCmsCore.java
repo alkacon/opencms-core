@@ -36,7 +36,7 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
@@ -950,7 +950,7 @@ public final class OpenCmsCore {
      * @param configuration the configurations from the <code>opencms.properties</code> file
      * @throws CmsInitException in case OpenCms can not be initialized
      */
-    protected synchronized void initConfiguration(CmsConfigurationParameter configuration) throws CmsInitException {
+    protected synchronized void initConfiguration(CmsParameterConfiguration configuration) throws CmsInitException {
 
         String systemEncoding = null;
         try {
@@ -1259,9 +1259,9 @@ public final class OpenCmsCore {
         getSystemInfo().init(servletContainerSettings);
 
         // Collect the configurations 
-        CmsConfigurationParameter configuration;
+        CmsParameterConfiguration configuration;
         try {
-            configuration = new CmsConfigurationParameter(getSystemInfo().getConfigurationFileRfsPath());
+            configuration = new CmsParameterConfiguration(getSystemInfo().getConfigurationFileRfsPath());
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(
                 Messages.ERR_CRITICAL_INIT_PROPFILE_1,
@@ -1792,7 +1792,7 @@ public final class OpenCmsCore {
      * @throws CmsInitException in case OpenCms can not be initialized
      * @return the initialized OpenCmsCore
      */
-    protected OpenCmsCore upgradeRunlevel(CmsConfigurationParameter configuration) throws CmsInitException {
+    protected OpenCmsCore upgradeRunlevel(CmsParameterConfiguration configuration) throws CmsInitException {
 
         synchronized (LOCK) {
             if ((m_instance != null) && (getRunLevel() >= OpenCms.RUNLEVEL_2_INITIALIZING)) {

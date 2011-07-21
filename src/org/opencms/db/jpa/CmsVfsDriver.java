@@ -28,7 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -1453,17 +1453,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
-        CmsConfigurationParameter config;
-        if (configuration instanceof CmsConfigurationParameter) {
-            config = (CmsConfigurationParameter)configuration;
-        } else {
-            config = new CmsConfigurationParameter(configuration);
-        }
-
-        String poolUrl = String.valueOf(configuration.get("db.vfs.pool"));
-        String classname = String.valueOf(configuration.get("db.vfs.sqlmanager"));
+        String poolUrl = config.getString("db.vfs.pool");
+        String classname = config.getString("db.vfs.sqlmanager");
 
         m_sqlManager = this.initSqlManager(classname);
 

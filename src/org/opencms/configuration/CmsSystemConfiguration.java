@@ -1208,16 +1208,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
             contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
             contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
-            Map<String, String> jobParameters = jobInfo.getConfiguration();
+            CmsParameterConfiguration jobParameters = jobInfo.getConfiguration();
             if ((jobParameters != null) && (jobParameters.size() > 0)) {
                 Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                Iterator<Map.Entry<String, String>> it = jobParameters.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry<String, String> entry = it.next();
-                    Element paramNode = parameterElement.addElement(N_PARAM);
-                    paramNode.addAttribute(A_NAME, entry.getKey());
-                    paramNode.addText(String.valueOf(entry.getValue()));
-                }
+                jobParameters.appendToXml(parameterElement);
             }
         }
 
@@ -1256,15 +1250,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             m_passwordHandler.getClass().getName());
         passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
-        Map<String, String> handlerParameters = m_passwordHandler.getConfiguration();
+        CmsParameterConfiguration handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator<Map.Entry<String, String>> it = handlerParameters.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
-                Element paramNode = passwordhandlerElement.addElement(N_PARAM);
-                paramNode.addAttribute(A_NAME, entry.getKey());
-                paramNode.addText(String.valueOf(entry.getValue()));
-            }
+            handlerParameters.appendToXml(passwordhandlerElement);
         }
 
         // validation handler

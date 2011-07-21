@@ -28,6 +28,7 @@
 package org.opencms.security;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
@@ -36,10 +37,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Collections;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -62,7 +59,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     private static SecureRandom m_secureRandom;
 
     /** The configuration of the password handler. */
-    private SortedMap<String, String> m_configuration;
+    private CmsParameterConfiguration m_configuration;
 
     /** The digest type used. */
     private String m_digestType = DIGEST_TYPE_MD5;
@@ -75,7 +72,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public CmsDefaultPasswordHandler() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new CmsParameterConfiguration();
     }
 
     /**
@@ -83,7 +80,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.put(paramName, paramValue);
+        m_configuration.setParameter(paramName, paramValue);
     }
 
     /**
@@ -161,7 +158,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         return m_configuration;
     }
@@ -201,7 +198,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
                 throw new CmsConfigurationException(message);
             }
         }
-        m_configuration = Collections.unmodifiableSortedMap(m_configuration);
+        m_configuration.freeze();
     }
 
     /**

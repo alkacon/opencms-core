@@ -44,7 +44,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.digester.Digester;
@@ -960,23 +959,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                     repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
 
                     // <params> node
-                    Map config = repository.getConfiguration();
+                    CmsParameterConfiguration config = repository.getConfiguration();
                     if ((config != null) && (config.size() > 0)) {
                         Element paramsElement = repositoryElement.addElement(N_PARAMS);
-
-                        Iterator it = config.entrySet().iterator();
-                        while (it.hasNext()) {
-                            Map.Entry e = (Map.Entry)it.next();
-                            String key = (String)e.getKey();
-                            String[] value = (String[])e.getValue();
-
-                            // <param> nodes
-                            for (int j = 0; j < value.length; j++) {
-                                Element paramNode = paramsElement.addElement(N_PARAM);
-                                paramNode.addAttribute(A_NAME, key);
-                                paramNode.addText(value[j]);
-                            }
-                        }
+                        config.appendToXml(paramsElement);
                     }
 
                     // <filter> node

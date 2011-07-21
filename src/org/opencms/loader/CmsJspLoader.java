@@ -27,7 +27,7 @@
 
 package org.opencms.loader;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -74,7 +74,6 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -182,7 +181,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private CmsFlexCache m_cache;
 
     /** The resource loader configuration. */
-    private Map<String, String> m_configuration;
+    private CmsParameterConfiguration m_configuration;
 
     /** Flag to indicate if error pages are marked as "committed". */
     // TODO: This is a hack, investigate this issue with different runtime environments
@@ -202,7 +201,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public CmsJspLoader() {
 
-        m_configuration = new TreeMap<String, String>();
+        m_configuration = new CmsParameterConfiguration();
         OpenCms.addCmsEventListener(this, new int[] {
             EVENT_CLEAR_CACHES,
             EVENT_CLEAR_OFFLINE_CACHES,
@@ -227,7 +226,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.put(paramName, paramValue);
+        m_configuration.addParameter(paramName, paramValue);
         if (paramName.startsWith("taglib.")) {
             m_taglibs.put(paramName.replaceFirst("^taglib\\.", ""), paramValue.trim());
         }
@@ -333,10 +332,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         // return the configuration in an immutable form
-        return Collections.unmodifiableMap(m_configuration);
+        return m_configuration;
     }
 
     /**
@@ -397,19 +396,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void initConfiguration() {
 
-        CmsConfigurationParameter config = new CmsConfigurationParameter(m_configuration);
-
-        m_jspRepository = config.getString(PARAM_JSP_REPOSITORY);
+        m_jspRepository = m_configuration.getString(PARAM_JSP_REPOSITORY);
         if (m_jspRepository == null) {
             m_jspRepository = OpenCms.getSystemInfo().getWebApplicationRfsPath();
         }
-        m_jspWebAppRepository = config.getString(PARAM_JSP_FOLDER, DEFAULT_JSP_FOLDER);
+        m_jspWebAppRepository = m_configuration.getString(PARAM_JSP_FOLDER, DEFAULT_JSP_FOLDER);
         if (!m_jspWebAppRepository.endsWith("/")) {
             m_jspWebAppRepository += "/";
         }
         m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
-        String maxAge = config.getString(PARAM_CLIENT_CACHE_MAXAGE);
+        String maxAge = m_configuration.getString(PARAM_CLIENT_CACHE_MAXAGE);
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {
@@ -417,13 +414,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
 
         // get the "error pages are committed or not" flag from the configuration
-        m_errorPagesAreNotCommitted = config.getBoolean(PARAM_JSP_ERRORPAGE_COMMITTED, true);
+        m_errorPagesAreNotCommitted = m_configuration.getBoolean(PARAM_JSP_ERRORPAGE_COMMITTED, true);
 
-        int cacheSize = -1;
-        String cacheSizeStr = config.getString(PARAM_JSP_CACHE_SIZE);
-        if (cacheSizeStr != null) {
-            cacheSize = Integer.parseInt(cacheSizeStr);
-        }
+        int cacheSize = m_configuration.getInteger(PARAM_JSP_CACHE_SIZE, -1);
         if (cacheSize > 0) {
             initCaches(cacheSize);
         }
@@ -439,7 +432,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
             if (cacheSize > 0) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JSP_CACHE_SIZE_1, cacheSizeStr));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_JSP_CACHE_SIZE_1,
+                    String.valueOf(cacheSize)));
             }
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_LOADER_INITIALIZED_1,

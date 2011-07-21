@@ -27,7 +27,7 @@
 
 package org.opencms.frontend.layoutpage;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -47,9 +47,9 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 
@@ -369,7 +369,7 @@ public class CmsLayoutPageBean {
             // check if a file has to be integrated
             boolean hasFileLink = m_content.hasValue(xPath + NODE_FILELINK, locale);
 
-            CmsConfigurationParameter xmlElementsProperties = null;
+            CmsParameterConfiguration xmlElementsProperties = null;
             CmsFile linkToFile = null;
             CmsXmlContent xmlContentFileLink = null;
             if (hasFileLink) {
@@ -1070,7 +1070,7 @@ public class CmsLayoutPageBean {
      * @return the String value of the xml content defined by the value(s) inside the given map.
      */
     protected String getPropertiesValue(
-        CmsConfigurationParameter xmlElements,
+        CmsParameterConfiguration xmlElements,
         String key,
         CmsXmlContent xmlContentFileLink,
         Locale locale) {
@@ -1081,9 +1081,9 @@ public class CmsLayoutPageBean {
             if (value instanceof String) {
                 // if value is a String object get the string value from the xml content
                 result = xmlContentFileLink.getStringValue(getCmsObject(), (String)value, locale);
-            } else if (value instanceof Vector) {
+            } else if (value instanceof List) {
                 // if value is a vector iterate over it
-                Iterator it_title = ((Vector)value).iterator();
+                Iterator it_title = ((List)value).iterator();
                 while (it_title.hasNext()) {
                     String next = (String)it_title.next();
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(xmlContentFileLink.getStringValue(
@@ -1112,9 +1112,9 @@ public class CmsLayoutPageBean {
      * @return an instance of ExtendedProperties with key-value pairs which define the elements to use inside
      *         an integrated xml content, e.g. to build the headline
      */
-    protected CmsConfigurationParameter getXmlElementsProperties(CmsFile linkToFile) {
+    protected CmsParameterConfiguration getXmlElementsProperties(CmsFile linkToFile) {
 
-        CmsConfigurationParameter properties = new CmsConfigurationParameter();
+        CmsParameterConfiguration properties = new CmsParameterConfiguration();
         try {
             // get the type name for the integrated file
             // type name is used as key for m_typeMappings
@@ -1127,7 +1127,7 @@ public class CmsLayoutPageBean {
                 m_typeMappings.put(typeName, properties);
             } else {
                 // if typeName is already used inside m_typeProperties get properties from this map
-                properties = (CmsConfigurationParameter)m_typeMappings.get(typeName);
+                properties = (CmsParameterConfiguration)m_typeMappings.get(typeName);
             }
         } catch (Exception e) {
             // ignore

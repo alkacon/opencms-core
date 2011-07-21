@@ -28,7 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -963,14 +963,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         List successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map configuration = configurationManager.getConfiguration();
-
-        CmsConfigurationParameter config;
-        if (configuration instanceof CmsConfigurationParameter) {
-            config = (CmsConfigurationParameter)configuration;
-        } else {
-            config = new CmsConfigurationParameter(configuration);
-        }
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
         String poolUrl = config.getString("db.user.pool");
         String classname = config.getString("db.user.sqlmanager");

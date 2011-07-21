@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -66,7 +67,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -165,7 +165,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     private Map m_activeProperties;
 
     /** Parameters of this class. */
-    private Map m_handlerParams;
+    private CmsParameterConfiguration m_handlerParams;
 
     /** Helper object storing the current editable state of the resource. */
     private Boolean m_isEditable;
@@ -393,14 +393,13 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         if (m_handlerParams == null) {
-            m_handlerParams = new MultiValueMap();
+            m_handlerParams = new CmsParameterConfiguration();
         }
         if (PARAM_HIDEADVANCED.equalsIgnoreCase(paramName)) {
-            m_handlerParams.put(PARAM_HIDEADVANCED, paramValue.trim());
+            m_handlerParams.addParameter(PARAM_HIDEADVANCED, paramValue.trim());
         }
-
         if (PARAM_SHOWGROUP.equalsIgnoreCase(paramName)) {
-            m_handlerParams.put(PARAM_SHOWGROUP, paramValue.trim());
+            m_handlerParams.addParameter(PARAM_SHOWGROUP, paramValue.trim());
         }
     }
 
@@ -562,10 +561,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         if (m_handlerParams == null) {
-            m_handlerParams = new MultiValueMap();
+            m_handlerParams = new CmsParameterConfiguration();
         }
         return m_handlerParams;
     }

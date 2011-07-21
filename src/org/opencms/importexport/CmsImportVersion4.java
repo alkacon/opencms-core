@@ -27,6 +27,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -116,7 +117,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        CmsImportParameters params = new CmsImportParameters(importResource != null
+        ? importResource.getAbsolutePath()
         : importZip.getName(), importPath, true);
 
         try {
@@ -188,9 +190,9 @@ public class CmsImportVersion4 extends A_CmsImport {
 
         boolean convert = false;
 
-        Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
-            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
+        CmsParameterConfiguration config = OpenCms.getPasswordHandler().getConfiguration();
+        if ((config != null) && config.containsParameter(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+            convert = config.getBoolean(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING, false);
         }
 
         if (convert) {
@@ -216,10 +218,12 @@ public class CmsImportVersion4 extends A_CmsImport {
         while (it.hasNext()) {
             CmsResource res = (CmsResource)it.next();
 
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(i + 1),
-                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(m_parseables.size())),
+                I_CmsReport.FORMAT_NOTE);
 
             m_report.print(
                 Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, m_cms.getSitePath(res)),
@@ -438,10 +442,12 @@ public class CmsImportVersion4 extends A_CmsImport {
 
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.size(); i++) {
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(importSize)), I_CmsReport.FORMAT_NOTE);
+                m_report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(importSize)),
+                    I_CmsReport.FORMAT_NOTE);
                 currentElement = (Element)fileNodes.get(i);
 
                 // <source>
@@ -593,9 +599,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                             } catch (CmsException e) {
                                 // user or group of ACE might not exist in target system, ignore ACE
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().getBundle().key(
-                                        Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
-                                        translatedName), e);
+                                    LOG.warn(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
+                                            translatedName),
+                                        e);
                                 }
                                 m_report.println(e);
                             }

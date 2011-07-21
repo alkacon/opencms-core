@@ -28,7 +28,7 @@
 package org.opencms.db.jpa;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
@@ -105,7 +105,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -813,14 +812,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map<String, String> configuration = configurationManager.getConfiguration();
-
-        CmsConfigurationParameter config;
-        if (configuration instanceof CmsConfigurationParameter) {
-            config = (CmsConfigurationParameter)configuration;
-        } else {
-            config = new CmsConfigurationParameter(configuration);
-        }
+        CmsParameterConfiguration config = configurationManager.getConfiguration();
 
         String poolUrl = config.getString("db.project.pool");
         String classname = config.getString("db.project.sqlmanager");

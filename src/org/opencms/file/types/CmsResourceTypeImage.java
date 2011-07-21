@@ -307,13 +307,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     public String getGalleryPreviewProvider() {
 
         if (m_galleryPreviewProvider == null) {
-            Object configParam = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
-            if (configParam == null) {
-                // this is the default preview provider
-                m_galleryPreviewProvider = GALLERY_PREVIEW_PROVIDER;
-            } else {
-                m_galleryPreviewProvider = String.valueOf(configParam);
-            }
+            m_galleryPreviewProvider = getConfiguration().getString(
+                CONFIGURATION_GALLERY_PREVIEW_PROVIDER,
+                GALLERY_PREVIEW_PROVIDER);
         }
         return m_galleryPreviewProvider;
     }

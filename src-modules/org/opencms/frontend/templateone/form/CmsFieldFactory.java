@@ -27,7 +27,7 @@
 
 package org.opencms.frontend.templateone.form;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -92,10 +92,10 @@ public final class CmsFieldFactory {
             propertyFile = new File(CUSTOM_FORM_FIELD_PROPERTIES);
             if (propertyFile.exists()) {
 
-                CmsConfigurationParameter fieldProperties = new CmsConfigurationParameter();
+                CmsParameterConfiguration fieldProperties = new CmsParameterConfiguration();
                 fieldProperties.load(new FileInputStream(propertyFile));
 
-                Iterator i = fieldProperties.getParameterSet().iterator();
+                Iterator i = fieldProperties.getParameters().iterator();
                 while (i.hasNext()) {
 
                     String key = (String)i.next();

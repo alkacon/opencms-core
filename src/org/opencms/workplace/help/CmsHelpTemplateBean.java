@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.help;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -813,7 +813,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                         // try to read the mappings from the current module
                         String absolutePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
                             resolveMacros(RFS_HELPMAPPINGS));
-                        CmsConfigurationParameter props = new CmsConfigurationParameter(absolutePath);
+                        CmsParameterConfiguration props = new CmsParameterConfiguration(absolutePath);
 
                         if (wpResource.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                             // remove context from workplace path

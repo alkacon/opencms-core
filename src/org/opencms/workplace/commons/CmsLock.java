@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -557,9 +558,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        return Collections.emptyMap();
+        return CmsParameterConfiguration.EMPTY_PARAMETERS;
     }
 
     /**

@@ -28,10 +28,8 @@
 package org.opencms.repository;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
@@ -44,7 +42,7 @@ import java.util.TreeMap;
 public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigurationParameterHandler {
 
     /** The repository configuration. */
-    private Map m_configuration;
+    private CmsParameterConfiguration m_configuration;
 
     /** The filter to use for the repository. */
     private CmsRepositoryFilter m_filter;
@@ -57,7 +55,7 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
      */
     public A_CmsRepository() {
 
-        m_configuration = new TreeMap();
+        m_configuration = new CmsParameterConfiguration();
         m_filter = null;
     }
 
@@ -66,23 +64,13 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        if (m_configuration.containsKey(paramName)) {
-            String[] values = (String[])m_configuration.get(paramName);
-
-            String[] added = new String[values.length + 1];
-            System.arraycopy(values, 0, added, 0, values.length);
-            added[added.length - 1] = paramValue;
-
-            m_configuration.put(paramName, added);
-        } else {
-            m_configuration.put(paramName, new String[] {paramValue});
-        }
+        m_configuration.addParameter(paramName, paramValue);
     }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         return m_configuration;
     }

@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
@@ -112,7 +111,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private Digester m_digester;
 
     /** The configuration based on <code>opencms.properties</code>. */
-    private CmsConfigurationParameter m_propertyConfiguration;
+    private CmsParameterConfiguration m_propertyConfiguration;
 
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -236,14 +235,12 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /**
      * Returns the properties read from <code>opencms.properties</code>.<p> 
      * 
-     * This is assured to be an instance of {@link org.opencms.configuration.CmsConfigurationParameter}.<p>
-     *
-     * @see #setConfiguration(CmsConfigurationParameter)
+     * @see #setConfiguration(CmsParameterConfiguration)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        return m_propertyConfiguration.getParameterMap();
+        return m_propertyConfiguration;
     }
 
     /**
@@ -349,7 +346,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * 
      * @see #getConfiguration()
      */
-    public void setConfiguration(CmsConfigurationParameter propertyConfiguration) {
+    public void setConfiguration(CmsParameterConfiguration propertyConfiguration) {
 
         m_propertyConfiguration = propertyConfiguration;
     }

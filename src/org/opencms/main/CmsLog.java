@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsFileUtil;
 
@@ -95,7 +95,7 @@ public final class CmsLog {
                 File tldFile = new File(tldFilePath);
                 if (tldFile.exists()) {
                     // assume this is a default OpenCms log configuration                
-                    CmsConfigurationParameter configuration = new CmsConfigurationParameter(path);
+                    CmsParameterConfiguration configuration = new CmsParameterConfiguration(path);
                     // check if OpenCms should set the log file environment variable
                     boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
                     if (setLogFile) {

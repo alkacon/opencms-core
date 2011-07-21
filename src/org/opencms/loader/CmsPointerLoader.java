@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -39,8 +40,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -198,14 +197,14 @@ public class CmsPointerLoader extends CmsDumpLoader {
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> config = super.getConfiguration();
-        SortedMap<String, String> result = new TreeMap<String, String>();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        CmsParameterConfiguration config = super.getConfiguration();
         if (config != null) {
-            result.putAll(config);
+            result.merge(config);
         }
-        result.put(CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED, String.valueOf(m_requestParamSupportEnabled));
+        result.setParameter(CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED, String.valueOf(m_requestParamSupportEnabled));
         return result;
     }
 

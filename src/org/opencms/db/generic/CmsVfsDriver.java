@@ -28,6 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -1176,9 +1177,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery(
-                projectId,
-                "C_READ_RESOURCE_OUS"));
+            stmt = m_sqlManager.getPreparedStatementForSql(
+                conn,
+                m_sqlManager.readQuery(projectId, "C_READ_RESOURCE_OUS"));
             stmt.setInt(1, CmsRelationType.OU_RESOURCE.getId());
             stmt.setString(2, resName);
             res = stmt.executeQuery();
@@ -1195,8 +1196,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         for (CmsRelation rel : rels) {
             try {
-                ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
-                    CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                ous.add(m_driverManager.readOrganizationalUnit(
+                    dbc,
+                    rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -1241,9 +1243,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map configuration = configurationManager.getConfiguration();
-        String poolUrl = (String)configuration.get("db.vfs.pool");
-        String classname = (String)configuration.get("db.vfs.sqlmanager");
+        CmsParameterConfiguration configuration = configurationManager.getConfiguration();
+        String poolUrl = configuration.getString("db.vfs.pool");
+        String classname = configuration.getString("db.vfs.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
         m_sqlManager.init(I_CmsVfsDriver.DRIVER_TYPE_ID, poolUrl);
 

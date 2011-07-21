@@ -27,7 +27,7 @@
 
 package org.opencms.test;
 
-import org.opencms.configuration.CmsConfigurationParameter;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
@@ -165,7 +165,7 @@ public class OpenCmsTestCase extends TestCase {
     public static final String DB_ORACLE = "oracle";
 
     /** The OpenCms/database configuration. */
-    public static CmsConfigurationParameter m_configuration;
+    public static CmsParameterConfiguration m_configuration;
 
     /** Name of the default tablespace (oracle only). */
     public static String m_defaultTablespace;
@@ -696,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
-        if ((path != null) && !m_configuration.hasParameter("test.keep.searchIndex")) {
+        if ((path != null) && !m_configuration.containsParameter("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("export/");
@@ -3600,7 +3600,7 @@ public class OpenCmsTestCase extends TestCase {
             boolean cont;
             do {
                 cont = false;
-                if (m_configuration.hasParameter(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
+                if (m_configuration.containsParameter(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
                     addTestDataPath(m_configuration.getString(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index));
                     cont = true;
                     index++;
@@ -3609,7 +3609,7 @@ public class OpenCmsTestCase extends TestCase {
 
             try {
                 String propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
-                m_configuration = new CmsConfigurationParameter(propertyFile);
+                m_configuration = new CmsParameterConfiguration(propertyFile);
             } catch (IOException e) {
                 fail(e.toString());
                 return;

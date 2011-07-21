@@ -81,14 +81,15 @@ public class CmsRepository extends A_CmsRepository {
     /**
      * @see org.opencms.repository.A_CmsRepository#initConfiguration()
      */
+    @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        if (getConfiguration().containsKey(PARAM_WRAPPER)) {
-            String[] wrappers = (String[])getConfiguration().get(PARAM_WRAPPER);
+        if (getConfiguration().containsParameter(PARAM_WRAPPER)) {
+            List<String> wrappers = getConfiguration().getList(PARAM_WRAPPER);
 
-            for (int i = 0; i < wrappers.length; i++) {
+            for (String classname : wrappers) {
 
-                String classname = wrappers[i].trim();
+                classname = classname.trim();
                 Class nameClazz;
 
                 // init class for wrapper

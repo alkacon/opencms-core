@@ -58,7 +58,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestConfigurationParameter.class));
+        suite.addTest(new TestSuite(TestParameterConfiguration.class));
         suite.addTest(new TestSuite(TestConfiguration.class));
         suite.addTest(TestSiteConfiguration.suite());
         //$JUnit-END$

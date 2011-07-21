@@ -27,9 +27,10 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,10 +46,8 @@ import org.opencms.workplace.list.CmsListExplorerColumn;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -257,9 +256,9 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        return Collections.emptyMap();
+        return CmsParameterConfiguration.EMPTY_PARAMETERS;
     }
 
     /**

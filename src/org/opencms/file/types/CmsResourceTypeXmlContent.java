@@ -27,6 +27,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -60,9 +61,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -191,15 +190,15 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
-        if (m_schema != null) {
-            result.put(CONFIGURATION_SCHEMA, m_schema);
-        }
-        Map<String, String> additional = super.getConfiguration();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        CmsParameterConfiguration additional = super.getConfiguration();
         if (additional != null) {
-            result.putAll(additional);
+            result.merge(additional);
+        }
+        if (m_schema != null) {
+            result.setParameter(CONFIGURATION_SCHEMA, m_schema);
         }
         return result;
     }

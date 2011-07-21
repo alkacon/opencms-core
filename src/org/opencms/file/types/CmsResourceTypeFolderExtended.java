@@ -27,10 +27,8 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.util.CmsStringUtil;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Resource type descriptor for extended folder types (like for example the workplace galleries).<p>
@@ -78,18 +76,18 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
     @Override
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
-        Map<String, String> result = new TreeMap<String, String>();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        CmsParameterConfiguration additional = super.getConfiguration();
+        if ((additional != null) && (additional.size() > 0)) {
+            result.merge(additional);
+        }
         if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
-            result.put(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
+            result.setParameter(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
         }
         if (CmsStringUtil.isNotEmpty(getFolderClassParams())) {
-            result.put(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
-        }
-        Map<String, String> additional = super.getConfiguration();
-        if ((additional != null) && (additional.size() > 0)) {
-            result.putAll(additional);
+            result.setParameter(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
         }
         return result;
     }

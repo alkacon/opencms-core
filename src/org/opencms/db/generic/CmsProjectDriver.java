@@ -28,6 +28,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
@@ -94,7 +95,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -832,9 +832,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
-        Map configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.get("db.project.pool").toString();
-        String classname = configuration.get("db.project.sqlmanager").toString();
+        CmsParameterConfiguration configuration = configurationManager.getConfiguration();
+        String poolUrl = configuration.getString("db.project.pool");
+        String classname = configuration.getString("db.project.sqlmanager");
         m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsProjectDriver.DRIVER_TYPE_ID, poolUrl);
 

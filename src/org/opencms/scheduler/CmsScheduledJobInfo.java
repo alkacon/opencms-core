@@ -27,6 +27,7 @@
 
 package org.opencms.scheduler;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsContextInfo;
@@ -38,7 +39,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -504,7 +504,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, String> getConfiguration() {
+    public CmsParameterConfiguration getConfiguration() {
 
         // this configuration does not support parameters
         if (LOG.isDebugEnabled()) {
@@ -513,7 +513,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
                 this));
         }
 
-        return Collections.<String, String> unmodifiableMap(getParameters());
+        return new CmsParameterConfiguration(getParameters());
     }
 
     /**

@@ -27,7 +27,6 @@
 
 package org.opencms.configuration;
 
-import java.util.Map;
 
 /**
  * Used for classes that are configurable using 
@@ -56,20 +55,13 @@ public interface I_CmsConfigurationParameterHandler {
     void addConfigurationParameter(String paramName, String paramValue);
 
     /**
-     * Returns the configuration of this parameter configurable class instance,
-     * or <code>null</code> if the class does not need to be configured.<p>
+     * Returns the parameters of this configurable class instance,
+     * or <code>null</code> if the class does not need any parameters.<p>
      * 
-     * All elements in the configuration are key, value String pairs,
-     * set using the {@link #addConfigurationParameter(String, String)} method
-     * during initialization of the loader.<p>
-     * 
-     * Implementations will (should) not to return a direct reference to
-     * the internal configuration but just a copy of it, to avoid 
-     * unwanted external manipulation.<p>
-     * 
-     * @return the configuration of this resource loader, or <code>null</code>
+     * @return the parameters of this configurable class instance,
+     *      or <code>null</code> if the class does not need any parameters
      */
-    Map<String, String> getConfiguration();
+    CmsParameterConfiguration getConfiguration();
 
     /**
      * Initializes a configuration after all parameters have been added.<p>
