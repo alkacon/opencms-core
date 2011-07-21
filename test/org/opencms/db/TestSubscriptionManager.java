@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
 public class TestSubscriptionManager extends OpenCmsTestCase {
 
     /** Time to wait for a database operation to finish. */
-    private static final long WAIT_FOR_DB_MILLIS = 100;
+    private static final long WAIT_FOR_DB_MILLIS = 300;
 
     /**
      * Default JUnit constructor.<p>
