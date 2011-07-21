@@ -60,6 +60,7 @@ public class CmsOriginalFormatRestriction implements I_CmsFormatRestriction {
     public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
 
         croppingParam.reset();
+        croppingParam.setFormatName(getName());
     }
 
     /**

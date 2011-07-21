@@ -78,6 +78,9 @@ public class CmsCroppingParamBean {
     /** The cropping Y parameter. */
     private int m_cropY = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
+    /** The used format name. */
+    private String m_formatName;
+
     private int m_orgHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     private int m_orgWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
@@ -250,6 +253,16 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Returns the used format name.<p>
+     *
+     * @return the used format name
+     */
+    public String getFormatName() {
+
+        return m_formatName;
+    }
+
+    /**
      * Returns the original image height.<p>
      *
      * @return the original image height
@@ -324,6 +337,42 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Returns the resulting height of the cropped image.<p>
+     * 
+     * @return the height
+     */
+    public int getResultingHeight() {
+
+        int height = getResultingTargetHeight();
+        if (height == -1) {
+            if (isCropped()) {
+                height = m_cropHeight;
+            } else {
+                height = m_orgHeight;
+            }
+        }
+        return height;
+    }
+
+    /**
+     * Returns the resulting width of the cropped image.<p>
+     * 
+     * @return the width
+     */
+    public int getResultingWidth() {
+
+        int width = getResultingTargetWidth();
+        if (width == -1) {
+            if (isCropped()) {
+                width = m_cropWidth;
+            } else {
+                width = m_orgWidth;
+            }
+        }
+        return width;
+    }
+
+    /**
      * Returns the scale parameter.<p>
      * 
      * @return the scale parameter
@@ -336,23 +385,10 @@ public class CmsCroppingParamBean {
         }
         StringBuffer result = new StringBuffer();
         if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
-            int height = 0;
-            int width = 0;
-            if (m_targetHeight > -1) {
-                height = m_targetHeight;
-            } else {
-                height = (int)Math.floor(((1.00 * m_orgHeight) / m_orgWidth) * m_targetWidth);
-            }
-            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(height).append(
+            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(getResultingTargetHeight()).append(
                 SCALE_PARAM_DELIMITER);
-
-            if (m_targetWidth > -1) {
-                width = m_targetWidth;
-            } else {
-                width = (int)Math.floor(((1.00 * m_orgWidth) / m_orgHeight) * m_targetHeight);
-            }
-            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(width).append(SCALE_PARAM_DELIMITER);
-
+            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(getResultingTargetWidth()).append(
+                SCALE_PARAM_DELIMITER);
         }
         if (m_cropX > -1) {
             result.append(SCALE_PARAM_CROP_X).append(SCALE_PARAM_COLON).append(m_cropX).append(SCALE_PARAM_DELIMITER);
@@ -468,6 +504,16 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Sets the used format name.<p>
+     *
+     * @param formatName the used format name to set
+     */
+    public void setFormatName(String formatName) {
+
+        m_formatName = formatName;
+    }
+
+    /**
      * Sets the original image height.<p>
      *
      * @param orgHeight the original image height to set
@@ -518,6 +564,42 @@ public class CmsCroppingParamBean {
             result = SCALE_PARAM_NAME + SCALE_PARAM_EQ + result;
         }
         return result;
+    }
+
+    /**
+     * Returns the resulting target height if set, otherwise '-1'.<p>
+     * 
+     * @return the height
+     */
+    private int getResultingTargetHeight() {
+
+        int height = -1;
+        if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
+            if (m_targetHeight > -1) {
+                height = m_targetHeight;
+            } else {
+                height = (int)Math.floor(((1.00 * m_orgHeight) / m_orgWidth) * m_targetWidth);
+            }
+        }
+        return height;
+    }
+
+    /**
+     * Returns the resulting target width if set, otherwise '-1'.<p>
+     * 
+     * @return the width
+     */
+    private int getResultingTargetWidth() {
+
+        int width = -1;
+        if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
+            if (m_targetWidth > -1) {
+                width = m_targetWidth;
+            } else {
+                width = (int)Math.floor(((1.00 * m_orgWidth) / m_orgHeight) * m_targetHeight);
+            }
+        }
+        return width;
     }
 
 }

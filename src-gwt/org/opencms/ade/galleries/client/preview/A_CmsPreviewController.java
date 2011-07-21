@@ -48,11 +48,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> implements I_CmsPreviewController<T> {
 
+    /** The preview service. */
+    private static I_CmsPreviewServiceAsync m_previewService;
+
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
-
-    /** The preview service. */
-    private I_CmsPreviewServiceAsync m_previewService;
 
     /**
      * Selects the resource.<p>
@@ -77,6 +77,23 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
                 //nothing to do here, should not be called
                 break;
         }
+    }
+
+    /**
+     * Returns the preview service.<p>
+     * 
+     * @return the preview service
+     */
+    protected static I_CmsPreviewServiceAsync getService() {
+
+        if (m_previewService == null) {
+            m_previewService = GWT.create(I_CmsPreviewService.class);
+            String serviceUrl = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getContext(),
+                "org.opencms.ade.galleries.CmsPreviewService.gwt");
+            ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
+        }
+        return m_previewService;
     }
 
     /**
@@ -135,22 +152,5 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         m_infoBean = resourceInfo;
         getHandler().showData(resourceInfo);
-    }
-
-    /**
-     * Returns the preview service.<p>
-     * 
-     * @return the preview service
-     */
-    protected I_CmsPreviewServiceAsync getService() {
-
-        if (m_previewService == null) {
-            m_previewService = GWT.create(I_CmsPreviewService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.galleries.CmsPreviewService.gwt");
-            ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
-        }
-        return m_previewService;
     }
 }

@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Handles the common RPC services related to the gallery preview dialog.<p>
@@ -61,6 +62,15 @@ public interface I_CmsPreviewServiceAsync {
      * @param callback the call-back 
      */
     void getResourceInfo(String resourcePath, AsyncCallback<CmsResourceInfoBean> callback);
+
+    /**
+     * Returns the image resource data to be displayed in the preview dialog.<p>
+     * 
+     * @param resourcePath the resource path
+     * @param callback the call-back
+     */
+    @SynchronizedRpcRequest
+    void syncGetImageInfo(String resourcePath, AsyncCallback<CmsImageInfoBean> callback);
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>

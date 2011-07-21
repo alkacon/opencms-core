@@ -185,12 +185,8 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      */
     public Map<String, String> getImageAttributes(Map<String, String> attributes) {
 
-        if (m_croppingParam.getTargetHeight() > 0) {
-            attributes.put("height", String.valueOf(m_croppingParam.getTargetHeight()));
-        }
-        if (m_croppingParam.getTargetWidth() > 0) {
-            attributes.put("width", String.valueOf(m_croppingParam.getTargetWidth()));
-        }
+        attributes.put("height", String.valueOf(m_croppingParam.getResultingHeight()));
+        attributes.put("width", String.valueOf(m_croppingParam.getResultingWidth()));
         return attributes;
     }
 
@@ -245,13 +241,15 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
             if (match != null) {
                 m_currentFormat = match.getValue();
                 m_formatForm.setFormatSelectValue(match.getKey());
+                m_formatForm.setHeightInput(m_croppingParam.getTargetHeight() != -1
+                ? m_croppingParam.getTargetHeight()
+                : m_originalHeight);
+                m_formatForm.setWidthInput(m_croppingParam.getTargetWidth() != -1
+                ? m_croppingParam.getTargetWidth()
+                : m_originalWidth);
+            } else {
+                onResetSize();
             }
-            m_formatForm.setHeightInput(m_croppingParam.getTargetHeight() != -1
-            ? m_croppingParam.getTargetHeight()
-            : m_originalHeight);
-            m_formatForm.setWidthInput(m_croppingParam.getTargetWidth() != -1
-            ? m_croppingParam.getTargetWidth()
-            : m_originalWidth);
         } else {
             m_formatForm.addFormatSelectOption("--", "--");
             m_formatForm.setFormEnabled(m_useFormats);
@@ -269,9 +267,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      */
     public void onFormatChange(String formatKey) {
 
-        if (m_currentFormat == m_formats.get(formatKey)) {
-            return;
-        }
+        //        if (m_currentFormat == m_formats.get(formatKey)) {
+        //            return;
+        //        }
 
         // setting the selected format restriction
         m_currentFormat = m_formats.get(formatKey);
@@ -371,7 +369,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         }
         m_formatForm.setFormatSelectValue(restrictionKey);
         m_croppingParam.reset();
-        onFormatChange(DefaultRestriction.original.name());
+        onFormatChange(restrictionKey);
     }
 
     /**
@@ -505,9 +503,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 if (restrictionType != null) {
                     switch (restrictionType) {
                         case original:
-                            m_formats.put(DefaultRestriction.original.name(), new CmsOriginalFormatRestriction(
-                                key,
-                                label));
+                            m_formats.put(key, new CmsOriginalFormatRestriction(key, label));
                             break;
                         case user:
                             m_formats.put(key, new CmsUserFormatRestriction(key, label));

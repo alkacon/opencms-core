@@ -313,24 +313,26 @@ public final class CmsPreviewUtil {
                     + fieldId);
             inputField.setAttribute("value", path);
             inputField.value = path;
-            var formatBox = $wnd.parent.document.getElementById("format."
-                    + fieldId);
-            if (formatBox != null && formatBox.options != null) {
-                for ( var i = 0; i < formatBox.options.length; i++) {
-                    if (formatBox.options[i].value == formatName) {
-                        formatBox.selectedIndex = i;
-                        $wnd.parent
-                                .setImageFormat(
-                                        fieldId,
-                                        $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
-                        break;
+            if (formatName != null) {
+                var formatBox = $wnd.parent.document.getElementById("format."
+                        + fieldId);
+                if (formatBox != null && formatBox.options != null) {
+                    for ( var i = 0; i < formatBox.options.length; i++) {
+                        if (formatBox.options[i].value == formatName) {
+                            formatBox.selectedIndex = i;
+                            $wnd.parent
+                                    .setImageFormat(
+                                            fieldId,
+                                            $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
+                            break;
+                        }
                     }
                 }
+                var formatField = $wnd.parent.document.getElementById("fmtval."
+                        + fieldId);
+                formatField.setAttribute("value", formatName);
+                formatField.value = formatName;
             }
-            var formatField = $wnd.parent.document.getElementById("fmtval."
-                    + fieldId);
-            formatField.setAttribute("value", formatName);
-            formatField.value = formatName;
             var ratioField = $wnd.parent.document.getElementById("imgrat."
                     + fieldId);
             ratioField.setAttribute("value", ratio);

@@ -88,6 +88,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
         if (!isWidthEditable()) {
             croppingParam.setTargetWidth(m_width);
         }
+        croppingParam.setFormatName(getName());
     }
 
     /**

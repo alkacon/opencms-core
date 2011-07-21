@@ -59,7 +59,7 @@ public class CmsUserFormatRestriction implements I_CmsFormatRestriction {
      */
     public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
 
-        // nothing to adjust
+        croppingParam.setFormatName(getName());
     }
 
     /**

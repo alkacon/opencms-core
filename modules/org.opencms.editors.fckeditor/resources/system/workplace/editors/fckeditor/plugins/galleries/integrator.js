@@ -240,31 +240,6 @@ function setImage(path, attributes){
             // sub title and/or copyright information has to be inserted 
             insertElement = fckEditor.FCK.EditorDocument.createElement("SPAN");
             // now set the span attributes      
-            var st = "width: " + attributes.width + "px;";
-            var al = attributes.align;
-            if (al == "left" || al == "right") {
-                st += " float: " + al + ";";
-            }
-            var imgVSp = attributes.vspace;
-            var imgHSp = attributes.hspace;
-            if ((imgVSp && imgVSp != "") || (imgHSp && imgHSp != "")) {
-                if (!imgVSp || imgVSp == "") {
-                    imgVSp = "0";
-                }
-                if (!imgHSp || imgHSp == "") {
-                    imgHSp = "0";
-                }
-                if (al || al != "") {
-                    var marginH = "right";
-                    if (al == "right") {
-                        marginH = "left";
-                    }
-                    st += "margin-bottom: " + imgVSp + "px; margin-" + marginH + ": " + imgHSp + "px;";
-                } else {
-                    st += "margin: " + imgVSp + "px " + imgHSp + "px " + imgVSp + "px " + imgHSp + "px";
-                }
-            }
-            insertElement.style.cssText = st;
             SetAttribute(insertElement, "id", ENHANCE_PREFIX + attributes.hash);
             
             // insert the image
@@ -283,7 +258,7 @@ function setImage(path, attributes){
                 // insert the 2nd span with the copyright information
                 var copyText = attributes.copyright;
                 var oSpan2 = fckEditor.FCK.EditorDocument.createElement("SPAN");
-                oSpan2.style.cssText = "display: block; clear: both;";
+                oSpan2.style.cssText = "display: block; clear: both; width: " + attributes.width + "px;";
                 oSpan2.className = "imgCopyright";
                 oSpan2.id = COPY_PREFIX + attributes.hash;
                 _setInnerText(oSpan2, copyText);
@@ -297,7 +272,7 @@ function setImage(path, attributes){
                     altText = attributes.title;
                 }
                 var oSpan3 = fckEditor.FCK.EditorDocument.createElement("SPAN");
-                oSpan3.style.cssText = "display: block; clear: both;";
+                oSpan3.style.cssText = "display: block; clear: both; width: " + attributes.width + "px;";
                 oSpan3.className = "imgSubtitle";
                 _setInnerText(oSpan3, altText);
                 oSpan3.id = SUB_PREFIX + attributes.hash;
@@ -323,7 +298,7 @@ function setImage(path, attributes){
             imageLink.setAttribute("id", LINK_PREFIX + attributes.hash);
         }
     }
-    
+    _setAlignmentStyle(insertElement, attributes);
     _removeEnhancementAttributes(attributes);
     //iterating given attributes and setting them on the image tag
     if (attributes){
@@ -351,6 +326,50 @@ function _removeEnhancementAttributes(attributes){
     attributes.insertSubtitle=null;
     attributes.linkPath=null;
     attributes.linkTarget=null;
+    attributes.vspace=null;
+    attributes.hspace=null;
+    attributes.style=null;
+    attributes.width=null;
+    attributes.height=null;
+    attributes.align=null;
+}
+
+/**
+ * Returns the alignment styles.<p>
+ * 
+ * @param attributes the attribute map
+ * 
+ * @return the alignment styles
+ */
+function _setAlignmentStyle(insertElement, attributes){
+    if (attributes.style!=null){
+        insertElement.style.cssText=attributes.style;
+    }
+    insertElement.style.width=attributes.width+"px";
+    var al = attributes.align;
+    if (al == "left" || al == "right") {
+        insertElement.style.setAttribute("float",al);
+    }
+    var imgVSp = attributes.vspace;
+    var imgHSp = attributes.hspace;
+    if ((imgVSp && imgVSp != "") || (imgHSp && imgHSp != "")) {
+        if (!imgVSp || imgVSp == "") {
+            imgVSp = "0";
+        }
+        if (!imgHSp || imgHSp == "") {
+            imgHSp = "0";
+        }
+        if (al || al != "") {
+            var marginH = "Right";
+            if (al == "Right") {
+                marginH = "Left";
+            }
+            insertElement.style.marginBottom= imgVSp + "px"
+            insertElement.style["margin" + marginH]=imgHSp + "px";
+        } else {
+            insertElement.style.margin=imgVSp + "px " + imgHSp + "px " + imgVSp + "px " + imgHSp + "px";
+        }
+    }
 }
 
 /**

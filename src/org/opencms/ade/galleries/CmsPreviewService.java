@@ -180,6 +180,14 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#syncGetImageInfo(java.lang.String)
+     */
+    public CmsImageInfoBean syncGetImageInfo(String resourcePath) throws CmsRpcException {
+
+        return getImageInfo(resourcePath);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#updateImageProperties(java.lang.String, java.util.Map)
      */
     public CmsImageInfoBean updateImageProperties(String resourcePath, Map<String, String> properties)
