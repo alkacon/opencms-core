@@ -8,6 +8,11 @@
     position: relative;
 }
 
+.dragAndDropMessage{
+	width: 60%;
+	margin: 20px auto;
+}
+
 .uploadFileInput {
 	position: absolute;
 	font-size: 40px;

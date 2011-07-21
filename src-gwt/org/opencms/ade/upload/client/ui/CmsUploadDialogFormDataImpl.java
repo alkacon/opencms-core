@@ -42,6 +42,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Provides the upload dialog for form data support.<p>
@@ -51,7 +52,6 @@ import com.google.gwt.core.client.JsArray;
 public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
     private String m_hightLightColor = I_CmsConstantsBundle.INSTANCE.css().backgroundColorHighlight();
-    // private String m_hightLightColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorHighlight();
 
     private String m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
 
@@ -178,6 +178,36 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             result += file.getFileSize();
         }
         return new Long(result).longValue();
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#setDragAndDropMessage()
+     */
+    @Override
+    protected void setDragAndDropMessage() {
+
+        if (m_dragAndDropMessage == null) {
+            m_dragAndDropMessage = new HTML();
+            m_dragAndDropMessage.setStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().dragAndDropMessage());
+            m_dragAndDropMessage.setText(Messages.get().key(Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
+        }
+        getContentWrapper().add(m_dragAndDropMessage);
+        m_normalColor = I_CmsConstantsBundle.INSTANCE.css().notificationNormalBg();
+        getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
+    }
+
+    /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#removeDragAndDropMessage()
+     */
+    @Override
+    protected void removeDragAndDropMessage() {
+
+        if (m_dragAndDropMessage != null) {
+            m_dragAndDropMessage.removeFromParent();
+            m_dragAndDropMessage = null;
+            m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
+            getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
+        }
     }
 
     /**

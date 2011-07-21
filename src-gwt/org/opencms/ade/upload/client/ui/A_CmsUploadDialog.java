@@ -50,6 +50,7 @@ import org.opencms.gwt.client.ui.CmsProgressBar;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
@@ -225,7 +226,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
          */
         private long getBytesRead(long percent) {
 
-            return percent != 0 ? getContentLength() * percent / 100 : 0;
+            return percent != 0 ? (getContentLength() * percent) / 100 : 0;
         }
     }
 
@@ -267,6 +268,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
     /** The user information text widget. */
     private HTML m_dialogInfo;
+
+    /** The drag and drop message. */
+    protected HTML m_dragAndDropMessage;
 
     /** The list of file item widgets. */
     private CmsList<I_CmsListItem> m_fileList;
@@ -437,8 +441,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         // enable or disable the OK button
         if (getFilesToUpload().isEmpty()) {
             disableOKButton(Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_NO_FILES_0));
+            setDragAndDropMessage();
         } else {
             enableOKButton();
+            removeDragAndDropMessage();
         }
 
         // set the user info
@@ -464,7 +470,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             });
         }
         show();
-
     }
 
     /**
@@ -1390,6 +1395,33 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         if (m_clientLoading) {
             m_contentWrapper.remove(m_loadingPanel);
             m_clientLoading = false;
+        }
+    }
+
+    /**
+     * Displays the 'use drag and drop' / 'no drag and drop available' message.<p>
+     */
+    protected void setDragAndDropMessage() {
+
+        if (m_dragAndDropMessage == null) {
+            m_dragAndDropMessage = new HTML();
+            m_dragAndDropMessage.setStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().dragAndDropMessage());
+            m_dragAndDropMessage.setText(Messages.get().key(Messages.GUI_UPLOAD_DRAG_AND_DROP_DISABLED_0));
+        }
+        getContentWrapper().add(m_dragAndDropMessage);
+        getContentWrapper().getElement().getStyle().setBackgroundColor(
+            I_CmsConstantsBundle.INSTANCE.css().notificationErrorBg());
+    }
+
+    /**
+     * Removes the drag and drop message.<p>
+     */
+    protected void removeDragAndDropMessage() {
+
+        if (m_dragAndDropMessage != null) {
+            m_dragAndDropMessage.removeFromParent();
+            m_dragAndDropMessage = null;
+            getContentWrapper().getElement().getStyle().clearBackgroundColor();
         }
     }
 }
