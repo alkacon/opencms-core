@@ -3311,44 +3311,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     boolean shouldPublishDeletedSubResources = publishList.isUserPublishList()
                         && directPublishResource.getState().isDeleted();
                     if (publishList.isPublishSubResources() || shouldPublishDeletedSubResources) {
-                        int flags = CmsDriverManager.READMODE_INCLUDE_TREE | CmsDriverManager.READMODE_EXCLUDE_STATE;
-                        if (!directPublishResource.getState().isDeleted()) {
-                            // fix for org.opencms.file.TestPublishIssues#testPublishFolderWithDeletedFileFromOtherProject
-                            flags = flags | CmsDriverManager.READMODE_INCLUDE_PROJECT;
-                        }
-
-                        // add all sub resources of the folder
-                        List<CmsResource> folderList = getVfsDriver(dbc).readResourceTree(
-                            dbc,
-                            dbc.currentProject().getUuid(),
-                            directPublishResource.getRootPath(),
-                            CmsDriverManager.READ_IGNORE_TYPE,
-                            CmsResource.STATE_UNCHANGED,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            flags | CmsDriverManager.READMODE_ONLY_FOLDERS);
-
-                        publishList.addAll(filterResources(dbc, publishList, folderList), true);
-
-                        List<CmsResource> fileList = getVfsDriver(dbc).readResourceTree(
-                            dbc,
-                            dbc.currentProject().getUuid(),
-                            directPublishResource.getRootPath(),
-                            CmsDriverManager.READ_IGNORE_TYPE,
-                            CmsResource.STATE_UNCHANGED,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            flags | CmsDriverManager.READMODE_ONLY_FILES);
-
-                        publishList.addAll(filterResources(dbc, publishList, fileList), true);
+                        addSubResources(dbc, publishList, directPublishResource);
                     }
                 } else if (directPublishResource.isFile() && !directPublishResource.getState().isUnchanged()) {
 
@@ -5709,56 +5672,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Method to create a new instance of a driver.<p>
-     * 
-     * @param configuration the configurations from the propertyfile
-     * @param driverName the class name of the driver
-     * @param driverPoolUrl the pool url for the driver
-     * @return an initialized instance of the driver
-     * @throws CmsException if something goes wrong
-     */
-    public Object newDriverInstance(CmsParameterConfiguration configuration, String driverName, String driverPoolUrl)
-    throws CmsException {
-
-        Class<?>[] initParamClasses = {CmsParameterConfiguration.class, String.class, CmsDriverManager.class};
-        Object[] initParams = {configuration, driverPoolUrl, this};
-
-        Class<?> driverClass = null;
-        Object driver = null;
-
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_START_1, driverName));
-            }
-
-            // try to create a instance
-            driver = driverClass.newInstance();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
-            }
-
-            // invoke the init-method of this access class
-            driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
-            }
-
-        } catch (Exception exc) {
-
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_DRIVER_MANAGER_1);
-            if (LOG.isFatalEnabled()) {
-                LOG.fatal(message.key(), exc);
-            }
-            throw new CmsDbException(message, exc);
-
-        }
-
-        return driver;
-    }
-
-    /**
      * Gets a new driver instance.<p>
      * 
      * @param dbc the database context
@@ -5803,6 +5716,56 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 LOG.error(message.key(), t);
             }
             throw new CmsInitException(message, t);
+        }
+
+        return driver;
+    }
+
+    /**
+     * Method to create a new instance of a driver.<p>
+     * 
+     * @param configuration the configurations from the propertyfile
+     * @param driverName the class name of the driver
+     * @param driverPoolUrl the pool url for the driver
+     * @return an initialized instance of the driver
+     * @throws CmsException if something goes wrong
+     */
+    public Object newDriverInstance(CmsParameterConfiguration configuration, String driverName, String driverPoolUrl)
+    throws CmsException {
+
+        Class<?>[] initParamClasses = {CmsParameterConfiguration.class, String.class, CmsDriverManager.class};
+        Object[] initParams = {configuration, driverPoolUrl, this};
+
+        Class<?> driverClass = null;
+        Object driver = null;
+
+        try {
+            // try to get the class
+            driverClass = Class.forName(driverName);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_START_1, driverName));
+            }
+
+            // try to create a instance
+            driver = driverClass.newInstance();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
+            }
+
+            // invoke the init-method of this access class
+            driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
+            }
+
+        } catch (Exception exc) {
+
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_DRIVER_MANAGER_1);
+            if (LOG.isFatalEnabled()) {
+                LOG.fatal(message.key(), exc);
+            }
+            throw new CmsDbException(message, exc);
+
         }
 
         return driver;
@@ -5941,6 +5904,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // check the parent folders
         checkParentFolders(dbc, publishList);
+        ensureSubResourcesOfMovedFoldersPublished(cms, dbc, publishList);
 
         try {
             // fire an event that a project is to be published
@@ -9829,6 +9793,33 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Tries to add sub-resources of moved folders to the publish list and throws an exception if the publish list still does 
+     * not contain some  sub-resources of the moved folders.<p>
+     *  
+     * @param cms the current CMS context 
+     * @param dbc the current database context 
+     * @param pubList the publish list 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void ensureSubResourcesOfMovedFoldersPublished(CmsObject cms, CmsDbContext dbc, CmsPublishList pubList)
+    throws CmsException {
+
+        List<CmsResource> topMovedFolders = pubList.getTopMovedFolders(cms);
+        Iterator<CmsResource> folderIt = topMovedFolders.iterator();
+        while (folderIt.hasNext()) {
+            CmsResource folder = folderIt.next();
+            addSubResources(dbc, pubList, folder);
+        }
+        CmsResource checkRes = pubList.checkContainsSubResources(cms, topMovedFolders);
+        if (checkRes != null) {
+            throw new CmsVfsException(Messages.get().container(
+                Messages.RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1,
+                checkRes.getRootPath()));
+        }
+
+    }
+
+    /**
      * Tries to find the best name for an URL name mapping for the given structure id.<p>
      * 
      * @param dbc the database context 
@@ -9943,6 +9934,49 @@ public final class CmsDriverManager implements I_CmsEventListener {
     long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
 
         return getUserDriver(dbc).countUsers(dbc, searchParams);
+    }
+
+    private void addSubResources(CmsDbContext dbc, CmsPublishList publishList, CmsResource directPublishResource)
+    throws CmsDataAccessException {
+
+        int flags = CmsDriverManager.READMODE_INCLUDE_TREE | CmsDriverManager.READMODE_EXCLUDE_STATE;
+        if (!directPublishResource.getState().isDeleted()) {
+            // fix for org.opencms.file.TestPublishIssues#testPublishFolderWithDeletedFileFromOtherProject
+            flags = flags | CmsDriverManager.READMODE_INCLUDE_PROJECT;
+        }
+
+        // add all sub resources of the folder
+        List<CmsResource> folderList = getVfsDriver(dbc).readResourceTree(
+            dbc,
+            dbc.currentProject().getUuid(),
+            directPublishResource.getRootPath(),
+            CmsDriverManager.READ_IGNORE_TYPE,
+            CmsResource.STATE_UNCHANGED,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            flags | CmsDriverManager.READMODE_ONLY_FOLDERS);
+
+        publishList.addAll(filterResources(dbc, publishList, folderList), true);
+
+        List<CmsResource> fileList = getVfsDriver(dbc).readResourceTree(
+            dbc,
+            dbc.currentProject().getUuid(),
+            directPublishResource.getRootPath(),
+            CmsDriverManager.READ_IGNORE_TYPE,
+            CmsResource.STATE_UNCHANGED,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            flags | CmsDriverManager.READMODE_ONLY_FILES);
+
+        publishList.addAll(filterResources(dbc, publishList, fileList), true);
     }
 
     /**
