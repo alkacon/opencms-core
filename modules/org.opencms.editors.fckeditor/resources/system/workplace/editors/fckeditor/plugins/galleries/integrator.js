@@ -153,6 +153,12 @@ function _collectAttributes(element, attributes){
             value=GetAttribute(element, 'class', null);
         }
         if (value!=null){
+            if (attributeNames[i]=='style' && hasEnhancedImageOptions()){
+                value= value.replace(/margin-right:\s*\d+px;/, "");
+                value= value.replace(/margin-bottom:\s*\d+px;/, "");
+                value= value.replace(/margin-left:\s*\d+px;/, "");
+                value= value.replace(/width:\s*\d+px;/, "");
+            }
             attributes[attributeNames[i]]=value;
         }
     }
@@ -166,14 +172,27 @@ function _collectAttributes(element, attributes){
     }
     var vspace=element.style.marginBottom;
     if (vspace!=null && vspace!=""){
-        attributes.vspace= ""+parseInt(vspace);
+        var vspaceValue=parseInt(vspace);
+        if (!isNaN(vspaceValue)){
+            attributes.vspace= ""+vspaceValue;
+        }
     }
     var hspace=element.style.marginLeft;
+    var hspaceValue="test";
     if (hspace!=null || hspace!=""){
-        hspace= element.style.marginRight;
+    hspaceValue=parseInt(hspace);
     }
-    if (hspace!=null || hspace!=""){
-        attributes.hspace= ""+parseInt(hspace);
+    if (isNaN(hspaceValue)){
+    
+        hspace= element.style.marginRight;
+        if (hspace!=null || hspace!=""){
+            hspaceValue=parseInt(hspace);
+        }
+    }
+    
+    
+    if (!isNaN(hspaceValue)){
+        attributes.hspace= ""+hspaceValue;
     }
 }
 
@@ -329,10 +348,12 @@ function setImage(path, attributes){
     //iterating given attributes and setting them on the image tag
     if (attributes){
         for (var key in attributes){
-            if (key=='clazz'){
-                SetAttribute(image, 'class', attributes[key]);
-            }else{
-                SetAttribute(image, key, attributes[key]);
+            if (attributes[key]!=null){
+                if (key=='clazz'){
+                    SetAttribute(image, 'class', attributes[key]);
+                }else{
+                    SetAttribute(image, key, attributes[key]);
+                }
             }
         }
     }
@@ -388,7 +409,7 @@ function _setAlignmentStyle(insertElement, attributes){
         }
         if (al || al != "") {
             var marginH = "Right";
-            if (al == "Right") {
+            if (al == "right") {
                 marginH = "Left";
             }
             insertElement.style.marginBottom= imgVSp + "px"
