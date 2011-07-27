@@ -80,7 +80,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.setParameter(paramName, paramValue);
+        m_configuration.put(paramName, paramValue);
     }
 
     /** 
@@ -169,7 +169,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        Object maxAge = m_configuration.getString("client.cache.maxage");
+        Object maxAge = m_configuration.get("client.cache.maxage");
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {

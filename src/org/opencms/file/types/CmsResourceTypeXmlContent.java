@@ -195,10 +195,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration additional = super.getConfiguration();
         if (additional != null) {
-            result.merge(additional);
+            result.putAll(additional);
         }
         if (m_schema != null) {
-            result.setParameter(CONFIGURATION_SCHEMA, m_schema);
+            result.put(CONFIGURATION_SCHEMA, m_schema);
         }
         return result;
     }

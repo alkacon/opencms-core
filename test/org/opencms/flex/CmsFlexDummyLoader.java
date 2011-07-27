@@ -79,7 +79,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_config.setParameter(paramName, paramValue);
+        m_config.put(paramName, paramValue);
     }
 
     /**

@@ -163,7 +163,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.addParameter(paramName, paramValue);
+        m_configuration.add(paramName, paramValue);
         if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
             if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
                 m_internal = Boolean.valueOf(paramValue.trim());
@@ -645,7 +645,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);
         m_copyResources = Collections.unmodifiableList(m_copyResources);
         m_mappings = Collections.unmodifiableList(m_mappings);
-        m_configuration.freeze();
+        m_configuration = CmsParameterConfiguration.unmodifiableVersion(m_configuration);
     }
 
     /**

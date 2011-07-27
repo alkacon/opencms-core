@@ -833,8 +833,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDriverManager driverManager) {
 
         CmsParameterConfiguration configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.getString("db.project.pool");
-        String classname = configuration.getString("db.project.sqlmanager");
+        String poolUrl = configuration.get("db.project.pool");
+        String classname = configuration.get("db.project.sqlmanager");
         m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsProjectDriver.DRIVER_TYPE_ID, poolUrl);
 

@@ -191,7 +191,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         boolean convert = false;
 
         CmsParameterConfiguration config = OpenCms.getPasswordHandler().getConfiguration();
-        if ((config != null) && config.containsParameter(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
             convert = config.getBoolean(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING, false);
         }
 

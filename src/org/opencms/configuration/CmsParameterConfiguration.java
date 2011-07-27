@@ -28,7 +28,6 @@
 package org.opencms.configuration;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.FileInputStream;
@@ -38,9 +37,10 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,7 +116,7 @@ import org.dom4j.Element;
  *      commas.escaped = Hi\, what'up?
  * </pre>
  */
-public class CmsParameterConfiguration {
+public class CmsParameterConfiguration extends AbstractMap<String, String> {
 
     /**
      * Used to read parameter lines from a property file.<p>  
@@ -221,11 +221,8 @@ public class CmsParameterConfiguration {
     /** The parsed map of parameters where the Strings may have become Objects. */
     private Map<String, Object> m_configurationObjects;
 
-    /** The initial map of parameters. */
+    /** The original map of parameters that contains only String values. */
     private Map<String, String> m_configurationStrings;
-
-    /** Indicates if this parameter configuration has been frozen. */
-    private boolean m_frozen;
 
     /**
      * Creates an empty parameter configuration.<p>
@@ -261,7 +258,7 @@ public class CmsParameterConfiguration {
         for (String key : configuration.keySet()) {
 
             String value = configuration.get(key);
-            addParameter(key, value);
+            add(key, value);
         }
     }
 
@@ -280,7 +277,7 @@ public class CmsParameterConfiguration {
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
-            this.load(in);
+            load(in);
         } finally {
             try {
                 if (in != null) {
@@ -302,6 +299,20 @@ public class CmsParameterConfiguration {
 
         m_configurationStrings = strings;
         m_configurationObjects = objects;
+    }
+
+    /**
+     * Returns an unmodifiable version of this parameter configuration.<p>
+     * 
+     * @param original the configuration to make unmodifiable
+     * 
+     * @return an unmodifiable version of this parameter configuration
+     */
+    public static CmsParameterConfiguration unmodifiableVersion(CmsParameterConfiguration original) {
+
+        return new CmsParameterConfiguration(
+            Collections.unmodifiableMap(original.m_configurationStrings),
+            original.m_configurationObjects);
     }
 
     /**
@@ -367,12 +378,12 @@ public class CmsParameterConfiguration {
      * method is used. To create a List of String values for a parameter, call this method
      * multiple times with the same parameter name.<p>
      *
-     * @param parameter the parameter to add
+     * @param key the parameter to add
      * @param value the value to add
      */
-    public void addParameter(String parameter, String value) {
+    public void add(String key, String value) {
 
-        addParameter(parameter, value, false);
+        add(key, value, false);
     }
 
     /**
@@ -429,7 +440,7 @@ public class CmsParameterConfiguration {
                     }
                 } else {
                     // use the original String as value
-                    String strValue = m_configurationStrings.get(name);
+                    String strValue = get(name);
                     Element paramNode = parentNode.addElement(I_CmsXmlConfiguration.N_PARAM);
                     // set the name attribute
                     paramNode.addAttribute(I_CmsXmlConfiguration.A_NAME, name);
@@ -443,55 +454,75 @@ public class CmsParameterConfiguration {
     }
 
     /**
-     * Returns <code>true</code> in case there is a value for the given parameter.<p>
-     * 
-     * @param parameter the parameter name to check
-     * 
-     * @return <code>true</code> in case there is a value for the given parameter
+     * @see java.util.Map#clear()
      */
-    public boolean containsParameter(String parameter) {
+    @Override
+    public void clear() {
 
-        return m_configurationObjects.containsKey(parameter);
+        m_configurationStrings.clear();
+        m_configurationObjects.clear();
     }
 
     /**
-     * Freezes this parameter configuration.<p>
-     * 
-     * If the configuration has been frozen,
-     * all subsequent calls that alter the underlying data tables will lead to an error.<p>
+     * @see java.util.Map#containsKey(java.lang.Object)
      */
-    public void freeze() {
+    @Override
+    public boolean containsKey(Object key) {
 
-        checkFrozen();
-        // use of the freeze method from the rest of the core is not consistent, 
-        // sometimes a configuration is frozen, sometimes it is not
+        return m_configurationStrings.containsKey(key);
+    }
 
-        // m_configurationObjects must NOT be frozen, because .get methods in this class that access non-String
-        // objects want to write the "right" data type back to the object map in the getter, not the setter only!
-        m_frozen = true;
-        m_configurationStrings = Collections.unmodifiableMap(m_configurationStrings);
+    /**
+     * @see java.util.Map#containsValue(java.lang.Object)
+     */
+    @Override
+    public boolean containsValue(Object value) {
+
+        return m_configurationStrings.containsValue(value) || m_configurationObjects.containsValue(value);
+    }
+
+    /**
+     * @see java.util.Map#entrySet()
+     */
+    @Override
+    public Set<java.util.Map.Entry<String, String>> entrySet() {
+
+        return m_configurationStrings.entrySet();
+    }
+
+    /**
+     * Returns the String associated with the given parameter.<p> 
+     *
+     * @param key the parameter to look up the value for
+     * 
+     * @return the String associated with the given parameter
+     */
+    @Override
+    public String get(Object key) {
+
+        return m_configurationStrings.get(key);
     }
 
     /**
      * Returns the boolean associated with the given parameter, 
      * or the default value in case there is no boolean value for this parameter.<p> 
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * @param defaultValue the default value
      * 
      * @return the boolean associated with the given parameter, 
      *      or the default value in case there is no boolean value for this parameter
      */
-    public boolean getBoolean(String parameter, boolean defaultValue) {
+    public boolean getBoolean(String key, boolean defaultValue) {
 
-        Object value = m_configurationObjects.get(parameter);
+        Object value = m_configurationObjects.get(key);
 
         if (value instanceof Boolean) {
             return ((Boolean)value).booleanValue();
 
         } else if (value instanceof String) {
             Boolean b = Boolean.valueOf((String)value);
-            m_configurationObjects.put(parameter, b);
+            m_configurationObjects.put(key, b);
             return b.booleanValue();
 
         } else {
@@ -503,22 +534,22 @@ public class CmsParameterConfiguration {
      * Returns the integer associated with the given parameter, 
      * or the default value in case there is no integer value for this parameter.<p> 
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * @param defaultValue the default value
      * 
      * @return the integer associated with the given parameter, 
      *      or the default value in case there is no integer value for this parameter
      */
-    public int getInteger(String parameter, int defaultValue) {
+    public int getInteger(String key, int defaultValue) {
 
-        Object value = m_configurationObjects.get(parameter);
+        Object value = m_configurationObjects.get(key);
 
         if (value instanceof Integer) {
             return ((Integer)value).intValue();
 
         } else if (value instanceof String) {
             Integer i = new Integer((String)value);
-            m_configurationObjects.put(parameter, i);
+            m_configurationObjects.put(key, i);
             return i.intValue();
 
         } else {
@@ -533,14 +564,14 @@ public class CmsParameterConfiguration {
      * The list returned is a copy of the internal data of this object, and as
      * such you may alter it freely.<p>
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * 
      * @return the List of Strings associated with the given parameter, 
      *      or an empty List in case there is no List of Strings for this parameter
      */
-    public List<String> getList(String parameter) {
+    public List<String> getList(String key) {
 
-        return getList(parameter, null);
+        return getList(key, null);
     }
 
     /**
@@ -550,15 +581,15 @@ public class CmsParameterConfiguration {
      * The list returned is a copy of the internal data of this object, and as
      * such you may alter it freely.<p>
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * @param defaultValue the default value
      * 
      * @return the List of Strings associated with the given parameter, 
      *      or the default value in case there is no List of Strings for this parameter
      */
-    public List<String> getList(String parameter, List<String> defaultValue) {
+    public List<String> getList(String key, List<String> defaultValue) {
 
-        Object value = m_configurationObjects.get(parameter);
+        Object value = m_configurationObjects.get(key);
 
         if (value instanceof List) {
             @SuppressWarnings("unchecked")
@@ -568,7 +599,7 @@ public class CmsParameterConfiguration {
         } else if (value instanceof String) {
             List<String> values = new ArrayList<String>(1);
             values.add((String)value);
-            m_configurationObjects.put(parameter, values);
+            m_configurationObjects.put(key, values);
             return values;
 
         } else {
@@ -584,61 +615,52 @@ public class CmsParameterConfiguration {
      * Returns the raw Object associated with the given parameter, 
      * or <code>null</code> in case there is no Object for this parameter.<p> 
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * 
      * @return the raw Object associated with the given parameter, 
      *      or <code>null</code> in case there is no Object for this parameter.<p> 
      */
-    public Object getObject(String parameter) {
+    public Object getObject(String key) {
 
-        return m_configurationObjects.get(parameter);
-    }
-
-    /**
-     * Returns the parameter Set for this configuration.<p>
-     * 
-     * The Set returned is a copy of the internal data of this object, and as
-     * such you may alter it freely.<p>
-     * 
-     * @return the "pure" String configuration of this parameter wrapper
-     */
-    public Set<String> getParameters() {
-
-        return new HashSet<String>(m_configurationObjects.keySet());
-    }
-
-    /**
-     * Returns the String associated with the given parameter, 
-     * or <code>null</code> in case there is no value for this parameter.<p> 
-     *
-     * @param parameter the parameter to look up the value for
-     * 
-     * @return the String associated with the given parameter, 
-     *      or <code>null</code> in case there is no value for this parameter.<p> 
-     */
-    public String getString(String parameter) {
-
-        return m_configurationStrings.get(parameter);
+        return m_configurationObjects.get(key);
     }
 
     /**
      * Returns the String associated with the given parameter, 
      * or the given default value in case there is no value for this parameter.<p> 
      *
-     * @param parameter the parameter to look up the value for
+     * @param key the parameter to look up the value for
      * @param defaultValue the default value
      * 
      * @return the String associated with the given parameter, 
      *      or the given default value in case there is no value for this parameter.<p> 
      */
-    public String getString(String parameter, String defaultValue) {
+    public String getString(String key, String defaultValue) {
 
-        String result = m_configurationStrings.get(parameter);
+        String result = get(key);
         return result == null ? defaultValue : result;
     }
 
     /**
-     * Load the parameters from the given input stream, which must be in property file formaet.<p>
+     * @see java.util.Map#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_configurationStrings.hashCode();
+    }
+
+    /**
+     * @see java.util.Map#keySet()
+     */
+    @Override
+    public Set<String> keySet() {
+
+        return m_configurationStrings.keySet();
+    }
+
+    /**
+     * Load the parameters from the given input stream, which must be in property file format.<p>
      *
      * @param input the stream to load the input from
      * 
@@ -646,7 +668,6 @@ public class CmsParameterConfiguration {
      */
     public void load(InputStream input) throws IOException {
 
-        checkFrozen();
         ParameterReader reader = null;
 
         try {
@@ -672,45 +693,8 @@ public class CmsParameterConfiguration {
                     continue;
                 }
 
-                addParameter(key, value, true);
+                add(key, value, true);
             }
-        }
-    }
-
-    /**
-     * Merges this parameter configuration with the provided other parameter configuration.<p>
-     * 
-     * As result, <code>this</code> configuration will be altered, the other configuration will 
-     * stay unchanged.<p>
-     * 
-     * @param other the other parameter configuration to merge this configuration with
-     */
-    public void merge(CmsParameterConfiguration other) {
-
-        checkFrozen();
-        for (String key : other.getParameters()) {
-            boolean tokenize = false;
-            Object o = other.getObject(key);
-            if (o instanceof List) {
-                tokenize = true;
-            }
-            addParameter(key, other.getString(key), tokenize);
-        }
-    }
-
-    /**
-     * Removes a parameter from this configuration.
-     *
-     * @param parameter the parameter to remove
-     */
-    public void removeParameter(String parameter) {
-
-        checkFrozen();
-        if (m_configurationStrings.containsKey(parameter)) {
-            m_configurationStrings.remove(parameter);
-        }
-        if (m_configurationObjects.containsKey(parameter)) {
-            m_configurationObjects.remove(parameter);
         }
     }
 
@@ -719,23 +703,75 @@ public class CmsParameterConfiguration {
      * 
      * If the parameter already exists then the existing value will be replaced.<p>
      *
-     * @param parameter the parameter to set
+     * @param key the parameter to set
      * @param value the value to set
+     * 
+     * @return the previous String value from the parameter map  
      */
-    public void setParameter(String parameter, String value) {
+    @Override
+    public String put(String key, String value) {
 
-        removeParameter(parameter);
-        addParameter(parameter, value, false);
+        String result = remove(key);
+        add(key, value, false);
+        return result;
     }
 
     /**
-     * Returns the number of parameters in this configuration.<p>
+     * Merges this parameter configuration with the provided other parameter configuration.<p>
      * 
-     * @return the number of parameters in this configuration
+     * The difference form a simple <code>Map&lt;String, String&gt;</code> is that for the parameter
+     * configuration, the values of the keys in both maps are merged and kept in the Object store 
+     * as a List.<p>
+     * 
+     * As result, <code>this</code> configuration will be altered, the other configuration will 
+     * stay unchanged.<p>
+     * 
+     * @param other the other parameter configuration to merge this configuration with
      */
-    public int size() {
+    @Override
+    public void putAll(Map<? extends String, ? extends String> other) {
 
-        return m_configurationStrings.size();
+        for (String key : other.keySet()) {
+            boolean tokenize = false;
+            if (other instanceof CmsParameterConfiguration) {
+                Object o = ((CmsParameterConfiguration)other).getObject(key);
+                if (o instanceof List) {
+                    tokenize = true;
+                }
+            }
+            add(key, other.get(key), tokenize);
+        }
+    }
+
+    /**
+     * Removes a parameter from this configuration.
+     *
+     * @param key the parameter to remove
+     */
+    @Override
+    public String remove(Object key) {
+
+        String result = m_configurationStrings.remove(key);
+        m_configurationObjects.remove(key);
+        return result;
+    }
+
+    /**
+     * @see java.util.Map#toString()
+     */
+    @Override
+    public String toString() {
+
+        return m_configurationStrings.toString();
+    }
+
+    /**
+     * @see java.util.Map#values()
+     */
+    @Override
+    public Collection<String> values() {
+
+        return m_configurationStrings.values();
     }
 
     /**
@@ -744,64 +780,52 @@ public class CmsParameterConfiguration {
      * If the parameter already exists then the value will be added
      * to the existing configuration entry and a List will be created for the values.<p>
      *
-     * @param parameter the parameter to add
+     * @param key the parameter to add
      * @param value the value to add
      * @param tokenize decides if a String value should be tokenized or nor
      */
-    private void addParameter(String parameter, String value, boolean tokenize) {
+    private void add(String key, String value, boolean tokenize) {
 
         if (tokenize && (value.indexOf(ParameterTokenizer.COMMA) > 0)) {
             // token contains commas, so must be split apart then added
             ParameterTokenizer tokenizer = new ParameterTokenizer(value);
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
-                addParameterInternal(parameter, unescape(token));
+                addInternal(key, unescape(token));
             }
         } else {
             // token contains no commas, so can be simply added
-            addParameterInternal(parameter, value);
+            addInternal(key, value);
         }
     }
 
     /**
      * Adds a parameter, parsing the value if required.<p>
      * 
-     * @param parameter the parameter to add
+     * @param key the parameter to add
      * @param value the value of the parameter
      */
-    private void addParameterInternal(String parameter, String value) {
+    private void addInternal(String key, String value) {
 
-        Object currentObj = m_configurationObjects.get(parameter);
-        String currentStr = m_configurationStrings.get(parameter);
+        Object currentObj = m_configurationObjects.get(key);
+        String currentStr = get(key);
 
         if (currentObj instanceof String) {
             // one object already in map - convert it to a list
             List<String> values = new ArrayList<String>(2);
             values.add(currentStr);
             values.add(value);
-            m_configurationObjects.put(parameter, values);
-            m_configurationStrings.put(parameter, currentStr + ParameterTokenizer.COMMA + value);
+            m_configurationObjects.put(key, values);
+            m_configurationStrings.put(key, currentStr + ParameterTokenizer.COMMA + value);
         } else if (currentObj instanceof List) {
             // already a list - just add the new token
             @SuppressWarnings("unchecked")
             List<String> list = (List<String>)currentObj;
             list.add(value);
-            m_configurationStrings.put(parameter, currentStr + ParameterTokenizer.COMMA + value);
+            m_configurationStrings.put(key, currentStr + ParameterTokenizer.COMMA + value);
         } else {
-            m_configurationObjects.put(parameter, value);
-            m_configurationStrings.put(parameter, value);
-        }
-    }
-
-    /**
-     * Checks if this parameter configuration is frozen.<p>
-     * 
-     * @throws CmsRuntimeException in case the configuration is already frozen
-     */
-    private void checkFrozen() throws CmsRuntimeException {
-
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_PARAMETER_CONFIG_FROZEN_0));
+            m_configurationObjects.put(key, value);
+            m_configurationStrings.put(key, value);
         }
     }
 }

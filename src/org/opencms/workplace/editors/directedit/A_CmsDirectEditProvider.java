@@ -91,7 +91,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
         if (m_configurationParameters == null) {
             m_configurationParameters = new CmsParameterConfiguration();
         }
-        m_configurationParameters.addParameter(paramName, paramValue);
+        m_configurationParameters.add(paramName, paramValue);
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
         if (m_configurationParameters == null) {
             m_configurationParameters = new CmsParameterConfiguration();
         }
-        m_configurationParameters.freeze();
+        m_configurationParameters = CmsParameterConfiguration.unmodifiableVersion(m_configurationParameters);
         if (m_configurationParameters == null) {
             // suppress the compiler warning, this is never true
             throw new CmsConfigurationException(null);

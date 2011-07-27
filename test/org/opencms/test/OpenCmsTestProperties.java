@@ -193,28 +193,28 @@ public final class OpenCmsTestProperties {
                 allowGetEnv = false;
             }
             if (System.getProperty(PROP_TEST_DATA_PATH) != null) {
-                m_configuration.setParameter(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
+                m_configuration.put(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
             } else if (allowGetEnv && (System.getenv(PROP_TEST_DATA_PATH) != null)) {
-                m_configuration.setParameter(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
+                m_configuration.put(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
             }
             if (System.getProperty(PROP_TEST_WEBAPP_PATH) != null) {
-                m_configuration.setParameter(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
+                m_configuration.put(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
             } else if (allowGetEnv && (System.getenv(PROP_TEST_WEBAPP_PATH) != null)) {
-                m_configuration.setParameter(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
+                m_configuration.put(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
             }
             if (System.getProperty(PROP_DB_PRODUCT) != null) {
-                m_configuration.setParameter(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
+                m_configuration.put(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
             } else if (allowGetEnv && (System.getenv(PROP_DB_PRODUCT) != null)) {
-                m_configuration.setParameter(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
+                m_configuration.put(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
             }
         } catch (SecurityException e) {
             // unable to read environment, use only properties from file
             e.printStackTrace(System.out);
         }
 
-        m_testSingleton.m_testDataPath = m_configuration.getString(PROP_TEST_DATA_PATH);
-        m_testSingleton.m_testWebappPath = m_configuration.getString(PROP_TEST_WEBAPP_PATH);
-        m_testSingleton.m_dbProduct = m_configuration.getString(PROP_DB_PRODUCT);
+        m_testSingleton.m_testDataPath = m_configuration.get(PROP_TEST_DATA_PATH);
+        m_testSingleton.m_testWebappPath = m_configuration.get(PROP_TEST_WEBAPP_PATH);
+        m_testSingleton.m_dbProduct = m_configuration.get(PROP_DB_PRODUCT);
     }
 
     /**

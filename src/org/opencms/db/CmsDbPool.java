@@ -175,9 +175,9 @@ public final class CmsDbPool {
     throws Exception {
 
         // read the values of the pool configuration specified by the given key
-        String jdbcDriver = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_DRIVER);
-        String jdbcUrl = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL);
-        String jdbcUrlParams = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL_PARAMS);
+        String jdbcDriver = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_DRIVER);
+        String jdbcUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL);
+        String jdbcUrlParams = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL_PARAMS);
         int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_IDLE, 5);
@@ -195,11 +195,11 @@ public final class CmsDbPool {
             + key
             + '.'
             + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
-        String testQuery = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
-        String username = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
-        String password = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
-        String poolUrl = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
-        String whenExhaustedActionValue = config.getString(
+        String testQuery = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
+        String username = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
+        String password = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
+        String poolUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
+        String whenExhaustedActionValue = config.get(
             KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = Boolean.valueOf(
@@ -235,7 +235,7 @@ public final class CmsDbPool {
         int maxActiveStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_ACTIVE, 25);
         int maxWaitStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_WAIT, 250);
         int maxIdleStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_IDLE, 15);
-        String whenStmtsExhaustedActionValue = config.getString(KEY_DATABASE_STATEMENTS
+        String whenStmtsExhaustedActionValue = config.get(KEY_DATABASE_STATEMENTS
             + '.'
             + key
             + '.'
@@ -358,7 +358,7 @@ public final class CmsDbPool {
      */
     public static String getDbPoolName(CmsParameterConfiguration configuration, String key) {
 
-        return configuration.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
+        return configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
     }
 
     /**

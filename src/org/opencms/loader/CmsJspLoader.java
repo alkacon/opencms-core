@@ -226,7 +226,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.addParameter(paramName, paramValue);
+        m_configuration.add(paramName, paramValue);
         if (paramName.startsWith("taglib.")) {
             m_taglibs.put(paramName.replaceFirst("^taglib\\.", ""), paramValue.trim());
         }
@@ -396,7 +396,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void initConfiguration() {
 
-        m_jspRepository = m_configuration.getString(PARAM_JSP_REPOSITORY);
+        m_jspRepository = m_configuration.get(PARAM_JSP_REPOSITORY);
         if (m_jspRepository == null) {
             m_jspRepository = OpenCms.getSystemInfo().getWebApplicationRfsPath();
         }
@@ -406,7 +406,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
-        String maxAge = m_configuration.getString(PARAM_CLIENT_CACHE_MAXAGE);
+        String maxAge = m_configuration.get(PARAM_CLIENT_CACHE_MAXAGE);
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {

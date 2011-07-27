@@ -396,10 +396,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             m_handlerParams = new CmsParameterConfiguration();
         }
         if (PARAM_HIDEADVANCED.equalsIgnoreCase(paramName)) {
-            m_handlerParams.addParameter(PARAM_HIDEADVANCED, paramValue.trim());
+            m_handlerParams.add(PARAM_HIDEADVANCED, paramValue.trim());
         }
         if (PARAM_SHOWGROUP.equalsIgnoreCase(paramName)) {
-            m_handlerParams.addParameter(PARAM_SHOWGROUP, paramValue.trim());
+            m_handlerParams.add(PARAM_SHOWGROUP, paramValue.trim());
         }
     }
 

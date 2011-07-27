@@ -202,9 +202,9 @@ public class CmsPointerLoader extends CmsDumpLoader {
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration config = super.getConfiguration();
         if (config != null) {
-            result.merge(config);
+            result.putAll(config);
         }
-        result.setParameter(CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED, String.valueOf(m_requestParamSupportEnabled));
+        result.put(CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED, String.valueOf(m_requestParamSupportEnabled));
         return result;
     }
 

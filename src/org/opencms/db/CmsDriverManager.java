@@ -9788,7 +9788,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // read the vfs driver class properties and initialize a new instance 
         List<String> drivers = config.getList(driverChainKey);
         String driverKey = drivers.get(0) + suffix;
-        String driverName = config.getString(driverKey);
+        String driverName = config.get(driverKey);
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         if (driverName == null) {
             CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));

@@ -475,8 +475,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         CmsParameterConfiguration config = configurationManager.getConfiguration();
 
-        String poolUrl = config.getString("db.history.pool");
-        String classname = config.getString("db.history.sqlmanager");
+        String poolUrl = config.get("db.history.pool");
+        String classname = config.get("db.history.sqlmanager");
 
         m_sqlManager = initSqlManager(classname);
 

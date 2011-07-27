@@ -252,10 +252,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration config = super.getConfiguration();
         if (config != null) {
-            result.merge(config);
+            result.putAll(config);
         }
-        result.setParameter(CONFIGURATION_SCALING_ENABLED, String.valueOf(m_enabled));
-        result.setParameter(CONFIGURATION_IMAGE_FOLDER, m_imageRepositoryFolder);
+        result.put(CONFIGURATION_SCALING_ENABLED, String.valueOf(m_enabled));
+        result.put(CONFIGURATION_IMAGE_FOLDER, m_imageRepositoryFolder);
         return result;
     }
 

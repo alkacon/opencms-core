@@ -64,7 +64,7 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.addParameter(paramName, paramValue);
+        m_configuration.add(paramName, paramValue);
     }
 
     /**

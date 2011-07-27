@@ -2357,9 +2357,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         for (String componentId : configuration.getList(PROPKEY_COMPONENTS)) {
             CmsSetupComponent componentBean = new CmsSetupComponent();
             componentBean.setId(componentId);
-            componentBean.setName(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
-            componentBean.setDescription(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_DESCRIPTION));
-            componentBean.setModulesRegex(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_MODULES));
+            componentBean.setName(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
+            componentBean.setDescription(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_DESCRIPTION));
+            componentBean.setModulesRegex(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_MODULES));
             componentBean.setDependencies(configuration.getList(PROPKEY_COMPONENT + componentId + PROPKEY_DEPENDENCIES));
             componentBean.setPosition(configuration.getInteger(
                 PROPKEY_COMPONENT + componentId + PROPKEY_POSITION,
@@ -2723,7 +2723,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void setExtProperty(String key, String value) {
 
-        m_configuration.addParameter(key, value);
+        m_configuration.add(key, value);
     }
 
     /**
@@ -2890,7 +2890,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
             if (forceWrite != null) {
                 for (String forced : forceWrite) {
-                    if (!alreadyWritten.contains(forced) && properties.containsParameter(forced)) {
+                    if (!alreadyWritten.contains(forced) && properties.containsKey(forced)) {
                         fw.write("\n\n");
                         fw.write(forced + "=");
                         try {

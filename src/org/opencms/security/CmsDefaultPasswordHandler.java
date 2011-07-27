@@ -80,7 +80,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.setParameter(paramName, paramValue);
+        m_configuration.put(paramName, paramValue);
     }
 
     /**
@@ -193,12 +193,12 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_INIT_CONFIG_CALLED_1, this);
             LOG.debug(message.key());
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
-            // supress compiler warning, this is never true
+            // suppress compiler warning, this is never true
             if (this == null) {
                 throw new CmsConfigurationException(message);
             }
         }
-        m_configuration.freeze();
+        m_configuration = CmsParameterConfiguration.unmodifiableVersion(m_configuration);
     }
 
     /**
