@@ -35,6 +35,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +43,8 @@ import java.util.Locale;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Unit test for searching in special fields of extracted document text.<p>
@@ -81,6 +84,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchFields("testExcerptCreationFromFields"));
         suite.addTest(new TestCmsSearchFields("testSearchWithFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testSearchWithCombinedFieldQuery"));
+        suite.addTest(new TestCmsSearchFields("testSearchWithPreBuildQuery"));
         suite.addTest(new TestCmsSearchFields("testExcerptCreationWithFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testSearchWithResouceTypeLimitaion"));
 
@@ -206,7 +210,6 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // search for "Cologne" in the "special" field
         searchBean.addFieldQueryMust("special", "Cologne");
-        searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
 
         // now also require that "article" is part of the Title
         searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
@@ -251,6 +254,87 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(1, searchResult.size());
+    }
+
+    /**
+     * Tests searching with a pre-build field query.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithPreBuildQuery() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search with a pre-build field query");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "article" or "opencms" in the "title" field, or "opencms" in the content field
+        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
+            CmsSearchField.FIELD_TITLE_UNSTORED,
+            Occur.SHOULD,
+            Arrays.asList("article", "opencms"),
+            Occur.SHOULD));
+        searchBean.addFieldQueryShould(CmsSearchField.FIELD_CONTENT, "opencms");
+        // extend the search to make the query more complex
+        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
+            CmsSearchField.FIELD_TITLE_UNSTORED,
+            Occur.MUST,
+            Arrays.asList("article", "page*", "index", "alkacon"),
+            Occur.SHOULD));
+        // extend the search to make the query more complex
+        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
+            CmsSearchField.FIELD_TITLE_UNSTORED,
+            Occur.MUST_NOT,
+            Arrays.asList("subfolder", "page1"),
+            Occur.SHOULD));
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with a comlex field query:");
+        TestCmsSearch.printResults(searchResult, cms);
+        String parsedQuery1 = searchBean.getParsedQuery();
+        echo("Query: " + parsedQuery1);
+        assertEquals(7, searchResult.size());
+
+        // now do a new search with the same parameters from a string
+        searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.setParsedQuery(parsedQuery1);
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found when reusing pre-parsed query:");
+        TestCmsSearch.printResults(searchResult, cms);
+        String parsedQuery2 = searchBean.getParsedQuery();
+        echo("Query: " + parsedQuery2);
+        assertEquals(7, searchResult.size());
+
+        // now do a new search with the same parameters from a string
+        searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.setParsedQuery(parsedQuery2);
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found when reusing pre-parsed query:");
+        TestCmsSearch.printResults(searchResult, cms);
+        String parsedQuery3 = searchBean.getParsedQuery();
+        echo("Query: " + parsedQuery3);
+        assertEquals(7, searchResult.size());
     }
 
     /**

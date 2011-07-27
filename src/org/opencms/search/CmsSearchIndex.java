@@ -212,10 +212,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
     /** Special value for the search.eclude property. */
-    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
 
     /** Special value for the search.eclude property. */
-    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
 
     /** Automatic ("auto") index rebuild mode. */
     public static final String REBUILD_MODE_AUTO = "auto";
@@ -1248,25 +1248,40 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             if (!params.isIgnoreQuery()) {
                 // since OpenCms 8 the query can be empty in which case only filters are used for the result
-                if (params.getFieldQueries() != null) {
+                if (params.getParsedQuery() != null) {
+                    // the query was already build, re-use it 
+                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    fieldsQuery = p.parse(params.getParsedQuery());
+                } else if (params.getFieldQueries() != null) {
                     // each field has an individual query
                     BooleanQuery mustOccur = null;
                     BooleanQuery shouldOccur = null;
-                    Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = params.getFieldQueries().iterator();
-                    while (i.hasNext()) {
-                        CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
+                    for (CmsSearchParameters.CmsSearchFieldQuery fq : params.getFieldQueries()) {
                         // add one sub-query for each defined field
                         QueryParser p = new QueryParser(LUCENE_VERSION, fq.getFieldName(), getAnalyzer());
+                        // first generate the combined keyword query
+                        Query keywordQuery = null;
+                        if (fq.getSearchTerms().size() == 1) {
+                            // this is just a single size keyword list
+                            keywordQuery = p.parse(fq.getSearchTerms().get(0));
+                        } else {
+                            // multiple size keyword list
+                            BooleanQuery keywordListQuery = new BooleanQuery();
+                            for (String keyword : fq.getSearchTerms()) {
+                                keywordListQuery.add(p.parse(keyword), fq.getTermOccur());
+                            }
+                            keywordQuery = keywordListQuery;
+                        }
                         if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
                             if (shouldOccur == null) {
                                 shouldOccur = new BooleanQuery();
                             }
-                            shouldOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                            shouldOccur.add(keywordQuery, fq.getOccur());
                         } else {
                             if (mustOccur == null) {
                                 mustOccur = new BooleanQuery();
                             }
-                            mustOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                            mustOccur.add(keywordQuery, fq.getOccur());
                         }
                     }
                     BooleanQuery booleanFieldsQuery = new BooleanQuery();
@@ -1305,6 +1320,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (query == null) {
                 // if no text query is set, then we match all documents 
                 query = new MatchAllDocsQuery();
+            } else {
+                // store the parsed query for page browsing
+                params.setParsedQuery(query.toString(CmsSearchField.FIELD_CONTENT));
             }
 
             // collect the categories

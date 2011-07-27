@@ -170,7 +170,7 @@ public final class CmsStringUtil {
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < arg.length; i++) {
             result.append(arg[i]);
-            if (i + 1 < arg.length) {
+            if ((i + 1) < arg.length) {
                 result.append(separator);
             }
         }
@@ -524,7 +524,7 @@ public final class CmsStringUtil {
         if (name.endsWith("/")) {
             names[names.length - 1] = names[names.length - 1] + "/";
         }
-        for (int i = 1; (total > maxLength) && (i < names.length - 1); i++) {
+        for (int i = 1; (total > maxLength) && (i < (names.length - 1)); i++) {
             if (i > 1) {
                 names[i - 1] = "";
             }
@@ -665,6 +665,31 @@ public final class CmsStringUtil {
         int result;
         try {
             result = Math.round(Float.parseFloat(value));
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Long (long) value for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as long
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the long value for the given parameter value String
+     */
+    public static long getLongValue(String value, long defaultValue, String key) {
+
+        long result;
+        try {
+            result = Long.valueOf(value).longValue();
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
@@ -1111,7 +1136,7 @@ public final class CmsStringUtil {
             String value = "";
             if (pos > 0) {
                 key = param.substring(0, pos);
-                if (pos + keyValLen < param.length()) {
+                if ((pos + keyValLen) < param.length()) {
                     value = param.substring(pos + keyValLen);
                 }
             }
@@ -1492,7 +1517,7 @@ public final class CmsStringUtil {
         String tmpValue = value;
         // loop over all rows with the old values between the place holders and take the values between them in the 
         // current property value
-        for (int placeCounter = 0; placeCounter < oldBetween.size() - 1; placeCounter++) {
+        for (int placeCounter = 0; placeCounter < (oldBetween.size() - 1); placeCounter++) {
             // get the two next values with the old values between the place holders
             String content = oldBetween.get(placeCounter);
             String nextContent = oldBetween.get(placeCounter + 1);
@@ -1633,13 +1658,13 @@ public final class CmsStringUtil {
         int pos = lastIndexOf(findPointSource, SENTENCE_ENDING_CHARS);
         if (pos >= 0) {
             // found a sentence ender in the lookup area, keep the sentence ender
-            result = source.substring(0, modLength - modArea + pos + 1) + suffix;
+            result = source.substring(0, (modLength - modArea) + pos + 1) + suffix;
         } else {
             // no sentence ender was found, try to find a whitespace
             pos = lastWhitespaceIn(findPointSource);
             if (pos >= 0) {
                 // found a whitespace, don't keep the whitespace
-                result = source.substring(0, modLength - modArea + pos) + suffix;
+                result = source.substring(0, (modLength - modArea) + pos) + suffix;
             } else {
                 // not even a whitespace was found, just cut away what's to long
                 result = source.substring(0, modLength) + suffix;
