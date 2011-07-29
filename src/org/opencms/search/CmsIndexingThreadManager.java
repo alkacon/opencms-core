@@ -37,7 +37,6 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriter;
 
 /**
  * Implements the management of indexing threads.<p>
@@ -94,7 +93,7 @@ public class CmsIndexingThreadManager {
      * @param writer the index writer that can update the index
      * @param res the resource
      */
-    public void createIndexingThread(CmsVfsIndexer indexer, IndexWriter writer, CmsResource res) {
+    public void createIndexingThread(CmsVfsIndexer indexer, I_CmsIndexWriter writer, CmsResource res) {
 
         I_CmsReport report = indexer.getReport();
         m_startedCounter++;
