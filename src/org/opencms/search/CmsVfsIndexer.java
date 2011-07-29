@@ -36,7 +36,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,8 +44,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
 
 /**
  * An indexer indexing {@link CmsResource} based content from the OpenCms VFS.<p>
@@ -68,9 +65,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private I_CmsReport m_report;
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexWriter, java.util.List)
+     * @see org.opencms.search.I_CmsIndexer#deleteResources(org.opencms.search.I_CmsIndexWriter, java.util.List)
      */
-    public void deleteResources(IndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete) {
+    public void deleteResources(I_CmsIndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete) {
 
         if ((resourcesToDelete == null) || resourcesToDelete.isEmpty()) {
             // nothing to delete
@@ -167,9 +164,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#rebuildIndex(org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager, org.opencms.search.CmsSearchIndexSource)
+     * @see org.opencms.search.I_CmsIndexer#rebuildIndex(org.opencms.search.I_CmsIndexWriter, org.opencms.search.CmsIndexingThreadManager, org.opencms.search.CmsSearchIndexSource)
      */
-    public void rebuildIndex(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
+    public void rebuildIndex(I_CmsIndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
     throws CmsIndexException {
 
         List<String> resourceNames = source.getResourcesNames();
@@ -208,10 +205,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#updateResources(org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager, java.util.List)
+     * @see org.opencms.search.I_CmsIndexer#updateResources(org.opencms.search.I_CmsIndexWriter, org.opencms.search.CmsIndexingThreadManager, java.util.List)
      */
     public void updateResources(
-        IndexWriter writer,
+        I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
         List<CmsPublishedResource> resourcesToUpdate) throws CmsIndexException {
 
@@ -303,16 +300,14 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @param indexWriter the index writer to resource the resource with
      * @param rootPath the root path of the resource to delete
      */
-    protected void deleteResource(IndexWriter indexWriter, String rootPath) {
+    protected void deleteResource(I_CmsIndexWriter indexWriter, String rootPath) {
 
-        // search for an exact match on the document root path
-        Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
         try {
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().getBundle().key(Messages.LOG_DELETING_FROM_INDEX_1, rootPath));
             }
             // delete all documents with this term from the index
-            indexWriter.deleteDocuments(term);
+            indexWriter.deleteDocuments(rootPath);
         } catch (IOException e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
@@ -345,7 +340,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    protected void updateResource(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
+    protected void updateResource(I_CmsIndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
     throws CmsIndexException {
 
         if (resource.isFolder() || resource.isTemporaryFile()) {
@@ -382,11 +377,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @param rootPath the root path of the resource to update
      * @param doc the new document for the resource
      */
-    protected void updateResource(IndexWriter indexWriter, String rootPath, Document doc) {
+    protected void updateResource(I_CmsIndexWriter indexWriter, String rootPath, Document doc) {
 
-        Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
         try {
-            indexWriter.updateDocument(pathTerm, doc);
+            indexWriter.updateDocument(rootPath, doc);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
