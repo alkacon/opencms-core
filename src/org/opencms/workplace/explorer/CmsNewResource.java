@@ -832,8 +832,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         String currentFolder = getParamCurrentFolder();
         if (CmsStringUtil.isEmpty(currentFolder)) {
             currentFolder = computeCurrentFolder();
-        }
-        return currentFolder + getParamResource();
+	}
+        String translatedFilename = OpenCms.getResourceManager().getFileTranslator().translateResource(getParamResource());
+        return currentFolder + translatedFilename;
     }
 
     /**
