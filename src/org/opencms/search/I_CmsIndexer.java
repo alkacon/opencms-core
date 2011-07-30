@@ -33,8 +33,6 @@ import org.opencms.report.I_CmsReport;
 
 import java.util.List;
 
-import org.apache.lucene.index.IndexWriter;
-
 /**
  * Indexes resources for the OpenCms search.<p>
  * 
@@ -53,7 +51,7 @@ public interface I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void deleteResources(IndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete)
+    void deleteResources(I_CmsIndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete)
     throws CmsIndexException;
 
     /**
@@ -92,7 +90,7 @@ public interface I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void rebuildIndex(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
+    void rebuildIndex(I_CmsIndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
     throws CmsIndexException;
 
     /**
@@ -105,7 +103,7 @@ public interface I_CmsIndexer {
      * @throws CmsIndexException if something goes wrong
      */
     void updateResources(
-        IndexWriter writer,
+        I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
         List<CmsPublishedResource> resourcesToUpdate) throws CmsIndexException;
 }

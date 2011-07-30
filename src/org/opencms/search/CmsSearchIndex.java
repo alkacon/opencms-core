@@ -786,7 +786,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @return a new instance of IndexWriter
      * @throws CmsIndexException if the index can not be opened
      */
-    public IndexWriter getIndexWriter(boolean create) throws CmsIndexException {
+    public I_CmsIndexWriter getIndexWriter(boolean create) throws CmsIndexException {
 
         IndexWriter indexWriter;
 
@@ -837,7 +837,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 e);
         }
 
-        return indexWriter;
+        return new CmsLuceneIndexWriter(indexWriter);
     }
 
     /**
