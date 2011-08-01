@@ -2064,7 +2064,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 initOfflineIndexes();
             }
 
-            IndexWriter writer = null;
+            I_CmsIndexWriter writer = null;
             try {
                 // create a backup of the existing index
                 String backup = index.createIndexBackup();
@@ -2212,7 +2212,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // unlock the index
             forceIndexUnlock(index, report, true);
 
-            IndexWriter writer = null;
+            I_CmsIndexWriter writer = null;
             try {
                 // obtain an index writer that updates the current index
                 writer = index.getIndexWriter(false);

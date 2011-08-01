@@ -68,7 +68,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
     protected int m_score;
 
     /** Holds the values of the search result fields. */
-    Map<String, String> m_fields;
+    protected Map<String, String> m_fields;
 
     /** Contains the pre-calculated memory size. */
     private int m_memorySize;
@@ -138,6 +138,13 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
         } else {
             m_documentType = null;
         }
+    }
+
+    /**
+     * Empty constructor to be used for overriding classes.
+     */
+    protected CmsSearchResult() {
+        
     }
 
     /**
