@@ -921,6 +921,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCH_USERS_0 = "ERR_SEARCH_USERS_0";
 
+    public static final String RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1 = "RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

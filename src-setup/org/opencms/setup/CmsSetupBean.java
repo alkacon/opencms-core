@@ -2723,7 +2723,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void setExtProperty(String key, String value) {
 
-        m_configuration.add(key, value);
+        m_configuration.put(key, value);
     }
 
     /**
