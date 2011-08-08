@@ -68,6 +68,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /** The scheme to identify a file in the OpenCms VFS. */
     public static final String OPENCMS_SCHEME = "opencms://";
 
+    /** Scheme for files which should be retrieved from the classpath. */
+    public static final String INTERNAL_SCHEME = "internal://";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
 
@@ -82,6 +85,14 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /** The location of the XML page XML schema. */
     private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
+
+    /**
+     * A list of string pairs used to translate legacy system ids to a new form. The first component of each pair
+     * is the prefix which should be replaced by the second component of that pair. 
+     */
+    private static final String[][] m_legacyTranslations = {
+        {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
+        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
 
     /** The (old) DTD address of the OpenCms xmlpage (used in 5.3.5). */
     private static final String XMLPAGE_OLD_DTD_SYSTEM_ID_1 = "http://www.opencms.org/dtd/6.0/xmlpage.dtd";
@@ -138,6 +149,20 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         if (m_cachePermanent != null) {
             return m_cachePermanent.containsKey(systemId);
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether the given schema id is an internal schema id or is translated to an internal schema id.<p>
+     * @param schema the schema id 
+     * @return true if the given schema id is an internal schema id or translated to an internal schema id  
+     */
+    public static boolean isInternalId(String schema) {
+
+        String translatedId = translateLegacySystemId(schema);
+        if (translatedId.startsWith(INTERNAL_SCHEME)) {
+            return true;
         }
         return false;
     }
@@ -211,6 +236,23 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     cacheContentDefinitions);
             }
         }
+    }
+
+    /**
+     * Translates a legacy system id to a new form.<p>
+     * 
+     * @param systemId the original system id 
+     * @return the new system id 
+     */
+    private static String translateLegacySystemId(String systemId) {
+
+        for (String[] translation : m_legacyTranslations) {
+            if (systemId.startsWith(translation[0])) {
+                // replace prefix with second component if it matches the first component
+                return translation[1] + systemId.substring(translation[0].length());
+            }
+        }
+        return systemId;
     }
 
     /**
@@ -302,6 +344,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         // lookup the system id caches first
         byte[] content;
+        systemId = translateLegacySystemId(systemId);
         content = m_cachePermanent.get(systemId);
         if (content != null) {
 
@@ -363,9 +406,20 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
+
+        } else if (systemId.startsWith(INTERNAL_SCHEME)) {
+            String location = systemId.substring(INTERNAL_SCHEME.length());
+            try {
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
+                content = CmsFileUtil.readFully(stream);
+                m_cachePermanent.put(systemId, content);
+                return new InputSource(new ByteArrayInputStream(content));
+            } catch (Throwable t) {
+                LOG.error(t.getLocalizedMessage(), t);
+            }
+
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
             CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {
-
             // default DTD location in the org.opencms.configuration package
             String location = null;
             try {
@@ -379,9 +433,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }
-
         }
-
         // use the default behaviour (i.e. resolve through external URL)
         return null;
     }
