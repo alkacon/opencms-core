@@ -420,7 +420,8 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             currentFolder = computeCurrentFolder();
         }
 
-	String translatedFoldername = OpenCms.getResourceManager().getFolderTranslator().translateResource(getParamResource());
+        String translatedFoldername = OpenCms.getResourceManager().getFolderTranslator().translateResource(
+            getParamResource());
 
         return currentFolder + translatedFoldername;
     }
@@ -639,11 +640,13 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
                 // add found setting to list
                 CmsListItem item = getList().newItem(set.getName());
                 item.set(LIST_COLUMN_NAME, key(set.getKey()));
-                item.set(LIST_COLUMN_ICON, "<img src=\""
-                    + getSkinUri()
-                    + CmsWorkplace.RES_PATH_FILETYPES
-                    + set.getIcon()
-                    + "\" style=\"width: 16px; height: 16px;\" />");
+                item.set(
+                    LIST_COLUMN_ICON,
+                    "<img src=\""
+                        + getSkinUri()
+                        + CmsWorkplace.RES_PATH_FILETYPES
+                        + set.getIcon()
+                        + "\" style=\"width: 16px; height: 16px;\" />");
                 ret.add(item);
             }
         }
