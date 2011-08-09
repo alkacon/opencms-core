@@ -6,7 +6,7 @@
 	<ui:style field="m_style" type="org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewContent.I_CmsPreviewContentStyle">
 		div.panel{
 			height: 100%;
-			overflow: auto;
+			overflow: hidden;
 			position: relative;
 		}
 		div.panel > div {
@@ -14,6 +14,9 @@
 		}
 		div.panel div.previewContent{
 			margin-top: 10px;
+			height: 310px;
+			position: relative;
+			overflow: auto;
 		}
 		
 	</ui:style>
