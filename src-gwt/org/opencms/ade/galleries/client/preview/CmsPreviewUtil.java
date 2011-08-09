@@ -109,12 +109,12 @@ public final class CmsPreviewUtil {
         }
         $wnd[listKey][previewName] = {};
         $wnd[listKey][previewName][@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION] = function(
-                mode, path, parentElementId) {
-            preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::openPreview(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, parentElementId);
+                mode, path, locale, parentElementId) {
+            preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::openPreview(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, locale, parentElementId);
         };
         $wnd[listKey][previewName][@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION] = function(
-                mode, path, title) {
-            preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::selectResource(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, title);
+                mode, path, locale, title) {
+            preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::selectResource(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, locale, title);
         };
         $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_DATA_IN_EDITOR_FUNCTION] = function() {
             return preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::setDataInEditor()();

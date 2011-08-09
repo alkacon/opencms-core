@@ -74,9 +74,9 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     private static final long serialVersionUID = -8175522641937277445L;
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getImageInfo(java.lang.String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getImageInfo(java.lang.String, java.lang.String)
      */
-    public CmsImageInfoBean getImageInfo(String resourcePath) throws CmsRpcException {
+    public CmsImageInfoBean getImageInfo(String resourcePath, String locale) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         CmsImageInfoBean resInfo = new CmsImageInfoBean();
@@ -87,7 +87,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                 resName = resourcePath.substring(0, pos);
             }
             CmsResource resource = cms.readResource(resName);
-            readResourceInfo(cms, resource, resInfo);
+            readResourceInfo(cms, resource, resInfo, locale);
             resInfo.setHash(resource.getStructureId().hashCode());
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             int height = -1;
@@ -109,9 +109,9 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getResourceInfo(java.lang.String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getResourceInfo(java.lang.String, java.lang.String)
      */
-    public CmsResourceInfoBean getResourceInfo(String resourcePath) throws CmsRpcException {
+    public CmsResourceInfoBean getResourceInfo(String resourcePath, String locale) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         CmsResourceInfoBean resInfo = new CmsResourceInfoBean();
@@ -122,7 +122,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                 resName = resourcePath.substring(0, pos);
             }
             CmsResource resource = cms.readResource(resName);
-            readResourceInfo(cms, resource, resInfo);
+            readResourceInfo(cms, resource, resInfo, locale);
         } catch (CmsException e) {
             error(e);
         }
@@ -135,10 +135,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
      * @param cms the initialized cms object
      * @param resource the resource
      * @param resInfo the resource info bean
+     * @param locale the content locale
      * 
      * @throws CmsException if something goes wrong
      */
-    public void readResourceInfo(CmsObject cms, CmsResource resource, CmsResourceInfoBean resInfo) throws CmsException {
+    public void readResourceInfo(CmsObject cms, CmsResource resource, CmsResourceInfoBean resInfo, String locale)
+    throws CmsException {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
 
@@ -176,21 +178,21 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
         }
         resInfo.setProperties(props);
-        resInfo.setPreviewContent(getPreviewContent(cms, resource, cms.getRequestContext().getLocale()));
+        resInfo.setPreviewContent(getPreviewContent(cms, resource, new Locale(locale)));
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#syncGetImageInfo(java.lang.String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#syncGetImageInfo(java.lang.String, java.lang.String)
      */
-    public CmsImageInfoBean syncGetImageInfo(String resourcePath) throws CmsRpcException {
+    public CmsImageInfoBean syncGetImageInfo(String resourcePath, String locale) throws CmsRpcException {
 
-        return getImageInfo(resourcePath);
+        return getImageInfo(resourcePath, locale);
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#updateImageProperties(java.lang.String, java.util.Map)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#updateImageProperties(java.lang.String, java.lang.String, java.util.Map)
      */
-    public CmsImageInfoBean updateImageProperties(String resourcePath, Map<String, String> properties)
+    public CmsImageInfoBean updateImageProperties(String resourcePath, String locale, Map<String, String> properties)
     throws CmsRpcException {
 
         try {
@@ -198,21 +200,23 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         } catch (CmsException e) {
             error(e);
         }
-        return getImageInfo(resourcePath);
+        return getImageInfo(resourcePath, locale);
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#updateResourceProperties(java.lang.String, java.util.Map)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#updateResourceProperties(java.lang.String, java.lang.String, java.util.Map)
      */
-    public CmsResourceInfoBean updateResourceProperties(String resourcePath, Map<String, String> properties)
-    throws CmsRpcException {
+    public CmsResourceInfoBean updateResourceProperties(
+        String resourcePath,
+        String locale,
+        Map<String, String> properties) throws CmsRpcException {
 
         try {
             saveProperties(resourcePath, properties);
         } catch (CmsException e) {
             error(e);
         }
-        return getResourceInfo(resourcePath);
+        return getResourceInfo(resourcePath, locale);
     }
 
     /**
@@ -236,13 +240,15 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                 CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
 
                 if (formatter != null) {
-                    CmsResource formatterResource = cms.readResource(formatter.getJspStructureId());
+                    CmsObject tempCms = OpenCms.initCmsObject(cms);
+                    tempCms.getRequestContext().setLocale(locale);
+                    CmsResource formatterResource = tempCms.readResource(formatter.getJspStructureId());
                     CmsContainerElementBean element = new CmsContainerElementBean(
                         resource.getStructureId(),
                         formatter.getJspStructureId(),
                         null,
                         false);
-                    element.initResource(cms);
+                    element.initResource(tempCms);
                     CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
                         OpenCms.getResourceManager().getLoader(formatterResource),
                         element.getResource(),
@@ -254,7 +260,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         1,
                         Collections.<CmsContainerElementBean> emptyList());
                     containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));
-                    getRequest().setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, cms);
+                    getRequest().setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, tempCms);
                     CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(getRequest());
                     standardContext.setContainer(containerBean);
                     standardContext.setElement(element);
@@ -264,7 +270,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = getResponse().getCharacterEncoding();
                     return (new String(loaderFacade.getLoader().dump(
-                        cms,
+                        tempCms,
                         loaderRes,
                         null,
                         locale,

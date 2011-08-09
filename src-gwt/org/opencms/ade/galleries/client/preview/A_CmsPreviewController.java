@@ -54,30 +54,8 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
 
-    /**
-     * Selects the resource.<p>
-     * 
-     * @param galleryMode the gallery mode 
-     * @param resourcePath the path of the selected resource
-     * @param title the resource title
-     */
-    public static void select(GalleryMode galleryMode, String resourcePath, String title) {
-
-        switch (galleryMode) {
-            case widget:
-                CmsPreviewUtil.setResourcePath(resourcePath);
-                break;
-            case editor:
-                CmsPreviewUtil.setLink(resourcePath, title, null);
-                CmsPreviewUtil.closeDialog();
-                break;
-            case ade:
-            case view:
-            default:
-                //nothing to do here, should not be called
-                break;
-        }
-    }
+    /** The content locale. */
+    protected String m_locale;
 
     /**
      * Returns the preview service.<p>
@@ -131,6 +109,31 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
         getHandler().removePreview();
         m_infoBean = null;
         m_previewService = null;
+    }
+
+    /**
+     * Selects the resource.<p>
+     * 
+     * @param galleryMode the gallery mode 
+     * @param resourcePath the path of the selected resource
+     * @param title the resource title
+     */
+    public void select(GalleryMode galleryMode, String resourcePath, String title) {
+
+        switch (galleryMode) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(resourcePath);
+                break;
+            case editor:
+                CmsPreviewUtil.setLink(resourcePath, title, null);
+                CmsPreviewUtil.closeDialog();
+                break;
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
     }
 
     /**

@@ -81,6 +81,9 @@ public class CmsClientProperty implements IsSerializable {
     /** The path component identifying a structure value. */
     public static final String PATH_STRUCTURE_VALUE = "S";
 
+    /** The copyright property name. */
+    public static final String PROPERTY_COPYRIGHT = "Copyright";
+
     /** The default-file property name. */
     public static final String PROPERTY_DEFAULTFILE = "default-file";
 
