@@ -103,6 +103,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The vfs service. */
     private I_CmsVfsServiceAsync m_vfsService;
 
+    /** The current load results call id. */
+    protected int m_currentCallId;
+
+    /** Flag to indicate that a load results request is currently running. */
+    protected boolean m_loading;
+
     /**
      * Constructor.<p>
      * 
@@ -358,6 +364,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the search locale.<p>
+     * 
+     * @return the search locale
+     */
+    public String getSearchLocale() {
+
+        return m_searchObject.getLocale();
+    }
+
+    /**
      * Returns the start locale.<p>
      * 
      * @return the start locale
@@ -406,6 +422,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns if a load results request is currently running.<p>
+     * 
+     * @return <code>true</code> if a load results request is currently running
+     */
+    public boolean isLoading() {
+
+        return m_loading;
+    }
+
+    /**
      * Checks if the gallery is first opened in results tab.<p> 
      * 
      * @return true if gallery is first opened in results tab, false otherwise
@@ -450,7 +476,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         String provider = getProviderName(resourceType);
         if (provider != null) {
-            String message = openPreview(provider, m_dialogMode.name(), resourcePath, m_handler.getDialogElementId());
+            String message = openPreview(
+                provider,
+                m_dialogMode.name(),
+                resourcePath,
+                getSearchLocale(),
+                m_handler.getDialogElementId());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
                 // should never happen
                 CmsDebugLog.getInstance().printLine(message);
@@ -521,7 +552,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         String provider = getProviderName(resourceType);
         if (provider != null) {
-            String message = selectResource(provider, m_dialogMode.name(), resourcePath, title);
+            String message = selectResource(provider, m_dialogMode.name(), resourcePath, getSearchLocale(), title);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
                 // should never happen
                 CmsDebugLog.getInstance().printLine(message);
@@ -714,12 +745,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             /** The RPC search action for the gallery dialog. */
             CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
 
+                private int m_callId;
+
                 /**
                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
                 */
                 @Override
                 public void execute() {
 
+                    m_currentCallId++;
+                    m_callId = m_currentCallId;
+                    m_loading = true;
                     CmsGallerySearchBean preparedObject = prepareSearchObject();
                     if (isNextPage) {
                         preparedObject.setPage(preparedObject.getPage() + 1);
@@ -735,9 +771,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 @Override
                 public void onResponse(CmsGallerySearchBean searchObj) {
 
+                    if (m_callId != m_currentCallId) {
+                        return;
+                    }
                     if (!isNextPage) {
                         m_handler.hideShowPreviewButton(true);
                     }
+                    m_loading = false;
                     m_searchObject.setResults(searchObj.getResults());
                     m_searchObject.setResultCount(searchObj.getResultCount());
                     m_searchObject.setSortOrder(searchObj.getSortOrder());
@@ -1009,6 +1049,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param previewName the name of the preview provider
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
+     * @param locale the content locale
      * @param parentElementId the id of the dialog element to insert the preview into
      * 
      * @return debug message
@@ -1017,43 +1058,45 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         String previewName,
         String galleryMode,
         String resourcePath,
+        String locale,
         String parentElementId)/*-{
-      try {
-         var openPreview = null;
-         var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-         if (providerList) {
-            var provider = providerList[previewName];
-            if (provider) {
-               openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
-               var removePrevious = $wnd["removePreview" + parentElementId];
-               if (removePrevious != null
-                     && typeof (removePrevious) == 'function') {
-                  try {
-                     removePrevious();
-                     $wnd["removePreview" + parentElementId] = null;
-                  } catch (err) {
-                     // should not happen, ignore
-                  }
-               }
-               if (openPreview && typeof (openPreview) == 'function') {
-                  try {
-                     openPreview(galleryMode, resourcePath, parentElementId);
-                  } catch (err) {
-                     return "ERROR: " + err.description;
-                  }
-                  return null;
-               } else {
-                  return "Open function not available";
-               }
+        try {
+            var openPreview = null;
+            var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+            if (providerList) {
+                var provider = providerList[previewName];
+                if (provider) {
+                    openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
+                    var removePrevious = $wnd["removePreview" + parentElementId];
+                    if (removePrevious != null
+                            && typeof (removePrevious) == 'function') {
+                        try {
+                            removePrevious();
+                            $wnd["removePreview" + parentElementId] = null;
+                        } catch (err) {
+                            // should not happen, ignore
+                        }
+                    }
+                    if (openPreview && typeof (openPreview) == 'function') {
+                        try {
+                            openPreview(galleryMode, resourcePath, locale,
+                                    parentElementId);
+                        } catch (err) {
+                            return "ERROR: " + err.description;
+                        }
+                        return null;
+                    } else {
+                        return "Open function not available";
+                    }
+                } else {
+                    return "Provider " + previewName + " not available";
+                }
             } else {
-               return "Provider " + previewName + " not available";
+                return "Provider list not available";
             }
-         } else {
-            return "Provider list not available";
-         }
-      } catch (err) {
-         return err.description;
-      }
+        } catch (err) {
+            return err.description;
+        }
     }-*/;
 
     /**
@@ -1066,27 +1109,32 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * 
      * @return an error message if an error occurred
      */
-    private native String selectResource(String previewName, String galleryMode, String resourcePath, String title)/*-{
-      var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-      if (providerList) {
-         var provider = providerList[previewName];
-         if (provider) {
-            var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
-            if (selectResource) {
-               try {
-                  selectResource(galleryMode, resourcePath, title);
-               } catch (err) {
-                  return err.description;
-               }
-               return null;
+    private native String selectResource(
+        String previewName,
+        String galleryMode,
+        String resourcePath,
+        String locale,
+        String title)/*-{
+        var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList) {
+            var provider = providerList[previewName];
+            if (provider) {
+                var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
+                if (selectResource) {
+                    try {
+                        selectResource(galleryMode, resourcePath, locale, title);
+                    } catch (err) {
+                        return err.description;
+                    }
+                    return null;
+                } else {
+                    return "Select function not available";
+                }
             } else {
-               return "Select function not available";
+                return "Provider " + previewName + " not available";
             }
-         } else {
-            return "Provider " + previewName + " not available";
-         }
-      } else {
-         return "Provider list not available";
-      }
+        } else {
+            return "Provider list not available";
+        }
     }-*/;
 }
