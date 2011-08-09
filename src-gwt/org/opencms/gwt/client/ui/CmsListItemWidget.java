@@ -848,6 +848,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         box.setText(m_title.getText());
         box.getElement().setAttribute("size", "45");
         box.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelInput());
+        box.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().titleInput());
         final String originalTitle = m_title.getText();
         // wrap the boolean flag in an array so we can change it from the event handlers 
         final boolean[] checked = new boolean[] {false};
