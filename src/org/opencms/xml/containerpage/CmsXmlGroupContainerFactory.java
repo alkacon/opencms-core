@@ -58,9 +58,6 @@ import org.xml.sax.EntityResolver;
  */
 public final class CmsXmlGroupContainerFactory {
 
-    /** The ADE cache. */
-    private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
-
     /**
      * No instances of this class should be created.<p> 
      */
@@ -382,6 +379,16 @@ public final class CmsXmlGroupContainerFactory {
     }
 
     /**
+     * Gets the ADE cache from the ADE manager.<p>
+     * 
+     * @return the ADE cache 
+     */
+    private static CmsADECache getCache() {
+
+        return OpenCms.getADEManager().getCache();
+    }
+
+    /**
      * Returns the cached group container.<p>
      * 
      * @param cms the cms context
@@ -395,8 +402,8 @@ public final class CmsXmlGroupContainerFactory {
         if (resource instanceof I_CmsHistoryResource) {
             return null;
         }
-        return m_cache.getCacheGroupContainer(
-            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
+        return getCache().getCacheGroupContainer(
+            getCache().getCacheKey(resource.getStructureId(), keepEncoding),
             cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
@@ -413,8 +420,8 @@ public final class CmsXmlGroupContainerFactory {
             return;
         }
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        m_cache.setCacheGroupContainer(
-            m_cache.getCacheKey(xmlGroupContainer.getFile().getStructureId(), keepEncoding),
+        getCache().setCacheGroupContainer(
+            getCache().getCacheKey(xmlGroupContainer.getFile().getStructureId(), keepEncoding),
             xmlGroupContainer,
             online);
     }

@@ -59,9 +59,6 @@ import org.xml.sax.EntityResolver;
  */
 public final class CmsXmlContainerPageFactory {
 
-    /** The ADE cache. */
-    private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
-
     /**
      * No instances of this class should be created.<p> 
      */
@@ -409,6 +406,16 @@ public final class CmsXmlContainerPageFactory {
     }
 
     /**
+     * Gets the ADE cache from the ADE manager.<p>
+     * 
+     * @return the ADE cache 
+     */
+    private static CmsADECache getCache() {
+
+        return OpenCms.getADEManager().getCache();
+    }
+
+    /**
      * Returns the cached container page.<p>
      * 
      * @param cms the cms context
@@ -422,8 +429,8 @@ public final class CmsXmlContainerPageFactory {
         if (resource instanceof I_CmsHistoryResource) {
             return null;
         }
-        return m_cache.getCacheContainerPage(
-            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
+        return getCache().getCacheContainerPage(
+            getCache().getCacheKey(resource.getStructureId(), keepEncoding),
             cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
@@ -440,8 +447,8 @@ public final class CmsXmlContainerPageFactory {
             return;
         }
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        m_cache.setCacheContainerPage(
-            m_cache.getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
+        getCache().setCacheContainerPage(
+            getCache().getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
             xmlCntPage,
             online);
     }
