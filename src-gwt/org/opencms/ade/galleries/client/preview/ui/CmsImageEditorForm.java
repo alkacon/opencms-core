@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -192,15 +193,23 @@ public class CmsImageEditorForm extends Composite {
     /**
      * Displays the provided image information.<p>
      * 
+     * @param imageInfo the image information
      * @param imageAttributes the image attributes
      */
-    public void fillContent(CmsJSONMap imageAttributes) {
+    public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes) {
 
         m_initialImageAttributes = imageAttributes;
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = imageAttributes.getString(entry.getKey().name());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                 entry.getValue().setFormValueAsString(val);
+            } else {
+                if (entry.getKey() == Attribute.alt) {
+                    entry.getValue().setFormValueAsString(imageInfo.getTitle());
+                }
+                if (entry.getKey() == Attribute.copyright) {
+                    entry.getValue().setFormValueAsString(imageInfo.getCopyright());
+                }
             }
         }
     }

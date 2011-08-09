@@ -28,9 +28,11 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
+import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
 import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.util.CmsJSONMap;
 
 import java.util.Map;
 
@@ -70,7 +72,13 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
 
-        m_form.fillContent(CmsPreviewUtil.getImageInfo());
+        CmsJSONMap imageInfos = CmsPreviewUtil.getImageInfo();
+        // checking if selected image resource is the same as previewed resource
+        if (imageInfos.containsKey(Attribute.hash.name())
+            && !imageInfos.getString(Attribute.hash.name()).equals(String.valueOf(m_handler.getImageIdHash()))) {
+            imageInfos = CmsJSONMap.createJSONMap();
+        }
+        m_form.fillContent(imageInfo, imageInfos);
     }
 
     /**
