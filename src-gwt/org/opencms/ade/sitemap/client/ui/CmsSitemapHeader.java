@@ -74,15 +74,14 @@ public class CmsSitemapHeader extends Composite {
     /**
      * Constructor.<p>
      * 
-     * @param info the sitemap info to display 
+     * @param sitemapInfo the sitemap info to display 
      */
-    public CmsSitemapHeader(CmsSitemapInfo info) {
+    public CmsSitemapHeader(CmsSitemapInfo sitemapInfo) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_title.setInnerText(info.getTitle());
-        m_description.setInnerText(info.getDescription());
-        m_siteHost.setInnerText(info.getSiteHost());
-        m_locale.setInnerText("[" + info.getSiteLocale() + "]");
+        m_title.setInnerText(sitemapInfo.getTitle());
+        m_description.setInnerText(sitemapInfo.getDescription());
+        m_siteHost.setInnerText(sitemapInfo.getSiteHost());
+        m_locale.setInnerText("[" + sitemapInfo.getSiteLocale() + "]");
     }
-
 }

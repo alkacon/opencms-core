@@ -31,7 +31,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
-import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @since 8.0.0
  */
-public class CmsToolbarGoBackButton extends CmsToggleButton {
+public class CmsToolbarGoBackButton extends CmsPushButton {
 
     /**
      * Constructor.<p>
