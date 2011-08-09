@@ -146,8 +146,8 @@ public class CmsPublish {
     /** The current cms context. */
     private final CmsObject m_cms;
 
-    /** The current locale. */
-    private final Locale m_locale;
+    /** The current user workplace locale. */
+    private final Locale m_workplaceLocale;
 
     /** The options. */
     private final CmsPublishOptions m_options;
@@ -162,9 +162,7 @@ public class CmsPublish {
      */
     public CmsPublish(CmsObject cms) {
 
-        m_cms = cms;
-        m_locale = m_cms.getRequestContext().getLocale();
-        m_options = new CmsPublishOptions();
+        this(cms, new CmsPublishOptions());
     }
 
     /**
@@ -176,7 +174,7 @@ public class CmsPublish {
     public CmsPublish(CmsObject cms, CmsPublishOptions options) {
 
         m_cms = cms;
-        m_locale = m_cms.getRequestContext().getLocale();
+        m_workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         m_options = options;
     }
 
@@ -216,7 +214,7 @@ public class CmsPublish {
                         try {
                             CmsResource theResource = relation.getSource(m_cms, CmsResourceFilter.ALL);
                             CmsPublishResourceInfo info = new CmsPublishResourceInfo(
-                                Messages.get().getBundle(m_locale).key(Messages.GUI_BROKEN_LINK_ONLINE_0),
+                                Messages.get().getBundle(m_workplaceLocale).key(Messages.GUI_BROKEN_LINK_ONLINE_0),
                                 CmsPublishResourceInfo.Type.BROKENLINK);
                             // HACK: GWT serialization does not like unmodifiable collections :(
                             // Collections.singletonList(resourceToBean(resource, info, false, null)));
@@ -244,7 +242,7 @@ public class CmsPublish {
                             }
                         }
                         CmsPublishResourceInfo info = new CmsPublishResourceInfo(
-                            Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_MISSING_ONLINE_0),
+                            Messages.get().getBundle(m_workplaceLocale).key(Messages.GUI_RESOURCE_MISSING_ONLINE_0),
                             CmsPublishResourceInfo.Type.MISSING);
                         CmsPublishResource pubRes = resourceToBean(resource, info, false, related);
                         resources.add(pubRes);
@@ -361,7 +359,7 @@ public class CmsPublish {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        CmsPublishGroupHelper groupHelper = new CmsPublishGroupHelper(m_locale);
+        CmsPublishGroupHelper groupHelper = new CmsPublishGroupHelper(m_workplaceLocale);
 
         Map<Long, Integer> daysMap = groupHelper.computeDaysForResources(sortedResources);
         Map<GroupAge, List<CmsResource>> resourcesByAge = groupHelper.partitionPublishResourcesByAge(
@@ -703,7 +701,7 @@ public class CmsPublish {
                     info = getResourceInfo(resource, published, permissions, locked);
                 } else if (!target.getState().isUnchanged()) {
                     // a modified related resource can not be published
-                    info = new CmsPublishResourceInfo(Messages.get().getBundle(m_locale).key(
+                    info = new CmsPublishResourceInfo(Messages.get().getBundle(m_workplaceLocale).key(
                         Messages.GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0), CmsPublishResourceInfo.Type.RELATED);
                 } else {
                     continue;
@@ -743,17 +741,17 @@ public class CmsPublish {
                 // TODO: get the real publish data
                 String publishUser = getOuAwareName(m_cms.readUser(resource.getUserLastModified()).getName());
                 Date publishDate = new Date(resource.getDateLastModified());
-                info = Messages.get().getBundle(m_locale).key(
+                info = Messages.get().getBundle(m_workplaceLocale).key(
                     Messages.GUI_RESOURCE_PUBLISHED_BY_2,
                     publishUser,
                     publishDate);
                 infoType = CmsPublishResourceInfo.Type.PUBLISHED;
             } else if (permissions.contains(resource)) {
-                info = Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0);
+                info = Messages.get().getBundle(m_workplaceLocale).key(Messages.GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0);
                 infoType = CmsPublishResourceInfo.Type.PERMISSIONS;
             } else if (locked.contains(resource)) {
                 CmsLock lock = m_cms.getLock(resource);
-                info = Messages.get().getBundle(m_locale).key(
+                info = Messages.get().getBundle(m_workplaceLocale).key(
                     Messages.GUI_RESOURCE_LOCKED_BY_2,
                     getOuAwareName(m_cms.readUser(lock.getUserId()).getName()),
                     getOuAwareName(lock.getProject().getName()));
@@ -789,7 +787,7 @@ public class CmsPublish {
             } else {
                 siteName = "/";
             }
-            rootPath = org.opencms.workplace.commons.Messages.get().getBundle(m_locale).key(
+            rootPath = org.opencms.workplace.commons.Messages.get().getBundle(m_workplaceLocale).key(
                 org.opencms.workplace.commons.Messages.GUI_PUBLISH_SITE_RELATION_2,
                 new Object[] {siteName, rootPath});
         }
