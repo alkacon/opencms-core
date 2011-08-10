@@ -6448,6 +6448,14 @@
 					<name>locale</name>
 					<value><![CDATA[de]]></value>
 				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[13.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Template III Demo [deutsch]]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>

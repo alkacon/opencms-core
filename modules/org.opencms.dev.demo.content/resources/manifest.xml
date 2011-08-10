@@ -85,6 +85,10 @@
 					<value><![CDATA[Dev Demo]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[60]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Dev Demo]]></value>
 				</property>
@@ -2383,7 +2387,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[3.4028235E38]]></value>
+					<value><![CDATA[10]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -2657,7 +2661,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[3.4028235E38]]></value>
+					<value><![CDATA[15]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
