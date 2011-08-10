@@ -30,7 +30,6 @@ package org.opencms.gwt.client.rpc;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.shared.rpc.I_CmsLogService;
 import org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -112,9 +111,7 @@ public final class CmsLog {
 
         if (m_loggingService == null) {
             m_loggingService = GWT.create(I_CmsLogService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.gwt.CmsLogService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.gwt.CmsLogService.gwt");
             ((ServiceDefTarget)m_loggingService).setServiceEntryPoint(serviceUrl);
 
         }

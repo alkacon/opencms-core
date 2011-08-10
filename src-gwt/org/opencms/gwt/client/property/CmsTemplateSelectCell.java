@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.A_CmsSelectCell;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -117,8 +116,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
         m_topLabel.setText(template.getTitle());
         m_bottomLabel.setText(template.getDescription());
         m_imageBox.clear();
-        m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath()
-            + SCALE_PARAMS)));
+        m_imageBox.add(new Image(CmsCoreProvider.get().link(template.getImgPath() + SCALE_PARAMS)));
         String stylename = I_CmsInputLayoutBundle.INSTANCE.inputCss().weakText();
         if (template.isShowWeakText()) {
             m_topLabel.addStyleName(stylename);

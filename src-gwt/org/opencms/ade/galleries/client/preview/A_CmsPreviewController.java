@@ -32,7 +32,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -66,9 +65,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         if (m_previewService == null) {
             m_previewService = GWT.create(I_CmsPreviewService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.galleries.CmsPreviewService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsPreviewService.gwt");
             ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
         }
         return m_previewService;

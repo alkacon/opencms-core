@@ -806,9 +806,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_gallerySvc == null) {
             m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.galleries.CmsGalleryService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
             ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
         }
         return m_gallerySvc;

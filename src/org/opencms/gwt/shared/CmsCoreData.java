@@ -65,8 +65,8 @@ public class CmsCoreData implements IsSerializable {
     /** The XML content editor URL. */
     private String m_contentEditorUrl;
 
-    /** The OpenCms context. */
-    private String m_context;
+    /** The OpenCms VFS prefix. */
+    private String m_vfsPrefix;
 
     /** The mappings of file extensions to resource types. */
     private Map<String, String> m_extensionMapping;
@@ -115,7 +115,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getContentEditorBacklinkUrl(),
             clone.getContentEditorDeleteLinkUrl(),
             clone.getLoginURL(),
-            clone.getContext(),
+            clone.getVfsPrefix(),
             clone.getSiteRoot(),
             clone.getLocale(),
             clone.getWpLocale(),
@@ -134,7 +134,7 @@ public class CmsCoreData implements IsSerializable {
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
      * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
      * @param loginUrl the login JSP URL
-     * @param context the OpenCms context
+     * @param vfsPrefix the OpenCms VFS prefix
      * @param siteRoot the current site root
      * @param locale the current request locale
      * @param wpLocale the workplace locale
@@ -150,7 +150,7 @@ public class CmsCoreData implements IsSerializable {
         String contentEditorBacklinkUrl,
         String contentEditorDeleteLinkUrl,
         String loginUrl,
-        String context,
+        String vfsPrefix,
         String siteRoot,
         String locale,
         String wpLocale,
@@ -165,7 +165,7 @@ public class CmsCoreData implements IsSerializable {
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
         m_contentEditorDeleteLinkUrl = contentEditorDeleteLinkUrl;
         m_loginURL = loginUrl;
-        m_context = context;
+        m_vfsPrefix = vfsPrefix;
         m_siteRoot = siteRoot;
         m_locale = locale;
         m_wpLocale = wpLocale;
@@ -218,13 +218,13 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
-     * Returns the OpenCms context.<p>
+     * Returns the OpenCms VFS prefix.<p>
      *
-     * @return the OpenCms context
+     * @return the OpenCms VFS prefix
      */
-    public String getContext() {
+    public String getVfsPrefix() {
 
-        return m_context;
+        return m_vfsPrefix;
     }
 
     /**

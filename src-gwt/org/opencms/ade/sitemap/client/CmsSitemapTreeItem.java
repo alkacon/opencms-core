@@ -216,7 +216,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public String getDisplayedUrl(String sitePath) {
 
-        String context = CmsCoreProvider.get().getContext();
         if (m_entry.isLeafType() && sitePath.endsWith("/")) {
             sitePath = sitePath.substring(0, sitePath.length() - 1);
         }
@@ -232,7 +231,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 return CmsStringUtil.joinPaths(rfsPrefix, exportName, sitePath);
             }
         }
-        return CmsStringUtil.joinPaths(context, sitePath);
+        return CmsCoreProvider.get().link(sitePath);
     }
 
     /**
