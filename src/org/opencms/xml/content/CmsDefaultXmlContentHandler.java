@@ -41,6 +41,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsListResourceBundle;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLock;
@@ -132,6 +133,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "key" appinfo attribute name. */
     public static final String APPINFO_ATTR_KEY = "key";
 
+    /** Constant for the "locale" appinfo attribute name. */
+    public static final String APPINFO_ATTR_LOCALE = "locale";
+
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
 
@@ -170,9 +174,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
-
-    /** Constant for the "locale" appinfo attribute name. */
-    public static final String APPINFO_ATTR_LOCALE = "locale";
 
     /** Constant for the "node" appinfo attribute value. */
     public static final String APPINFO_ATTR_TYPE_NODE = "node";
@@ -243,6 +244,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
 
+    /** Constant for the "propertybundle" appinfo element name. */
+    public static final String APPINFO_PROPERTYBUNDLE = "propertybundle";
+
     /** Constant for the "relation" appinfo element name. */
     public static final String APPINFO_RELATION = "relation";
 
@@ -254,6 +258,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "resourcebundle" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
+
+    /** Constant for the "resourcebundles" appinfo element name. */
+    public static final String APPINFO_RESOURCEBUNDLES = "resourcebundles";
 
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
@@ -295,6 +302,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
+
+    /** Constant for the "xmlbundle" appinfo element name. */
+    public static final String APPINFO_XMLBUNDLE = "xmlbundle";
 
     /** Constant for head include type attribute: CSS. */
     public static final String ATTRIBUTE_INCLUDE_TYPE_CSS = "css";
@@ -348,7 +358,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected Set<String> m_jsHeadIncludes;
 
     /** The resource bundle name to be used for localization of this content handler. */
-    protected String m_messageBundleName;
+    protected List<String> m_messageBundleNames;
 
     /** The folder containing the model file(s) for the content. */
     protected String m_modelFolder;
@@ -524,12 +534,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public CmsMessages getMessages(Locale locale) {
 
-        if (m_messageBundleName == null) {
-            // no message bundle was initialized
-            return null;
+        CmsMessages result = null;
+        if ((m_messageBundleNames != null) && !m_messageBundleNames.isEmpty()) {
+            // a message bundle was initialized
+            if (m_messageBundleNames.size() == 1) {
+                // single message bundle
+                result = new CmsMessages(m_messageBundleNames.get(0), locale);
+            } else {
+                // multiple message bundle
+                CmsMultiMessages multiMessages = new CmsMultiMessages(locale);
+                for (String messageBundleName : m_messageBundleNames) {
+                    multiMessages.addMessages(new CmsMessages(messageBundleName, locale));
+                }
+                result = multiMessages;
+            }
         }
-
-        return new CmsMessages(m_messageBundleName, locale);
+        return result;
     }
 
     /**
@@ -693,7 +713,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 } else if (nodeName.equals(APPINFO_PREVIEW)) {
                     initPreview(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
-                    initResourceBundle(element, contentDefinition);
+                    initResourceBundle(element, contentDefinition, true);
+                } else if (nodeName.equals(APPINFO_RESOURCEBUNDLES)) {
+                    initResourceBundle(element, contentDefinition, false);
                 } else if (nodeName.equals(APPINFO_SEARCHSETTINGS)) {
                     initSearchSettings(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_TABS)) {
@@ -1845,69 +1867,109 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @param root the "resourcebundle" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
+     * @param single if <code>true</code> we process the classic sinle line entry, otherwise it's the multiple line setting
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    protected void initResourceBundle(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+    protected void initResourceBundle(Element root, CmsXmlContentDefinition contentDefinition, boolean single)
+    throws CmsXmlException {
 
-        String name = root.attributeValue(APPINFO_ATTR_NAME);
-        if (name == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2,
-                root.getName(),
-                contentDefinition.getSchemaLocation()));
+        if (m_messageBundleNames == null) {
+            // it's uncommon to have more then one bundle so just initialize an array length of 2
+            m_messageBundleNames = new ArrayList<String>(2);
         }
-        m_messageBundleName = name;
 
-        // clear the cached resource bundles for this module
-        CmsResourceBundleLoader.flushBundleCache(m_messageBundleName);
+        if (single) {
+            // single "resourcebundle" node
 
-        // get an iterator for all "bundle" subnodes
-        Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(root, APPINFO_BUNDLE);
-        while (bundles.hasNext()) {
-            // iterate all "bundle" elements in the "resourcebundle" node
-            Element bundle = bundles.next();
-            String localeStr = bundle.attributeValue(APPINFO_ATTR_LOCALE);
-            Locale locale;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(localeStr)) {
-                // no locale set, so use no locale
-                locale = null;
-            } else {
-                // use provided locale
-                locale = CmsLocaleManager.getLocale(localeStr);
+            String messageBundleName = root.attributeValue(APPINFO_ATTR_NAME);
+            if (messageBundleName == null) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2,
+                    root.getName(),
+                    contentDefinition.getSchemaLocation()));
             }
-            if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
-                // in case the default locale is given, we store this as root
-                locale = null;
+            if (!m_messageBundleNames.contains(messageBundleName)) {
+                // avoid duplicates
+                m_messageBundleNames.add(messageBundleName);
             }
+            // clear the cached resource bundles for this bundle
+            CmsResourceBundleLoader.flushBundleCache(messageBundleName);
 
-            CmsListResourceBundle xmlBundle = null;
+        } else {
+            // multiple "resourcebundles" node
 
-            Iterator<Element> resources = CmsXmlGenericWrapper.elementIterator(bundle, APPINFO_RESOURCE);
-            while (resources.hasNext()) {
-                // now collect all resource bundle keys
-                Element resource = resources.next();
-                String key = resource.attributeValue(APPINFO_ATTR_KEY);
-                String value = resource.attributeValue(APPINFO_ATTR_VALUE);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-                    // read from inside XML tag if value attribute is not set
-                    value = resource.getTextTrim();
+            // get an iterator for all "propertybundle" subnodes
+            Iterator<Element> propertybundles = CmsXmlGenericWrapper.elementIterator(root, APPINFO_PROPERTYBUNDLE);
+            while (propertybundles.hasNext()) {
+                // iterate all "propertybundle" elements in the "resourcebundle" node
+                Element propBundle = propertybundles.next();
+                String propertyBundleName = propBundle.attributeValue(APPINFO_ATTR_NAME);
+                if (!m_messageBundleNames.contains(propertyBundleName)) {
+                    // avoid duplicates
+                    m_messageBundleNames.add(propertyBundleName);
                 }
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-                    if (xmlBundle == null) {
-                        // use lazy initilaizing of the bundle
-                        xmlBundle = new CmsListResourceBundle();
-                    }
-                    xmlBundle.addMessage(key.trim(), value.trim());
-                }
+                // clear the cached resource bundles for this bundle
+                CmsResourceBundleLoader.flushBundleCache(propertyBundleName);
             }
 
-            if (xmlBundle != null) {
+            // get an iterator for all "xmlbundle" subnodes
+            Iterator<Element> xmlbundles = CmsXmlGenericWrapper.elementIterator(root, APPINFO_XMLBUNDLE);
+            while (xmlbundles.hasNext()) {
+                Element xmlbundle = xmlbundles.next();
+                String xmlBundleName = xmlbundle.attributeValue(APPINFO_ATTR_NAME);
                 // cache the bundle from the XML
-                CmsResourceBundleLoader.addBundleToCache(m_messageBundleName, locale, xmlBundle);
+                if (!m_messageBundleNames.contains(xmlBundleName)) {
+                    // avoid duplicates
+                    m_messageBundleNames.add(xmlBundleName);
+                }
+                // clear the cached resource bundles for this bundle
+                CmsResourceBundleLoader.flushBundleCache(xmlBundleName);
+                Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(xmlbundle, APPINFO_BUNDLE);
+                while (bundles.hasNext()) {
+                    // iterate all "bundle" elements in the "xmlbundle" node
+                    Element bundle = bundles.next();
+                    String localeStr = bundle.attributeValue(APPINFO_ATTR_LOCALE);
+                    Locale locale;
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(localeStr)) {
+                        // no locale set, so use no locale
+                        locale = null;
+                    } else {
+                        // use provided locale
+                        locale = CmsLocaleManager.getLocale(localeStr);
+                    }
+                    if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
+                        // in case the default locale is given, we store this as root
+                        locale = null;
+                    }
+
+                    CmsListResourceBundle xmlBundle = null;
+
+                    Iterator<Element> resources = CmsXmlGenericWrapper.elementIterator(bundle, APPINFO_RESOURCE);
+                    while (resources.hasNext()) {
+                        // now collect all resource bundle keys
+                        Element resource = resources.next();
+                        String key = resource.attributeValue(APPINFO_ATTR_KEY);
+                        String value = resource.attributeValue(APPINFO_ATTR_VALUE);
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                            // read from inside XML tag if value attribute is not set
+                            value = resource.getTextTrim();
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)
+                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                            if (xmlBundle == null) {
+                                // use lazy initilaizing of the bundle
+                                xmlBundle = new CmsListResourceBundle();
+                            }
+                            xmlBundle.addMessage(key.trim(), value.trim());
+                        }
+                    }
+                    if (xmlBundle != null) {
+                        CmsResourceBundleLoader.addBundleToCache(xmlBundleName, locale, xmlBundle);
+                    }
+                }
             }
         }
-
     }
 
     /**

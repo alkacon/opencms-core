@@ -9,6 +9,7 @@
 		<xsd:all>
 			<xsd:element name="handler" type="OpenCmsDefaultAppinfoHandler" minOccurs="0" />
 			<xsd:element name="resourcebundle" type="OpenCmsDefaultAppinfoResourcebundle" minOccurs="0" />
+			<xsd:element name="resourcebundles" type="OpenCmsDefaultAppinfoResourcebundles" minOccurs="0" />
 			<xsd:element name="preview" type="OpenCmsDefaultAppinfoPreview" minOccurs="0" />
 			<xsd:element name="defaults" type="OpenCmsDefaultAppinfoDefaults" minOccurs="0" />
 			<xsd:element name="mappings" type="OpenCmsDefaultAppinfoMappings" minOccurs="0" />

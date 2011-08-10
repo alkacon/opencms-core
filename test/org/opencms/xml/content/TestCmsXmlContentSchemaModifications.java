@@ -29,6 +29,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
@@ -153,7 +154,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             CmsFileUtil.readFile(originalFile),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         // assumption: a file is to be corrected automatically while writing it to the VFS
         // for this, a special OpenCms request context attribute has been introduced
@@ -353,7 +354,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             xmlcontent.toString().getBytes(xmlcontent.getEncoding()),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         // change the XML schema definition for the XML content 
         // it's important that the schema is changed _before_ the content is unmarshaled
         // in a "real world" use case this should be no problem as the schema will have been changed in another request
@@ -405,9 +406,9 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         System.out.println(xmlcontent.toString());
         String content = CmsFileUtil.readFile(filename, CmsEncoder.ENCODING_UTF_8);
-        assertEquals(CmsXmlUtils.unmarshalHelper(xmlcontent.toString(), resolver), CmsXmlUtils.unmarshalHelper(
-            content,
-            resolver));
+        assertEquals(
+            CmsXmlUtils.unmarshalHelper(xmlcontent.toString(), resolver),
+            CmsXmlUtils.unmarshalHelper(content, resolver));
     }
 
     /**
@@ -471,7 +472,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             xmlcontent.toString().getBytes(xmlcontent.getEncoding()),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         CmsFile file = cms.readFile(filename);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(cms, file);

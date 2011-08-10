@@ -23,11 +23,14 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.content.testmessages">			
-				<bundle locale="DE_de">
-					<resource key="editor.xmlcontent.validation.warning">Warnung aus dem XML</resource>
-				</bundle>			
-			</resourcebundle>
+			<resourcebundles>
+				<propertybundle name="org.opencms.xml.content.testmessages" />
+				<xmlbundle name="org.opencms.xml.content.testmessages">			
+					<bundle locale="DE_de">
+						<resource key="editor.xmlcontent.validation.warning">Warnung aus dem XML</resource>
+					</bundle>
+				</xmlbundle>			
+			</resourcebundles>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
