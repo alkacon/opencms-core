@@ -963,7 +963,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             // if no content handler is defined, the default handler is used
             contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(
                 CmsDefaultXmlContentHandler.class.getName(),
-                name);
+                schemaLocation);
         }
 
         // analyze the app info node with the selected XML content handler
