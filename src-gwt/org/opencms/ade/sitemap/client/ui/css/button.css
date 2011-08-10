@@ -66,7 +66,7 @@ div.hoverbar{
     gwt-image: "bigIcons.gotoParentBigIconActive";
 }
 @sprite .cmsState-up .hoverbarParent, .cmsState-up-disabled .hoverbarParent, .cmsState-down-disabled .hoverbarParent{
-    gwt-image: "bigIcons.gotoParentBigIconDeactivated";
+    gwt-image: "bigIcons.gotoParentBigIconActive";
 }
 
 @sprite .cmsState-up-hovering .hoverbarGotoSub, .cmsState-down-hovering .hoverbarGotoSub, .cmsState-down .hoverbarGotoSub, .context .hoverbarGotoSub {
