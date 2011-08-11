@@ -56,7 +56,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -166,9 +165,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** The original position of the draggable. */
     private int m_originalIndex;
-
-    /** Overlay iFrame. */
-    private IFrameElement m_overlayIFrame;
 
     /** Objects for restoring the min. heights of containers. */
     private List<CmsStyleSaver> m_savedMinHeights = new ArrayList<CmsStyleSaver>();
@@ -526,15 +522,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void installDragOverlay() {
 
-        if (m_overlayIFrame != null) {
-            m_overlayIFrame.removeFromParent();
-        }
-        m_overlayIFrame = IFrameElement.as(DOM.createIFrame());
-        m_overlayIFrame.setSrc("javascript:'<html></html>';");
-        m_overlayIFrame.setAttribute("width", "100%");
-        m_overlayIFrame.setAttribute("height", "100%");
-        m_overlayIFrame.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
-        Document.get().getBody().appendChild(m_overlayIFrame);
         if (m_dragOverlay != null) {
             m_dragOverlay.removeFromParent();
         }
@@ -651,10 +638,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void removeDragOverlay() {
 
-        if (m_overlayIFrame != null) {
-            m_overlayIFrame.removeFromParent();
-            m_overlayIFrame = null;
-        }
         if (m_dragOverlay != null) {
             m_dragOverlay.removeFromParent();
             m_dragOverlay = null;
