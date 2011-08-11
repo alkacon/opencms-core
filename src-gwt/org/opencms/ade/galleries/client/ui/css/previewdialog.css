@@ -1,7 +1,7 @@
 @external hidePreview;
 
 /* The height and width are set as inline style. */
-.previewDialog {
+div.previewDialog {
 	position:absolute;
 	top:0px;
 	left:0px;

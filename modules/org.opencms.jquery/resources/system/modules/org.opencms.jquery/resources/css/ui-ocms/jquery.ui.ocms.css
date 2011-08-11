@@ -47,20 +47,20 @@ div.galleryDialog {
  border-radius: 12px; 
 }
 
-div.galleryDialog > div{
+div.galleryDialog .ui-dialog-titlebar, div.galleryDialog .ui-dialog-content{
  border: 0;
  padding: 0;
  margin: 0;
  background: transparent;
 }
 
-div.galleryDialog > div.ui-dialog-titlebar {
+div.galleryDialog .ui-dialog-titlebar {
     cursor: move;
     height: 25px;
     line-height: 25px;
     padding: 0 0 5px 5px;
 }
-div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-title{
+div.galleryDialog .ui-dialog-titlebar .ui-dialog-title{
     color: #FFFFFF;
     font-size: 14px;
     font-weight: bold;
@@ -68,8 +68,8 @@ div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-title{
     white-space: nowrap;
 }
 
-div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close{
-	background-image: url(images/dialogCloseImage.png);
+div.galleryDialog div.ui-dialog-titlebar a.ui-dialog-titlebar-close{
+    background-image: url(images/dialogCloseImage.png);
     background-color: transparent;
 	cursor: pointer;
     height: 23px;
@@ -83,15 +83,15 @@ div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close{
     padding: 0;
 }
 
-div.galleryDialog > div.ui-dialog-titlebar .ui-dialog-titlebar-close *{
+div.galleryDialog div.ui-dialog-titlebar a.ui-dialog-titlebar-close *{
 	display: none;
 }
 
-div.galleryDialog.hideCaption > div.ui-dialog-titlebar .ui-dialog-title {
+div.galleryDialog.hideCaption div.ui-dialog-titlebar span.ui-dialog-title {
 	display: none;
 }
 
-div.galleryDialog.hideCaption > div.ui-dialog-titlebar {
+div.galleryDialog.hideCaption div.ui-dialog-titlebar {
     font-size: 0;
     height: 0;
     line-height: 0;

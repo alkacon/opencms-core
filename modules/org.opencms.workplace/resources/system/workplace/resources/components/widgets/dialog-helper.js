@@ -67,9 +67,11 @@ function _getScaleValue(scale, valueName) {
 }
 
 /**
- * Closes the dialog with the given id.<p>
+ * Closes the dialog with the given id.
+ * <p>
  * 
- * @param fieldId the field id
+ * @param fieldId
+ *            the field id
  * 
  * @return void
  */
@@ -79,37 +81,35 @@ function cmsCloseDialog(fieldId){
 }
 
 /**
- * Opens a modal iFrame dialog with the given parameters.<p>
- * Call #cmsCloseDialog(fieldId) to close the dialog again.<p>
+ * Opens a modal iFrame dialog with the given parameters.
+ * <p>
+ * Call #cmsCloseDialog(fieldId) to close the dialog again.
+ * <p>
  * 
- * @param title the dialog title
- * @param dialogUrl the iFrame URL
- * @param fieldId the field id
- * @param height the dialog height
- * @param width the dialog width
+ * @param title
+ *            the dialog title
+ * @param dialogUrl
+ *            the iFrame URL
+ * @param fieldId
+ *            the field id
+ * @param height
+ *            the dialog height
+ * @param width
+ *            the dialog width
  * 
- * @return void 
+ * @return void
  */
 function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
 	var _dialogElementId="cms_dialog_"+fieldId;
 	if (!(document.getElementById(_dialogElementId))){
-		var _iframe = $('<iframe/>', {
-            'src': dialogUrl,
-            'name': 'cms_iframe_' + fieldId,
-            'css': {
-               'width': '100%',
-               'height': '100%',
-               'border': 'none',
-               'overflow': 'hidden'
-            },
-            'frameborder': '0',
-            'framespacing': '0'
-         });
-         var _iframeBox = $('<div/>').appendTo(document.body);
+	 // 'allowtransparency' attribute needs to be set for IE7+IE8, 
+	 // this attribute and the 'name' attribute also can not be assigned after element creation,
+	 // it wouldn't have any effect in IE7+IE8
+	 var _iframe = $('<iframe '+ ($.browser.msie ? 'allowtransparency="true" ':'')+'src="'+dialogUrl+'" name="cms_iframe_' + fieldId+'" style="width: 100%; height: 100%; border: none;" frameborder="0" framespacing="0"/>');
+     var _iframeBox = $('<div/>').appendTo(document.body);
          _iframeBox.css({
             'width': '100%',
             'height': height+'px',
-            'background-color': 'transparent',
             'padding': '0px',
             'overflow': 'visible'
          });
@@ -131,18 +131,21 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
             resizable: false,
             autoOpen: true,
             width: width + 4 + ($.browser.msie ? 6 : 0),
-            // height: height+ 27 + ($.browser.msie ? 11 : 0)
-            height: height -2
+            height: height + ($.browser.msie ? 11 : -2)
          });
 	}
 }
 
 /**
- * Opens a modal image preview.<p>
+ * Opens a modal image preview.
+ * <p>
  * 
- * @param title the dialog title
- * @param context the context path
- * @param sitePath the site path of the resource to preview
+ * @param title
+ *            the dialog title
+ * @param context
+ *            the context path
+ * @param sitePath
+ *            the site path of the resource to preview
  * 
  * @return void
  */
@@ -154,7 +157,8 @@ function cmsOpenImagePreview(title, context, fieldId){
 		var _boxWidth=null;
 		var _resizable=false;
 		if ($.browser.msie){
-			// for IE dialog width 'auto' will not work, so try to read scaling parameter to detect image width
+			// for IE dialog width 'auto' will not work, so try to read scaling
+            // parameter to detect image width
 			var _scale=_getScaleParam(sitePath);
 			if (_scale){
 				_dialogWidth=_getScaleValue(_scale, 'w');
@@ -224,11 +228,15 @@ function cmsOpenImagePreview(title, context, fieldId){
 
 
 /**
- * Opens a modal preview dialog.<p>
+ * Opens a modal preview dialog.
+ * <p>
  * 
- * @param title the dialog title
- * @param context the context path
- * @param sitePath the site path of the resource to preview
+ * @param title
+ *            the dialog title
+ * @param context
+ *            the context path
+ * @param sitePath
+ *            the site path of the resource to preview
  * 
  * @return void
  */
