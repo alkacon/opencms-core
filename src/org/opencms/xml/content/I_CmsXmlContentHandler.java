@@ -161,14 +161,11 @@ public interface I_CmsXmlContentHandler {
     CmsMessages getMessages(Locale locale);
 
     /**
-     * Returns the folder that contains eventual XML content model files to use for this resource type.<p>
+     * Returns the folder name that contains eventual XML content model files to use for this resource type.<p>
      * 
-     * @param cms the current OpenCms user context
-     * @param currentFolder the folder the user is currently working in
-     * 
-     * @return the folder containing eventual XML content master files
+     * @return the folder name containing eventual XML content master files
      */
-    String getModelFolder(CmsObject cms, String currentFolder);
+    String getModelFolder();
 
     /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 

@@ -553,24 +553,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getModelFolder(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getModelFolder()
      */
-    public String getModelFolder(CmsObject cms, String currentFolder) {
+    public String getModelFolder() {
 
-        String result = m_modelFolder;
-        // store the original URI
-        String uri = cms.getRequestContext().getUri();
-        try {
-            // set URI to current folder
-            cms.getRequestContext().setUri(currentFolder);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
-            // resolve eventual macros
-            result = resolver.resolveMacros(m_modelFolder);
-        } finally {
-            // switch back to stored uri
-            cms.getRequestContext().setUri(uri);
-        }
-        return result;
+        return m_modelFolder;
     }
 
     /**

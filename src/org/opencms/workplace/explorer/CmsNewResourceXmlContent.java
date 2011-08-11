@@ -37,9 +37,12 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.Collections;
@@ -124,25 +127,48 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     public static List<CmsResource> getModelFiles(CmsObject cms, String currentFolder, String newResourceTypeName) {
 
         try {
+
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(newResourceTypeName);
+            I_CmsPreEditorActionDefinition preEditorAction = OpenCms.getWorkplaceManager().getPreEditorConditionDefinition(
+                resType);
+            // get the global master folder if configured
+            String masterFolder = preEditorAction.getConfiguration().getString(
+                CmsDefaultXmlContentHandler.APPINFO_MODELFOLDER,
+                null);
             // get the schema for the resource type to create
             String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
             // get the content handler for the resource type to create
             I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
-            String masterFolder = handler.getModelFolder(cms, currentFolder);
-            if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
-                // folder for master files exists, get all files of the same resource type
-                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resType.getTypeId());
-                return cms.readResources(masterFolder, filter, false);
-            } else {
-                // no master folder found
-                return Collections.emptyList();
+            String individualModelFolder = handler.getModelFolder();
+            if (CmsStringUtil.isNotEmpty(individualModelFolder)) {
+                masterFolder = individualModelFolder;
+            }
+
+            if (CmsStringUtil.isNotEmpty(masterFolder)) {
+                // store the original URI
+                String uri = cms.getRequestContext().getUri();
+                try {
+                    // set URI to current folder
+                    cms.getRequestContext().setUri(currentFolder);
+                    CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+                    // resolve eventual macros
+                    masterFolder = resolver.resolveMacros(masterFolder);
+                } finally {
+                    // switch back to stored URI
+                    cms.getRequestContext().setUri(uri);
+                }
+
+                if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
+                    // folder for master files exists, get all files of the same resource type
+                    CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resType.getTypeId());
+                    return cms.readResources(masterFolder, filter, false);
+                }
             }
         } catch (Throwable t) {
             // error determining resource type, should never happen
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
     }
 
     /**

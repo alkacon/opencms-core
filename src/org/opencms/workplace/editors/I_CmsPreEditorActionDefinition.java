@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.workplace.CmsDialog;
@@ -36,7 +37,7 @@ import org.opencms.workplace.CmsDialog;
  * 
  * @since 6.5.4 
  */
-public interface I_CmsPreEditorActionDefinition {
+public interface I_CmsPreEditorActionDefinition extends I_CmsConfigurationParameterHandler {
 
     /**
      * Returns if an action has to be performed before opening the editor depending on the resource to edit
