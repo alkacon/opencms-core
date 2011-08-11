@@ -107,6 +107,28 @@ import org.apache.commons.logging.Log;
  */
 public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
+    private class LockInfo {
+
+        private CmsLock m_lock;
+        private boolean m_wasJustLocked;
+
+        public LockInfo(CmsLock lock, boolean wasJustLocked) {
+
+            m_lock = lock;
+            m_wasJustLocked = wasJustLocked;
+        }
+
+        public CmsLock getLock() {
+
+            return m_lock;
+        }
+
+        public boolean wasJustLocked() {
+
+            return m_wasJustLocked;
+        }
+    }
+
     /** The additional user info key for deleted list. */
     private static final String ADDINFO_ADE_DELETED_LIST = "ADE_DELETED_LIST";
 
@@ -412,6 +434,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Locks the given resource with a temporary, if not already locked by the current user.
+     * Will throw an exception if the resource could not be locked for the current user.<p>
+     * 
+     * @param resource the resource to lock
+     * 
+     * @return the assigned lock
+     * 
+     * @throws CmsException if the resource could not be locked
+     */
+    protected LockInfo ensureLockAndGetInfo(CmsResource resource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        boolean justLocked = false;
+        List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
+        if ((blockingResources != null) && !blockingResources.isEmpty()) {
+            throw new CmsException(org.opencms.gwt.Messages.get().container(
+                org.opencms.gwt.Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
+                cms.getSitePath(resource)));
+        }
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(resource);
+        if (!lock.isOwnedBy(user)) {
+            cms.lockResourceTemporary(resource);
+            lock = cms.getLock(resource);
+            justLocked = true;
+        } else if (!lock.isOwnedInProjectBy(user, cms.getRequestContext().getCurrentProject())) {
+            cms.changeLock(resource);
+            lock = cms.getLock(resource);
+            justLocked = true;
+        }
+        return new LockInfo(lock, justLocked);
+    }
+
+    /**
      * Internal method for saving a sitemap.<p>
      * 
      * @param entryPoint the URI of the sitemap to save
@@ -525,6 +581,54 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Changes the navigation for a moved entry and its neighbors.<p>
+     * 
+     * @param change the sitemap change 
+     * @param entryFolder the moved entry 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void applyNavigationChanges(CmsSitemapChange change, CmsResource entryFolder) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        String parentPath = null;
+        if (change.hasNewParent()) {
+            CmsResource parent = cms.readResource(change.getParentId());
+            parentPath = cms.getSitePath(parent);
+        } else {
+            parentPath = CmsResource.getParentFolder(cms.getSitePath(entryFolder));
+        }
+        List<CmsJspNavElement> navElements = getNavBuilder().getNavigationForFolder(parentPath, true);
+        CmsSitemapNavPosCalculator npc = new CmsSitemapNavPosCalculator(navElements, entryFolder, change.getPosition());
+        List<CmsJspNavElement> navs = npc.getNavigationChanges();
+        List<CmsResource> needToUnlock = new ArrayList<CmsResource>();
+
+        try {
+            for (CmsJspNavElement nav : navs) {
+                LockInfo lockInfo = ensureLockAndGetInfo(nav.getResource());
+                if (!nav.getResource().equals(entryFolder) && lockInfo.wasJustLocked()) {
+                    needToUnlock.add(nav.getResource());
+                }
+            }
+            for (CmsJspNavElement nav : navs) {
+                CmsProperty property = new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_NAVPOS,
+                    "" + nav.getNavPosition(),
+                    null);
+                cms.writePropertyObject(cms.getSitePath(nav.getResource()), property);
+            }
+        } finally {
+            for (CmsResource lockedRes : needToUnlock) {
+                try {
+                    cms.unlockResource(lockedRes);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Calculates the navPos value for the given target position.<p>
      * 
      * @param entryFolder the folder to position in
@@ -535,8 +639,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private float calculateNavPosition(CmsResource entryFolder, int targetPosition) {
 
         CmsObject cms = getCmsObject();
+        System.out.println("target position = " + targetPosition);
         String parentPath = CmsResource.getParentFolder(cms.getSitePath(entryFolder));
-        List<CmsJspNavElement> navElements = getNavBuilder().getNavigationForFolder(parentPath);
+        List<CmsJspNavElement> navElements = getNavBuilder().getNavigationForFolder(parentPath, true);
         if (navElements.size() == 0) {
             return 10;
         }
@@ -629,6 +734,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         change.getName(),
                         null)));
                 cms.writePropertyObjects(newRes, generateInheritProperties(change, newRes));
+                applyNavigationChanges(change, newRes);
             } else {
                 String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
                 boolean idWasNull = change.getEntryId() == null;
@@ -664,6 +770,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 if (idWasNull) {
                     change.setEntryId(entryFolder.getStructureId());
                 }
+                applyNavigationChanges(change, entryFolder);
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
                 newRes = cms.createResource(
                     entryPath,
@@ -799,10 +906,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 result.add(prop);
             }
         }
+
+        /*
         if (change.hasChangedPosition()) {
-            float navPos = calculateNavPosition(entryFolder, change.getPosition()/*, entryFolders */);
+            float navPos = calculateNavPosition(entryFolder, change.getPosition());
             result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos), null));
         }
+        */
         result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, change.getName(), null));
         return result;
     }
@@ -1532,10 +1642,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private void updateNavPos(CmsResource res, CmsSitemapChange change) throws CmsException {
 
         if (change.hasChangedPosition()) {
-            CmsObject cms = getCmsObject();
-            float navPos = calculateNavPosition(res, change.getPosition()/*, entryFolders */);
-            CmsProperty navpos = new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos), null);
-            cms.writePropertyObjects(res, Collections.singletonList(navpos));
+            applyNavigationChanges(change, res);
         }
     }
 

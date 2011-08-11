@@ -57,6 +57,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     private CmsResource m_resource;
     private String m_sitePath;
     private String m_text;
+    private boolean m_changedNavPos;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
@@ -365,6 +366,11 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
         return m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
     }
 
+    public boolean hasChangedNavPosition() {
+
+        return m_changedNavPos;
+    }
+
     /**
      * Note: this class has a natural ordering that is inconsistent with equals.<p>
      * 
@@ -468,6 +474,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     public void setNavPosition(float value) {
 
         m_position = value;
+        m_changedNavPos = true;
     }
 
     /**
