@@ -1,67 +1,85 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/nested/options.xsd"/>
-		
-	<xsd:element name="DevDemoSettingsArticles" type="OpenCmsDevDemoSettingsArticles"/>
-	
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+	<xsd:include
+		schemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/nested/options.xsd" />
+
+	<xsd:element name="DevDemoSettingsArticles" type="OpenCmsDevDemoSettingsArticles" />
+
 	<xsd:complexType name="OpenCmsDevDemoSettingsArticles">
 		<xsd:sequence>
-			<xsd:element name="DevDemoSettingsArticle" type="OpenCmsDevDemoSettingsArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DevDemoSettingsArticle" type="OpenCmsDevDemoSettingsArticle"
+				minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDevDemoSettingsArticle">
-		<xsd:sequence>			
-			<xsd:element name="Title" type="OpenCmsString" />					
-			<xsd:element name="Options" type="OpenCmsDevDemoTextOption" minOccurs="0" maxOccurs="1"/>				
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Options" type="OpenCmsDevDemoTextOption"
+				minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Image" type="OpenCmsVfsFile" />
 		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace.ddsettingsarticle">
-                <bundle locale="EN">
-                    <resource key="label.DevDemoSettingsArticle.Title">Title</resource>                    
-                    <resource key="label.DevDemoSettingsArticle.Title.help">The title of the Dev Demo Settings Article.</resource>
-                    <resource key="dev.demo.ddsettingsarticle.default.Title">New settings demo</resource>
-                    <resource key="label.DevDemoSettingsArticle.Options">Text options</resource>                    
-                    <resource key="label.DevDemoSettingsArticle.Image">Image</resource>
-                    <resource key="label.DevDemoSettingsArticle.Image.help">The image for the Dev Demo Settings article.</resource>
-                    
-                    <resource key="label.DevDemoTextOption.Text">Input field</resource>
-                    <resource key="label.DevDemoTextOption.Text.help">The one line field.</resource>                    
-                    <resource key="label.DevDemoTextOption.Html">Html</resource>
-                    <resource key="label.DevDemoTextOption.Html.help">The html field.</resource>                    
-                    <resource key="label.DevDemoTextOption.Link">Link</resource>
-                    <resource key="label.DevDemoTextOption.Link.help">A link field.</resource>                    
-                </bundle>                                    
-            </resourcebundle> 		
+			<resourcebundles>
+				<xmlbundle name="org.opencms.dev.demo.workplace.ddsettingsarticle">
+					<bundle locale="en">
+						<resource key="label.DevDemoSettingsArticle.Title">Title</resource>
+						<resource key="label.DevDemoSettingsArticle.Title.help">The title of the Dev Demo Settings Article.</resource>
+						<resource key="dev.demo.ddsettingsarticle.default.Title">New settings demo</resource>
+						<resource key="label.DevDemoSettingsArticle.Options">Text options</resource>
+						<resource key="label.DevDemoSettingsArticle.Image">Image</resource>
+						<resource key="label.DevDemoSettingsArticle.Image.help">The image for the Dev Demo Settings
+							article.</resource>
+
+						<resource key="label.DevDemoTextOption.Text">Input field</resource>
+						<resource key="label.DevDemoTextOption.Text.help">The one line field.</resource>
+						<resource key="label.DevDemoTextOption.Html">Html</resource>
+						<resource key="label.DevDemoTextOption.Html.help">The html field.</resource>
+						<resource key="label.DevDemoTextOption.Link">Link</resource>
+						<resource key="label.DevDemoTextOption.Link.help">A link field.</resource>
+					</bundle>
+				</xmlbundle>
+			</resourcebundles>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<!-- Enables nice url name for detail pages -->
 				<mapping element="Title" mapto="urlName" />
 			</mappings>
-			<layouts>								
-				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:false}" />				
+			<layouts>
+				<layout element="Image" widget="ImageGalleryWidget"
+					configuration="{useformat:false}" />
 			</layouts>
-			<validationrules/>
+			<validationrules />
 			<defaults>
-                <default element="Title" value="%(key.dev.demo.ddsettingsarticle.default.Title)" />
-            </defaults>
-			<relations/>
-			<formatters>				
-				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/formatters/settings_article/settings.jsp" searchcontent="false"/>
+				<default element="Title"
+					value="%(key.dev.demo.ddsettingsarticle.default.Title)" />
+			</defaults>
+			<relations />
+			<formatters>
+				<formatter minwidth="150"
+					uri="/system/modules/org.opencms.dev.demo/formatters/settings_article/settings.jsp"
+					searchcontent="false" />
 			</formatters>
 			<settings>
-				<setting name="boxschema" nice-name="Box Color" type="string" widget="select" widget-config="box_schema1:blue|box_schema2:grey" />
-				<setting name="text" nice-name="Text" type="string" widget="string" default="Default setting text" rule-regex=".+" error="The Input should may not be empty!"/> 					
-				<setting name="showimage" nice-name="Show Image" type="string" widget="checkbox" default="false" />								
-				<setting name="date" nice-name="Date Picker" type="string" widget="datebox" />
-				<setting name="format" nice-name="Date format" type="string" widget="radio" default="both" widget-config="both:With time|date:No time"/>
-			</settings>							
+				<setting name="boxschema" nice-name="Box Color" type="string"
+					widget="select" widget-config="box_schema1:blue|box_schema2:grey" />
+				<setting name="text" nice-name="Text" type="string" widget="string"
+					default="Default setting text" rule-regex=".+"
+					error="The Input should may not be empty!" />
+				<setting name="showimage" nice-name="Show Image" type="string"
+					widget="checkbox" default="false" />
+				<setting name="date" nice-name="Date Picker" type="string"
+					widget="datebox" />
+				<setting name="format" nice-name="Date format" type="string"
+					widget="radio" default="both" widget-config="both:With time|date:No time" />
+			</settings>
 		</xsd:appinfo>
-	</xsd:annotation>  
+	</xsd:annotation>
 </xsd:schema>
