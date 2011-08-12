@@ -22,8 +22,10 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.article.workplace.xml">
-				<bundle locale="EN">
+			<resourcebundles>
+			<xmlbundle name="com.alkacon.opencms.v8.article.workplace.xml">
+			
+				<bundle locale="en">
 					<resource key="label.V8Article.Title">Title</resource>
 					<resource key="label.V8Article.Title.help">The title of the article.</resource>
 					<resource key="label.V8Article.Paragraph">Paragraph</resource>
@@ -48,7 +50,7 @@
 					<resource key="v8.article.default.Title">New article</resource>
 					<resource key="v8.article.default.Text">Please edit the article text.</resource>
 				</bundle> 
-				<bundle locale="DE">
+				<bundle locale="de">
 					<resource key="label.V8Article.Title">Titel</resource>
 					<resource key="label.V8Article.Title.help">Der Titel des Artikels.</resource>
 					<resource key="label.V8Article.Paragraph">Absatz</resource>
@@ -73,7 +75,8 @@
 					<resource key="v8.article.default.Title">Neuer Artikel</resource>
 					<resource key="v8.article.default.Text">Bitte bearbeiten Sie den Artikeltext.</resource>
 				</bundle>						
-			</resourcebundle>
+				</xmlbundle>
+			</resourcebundles>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Title" mapto="urlName" />

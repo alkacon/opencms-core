@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
@@ -12,39 +13,39 @@
 
 	<xsd:complexType name="OpenCmsV8Login">
 		<xsd:sequence>
-			<xsd:element name="Title" type="OpenCmsString" />
-			<xsd:element name="Text" type="OpenCmsString"  />
+			<xsd:element name="Title" type="OpenCmsString"/>
+			<xsd:element name="Text" type="OpenCmsString"/>
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="com.alkacon.opencms.v8.login.workplace.xml">
-				<bundle locale="EN">
+			<resourcebundles><xmlbundle name="com.alkacon.opencms.v8.login.workplace.xml">
+				<bundle locale="en">
 					<resource key="v8.login.default.Title">New login box</resource>
 					<resource key="v8.login.default.Text">Please edit the login text.</resource>
 				</bundle> 
-				<bundle locale="DE">
+				<bundle locale="de">
 					<resource key="v8.login.default.Title">Neue Loginbox</resource>
 					<resource key="v8.login.default.Text">Bitte bearbeiten Sie den Logintext.</resource>
 				</bundle>						
-			</resourcebundle>
+			</xmlbundle></resourcebundles>
 			<mappings>
-				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="property:Title"/>
 			</mappings>
 			<layouts/>
 			<validationrules/>
 			<defaults>
-				<default element="Title" value="%(key.v8.login.default.Title)" />
-				<default element="Text" value="%(key.v8.login.default.Text)" />
+				<default element="Title" value="%(key.v8.login.default.Title)"/>
+				<default element="Text" value="%(key.v8.login.default.Text)"/>
 			</defaults>
 			<relations/>
 			<formatters>
-				<formatter minwidth="150" uri="/system/modules/com.alkacon.opencms.v8.login/formatters/all.jsp" searchcontent="false" />
+				<formatter minwidth="150" uri="/system/modules/com.alkacon.opencms.v8.login/formatters/all.jsp" searchcontent="false"/>
 			</formatters>
 			<settings>
-				<setting name="boxschema" nice-name="Box Schema" default="box_schema1" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />
+				<setting name="boxschema" nice-name="Box Schema" default="box_schema1" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White"/>
 			</settings>
 		</xsd:appinfo>
 
