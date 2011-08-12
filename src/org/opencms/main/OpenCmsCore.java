@@ -32,11 +32,11 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
@@ -1081,7 +1081,10 @@ public final class OpenCmsCore {
         m_defaultFiles = vfsConfiguation.getDefaultFiles();
 
         // initialize translation engines
-        m_resourceManager.setTranslators(vfsConfiguation.getFolderTranslator(), vfsConfiguation.getFileTranslator());
+        m_resourceManager.setTranslators(
+            vfsConfiguation.getFolderTranslator(),
+            vfsConfiguation.getFileTranslator(),
+            vfsConfiguation.getXsdTranslator());
 
         // try to initialize the flex cache
         CmsFlexCache flexCache = null;

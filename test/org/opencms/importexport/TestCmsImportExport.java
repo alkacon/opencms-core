@@ -1394,7 +1394,10 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             "s#^/sites/default/content(.*)#/system$1#"}, false);
 
         // set modified folder translator
-        OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator,
+            OpenCms.getResourceManager().getFileTranslator(),
+            OpenCms.getResourceManager().getXsdTranslator());
 
         // update OpenCms context to ensure new translator is used
         cms = getCmsObject();
@@ -1516,7 +1519,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // reset the translation rules
         OpenCms.getResourceManager().setTranslators(
             oldFolderTranslator,
-            OpenCms.getResourceManager().getFileTranslator());
+            OpenCms.getResourceManager().getFileTranslator(),
+            OpenCms.getResourceManager().getXsdTranslator());
     }
 
     /**
@@ -1552,7 +1556,10 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             "s#^/(.*)#/sites/mysite/$1#"}, false);
 
         // set modified folder translator
-        OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator,
+            OpenCms.getResourceManager().getFileTranslator(),
+            OpenCms.getResourceManager().getXsdTranslator());
 
         // update OpenCms context to ensure new translator is used
         cms = getCmsObject();
@@ -1670,7 +1677,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // reset the translation rules
         OpenCms.getResourceManager().setTranslators(
             oldFolderTranslator,
-            OpenCms.getResourceManager().getFileTranslator());
+            OpenCms.getResourceManager().getFileTranslator(),
+            OpenCms.getResourceManager().getXsdTranslator());
     }
 
     /**

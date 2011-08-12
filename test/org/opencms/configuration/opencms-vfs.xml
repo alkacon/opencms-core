@@ -654,6 +654,7 @@
 				<translation>s#/htmlgalleries/(.*)#/system/galleries/htmlgalleries/$1#</translation>
 				<translation>s#/content/(.*)#/system/$1#</translation>
 			</foldertranslations>
+			<xsdtranslations enabled="false" />
 		</translations>
 		<xmlcontent>
 			<widgets>

@@ -93,7 +93,7 @@
 <!--
 # Translations for file and folder names.
 -->
-<!ELEMENT translations (filetranslations?, foldertranslations?)>
+<!ELEMENT translations (filetranslations?, foldertranslations?, xsdtranslations?)>
 <!ELEMENT translation (#PCDATA)>
 
 <!--
@@ -130,6 +130,24 @@
 
 <!ELEMENT foldertranslations (translation*)>
 <!ATTLIST foldertranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# XSD (XML schema) translation can be used to find XSD files that have been 
+# moved from their original location. Since the XSD path is stored in the XML,
+# and the CRE can not be used here, existing XML files that point to a moved
+# XSD would not be able to find the schema. Using the translation, the schema
+# can still be found without updating all the affected XML files.
+# This is done using Perl5 regular search & replace expression rules.
+# All read and write access to a OpenCms XSD schema that matches one of given
+# translation rules is automatically translated to the new name.
+# Translation is stopped after the first match was found.
+#
+# The attribute "enabled" controls if folder translation is enabled.
+# The default is "not enabled".
+-->
+
+<!ELEMENT xsdtranslations (translation*)>
+<!ATTLIST xsdtranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
 
 <!--
 # XML content definitions that are used to build XML content items.

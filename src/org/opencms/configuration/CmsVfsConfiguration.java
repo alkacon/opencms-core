@@ -179,6 +179,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The xmlcontents node name. */
     public static final String N_XMLCONTENTS = "xmlcontents";
 
+    /** XSD translations node name. */
+    public static final String N_XSDTRANSLATIONS = "xsdtranslations";
+
     /** The namegenerator node name. */
     private static final String N_NAMEGENERATOR = "namegenerator";
 
@@ -202,6 +205,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured resource manager. */
     private CmsResourceManager m_resourceManager;
+
+    /** Controls if XSD translation is enabled. */
+    private boolean m_xsdTranslationEnabled;
+
+    /** The list of XSD translations. */
+    private List<String> m_xsdTranslations;
 
     /**
      * Adds the resource type rules to the given digester.<p>
@@ -547,6 +556,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             1);
         digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, 0, A_ENABLED);
 
+        // add rules for file translations
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_XSDTRANSLATIONS + "/" + N_TRANSLATION,
+            "addXsdTranslation",
+            0);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_XSDTRANSLATIONS,
+            "setXsdTranslationEnabled",
+            1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_XSDTRANSLATIONS, 0, A_ENABLED);
+
         // XML content type manager creation rules
         digester.addObjectCreate("*/" + N_VFS + "/" + N_XMLCONTENT, CmsXmlContentTypeManager.class);
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENT, "setXmlContentTypeManager");
@@ -567,6 +587,19 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE,
             1,
             A_DEFAULTWIDGET);
+    }
+
+    /**
+     * Adds one XSD translation rule.<p>
+     * 
+     * @param translation the XSD translation rule to add
+     */
+    public void addXsdTranslation(String translation) {
+
+        m_xsdTranslations.add(translation);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_ADD_XSD_TRANSLATION_1, translation));
+        }
     }
 
     /**
@@ -683,6 +716,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             folderTransElement.addElement(N_TRANSLATION).setText(translation);
         }
 
+        // XSD translation rules
+        Element xsdTransElement = translationsElement.addElement(N_XSDTRANSLATIONS).addAttribute(
+            A_ENABLED,
+            String.valueOf(m_xsdTranslationEnabled));
+        for (String translation : m_xsdTranslations) {
+            xsdTransElement.addElement(N_TRANSLATION).setText(translation);
+        }
+
         // XML content configuration
         Element xmlContentsElement = vfs.addElement(N_XMLCONTENT);
 
@@ -782,6 +823,21 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the XSD translator that has been initialized
+     * with the configured XSD translation rules.<p>
+     * 
+     * @return the XSD translator 
+     */
+    public CmsResourceTranslator getXsdTranslator() {
+
+        String[] array = m_xsdTranslationEnabled ? new String[m_xsdTranslations.size()] : new String[0];
+        for (int i = 0; i < m_xsdTranslations.size(); i++) {
+            array[i] = m_xsdTranslations.get(i);
+        }
+        return new CmsResourceTranslator(array, true);
+    }
+
+    /**
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
@@ -849,6 +905,23 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Enables or disables the XSD translation rules.<p>
+     * 
+     * @param value if <code>"true"</code>, XSD translation is enabled, otherwise it is disabled
+     */
+    public void setXsdTranslationEnabled(String value) {
+
+        m_xsdTranslationEnabled = Boolean.valueOf(value).booleanValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            if (m_xsdTranslationEnabled) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_XSD_TRANSLATION_ENABLE_0));
+            } else {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_XSD_TRANSLATION_DISABLE_0));
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
      */
     @Override
@@ -857,6 +930,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         m_fileTranslations = new ArrayList<String>();
         m_folderTranslations = new ArrayList<String>();
+        m_xsdTranslations = new ArrayList<String>();
         m_defaultFiles = new ArrayList<String>();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_INIT_0));

@@ -240,6 +240,9 @@ public class CmsResourceManager {
     /** The configured default type for folders when the resource type is missing. */
     private I_CmsResourceType m_restypeUnknownFolder;
 
+    /** XSD translator, used to translate all accesses to XML schemas from Strings. */
+    private CmsResourceTranslator m_xsdTranslator;
+
     /**
      * Creates a new instance for the resource manager, 
      * will be called by the VFS configuration manager.<p>
@@ -934,6 +937,16 @@ public class CmsResourceManager {
     }
 
     /**
+     * Returns the XSD translator.<p>
+     *
+     * @return the XSD translator
+     */
+    public CmsResourceTranslator getXsdTranslator() {
+
+        return m_xsdTranslator;
+    }
+
+    /**
      * Checks if an initialized resource type instance equal to the given resource type is available.<p>
      * 
      * @param type the resource type to check
@@ -1065,15 +1078,20 @@ public class CmsResourceManager {
     }
 
     /**
-     * Sets the folder and the file translator.<p>
+     * Sets the folder, the file and the XSD translator.<p>
      * 
      * @param folderTranslator the folder translator to set
      * @param fileTranslator the file translator to set
+     * @param xsdTranslator the XSD translator to set
      */
-    public void setTranslators(CmsResourceTranslator folderTranslator, CmsResourceTranslator fileTranslator) {
+    public void setTranslators(
+        CmsResourceTranslator folderTranslator,
+        CmsResourceTranslator fileTranslator,
+        CmsResourceTranslator xsdTranslator) {
 
         m_folderTranslator = folderTranslator;
         m_fileTranslator = fileTranslator;
+        m_xsdTranslator = xsdTranslator;
     }
 
     /**

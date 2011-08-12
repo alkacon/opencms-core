@@ -197,6 +197,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_VFS_ADD_FOLDER_TRANSLATION_1 = "INIT_VFS_ADD_FOLDER_TRANSLATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_VFS_ADD_XSD_TRANSLATION_1 = "INIT_VFS_ADD_XSD_TRANSLATION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_VFS_CONFIG_FINISHED_0 = "INIT_VFS_CONFIG_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -219,6 +222,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_VFS_XML_CONTENT_FINISHED_0 = "INIT_VFS_XML_CONTENT_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_VFS_XSD_TRANSLATION_DISABLE_0 = "INIT_VFS_XSD_TRANSLATION_DISABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_VFS_XSD_TRANSLATION_ENABLE_0 = "INIT_VFS_XSD_TRANSLATION_ENABLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_FINISHED_0 = "INIT_WORKPLACE_FINISHED_0";
