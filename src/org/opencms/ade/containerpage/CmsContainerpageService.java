@@ -765,24 +765,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cache.setCacheContainerElement(element.editorHash(), element);
                 CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
                 result.add(elementData);
-                if (elementData.isGroupContainer()) {
-                    // this is a group-container 
-
-                    CmsResource elementRes = cms.readResource(element.getId());
-                    CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
-                        cms,
-                        elementRes,
-                        getRequest());
-                    CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-                        cms,
-                        cms.getRequestContext().getLocale());
-
-                    // adding all sub-items to the elements data
-                    for (CmsContainerElementBean subElement : groupContainer.getElements()) {
-                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
-                        result.add(subItemData);
-                    }
-                }
             }
         }
         return result;
