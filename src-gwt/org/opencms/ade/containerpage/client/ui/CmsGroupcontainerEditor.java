@@ -290,12 +290,12 @@ public final class CmsGroupcontainerEditor extends Composite {
                     elementsData.get(element.getClientId()),
                     m_parentContainer);
                 m_parentContainer.insert(containerElement, index);
-                m_controller.addToRecentList(element.getClientId());
                 index++;
             } catch (Exception e) {
                 CmsDebugLog.getInstance().printLine(e.getMessage());
             }
         }
+        m_controller.addToRecentList(m_groupContainerBean.getClientId());
         m_controller.setPageChanged();
         closeDialog(true);
     }
