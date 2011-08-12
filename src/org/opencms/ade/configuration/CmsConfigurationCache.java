@@ -258,7 +258,8 @@ class CmsConfigurationCache {
 
         LOG.info("Computing folder types for detail pages...");
         m_folderTypes.clear();
-        for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+        List<CmsADEConfigData> configDataObjects = new ArrayList<CmsADEConfigData>(m_siteConfigurations.values());
+        for (CmsADEConfigData configData : configDataObjects) {
             Map<String, String> folderTypes = configData.getFolderTypes();
             m_folderTypes.putAll(folderTypes);
         }
