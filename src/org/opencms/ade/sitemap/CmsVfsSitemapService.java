@@ -107,22 +107,42 @@ import org.apache.commons.logging.Log;
  */
 public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
+    /** Helper class for representing information about a  lock. */
     private class LockInfo {
 
+        /** The lock state. */
         private CmsLock m_lock;
+
+        /** True if the lock was just locked. */
         private boolean m_wasJustLocked;
 
+        /**
+         * Creates a new LockInfo object.<p>
+         * 
+         * @param lock the lock state 
+         * @param wasJustLocked true if the lock was just locked 
+         */
         public LockInfo(CmsLock lock, boolean wasJustLocked) {
 
             m_lock = lock;
             m_wasJustLocked = wasJustLocked;
         }
 
+        /** 
+         * Returns the lock state.<p>
+         * 
+         * @return the lock state 
+         */
         public CmsLock getLock() {
 
             return m_lock;
         }
 
+        /**
+         * Returns true if the lock was just locked 
+         * 
+         * @return true if the lock was just locked 
+         */
         public boolean wasJustLocked() {
 
             return m_wasJustLocked;
@@ -622,63 +642,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 try {
                     cms.unlockResource(lockedRes);
                 } catch (CmsException e) {
+                    // we catch this because we still want to unlock the other resources 
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
-    }
-
-    /**
-     * Calculates the navPos value for the given target position.<p>
-     * 
-     * @param entryFolder the folder to position in
-     * @param targetPosition the target position
-     * 
-     * @return the navPos value
-     */
-    private float calculateNavPosition(CmsResource entryFolder, int targetPosition) {
-
-        CmsObject cms = getCmsObject();
-        System.out.println("target position = " + targetPosition);
-        String parentPath = CmsResource.getParentFolder(cms.getSitePath(entryFolder));
-        List<CmsJspNavElement> navElements = getNavBuilder().getNavigationForFolder(parentPath, true);
-        if (navElements.size() == 0) {
-            return 10;
-        }
-        if (navElements.size() <= targetPosition) {
-            CmsJspNavElement last = navElements.get(navElements.size() - 1);
-            if (last.getResource().equals(entryFolder)) {
-                return last.getNavPosition();
-            }
-            return last.getNavPosition() + 10;
-
-        }
-
-        float previous = 0;
-        float following = 0;
-        for (int i = 0; i < navElements.size(); i++) {
-            CmsJspNavElement element = navElements.get(i);
-
-            if (element.getResource().equals(entryFolder)) {
-                if (i == targetPosition) {
-                    return element.getNavPosition();
-                }
-                targetPosition++;
-                if (navElements.size() == targetPosition) {
-                    CmsJspNavElement last = navElements.get(navElements.size() - 1);
-                    return last.getNavPosition() + 10;
-                }
-                continue;
-            }
-            if (i == (targetPosition - 1)) {
-                previous = element.getNavPosition();
-            }
-            if (i == targetPosition) {
-                following = element.getNavPosition();
-                break;
-            }
-        }
-        return previous + ((following - previous) / 2);
     }
 
     /**
