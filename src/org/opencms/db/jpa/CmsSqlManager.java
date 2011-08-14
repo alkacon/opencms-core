@@ -276,7 +276,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
         EntityManagerFactory factory = m_factoryTable.get(unitName);
         if (factory == null) {
-            factory = Persistence.createEntityManagerFactory(unitName, System.getProperties());
+            factory = Persistence.createEntityManagerFactory(unitName);
             m_factoryTable.put(unitName, factory);
         }
         return factory;
