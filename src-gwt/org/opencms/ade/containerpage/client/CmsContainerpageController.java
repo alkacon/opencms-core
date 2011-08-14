@@ -1505,9 +1505,7 @@ public final class CmsContainerpageController {
 
         if (m_containerpageService == null) {
             m_containerpageService = GWT.create(I_CmsContainerpageService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.containerpage.CmsContainerpageService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.containerpage.CmsContainerpageService.gwt");
             ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
         }
         return m_containerpageService;

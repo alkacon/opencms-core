@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchParameters.CmsSearchFieldQuery;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.Sort;
 
 /**
  * Helper class to access the search facility within a jsp.<p>
@@ -129,6 +130,28 @@ public class CmsSearch {
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
      * 
+     * @param fieldQuery the field query to use
+     * 
+     * @since 8.0.2
+     */
+    public void addFieldQuery(CmsSearchFieldQuery fieldQuery) {
+
+        m_parameters.addFieldQuery(fieldQuery);
+        resetLastResult();
+    }
+
+    /**
+     * Adds an individual query for a search field.<p>
+     * 
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     * will be ignored and only the individual field search settings will be used.<p>
+     * 
+     * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
+     * All SHOULD clauses will be grouped and wrapped in one query, 
+     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * This means that at least one of the terms which are given as a SHOULD query must occur in the
+     * search result.<p>
+     * 
      * @param fieldName the field name
      * @param searchQuery the search query
      * @param occur the occur parameter for the query in the field
@@ -137,8 +160,7 @@ public class CmsSearch {
      */
     public void addFieldQuery(String fieldName, String searchQuery, Occur occur) {
 
-        m_parameters.addFieldQuery(fieldName, searchQuery, occur);
-        resetLastResult();
+        addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(fieldName, searchQuery, occur));
     }
 
     /**
@@ -293,6 +315,46 @@ public class CmsSearch {
     }
 
     /**
+     * Returns the maximum creation date a resource must have to be included in the search result.<p>
+     *
+     * @return the maximum creation date a resource must have to be included in the search result
+     */
+    public long getMaxDateCreated() {
+
+        return m_parameters.getMaxDateCreated();
+    }
+
+    /**
+     * Returns the maximum last modification date a resource must have to be included in the search result.<p>
+     *
+     * @return the maximum last modification date a resource must have to be included in the search result
+     */
+    public long getMaxDateLastModified() {
+
+        return m_parameters.getMaxDateLastModified();
+    }
+
+    /**
+     * Returns the minimum creation date a resource must have to be included in the search result.<p>
+     *
+     * @return the minimum creation date a resource must have to be included in the search result
+     */
+    public long getMinDateCreated() {
+
+        return m_parameters.getMinDateCreated();
+    }
+
+    /**
+     * Returns the minimum last modification date a resource must have to be included in the search result.<p>
+     *
+     * @return the minimum last modification date a resource must have to be included in the search result
+     */
+    public long getMinDateLastModified() {
+
+        return m_parameters.getMinDateLastModified();
+    }
+
+    /**
      * Gets the URL for the link to the next result page.<p>
      * 
      * @return the URL to the next result page
@@ -371,6 +433,23 @@ public class CmsSearch {
     }
 
     /**
+     * Returns the parsed query.<p>
+     * 
+     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
+     * The Lucene query build from the parameters is stored here and can be later used 
+     * for paging through the results.<p>
+     * 
+     * Please note that this returns only to the query part, not the filter part of the search.<p>
+     * 
+     * @return the parsed query 
+     */
+    public String getParsedQuery() {
+
+        return m_parameters.getParsedQuery();
+    }
+
+    /**
      * Gets the URL for the link to the previous result page.<p>
      * 
      * @return the URL to the previous result page
@@ -420,23 +499,26 @@ public class CmsSearch {
         if ((m_cms != null)
             && (m_result == null)
             && (m_parameters.getIndex() != null)
-            && (m_parameters.isIgnoreQuery() || CmsStringUtil.isNotEmpty(m_parameters.getQuery()) || (m_parameters.getFieldQueries() != null))) {
+            && (m_parameters.isIgnoreQuery()
+                || CmsStringUtil.isNotEmpty(m_parameters.getQuery())
+                || CmsStringUtil.isNotEmpty(m_parameters.getParsedQuery()) || (m_parameters.getFieldQueries() != null))) {
 
-            if (!m_parameters.isIgnoreQuery() && (getQueryLength() > 0)) {
+            if (!m_parameters.isIgnoreQuery()
+                && CmsStringUtil.isEmpty(m_parameters.getParsedQuery())
+                && (getQueryLength() > 0)) {
 
                 if (m_parameters.getFieldQueries() != null) {
                     // check all field queries if the length of the query is ok
-                    Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = m_parameters.getFieldQueries().iterator();
-                    while (i.hasNext()) {
-                        CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
-                        if (CmsStringUtil.isEmpty(fq.getSearchQuery())
-                            || (fq.getSearchQuery().trim().length() < getQueryLength())) {
+                    for (CmsSearchParameters.CmsSearchFieldQuery fq : m_parameters.getFieldQueries()) {
+                        for (String keyword : fq.getSearchTerms()) {
+                            if (CmsStringUtil.isEmpty(keyword) || (keyword.trim().length() < getQueryLength())) {
 
-                            m_lastException = new CmsSearchException(Messages.get().container(
-                                Messages.ERR_QUERY_TOO_SHORT_1,
-                                new Integer(getQueryLength())));
+                                m_lastException = new CmsSearchException(Messages.get().container(
+                                    Messages.ERR_QUERY_TOO_SHORT_1,
+                                    new Integer(getQueryLength())));
 
-                            return null;
+                                return null;
+                            }
                         }
                     }
 
@@ -630,7 +712,7 @@ public class CmsSearch {
      * Controls if the excerpt from a field is generated only for searched fields, or for all fields (the default).<p>
      *
      * The default setting is <code>false</code>, which means all text fields configured for the excerpt will
-     * be used to gernerate the excerpt, regardless if they have been searched in or not.<p>
+     * be used to generate the excerpt, regardless if they have been searched in or not.<p>
      *
      * Please note: A field will only be included in the excerpt if it has been configured as <code>excerpt="true"</code>
      * in <code>opencms-search.xml</code>. This method controls if so configured fields are used depending on the
@@ -700,6 +782,52 @@ public class CmsSearch {
     }
 
     /**
+     * Sets the maximum creation date a resource must have to be included in the search result.<p>
+     *
+     * @param maxDateCreated the maximum creation date to set
+     */
+    public void setMaxDateCreated(String maxDateCreated) {
+
+        m_parameters.setMaxDateCreated(CmsStringUtil.getLongValue(maxDateCreated, Long.MAX_VALUE, "maxDateCreated"));
+    }
+
+    /**
+     * Sets the maximum last modification date a resource must have to be included in the search result.<p>
+     *
+     * @param maxDateLastModified the maximum last modification date to set
+     */
+    public void setMaxDateLastModified(String maxDateLastModified) {
+
+        m_parameters.setMaxDateLastModified(CmsStringUtil.getLongValue(
+            maxDateLastModified,
+            Long.MAX_VALUE,
+            "maxDateLastModified"));
+    }
+
+    /**
+     * Sets the minimum creation date a resource must have to be included in the search result.<p>
+     *
+     * @param minDateCreated the minimum creation date to set
+     */
+    public void setMinDateCreated(String minDateCreated) {
+
+        m_parameters.setMinDateCreated(CmsStringUtil.getLongValue(minDateCreated, Long.MIN_VALUE, "minDateCreated"));
+    }
+
+    /**
+     * Sets the minimum last modification date a resource must have to be included in the search result.<p>
+     *
+     * @param minDateLastModified he minimum last modification date to set
+     */
+    public void setMinDateLastModified(String minDateLastModified) {
+
+        m_parameters.setMinDateLastModified(CmsStringUtil.getLongValue(
+            minDateLastModified,
+            Long.MIN_VALUE,
+            "minDateLastModified"));
+    }
+
+    /**
      * Set the parameters to use if a non null instance is provided. <p>
      * 
      * @param parameters the parameters to use for the search if a non null instance is provided 
@@ -709,6 +837,27 @@ public class CmsSearch {
 
         if (parameters != null) {
             m_parameters = parameters;
+        }
+    }
+
+    /**
+     * Sets the parsed query, which will be parameter decoded first.<p>
+     * 
+     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
+     * The Lucene query build from the parameters is stored here and can be later used 
+     * for paging through the results.<p>
+     * 
+     * Please note that this applies only to the query part, not the filter part of the search.<p>
+     * 
+     * @param parsedQuery the parsed query to set 
+     */
+    public void setParsedQuery(String parsedQuery) {
+
+        try {
+            m_parameters.setParsedQuery(CmsEncoder.decodeParameter(parsedQuery));
+        } catch (CmsIllegalArgumentException iae) {
+            m_lastException = iae;
         }
     }
 
@@ -841,7 +990,7 @@ public class CmsSearch {
     }
 
     /**
-     * Resets the last seach result.<p>
+     * Resets the last search result.<p>
      */
     private void resetLastResult() {
 
@@ -849,5 +998,6 @@ public class CmsSearch {
         m_lastException = null;
         m_categoriesFound = null;
         m_parameterRestriction = null;
+        m_parameters.setParsedQuery(null);
     }
 }

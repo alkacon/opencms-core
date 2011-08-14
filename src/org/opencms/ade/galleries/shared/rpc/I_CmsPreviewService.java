@@ -50,58 +50,64 @@ public interface I_CmsPreviewService extends RemoteService {
      * Returns the image resource data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the resource path
+     * @param locale the content locale
      * 
      * @return the image resource data
      * 
      * @throws CmsRpcException  if something goes wrong
      */
-    CmsImageInfoBean getImageInfo(String resourcePath) throws CmsRpcException;
+    CmsImageInfoBean getImageInfo(String resourcePath, String locale) throws CmsRpcException;
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
+     * @param locale the content locale
      * 
      * @return the preview data
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsResourceInfoBean getResourceInfo(String resourcePath) throws CmsRpcException;
+    CmsResourceInfoBean getResourceInfo(String resourcePath, String locale) throws CmsRpcException;
 
     /**
      * Returns the image resource data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the resource path
+     * @param locale the content locale
      * 
      * @return the image resource data
      * 
      * @throws CmsRpcException  if something goes wrong
      */
-    CmsImageInfoBean syncGetImageInfo(String resourcePath) throws CmsRpcException;
+    CmsImageInfoBean syncGetImageInfo(String resourcePath, String locale) throws CmsRpcException;
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
+     * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @return the updates preview data
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsImageInfoBean updateImageProperties(String resourcePath, Map<String, String> properties) throws CmsRpcException;
+    CmsImageInfoBean updateImageProperties(String resourcePath, String locale, Map<String, String> properties)
+    throws CmsRpcException;
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
+     * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @return the updates preview data
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsResourceInfoBean updateResourceProperties(String resourcePath, Map<String, String> properties)
+    CmsResourceInfoBean updateResourceProperties(String resourcePath, String locale, Map<String, String> properties)
     throws CmsRpcException;
 
 }

@@ -15,6 +15,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.0.2 - August 18, 2011
+! Support for XSD translations in existing XML contents, configured in opencms-vfs.xml.
+! It's now possible to configure multiple resource bundles (properties or XML) in an XML content schema.
+- I_CmsConfigurationParameterHandler.getConfiguration() now returns a CmsParameterConfiguration. 
+- New abstraction Layer for the Lucene index writer, provided by Florian Hopf.
+
 OpenCms 8.0.1 - June 29, 2011
 ! The sitemap and ADE configuration has been greatly simplified and improved.
 ! The properties of a page can now be modified directly in the ADE editor.

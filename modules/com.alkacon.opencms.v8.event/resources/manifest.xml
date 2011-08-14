@@ -122,7 +122,16 @@
 			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

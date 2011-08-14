@@ -85,7 +85,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);
 
-        for (String key : oldProperties.getParameters()) {
+        for (String key : oldProperties.keySet()) {
             Object obj = oldProperties.getObject(key);
 
             String oldValue = "", newValue = "";
@@ -106,7 +106,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
             } else {
                 oldValue = (String)obj;
-                newValue = newProperties.getString(key);
+                newValue = newProperties.get(key);
             }
             System.out.println("key  : " + key);
             System.out.println("read : " + oldValue);

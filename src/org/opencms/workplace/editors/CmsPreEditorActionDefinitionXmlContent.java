@@ -71,10 +71,7 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
                 // get the folder path from the currently edited resource
                 folderPath = CmsResource.getFolderPath(resName);
             }
-            if (CmsNewResourceXmlContent.getModelFiles(
-                dialog.getCms(),
-                folderPath,
-                type.getTypeName()).size() > 0) {
+            if (CmsNewResourceXmlContent.getModelFiles(dialog.getCms(), folderPath, type.getTypeName()).size() > 0) {
                 // model files present, display model file selection dialog before opening editor
                 Map params = new HashMap(4);
                 // put the original request parameters to a new parameter value

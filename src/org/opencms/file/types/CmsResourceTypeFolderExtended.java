@@ -81,13 +81,13 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
-            result.merge(additional);
+            result.putAll(additional);
         }
         if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
-            result.setParameter(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
+            result.put(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
         }
         if (CmsStringUtil.isNotEmpty(getFolderClassParams())) {
-            result.setParameter(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
+            result.put(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
         }
         return result;
     }

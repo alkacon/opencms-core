@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -57,6 +58,9 @@ public class CmsSitemapToolbar extends CmsToolbar {
             addLeft(new CmsToolbarClipboardButton(this, controller));
         }
         addLeft(new CmsToolbarShowNonNavigationButton());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(controller.getData().getParentSitemap())) {
+            addRight(new CmsToolbarGoToParentButton(this, controller));
+        }
         addRight(new CmsToolbarGoBackButton(this, controller));
     }
 

@@ -69,11 +69,11 @@ public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended 
 
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         if (CmsStringUtil.isNotEmpty(getFolderContentTypes())) {
-            result.addParameter(CONFIGURATION_FOLDER_CONTENT_TYPES, getFolderContentTypes());
+            result.add(CONFIGURATION_FOLDER_CONTENT_TYPES, getFolderContentTypes());
         }
         CmsParameterConfiguration additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
-            result.merge(additional);
+            result.putAll(additional);
         }
         return result;
     }

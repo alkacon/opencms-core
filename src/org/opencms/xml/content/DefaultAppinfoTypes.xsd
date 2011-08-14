@@ -7,21 +7,37 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundle">
-		<xsd:sequence>
-			<xsd:element name="bundle" type="OpenCmsDefaultAppinfoResourcebundleBundle" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>		
 		<xsd:attribute name="name" type="xsd:string" />
 	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundleBundle">
+		
+	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundles">
 		<xsd:sequence>
-			<xsd:element name="resource" type="OpenCmsDefaultAppinfoResourcebundleResource" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="propertybundle" type="OpenCmsDefaultAppinfoResourcebundlesPropertybundle" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="xmlbundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundle" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>		
-		<xsd:attribute name="locale" type="xsd:string" use="required" />
 	</xsd:complexType>
 	
+	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesPropertybundle">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundle">
+		<xsd:sequence>
+			<xsd:element name="bundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale">
+		<xsd:sequence>
+			<xsd:element name="resource" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>		
+		<xsd:attribute name="locale" type="xsd:string" use="required" />
+	</xsd:complexType>	
+		
 	<xsd:complexType
-		name="OpenCmsDefaultAppinfoResourcebundleResource">
+		name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="key" type="xsd:string" use="required" />

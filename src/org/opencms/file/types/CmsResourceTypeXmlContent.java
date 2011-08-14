@@ -195,10 +195,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration additional = super.getConfiguration();
         if (additional != null) {
-            result.merge(additional);
+            result.putAll(additional);
         }
         if (m_schema != null) {
-            result.setParameter(CONFIGURATION_SCHEMA, m_schema);
+            result.put(CONFIGURATION_SCHEMA, m_schema);
         }
         return result;
     }
@@ -377,6 +377,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         String schema = xmlContent.getContentDefinition().getSchemaLocation();
         if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
+            if (CmsXmlEntityResolver.isInternalId(schema)) {
+                return null;
+            }
             schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
         } else if (CmsXmlEntityResolver.isCachedSystemId(schema)) {
             // schema may not exist as a VFS file because it has just been cached (some test cases do this) 

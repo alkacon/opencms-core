@@ -126,7 +126,7 @@ public class CmsResultsTab extends A_CmsListTab {
          */
         public void onScroll(ScrollEvent event) {
 
-            if (!m_hasMoreResults) {
+            if (!m_hasMoreResults || getTabHandler().isLoading()) {
                 return;
             }
             final ScrollPanel scrollPanel = (ScrollPanel)event.getSource();

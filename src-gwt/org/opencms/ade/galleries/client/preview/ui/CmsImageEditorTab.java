@@ -73,15 +73,16 @@ public class CmsImageEditorTab extends A_CmsPreviewDetailTab {
     public void fillContent(CmsImageInfoBean imageInfo) {
 
         //checking for enhanced image options
-        //TODO: add enhanced options for widget mode
         m_form.hideEnhancedOptions((getDialogMode() != GalleryMode.editor) || !CmsPreviewUtil.hasEnhancedImageOptions());
         CmsJSONMap imageInfos = CmsPreviewUtil.getImageInfo();
         // checking if selected image resource is the same as previewed resource
-        if (!imageInfos.containsKey(Attribute.hash.name())
-            || imageInfos.getString(Attribute.hash.name()).equals(String.valueOf(m_handler.getImageIdHash()))) {
-
-            m_form.fillContent(imageInfos);
+        if (imageInfos.containsKey(Attribute.hash.name())
+            && !imageInfos.getString(Attribute.hash.name()).equals(String.valueOf(m_handler.getImageIdHash()))) {
+            imageInfos = CmsJSONMap.createJSONMap();
         }
+
+        m_form.fillContent(imageInfo, imageInfos);
+
     }
 
     /**

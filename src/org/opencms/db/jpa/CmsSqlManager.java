@@ -366,9 +366,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         StringBuffer propValue = new StringBuffer();
 
         // read the values of the pool configuration specified by the given key
-        String jdbcDriver = config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_DRIVER);
-        String jdbcUrl = config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL);
-        String jdbcUrlParams = config.getString(CmsDbPool.KEY_DATABASE_POOL
+        String jdbcDriver = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_DRIVER);
+        String jdbcUrl = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL);
+        String jdbcUrlParams = config.get(CmsDbPool.KEY_DATABASE_POOL
             + '.'
             + key
             + '.'
@@ -401,7 +401,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         boolean testWhileIdle = Boolean.valueOf(
             config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_WHILE_IDLE, "false").trim()).booleanValue();
 
-        String testQuery = config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_QUERY);
+        String testQuery = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_QUERY);
         if ("".equals(testQuery)) {
             testQuery = null;
         }

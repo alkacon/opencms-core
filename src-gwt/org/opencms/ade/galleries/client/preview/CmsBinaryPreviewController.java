@@ -41,17 +41,30 @@ import java.util.Map;
  */
 public final class CmsBinaryPreviewController extends A_CmsPreviewController<CmsResourceInfoBean> {
 
+    /** The preview handler. */
     private CmsBinaryPreviewHandler m_handler;
 
     /**
-     * Hiding constructor.<p>
+     * Constructor.<p>
      * 
      * @param handler the preview controller handler
+     * @param locale the content locale
      */
-    public CmsBinaryPreviewController(CmsBinaryPreviewHandler handler) {
+    public CmsBinaryPreviewController(CmsBinaryPreviewHandler handler, String locale) {
 
         m_handler = handler;
+        m_locale = locale;
         m_handler.init(this);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param locale the content locale
+     */
+    public CmsBinaryPreviewController(String locale) {
+
+        m_locale = locale;
     }
 
     /**
@@ -60,6 +73,9 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
     @Override
     public I_CmsPreviewHandler<CmsResourceInfoBean> getHandler() {
 
+        if (m_handler == null) {
+            throw new UnsupportedOperationException("Preview handler not initialized");
+        }
         return m_handler;
     }
 
@@ -78,7 +94,7 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             @Override
             public void execute() {
 
-                getService().getResourceInfo(resourcePath, this);
+                getService().getResourceInfo(resourcePath, m_locale, this);
             }
 
             /**
@@ -116,7 +132,7 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             @Override
             public void execute() {
 
-                getService().updateResourceProperties(getResourcePath(), properties, this);
+                getService().updateResourceProperties(getResourcePath(), m_locale, properties, this);
             }
 
             /**

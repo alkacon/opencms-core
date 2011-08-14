@@ -32,7 +32,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -54,30 +53,8 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
 
-    /**
-     * Selects the resource.<p>
-     * 
-     * @param galleryMode the gallery mode 
-     * @param resourcePath the path of the selected resource
-     * @param title the resource title
-     */
-    public static void select(GalleryMode galleryMode, String resourcePath, String title) {
-
-        switch (galleryMode) {
-            case widget:
-                CmsPreviewUtil.setResourcePath(resourcePath);
-                break;
-            case editor:
-                CmsPreviewUtil.setLink(resourcePath, title, null);
-                CmsPreviewUtil.closeDialog();
-                break;
-            case ade:
-            case view:
-            default:
-                //nothing to do here, should not be called
-                break;
-        }
-    }
+    /** The content locale. */
+    protected String m_locale;
 
     /**
      * Returns the preview service.<p>
@@ -88,9 +65,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         if (m_previewService == null) {
             m_previewService = GWT.create(I_CmsPreviewService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.galleries.CmsPreviewService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsPreviewService.gwt");
             ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
         }
         return m_previewService;
@@ -131,6 +106,31 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
         getHandler().removePreview();
         m_infoBean = null;
         m_previewService = null;
+    }
+
+    /**
+     * Selects the resource.<p>
+     * 
+     * @param galleryMode the gallery mode 
+     * @param resourcePath the path of the selected resource
+     * @param title the resource title
+     */
+    public void select(GalleryMode galleryMode, String resourcePath, String title) {
+
+        switch (galleryMode) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(resourcePath);
+                break;
+            case editor:
+                CmsPreviewUtil.setLink(resourcePath, title, null);
+                CmsPreviewUtil.closeDialog();
+                break;
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
     }
 
     /**

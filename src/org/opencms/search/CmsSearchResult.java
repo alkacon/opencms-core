@@ -61,14 +61,14 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
     /** The excerpt of this search result. */
     protected String m_excerpt;
 
+    /** Holds the values of the search result fields. */
+    protected Map<String, String> m_fields;
+
     /** The resource path of this search result. */
     protected String m_path;
 
     /** The score of this search result. */
     protected int m_score;
-
-    /** Holds the values of the search result fields. */
-    protected Map<String, String> m_fields;
 
     /** Contains the pre-calculated memory size. */
     private int m_memorySize;
@@ -144,7 +144,8 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * Empty constructor to be used for overriding classes.
      */
     protected CmsSearchResult() {
-        
+
+        // noop
     }
 
     /**
@@ -337,6 +338,6 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
     @Override
     public int hashCode() {
 
-        return m_documentType.hashCode() * 1109 + m_path.hashCode();
+        return (m_documentType.hashCode() * 1109) + m_path.hashCode();
     }
 }

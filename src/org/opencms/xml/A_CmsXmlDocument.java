@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -48,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
@@ -191,6 +193,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @throws CmsXmlException if something goes wrong
      */
     public CmsFile correctXmlStructure(CmsObject cms) throws CmsXmlException {
+
+        // apply XSD schema translation
+        Attribute schema = m_document.getRootElement().attribute(
+            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
+        if (schema != null) {
+            String schemaLocation = schema.getValue();
+            String translatedSchema = OpenCms.getResourceManager().getXsdTranslator().translateResource(schemaLocation);
+            if (!schemaLocation.equals(translatedSchema)) {
+                schema.setValue(translatedSchema);
+            }
+        }
 
         // iterate over all locales
         Iterator<Locale> i = m_locales.iterator();
@@ -869,7 +882,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         String elName = element.getName();
         if (parentPath != null) {
             Element first = element.getParent().element(elName);
-            int elIndex = element.getParent().indexOf(element) - first.getParent().indexOf(first) + 1;
+            int elIndex = (element.getParent().indexOf(element) - first.getParent().indexOf(first)) + 1;
             elName = parentPath + (parentPath.length() > 0 ? "/" : "") + elName.concat("[" + elIndex + "]");
         }
 

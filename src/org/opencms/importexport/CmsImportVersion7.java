@@ -1944,7 +1944,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             }
 
             CmsParameterConfiguration config = OpenCms.getPasswordHandler().getConfiguration();
-            if ((config != null) && config.containsParameter(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+            if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
                 if (config.getBoolean(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING, false)) {
                     m_userPassword = convertDigestEncoding(m_userPassword);
                 }

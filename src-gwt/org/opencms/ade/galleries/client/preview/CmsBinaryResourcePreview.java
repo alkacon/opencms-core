@@ -49,11 +49,11 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
     /** The preview instance. */
     private static CmsBinaryResourcePreview m_instance;
 
-    /** The preview controller. */
-    private CmsBinaryPreviewController m_controller;
-
     /** The drag-and-drop handler to use for resource list items in the preview. */
     protected CmsDNDHandler m_dndHandler;
+
+    /** The preview controller. */
+    private CmsBinaryPreviewController m_controller;
 
     /** The gallery dialog in which this preview is displayed. */
     private CmsGalleryDialog m_galleryDialog;
@@ -126,9 +126,9 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
+    public void openPreview(String galleryMode, String resourcePath, String locale, String parentElementId) {
 
         FlowPanel parentPanel = CmsGalleryDialog.getPreviewParent(parentElementId);
 
@@ -142,7 +142,9 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
             parentPanel.getOffsetWidth());
 
         // initialize the controller and controller handler
-        m_controller = new CmsBinaryPreviewController(new CmsBinaryPreviewHandler(previewDialog, this, parentElementId));
+        m_controller = new CmsBinaryPreviewController(
+            new CmsBinaryPreviewHandler(previewDialog, this, parentElementId),
+            locale);
         exportRemovePreview(parentElementId);
         CmsPreviewUtil.exportFunctions(getPreviewName(), this);
         parentPanel.add(previewDialog);
@@ -152,12 +154,13 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public void selectResource(String galleryMode, String resourcePath, String title) {
+    public void selectResource(String galleryMode, String resourcePath, String locale, String title) {
 
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
-        A_CmsPreviewController.select(mode, resourcePath, title);
+        CmsBinaryPreviewController controller = new CmsBinaryPreviewController(locale);
+        controller.select(mode, resourcePath, title);
     }
 
     /**
@@ -188,9 +191,9 @@ public final class CmsBinaryResourcePreview implements I_CmsResourcePreview, I_C
      * @param parentId the previews parent element id
      */
     private native void exportRemovePreview(String parentId) /*-{
-      $wnd["removePreview" + parentId] = function() {
-         @org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
-      };
+        $wnd["removePreview" + parentId] = function() {
+            @org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview::removePreview()();
+        };
     }-*/;
 
     /**

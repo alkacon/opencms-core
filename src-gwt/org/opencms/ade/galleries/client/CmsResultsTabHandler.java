@@ -27,7 +27,6 @@
 
 package org.opencms.ade.galleries.client;
 
-
 /**
  * The results tab handler.<p>
  * 
@@ -75,6 +74,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public boolean hasSelectResource() {
 
         return m_controller.hasSelectResource();
+    }
+
+    /**
+     * Returns if a load results request is currently running.<p>
+     * 
+     * @return <code>true</code> if a load results request is currently running
+     */
+    public boolean isLoading() {
+
+        return m_controller.isLoading();
     }
 
     /**

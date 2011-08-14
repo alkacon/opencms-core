@@ -95,7 +95,7 @@ public final class CmsFieldFactory {
                 CmsParameterConfiguration fieldProperties = new CmsParameterConfiguration();
                 fieldProperties.load(new FileInputStream(propertyFile));
 
-                Iterator i = fieldProperties.getParameters().iterator();
+                Iterator i = fieldProperties.keySet().iterator();
                 while (i.hasNext()) {
 
                     String key = (String)i.next();

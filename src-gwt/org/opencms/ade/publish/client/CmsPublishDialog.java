@@ -37,7 +37,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -250,9 +249,7 @@ public class CmsPublishDialog extends CmsPopup {
 
         if (SERVICE == null) {
             SERVICE = GWT.create(I_CmsPublishService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.publish.CmsPublishService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.publish.CmsPublishService.gwt");
             ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;

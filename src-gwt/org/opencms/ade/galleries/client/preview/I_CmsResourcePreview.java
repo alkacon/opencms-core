@@ -60,18 +60,20 @@ public interface I_CmsResourcePreview {
      * 
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
+     * @param locale the content locale
      * @param parentElementId the dom element id to insert the preview into
      */
-    void openPreview(String galleryMode, String resourcePath, String parentElementId);
+    void openPreview(String galleryMode, String resourcePath, String locale, String parentElementId);
 
     /**
      * Sets the selected resource in the opening editor for the given gallery mode.<p>
      * 
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
+     * @param locale the content locale
      * @param title the resource title
      */
-    void selectResource(String galleryMode, String resourcePath, String title);
+    void selectResource(String galleryMode, String resourcePath, String locale, String title);
 
     /**
      * Checks if further user input is required and other wise sets the selected resource

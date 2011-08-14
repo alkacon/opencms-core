@@ -866,9 +866,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         if (m_service == null) {
             m_service = GWT.create(I_CmsSitemapService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.sitemap.CmsVfsSitemapService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.sitemap.CmsVfsSitemapService.gwt");
             ((ServiceDefTarget)m_service).setServiceEntryPoint(serviceUrl);
         }
         return m_service;

@@ -1244,17 +1244,7 @@ public class CmsHtmlImport {
                 // new folder in OpenCms
                 // only do this if we have found a meta.properties file          
                 if (metaPropertiesFound) {
-                    for (String property : propertyFile.getParameters()) {
-                        // get property and value
-                        try {
-                            String propertyvalue = propertyFile.getString(property);
-                            // copy to the properties of the OpenCms folder
-                            properties.put(property, propertyvalue);
-                        } catch (Exception e2) {
-                            // just skip this property if it could not be read.
-                            e2.printStackTrace();
-                        }
-                    }
+                    properties.putAll(propertyFile);
 
                     // check if we have to set the navpos property.
                     if (properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS) == null) {

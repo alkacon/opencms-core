@@ -84,19 +84,12 @@
 	.popupMainContent, .caption{
 		border-radius: 8px;
 	}
-} @elif user.agent ie6 {
-	.popupContent{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		/** filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"); */
-	}
-} @elif user.agent ie8 {
-	.popupContent{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)";
-		border-radius: 12px; 
-	}
-	.popupMainContent, .caption{
-		border-radius: 8px;
+} @elif user.agent ie6 ie8 {
+	div.popupContent{
+		/** No shadow for IE7 and IE8. The necessary filter would prevent the use of other filters like opacity. */
+		
+		/** Ensure the proper background-color. */
+		background-color: value("constants.css.backgroundColorDialogBorder");
 	}
 }
 

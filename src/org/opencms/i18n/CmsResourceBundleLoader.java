@@ -115,11 +115,11 @@ public final class CmsResourceBundleLoader {
         }
 
         /**
-         * Checks if the f´given base name is identical to the base name of this bundle key.<p>
+         * Checks if the given base name is identical to the base name of this bundle key.<p>
          * 
-         * @param baseName the base name to compate
+         * @param baseName the base name to compare
          * 
-         * @return <code>true</code> if the f´given base name is identical to the base name of this bundle key
+         * @return <code>true</code> if the given base name is identical to the base name of this bundle key
          */
         public boolean isSameBase(String baseName) {
 

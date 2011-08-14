@@ -28,6 +28,11 @@ li div.itemContainer.cmsHovering{
 	line-height: 16px;
 }
 
+.itemContainer .titleInput{
+	font-weight: bold;
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+}
 
 @external navMode;
 

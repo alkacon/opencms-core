@@ -97,9 +97,9 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String, String, String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String, String, String, String)
      */
-    public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
+    public void openPreview(String galleryMode, String resourcePath, String locale, String parentElementId) {
 
         FlowPanel parentPanel = CmsGalleryDialog.getPreviewParent(parentElementId);
 
@@ -111,7 +111,7 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
         // initialize the controller and controller handler
-        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId));
+        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId), locale);
         exportRemovePreview(parentElementId);
         CmsPreviewUtil.exportFunctions(getPreviewName(), this);
         parentPanel.add(preview);
@@ -121,12 +121,13 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public void selectResource(String galleryMode, String resourcePath, String title) {
+    public void selectResource(String galleryMode, String resourcePath, String locale, String title) {
 
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
-        CmsImagePreviewController.select(mode, resourcePath, title);
+        CmsImagePreviewController controller = new CmsImagePreviewController(locale);
+        controller.select(mode, resourcePath, title);
     }
 
     /**
@@ -147,9 +148,9 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
      * @param parentId the previews parent element id
      */
     private native void exportRemovePreview(String parentId) /*-{
-      $wnd["removePreview" + parentId] = function() {
-         @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
-      };
+        $wnd["removePreview" + parentId] = function() {
+            @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
+        };
     }-*/;
 
     /**

@@ -29,8 +29,9 @@ div.editorGallery {}
 	overflow: hidden;
 }
 @if user.agent ie6 {
-.galleryBody *{
+body.galleryBody *{
 	zoom: 1;
+	background-color:transparent;
 }
 }
 .resultTabUpload{
@@ -40,6 +41,7 @@ div.editorGallery {}
 /* The height is set as inline style. */
 .parentPanel {
 	position:relative;
+	overflow: hidden;
 }
 
 .showPreview{

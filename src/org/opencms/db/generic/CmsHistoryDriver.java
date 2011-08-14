@@ -409,19 +409,19 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsParameterConfiguration configuration = configurationManager.getConfiguration();
 
         String poolUrl;
-        if (configuration.getString("db.history.pool") != null) {
-            poolUrl = configuration.getString("db.history.pool").toString();
+        if (configuration.get("db.history.pool") != null) {
+            poolUrl = configuration.get("db.history.pool").toString();
         } else {
             // TODO: deprecated, remove as soon as possible
-            poolUrl = configuration.getString("db.backup.pool").toString();
+            poolUrl = configuration.get("db.backup.pool").toString();
         }
 
         String classname;
-        if (configuration.getString("db.history.sqlmanager") != null) {
-            classname = configuration.getString("db.history.sqlmanager").toString();
+        if (configuration.get("db.history.sqlmanager") != null) {
+            classname = configuration.get("db.history.sqlmanager").toString();
         } else {
             // TODO: deprecated, remove as soon as possible
-            classname = configuration.getString("db.backup.sqlmanager").toString();
+            classname = configuration.get("db.backup.sqlmanager").toString();
         }
 
         m_sqlManager = initSqlManager(classname);

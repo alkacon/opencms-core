@@ -230,8 +230,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         CmsParameterConfiguration config = configurationManager.getConfiguration();
 
-        String poolUrl = config.getString("db.subscription.pool");
-        String classname = config.getString("db.subscription.sqlmanager");
+        String poolUrl = config.get("db.subscription.pool");
+        String classname = config.get("db.subscription.sqlmanager");
 
         m_sqlManager = this.initSqlManager(classname);
 

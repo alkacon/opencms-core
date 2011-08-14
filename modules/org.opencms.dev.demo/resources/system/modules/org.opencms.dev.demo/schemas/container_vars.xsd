@@ -1,12 +1,15 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-		
-	<xsd:element name="DevDemoContainerVariables" type="OpenCmsDevDemoContainerVariables"/>
-	
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+	<xsd:element name="DevDemoContainerVariables" type="OpenCmsDevDemoContainerVariables" />
+
 	<xsd:complexType name="OpenCmsDevDemoContainerVariables">
 		<xsd:sequence>
-			<xsd:element name="DevDemoContainerVariable" type="OpenCmsDevDemoContainerVariable" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DevDemoContainerVariable" type="OpenCmsDevDemoContainerVariable"
+				minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -15,32 +18,39 @@
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Content" type="OpenCmsHtml" />
 		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required" />
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.dev.demo.workplace.ddcontainervars">
-                <bundle locale="EN">
-                    <resource key="label.DevDemoContainerVariable.Title">Title</resource>                    
-                    <resource key="label.DevDemoContainerVariable.Title.help">The title of the Dev Demo Container Variables Element.</resource>
-                    <resource key="dev.demo.ddcontainervars.default.Title">New container variables demo</resource>
-                    <resource key="label.DevDemoContainerVariable.Content">Content</resource>
-                    <resource key="label.DevDemoContainerVariable.Content.help">The content of the Dev Demo Container Variables Element.</resource>                  
-                </bundle>                                    
-            </resourcebundle> 
-            <defaults>
-                <default element="Title" value="%(key.dev.demo.ddcontainervars.default.Title)" />
-            </defaults> 			
+			<resourcebundles>
+				<xmlbundle name="org.opencms.dev.demo.workplace.ddcontainervars">
+					<bundle locale="en">
+						<resource key="label.DevDemoContainerVariable.Title">Title</resource>
+						<resource key="label.DevDemoContainerVariable.Title.help">The title of the Dev Demo Container
+							Variables Element.</resource>
+						<resource key="dev.demo.ddcontainervars.default.Title">New container variables demo</resource>
+						<resource key="label.DevDemoContainerVariable.Content">Content</resource>
+						<resource key="label.DevDemoContainerVariable.Content.help">The content of the Dev Demo Container
+							Variables Element.</resource>
+					</bundle>
+				</xmlbundle>
+			</resourcebundles>
+			<defaults>
+				<default element="Title"
+					value="%(key.dev.demo.ddcontainervars.default.Title)" />
+			</defaults>
 			<formatters>
-				<formatter minwidth="150" uri="/system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp" searchcontent="false"/>
+				<formatter minwidth="150"
+					uri="/system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp"
+					searchcontent="false" />
 			</formatters>
 			<layouts>
 				<layout element="Content" widget="HtmlWidget" configuration="formatselect,source" />
 			</layouts>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
-			</mappings>			
+			</mappings>
 		</xsd:appinfo>
-	</xsd:annotation>  
+	</xsd:annotation>
 </xsd:schema>

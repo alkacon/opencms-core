@@ -873,7 +873,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setOwnProperties(new HashMap<String, CmsClientProperty>(source.getOwnProperties()));
         setDefaultFileId(source.getDefaultFileId());
         setDefaultFileType(source.getDefaultFileType());
-        setDefaultFileProperties(new HashMap<String, CmsClientProperty>(source.getDefaultFileProperties()));
+        Map<String, CmsClientProperty> defaultFileProperties = source.getDefaultFileProperties();
+        if (defaultFileProperties == null) {
+            defaultFileProperties = new HashMap<String, CmsClientProperty>();
+        }
+        setDefaultFileProperties(new HashMap<String, CmsClientProperty>(defaultFileProperties));
         if (source.getDetailpageTypeName() != null) {
             // do not copy the detail page type name unless it is not null, otherwise newly created detail pages
             // are not displayed correctly in the sitemap editor.

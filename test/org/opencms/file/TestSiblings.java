@@ -264,7 +264,10 @@ public class TestSiblings extends OpenCmsTestCase {
             "s#^/sites/default/content(.*)#/system$1#"}, false);
 
         // set modified folder translator
-        OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator,
+            OpenCms.getResourceManager().getFileTranslator(),
+            OpenCms.getResourceManager().getXsdTranslator());
 
         try {
 
@@ -303,7 +306,8 @@ public class TestSiblings extends OpenCmsTestCase {
             // reset the translation rules
             OpenCms.getResourceManager().setTranslators(
                 oldFolderTranslator,
-                OpenCms.getResourceManager().getFileTranslator());
+                OpenCms.getResourceManager().getFileTranslator(),
+                OpenCms.getResourceManager().getXsdTranslator());
 
         }
     }

@@ -37,6 +37,9 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_BREAK_UP_TEXT_0 = "GUI_BUTTON_BREAK_UP_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_CANCEL_TEXT_0 = "GUI_BUTTON_CANCEL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */

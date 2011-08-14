@@ -42,7 +42,7 @@
 	<form id="searchForm" name="searchForm" action="<cms:link>${cms.cmsObject.requestContext.uri}</cms:link>" method="post">
 		    <input type="hidden" name="action" value="search" />
 			<input type="hidden" name="searchPage" value="1" />
-		    <input type="text" name="query" value="${search.query}" />
+		    <input type="text" name="query" value="<c:out value="${search.query}" />" />
 		    <input type="submit" name="submit" value="<fmt:message key="search.button" />" />
 	</form>
 </c:if>

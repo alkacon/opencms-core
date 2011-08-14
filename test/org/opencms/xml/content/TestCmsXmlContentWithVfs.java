@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -87,7 +88,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
     private static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
     private static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
-    private static final String SCHEMA_SYSTEM_ID_1L3 = "http://www.opencms.org/test1_localized3.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1L4 = "http://www.opencms.org/test1_localized4.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -136,6 +137,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXml"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXmlWithDefault"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testResourceMultiBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
         suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
@@ -1224,7 +1226,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             resourcename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         CmsFile file = cms.readFile(resourcename);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
@@ -1338,7 +1340,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             resourcename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         CmsFile file = cms.readFile(resourcename);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
@@ -1493,7 +1495,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             resourcename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         CmsFile file = cms.readFile(resourcename);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
@@ -1739,6 +1741,58 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     }
 
     /**
+     * Test if a multiple resource bundle in the schema definition is properly initialized.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testResourceMultiBundle() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing a multiple resource bundle in content handler for XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContentDefinition definition;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1_localized4.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L4, resolver);
+
+        I_CmsXmlContentHandler contentHandler;
+
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        CmsMessages messages = contentHandler.getMessages(Locale.ENGLISH);
+        assertNotNull(messages);
+        assertEquals(
+            "The following errors occurred when validating the form:",
+            messages.key(org.opencms.xml.content.Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
+        assertEquals(
+            "Error while converting old xmlPage content.",
+            messages.key(org.opencms.xml.page.Messages.ERR_XML_PAGE_CONVERT_CONTENT_0));
+
+        // get a Locale / language variation and see if this works
+        CmsMessages messagesDEde = contentHandler.getMessages(Locale.GERMANY);
+        assertTrue(messagesDEde instanceof CmsMultiMessages);
+
+        // from DE locale
+        assertEquals(
+            "ECHT schlechter Wert \"Arg0\" wegen Regel Arg1",
+            messagesDEde.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
+        // from EN locale
+        assertEquals(
+            "The following errors occurred when validating the form:",
+            messagesDEde.key("editor.xmlcontent.validation.error.title"));
+
+        // from DE_de locale
+        assertEquals("Der Autor ist JETZT", messagesDEde.key("label.newauthor"));
+    }
+
+    /**
      * Test the resource bundles defined in XML content.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -1873,7 +1927,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         String content;
         CmsXmlContentDefinition definition;
-        I_CmsXmlContentHandler contentHandler;
 
         // unmarshal content definition with localization in XML only
         content = CmsFileUtil.readFile(
@@ -1881,7 +1934,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             CmsEncoder.ENCODING_UTF_8);
         // create the content definition
         definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1L2, resolver);
-        contentHandler = definition.getContentHandler();
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
 
         // store content definition in entity resolver

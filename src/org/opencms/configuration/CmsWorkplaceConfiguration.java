@@ -862,12 +862,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORCSSHANDLERS + "/" + N_EDITORCSSHANDLER, 0, A_CLASS);
 
         // add rules for pre editor action classes
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addSetNext(
+            "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
+            "addPreEditorConditionDefinition");
+
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
-            "addPreEditorConditionDefinition",
-            2);
+            "setResourceTypeName",
+            1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION, 0, A_NAME);
-        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION, 1, A_CLASS);
+
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
 
         // add rules for direct edit provider
         digester.addObjectCreate(
@@ -1006,6 +1017,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 Element action = editorPreActions.addElement(N_EDITORPRECONDITION);
                 action.addAttribute(A_NAME, current.getResourceTypeName());
                 action.addAttribute(A_CLASS, current.getClass().getName());
+                // get the configuration parameters
+                CmsParameterConfiguration config = current.getConfiguration();
+                if ((config != null) && (config.size() > 0)) {
+                    // append the configuration parameters
+                    config.appendToXml(action);
+                }
             }
         }
 

@@ -47,8 +47,13 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -88,18 +93,14 @@ public class CmsBinaryPreviewContent extends Composite {
         String previewContent();
     }
 
+    /** The preview panel height. */
+    protected static final int PREVIEW_PANEL_HEIGHT = 348;
+
     /** The ui binder instance for this widget class. */
     private static I_CmsPreviewContentUiBinder uiBinder = GWT.create(I_CmsPreviewContentUiBinder.class);
 
-    /** The css for this widget. */
-    @UiField
-    protected I_CmsPreviewContentStyle m_style;
-
-    /** The list item widget for the previewed resource. */
-    protected CmsListItemWidget m_listItemWidget;
-
-    /** The list item for the previewed resource. */
-    protected CmsListItem m_listItem;
+    /** The preview handler. */
+    protected CmsBinaryPreviewHandler m_binaryPreviewHandler;
 
     /** The list which only contains the list item for the previewed resource (required for drag and drop). */
     @UiField
@@ -109,8 +110,9 @@ public class CmsBinaryPreviewContent extends Composite {
     @UiField
     protected HTML m_previewContent;
 
-    /** The preview handler. */
-    protected CmsBinaryPreviewHandler m_binaryPreviewHandler;
+    /** The css for this widget. */
+    @UiField
+    protected I_CmsPreviewContentStyle m_style;
 
     /**
      * Constructor.<p>
@@ -125,15 +127,15 @@ public class CmsBinaryPreviewContent extends Composite {
         if (galleryDialog != null) {
             dndHandler = galleryDialog.getResultsTab().getDNDHandler();
         }
-        m_listItem = createListItem(info, dndHandler);
+        CmsListItem listItem = createListItem(info, dndHandler);
         m_binaryPreviewHandler = previewHandler;
         initWidget(uiBinder.createAndBindUi(this));
         CmsUUID structureId = info.getStructureId();
 
         if (structureId != null) {
-            m_listItem.setId(structureId.toString());
+            listItem.setId(structureId.toString());
         }
-        m_list.addItem(m_listItem);
+        m_list.addItem(listItem);
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(info.getPreviewContent())) {
             m_previewContent.setHTML(info.getPreviewContent());
@@ -164,6 +166,22 @@ public class CmsBinaryPreviewContent extends Composite {
                 CmsDateTimeUtil.getDate(resourceInfo.getLastModified(), Format.MEDIUM));
         }
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
+        itemWidget.addOpenHandler(new OpenHandler<CmsListItemWidget>() {
+
+            public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+                int widgetHeight = event.getTarget().getOffsetHeight();
+                m_previewContent.getElement().getStyle().setHeight(PREVIEW_PANEL_HEIGHT - widgetHeight, Unit.PX);
+            }
+        });
+        itemWidget.addCloseHandler(new CloseHandler<CmsListItemWidget>() {
+
+            public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+                int widgetHeight = event.getTarget().getOffsetHeight();
+                m_previewContent.getElement().getStyle().setHeight(PREVIEW_PANEL_HEIGHT - widgetHeight, Unit.PX);
+            }
+        });
         CmsListItem result = new CmsListItem(itemWidget);
 
         CmsPushButton button = CmsResultListItem.createDeleteButton();
@@ -185,7 +203,6 @@ public class CmsBinaryPreviewContent extends Composite {
             button.addClickHandler(handler);
             itemWidget.addButton(button);
         }
-
         return result;
     }
 }

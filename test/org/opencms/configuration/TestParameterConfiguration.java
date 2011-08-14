@@ -65,18 +65,18 @@ public class TestParameterConfiguration extends TestCase {
         assertTrue("Test property file '" + file.getAbsolutePath() + "' not found", file.exists());
 
         CmsParameterConfiguration cmsProp = new CmsParameterConfiguration(file.getAbsolutePath());
-        assertEquals("C:\\dev\\workspace\\opencms-core\\test\\data", cmsProp.getString("test.path.one"));
+        assertEquals("C:\\dev\\workspace\\opencms-core\\test\\data", cmsProp.get("test.path.one"));
 
         // test some of the more advanced features
         assertEquals(4, cmsProp.getList("test.list").size());
         assertEquals(3, cmsProp.getList("test.otherlist").size());
-        assertEquals("comma, escaped with \\ backslash", cmsProp.getString("test.escaping"));
-        assertEquals("this is a long long long long long long line!", cmsProp.getString("test.multiline"));
+        assertEquals("comma, escaped with \\ backslash", cmsProp.get("test.escaping"));
+        assertEquals("this is a long long long long long long line!", cmsProp.get("test.multiline"));
 
         // test compatibility with Collection Extended Properties
         ExtendedProperties extProp = new ExtendedProperties(file.getAbsolutePath());
         assertEquals(extProp.size(), cmsProp.size());
-        for (String key : cmsProp.getParameters()) {
+        for (String key : cmsProp.keySet()) {
             Object value = cmsProp.getObject(key);
             assertTrue("Key '" + key + "' not found in CmsConfiguration", extProp.containsKey(key));
             assertTrue("Objects for '" + key + "' not equal", value.equals(extProp.getProperty(key)));
@@ -92,23 +92,23 @@ public class TestParameterConfiguration extends TestCase {
 
         CmsParameterConfiguration config1 = new CmsParameterConfiguration();
         String p = "testParam";
-        config1.addParameter(p, "1");
-        config1.addParameter(p, "2");
-        config1.addParameter(p, "3");
-        config1.addParameter("x", "y");
+        config1.add(p, "1");
+        config1.add(p, "2");
+        config1.add(p, "3");
+        config1.add("x", "y");
 
         CmsParameterConfiguration config2 = new CmsParameterConfiguration();
-        config2.addParameter(p, "a");
-        config2.addParameter(p, "b");
-        config2.addParameter(p, "c");
-        config2.addParameter("v", "w");
+        config2.add(p, "a");
+        config2.add(p, "b");
+        config2.add(p, "c");
+        config2.add("v", "w");
 
-        config1.merge(config2);
+        config1.putAll(config2);
 
-        assertEquals("1,2,3,a,b,c", config1.getString(p));
+        assertEquals("1,2,3,a,b,c", config1.get(p));
         assertEquals(6, config1.getList(p).size());
-        assertEquals("y", config1.getString("x"));
-        assertEquals("w", config1.getString("v"));
+        assertEquals("y", config1.get("x"));
+        assertEquals("w", config1.get("v"));
     }
 
     /**
@@ -120,14 +120,14 @@ public class TestParameterConfiguration extends TestCase {
 
         CmsParameterConfiguration config = new CmsParameterConfiguration();
 
-        config.addParameter("test1", "test, eins");
-        assertEquals("test, eins", config.getString("test1"));
+        config.add("test1", "test, eins");
+        assertEquals("test, eins", config.get("test1"));
 
-        config.addParameter("test2", "test \\\\ zwei");
-        assertEquals("test \\\\ zwei", config.getString("test2"));
+        config.add("test2", "test \\\\ zwei");
+        assertEquals("test \\\\ zwei", config.get("test2"));
 
-        config.addParameter("test3", "test \\= drei");
-        assertEquals("test \\= drei", config.getString("test3"));
+        config.add("test3", "test \\= drei");
+        assertEquals("test \\= drei", config.get("test3"));
 
     }
 }

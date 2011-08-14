@@ -50,38 +50,42 @@ public interface I_CmsPreviewServiceAsync {
      * Returns the image resource data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the resource path
+     * @param locale the content locale
      * @param callback the call-back
      */
-    void getImageInfo(String resourcePath, AsyncCallback<CmsImageInfoBean> callback);
+    void getImageInfo(String resourcePath, String locale, AsyncCallback<CmsImageInfoBean> callback);
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
-     * 
+     * @param locale the content locale
      * @param callback the call-back 
      */
-    void getResourceInfo(String resourcePath, AsyncCallback<CmsResourceInfoBean> callback);
+    void getResourceInfo(String resourcePath, String locale, AsyncCallback<CmsResourceInfoBean> callback);
 
     /**
      * Returns the image resource data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the resource path
+     * @param locale the content locale
      * @param callback the call-back
      */
     @SynchronizedRpcRequest
-    void syncGetImageInfo(String resourcePath, AsyncCallback<CmsImageInfoBean> callback);
+    void syncGetImageInfo(String resourcePath, String locale, AsyncCallback<CmsImageInfoBean> callback);
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
+     * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @param callback the call-back 
      */
     void updateImageProperties(
         String resourcePath,
+        String locale,
         Map<String, String> properties,
         AsyncCallback<CmsImageInfoBean> callback);
 
@@ -89,12 +93,14 @@ public interface I_CmsPreviewServiceAsync {
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
+     * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @param callback the call-back 
      */
     void updateResourceProperties(
         String resourcePath,
+        String locale,
         Map<String, String> properties,
         AsyncCallback<CmsResourceInfoBean> callback);
 

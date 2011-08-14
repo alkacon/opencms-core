@@ -102,7 +102,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         if (SERVICE == null) {
             SERVICE = GWT.create(I_CmsCoreService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(get().getContext(), "org.opencms.gwt.CmsCoreService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.gwt.CmsCoreService.gwt");
             ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;
@@ -117,7 +117,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         if (VFS_SERVICE == null) {
             VFS_SERVICE = GWT.create(I_CmsVfsService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(get().getContext(), "org.opencms.gwt.CmsVfsService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.gwt.CmsVfsService.gwt");
             ((ServiceDefTarget)VFS_SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return VFS_SERVICE;
@@ -253,7 +253,7 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     public String link(String sitePath) {
 
-        return getContext() + sitePath;
+        return CmsStringUtil.joinPaths(getVfsPrefix(), sitePath);
     }
 
     /**

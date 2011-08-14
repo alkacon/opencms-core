@@ -111,10 +111,10 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
         CmsParameterConfiguration result = new CmsParameterConfiguration();
         CmsParameterConfiguration additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
-            result.merge(additional);
+            result.putAll(additional);
         }
         if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
-            result.setParameter(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
+            result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
         }
         return result;
     }

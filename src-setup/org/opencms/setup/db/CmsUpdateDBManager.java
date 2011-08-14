@@ -189,19 +189,19 @@ public class CmsUpdateDBManager {
             CmsParameterConfiguration props = updateBean.getProperties();
 
             // Initialize the CmsUUID generator.
-            CmsUUID.init(props.getString("server.ethernet.address"));
+            CmsUUID.init(props.get("server.ethernet.address"));
 
-            m_dbName = props.getString("db.name");
+            m_dbName = props.get("db.name");
 
-            List<String> pools = CmsStringUtil.splitAsList(props.getString("db.pools"), ',');
+            List<String> pools = CmsStringUtil.splitAsList(props.get("db.pools"), ',');
             for (Iterator<String> it = pools.iterator(); it.hasNext();) {
                 String pool = it.next();
                 Map<String, String> data = new HashMap<String, String>();
-                data.put("driver", props.getString("db.pool." + pool + ".jdbcDriver"));
-                data.put("url", props.getString("db.pool." + pool + ".jdbcUrl"));
-                data.put("params", props.getString("db.pool." + pool + ".jdbcUrl.params"));
-                data.put("user", props.getString("db.pool." + pool + ".user"));
-                data.put("pwd", props.getString("db.pool." + pool + ".password"));
+                data.put("driver", props.get("db.pool." + pool + ".jdbcDriver"));
+                data.put("url", props.get("db.pool." + pool + ".jdbcUrl"));
+                data.put("params", props.get("db.pool." + pool + ".jdbcUrl.params"));
+                data.put("user", props.get("db.pool." + pool + ".user"));
+                data.put("pwd", props.get("db.pool." + pool + ".password"));
                 data.put("keepHistory", String.valueOf(updateBean.isKeepHistory()));
                 m_dbPools.put(pool, data);
             }

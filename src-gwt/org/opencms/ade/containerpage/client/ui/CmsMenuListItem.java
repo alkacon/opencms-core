@@ -33,7 +33,6 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -71,9 +70,6 @@ public class CmsMenuListItem extends CmsListItem {
         }
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
-        if ((element.getSettings() != null) && !element.getSettings().isEmpty()) {
-            getListItemWidget().setBackground(Background.YELLOW);
-        }
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
         m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);

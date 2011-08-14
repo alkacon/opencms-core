@@ -25,11 +25,13 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.content.test.article">			
-				<bundle locale="DE_de">
-					<resource key="from.xml">Lokalisierung im XML Schema</resource>
-				</bundle>			
-			</resourcebundle>		
+			<resourcebundles>
+				<xmlbundle name="org.opencms.xml.content.test.article">			
+					<bundle locale="DE_de">
+						<resource key="from.xml">Lokalisierung im XML Schema</resource>
+					</bundle>
+				</xmlbundle>			
+			</resourcebundles>		
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />

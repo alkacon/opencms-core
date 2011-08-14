@@ -1,12 +1,15 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-		
-	<xsd:element name="DevDemoHeadincludeArticles" type="OpenCmsDevDemoHeadincludeArticles"/>
-	
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+	<xsd:element name="DevDemoHeadincludeArticles" type="OpenCmsDevDemoHeadincludeArticles" />
+
 	<xsd:complexType name="OpenCmsDevDemoHeadincludeArticles">
 		<xsd:sequence>
-			<xsd:element name="DevDemoHeadincludeArticle" type="OpenCmsDevDemoHeadincludeArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DevDemoHeadincludeArticle" type="OpenCmsDevDemoHeadincludeArticle"
+				minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -14,48 +17,60 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" />
-			<xsd:element name="Image" type="OpenCmsVfsFile"/>						
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-		<resourcebundle name="org.opencms.dev.demo.workplace.ddheadincludearticle">
-                 <bundle locale="EN">
-                    <resource key="label.DevDemoHeadincludeArticle.Title">Title</resource>                    
-                    <resource key="label.DevDemoHeadincludeArticle.Title.help">The title of the Dev Demo Article.</resource>
-                    <resource key="dev.demo.ddheadincludearticle.default.Title">New article for Dev Demo template using headinclude tag</resource>
-                    <resource key="label.DevDemoHeadincludeArticle.Text">Text</resource>
-                    <resource key="label.DevDemoHeadincludeArticle.Text.help">The content of the Dev Demo article.</resource>
-                    <resource key="dev.demo.ddheadincludearticle.default.Text">Please edit the article.</resource>
-                    <resource key="label.DevDemoHeadincludeArticle.Image">Image</resource>
-                    <resource key="label.DevDemoHeadincludeArticle.Image.help">The image for the Dev Demo article.</resource>                    
-                </bundle>                                    
-            </resourcebundle>			
+			<resourcebundles>
+				<xmlbundle name="org.opencms.dev.demo.workplace.ddheadincludearticle">
+					<bundle locale="en">
+						<resource key="label.DevDemoHeadincludeArticle.Title">Title</resource>
+						<resource key="label.DevDemoHeadincludeArticle.Title.help">The title of the Dev Demo Article.</resource>
+						<resource key="dev.demo.ddheadincludearticle.default.Title">New article for Dev Demo template using
+							headinclude tag</resource>
+						<resource key="label.DevDemoHeadincludeArticle.Text">Text</resource>
+						<resource key="label.DevDemoHeadincludeArticle.Text.help">The content of the Dev Demo article.</resource>
+						<resource key="dev.demo.ddheadincludearticle.default.Text">Please edit the article.</resource>
+						<resource key="label.DevDemoHeadincludeArticle.Image">Image</resource>
+						<resource key="label.DevDemoHeadincludeArticle.Image.help">The image for the Dev Demo article.</resource>
+					</bundle>
+				</xmlbundle>
+			</resourcebundles>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<!-- Enables nice url name for detail pages -->
 				<mapping element="Title" mapto="urlName" />
 			</mappings>
 			<layouts>
-				<layout element="Text" widget="HtmlWidget" configuration="height:200px,link,source"/>
-				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:false}" />				
+				<layout element="Text" widget="HtmlWidget" configuration="height:200px,link,source" />
+				<layout element="Image" widget="ImageGalleryWidget"
+					configuration="{useformat:false}" />
 			</layouts>
-			<validationrules/>
+			<validationrules />
 			<defaults>
-               			<default element="Title" value="%(key.dev.demo.ddheadincludearticle.default.Title)" />
-		                <default element="Text" value="%(key.dev.demo.ddheadincludearticle.default.Text)" />
-		            </defaults> 
-			<relations/>
-			<formatters>				
-				<formatter minwidth="1" maxwidth="250" uri="/system/modules/org.opencms.dev.demo/formatters/article_with_headincludes/side.jsp" searchcontent="false"/>
-				<formatter minwidth="250" uri="/system/modules/org.opencms.dev.demo/formatters/article_with_headincludes/center.jsp" searchcontent="false"/>				
-			</formatters>			
-			<headincludes>				
-				<headinclude type="javascript" uri="/system/modules/org.opencms.dev.demo/resources/js/headinclude_script.js" />
-				<headinclude type="css" uri="/system/modules/org.opencms.dev.demo/resources/css/headinclude_css.css" />											
-			</headincludes>									
+				<default element="Title"
+					value="%(key.dev.demo.ddheadincludearticle.default.Title)" />
+				<default element="Text"
+					value="%(key.dev.demo.ddheadincludearticle.default.Text)" />
+			</defaults>
+			<relations />
+			<formatters>
+				<formatter minwidth="1" maxwidth="250"
+					uri="/system/modules/org.opencms.dev.demo/formatters/article_with_headincludes/side.jsp"
+					searchcontent="false" />
+				<formatter minwidth="250"
+					uri="/system/modules/org.opencms.dev.demo/formatters/article_with_headincludes/center.jsp"
+					searchcontent="false" />
+			</formatters>
+			<headincludes>
+				<headinclude type="javascript"
+					uri="/system/modules/org.opencms.dev.demo/resources/js/headinclude_script.js" />
+				<headinclude type="css"
+					uri="/system/modules/org.opencms.dev.demo/resources/css/headinclude_css.css" />
+			</headincludes>
 		</xsd:appinfo>
-	</xsd:annotation>  
+	</xsd:annotation>
 </xsd:schema>

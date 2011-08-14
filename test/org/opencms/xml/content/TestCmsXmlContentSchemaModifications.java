@@ -29,6 +29,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
@@ -36,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -85,6 +87,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentSchemaModifications("testReArrangeSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testCombinedChangeSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testNestedChangeSchemaNodes"));
+        suite.addTest(new TestCmsXmlContentSchemaModifications("testXsdTranslation"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -102,6 +105,55 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test for using the XSD translation.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testXsdTranslation() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        CmsResourceTranslator oldXsdTranslator = OpenCms.getResourceManager().getXsdTranslator();
+
+        String newSchema = "http://www.alkacon.com/changed-schema.xsd";
+
+        CmsResourceTranslator xsdTranslator = new CmsResourceTranslator(
+            new String[] {"s#^http://www\\.opencms\\.org/test1\\.xsd#" + newSchema + "#"},
+            false);
+
+        // set modified folder translator
+        OpenCms.getResourceManager().setTranslators(
+            OpenCms.getResourceManager().getFolderTranslator(),
+            OpenCms.getResourceManager().getFileTranslator(),
+            xsdTranslator);
+
+        String schema = "org/opencms/xml/content/xmlcontent-definition-1.xsd";
+        String rfsFile = "org/opencms/xml/content/xmlcontent-1.xml";
+        // cache the content definition
+        cacheSchema(resolver, SCHEMA_SYSTEM_ID_1, schema);
+
+        // read the XML content from the test directory, usually this would be from the VFS
+        String content = CmsFileUtil.readFile(rfsFile, CmsEncoder.ENCODING_UTF_8);
+
+        // unmarshal the XML content
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        xmlcontent.correctXmlStructure(cms);
+
+        String strContent = xmlcontent.toString();
+        // output the XML content (modified version)
+        System.out.println(strContent);
+
+        assertTrue("Translated XSD schema not found", strContent.indexOf(newSchema) > 0);
+
+        // restore original XSD translator
+        OpenCms.getResourceManager().setTranslators(
+            OpenCms.getResourceManager().getFolderTranslator(),
+            OpenCms.getResourceManager().getFileTranslator(),
+            oldXsdTranslator);
     }
 
     /**
@@ -153,7 +205,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             CmsFileUtil.readFile(originalFile),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         // assumption: a file is to be corrected automatically while writing it to the VFS
         // for this, a special OpenCms request context attribute has been introduced
@@ -353,7 +405,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             xmlcontent.toString().getBytes(xmlcontent.getEncoding()),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         // change the XML schema definition for the XML content 
         // it's important that the schema is changed _before_ the content is unmarshaled
         // in a "real world" use case this should be no problem as the schema will have been changed in another request
@@ -405,9 +457,9 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         System.out.println(xmlcontent.toString());
         String content = CmsFileUtil.readFile(filename, CmsEncoder.ENCODING_UTF_8);
-        assertEquals(CmsXmlUtils.unmarshalHelper(xmlcontent.toString(), resolver), CmsXmlUtils.unmarshalHelper(
-            content,
-            resolver));
+        assertEquals(
+            CmsXmlUtils.unmarshalHelper(xmlcontent.toString(), resolver),
+            CmsXmlUtils.unmarshalHelper(content, resolver));
     }
 
     /**
@@ -471,7 +523,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             filename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
             xmlcontent.toString().getBytes(xmlcontent.getEncoding()),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         CmsFile file = cms.readFile(filename);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(cms, file);

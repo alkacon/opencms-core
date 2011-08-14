@@ -84,7 +84,7 @@ public class CmsRepository extends A_CmsRepository {
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        if (getConfiguration().containsParameter(PARAM_WRAPPER)) {
+        if (getConfiguration().containsKey(PARAM_WRAPPER)) {
             List<String> wrappers = getConfiguration().getList(PARAM_WRAPPER);
 
             for (String classname : wrappers) {

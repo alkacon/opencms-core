@@ -976,6 +976,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          **/
         String secure();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String titleInput();
+
         /** 
          * Access method.<p>
          * 

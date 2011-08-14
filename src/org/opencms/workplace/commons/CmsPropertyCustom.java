@@ -586,7 +586,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         I_CmsDialogHandler handler = OpenCms.getWorkplaceManager().getDialogHandler(getDialogHandler());
         CmsParameterConfiguration handlerParams = handler.getConfiguration();
-        if ((handlerParams != null) && handlerParams.containsParameter(PARAM_HIDEADVANCED)) {
+        if ((handlerParams != null) && handlerParams.containsKey(PARAM_HIDEADVANCED)) {
             // checks if "hideadvanced" is set to true
             boolean isHideAdvancedSet = false;
             List<String> hAdvanced = handlerParams.getList(PARAM_HIDEADVANCED);
@@ -598,7 +598,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
-                if (handlerParams.containsParameter(PARAM_SHOWGROUP)) {
+                if (handlerParams.containsKey(PARAM_SHOWGROUP)) {
                     // check if user is one of the configured groups
                     CmsUser currentUser = getCms().getRequestContext().getCurrentUser();
                     List<String> confGroups = handlerParams.getList(PARAM_SHOWGROUP);

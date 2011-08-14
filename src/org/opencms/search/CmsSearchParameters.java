@@ -36,15 +36,16 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsSearchIndex#search(org.opencms.file.CmsObject, CmsSearchParameters)}</code>.<p>
@@ -59,28 +60,50 @@ public class CmsSearchParameters {
     /**
      * Describes a specific search field query.<p>
      */
-    public class CmsSearchFieldQuery {
+    public static class CmsSearchFieldQuery {
 
         /** The field name. */
         private String m_fieldName;
 
-        /** The occur parameter required for this field / query. */
-        private Occur m_occur;
+        /** The occur parameter for this field. */
+        private Occur m_fieldOccur;
 
-        /** The search query. */
-        private String m_searchQuery;
+        /** The search term list. */
+        private List<String> m_searchTerms;
+
+        /** The occur parameter used for the search term combination. */
+        private Occur m_termOccur;
 
         /**
+         * Creates a new search field query with a variable length search term list.<p>
+         * 
          * @param fieldName the field name
-         * @param searchQuery the search query
-         * @param occur the occur parameter required for this field / query
+         * @param fieldOccur the occur parameter for this field
+         * @param termList the search term list
+         * @param termOccur the occur parameter used for the search term combination
          */
-        public CmsSearchFieldQuery(String fieldName, String searchQuery, Occur occur) {
+        public CmsSearchFieldQuery(String fieldName, Occur fieldOccur, List<String> termList, Occur termOccur) {
 
             super();
             m_fieldName = fieldName;
-            m_searchQuery = searchQuery;
-            m_occur = occur;
+            m_fieldOccur = fieldOccur;
+            m_searchTerms = termList;
+            m_termOccur = termOccur;
+        }
+
+        /**
+         * Creates a new search field query with just a single search term.<p>
+         * 
+         * Please note: Since there is only one term, the ocucr parameter for the term combination is
+         * not required and set to <code>null</code>.<p>
+         * 
+         * @param fieldName the field name
+         * @param searchTerm the search term
+         * @param fieldOccur the occur parameter for this field
+         */
+        public CmsSearchFieldQuery(String fieldName, String searchTerm, Occur fieldOccur) {
+
+            this(fieldName, fieldOccur, Arrays.asList(searchTerm), null);
         }
 
         /**
@@ -94,29 +117,52 @@ public class CmsSearchParameters {
         }
 
         /**
-         * Returns the occur parameter required for this field / query.<p>
+         * Returns the occur parameter for this field query.<p>
          *
-         * @return the occur parameter required for this field / query
+         * @return the occur parameter for this field query
          */
         public Occur getOccur() {
 
-            return m_occur;
+            return m_fieldOccur;
         }
 
         /**
-         * Returns the search query.<p>
+         * Returns the first entry from the term list.<p>
          *
          * @return the search query
+         * 
+         * @deprecated use {@link #getSearchTerms()} instead
          */
+        @Deprecated
         public String getSearchQuery() {
 
-            return m_searchQuery;
+            return m_searchTerms.get(0);
         }
 
         /**
-         * Sets the field name.<p>
+         * Returns the search term list.<p>
          *
-         * @param fieldName the field name to set
+         * @return the search term list
+         */
+        public List<String> getSearchTerms() {
+
+            return m_searchTerms;
+        }
+
+        /**
+         * Returns the occur parameter used for the search term combination of this field query.<p>
+         *
+         * @return the occur parameter used for the search term combination of this field query
+         */
+        public Occur getTermOccur() {
+
+            return m_termOccur;
+        }
+
+        /**
+         * Sets the name of the field to use this query for.<p>
+         *
+         * @param fieldName the name of the field to use this query for
          */
         public void setFieldName(String fieldName) {
 
@@ -124,23 +170,36 @@ public class CmsSearchParameters {
         }
 
         /**
-         * Sets the occur parameter for this field / query.<p>
+         * Sets the occur parameter for this field query.<p>
          *
          * @param occur the occur parameter to set
          */
         public void setOccur(BooleanClause.Occur occur) {
 
-            m_occur = occur;
+            m_fieldOccur = occur;
         }
 
         /**
-         * Sets the search query.<p>
+         * Sets the search keywords to just a single entry.<p>
          *
-         * @param searchQuery the search query to set
+         * @param searchQuery the single search keyword to set
+         * 
+         * @deprecated use {@link #setSearchTerms(List)} instead
          */
+        @Deprecated
         public void setSearchQuery(String searchQuery) {
 
-            m_searchQuery = searchQuery;
+            setSearchTerms(Arrays.asList(searchQuery));
+        }
+
+        /**
+         * Sets the search terms.<p>
+         * 
+         * @param searchTerms the search terms to set
+         */
+        public void setSearchTerms(List<String> searchTerms) {
+
+            m_searchTerms = searchTerms;
         }
     }
 
@@ -213,6 +272,9 @@ public class CmsSearchParameters {
 
     /** The current result page. */
     private int m_page;
+
+    /** The pre-parsed query. */
+    private String m_parsedQuery;
 
     /** The search query to use. */
     private String m_query;
@@ -424,9 +486,9 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns the creation date the resources have to have as maximum.<p>
+     * Returns the maximum creation date a resource must have to be included in the search result.<p>
      *
-     * @return the creation date the resources have to have as maximum
+     * @return the maximum creation date a resource must have to be included in the search result
      */
     public long getMaxDateCreated() {
 
@@ -434,9 +496,9 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns the last modification date the resources have to have as maximum.<p>
+     * Returns the maximum last modification date a resource must have to be included in the search result.<p>
      *
-     * @return the last modification date the resources have to have as maximum
+     * @return the maximum last modification date a resource must have to be included in the search result
      */
     public long getMaxDateLastModified() {
 
@@ -444,9 +506,9 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns the creation date the resources have to have as minimum.<p>
+     * Returns the minimum creation date a resource must have to be included in the search result.<p>
      *
-     * @return the creation date the resources have to have as minimum
+     * @return the minimum creation date a resource must have to be included in the search result
      */
     public long getMinDateCreated() {
 
@@ -454,13 +516,30 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns the last modification date the resources have to have as minimum.<p>
+     * Returns the minimum last modification date a resource must have to be included in the search result.<p>
      *
-     * @return the last modification date the resources have to have as minimum
+     * @return the minimum last modification date a resource must have to be included in the search result
      */
     public long getMinDateLastModified() {
 
         return m_minDateLastModified;
+    }
+
+    /**
+     * Returns the parsed query.<p>
+     * 
+     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
+     * The Lucene query build from the parameters is stored here and can be later used 
+     * for paging through the results.<p>
+     * 
+     * Please note that this returns only to the query part, not the filter part of the search.<p>
+     * 
+     * @return the parsed query 
+     */
+    public String getParsedQuery() {
+
+        return m_parsedQuery;
     }
 
     /**
@@ -834,43 +913,60 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Sets the creation date the resources have to have as maximum.<p>
+     * Sets the maximum creation date a resource must have to be included in the search result.<p>
      *
-     * @param dateCreatedTo the creation date the resources have to have as maximum to set
+     * @param maxDateCreated the maximum creation date to set
      */
-    public void setMaxDateCreated(long dateCreatedTo) {
+    public void setMaxDateCreated(long maxDateCreated) {
 
-        m_maxDateCreated = dateCreatedTo;
+        m_maxDateCreated = maxDateCreated;
     }
 
     /**
-     * Sets the last modification date the resources have to have as maximum.<p>
+     * Sets the maximum last modification date a resource must have to be included in the search result.<p>
      *
-     * @param dateLastModifiedTo the last modification date the resources have to have as maximum to set
+     * @param maxDateLastModified the maximum last modification date to set
      */
-    public void setMaxDateLastModified(long dateLastModifiedTo) {
+    public void setMaxDateLastModified(long maxDateLastModified) {
 
-        m_maxDateLastModified = dateLastModifiedTo;
+        m_maxDateLastModified = maxDateLastModified;
     }
 
     /**
-     * Sets the creation date the resources have to have as minimum.<p>
+     * Sets the minimum creation date a resource must have to be included in the search result.<p>
      *
-     * @param dateCreatedFrom the creation date the resources have to have as minimum to set
+     * @param minDateCreated the minimum creation date to set
      */
-    public void setMinDateCreated(long dateCreatedFrom) {
+    public void setMinDateCreated(long minDateCreated) {
 
-        m_minDateCreated = dateCreatedFrom;
+        m_minDateCreated = minDateCreated;
     }
 
     /**
-     * Sets the last modification date the resources have to have as minimum.<p>
+     * Sets the minimum last modification date a resource must have to be included in the search result.<p>
      *
-     * @param dateLastModifiedFrom the the last modification date the resources have to have as minimum to set
+     * @param minDateLastModified he minimum last modification date to set
      */
-    public void setMinDateLastModified(long dateLastModifiedFrom) {
+    public void setMinDateLastModified(long minDateLastModified) {
 
-        m_minDateLastModified = dateLastModifiedFrom;
+        m_minDateLastModified = minDateLastModified;
+    }
+
+    /**
+     * Sets the parsed query.<p>
+     * 
+     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
+     * The Lucene query build from the parameters is stored here and can be later used 
+     * for paging through the results.<p>
+     * 
+     * Please note that this applies only to the query part, not the filter part of the search.<p>
+     * 
+     * @param parsedQuery the parsed query to set 
+     */
+    public void setParsedQuery(String parsedQuery) {
+
+        m_parsedQuery = parsedQuery;
     }
 
     /**
@@ -1014,8 +1110,14 @@ public class CmsSearchParameters {
     public String toQueryString() {
 
         StringBuffer result = new StringBuffer(128);
-        result.append("?action=search&query=");
-        result.append(CmsEncoder.encodeParameter(getQuery()));
+        result.append("?action=search");
+        if (getParsedQuery() != null) {
+            result.append("&parsedQuery=");
+            result.append(CmsEncoder.encodeParameter(getParsedQuery()));
+        } else {
+            result.append("&query=");
+            result.append(CmsEncoder.encodeParameter(getQuery()));
+        }
 
         result.append("&matchesPerPage=");
         result.append(getMatchesPerPage());
@@ -1045,6 +1147,23 @@ public class CmsSearchParameters {
                     result.append(',');
                 }
             }
+        }
+
+        if (getMinDateCreated() > Long.MIN_VALUE) {
+            result.append("&minDateCreated=");
+            result.append(getMinDateCreated());
+        }
+        if (getMinDateLastModified() > Long.MIN_VALUE) {
+            result.append("&minDateLastModified=");
+            result.append(getMinDateLastModified());
+        }
+        if (getMaxDateCreated() < Long.MAX_VALUE) {
+            result.append("&maxDateCreated=");
+            result.append(getMaxDateCreated());
+        }
+        if (getMaxDateLastModified() < Long.MAX_VALUE) {
+            result.append("&maxDateLastModified=");
+            result.append(getMaxDateLastModified());
         }
 
         if ((getRoots() != null) && (getRoots().size() > 0)) {
@@ -1079,7 +1198,7 @@ public class CmsSearchParameters {
             result.append("fields:[");
             for (int i = 0; i < m_fields.size(); i++) {
                 result.append(m_fields.get(i));
-                if (i + 1 < m_fields.size()) {
+                if ((i + 1) < m_fields.size()) {
                     result.append(", ");
                 }
             }
@@ -1089,7 +1208,7 @@ public class CmsSearchParameters {
             result.append("roots:[");
             for (int i = 0; i < m_roots.size(); i++) {
                 result.append(m_roots.get(i));
-                if (i + 1 < m_roots.size()) {
+                if ((i + 1) < m_roots.size()) {
                     result.append(", ");
                 }
             }
@@ -1099,7 +1218,7 @@ public class CmsSearchParameters {
             result.append("categories:[");
             for (int i = 0; i < m_categories.size(); i++) {
                 result.append(m_categories.get(i));
-                if (i + 1 < m_categories.size()) {
+                if ((i + 1) < m_categories.size()) {
                     result.append(", ");
                 }
             }
@@ -1109,7 +1228,7 @@ public class CmsSearchParameters {
             result.append("resourceTypes:[");
             for (int i = 0; i < m_resourceTypes.size(); i++) {
                 result.append(m_resourceTypes.get(i));
-                if (i + 1 < m_resourceTypes.size()) {
+                if ((i + 1) < m_resourceTypes.size()) {
                     result.append(", ");
                 }
             }

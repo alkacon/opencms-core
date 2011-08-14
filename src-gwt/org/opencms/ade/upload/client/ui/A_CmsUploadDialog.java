@@ -755,9 +755,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
         if (m_uploadService == null) {
             m_uploadService = GWT.create(I_CmsUploadService.class);
-            String serviceUrl = CmsStringUtil.joinPaths(
-                CmsCoreProvider.get().getContext(),
-                "org.opencms.ade.upload.CmsUploadService.gwt");
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.upload.CmsUploadService.gwt");
             ((ServiceDefTarget)m_uploadService).setServiceEntryPoint(serviceUrl);
         }
         return m_uploadService;

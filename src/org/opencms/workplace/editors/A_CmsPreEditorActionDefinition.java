@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
@@ -42,6 +43,9 @@ import org.opencms.workplace.CmsDialog;
  */
 public abstract class A_CmsPreEditorActionDefinition implements I_CmsPreEditorActionDefinition {
 
+    /** Configuration parameters. */
+    protected CmsParameterConfiguration m_configuration;
+
     /** The resource type for which the action should be performed. */
     private I_CmsResourceType m_resourceType;
 
@@ -54,12 +58,29 @@ public abstract class A_CmsPreEditorActionDefinition implements I_CmsPreEditorAc
     public A_CmsPreEditorActionDefinition() {
 
         // empty constructor, needed for initialization
+        m_configuration = new CmsParameterConfiguration();
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        m_configuration.add(paramName, paramValue);
     }
 
     /**
      * @see org.opencms.workplace.editors.I_CmsPreEditorActionDefinition#doPreAction(org.opencms.file.CmsResource, org.opencms.workplace.CmsDialog, java.lang.String)
      */
     public abstract boolean doPreAction(CmsResource resource, CmsDialog dialog, String originalParams) throws Exception;
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public CmsParameterConfiguration getConfiguration() {
+
+        return m_configuration;
+    }
 
     /**
      * @see org.opencms.workplace.editors.I_CmsPreEditorActionDefinition#getResourceType()
@@ -82,6 +103,14 @@ public abstract class A_CmsPreEditorActionDefinition implements I_CmsPreEditorAc
     public String getResourceTypeName() {
 
         return m_resourceTypeName;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public final void initConfiguration() {
+
+        // final since subclasses should NOT implement this        
     }
 
     /**

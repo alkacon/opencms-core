@@ -267,7 +267,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         CmsXmlContentDefinition contentDef = null;
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-        String schema = resType.getConfiguration().getString(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+        String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
         if (!schema.equals("null")) {
             try {
                 // this wont in most cases read the file content because of caching
@@ -316,7 +316,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     throws CmsException {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
-        String schema = resType.getConfiguration().getString(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+        String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
         CmsXmlContentDefinition contentDef = null;
         if (schema == null) {
             return null;
@@ -356,6 +356,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(byte[] xmlData, String schemaLocation, EntityResolver resolver)
     throws CmsXmlException {
 
+        schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
@@ -378,6 +379,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
         String schemaLocation = CmsXmlEntityResolver.OPENCMS_SCHEME.concat(resourcename.substring(1));
+        schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
@@ -402,6 +404,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public static CmsXmlContentDefinition unmarshal(Document document, String schemaLocation) throws CmsXmlException {
 
+        schemaLocation = translateSchema(schemaLocation);
         EntityResolver resolver = document.getEntityResolver();
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
@@ -425,6 +428,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(InputSource source, String schemaLocation, EntityResolver resolver)
     throws CmsXmlException {
 
+        schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
@@ -451,6 +455,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(String schemaLocation, EntityResolver resolver)
     throws CmsXmlException, SAXException, IOException {
 
+        schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
@@ -475,6 +480,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(String xmlData, String schemaLocation, EntityResolver resolver)
     throws CmsXmlException {
 
+        schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
@@ -810,6 +816,21 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * Translates the XSD schema location.<p>
+     * 
+     * @param schemaLocation the location to translate
+     * 
+     * @return the translated schema location
+     */
+    private static String translateSchema(String schemaLocation) {
+
+        if (OpenCms.getRepositoryManager() != null) {
+            return OpenCms.getResourceManager().getXsdTranslator().translateResource(schemaLocation);
+        }
+        return schemaLocation;
+    }
+
+    /**
      * Internal method to unmarshal (read) a XML content definition instance from a XML document.<p>
      * 
      * It is assumed that the XML content definition cache has already been tested and the document 
@@ -963,7 +984,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             // if no content handler is defined, the default handler is used
             contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(
                 CmsDefaultXmlContentHandler.class.getName(),
-                name);
+                schemaLocation);
         }
 
         // analyze the app info node with the selected XML content handler

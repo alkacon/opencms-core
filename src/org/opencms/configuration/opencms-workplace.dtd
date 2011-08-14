@@ -174,14 +174,14 @@
 # The specified class must implement the org.opencms.workplace.editors.I_CmsPreEditorActionDefinition interface.
 -->
 <!ELEMENT editorpreconditions (editorprecondition+)>
-<!ELEMENT editorprecondition EMPTY>
+<!ELEMENT editorprecondition (param*)>
 <!ATTLIST editorprecondition name CDATA #REQUIRED class CDATA #REQUIRED>
-
-<!ELEMENT directeditprovider (param*)>
-<!ATTLIST directeditprovider class CDATA #REQUIRED>
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!ELEMENT directeditprovider (param*)>
+<!ATTLIST directeditprovider class CDATA #REQUIRED>
 
 <!--
 # An export point is a folder inside the OpenCms VFS that is copied 1:1 to a 

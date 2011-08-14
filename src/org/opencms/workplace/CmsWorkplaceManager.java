@@ -329,9 +329,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -357,9 +357,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -464,6 +464,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_menuRules.add(menuRule);
     }
 
+    public void addPreEditorConditionDefinition(I_CmsPreEditorActionDefinition preEditorCondition) {
+
+        m_preEditorConditionDefinitions.add(preEditorCondition);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_EDITOR_PRE_ACTION_2,
+                preEditorCondition.getClass().getName(),
+                preEditorCondition.getResourceTypeName()));
+        }
+    }
+
     /**
      * Adds a condition definition class for a given resource type glass name that is triggered before opening the editor.<p>
      * 
@@ -484,9 +495,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     resourceTypeName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
-                preEditorConditionDefinitionClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
+                    preEditorConditionDefinitionClassName),
+                e);
         }
     }
 
@@ -1734,9 +1747,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_defaultAccess.createAccessControlList(CmsExplorerTypeAccess.PRINCIPAL_DEFAULT);
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        CmsExplorerTypeAccess.PRINCIPAL_DEFAULT), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
+                            CmsExplorerTypeAccess.PRINCIPAL_DEFAULT),
+                        e);
                 }
             }
         }
@@ -1756,9 +1771,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 settings.getAccess().createAccessControlList(settings.getName());
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        settings.getName()), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()),
+                        e);
                 }
             }
         }
@@ -1845,9 +1860,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1,
-                    CmsWorkplace.VFS_PATH_VIEWS), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
+                    e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList<CmsResource>();
