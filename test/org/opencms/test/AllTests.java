@@ -84,9 +84,12 @@ public final class AllTests {
 
         TestSuite suite = new TestSuite("OpenCms complete tests");
 
+        suite.addTest(org.opencms.setup.AllTests.suite());
+        suite.addTest(org.opencms.ade.configuration.AllTests.suite());
+        suite.addTest(org.opencms.ade.publish.AllTests.suite());
+        suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
         suite.addTest(org.opencms.cache.AllTests.suite());
         suite.addTest(org.opencms.configuration.AllTests.suite());
-        suite.addTest(org.opencms.ade.configuration.AllTests.suite());
         suite.addTest(org.opencms.db.AllTests.suite());
         suite.addTest(org.opencms.file.AllTests.suite());
         suite.addTest(org.opencms.file.collectors.AllTests.suite());
@@ -109,18 +112,15 @@ public final class AllTests {
         suite.addTest(org.opencms.search.AllTests.suite());
         suite.addTest(org.opencms.search.extractors.AllTests.suite());
         suite.addTest(org.opencms.security.AllTests.suite());
-        suite.addTest(org.opencms.setup.AllTests.suite());
         suite.addTest(org.opencms.staticexport.AllTests.suite());
         suite.addTest(org.opencms.synchronize.AllTests.suite());
         suite.addTest(org.opencms.util.AllTests.suite());
         suite.addTest(org.opencms.widgets.AllTests.suite());
         suite.addTest(org.opencms.workplace.AllTests.suite());
-        suite.addTest(org.opencms.ade.publish.AllTests.suite());
         suite.addTest(org.opencms.xml.AllTests.suite());
         suite.addTest(org.opencms.xml.containerpage.AllTests.suite());
         suite.addTest(org.opencms.xml.content.AllTests.suite());
         suite.addTest(org.opencms.xml.page.AllTests.suite());
-        suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
 
         TestSetup wrapper = new TestSetup(suite) {
 
