@@ -506,7 +506,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 config,
                 CONFIGURATION_SUBSCRIPTION,
                 ".subscription.driver");
-        } catch (ArrayIndexOutOfBoundsException npe) {
+        } catch (IndexOutOfBoundsException npe) {
             LOG.warn("Could not instantiate subscription driver!");
             LOG.warn(npe.getLocalizedMessage(), npe);
         }
