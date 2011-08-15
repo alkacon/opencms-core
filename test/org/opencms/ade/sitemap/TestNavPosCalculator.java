@@ -47,7 +47,6 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
      * Test constructor.<p>
      */
     public TestNavPosCalculator() {
-
         super("TestNavPosCalculator");
     }
 
