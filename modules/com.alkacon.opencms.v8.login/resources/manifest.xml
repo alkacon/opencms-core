@@ -26,23 +26,10 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/com.alkacon.opencms.v8.login/"/>
-			<resource uri="/system/workplace/resources/filetypes/v8login.png"/>
-			<resource uri="/system/workplace/resources/filetypes/v8login_big.png"/>
 		</resources>
 		<parameters/>
-		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8login" id="150">
-				<param name="schema">/system/modules/com.alkacon.opencms.v8.login/schemas/login.xsd</param>
-			</type>
-		</resourcetypes>
-		<explorertypes>
-			<explorertype name="v8login" key="fileicon.v8login" icon="v8login.png" bigicon="v8login_big.png" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=v8login" order="114" autosetnavigation="false" autosettitle="false" info="desc.v8login"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
-		</explorertypes>
+		<resourcetypes />
+		<explorertypes />
 	</module>
 	<files>
 		<file>
@@ -96,21 +83,6 @@
 			<datelastmodified>Wed, 27 Apr 2011 10:27:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Apr 2011 10:27:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.login/.config</source>
-			<destination>system/modules/com.alkacon.opencms.v8.login/.config</destination>
-			<type>module_config</type>
-			<uuidstructure>7a01ded1-3352-4a9f-af48-8807a6a28d08</uuidstructure>
-			<uuidresource>7a01ded1-3352-4a9f-af48-8807a6a28d09</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 11:02:22 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -308,7 +280,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.login/formatters</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.login/pages</destination>
 			<type>folder</type>
 			<uuidstructure>ed6ad694-70b8-11e0-ba21-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 10:27:18 GMT</datelastmodified>
@@ -321,8 +293,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.login/formatters/all.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.login/formatters/all.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.login/pages/login.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.login/pages/login.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>8eb3c1f9-70bd-11e0-9d2c-91706a02fba1</uuidstructure>
 			<uuidresource>8eb3c1fa-70bd-11e0-9d2c-91706a02fba1</uuidresource>
@@ -335,148 +307,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.login/schemas</destination>
-			<type>folder</type>
-			<uuidstructure>ed6f9186-70b8-11e0-ba21-91706a02fba1</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 10:27:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 10:27:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.login/schemas/login.xsd</source>
-			<destination>system/modules/com.alkacon.opencms.v8.login/schemas/login.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>7badcb6c-70ba-11e0-ba21-91706a02fba1</uuidstructure>
-			<uuidresource>7badcb6d-70ba-11e0-ba21-91706a02fba1</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 14:46:43 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 10:38:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for login]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace</destination>
-			<type>folder</type>
-			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<destination>system/workplace/resources</destination>
-			<type>folder</type>
-			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/filetypes</destination>
-			<type>folder</type>
-			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/v8login.png</source>
-			<destination>system/workplace/resources/filetypes/v8login.png</destination>
-			<type>image</type>
-			<uuidstructure>dc07bf6d-70bd-11e0-9d2c-91706a02fba1</uuidstructure>
-			<uuidresource>dc07bf6e-70bd-11e0-9d2c-91706a02fba1</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 11:05:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 11:02:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/v8login_big.png</source>
-			<destination>system/workplace/resources/filetypes/v8login_big.png</destination>
-			<type>image</type>
-			<uuidstructure>dc113551-70bd-11e0-9d2c-91706a02fba1</uuidstructure>
-			<uuidresource>dc113552-70bd-11e0-9d2c-91706a02fba1</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 11:05:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 11:02:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>

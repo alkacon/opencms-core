@@ -26,23 +26,10 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/com.alkacon.opencms.v8.search/"/>
-			<resource uri="/system/workplace/resources/filetypes/v8search.png"/>
-			<resource uri="/system/workplace/resources/filetypes/v8search_big.png"/>
 		</resources>
 		<parameters/>
-		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="v8search" id="140">
-				<param name="schema">/system/modules/com.alkacon.opencms.v8.search/schemas/search.xsd</param>
-			</type>
-		</resourcetypes>
-		<explorertypes>
-			<explorertype name="v8search" key="fileicon.v8search" icon="v8search.png" bigicon="v8search_big.png" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=v8search" order="118" autosetnavigation="false" autosettitle="false" info="desc.v8search"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
-		</explorertypes>
+		<resourcetypes />
+		<explorertypes />
 	</module>
 	<files>
 		<file>
@@ -96,21 +83,6 @@
 			<datelastmodified>Wed, 27 Apr 2011 15:22:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Apr 2011 15:22:54 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.search/.config</source>
-			<destination>system/modules/com.alkacon.opencms.v8.search/.config</destination>
-			<type>module_config</type>
-			<uuidstructure>f55add4f-5d6a-4ace-a58c-448e481693e8</uuidstructure>
-			<uuidresource>f55add4f-5d6a-4ace-a58c-448e481693e9</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 11:03:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Apr 2011 14:45:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -298,7 +270,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.search/formatters</destination>
+			<destination>system/modules/com.alkacon.opencms.v8.search/pages</destination>
 			<type>folder</type>
 			<uuidstructure>3979fb31-70e2-11e0-bc96-5de1afb8a118</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 15:22:55 GMT</datelastmodified>
@@ -311,8 +283,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.search/formatters/detail.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.search/formatters/detail.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.search/pages/searchResult.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.search/pages/searchResult.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>0737cfd4-70e3-11e0-bc96-5de1afb8a118</uuidstructure>
 			<uuidresource>0737cfd5-70e3-11e0-bc96-5de1afb8a118</uuidresource>
@@ -335,8 +307,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.search/formatters/side.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.search/formatters/side.jsp</destination>
+			<source>system/modules/com.alkacon.opencms.v8.search/pages/searchBox.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.search/pages/searchBox.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>201fda44-719c-11e0-a47b-ed3609521ba5</uuidstructure>
 			<uuidresource>201fda45-719c-11e0-a47b-ed3609521ba5</uuidresource>
@@ -353,181 +325,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.search/schemas</destination>
-			<type>folder</type>
-			<uuidstructure>397c6c33-70e2-11e0-bc96-5de1afb8a118</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 15:22:55 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:22:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.search/schemas/search.xsd</source>
-			<destination>system/modules/com.alkacon.opencms.v8.search/schemas/search.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>79007e61-70e2-11e0-bc96-5de1afb8a118</uuidstructure>
-			<uuidresource>79007e62-70e2-11e0-bc96-5de1afb8a118</uuidresource>
-			<datelastmodified>Tue, 28 Jun 2011 14:47:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:24:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for a search page]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.search/schemas/nested</destination>
-			<type>folder</type>
-			<uuidstructure>f8ac403b-70e3-11e0-bc96-5de1afb8a118</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 15:35:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:35:25 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.search/schemas/nested/config.xsd</source>
-			<destination>system/modules/com.alkacon.opencms.v8.search/schemas/nested/config.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>c2f930fd-70e4-11e0-bc96-5de1afb8a118</uuidstructure>
-			<uuidresource>c2f930fe-70e4-11e0-bc96-5de1afb8a118</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 15:48:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:41:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Nested XSD for search configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace</destination>
-			<type>folder</type>
-			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<destination>system/workplace/resources</destination>
-			<type>folder</type>
-			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/filetypes</destination>
-			<type>folder</type>
-			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/v8search.png</source>
-			<destination>system/workplace/resources/filetypes/v8search.png</destination>
-			<type>image</type>
-			<uuidstructure>0fb4110e-70e7-11e0-a086-5de1afb8a118</uuidstructure>
-			<uuidresource>0fb4110f-70e7-11e0-a086-5de1afb8a118</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 15:57:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:57:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/v8search_big.png</source>
-			<destination>system/workplace/resources/filetypes/v8search_big.png</destination>
-			<type>image</type>
-			<uuidstructure>0fbff6f2-70e7-11e0-a086-5de1afb8a118</uuidstructure>
-			<uuidresource>0fbff6f3-70e7-11e0-a086-5de1afb8a118</uuidresource>
-			<datelastmodified>Wed, 27 Apr 2011 15:57:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:57:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>

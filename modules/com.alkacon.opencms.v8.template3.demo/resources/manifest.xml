@@ -2933,7 +2933,89 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/.content/group_container</destination>
+			<destination>sites/default/.content/function</destination>
+			<type>folder</type>
+			<uuidstructure>ba3691ea-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 08:24:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 08:00:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Functions]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/function/function-00001.html</source>
+			<destination>sites/default/.content/function/function-00001.html</destination>
+			<type>function</type>
+			<uuidstructure>5fba7e2c-7655-11e0-a2c2-000c2972a6a4</uuidstructure>
+			<uuidresource>5fba7e2d-7655-11e0-a2c2-000c2972a6a4</uuidresource>
+			<datelastmodified>Mon, 15 Aug 2011 08:24:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 13:49:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Login box]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/function/function-00002.html</source>
+			<destination>sites/default/.content/function/function-00002.html</destination>
+			<type>function</type>
+			<uuidstructure>2a5908f7-77ec-11e0-be13-000c2972a6a4</uuidstructure>
+			<uuidresource>2a5908f8-77ec-11e0-be13-000c2972a6a4</uuidresource>
+			<datelastmodified>Mon, 15 Aug 2011 08:24:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 May 2011 14:21:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search Box]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/function/function-00003.html</source>
+			<destination>sites/default/.content/function/function-00003.html</destination>
+			<type>function</type>
+			<uuidstructure>08bc060e-c717-11e0-bc9c-af92a00685e0</uuidstructure>
+			<uuidresource>08bc060f-c717-11e0-bc9c-af92a00685e0</uuidresource>
+			<datelastmodified>Mon, 15 Aug 2011 08:24:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 08:17:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search Result]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/.content/groupcontainer</destination>
 			<type>folder</type>
 			<uuidstructure>da89163a-77e8-11e0-be13-000c2972a6a4</uuidstructure>
 			<datelastmodified>Sat, 07 May 2011 12:38:15 GMT</datelastmodified>
@@ -2955,8 +3037,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/.content/group_container/gc_00002.html</source>
-			<destination>sites/default/.content/group_container/gc_00002.html</destination>
+			<source>sites/default/.content/groupcontainer/gc_00002.html</source>
+			<destination>sites/default/.content/groupcontainer/gc_00002.html</destination>
 			<type>groupcontainer</type>
 			<uuidstructure>82065df5-77eb-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>82068506-77eb-11e0-be13-000c2972a6a4</uuidresource>
@@ -5317,48 +5399,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/.content/login</destination>
-			<type>folder</type>
-			<uuidstructure>ba3691ea-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:37:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 08:00:22 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Logins]]></value>
-				</property>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/.content/login/lg_00001.html</source>
-			<destination>sites/default/.content/login/lg_00001.html</destination>
-			<type>v8login</type>
-			<uuidstructure>5fba7e2c-7655-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<uuidresource>5fba7e2d-7655-11e0-a2c2-000c2972a6a4</uuidresource>
-			<datelastmodified>Sat, 07 May 2011 08:35:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2011 13:49:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Login to the Extranet]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>sites/default/.content/news</destination>
 			<type>v8newsgallery</type>
 			<uuidstructure>a348c79b-716b-11e0-87bc-000c2972a6a4</uuidstructure>
@@ -5587,48 +5627,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1301658780000]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>sites/default/.content/search</destination>
-			<type>folder</type>
-			<uuidstructure>ea7508b6-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 12:37:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 08:01:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Searches]]></value>
-				</property>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/.content/search/s_00001.html</source>
-			<destination>sites/default/.content/search/s_00001.html</destination>
-			<type>v8search</type>
-			<uuidstructure>2a5908f7-77ec-11e0-be13-000c2972a6a4</uuidstructure>
-			<uuidresource>2a5908f8-77ec-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Tue, 31 May 2011 08:41:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2011 14:21:42 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Search the World of Flowers]]></value>
 				</property>
 			</properties>
 			<relations/>
