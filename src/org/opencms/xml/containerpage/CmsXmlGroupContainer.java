@@ -240,10 +240,11 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
      * 
      * @param cms the current cms context
      * @param groupContainer the group-container page to save
+     * @param locale the locale to save
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, CmsGroupContainerBean groupContainer) throws CmsException {
+    public void save(CmsObject cms, CmsGroupContainerBean groupContainer, Locale locale) throws CmsException {
 
         CmsFile file = getFile();
 
@@ -251,7 +252,6 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
         cms.lockResourceTemporary(cms.getSitePath(file));
 
         // wipe the locale
-        Locale locale = cms.getRequestContext().getLocale();
         if (hasLocale(locale)) {
             removeLocale(locale);
         }
@@ -437,9 +437,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
             // the properties
             Map<String, String> properties = element.getIndividualSettings();
-            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
-                cms,
-                uriRes);
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(cms, uriRes);
 
             CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes, propertiesConf);
         }

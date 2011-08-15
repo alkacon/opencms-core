@@ -439,7 +439,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                 cms,
                 cms.readFile(resourceName));
-            xmlGroupContainer.save(cms, groupContainerBean);
+            xmlGroupContainer.save(cms, groupContainerBean, new Locale(locale));
             cms.unlockResource(resourceName);
         } catch (Throwable e) {
             error(e);
