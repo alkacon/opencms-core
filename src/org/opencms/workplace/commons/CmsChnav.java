@@ -180,7 +180,7 @@ public class CmsChnav extends CmsDialog {
             }
 
             // if the element is the current file, mark it in selectbox
-            if (curNav.getNavText().equals(navText) && (curNav.getNavPosition() == navPos)) {
+            if ((curNav != null) && curNav.getNavText().equals(navText) && (curNav.getNavPosition() == navPos)) {
                 options.add(CmsEncoder.escapeHtml(messages.key(
                     Messages.GUI_CHNAV_POS_CURRENT_1,
                     new Object[] {ne.getFileName()})));
@@ -197,7 +197,7 @@ public class CmsChnav extends CmsDialog {
 
         // add the entry: no change
         options.add(messages.key(Messages.GUI_CHNAV_NO_CHANGE_0));
-        if (curNav.getNavPosition() == Float.MAX_VALUE) {
+        if ((curNav != null) && (curNav.getNavPosition() == Float.MAX_VALUE)) {
             // current resource has no valid position, use "last position"
             values.add((maxValue + 1) + "");
         } else {
