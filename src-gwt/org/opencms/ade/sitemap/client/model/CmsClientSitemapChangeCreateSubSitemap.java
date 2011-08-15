@@ -65,6 +65,7 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
             changes.add(deleteAction);
         }
         entry.setEntryType(EntryType.subSitemap);
+        entry.setResourceTypeName(info.getEntry().getResourceTypeName());
         CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, info.getEntry(), false);
         changes.add(editAction);
         m_internalChanges = changes;

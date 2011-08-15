@@ -297,7 +297,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 iconClass = CmsIconUtil.getResourceIconClasses(
                     m_controller.getDetailPageInfo(entry.getId()).getType(),
                     false);
-            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
+            } else if (!entry.isSubSitemapType()
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
                 iconClass = CmsIconUtil.getResourceIconClasses(entry.getDefaultFileType(), false);
             }
         }
