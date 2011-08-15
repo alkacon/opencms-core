@@ -105,6 +105,9 @@ public class CmsSearch {
     /** The total number of search results matching the query. */
     protected int m_searchResultCount;
 
+    /** Indicates if the parsed query was deliberately set on this instance. */
+    private boolean m_parsedQuerySet;
+
     /**
      * Default constructor, used to instantiate the search facility as a bean.<p>
      */
@@ -116,6 +119,7 @@ public class CmsSearch {
         m_searchResultCount = 0;
         m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
         m_parameters.setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
+        m_parsedQuerySet = false;
     }
 
     /**
@@ -855,6 +859,7 @@ public class CmsSearch {
     public void setParsedQuery(String parsedQuery) {
 
         try {
+            m_parsedQuerySet = true;
             m_parameters.setParsedQuery(CmsEncoder.decodeParameter(parsedQuery));
         } catch (CmsIllegalArgumentException iae) {
             m_lastException = iae;
@@ -998,6 +1003,9 @@ public class CmsSearch {
         m_lastException = null;
         m_categoriesFound = null;
         m_parameterRestriction = null;
-        m_parameters.setParsedQuery(null);
+        if (!m_parsedQuerySet) {
+            // don't reset parsed query if it was deliberately set, otherwise initializing search bean from JSP might fail 
+            m_parameters.setParsedQuery(null);
+        }
     }
 }
