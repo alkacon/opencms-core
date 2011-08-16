@@ -873,6 +873,19 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Leaves the current sitemap to open the parent sitemap.<p>
+     */
+    public void gotoParentSitemap() {
+
+        String sitemapLocation = CmsCoreProvider.get().getUri() + "?path=" + getData().getParentSitemap();
+        String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
+        if ((returnCode != null) && (returnCode.length() != 0)) {
+            sitemapLocation += "&returncode=" + returnCode;
+        }
+        leaveEditor(sitemapLocation);
+    }
+
+    /**
      * Checks whether this entry belongs to a detail page.<p>
      * 
      * @param entry the entry to check

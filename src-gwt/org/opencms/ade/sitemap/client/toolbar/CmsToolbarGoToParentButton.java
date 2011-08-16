@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
@@ -63,10 +62,7 @@ public class CmsToolbarGoToParentButton extends CmsPushButton {
             public void onClick(ClickEvent event) {
 
                 toolbar.onButtonActivation(CmsToolbarGoToParentButton.this);
-                String sitemapLocation = CmsCoreProvider.get().getUri()
-                    + "?path="
-                    + controller.getData().getParentSitemap();
-                controller.leaveEditor(sitemapLocation);
+                controller.gotoParentSitemap();
             }
         });
     }
