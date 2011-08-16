@@ -1,6 +1,5 @@
 <%@page session="true" import="java.util.*, org.opencms.i18n.*, org.opencms.jsp.*, org.opencms.widgets.*" %>
 <%@ page taglibs="c,cms,fmt,fn" %>
-<cms:formatter var="content" val="value">
 <fmt:setLocale value="${cms.locale}" />
 <fmt:bundle basename="com.alkacon.opencms.v8.subscription.frontend">
 <c:if test="${not empty param.action}">
@@ -14,17 +13,10 @@
 	</c:choose>
 </c:if>
 <c:set var="boxschema"><cms:elementsetting name="boxschema" default="box_schema1" /></c:set>
-<c:set var="collector"><c:choose><c:when test="${content.value.Collector.exists}">${content.value.Collector}</c:when><c:otherwise>allSubscribed</c:otherwise></c:choose></c:set>
-<c:set var="collectorparams"><c:choose><c:when test="${content.value.Params.exists}">${content.value.Params}</c:when><c:otherwise>resource=/|currentuser=true|includesubfolders=true|mode=all</c:otherwise></c:choose></c:set>
+<c:set var="collector">${(empty param.subscriptionCollector) ? "allSubscribed" : param.subscriptionCollector}</c:set>
+<c:set var="collectorparams">${(empty param.subscriptionParams) ? "resource=/|currentuser=true|includesubfolders=true|mode=all" : param.subscriptionParams}</c:set>
 <div class="box ${boxschema}">
-	<h4><c:choose>
-	<c:when test="${content.value.Title.isSet}">
-	${content.value.Title}
-	</c:when>
-	<c:otherwise>
-	<fmt:message key="subscriptioneditor.title" /> 
-	</c:otherwise>
-	</c:choose></h4>
+	<h4><fmt:message key="subscriptioneditor.title" /></h4>
 	<div class="boxbody">
 		<c:set var="locale"><cms:info property="opencms.request.locale" /></c:set>
 		<c:set var="currenturi"><cms:info property="opencms.request.uri"/></c:set>
@@ -76,4 +68,3 @@
 	</div><!-- boxbody -->
 </div><!-- box -->
 </fmt:bundle>
-</cms:formatter>
