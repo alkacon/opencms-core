@@ -49,10 +49,10 @@
 								<c:set var="subscribedtouser"><cms:usertracking action="checksubscribed" file="${item.filename}" currentuser="true" /></c:set>
 								<c:choose>
 								    <c:when test="${subscribedtouser == true}">
-								    	<a href="${linktarget}?action=unsubscribe&file=${item.filename}"><img src="<cms:link>/system/modules/com.alkacon.opencms.v8.subscription/resources/unsubscribe.png</cms:link>" title="<fmt:message key="button.unsubscribe"/>"></a>
+								    	<a href="${linktarget}?action=unsubscribe&file=${item.filename}"><img src="<cms:link>%(link.weak:/system/modules/com.alkacon.opencms.v8.subscription/resources/unsubscribe.png:f706bc56-78a7-11e0-aaab-db99d0e3bad2)</cms:link>" title="<fmt:message key="button.unsubscribe"/>"></a>
 								    </c:when>					    
 								    <c:otherwise>
-		    					    	<a href="${linktarget}?action=subscribe&file=${item.filename}"><img src="<cms:link>/system/modules/com.alkacon.opencms.v8.subscription/resources/subscribe.png</cms:link>" title="<fmt:message key="button.subscribe"/>"></a>
+		    					    	<a href="${linktarget}?action=subscribe&file=${item.filename}"><img src="<cms:link>%(link.weak:/system/modules/com.alkacon.opencms.v8.subscription/resources/subscribe.png:e98f5141-78a7-11e0-aaab-db99d0e3bad2)</cms:link>" title="<fmt:message key="button.subscribe"/>"></a>
 								    </c:otherwise>
 								</c:choose>
 							</td>
