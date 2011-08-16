@@ -41,14 +41,17 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -112,8 +115,24 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** Signals whether the error message will be shown on mouse over. */
     private boolean m_preventShowError;
 
+    private String m_ghostValue;
+
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
+
+    protected static final int[] navigationCodes = {
+        KeyCodes.KEY_ALT,
+        KeyCodes.KEY_CTRL,
+        KeyCodes.KEY_DOWN,
+        KeyCodes.KEY_END,
+        KeyCodes.KEY_ENTER,
+        KeyCodes.KEY_ESCAPE,
+        KeyCodes.KEY_HOME,
+        KeyCodes.KEY_LEFT,
+        KeyCodes.KEY_RIGHT,
+        KeyCodes.KEY_SHIFT,
+        KeyCodes.KEY_TAB,
+        KeyCodes.KEY_UP};
 
     /**
      * Constructs a new instance of this widget.
@@ -146,6 +165,22 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             }
         });
 
+        m_textbox.addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                setGhostStyleEnabled(false);
+            }
+        });
+
+        m_textbox.addBlurHandler(new BlurHandler() {
+
+            public void onBlur(BlurEvent event) {
+
+                setGhostStyleEnabled(m_ghostMode);
+            }
+        });
+
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
@@ -163,6 +198,11 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 setGhostMode(false);
+                if ((m_ghostValue != null) && "".equals(m_textbox.getValue())) {
+                    m_ghostMode = true;
+                    setGhostStyleEnabled(true);
+                    m_textbox.setValue(m_ghostValue);
+                }
                 fireValueChangedEvent();
             }
         });
@@ -173,7 +213,10 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
              */
             public void onKeyPress(KeyPressEvent event) {
 
-                setGhostMode(false);
+                int keyCode = event.getNativeEvent().getKeyCode();
+                if (!isNavigationKey(keyCode)) {
+                    setGhostMode(false);
+                }
             }
         });
     }
@@ -412,7 +455,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorMessageWidth)) {
                 m_error.setWidth(m_errorMessageWidth);
             } else {
-                m_error.setWidth(getOffsetWidth() - 8 + Unit.PX.toString());
+                m_error.setWidth((getOffsetWidth() - 8) + Unit.PX.toString());
             }
             m_textboxContainer.removeStyleName(CSS.textBoxPanel());
             m_textboxContainer.addStyleName(CSS.textBoxPanelError());
@@ -464,7 +507,13 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         if (newValue == null) {
             newValue = "";
         }
-        setFormValue(newValue);
+        if ("".equals(newValue) && (m_ghostValue != null)) {
+            m_ghostMode = true;
+            setGhostStyleEnabled(true);
+            m_textbox.setValue(m_ghostValue);
+        } else {
+            setFormValue(newValue);
+        }
     }
 
     /**
@@ -474,7 +523,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setGhostMode(boolean ghostMode) {
 
-        setGhostStyleEnabled(ghostMode);
+        //setGhostStyleEnabled(ghostMode);
         m_ghostMode = ghostMode;
 
     }
@@ -500,11 +549,13 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setGhostValue(String value, boolean ghostMode) {
 
+        m_ghostValue = value;
         if (!ghostMode) {
             return;
         }
         m_textbox.setValue(value);
         setGhostMode(true);
+        setGhostStyleEnabled(true);
     }
 
     /**
@@ -568,6 +619,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     protected void hideError() {
 
         m_error.hideError();
+    }
+
+    protected boolean isNavigationKey(int keyCode) {
+
+        for (int i = 0; i < navigationCodes.length; i++) {
+            if (navigationCodes[i] == keyCode) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
