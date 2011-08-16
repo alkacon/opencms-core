@@ -1,5 +1,9 @@
-<%@page session="false" taglibs="c,cms,fmt,fn" %>
-<fmt:setLocale value="${cms.locale}" />
+<%@page session="false" taglibs="c,cms,fmt,fn" %><%--
+
+	to use this JSP as a function provider the parameter 'searchformlink'
+	needs to be set and point to the search result page
+
+ --%><fmt:setLocale value="${cms.locale}" />
 <fmt:bundle basename="com.alkacon.opencms.v8.search.frontend">
 <div class="box ${cms.element.settings.boxschema}">
 	<c:choose>

@@ -1,5 +1,11 @@
-<%@page session="false" taglibs="c,cms,fmt,fn" import="org.opencms.file.*"%>
-<div>
+<%@page session="false" taglibs="c,cms,fmt,fn" import="org.opencms.file.*"%><%--
+
+	to use this JSP as function provider the following parameters may be set:
+	'searchIndex' to set the index searched, default: 'Online project EN (VFS)'
+	'searchRoot' to set the folder to be searched, default: '/'
+	'searchMatchesPerPage' to set the number of results displayed per page, default: '5'
+	
+ --%><div>
 <fmt:setLocale value="${cms.locale}" />
 <fmt:bundle basename="com.alkacon.opencms.v8.search.frontend">
 <c:set var="cmsobj" value="${cms.vfs.cmsObject}" />
