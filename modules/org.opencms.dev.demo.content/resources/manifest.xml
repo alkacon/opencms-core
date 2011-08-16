@@ -1829,7 +1829,7 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Container variables demo]]></value>
-				</property>				
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1840,7 +1840,7 @@
 			<type>containerpage</type>
 			<uuidstructure>bf39b7df-78a6-11e0-88e3-e3fff2a64270</uuidstructure>
 			<uuidresource>bf39b7e0-78a6-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Sun, 08 May 2011 14:40:01 GMT</datelastmodified>
+			<datelastmodified>Tue, 16 Aug 2011 13:44:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 07 May 2011 12:37:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1878,7 +1878,7 @@
 			<type>sitemap_config</type>
 			<uuidstructure>1f839284-a229-11e0-8a44-31bf300cc6c9</uuidstructure>
 			<uuidresource>1f839285-a229-11e0-8a44-31bf300cc6c9</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:25:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 16 Aug 2011 14:46:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 29 Jun 2011 08:23:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1914,60 +1914,241 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/.content/content/cv_00001.html</source>
-			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00001.html</destination>
-			<type>ddcontainervars</type>
-			<uuidstructure>e4489b82-78a7-11e0-88e3-e3fff2a64270</uuidstructure>
-			<uuidresource>e4489b83-78a7-11e0-88e3-e3fff2a64270</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:58:32 GMT</datelastmodified>
+			<source>sites/default/dev_demo/container_vars/.content/content/function-00001.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/function-00001.html</destination>
+			<type>function</type>
+			<uuidstructure>c2b41a94-c7eb-11e0-9f81-e73d0dfd48ec</uuidstructure>
+			<uuidresource>c2b41a95-c7eb-11e0-9f81-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 09:52:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2011 12:45:30 GMT</datecreated>
+			<datecreated>Tue, 16 Aug 2011 09:40:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Access of the container variables]]></value>
+					<value><![CDATA[Container variables demo]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/.content/content/cv_00002.html</source>
-			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00002.html</destination>
-			<type>ddcontainervars</type>
-			<uuidstructure>c59843af-7980-11e0-934b-1df1339be1a9</uuidstructure>
-			<uuidresource>c59843b0-7980-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:58:49 GMT</datelastmodified>
+			<source>sites/default/dev_demo/container_vars/.content/content/function-00002.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/function-00002.html</destination>
+			<type>function</type>
+			<uuidstructure>be604e84-c80c-11e0-b06a-e73d0dfd48ec</uuidstructure>
+			<uuidresource>be604e85-c80c-11e0-b06a-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:37:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sun, 08 May 2011 14:37:59 GMT</datecreated>
+			<datecreated>Tue, 16 Aug 2011 13:36:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Variables access demo]]></value>
+					<value><![CDATA[Container variables demo side element]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/dev_demo/container_vars/.content/content/cv_00003.html</source>
-			<destination>sites/default/dev_demo/container_vars/.content/content/cv_00003.html</destination>
-			<type>ddcontainervars</type>
-			<uuidstructure>f900f860-7980-11e0-934b-1df1339be1a9</uuidstructure>
-			<uuidresource>f900f861-7980-11e0-934b-1df1339be1a9</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:58:57 GMT</datelastmodified>
+			<source>sites/default/dev_demo/container_vars/.content/content/function-00003.html</source>
+			<destination>sites/default/dev_demo/container_vars/.content/content/function-00003.html</destination>
+			<type>function</type>
+			<uuidstructure>f859ebae-c80c-11e0-b06a-e73d0dfd48ec</uuidstructure>
+			<uuidresource>f859ebaf-c80c-11e0-b06a-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:38:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sun, 08 May 2011 14:39:26 GMT</datecreated>
+			<datecreated>Tue, 16 Aug 2011 13:38:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Variables access demo]]></value>
+					<value><![CDATA[Container variables demo left side element]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/dynamic_function</destination>
+			<type>subsitemap</type>
+			<uuidstructure>49518893-c73c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<datelastmodified>Tue, 16 Aug 2011 13:51:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 12:44:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.2734375]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Dynamic function demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dynamic function demo]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/dynamic_function/index.html</source>
+			<destination>sites/default/dev_demo/dynamic_function/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>49649b68-c73c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<uuidresource>49649b69-c73c-11e0-a174-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 08:57:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 12:44:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dynamic Functionality Demo]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/dynamic_function/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>8a020ccb-c73c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 12:46:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 12:46:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/dynamic_function/.content/.config</source>
+			<destination>sites/default/dev_demo/dynamic_function/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>8a0938bd-c73c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<uuidresource>8a0938be-c73c-11e0-a174-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 07:52:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 12:46:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource type configuration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/dynamic_function/.content/ddarticle</destination>
+			<type>folder</type>
+			<uuidstructure>510d8d5b-c7dc-11e0-9f81-e73d0dfd48ec</uuidstructure>
+			<datelastmodified>Tue, 16 Aug 2011 07:49:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Aug 2011 07:49:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/dynamic_function/.content/ddarticle/ddarticle-00001.html</source>
+			<destination>sites/default/dev_demo/dynamic_function/.content/ddarticle/ddarticle-00001.html</destination>
+			<type>ddarticle</type>
+			<uuidstructure>02ec5f80-c7dd-11e0-9f81-e73d0dfd48ec</uuidstructure>
+			<uuidresource>02ec5f81-c7dd-11e0-9f81-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 09:43:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Aug 2011 07:54:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo of the dynamic function]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/dev_demo/dynamic_function/.content/function</destination>
+			<type>folder</type>
+			<uuidstructure>e2437b95-c74c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 14:43:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 14:43:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/dynamic_function/.content/function/function-00001.html</source>
+			<destination>sites/default/dev_demo/dynamic_function/.content/function/function-00001.html</destination>
+			<type>function</type>
+			<uuidstructure>e2483687-c74c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<uuidresource>e2483688-c74c-11e0-a174-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:49:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 14:43:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dynamic Function Demo]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/dev_demo/dynamic_function/.content/function/time.jsp</source>
+			<destination>sites/default/dev_demo/dynamic_function/.content/function/time.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f828a581-c74c-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<uuidresource>f828a582-c74c-11e0-a174-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:50:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 14:43:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[A  simple Jsp to demontrate the dynamic functionality]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>

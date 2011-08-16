@@ -29,8 +29,6 @@
 			<resource uri="/system/modules/org.opencms.dev.demo/"/>
 			<resource uri="/system/workplace/resources/filetypes/ddarticle.png"/>
 			<resource uri="/system/workplace/resources/filetypes/ddarticle_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/ddcontainervars.png"/>
-			<resource uri="/system/workplace/resources/filetypes/ddcontainervars_big.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
@@ -39,10 +37,7 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ddsettingsarticle" id="136">
 				<param name="schema">/system/modules/org.opencms.dev.demo/schemas/settings_article.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ddcontainervars" id="137">
-				<param name="schema">/system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</param>
-			</type>
+			</type>			
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ddheadincludearticle" id="141">
 				<param name="schema">/system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd</param>
 			</type>
@@ -59,13 +54,7 @@
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
-			</explorertype>
-			<explorertype name="ddcontainervars" key="fileicon.ddcontainervars" icon="ddcontainervars.png" bigicon="ddcontainervars_big.png" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=ddcontainervars" order="110" autosetnavigation="false" autosettitle="false" info="desc.ddcontainervars"/>
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
+			</explorertype>			
 			<explorertype name="ddheadincludearticle" key="fileicon.ddheadincludearticle" icon="ddarticle.png" bigicon="ddarticle_big.png" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=ddheadincludearticle" order="110" autosetnavigation="false" autosettitle="false" info="desc.ddheadincludearticle"/>
 				<accesscontrol>
@@ -632,44 +621,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.dev.demo/formatters/container_vars</destination>
-			<type>folder</type>
-			<uuidstructure>83cbe09e-7715-11e0-ae74-eda16dd9314c</uuidstructure>
-			<datelastmodified>Sat, 07 May 2011 13:14:56 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 12:45:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Formatters for container varibales]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp</source>
-			<destination>system/modules/org.opencms.dev.demo/formatters/container_vars/containervar.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>f29754ba-7714-11e0-ae74-eda16dd9314c</uuidstructure>
-			<uuidresource>f29754bb-7714-11e0-ae74-eda16dd9314c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 10:02:54 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 12:41:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.dev.demo/formatters/settings_article</destination>
 			<type>folder</type>
 			<uuidstructure>5a43edda-77d7-11e0-bb7c-cde485e16fbf</uuidstructure>
@@ -717,6 +668,43 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.dev.demo/pages</destination>
+			<type>folder</type>
+			<uuidstructure>15e2ccff-c749-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 14:15:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 14:15:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.dev.demo/pages/containervars.jsp</source>
+			<destination>system/modules/org.opencms.dev.demo/pages/containervars.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1ed39e81-c749-11e0-a174-e73d0dfd48ec</uuidstructure>
+			<uuidresource>1ed39e82-c749-11e0-a174-e73d0dfd48ec</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:45:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Aug 2011 14:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp demo how to access the available container variables.]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1343,27 +1331,7 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</source>
-			<destination>system/modules/org.opencms.dev.demo/schemas/container_vars.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>eb5878f7-7714-11e0-ae74-eda16dd9314c</uuidstructure>
-			<uuidresource>eb5878f8-7714-11e0-ae74-eda16dd9314c</uuidresource>
-			<datelastmodified>Wed, 13 Jul 2011 15:16:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 12:40:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for the test of container variables]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
+		</file>		
 		<file>
 			<source>system/modules/org.opencms.dev.demo/schemas/settings_article.xsd</source>
 			<destination>system/modules/org.opencms.dev.demo/schemas/settings_article.xsd</destination>
@@ -1600,46 +1568,6 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/ddcontainervars.png</source>
-			<destination>system/workplace/resources/filetypes/ddcontainervars.png</destination>
-			<type>image</type>
-			<uuidstructure>74d48fbd-7719-11e0-95b7-eda16dd9314c</uuidstructure>
-			<uuidresource>74d48fbe-7719-11e0-95b7-eda16dd9314c</uuidresource>
-			<datelastmodified>Thu, 07 Apr 2011 13:27:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 13:13:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/ddcontainervars_big.png</source>
-			<destination>system/workplace/resources/filetypes/ddcontainervars_big.png</destination>
-			<type>image</type>
-			<uuidstructure>7c3e7320-7719-11e0-95b7-eda16dd9314c</uuidstructure>
-			<uuidresource>7c3e7321-7719-11e0-95b7-eda16dd9314c</uuidresource>
-			<datelastmodified>Thu, 07 Apr 2011 13:27:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 05 May 2011 13:13:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
+		</file>		
 	</files>
 </export>
