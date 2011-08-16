@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -52,6 +53,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -255,9 +257,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
-                elementBean.getResource(),
-                settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(
+                elementBean,
+                convertSettingValues(elementBean.getResource(), settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -418,29 +420,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
-            ensureSession();
-            String resourceName = groupContainer.getSitePath();
-            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
-            if (groupContainer.isNew()) {
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                    getCmsObject(),
-                    pageResource.getRootPath());
-                CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
-                CmsResource groupContainerResource = typeConfig.createNewElement(getCmsObject());
-                resourceName = cms.getSitePath(groupContainerResource);
-                groupContainer.setSitePath(resourceName);
-                groupContainer.setClientId(groupContainerResource.getStructureId().toString());
-            }
-            CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
-                groupContainer,
-                pageResource.getStructureId(),
-                locale);
-            cms.lockResourceTemporary(resourceName);
-            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
-                cms,
-                cms.readFile(resourceName));
-            xmlGroupContainer.save(cms, groupContainerBean, new Locale(locale));
-            cms.unlockResource(resourceName);
+            internalSaveGroupContainer(cms, pageStructureId, groupContainer, locale);
         } catch (Throwable e) {
             error(e);
         }
@@ -475,9 +455,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Converts the given setting values according to the setting configuration of the given resource.<p>
      * 
      * @param resource the resource
-     * @param the settings to convert
+     * @param settings the settings to convert
      * 
      * @return the converted settings
+     * @throws CmsException if something goes wrong 
      */
     private Map<String, String> convertSettingValues(CmsResource resource, Map<String, String> settings)
     throws CmsException {
@@ -489,10 +470,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    getCmsObject(),
-                    settingType,
-                    entry.getValue()));
+                changedSettings.put(
+                    settingName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
             }
         }
         return changedSettings;
@@ -562,11 +542,27 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsContainerElement elementData : container.getElements()) {
             try {
                 if (elementData.isNew()) {
-                    elementData = createNewElement(
-                        containerpage.getStructureId(),
-                        elementData.getClientId(),
-                        elementData.getResourceType(),
-                        locale);
+
+                    if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(elementData.getResourceType())) {
+                        CmsGroupContainer groupContainer = new CmsGroupContainer();
+                        groupContainer.setNew(true);
+                        groupContainer.setElements(new ArrayList<CmsContainerElement>());
+                        Set<String> types = new HashSet<String>();
+                        types.add(container.getType());
+                        groupContainer.setTypes(types);
+                        elementData = internalSaveGroupContainer(
+                            cms,
+                            containerpage.getStructureId(),
+                            groupContainer,
+                            locale);
+
+                    } else {
+                        elementData = createNewElement(
+                            containerpage.getStructureId(),
+                            elementData.getClientId(),
+                            elementData.getResourceType(),
+                            locale);
+                    }
                 }
                 CmsContainerElementBean element = getCachedElement(elementData.getClientId());
 
@@ -864,6 +860,56 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return m_sessionCache;
+    }
+
+    /**
+     * Internal method for saving a group container
+     * 
+     * @param cms the cms context 
+     * @param pageStructureId the container page structure id 
+     * @param groupContainer the group container to save 
+     * @param locale the locale for which the group container should be saved 
+     * 
+     * @return the container element representing the group container
+     *  
+     * @throws CmsException if something goes wrong 
+     * @throws CmsXmlException if the XML processing goes wrong 
+     */
+    private CmsContainerElement internalSaveGroupContainer(
+        CmsObject cms,
+        CmsUUID pageStructureId,
+        CmsGroupContainer groupContainer,
+        String locale) throws CmsException, CmsXmlException {
+
+        ensureSession();
+        String resourceName = groupContainer.getSitePath();
+        CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+        CmsResource groupContainerResource = null;
+        if (groupContainer.isNew()) {
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                pageResource.getRootPath());
+            CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
+            groupContainerResource = typeConfig.createNewElement(getCmsObject());
+            resourceName = cms.getSitePath(groupContainerResource);
+            groupContainer.setSitePath(resourceName);
+            groupContainer.setClientId(groupContainerResource.getStructureId().toString());
+        }
+        CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
+            groupContainer,
+            pageResource.getStructureId(),
+            locale);
+        cms.lockResourceTemporary(resourceName);
+        CmsFile groupContainerFile = cms.readFile(resourceName);
+        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, groupContainerFile);
+        xmlGroupContainer.save(cms, groupContainerBean, new Locale(locale));
+        cms.unlockResource(resourceName);
+
+        CmsContainerElement element = new CmsContainerElement();
+        element.setClientId(groupContainerFile.getStructureId().toString());
+        element.setSitePath(cms.getSitePath(groupContainerFile));
+        element.setResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
+        return element;
     }
 
     /**
