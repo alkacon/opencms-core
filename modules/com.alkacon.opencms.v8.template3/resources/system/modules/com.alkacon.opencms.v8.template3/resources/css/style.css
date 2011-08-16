@@ -295,9 +295,6 @@
    .box {
      background: #e1e1e1;
      margin-bottom: 15px;
-     border-bottom:1px solid #7B7F7E;
-     border-left:1px solid #7B7F7E;
-     border-right:1px solid #7B7F7E;
    }
    
    .box h4 {
@@ -305,7 +302,7 @@
    	 color: #fff;
    	 font-size: 13px;
    	 width: auto;
-   	 margin: -1px;
+   	 margin: 0px;
    	 padding: 5px;
    	 line-height: 16px;
    }
@@ -344,6 +341,7 @@
    .boxbody {
      padding: 10px;
      font-size: 11px;
+     border:1px solid #7B7F7E;
    }
    
    .boxbody p, .boxbody div, .boxbody a {
