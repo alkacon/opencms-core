@@ -1630,8 +1630,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         if ((categories != null) && (categories.size() > 0)) {
             // add query categories (if required)
+
+            // categories are indexed as lower-case strings 
+            // @see org.opencms.search.fields.CmsSearchFieldConfiguration#appendCategories
+            List<String> lowerCaseCategories = new ArrayList<String>();
+            for (String category : categories) {
+                lowerCaseCategories.add(category.toLowerCase());
+            }
             filter.add(new FilterClause(
-                getMultiTermQueryFilter(CmsSearchField.FIELD_CATEGORY, categories),
+                getMultiTermQueryFilter(CmsSearchField.FIELD_CATEGORY, lowerCaseCategories),
                 BooleanClause.Occur.MUST));
         }
 
