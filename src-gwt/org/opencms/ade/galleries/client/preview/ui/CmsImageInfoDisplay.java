@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateConverter;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -138,7 +139,7 @@ public class CmsImageInfoDisplay extends Composite {
         m_displayFormat.setText(infoBean.getWidth() + "x" + infoBean.getHeight());
         m_displayType.setText(infoBean.getResourceType());
         m_displaySize.setText(infoBean.getSize());
-        m_displayTitle.setText(infoBean.getProperties().get("Title"));
+        m_displayTitle.setText(infoBean.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
         m_displayModified.setText(CmsDateConverter.toString(infoBean.getLastModified()));
     }
 }

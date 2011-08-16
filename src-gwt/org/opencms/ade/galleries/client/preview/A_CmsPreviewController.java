@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -140,7 +141,8 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
      */
     public void setResource(GalleryMode galleryMode) {
 
-        select(galleryMode, m_infoBean.getResourcePath(), m_infoBean.getTitle());
+        select(galleryMode, m_infoBean.getResourcePath(), m_infoBean.getProperties().get(
+            CmsClientProperty.PROPERTY_TITLE));
     }
 
     /**

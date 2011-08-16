@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.CmsVfsLinkWidget;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.util.CmsJSONMap;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -209,7 +210,8 @@ public class CmsImageAdvancedForm extends Composite {
                 entry.getValue().setFormValueAsString(val);
             } else {
                 if (entry.getKey() == Attribute.title) {
-                    entry.getValue().setFormValueAsString(imageInfo.getTitle());
+                    entry.getValue().setFormValueAsString(
+                        imageInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
                 }
             }
         }

@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsDateTimeUtil;
 import org.opencms.gwt.client.util.CmsDateTimeUtil.Format;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -151,7 +152,10 @@ public class CmsBinaryPreviewContent extends Composite {
     private CmsListItem createListItem(CmsResourceInfoBean resourceInfo, CmsDNDHandler dndHandler) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
-        infoBean.setTitle(resourceInfo.getTitle());
+        infoBean.setTitle(CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceInfo.getProperties().get(
+            CmsClientProperty.PROPERTY_TITLE))
+        ? resourceInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE)
+        : resourceInfo.getTitle());
         infoBean.setSubTitle(resourceInfo.getResourcePath());
         infoBean.setResourceType(resourceInfo.getResourceType());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_SIZE_0), resourceInfo.getSize());

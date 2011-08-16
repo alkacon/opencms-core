@@ -487,7 +487,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                     int pos = m_formatNames[i].indexOf(":");
                     if (pos > 0) {
                         label = m_formatNames[i].substring(pos + 1, m_formatNames[i].length());
-                        key = m_formatNames[i].substring(pos);
+                        key = m_formatNames[i].substring(0, pos);
                     } else {
                         label = m_formatNames[i];
                         key = m_formatNames[i];
@@ -539,8 +539,12 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
         Entry<String, I_CmsFormatRestriction> result = null;
         for (Entry<String, I_CmsFormatRestriction> entry : m_formats.entrySet()) {
+
             if (entry.getValue().matchesCroppingParam(croppingParam)) {
                 result = entry;
+                if (entry.getKey().equals(croppingParam.getFormatName())) {
+                    break;
+                }
             }
         }
         return result;

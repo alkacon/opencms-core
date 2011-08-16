@@ -73,7 +73,6 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     @Override
     public void fillContent(CmsResourceInfoBean infoBean) {
 
-        //TODO: use proper preview content
         fillPreviewPanel(infoBean);
         m_propertiesTab.fillProperties(infoBean.getProperties());
     }

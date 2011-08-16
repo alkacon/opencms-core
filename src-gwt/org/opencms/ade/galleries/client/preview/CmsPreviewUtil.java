@@ -317,15 +317,20 @@ public final class CmsPreviewUtil {
                 var formatBox = $wnd.parent.document.getElementById("format."
                         + fieldId);
                 if (formatBox != null && formatBox.options != null) {
+                    var selectIndex = -1;
                     for ( var i = 0; i < formatBox.options.length; i++) {
                         if (formatBox.options[i].value == formatName) {
                             formatBox.selectedIndex = i;
-                            $wnd.parent
-                                    .setImageFormat(
-                                            fieldId,
-                                            $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
                             break;
                         }
+                    }
+
+                    if (selectIndex != -1) {
+                        formatBox.selectedIndex = selectIndex;
+                        $wnd.parent
+                                .setImageFormat(
+                                        fieldId,
+                                        $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
                     }
                 }
                 var formatField = $wnd.parent.document.getElementById("fmtval."

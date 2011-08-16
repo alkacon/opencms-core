@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
@@ -61,22 +62,20 @@ public class CmsResultItemWidget extends CmsListItemWidget {
      * Constructor.<p>
      * 
      * @param infoBean the resource info bean
-     * @param resourceType the resource type
-     * @param resourcePath the resource path
      */
-    public CmsResultItemWidget(CmsListInfoBean infoBean, String resourceType, String resourcePath) {
+    public CmsResultItemWidget(CmsResultItemBean infoBean) {
 
         super(infoBean);
-        setIcon(CmsIconUtil.getResourceIconClasses(resourceType, resourcePath, false));
+        setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getType(), infoBean.getPath(), false));
 
         // if resourceType=="image" prepare for tile view
-        if (IMAGE_TYPE.equals(resourceType)) {
+        if (IMAGE_TYPE.equals(infoBean.getType())) {
             m_hasTileView = true;
             // add tile view marker css classes
 
             // insert tile view image div
             HTML imageTile = new HTML("<img src=\""
-                + CmsCoreProvider.get().link(resourcePath)
+                + CmsCoreProvider.get().link(infoBean.getPath())
                 + IMAGE_SCALE_PARAM
                 + "\" />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());

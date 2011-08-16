@@ -71,10 +71,8 @@ public class CmsResultListItem extends CmsListItem {
      */
     public CmsResultListItem(CmsResultItemBean resultItem, CmsDNDHandler dndHandler) {
 
-        CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(
-            resultItem,
-            resultItem.getType(),
-            resultItem.getPath());
+        resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
+        CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
         initContent(resultItemWidget);
         if (dndHandler != null) {
             setId(resultItem.getClientId());

@@ -66,6 +66,8 @@ public class CmsCroppingParamBean {
     /** Scale parameter name. */
     private static final String SCALE_PARAM_TARGETWIDTH = "w";
 
+    private static final String SCALE_FORMAT_NAME_PARAM = "__formatName";
+
     /** The cropping height parameter. */
     private int m_cropHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
@@ -136,6 +138,7 @@ public class CmsCroppingParamBean {
      */
     public static CmsCroppingParamBean parseImagePath(String selectedPath) {
 
+        CmsCroppingParamBean result = null;
         int pos = selectedPath.indexOf(SCALE_PARAM_NAME + SCALE_PARAM_EQ);
         if (pos > -1) {
             // removing string part before the scaling parameter
@@ -146,9 +149,23 @@ public class CmsCroppingParamBean {
             if (pos > -1) {
                 param = param.substring(0, pos);
             }
-            return parseScaleParam(param);
+            result = parseScaleParam(param);
+        } else {
+            result = new CmsCroppingParamBean();
         }
-        return new CmsCroppingParamBean();
+        // look up format name if available
+        pos = selectedPath.indexOf(SCALE_FORMAT_NAME_PARAM + SCALE_PARAM_EQ);
+        if (pos > -1) {
+            String param = selectedPath.substring(pos + SCALE_FORMAT_NAME_PARAM.length() + SCALE_PARAM_EQ.length());
+
+            // removing string part after the scaling parameter
+            pos = param.indexOf("&");
+            if (pos > -1) {
+                param = param.substring(0, pos);
+            }
+            result.setFormatName(param);
+        }
+        return result;
     }
 
     /**

@@ -104,32 +104,6 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         return result.toString();
     }
 
-    //    /**
-    //     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
-    //     */
-    //    @Override
-    //    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-    //
-    //        return "\tinitVfsImageGallery();\n";
-    //    }
-
-    //    /**
-    //     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
-    //     */
-    //    @Override
-    //    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-    //
-    //        StringBuffer result = new StringBuffer(16);
-    //        result.append("function initVfsImageGallery() {\n");
-    //        result.append("\t");
-    //        result.append("vfsImageGalleryPath = \"");
-    //        result.append(A_CmsAjaxGallery.PATH_GALLERIES);
-    //        result.append(CmsAjaxImageGallery.OPEN_URI_SUFFIX);
-    //        result.append("\";\n");
-    //        result.append("}\n");
-    //        return result.toString();
-    //    }
-
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
@@ -440,8 +414,11 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         // the current element value will be read by java-script including the image input field and the scale input field
         StringBuffer currentElement = new StringBuffer("'+document.getElementById('");
         currentElement.append(PREFIX_IMAGE).append(param.getId());
-        currentElement.append("').getAttribute('value')+'?__scale='+document.getElementById('");
+        currentElement.append("').getAttribute('value')+'%3F__scale%3D'+document.getElementById('");
         currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
+        currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
+            param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
+            "').selectedIndex].value)+'");
         result.put(GALLERY_PARAM.currentelement.name(), currentElement.toString());
         return result;
     }
