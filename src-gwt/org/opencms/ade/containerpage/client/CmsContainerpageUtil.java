@@ -112,7 +112,7 @@ public class CmsContainerpageUtil {
             boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, child);
             boolean isGroupcontainerElement = CmsDomUtil.hasClass(CLASS_GROUP_CONTAINER_ELEMENT_MARKER, child);
             if (isContainerElement || isGroupcontainerElement) {
-                String clientId = child.getAttribute("title");
+                String clientId = child.getAttribute("clientId");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
                 String newType = child.getAttribute("newType");
