@@ -82,7 +82,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Dev Demo]]></value>
+					<value><![CDATA[Developer Demo]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -90,7 +90,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Dev Demo]]></value>
+					<value><![CDATA[Developer Demo]]></value>
 				</property>
 				<property>
 					<name>locale</name>
@@ -115,7 +115,12 @@
 			<datecreated>Fri, 06 May 2011 10:03:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Developer Demo]]></value>
+				</property>
+			</properties>	
 			<relations/>
 			<accesscontrol/>
 		</file>
