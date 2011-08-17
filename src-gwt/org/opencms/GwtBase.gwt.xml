@@ -90,6 +90,17 @@
         </any>
     </replace-with>
     
+    <replace-with class="org.opencms.gwt.client.CmsDefaultUserAgentInfo">
+    	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
+    </replace-with>
+    
+    <replace-with class="org.opencms.gwt.client.CmsIEUserAgentInfo">
+    	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
+    	<any>
+    		<when-property-is name="user.agent" value="ie6" />
+    	</any>
+    </replace-with>
+    
     <source path="gwt">
     	<include name="CmsRpcException.java" />
     </source>
@@ -123,12 +134,15 @@
 	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 
 
-	<!-- down here only debugging stuff, should be commented out for release building   
+	<!-- down here only debugging stuff, should be commented out for release building -->   
+<!--
 	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
 
 	<set-property name="compiler.emulatedStack" value="true" />
+	<set-property name="user.agent" value="ie6,gecko1_8" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" /> -->
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+-->
 
 </module>

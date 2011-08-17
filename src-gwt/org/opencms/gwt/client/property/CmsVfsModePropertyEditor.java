@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.property;
 
+import org.opencms.gwt.client.I_CmsUserAgentInfo;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
@@ -53,6 +54,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
@@ -74,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The interval used for updating the height. */
-    public static final int UPDATE_HEIGHT_INTERVAL = 100;
+    public static final int UPDATE_HEIGHT_INTERVAL = 200;
 
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
@@ -91,6 +93,12 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** Flag which indicates whether the resource properties should be editable. */
     private boolean m_showResourceProperties;
 
+    /** Flag which indicates whether we are in Internet Explorer. */
+    private boolean m_isIe;
+
+    /** The previous tab index. */
+    private int m_oldTabIndex = -1;
+
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
      * 
@@ -103,6 +111,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         m_dialog.setCaption(null);
         m_dialog.removePadding();
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
+        I_CmsUserAgentInfo userAgentInfo = GWT.create(I_CmsUserAgentInfo.class);
+        m_isIe = userAgentInfo.isIE7();
     }
 
     static {
@@ -219,15 +229,24 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     protected void updateHeight() {
 
         int tabIndex = m_panel.getTabPanel().getSelectedIndex();
-        Element tabElement = m_panel.getTabPanel().getWidget(tabIndex).getElement();
+        boolean changedTab = tabIndex != m_oldTabIndex;
+        m_oldTabIndex = tabIndex;
+        Widget tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        Element tabElement = tabWidget.getElement();
         Element innerElement = tabElement.getFirstChildElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = m_dialog.getAvailableHeight(0);
         int newHeight = Math.min(spaceLeft, contentHeight) + 45;
-        if (m_panel.getTabPanel().getOffsetHeight() != newHeight) {
+        if ((m_panel.getTabPanel().getOffsetHeight() != newHeight) || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
-            m_dialog.center();
+            if (m_isIe) {
+                int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
+                Widget widget = m_panel.getTabPanel().getWidget(selectedIndex);
+                widget.setHeight((newHeight - 45) + "px");
+                m_dialog.center();
+            }
         }
+
     }
 
     /**
@@ -271,8 +290,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
-                Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.singletonMap(
+                CmsSelectBox.NO_SELECTION_TEXT,
+                Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_1)),
             true);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
