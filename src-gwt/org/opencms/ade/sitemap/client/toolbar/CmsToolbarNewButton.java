@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.user.client.ui.Label;
@@ -132,7 +133,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
+        widget.setIcon(CmsIconUtil.getResourceIconClasses(typeInfo.getTypeName(), false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.detailpage);
         listItem.addTag(TAG_SPECIAL);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
