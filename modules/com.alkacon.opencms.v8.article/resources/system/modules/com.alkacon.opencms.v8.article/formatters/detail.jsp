@@ -1,10 +1,13 @@
 <%@page buffer="none" session="false" taglibs="c,cms" %>
 <cms:formatter var="content" val="value">
 
-<div class="view-article">
+<div class="article-${cms.element.settings.boxschema}">
 
 	<%-- Title of the article --%>
-	<h2>${value.Title}</h2>
+	<c:if test="${cms.element.settings.hidetitle ne 'true'}">
+		<h2>${value.Title}</h2>
+	</c:if>	
+
 	
 	<%-- Paragraphs of the article --%>
 	<c:forEach var="paragraph" items="${content.valueList.Paragraph}">
@@ -17,7 +20,14 @@
 			<c:set var="imgwidth">${((cms.container.width) / 2) - 25}</c:set>
 			<c:choose>
 				<c:when test="${imgalign == 'top'}">
-					<c:set var="imgwidth">${cms.container.width}</c:set>
+					<c:choose>
+						<c:when test="${cms.element.settings.boxschema == 'box_schema3'}">
+						<c:set var="imgoffset">0</c:set>
+						</c:when><c:otherwise>
+					    	<c:set var="imgoffset">8</c:set>
+						</c:otherwise>
+					</c:choose>				
+					<c:set var="imgwidth">${cms.container.width - imgoffset}</c:set>
 					<c:set var="imgclass">top</c:set>
 				</c:when>
 				<c:when test="${imgalign == 'left' || imgalign == 'lefthl'}">
@@ -32,6 +42,7 @@
 			<cms:img src="${paragraph.value.Image.value.Image}" width="${imgwidth}" scaleColor="transparent" scaleType="0" cssclass="${imgclass}" alt="${paragraph.value.Image.value.Title}" title="${paragraph.value.Image.value.Title}" />
 		</c:if>
 		<%-- Optional headline of the paragraph --%>
+
 		<c:if test="${paragraph.value.Headline.isSet}">
 			<h3>${paragraph.value.Headline}</h3>
 		</c:if>

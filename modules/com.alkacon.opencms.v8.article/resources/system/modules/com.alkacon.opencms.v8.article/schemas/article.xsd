@@ -49,6 +49,10 @@
 					<resource key="v8.article.image.right">Right of text</resource>
 					<resource key="v8.article.default.Title">New article</resource>
 					<resource key="v8.article.default.Text">Please edit the article text.</resource>
+					<resource key="v8.article.setting.boxschema">Color schema</resource>
+					<resource key="v8.article.setting.imgalign">Image alignment</resource>
+					<resource key="v8.article.setting.hidetitle">Hide title</resource>
+					<resource key="v8.article.setting.keephtml">Keep HTML in side column</resource>					
 				</bundle> 
 				<bundle locale="de">
 					<resource key="label.V8Article.Title">Titel</resource>
@@ -74,6 +78,10 @@
 					<resource key="v8.article.image.right">Rechts vom Text</resource>
 					<resource key="v8.article.default.Title">Neuer Artikel</resource>
 					<resource key="v8.article.default.Text">Bitte bearbeiten Sie den Artikeltext.</resource>
+					<resource key="v8.article.setting.boxschema">Farbschema</resource>
+					<resource key="v8.article.setting.imgalign">Bildausrichtung</resource>
+					<resource key="v8.article.setting.hidetitle">Titel verstecken</resource>
+					<resource key="v8.article.setting.keephtml">HTML in Seitenspalte erhalten</resource>
 				</bundle>						
 				</xmlbundle>
 			</resourcebundles>
@@ -97,8 +105,10 @@
 				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.article/formatters/side.jsp" searchcontent="true" />
 			</formatters>
 			<settings>
-				<setting name="boxschema" nice-name="Box Schema" default="box_schema1" type="string" widget="select" widget-config="box_schema1:Schema Blue|box_schema2:Schema Red|box_schema3:Schema White" />
-				<setting name="imgalign" nice-name="Image Align" type="string" widget="select" widget-config="left:%(key.v8.article.image.left)|right:%(key.v8.article.image.right)|top:%(key.v8.article.image.top)|lefthl:%(key.v8.article.image.lefthl)|righthl:%(key.v8.article.image.righthl)" />
+				<setting name="boxschema" nice-name="%(key.v8.article.setting.boxschema)" default="box_schema3" type="string" widget="select" widget-config="box_schema3:Schema White|box_schema1:Schema Blue|box_schema2:Schema Red" />
+				<setting name="imgalign" nice-name="%(key.v8.article.setting.imgalign)" type="string" widget="select" widget-config="left:%(key.v8.article.image.left)|right:%(key.v8.article.image.right)|top:%(key.v8.article.image.top)|lefthl:%(key.v8.article.image.lefthl)|righthl:%(key.v8.article.image.righthl)" />
+				<setting name="hidetitle" nice-name="%(key.v8.article.setting.hidetitle)" type="string" widget="checkbox" />
+				<setting name="keephtml" nice-name="%(key.v8.article.setting.keephtml)" type="string" widget="checkbox" />
 			</settings>
 		</xsd:appinfo>
 

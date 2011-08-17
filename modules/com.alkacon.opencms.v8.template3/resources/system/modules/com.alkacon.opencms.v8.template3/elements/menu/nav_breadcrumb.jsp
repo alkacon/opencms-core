@@ -15,11 +15,12 @@
 	</c:if>
 </c:forEach>
 
+        <c:set var="navTextOnFolder" value="${navText}" />
 	<c:set var="navText"><cms:property name="NavText" /></c:set>
 	<c:if test="${empty navText or fn:contains(navText, '??? NavText')}">
 		<c:set var="navText"><cms:property name="Title" /></c:set>
 	</c:if>
-	<c:if test="${!empty navText}">
+	<c:if test="${!empty navText and (navText ne navTextOnFolder)}">
 		<c:if test="${!first}">
 			&nbsp;»&nbsp;
 		</c:if>

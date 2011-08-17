@@ -4,7 +4,9 @@
 <div class="box ${cms.element.settings.boxschema}">
 
 	<%-- Title of the article --%>
-	<h4>${value.Title}</h4>
+	<c:if test="${cms.element.settings.hidetitle ne 'true'}">
+		<h4>${value.Title}</h4>
+	</c:if>	
 	
 	<div class="boxbody">
 		<%-- Paragraphs of the article --%>
@@ -39,7 +41,13 @@
 			<c:if test="${showimg && (imgalign == 'left' || imgalign == 'right')}">
 				<cms:img src="${paragraph.value.Image.value.Image}" width="${imgwidth}" scaleColor="transparent" scaleType="0" cssclass="${imgclass}" alt="${paragraph.value.Image.value.Title}" title="${paragraph.value.Image.value.Title}" />
 			</c:if>
-			${cms:trimToSize(cms:stripHtml(paragraph.value.Text), 300)}
+			<c:choose>
+				<c:when test="${cms.element.settings.keephtml == 'true'}">
+					${paragraph.value.Text}
+				</c:when><c:otherwise>
+					${cms:trimToSize(cms:stripHtml(paragraph.value.Text), 300)}
+				</c:otherwise>
+			</c:choose>
 		</div>
 		</c:forEach>
 	</div>

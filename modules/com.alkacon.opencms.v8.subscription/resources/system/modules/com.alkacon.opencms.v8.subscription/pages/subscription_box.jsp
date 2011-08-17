@@ -24,7 +24,7 @@
 		<c:set var="label"><c:choose><c:when test="${subscribed}"><fmt:message key="button.unsubscribe"/></c:when><c:otherwise><fmt:message key="button.subscribe"/></c:otherwise></c:choose></c:set>
 		<input name="action" type="hidden" value="${formaction}" />
 		<input name="file" type="hidden" value="${checkuri}" />
-		<input style="-moz-border-radius: 2px; -webkit-border-radius:2px;  border: 1px solid black; background-color: #acf; height: 20px; width: 10em; " type="submit" value="${label}" />
+		<input style="-moz-border-radius:2px; -webkit-border-radius:2px;  border: 1px solid black; background-color: #acf; height: 20px; width: 10em; " type="submit" value="${label}" />
 	</form>
 	</div>
 </div>

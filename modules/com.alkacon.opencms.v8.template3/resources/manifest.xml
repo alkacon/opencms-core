@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.0</opencms_version>
-		<createdate>Tue, 28 Jun 2011 14:59:29 GMT</createdate>
+		<createdate>Wed, 17 Aug 2011 11:51:18 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -63,10 +63,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>3f542e44-a172-11e0-9d54-8f2a539630cb</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 10:34:48 GMT</datelastmodified>
+			<uuidstructure>fdb3ead8-c72c-11e0-a3d5-7b2444d59c19</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 10:54:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 10:34:48 GMT</datecreated>
+			<datecreated>Mon, 15 Aug 2011 10:54:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -85,10 +85,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>3fecc500-a172-11e0-9d54-8f2a539630cb</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 10:34:49 GMT</datelastmodified>
+			<uuidstructure>002c1704-c72d-11e0-a3d5-7b2444d59c19</uuidstructure>
+			<datelastmodified>Mon, 15 Aug 2011 10:54:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 10:34:49 GMT</datecreated>
+			<datecreated>Mon, 15 Aug 2011 10:54:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -281,49 +281,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters</destination>
-			<type>folder</type>
-			<uuidstructure>d7982c48-422b-4e95-b75a-e978ace8f4a6</uuidstructure>
-			<datelastmodified>Wed, 20 Apr 2011 07:11:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Apr 2011 07:11:25 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</source>
-			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c3b2d43e-70d0-11e0-af5a-5de1afb8a118</uuidstructure>
-			<uuidresource>c3b2d43f-70d0-11e0-af5a-5de1afb8a118</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 13:49:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 13:17:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Formatter for configuration header & footer]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[container-element;locale]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
 		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.template3/elements/menu</destination>
 			<type>folder</type>
@@ -343,7 +300,7 @@
 			<type>jsp</type>
 			<uuidstructure>358b431b-6b66-11e0-92d8-e363b206b5de</uuidstructure>
 			<uuidresource>358b431c-6b66-11e0-92d8-e363b206b5de</uuidresource>
-			<datelastmodified>Fri, 29 Apr 2011 13:26:36 GMT</datelastmodified>
+			<datelastmodified>Tue, 16 Aug 2011 09:26:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 15:52:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -400,6 +357,47 @@
 				<property>
 					<name>cache</name>
 					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>d7982c48-422b-4e95-b75a-e978ace8f4a6</uuidstructure>
+			<datelastmodified>Wed, 20 Apr 2011 07:11:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2011 07:11:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</source>
+			<destination>system/modules/com.alkacon.opencms.v8.template3/formatters/config.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3b2d43e-70d0-11e0-af5a-5de1afb8a118</uuidstructure>
+			<uuidresource>c3b2d43f-70d0-11e0-af5a-5de1afb8a118</uuidresource>
+			<datelastmodified>Fri, 06 May 2011 13:49:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:17:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Formatter for configuration header & footer]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[container-element;locale]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -519,7 +517,7 @@
 			<type>jsp</type>
 			<uuidstructure>24fe3f11-6b2c-11e0-bc98-e363b206b5de</uuidstructure>
 			<uuidresource>24fe3f12-6b2c-11e0-bc98-e363b206b5de</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 12:52:42 GMT</datelastmodified>
+			<datelastmodified>Wed, 17 Aug 2011 08:27:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 08:56:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -542,7 +540,7 @@
 			<type>jsp</type>
 			<uuidstructure>5b18e640-7230-11e0-828d-ed3609521ba5</uuidstructure>
 			<uuidresource>24fe3f12-6b2c-11e0-bc98-e363b206b5de</uuidresource>
-			<datelastmodified>Fri, 06 May 2011 12:52:42 GMT</datelastmodified>
+			<datelastmodified>Wed, 17 Aug 2011 08:27:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Apr 2011 08:56:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>

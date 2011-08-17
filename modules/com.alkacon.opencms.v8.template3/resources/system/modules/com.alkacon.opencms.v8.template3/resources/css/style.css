@@ -311,6 +311,24 @@
    	font-size: 12px;
    }
    
+   .article-box_schema1 {
+	padding-left: 3px;
+	padding-right: 3px;
+	border: 1px solid #7B7F7E;
+   	background: ${content.localeValue[loc]['schema1.box.background']};   
+   }
+
+   .article-box_schema2 {
+	padding-left: 3px;
+	padding-right: 3px;
+	border: 1px solid #7B7F7E;
+   	background: ${content.localeValue[loc]['schema2.box.background']};   
+   }
+
+   .article-box_schema3 {
+   	background: ${content.localeValue[loc]['schema3.box.background']};   
+   }
+   
    .box_schema1 {
    	 background: ${content.localeValue[loc]['schema1.box.background']};   
    }
@@ -322,6 +340,7 @@
    .box_schema3 {
    	 background: ${content.localeValue[loc]['schema3.box.background']};   
    }
+   
    
    .box_schema1 h4 {
    	 background: ${content.localeValue[loc]['schema1.box.header.background']} url("../images/gradient.png") repeat-x scroll center top; 
@@ -344,7 +363,7 @@
      border:1px solid #7B7F7E;
    }
    
-   .boxbody p, .boxbody div, .boxbody a {
+   .boxbody p, .boxbody div, .boxbody a, .boxbody b, .boxbody strong, .boxbody em, .boxbody i {
      font-size: 11px;
    }
    
