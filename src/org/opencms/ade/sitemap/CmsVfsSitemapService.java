@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
@@ -506,9 +507,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             case clipboardOnly:
                 // do nothing
                 break;
-            case delete:
-                changedEntry = delete(change);
-                break;
             case remove:
                 changedEntry = removeEntryFromNavigation(change);
                 break;
@@ -590,6 +588,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         if (change.isNew()) {
             changedEntry = createNewEntry(entryPoint, change);
+        } else if (change.getChangeType() == ChangeType.delete) {
+            changedEntry = delete(change);
         } else if (change.getEntryId() != null) {
             modifyEntry(change);
         }
