@@ -579,8 +579,8 @@ public class CmsJspTagContainer extends TagSupport {
         } else {
             noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
         }
-        result.append(" title='").append(elementBean.editorHash()).append("'");
-        result.append(" alt='").append(elementBean.getCorrectedSitePath(cms)).append("'");
+        result.append(" clientId='").append(elementBean.editorHash()).append("'");
+        result.append(" alt='").append(elementBean.getSitePath()).append("'");
         if (elementBean.isCreateNew()) {
             String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
             result.append(" newType='").append(typeName).append("'");
@@ -873,12 +873,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
                     }
@@ -910,12 +908,10 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            elementFormatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        elementFormatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
             }
