@@ -245,6 +245,13 @@ public class CmsConfigurationReader {
             namePattern = namePatternLoc.asString(m_cms);
         }
 
+        boolean detailPagesDisabled = false;
+        I_CmsXmlContentValueLocation detailDisabledLoc = node.getSubValue("DetailPagesDisabled");
+        if (detailDisabledLoc != null) {
+            String detailPagesDisabledStr = detailDisabledLoc.asString(m_cms);
+            detailPagesDisabled = Boolean.parseBoolean(detailPagesDisabledStr);
+        }
+
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues("Formatter")) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -256,7 +263,8 @@ public class CmsConfigurationReader {
             disabled,
             folderOrName,
             namePattern,
-            formatterConfig);
+            formatterConfig,
+            detailPagesDisabled);
         m_resourceTypeConfigs.add(typeConfig);
     }
 

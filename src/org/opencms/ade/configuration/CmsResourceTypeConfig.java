@@ -75,6 +75,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The formatter configuration. */
     private CmsFormatterConfiguration m_formatterConfig;
 
+    /** The flag for disabling detail pages. */
+    private boolean m_detailPagesDisabled;
+
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
@@ -97,11 +100,32 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         CmsFormatterConfiguration formatterConfig) {
 
+        this(typeName, disabled, folder, pattern, formatterConfig, false);
+    }
+
+    /** 
+     * Creates a new resource type configuration.<p>
+     * 
+     * @param typeName the resource type name 
+     * @param disabled true if this is a disabled configuration 
+     * @param folder the folder reference 
+     * @param pattern the name pattern 
+     * @param formatterConfig the formatter configuration 
+     */
+    public CmsResourceTypeConfig(
+        String typeName,
+        boolean disabled,
+        CmsFolderOrName folder,
+        String pattern,
+        CmsFormatterConfiguration formatterConfig,
+        boolean detailPagesDisabled) {
+
         m_typeName = typeName;
         m_disabled = disabled;
         m_folderOrName = folder;
         m_namePattern = pattern;
         m_formatterConfig = formatterConfig;
+        m_detailPagesDisabled = detailPagesDisabled;
     }
 
     /** 
@@ -253,6 +277,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return createdResource;
     }
 
+    public boolean getDetailPagesDisabled() {
+
+        return m_detailPagesDisabled;
+    }
+
     /**
      * Computes the folder path for this resource type.<p>
      * 
@@ -350,7 +379,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsFormatterConfiguration formatterConfig = childConfig.m_formatterConfig != null
         ? childConfig.m_formatterConfig
         : m_formatterConfig;
-        return new CmsResourceTypeConfig(m_typeName, false, folderOrName, namePattern, formatterConfig);
+        return new CmsResourceTypeConfig(
+            m_typeName,
+            false,
+            folderOrName,
+            namePattern,
+            formatterConfig,
+            getDetailPagesDisabled() || childConfig.getDetailPagesDisabled());
     }
 
     /**
@@ -360,7 +395,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     protected CmsResourceTypeConfig copy() {
 
-        return new CmsResourceTypeConfig(m_typeName, m_disabled, getFolderOrName(), m_namePattern, m_formatterConfig);
+        return new CmsResourceTypeConfig(
+            m_typeName,
+            m_disabled,
+            getFolderOrName(),
+            m_namePattern,
+            m_formatterConfig,
+            m_detailPagesDisabled);
     }
 
     /**
