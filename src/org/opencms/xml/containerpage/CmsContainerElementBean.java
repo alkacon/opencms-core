@@ -35,7 +35,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -47,8 +46,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
 
 /**
  * One element of a container in a container page.<p>
@@ -83,9 +80,6 @@ public class CmsContainerElementBean {
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsContainerElementBean.class);
 
     /**
      * Creates a new container page element bean.<p> 
@@ -190,6 +184,12 @@ public class CmsContainerElementBean {
                 locale,
                 OpenCms.getSystemInfo().getDefaultEncoding(),
                 contentDefinition);
+            // adding all other available locales
+            for (Locale otherLocale : OpenCms.getLocaleManager().getAvailableLocales()) {
+                if (!locale.equals(otherLocale)) {
+                    xmlContent.addLocale(newCms, otherLocale);
+                }
+            }
             content = xmlContent.marshal();
         }
 
@@ -235,23 +235,6 @@ public class CmsContainerElementBean {
             return false;
         }
         return editorHash().equals(((CmsContainerElementBean)obj).editorHash());
-    }
-
-    /**
-     * Gets the site path by reading the resource with the element bean's id.<p>
-     * 
-     * @param cms the current CMS context
-     * @return the site path of the element bean in the context 
-     */
-    public String getCorrectedSitePath(CmsObject cms) {
-
-        try {
-            CmsResource res = cms.readResource(getId());
-            return cms.getSitePath(res);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return getSitePath();
-        }
     }
 
     /**

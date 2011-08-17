@@ -299,15 +299,6 @@ public final class CmsXmlGroupContainerFactory {
 
         String rootPath = resource.getRootPath();
 
-        //TODO: test if this is really of the group container resource type
-
-        //        if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-        //            // sanity check: resource must be of type XML content
-        //            throw new CmsXmlException(Messages.get().container(
-        //                Messages.ERR_XMLCONTENT_INVALID_TYPE_1,
-        //                cms.getSitePath(resource)));
-        //        }
-
         // try to get the requested content from the current request attribute
         // this is also necessary for historic versions that have been loaded 
         CmsXmlGroupContainer content = (CmsXmlGroupContainer)req.getAttribute(rootPath);
