@@ -39,17 +39,4 @@ Password: <tt>admin</tt>
 <p><strong>Important:</strong> You should change this default password immediately,
 before someone else does it for you.</p>
 
-<p>If you're seeing this page, and you don't think you should be, 
-then either you're a a user who has arrived at a new installation of OpenCms, 
-or you're an administrator who hasn't got his/her setup quite right. 
-Providing the latter is the case, please refer to the OpenCms Documentation 
-available at <a href="http://www.opencms.org">http://www.opencms.org</a>
-for more detailed setup and administration information.</p>
-
-<p>In case you have questions about OpenCms, please use the <b>opencms-dev</b> mailing list.
-This is currently the list for all questions regarding OpenCms setup, configuration and development.
-Check the <a href="<cms:link>/release/Mailing_list/index.html</cms:link>">mailing list</a> page to learn how to subscribe to this list.
-</p>
-
-<p>Have fun exploring OpenCms!</p>
 </div>

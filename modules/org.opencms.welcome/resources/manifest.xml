@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.1</opencms_version>
-		<createdate>Wed, 29 Jun 2011 16:23:12 GMT</createdate>
+		<createdate>Wed, 17 Aug 2011 15:52:49 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -41,10 +41,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>b1717e0c-a19c-11e0-b12f-df452125cf28</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 15:38:38 GMT</datelastmodified>
+			<uuidstructure>f82e9830-c8d4-11e0-9b44-bbc752246813</uuidstructure>
+			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 15:38:38 GMT</datecreated>
+			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -54,10 +54,10 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>b17638fe-a19c-11e0-b12f-df452125cf28</uuidstructure>
+			<uuidstructure>f846db22-c8d4-11e0-9b44-bbc752246813</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 10:51:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 15:38:38 GMT</datecreated>
+			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -138,7 +138,7 @@
 			<type>htmlredirect</type>
 			<uuidstructure>30cc41bd-77c5-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>30cc41be-77c5-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 17 Aug 2011 07:51:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 09:42:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -162,7 +162,7 @@
 			<type>jsp</type>
 			<uuidstructure>c8d5c415-77c5-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>c8d5c416-77c5-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 16 Aug 2011 09:37:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 09:46:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -398,7 +398,7 @@
 			<type>v8article</type>
 			<uuidstructure>f00ce372-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>f00ce373-7720-11e0-bfd0-1797e684fbbe</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 14:04:44 GMT</datelastmodified>
+			<datelastmodified>Wed, 17 Aug 2011 07:51:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 05 May 2011 14:06:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -587,6 +587,66 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Release Notes for OpenCms 8.0.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/.content/article/a_00016.html</source>
+			<destination>sites/default/release/.content/article/a_00016.html</destination>
+			<type>v8article</type>
+			<uuidstructure>523b6d27-c8a5-11e0-ac0c-7b2444d59c19</uuidstructure>
+			<uuidresource>523b6d28-c8a5-11e0-ac0c-7b2444d59c19</uuidresource>
+			<datelastmodified>Wed, 17 Aug 2011 09:58:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Aug 2011 07:48:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release Notes for OpenCms 8.0.2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/.content/article/a_00046.html</source>
+			<destination>sites/default/release/.content/article/a_00046.html</destination>
+			<type>v8article</type>
+			<uuidstructure>24edefc0-c7eb-11e0-a3d5-7b2444d59c19</uuidstructure>
+			<uuidresource>24edefc1-c7eb-11e0-a3d5-7b2444d59c19</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 09:45:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Aug 2011 09:35:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Documentation link for welcome page]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/.content/article/a_00047.html</source>
+			<destination>sites/default/release/.content/article/a_00047.html</destination>
+			<type>v8article</type>
+			<uuidstructure>c77b0e49-c80f-11e0-a3d5-7b2444d59c19</uuidstructure>
+			<uuidresource>c77b0e4a-c80f-11e0-a3d5-7b2444d59c19</uuidresource>
+			<datelastmodified>Tue, 16 Aug 2011 13:58:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Aug 2011 13:58:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Further Information]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1233,6 +1293,52 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>sites/default/release/8.0.2-release-notes</destination>
+			<type>folder</type>
+			<uuidstructure>324d991d-c8a5-11e0-ac0c-7b2444d59c19</uuidstructure>
+			<datelastmodified>Wed, 17 Aug 2011 07:48:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Aug 2011 07:47:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[8.0.2 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[8.0.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/release/8.0.2-release-notes/index.html</source>
+			<destination>sites/default/release/8.0.2-release-notes/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>32930692-c8a5-11e0-ac0c-7b2444d59c19</uuidstructure>
+			<uuidresource>32930693-c8a5-11e0-ac0c-7b2444d59c19</uuidresource>
+			<datelastmodified>Wed, 17 Aug 2011 07:50:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Aug 2011 07:47:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[8.0.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/release/Installation</destination>
 			<type>folder</type>
 			<uuidstructure>e19630cc-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
@@ -1317,10 +1423,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>b0cf4a66-a19c-11e0-b12f-df452125cf28</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 15:38:37 GMT</datelastmodified>
+			<uuidstructure>f609961a-c8d4-11e0-9b44-bbc752246813</uuidstructure>
+			<datelastmodified>Wed, 17 Aug 2011 13:29:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 15:38:37 GMT</datecreated>
+			<datecreated>Wed, 17 Aug 2011 13:29:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1339,10 +1445,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>b17af3f2-a19c-11e0-b12f-df452125cf28</uuidstructure>
-			<datelastmodified>Tue, 28 Jun 2011 15:38:38 GMT</datelastmodified>
+			<uuidstructure>f86c8b96-c8d4-11e0-9b44-bbc752246813</uuidstructure>
+			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Jun 2011 15:38:38 GMT</datecreated>
+			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1579,7 +1685,7 @@
 			<type>containerpage</type>
 			<uuidstructure>da97aa19-77c5-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>da97aa1a-77c5-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2011 10:30:16 GMT</datelastmodified>
+			<datelastmodified>Wed, 17 Aug 2011 09:44:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 09:47:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
