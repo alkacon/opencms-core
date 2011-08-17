@@ -364,7 +364,7 @@ public class CmsElementUtil {
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(m_cms, CmsDirectEditMode.TRUE, element.getCorrectedSitePath(m_cms));
+            eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
             String encoding = m_res.getCharacterEncoding();
             return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();

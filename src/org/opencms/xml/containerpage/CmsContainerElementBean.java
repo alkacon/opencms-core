@@ -343,7 +343,7 @@ public class CmsContainerElementBean {
 
         if (m_resource == null) {
             m_resource = cms.readResource(getId());
-        } else {
+        } else if (!isInMemoryOnly()) {
             CmsUUID id = m_resource.getStructureId();
             if (id == null) {
                 id = getId();

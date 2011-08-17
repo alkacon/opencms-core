@@ -574,6 +574,8 @@ public class CmsJspTagContainer extends TagSupport {
         result.append("'");
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         String noEditReason = "";
+        // reinitializing resource to avoid caching issues
+        elementBean.initResource(cms);
         if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
             noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale);
         } else {
