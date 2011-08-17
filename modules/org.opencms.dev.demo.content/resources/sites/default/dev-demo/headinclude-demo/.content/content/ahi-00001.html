@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoHeadincludeArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd">
+  <DevDemoHeadincludeArticle language="en">
+    <Title><![CDATA[Article using headinclude tag.]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>In OpenCms 8 it is possibe to use additional javascript or css files to display a specific resource type. The paths to the additional files can be set inside of the resource type scheme. The referenced files are loaded dynamically, if the reource type is used on a container page.</p>
+<p>To include the javascript or css files follow the inscructions:</p>
+<ul>
+    <li>Reference the javascript or css files inside of the resource type scheme using &lt;headinclude&gt; node.</li>
+</ul>
+<p>Please compare:</p>
+<p>/system/modules/org.opencms.dev.demo/schemas/article_with_headincludes.xsd</p>
+<ul>
+    <li>Use the javascript or css information inside of the formatter of the resource type.</li>
+    <li>Add following lines to the html &lt;head&gt; area of the template:</li>
+</ul>
+<p>&lt;cms:headincludes type=&quot;javascript&quot; /&gt;<br />
+&lt;cms:headincludes type=&quot;css&quot; /&gt;</p>]]></content>
+    </Text>
+    <Image/>
+  </DevDemoHeadincludeArticle>
+</DevDemoHeadincludeArticles>

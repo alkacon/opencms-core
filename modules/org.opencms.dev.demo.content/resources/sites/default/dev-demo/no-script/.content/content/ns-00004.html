@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/article.xsd">
+  <DevDemoArticle language="en">
+    <Title><![CDATA[Paste Script Demo]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>With OpenCms 8 you can paste scripts like Facebook Like Button directly inside of your content, by defining a special area inside of the formatter.</p>
+<p>Define two different contents areas inside of the element formatter using ${cms.edited} varible.  If the page have been reloaded the part of the html code containing the  pasted scripts is displayed. If the element have been edited or moved  the alternative part of the html without scripts is displayed. In that case the user can be reminded to reload the page.</p>
+<p>&nbsp;</p>
+<p>Please see following formatter for implementation details:</p>
+<p>/system/modules/org.opencms.dev.demo/formatters/article/no_script/center.jsp</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>]]></content>
+    </Text>
+    <Image/>
+    <Script>
+      <Script><![CDATA[<script type="text/javascript" src="http://www.ohloh.net/p/4368/widgets/project_languages.js"></script>]]></Script>
+      <NoScript><![CDATA[This element is edited. Please reload the page to display the included scripts correctly.]]></NoScript>
+    </Script>
+  </DevDemoArticle>
+</DevDemoArticles>

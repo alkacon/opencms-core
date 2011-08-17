@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/article.xsd">
+  <DevDemoArticle language="en">
+    <Title><![CDATA[Dynamic Image Size Demo]]></Title>
+    <Text name="Text0">
+      <links>
+        <link name="link2" internal="true" type="A">
+          <target><![CDATA[/system/modules/org.opencms.dev.demo.content/resources/license/fdl.txt]]></target>
+          <uuid>63d20ff8-8acb-11e0-a3d4-eda89ab1c2d4</uuid>
+        </link>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://en.wikipedia.org/]]></target>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://en.wikipedia.org/wiki/Gerbera]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<p>This example demonstrates how to scale the size of an image dynamically. The scaling depends on the width of the container, in which this article is dropped.</p>
+<p>The image size is set dynamically inside of the formatter using container width. You have to define the container width as an attribute of the &lt;cms:container&gt; tag inside of the template. Then you can access the container width inside of the formatter.</p>
+<p>&nbsp;</p>
+<p>Please check following formatters to get more implementation details:</p>
+<p>/system/modules/org.opencms.dev.demo/formatters/article/center.jsp</p>
+<p>/system/modules/org.opencms.dev.demo/formatters/article/side.jsp</p>
+<p>&nbsp;</p>
+<p>This article uses material from the <a href="%(link0)" target="_self" title="Wikipedia">Wikipedia</a> article <a href="%(link1)" target="_self">Gerbera</a> and is licensed under the <a href="%(link2)" target="_self">GNU Free Documentation License</a>.</p>]]></content>
+    </Text>
+    <Image>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/dev_demo/.content/images/a-i/gerbera.jpg]]></target>
+        <uuid>b8333bd2-7727-11e0-a2f4-eda16dd9314c</uuid>
+      </link>
+    </Image>
+  </DevDemoArticle>
+</DevDemoArticles>

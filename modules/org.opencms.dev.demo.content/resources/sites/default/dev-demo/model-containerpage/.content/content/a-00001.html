@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/article.xsd">
+  <DevDemoArticle language="en">
+    <Title><![CDATA[How to use the page model?]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>A model is a default copy model for the containerpages, where common content which should appear on all new containerpages is defined. Usually the containerpage model is in folder of the sub sitemap:</p>
+<p>&nbsp;</p>
+<p><em>/{sitefolder}/{sub sitemap path}/.content/.new/</em></p>
+<p>&nbsp;</p>
+<p>In order to use the model, its path has to be set in the sitemap configuration inside of the tab &quot;Page Models&quot;.</p>
+<p>The defined page model will then appear as first in the list of containerpages in the &quot;Create Page&quot; dialog of the sitemap editor. In order to have a nice name for the new page model, please edit additionally its title property. If set as default this model is also used to create the new page, when it is added over the context menu in the sitemap editor. Futher use the disabled checkbox of the page model configuration to control the visibility of the inherited page models from the upper sitemaps.</p>
+<p>&nbsp;</p>
+<p>For this demo example a simple containerpage model with a simple article is defined. Please have a look at following resources to get more details:</p>
+<p><strong>Sitemap configuration of this example:</strong></p>
+<p><em>/dev_demo/model_containerpage/.content/.config</em></p>
+<p><strong>Simple page model of this example:</strong></p>
+<p><em>/dev_demo/model_containerpage/.content/.new/default_with_article.html</em></p>
+<p><strong>Title property:<br />
+</strong></p>
+<p>&quot;Dev Demo Model Containerpage with Article&quot;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>]]></content>
+    </Text>
+    <Image/>
+  </DevDemoArticle>
+</DevDemoArticles>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DevDemoArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.dev.demo/schemas/article.xsd">
+  <DevDemoArticle language="en">
+    <Title><![CDATA[Demo of the dynamic function]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>Since OpenCms 8.0.2&nbsp; a new resource &quot;Dynamic Functionality&quot; is introduced. The new resource type make it possible to drag and drop a dynamic content provided by a jsp directly into a container page of&nbsp; the web site. Typical use case is extending of the web site by a search or login functionality.</p>
+<p>In this demo example a simple date display is added in a box, which can be dropped in one of the side containers. The settings are used to set the format and the style of the date. The locale is provided by the request paremeter specified in the xmlcontent.</p>
+<p>&nbsp;</p>
+<p><strong>How to use &quot;Dynamic Functionality&quot;:</strong></p>
+<ul>
+    <li>Drop a new resource of type &quot;Dynamic Funcionality&quot; into the container page and configure it as xmlcontent from ADE.</li>
+    <li>Set the title, which is used for this resource in the add wizard.</li>
+    <li>Define the path to the jsp, which provides the required functionality in the xml field &quot;Funtion&nbsp; provider&quot;.</li>
+    <li>Some optional request parameters can be deifined in the xml field &quot;Parameters&quot;.</li>
+    <li>In the xml field &quot;Formatter options&quot; the type of the container as well as its min and max width can be defined to control the container, in which this resource can be dropped.</li>
+    <li>Additionally define the setting in the second tab directly in the xmlContent editor. Use the same options as inside of the scheme definition for the resource type.</li>
+</ul>
+<p><strong>Important note: </strong>The html output provided by the used jsp should be surrounded by a &lt;div&gt; tag, similar to the formatter jsp.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>]]></content>
+    </Text>
+    <Image/>
+  </DevDemoArticle>
+</DevDemoArticles>
