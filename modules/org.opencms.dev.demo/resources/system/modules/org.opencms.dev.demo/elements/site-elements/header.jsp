@@ -17,7 +17,7 @@
 	  	<div style="margin: 0px 210px 0pt 160px;">
       			<p style="margin: 1pt; float: right;">&nbsp;</p>
 	    		<h3 style="margin: 0pt;">OpenCms 8 Demo Website</h3>
-	    		<p style="margin: 1pt;"><i>Development Demo Module</i></p>
+	    		<p style="margin: 1pt;"><i>Developer Demo Module</i></p>
      		</div>
   	</div>		    	
 </div>
