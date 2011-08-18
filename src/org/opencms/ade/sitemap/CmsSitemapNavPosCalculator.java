@@ -142,7 +142,10 @@ public class CmsSitemapNavPosCalculator {
                 break;
             }
         }
-
+        if (insertPosition > workList.size()) {
+            // could happen if the navigation was concurrently changed by another user 
+            insertPosition = workList.size();
+        }
         // First, insert the dummy element at the correct position in the list.
         workList.add(insertPosition, dummyNavElement);
 
