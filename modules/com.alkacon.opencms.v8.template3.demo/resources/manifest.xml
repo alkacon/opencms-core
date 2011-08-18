@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.2</opencms_version>
-		<createdate>Wed, 17 Aug 2011 14:09:04 GMT</createdate>
+		<createdate>Thu, 18 Aug 2011 14:21:50 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -45,10 +45,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>f82e9830-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
+			<uuidstructure>378b627c-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -58,10 +58,10 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>f846db22-c8d4-11e0-9b44-bbc752246813</uuidstructure>
+			<uuidstructure>379e4e3e-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 10:51:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -114,7 +114,7 @@
 			<type>sitemap_config</type>
 			<uuidstructure>bd081b3d-a19c-11e0-a8e7-4770e34e5651</uuidstructure>
 			<uuidresource>bd081b3e-a19c-11e0-a8e7-4770e34e5651</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 13:58:26 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:45:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 28 Jun 2011 15:38:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -188,12 +188,16 @@
 			<type>containerpage</type>
 			<uuidstructure>e4b16562-c8bd-11e0-ac0c-7b2444d59c19</uuidstructure>
 			<uuidresource>e4b16563-c8bd-11e0-ac0c-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 13:58:26 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:19:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Aug 2011 10:44:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[3 column layout without pre-configured elements]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Blank page]]></value>
@@ -208,15 +212,47 @@
 			<type>containerpage</type>
 			<uuidstructure>7e07ef80-6bfa-11e0-ad63-c3baf286301a</uuidstructure>
 			<uuidresource>7e07ef81-6bfa-11e0-ad63-c3baf286301a</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 13:58:26 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:18:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 21 Apr 2011 09:34:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[3 column layout (left / center / right) with pre-configured elements]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Default page]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/.new/twocolumn.html</source>
+			<destination>sites/default/.content/.new/twocolumn.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>6b0f528a-c98e-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>6b0f528b-c98e-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 12:31:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 11:37:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[2 column layout (left / center)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Two column page]]></value>
+				</property>
+				<property>
+					<name>style.columns</name>
+					<value><![CDATA[2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2500,6 +2536,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>sites/default/.content/article/a_00046.html</source>
+			<destination>sites/default/.content/article/a_00046.html</destination>
+			<type>v8article</type>
+			<uuidstructure>e47decdf-c996-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>e47dece0-c996-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 12:46:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 12:37:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The OpenCms 8 content subscription engine]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/.content/config</destination>
 			<type>folder</type>
 			<uuidstructure>2e9f0e28-70d7-11e0-b894-5de1afb8a118</uuidstructure>
@@ -2565,7 +2621,7 @@
 			<type>v8event</type>
 			<uuidstructure>59731d4d-77e4-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>59731d4e-77e4-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:34 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:43:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 13:25:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2577,7 +2633,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1275816720000]]></value>
+					<value><![CDATA[1307179920000]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2667,7 +2723,7 @@
 			<type>v8event</type>
 			<uuidstructure>89af6c16-77f6-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>89af6c17-77f6-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:35 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:45:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 15:35:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2679,11 +2735,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1281459600000]]></value>
+					<value><![CDATA[1312736400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1280743200000]]></value>
+					<value><![CDATA[1311933600000]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2953,6 +3009,45 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>sites/default/.content/event/e_00015.html</source>
+			<destination>sites/default/.content/event/e_00015.html</destination>
+			<type>v8event</type>
+			<uuidstructure>beaa79ed-c998-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>beaa79ee-c998-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 13:40:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 12:51:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[International Horticultural Trade Fair]]></value>
+				</property>
+				<property>
+					<name>calendar.enddate</name>
+					<value><![CDATA[1314637200000]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1314266400000]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>da3592ce-7193-11e0-87bc-000c2972a6a4</id>
+					<path>/sites/default/_categories/location/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>e73ef9d1-7193-11e0-87bc-000c2972a6a4</id>
+					<path>/sites/default/_categories/location/europe/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/.content/function</destination>
 			<type>folder</type>
 			<uuidstructure>ba3691ea-76ed-11e0-a2c2-000c2972a6a4</uuidstructure>
@@ -2980,7 +3075,7 @@
 			<type>function</type>
 			<uuidstructure>5fba7e2c-7655-11e0-a2c2-000c2972a6a4</uuidstructure>
 			<uuidresource>5fba7e2d-7655-11e0-a2c2-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:39 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:59:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 May 2011 13:49:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2988,7 +3083,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Login box]]></value>
+					<value><![CDATA[Login Box]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3000,7 +3095,7 @@
 			<type>function</type>
 			<uuidstructure>2a5908f7-77ec-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>2a5908f8-77ec-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:39 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:58:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:21:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3060,7 +3155,7 @@
 			<type>function</type>
 			<uuidstructure>08c9c4a7-c8a3-11e0-ac0c-7b2444d59c19</uuidstructure>
 			<uuidresource>08c9c4a8-c8a3-11e0-ac0c-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:40 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:58:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Aug 2011 07:32:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3122,7 +3217,7 @@
 			<type>groupcontainer</type>
 			<uuidstructure>a66f654c-c8bc-11e0-ac0c-7b2444d59c19</uuidstructure>
 			<uuidresource>a66f654d-c8bc-11e0-ac0c-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:40 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:15:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Aug 2011 10:35:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3146,7 +3241,7 @@
 			<type>groupcontainer</type>
 			<uuidstructure>82065df5-77eb-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>82068506-77eb-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:40 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:35:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:17:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3159,6 +3254,30 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Default Right Column]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/groupcontainer/groupcontainer_00003.html</source>
+			<destination>sites/default/.content/groupcontainer/groupcontainer_00003.html</destination>
+			<type>groupcontainer</type>
+			<uuidstructure>85f31a72-c990-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>85f31a73-c990-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 12:30:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 11:52:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Elements for the left column in the two column page]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default Side in Two Column Page]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3593,6 +3712,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>sites/default/.content/images/events/HarrogateCenotaph.jpg</source>
+			<destination>sites/default/.content/images/events/HarrogateCenotaph.jpg</destination>
+			<type>image</type>
+			<uuidstructure>50a03884-c9a1-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>50a05f95-c9a1-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 13:53:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 13:52:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Author: Euchiasmus]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HarrogateCenotaph]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:640,h:479]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>sites/default/.content/images/events/hoya.jpg</source>
 			<destination>sites/default/.content/images/events/hoya.jpg</destination>
 			<type>image</type>
@@ -3615,6 +3762,34 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:685,h:599]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/.content/images/events/InternationaleGartenbaumesseTulln.jpg</source>
+			<destination>sites/default/.content/images/events/InternationaleGartenbaumesseTulln.jpg</destination>
+			<type>image</type>
+			<uuidstructure>a166a8a9-c99e-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>a166a8aa-c99e-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 13:34:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 13:33:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Author: MesseTulln]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[InternationalHorticultural Trade Fair Tulln]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:535]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5659,7 +5834,7 @@
 			<type>v8news</type>
 			<uuidstructure>b751eb17-8b92-11e0-9f3a-7b2444d59c19</uuidstructure>
 			<uuidresource>b751eb18-8b92-11e0-9f3a-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:59 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:42:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 31 May 2011 14:31:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5671,7 +5846,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1304322420000]]></value>
+					<value><![CDATA[1312271220000]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5731,7 +5906,7 @@
 			<type>v8news</type>
 			<uuidstructure>cd574970-8b7c-11e0-9f3a-7b2444d59c19</uuidstructure>
 			<uuidresource>cd577081-8b7c-11e0-9f3a-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 14:03:59 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 13:55:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 31 May 2011 11:54:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5739,11 +5914,11 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Bundesgartenschau 2011 in Koblenz]]></value>
+					<value><![CDATA[BUGA 2011 in Koblenz]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1301658780000]]></value>
+					<value><![CDATA[1312458780000]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -6581,7 +6756,7 @@
 			<type>containerpage</type>
 			<uuidstructure>f71216b4-9017-11e0-9ccb-3976ff7a5cd1</uuidstructure>
 			<uuidresource>f71216b5-9017-11e0-9ccb-3976ff7a5cd1</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 11:27:55 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:55:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Jun 2011 08:35:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6639,6 +6814,56 @@
 				<property>
 					<name>search.exclude</name>
 					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/flower-de/blumen-abonnements</destination>
+			<type>folder</type>
+			<uuidstructure>14a093a5-c996-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 12:32:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 12:32:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[41.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Blumen Abonnements]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Blumen Abonnements]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/flower-de/blumen-abonnements/index.html</source>
+			<destination>sites/default/flower-de/blumen-abonnements/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>14c92a4a-c996-11e0-b07b-a97c08d979d8</uuidstructure>
+			<uuidresource>14c92a4b-c996-11e0-b07b-a97c08d979d8</uuidresource>
+			<datelastmodified>Thu, 18 Aug 2011 12:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 18 Aug 2011 12:32:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Blumen Abonnements]]></value>
+				</property>
+				<property>
+					<name>style.columns</name>
+					<value><![CDATA[2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -7179,7 +7404,7 @@
 			<type>containerpage</type>
 			<uuidstructure>0f6944d8-77e8-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>0f6944d9-77e8-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Tue, 16 Aug 2011 14:44:38 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 11:55:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 13:52:19 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7667,7 +7892,7 @@
 			<type>containerpage</type>
 			<uuidstructure>3ae11a2a-c8a3-11e0-ac0c-7b2444d59c19</uuidstructure>
 			<uuidresource>3ae11a2b-c8a3-11e0-ac0c-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 07:34:38 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:46:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Aug 2011 07:33:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7676,6 +7901,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flower Subscription]]></value>
+				</property>
+				<property>
+					<name>style.columns</name>
+					<value><![CDATA[2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -7713,7 +7942,7 @@
 			<type>containerpage</type>
 			<uuidstructure>b7e482d3-77ef-11e0-be13-000c2972a6a4</uuidstructure>
 			<uuidresource>b7e482d4-77ef-11e0-be13-000c2972a6a4</uuidresource>
-			<datelastmodified>Wed, 01 Jun 2011 12:55:58 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 12:33:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 06 May 2011 14:47:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7814,10 +8043,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>f609961a-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:40 GMT</datelastmodified>
+			<uuidstructure>3561f296-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:40 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -7836,10 +8065,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>f86c8b96-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
+			<uuidstructure>37c07c42-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
