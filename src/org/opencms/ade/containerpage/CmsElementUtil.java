@@ -281,6 +281,10 @@ public class CmsElementUtil {
                 m_req);
             CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms, m_locale);
             elementBean.setGroupContainer(true);
+
+            // make sure to use the content title and not the property title
+            elementBean.setTitle(groupContainer.getTitle());
+
             elementBean.setTypes(groupContainer.getTypes());
             elementBean.setDescription(groupContainer.getDescription());
             if (groupContainer.getTypes().isEmpty()) {
