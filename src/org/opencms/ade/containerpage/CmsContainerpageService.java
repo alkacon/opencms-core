@@ -257,9 +257,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
-                elementBean.getResource(),
-                settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(
+                elementBean,
+                convertSettingValues(elementBean.getResource(), settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -470,10 +470,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    getCmsObject(),
-                    settingType,
-                    entry.getValue()));
+                changedSettings.put(
+                    settingName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
             }
         }
         return changedSettings;
@@ -881,7 +880,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String locale) throws CmsException, CmsXmlException {
 
         ensureSession();
-        String resourceName = groupContainer.getSitePath();
         CmsResource pageResource = getCmsObject().readResource(pageStructureId);
         CmsResource groupContainerResource = null;
         if (groupContainer.isNew()) {
@@ -890,19 +888,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
             groupContainerResource = typeConfig.createNewElement(getCmsObject());
-            resourceName = cms.getSitePath(groupContainerResource);
+            String resourceName = cms.getSitePath(groupContainerResource);
             groupContainer.setSitePath(resourceName);
             groupContainer.setClientId(groupContainerResource.getStructureId().toString());
+        }
+        if (groupContainerResource == null) {
+            CmsUUID id = convertToServerId(groupContainer.getClientId());
+            groupContainerResource = cms.readResource(id);
         }
         CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
             groupContainer,
             pageResource.getStructureId(),
             locale);
-        cms.lockResourceTemporary(resourceName);
-        CmsFile groupContainerFile = cms.readFile(resourceName);
+        cms.lockResourceTemporary(groupContainerResource);
+        CmsFile groupContainerFile = cms.readFile(groupContainerResource);
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, groupContainerFile);
         xmlGroupContainer.save(cms, groupContainerBean, new Locale(locale));
-        cms.unlockResource(resourceName);
+        cms.unlockResource(groupContainerResource);
 
         CmsContainerElement element = new CmsContainerElement();
         element.setClientId(groupContainerFile.getStructureId().toString());
