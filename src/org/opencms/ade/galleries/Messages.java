@@ -59,6 +59,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESULT_LABEL_DIMENSION_0 = "GUI_RESULT_LABEL_DIMENSION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESULT_LABEL_DESCRIPTION_0 = "GUI_RESULT_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESULT_LABEL_RESOURCE_TYPE_0 = "GUI_RESULT_LABEL_RESOURCE_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_LABEL_EXCERPT_0 = "GUI_RESULT_LABEL_EXCERPT_0";
 
     /** Message constant for key in the resource bundle. */

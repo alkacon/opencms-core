@@ -514,7 +514,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setClientId(sResult.getStructureId());
                 // set nice resource type name as subtitle
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
-                bean.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
+                String resourceTypeDisplayName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName());
+                String description = sResult.getDescription();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
+                    bean.setDescription(description);
+                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
+                } else {
+                    bean.setDescription(resourceTypeDisplayName);
+                }
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
