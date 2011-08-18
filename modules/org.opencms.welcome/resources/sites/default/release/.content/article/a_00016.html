@@ -13,81 +13,76 @@
             <target><![CDATA[https://github.com/alkacon/opencms-core]]></target>
           </link>
           <link name="link1" internal="true" type="A">
-            <target><![CDATA[/sites/default/release/Mailing_list/index.html]]></target>
+            <target><![CDATA[/sites/default/release/mailing-list/index.html]]></target>
             <uuid>8fed4658-7722-11e0-bfd0-1797e684fbbe</uuid>
           </link>
         </links>
-        <content><![CDATA[<p>August 18, 2011: This is the release of OpenCms 8.0.2. With OpenCms 8.0.2, many additional features and improvements have been added to the core system.  Moreover, a number of issues that persisted in the 8.0.1  release have been fixed.</p>
-<h2>Main new features of OpenCms 8</h2>
+        <content><![CDATA[<p>August 18, 2011: This is the release of OpenCms 8.0.2. Some important additional features have been added to OpenCms 8 in this version.  Moreover, a number of issues that persisted in the 8.0.1  release have been fixed.</p>
+<h2>Important features of OpenCms 8</h2>
 <ul>
-    <li>The &quot;Advanced Direct Edit&quot; mode allows to create page content by drag &amp; drop.</li>
-    <li>The new sitemap editor allows to create new pages and rearrange the navigation tree by drag &amp; drop.</li>
-    <li>A multiple file enabled upload dialog all based on HTML replaced the old &quot;Upload Applet&quot;.</li>
-    <li>The new &quot;Content Subscription Engine&quot; allows to inform users when important documents have changed.</li>
-    <li>The XML content editor now support &lt;xsd:choice&gt; elements.</li>
-    <li>The new publish dialog supports session based selection of content as well as add/remove of individual resources.</li>
+    <li>The &quot;Advanced Direct Edit&quot; (ADE) mode allows to create page content by drag &amp; drop.</li>
+    <li>The sitemap editor allows to create new pages and re-arrange the navigation tree by drag &amp; drop.</li>
+    <li>The &quot;Content Subscription Engine&quot; allows to inform users when subscribed documents have changed.</li>
     <li>Extended support for creation of content for mobile devices with the &lt;cms:mobile&gt; tag.</li>
-    <li>A central &quot;Shared Folder&quot; has been added that is available from all sites for sharing content.</li>
-    <li>JPA support has been added to the database layer, so there's support for 10+ additional databases.</li>
 </ul>
-<h2>New features and improvements in OpenCms 8.0.2</h2>
+<h2>Main new features in OpenCms 8.0.2</h2>
 <ul>
-    <li>Supports servlet container Tomcat 7.</li>
+    <li>It's now possible to easily enable drag &amp; drop for any existing JSP. Just create a reference to the JSP with the new ADE resource type &quot;Dynamic Function&quot;. See the &quot;Login Box&quot; or &quot;Search Box&quot; in the Template III demo for examples.</li>
     <li>Refined element permissions for ADE now support Elements dragable by everyone, but editable only with special permissions.</li>
-    <li>Improved Sitemap Configuration with &quot;Combo Box&quot; displaying all configured resource types.</li>
-    <li>Improved Sitemap Configuration with new option &quot;Disable all&quot;, disabling all inherited configuration and thus making it much easier to create special configurations with only some types.</li>
-    <li>Refined &quot;Properties&quot; Dialog in the &quot;simple&quot; view.</li>
-    <li>Improved context menu on old DE pages now shows &quot;Property&quot; and &quot;Logout&quot; option.</li>
-    <li>Refined naming schema for automatically created resources now uses &quot;-&quot; instead of &quot;_&quot; for SEO reasons.</li>
-    <li>Improved Sitemap Configuration now features new option &quot;Local contents&quot; to create all new resources below a selected sitemap with the configured naming schema.</li>
-    <li>Improved Sitemap Editor now shows sub sitemap folder resource type icon if a resource is the start of a Sub-Sitemap.</li>
-    <li>Improved ADE Editor now shows elements last &quot;used&quot; (edited, moved, removed, etc.) on top of the recent list.</li>
-    <li>Added new EL Property that tests if a detail page is configured for a resource type.</li>
-    <li>Restyled message box now follows the general OpenCms 8 look &amp; feel.</li>
-    <li>New XML content based resource type &quot;Dynamic Functionality&quot; for rendering JSP elements directly in ADE.</li>
-    <li>Improved several v8 modules using &quot;Dynamic Functionality&quot;.</li>
-    <li>Improved Sitemap Editor now displays a nice title above the sitemap.</li>
-    <li>Improved server side filtering of &lt;script&gt; tags to avoid Cross Site Scripting (XSS)</li>
-    <li>Removed jQuery references from the devDemo module to simplify it.</li>
-    <li>Improved ADE content gallery with Drag &amp; Drop Option in resource preview.</li>
+    <li>The sitemap editor now displays status information such as title and VFS location above the currently edited sitemap. It also features a &quot;go to the parent sitemap&quot; button in the toolbar.</li>
+    <li>Group containers now have a &quot;Break Up&quot; option which removes the group and places all elements individually on currently edited page, making it easier to create pages with slightly different configurations.</li>
+    <li>If a content is previewed in the ADE content gallery, it can now  directly be dragged &amp; dropped from the content preview to the  current page.</li>
+    <li>The legacy direct edit provider for pages using &quot;old&quot; templates now allows to open the &quot;Property&quot; dialog to edit the page properties in direct edit mode. Moreover, it also features a &quot;Logout&quot; option.</li>
+    <li>A full demo of the content subscription engine has been added to Template III.</li>
+</ul>
+<h2>Other new features and improvements in OpenCms 8.0.2</h2>
+<ul>
     <li>Optimized gallery performance using dynamic scroll-bar and lazily added elements in gallery list.</li>
-    <li>Added Subscription Module to Template III.</li>
+    <li>Refined naming schema for automatically created resources now uses &quot;-&quot; instead of &quot;_&quot; for SEO reasons.</li>
+    <li>Restyled message box on top screen now follows the general OpenCms 8 look &amp; feel.</li>
+    <li>Refined the option in the &quot;Simple&quot; tab of the new ADE Properties Dialog.</li>
+    <li>Improved sitemap configuration with &quot;Combo Box&quot; displaying all configured resource types.</li>
+    <li>Improved sitemap configuration with option &quot;Local  contents&quot; to create all new resources automatically below the current sitemap.</li>
+    <li>Improved sitemap configuration with new option &quot;Disable all&quot; to  disable all inherited configurations.</li>
+    <li>Improved sitemap editor now shows sub sitemap folder resource type icon if a resource is the start of a Sub-Sitemap.</li>
+    <li>Added new EL function for JSP that tests if a detail page is configured for a resource type.</li>
+    <li>Improved server side filtering of &lt;script&gt; tags in user generated content of ADE elements.</li>
+    <li>New XSD path translation feature allows to configure old and new location for moved XSD files that are referenced in existing XML resouces.</li>
+    <li>Removed jQuery references from the devDemo module to simplify it.</li>
     <li>Unified VFS image widget now used for different gallery types.</li>
-    <li>ADE base schemas now get stored in Java package files, not VFS.</li>
-    <li>Added option &quot;Break Up&quot; to Group Container that removes the Group Container and directly places all contained elements at the same location.</li>
-    <li>Added &quot;Go to parent sitemap&quot; Button to Info Box on sitemap top.</li>
-    <li>Added XSD path translation that translates old to new path in referencing XML content when the XSD file is moved or renamed.</li>
-    <li>Changed JSPs for Template III to use %(link.strong) macro.</li>
+    <li>Changed some JSPs for Template III to use %(link.strong) macro.</li>
+    <li>ADE base schemas are now stored in Java package files, not VFS.</li>
+    <li>Applied patch to abstrract the Lucene index writer used, contributed by Florian Hopf.</li>
 </ul>
 <h2>Fixed issues in OpenCms 8.0.2</h2>
 <ul>
-    <li>Fixed issue in the ADE gallery full text search of the &quot;Advanced&quot; tab, where options were not shown correctly in the German Version.</li>
-    <li>Fixed issue in Sitemap Editor, where creating a new page resulted in different names, depending on if the &quot;+&quot; symbol was clicked in the top menu or the context menu.</li>
-    <li>Fixed issue that Sitemap Editor in online projects displayed an empty page. Now sitemap in read only is shown.</li>
-    <li>Fixed issue in the Sitemap Editor, that the &quot;Back&quot; button was not shown anymore, when the sitemap got changed.</li>
-    <li>Fixed issue with Sitemap / Module Configuration and OCEE cache, where a previously added element was not visible when editing it again.</li>
+    <li>Fixed issue in ADE Editor where elements last used (edited, moved, removed, etc.) where not moved to top of the &quot;recent&quot; list.</li>
+    <li>Fixed issue in the ADE gallery full text search of the &quot;Advanced&quot; tab, where options were not shown correctly in localized versions.</li>
+    <li>Fixed issue in sitemap editor, where creating a new page resulted in different names if either the &quot;+&quot; symbol in the top menu or the context menu was used.</li>
+    <li>Fixed issue that sitemap editor in online projects displayed only an empty page., instead the sitemap in now shown in &quot;read only&quot; mode.</li>
+    <li>Fixed issue in the sitemap editor where the &quot;Back&quot; button was not working anymore when the sitemap got changed.</li>
+    <li>Fixed issue with sitemap / module configuration and OCEE cache, where a previously added element was not visible when editing it again.</li>
     <li>Fixed issue that deleting a user with Root-Admin role failed.</li>
-    <li>Fixed issue that menu bar could not be switched of in &quot;old&quot; version 7 templates.</li>
+    <li>Fixed issue where the toolbar could not be switched off in &quot;old&quot; version 7 templates.</li>
     <li>Fixed several issues in image gallery regarding scaling, resizing, cropping and setting of title / alt text when editing xmlpages.</li>
     <li>Fixed several issues in download gallery regarding the creation of download links when editing xmlpages.</li>
-    <li>Fixed issue that ADE Button was unreachable when pasting script code &quot;from the outside&quot; in a container.</li>
-    <li>Fixed issue with mouse over handling, where buttons often still hovered, even though the mouse pointer was no longer above the item.</li>
-    <li>Fixed issues that creating a new detail page for a content type in ADE sitemap created a blank container page and not a defined model page.</li>
-    <li>Fixed issue that Drag &amp; Drop of elements did not work if the element type was not configured in the ADE configuration.</li>
-    <li>Fixed issues with Preview in Gallery regarding scrolling and german localization.</li>
-    <li>Fixed issue within image gallery, that the fields &quot;Title/Alt Text&quot; and &quot;Copyright&quot; were not filled with the according property values of the selected image.</li>
-    <li>Fixed issue that when a new page is created and repeatedly renamed in the sitemap editor an exception might get thrown in the ADE Editor when edited afterwards.</li>
-    <li>Fixed several issues in the german localization.</li>
+    <li>Fixed issue that the ADE button may become overlayed and thus unreachable when pasting external script code in a container.</li>
+    <li>Fixed issue with mouse over handling where buttons often still shown even though the mouse pointer was no longer above the item.</li>
+    <li>Fixed issues that creating a new detail page for a content type in ADE sitemap created a blank container page and not the default model page.</li>
+    <li>Fixed issue that drag &amp; drop of elements did not work if the element type was not configured in the ADE configuration.</li>
+    <li>Fixed issues with preview in galleries regarding scrolling and localization.</li>
+    <li>Fixed issue within image gallery where the fields &quot;Title/Alt Text&quot; and &quot;Copyright&quot; were not filled with the according property values of the selected image.</li>
+    <li>Fixed issue that when a new page is created and repeatedly renamed in the sitemap editor an exception might get thrown in the ADE Editor when this page was edited afterwards.</li>
     <li>Fixed several issues in style and coloring.</li>
-    <li>Fixed issue that position in navigation (navPos) of a page as defined in the Sitemap Editor gets lost and overwritten after leaving the Sitemap Editor.</li>
+    <li>Fixed issue that in certain cases the position of a page in the navigation as defined in the sitemap editor was lost after leaving the sitemap editor.</li>
     <li>Fixed issue that a ConcurrentModificationException happened sometimes when demo content modules were imported.</li>
-    <li>Fixed issue that paging in template 3 search did not work.</li>
-    <li>Fixed issue in Sitemap Editor that icon of a subsitemap moved in tree changed to &quot;normal containerpage icon.</li>
-    <li>Fixed issue articles assigned to categories are not found in the ADE new wizard.</li>
-    <li>Fixed issue that the &quot;Show last page&quot; button did not work anymore when switching from Sitemap Editor to the parent site map.</li>
-    <li>Fixed issues with &quot;Favorites&quot; Dialog in ADE Clipboard where elements appeared multiple times or removal of elements failed.</li>
-    <li>Fixed issue that newly created empty group containers vanished if title missed.</li>
-    <li>Fixed issue in Property Dialog where inherited values were displayed ambiguously after mouse click.</li>
+    <li>Fixed issue that paging in Template III search did not work.</li>
+    <li>Fixed issue in sitemap editor that the icon of a sub-sitemap moved around in the sitemap changed to the container page icon.</li>
+    <li>Fixed issue where articles assigned to categories where not found in the ADE new wizard.</li>
+    <li>Fixed issue where the &quot;Show last page&quot; button did not work anymore when switching from the sitemap editor to the parent sitemap.</li>
+    <li>Fixed issues with the &quot;Favorites&quot; tab in the ADE clipboard where elements appeared multiple times or removal of elements failed.</li>
+    <li>Fixed issue that newly created empty group containers vanished if the title was not entered.</li>
+    <li>Fixed issue in the property dialog where inherited values were displayed ambiguously after entering / leaving the field without changes.</li>
     <li>Fixed issue #1976:&nbsp; Error in ADE to create new section.</li>
     <li>Fixed issue #1982: &quot;change navigation&quot; fails on expired resources.</li>
     <li>Fixed issue #1983: Can't create user under sub &quot;Webuser organizational unit&quot;.</li>
@@ -95,7 +90,7 @@
     <li>Fixed issue #1988: ADE toolbar covers &lt;cms:editable/&gt; &quot;direct edit&quot; button.</li>
     <li>Fixed issue #1989: When leaving the ADE sitemap &ldquo;/cms/&rdquo; (servlet-mapping) remains in the path.</li>
 </ul>
-<h2>Features of OpenCms in General</h2>
+<h2>Other features of OpenCms</h2>
 <ul>
     <li>&quot;Direct Edit&quot; allows creation and modification of content directly from a web page.</li>
     <li>Structured contents can be defined using a simple XML schema.</li>
@@ -124,12 +119,10 @@
 <p>On the database side, we have tested with MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x, MS SQL Server 2000 / 2003, DB2 9.1 and HSQLDB 1.8.0. The  automatic update wizard for OpenCms 8 supports MySQL, Oracle and PostgreSQL.</p>
 <h2>Regarding version numbers and build tags</h2>
 <p>In case you want to check out OpenCms from Git, please keep the   following in mind: The tag numbers for all OpenCms 8.0 final releases are  &quot;build_8_0_x&quot;, so the 8.0.2 release is tagged  &quot;build_8_0_2&quot;.</p>
-<p>&nbsp;</p>
-<p>The Git repository is available from Github at <a href="%(link0)">github.com/alkacon/opencms-core</a>.</p>
+<p>The main OpenCms Git repository is available on Github at <a href="%(link0)">github.com/alkacon/opencms-core</a>.</p>
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link1)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: <a href="%(link2)">http://bugzilla.opencms.org/<br />
-</a></p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link2)">http://bugzilla.opencms.org/</a></p>
 <p>&nbsp;</p>
 <p>Thank you for using OpenCms and have fun with OpenCms 8 :-)</p>]]></content>
       </Text>

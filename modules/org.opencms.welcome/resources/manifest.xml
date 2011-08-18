@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.1</opencms_version>
-		<createdate>Wed, 17 Aug 2011 15:52:49 GMT</createdate>
+		<createdate>Thu, 18 Aug 2011 14:42:06 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -41,10 +41,10 @@
 		<file>
 			<destination>sites</destination>
 			<type>folder</type>
-			<uuidstructure>f82e9830-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
+			<uuidstructure>378b627c-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -54,10 +54,10 @@
 		<file>
 			<destination>sites/default</destination>
 			<type>folder</type>
-			<uuidstructure>f846db22-c8d4-11e0-9b44-bbc752246813</uuidstructure>
+			<uuidstructure>379e4e3e-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 10:51:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -598,7 +598,7 @@
 			<type>v8article</type>
 			<uuidstructure>523b6d27-c8a5-11e0-ac0c-7b2444d59c19</uuidstructure>
 			<uuidresource>523b6d28-c8a5-11e0-ac0c-7b2444d59c19</uuidresource>
-			<datelastmodified>Wed, 17 Aug 2011 09:58:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 18 Aug 2011 08:58:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Aug 2011 07:48:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -695,7 +695,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.0_Release_Notes</destination>
+			<destination>sites/default/release/7.0.0-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>07a08a69-772d-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -721,8 +721,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.0_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.0_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.0-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.0-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>07a5455d-772d-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>07a5455e-772d-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -741,7 +741,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.1_Release_Notes</destination>
+			<destination>sites/default/release/7.0.1-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>917f7399-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -767,8 +767,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.1_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.1_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.1-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.1-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>91869f8d-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>91869f8e-772c-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -787,7 +787,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.2_Release_Notes</destination>
+			<destination>sites/default/release/7.0.2-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>0dc58707-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -813,8 +813,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.2_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.2_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.2-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.2-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>0dca690b-772c-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>0dca690c-772c-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -833,7 +833,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.3_Release_Notes</destination>
+			<destination>sites/default/release/7.0.3-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>846ba1a7-772b-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -859,8 +859,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.3_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.3_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.3-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.3-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>8477888b-772b-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>8477888c-772b-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -879,7 +879,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.4_Release_Notes</destination>
+			<destination>sites/default/release/7.0.4-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>d91c7f7f-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -905,8 +905,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.4_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.4_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.4-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.4-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>d92ab053-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>d92ab054-772a-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -925,7 +925,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.0.5_Release_Notes</destination>
+			<destination>sites/default/release/7.0.5-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>5df40657-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -951,8 +951,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.0.5_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.0.5_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.0.5-release-notes/index.html</source>
+			<destination>sites/default/release/7.0.5-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>5dfb0b3b-772a-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>5dfb0b3c-772a-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -971,7 +971,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.5.0_Release_Notes</destination>
+			<destination>sites/default/release/7.5.0-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>2b79dc0a-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -997,8 +997,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.5.0_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.5.0_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.5.0-release-notes/index.html</source>
+			<destination>sites/default/release/7.5.0-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>2b7e96fe-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>2b7e96ff-7720-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1017,7 +1017,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.5.1_Release_Notes</destination>
+			<destination>sites/default/release/7.5.1-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>bf1cc533-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1043,8 +1043,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.5.1_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.5.1_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.5.1-release-notes/index.html</source>
+			<destination>sites/default/release/7.5.1-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>bf23f127-771f-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>bf23f128-771f-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1063,7 +1063,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.5.2_Release_Notes</destination>
+			<destination>sites/default/release/7.5.2-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>f3080cb2-771e-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1089,8 +1089,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.5.2_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.5.2_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.5.2-release-notes/index.html</source>
+			<destination>sites/default/release/7.5.2-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>f30cc7a6-771e-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>f30cc7a7-771e-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1109,7 +1109,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.5.3_Release_Notes</destination>
+			<destination>sites/default/release/7.5.3-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>a52fe06e-771d-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1135,8 +1135,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.5.3_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.5.3_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.5.3-release-notes/index.html</source>
+			<destination>sites/default/release/7.5.3-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>a5349b62-771d-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>a5349b63-771d-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1155,7 +1155,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/7.5.4_Release_Notes</destination>
+			<destination>sites/default/release/7.5.4-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>eac47979-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1181,8 +1181,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/7.5.4_Release_Notes/index.html</source>
-			<destination>sites/default/release/7.5.4_Release_Notes/index.html</destination>
+			<source>sites/default/release/7.5.4-release-notes/index.html</source>
+			<destination>sites/default/release/7.5.4-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>eac95b7d-7718-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>eac95b7e-7718-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1201,7 +1201,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/8.0.0_Release_Notes</destination>
+			<destination>sites/default/release/8.0.0-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>0c655475-7724-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1227,8 +1227,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/8.0.0_Release_Notes/index.html</source>
-			<destination>sites/default/release/8.0.0_Release_Notes/index.html</destination>
+			<source>sites/default/release/8.0.0-release-notes/index.html</source>
+			<destination>sites/default/release/8.0.0-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>0c6c8069-7724-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>0c6c806a-7724-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1247,7 +1247,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/8.0.1_Release_Notes</destination>
+			<destination>sites/default/release/8.0.1-release-notes</destination>
 			<type>folder</type>
 			<uuidstructure>b79cb4e1-a19e-11e0-b12f-df452125cf28</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1273,8 +1273,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/8.0.1_Release_Notes/index.html</source>
-			<destination>sites/default/release/8.0.1_Release_Notes/index.html</destination>
+			<source>sites/default/release/8.0.1-release-notes/index.html</source>
+			<destination>sites/default/release/8.0.1-release-notes/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>b7a196e6-a19e-11e0-b12f-df452125cf28</uuidstructure>
 			<uuidresource>b7a196e7-a19e-11e0-b12f-df452125cf28</uuidresource>
@@ -1339,7 +1339,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/Installation</destination>
+			<destination>sites/default/release/installation</destination>
 			<type>folder</type>
 			<uuidstructure>e19630cc-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1365,8 +1365,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/Installation/index.html</source>
-			<destination>sites/default/release/Installation/index.html</destination>
+			<source>sites/default/release/installation/index.html</source>
+			<destination>sites/default/release/installation/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>e19b12d0-7720-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>e19b12d1-7720-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1380,7 +1380,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>sites/default/release/Mailing_list</destination>
+			<destination>sites/default/release/mailing-list</destination>
 			<type>folder</type>
 			<uuidstructure>8fe88b64-7722-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<datelastmodified>Wed, 29 Jun 2011 09:04:00 GMT</datelastmodified>
@@ -1406,8 +1406,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>sites/default/release/Mailing_list/index.html</source>
-			<destination>sites/default/release/Mailing_list/index.html</destination>
+			<source>sites/default/release/mailing-list/index.html</source>
+			<destination>sites/default/release/mailing-list/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>8fed4658-7722-11e0-bfd0-1797e684fbbe</uuidstructure>
 			<uuidresource>8fed4659-7722-11e0-bfd0-1797e684fbbe</uuidresource>
@@ -1423,10 +1423,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>f609961a-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:40 GMT</datelastmodified>
+			<uuidstructure>3561f296-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:40 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1445,10 +1445,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>f86c8b96-c8d4-11e0-9b44-bbc752246813</uuidstructure>
-			<datelastmodified>Wed, 17 Aug 2011 13:29:44 GMT</datelastmodified>
+			<uuidstructure>37c07c42-c96b-11e0-b07b-a97c08d979d8</uuidstructure>
+			<datelastmodified>Thu, 18 Aug 2011 07:25:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 17 Aug 2011 13:29:44 GMT</datecreated>
+			<datecreated>Thu, 18 Aug 2011 07:25:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
