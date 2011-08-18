@@ -2013,7 +2013,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 element.attributeValue(APPINFO_ATTR_ERROR),
                 element.attributeValue(APPINFO_ATTR_PREFERFOLDER));
             String name = setting.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name) && !CmsXmlContentPropertyHelper.isSpecialProperty(name)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
                 m_settings.put(name, setting);
             }
         }
