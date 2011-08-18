@@ -13,6 +13,7 @@
     <xsd:complexType name="OpenCmsDynamicFunction">
         <xsd:sequence>
         	<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        	<xsd:element name="Description" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         	<xsd:element name="FunctionProvider" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
         	<xsd:element name="Parameter" type="OpenCmsDynamicFunctionParameter" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="ContainerSettings" type="OpenCmsContainerSettings" minOccurs="0" maxOccurs="1" />
@@ -24,9 +25,9 @@
         <xsd:appinfo>
           <handler class="org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler" />
           	<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-         	
-    		<mappings>
+         	<mappings>
 				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Description" mapto="property:Description" />
 			</mappings>
 			<tabs>
 				<tab element="Title" name="TabGeneral" collapse="false" />
