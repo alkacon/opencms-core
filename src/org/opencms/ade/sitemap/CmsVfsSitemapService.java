@@ -79,6 +79,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -86,8 +87,10 @@ import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -773,13 +776,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String name = OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
         String title = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         String description = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
-
         CmsNewResourceInfo info = new CmsNewResourceInfo(
             typeId,
             name,
             title,
             description,
-            modelResource.getStructureId());
+            modelResource.getStructureId(),
+            description);
+
+        info.setDate(CmsDateUtil.getDate(
+            new Date(modelResource.getDateLastModified()),
+            DateFormat.LONG,
+            getWorkplaceLocale()));
+        info.setVfsPath(modelResource.getRootPath());
         return info;
     }
 
@@ -796,13 +805,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String name = resType.getTypeName();
         Locale locale = getWorkplaceLocale();
         if (copyResource != null) {
-            return new CmsNewResourceInfo(copyResource.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
-                locale,
-                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), copyResource.getStructureId());
+            return new CmsNewResourceInfo(
+                copyResource.getTypeId(),
+                name,
+                CmsWorkplaceMessages.getResourceTypeName(locale, name),
+                CmsWorkplaceMessages.getResourceTypeDescription(locale, name),
+                copyResource.getStructureId(),
+                CmsWorkplaceMessages.getResourceTypeName(locale, name));
         } else {
-            return new CmsNewResourceInfo(resType.getTypeId(), name, CmsWorkplaceMessages.getResourceTypeName(
-                locale,
-                name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), null);
+            return new CmsNewResourceInfo(
+                resType.getTypeId(),
+                name,
+                CmsWorkplaceMessages.getResourceTypeName(locale, name),
+                CmsWorkplaceMessages.getResourceTypeDescription(locale, name),
+                null,
+                CmsWorkplaceMessages.getResourceTypeName(locale, name));
         }
     }
 

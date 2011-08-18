@@ -55,6 +55,15 @@ public class CmsNewResourceInfo implements Serializable {
     /** The title. */
     private String m_title;
 
+    /** Subtitle. */
+    private String m_subtitle;
+
+    /** VFS path. */
+    private String m_vfsPath;
+
+    /** Date. */
+    private String m_date;
+
     /**
      * Instantiates a new resource type information bean.
      *
@@ -63,24 +72,22 @@ public class CmsNewResourceInfo implements Serializable {
      * @param title the title
      * @param description the description
      * @param copyResourceId the structure id of the copy resource
+     * @param subTitle the subtitle to display
      */
-    public CmsNewResourceInfo(int id, String typeName, String title, String description, CmsUUID copyResourceId) {
+    public CmsNewResourceInfo(
+        int id,
+        String typeName,
+        String title,
+        String description,
+        CmsUUID copyResourceId,
+        String subTitle) {
 
         m_id = id;
         m_typeName = typeName;
         m_title = title;
         m_copyResourceId = copyResourceId;
         m_description = description;
-    }
-
-    /**
-     * Returns the description.<p>
-     *
-     * @return the description
-     */
-    public String getDescription() {
-
-        return m_description;
+        m_subtitle = subTitle;
     }
 
     /**
@@ -102,6 +109,26 @@ public class CmsNewResourceInfo implements Serializable {
     }
 
     /**
+     * Returns the date to display.<p>
+     * 
+     * @return the date to display
+     */
+    public String getDate() {
+
+        return m_date;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
      * Gets the id.
      *
      * @return the id
@@ -109,6 +136,21 @@ public class CmsNewResourceInfo implements Serializable {
     public int getId() {
 
         return m_id;
+    }
+
+    public String getSubTitle() {
+
+        return m_subtitle;
+    }
+
+    /**
+     * Gets the title.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**
@@ -121,14 +163,24 @@ public class CmsNewResourceInfo implements Serializable {
         return m_typeName;
     }
 
-    /**
-     * Gets the title.
-     *
-     * @return the title
-     */
-    public String getTitle() {
+    public String getVfsPath() {
 
-        return m_title;
+        return m_vfsPath;
+    }
+
+    public void setDate(String date) {
+
+        m_date = date;
+    }
+
+    public void setSubTitle(String subtitle) {
+
+        m_subtitle = subtitle;
+    }
+
+    public void setVfsPath(String vfsPath) {
+
+        m_vfsPath = vfsPath;
     }
 
 }

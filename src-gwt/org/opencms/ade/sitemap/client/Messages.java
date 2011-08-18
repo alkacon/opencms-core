@@ -166,6 +166,9 @@ public final class Messages {
     public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_0 = "GUI_LABEL_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MAIN_DETAIL_PAGE_TITLE_1 = "GUI_MAIN_DETAIL_PAGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -296,6 +299,8 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
+
+    public static final String GUI_LABEL_VFSPATH_0 = "GUI_LABEL_VFSPATH_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

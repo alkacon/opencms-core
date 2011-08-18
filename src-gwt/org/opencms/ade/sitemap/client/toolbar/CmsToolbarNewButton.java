@@ -128,7 +128,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     private CmsCreatableListItem makeDetailPageItem(CmsNewResourceInfo typeInfo) {
 
         CmsListInfoBean info = new CmsListInfoBean();
-        String subtitle = typeInfo.getTypeName();
+        String subtitle = typeInfo.getSubTitle();
         String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
         info.setTitle(title);
         info.setSubTitle(subtitle);
@@ -151,12 +151,18 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(typeInfo.getTitle());
-        info.setSubTitle(typeInfo.getTypeName());
+        info.setSubTitle(typeInfo.getSubTitle());
         if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
             info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0), typeInfo.getDescription());
         }
+        if (typeInfo.getVfsPath() != null) {
+            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_VFSPATH_0), typeInfo.getVfsPath());
+        }
+        if (typeInfo.getDate() != null) {
+            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DATE_0), typeInfo.getDate());
+        }
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
+        widget.setIcon(CmsIconUtil.getResourceIconClasses("containerpage", false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
