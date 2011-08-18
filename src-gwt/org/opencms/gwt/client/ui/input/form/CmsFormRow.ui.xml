@@ -2,7 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:with field="istyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="mainStyle" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.additionalIcon {
     		position: absolute;
@@ -10,9 +11,9 @@
     		margin-top: -2px;
 		}
 	</ui:style>
-	<g:FlowPanel styleName="{istyle.inputCss.formRow}">
+	<g:FlowPanel styleName="{inputstyle.inputCss.formRow} {mainStyle.generalCss.clearFix}">
 		<g:Label styleName="{style.additionalIcon}" ui:field="m_icon" />
-		<g:Label ui:field="m_label"  styleName="{istyle.inputCss.formLabel}"/>
-		<g:SimplePanel ui:field="m_widgetContainer"  styleName="{istyle.inputCss.formWidgetContainer}" />
+		<g:Label ui:field="m_label"  styleName="{inputstyle.inputCss.formLabel}"/>
+		<g:SimplePanel ui:field="m_widgetContainer"  styleName="{inputstyle.inputCss.formWidgetContainer}" />
 	</g:FlowPanel>
 </ui:UiBinder> 

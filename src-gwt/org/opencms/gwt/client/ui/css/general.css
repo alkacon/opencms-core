@@ -96,6 +96,16 @@ div.toolTip{
 	border: none;
 }
 
+/** Following is a clear-fix for containers with floated content, forcing the container to enclose its content.
+    @see http://www.positioniseverything.net/easyclearing.html */
+.clearFix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
 @sprite div.disablingOverlay{
 	gwt-image: 'gwtImages.placeholderImage';
 	display: block;

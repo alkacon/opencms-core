@@ -602,6 +602,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String clearFix();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String clearStyles();
 
         /** 
