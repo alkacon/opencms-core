@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -775,22 +776,47 @@ public class CmsJspTagContainer extends TagSupport {
      * @param isOnline true if we are in Online mode 
      * @param elementSitePath the element site path
      * @param formatterSitePath the formatter site path
+     * @param exception the exception causing the error
      * 
      * @throws IOException if something goes wrong writing to response out
      */
-    private void printElementErrorTag(boolean isOnline, String elementSitePath, String formatterSitePath)
-    throws IOException {
+    private void printElementErrorTag(
+        boolean isOnline,
+        String elementSitePath,
+        String formatterSitePath,
+        Exception exception) throws IOException {
 
         if (!isOnline) {
-            pageContext.getOut().print(
-                "<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\""
-                    + CLASS_ELEMENT_ERROR
-                    + "\">"
-                    + Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        elementSitePath,
-                        formatterSitePath)
-                    + "</div>");
+            String stacktrace = CmsException.getStackTraceAsString(exception);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(stacktrace)) {
+                stacktrace = null;
+            } else {
+                // stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
+                stacktrace = CmsEncoder.escapeXml(stacktrace);
+            }
+            StringBuffer errorBox = new StringBuffer(256);
+            errorBox.append("<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
+            errorBox.append(CLASS_ELEMENT_ERROR);
+            errorBox.append("\">");
+            errorBox.append(Messages.get().getBundle().key(
+                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                elementSitePath,
+                formatterSitePath));
+            errorBox.append("<br />");
+            errorBox.append(exception.getLocalizedMessage());
+            if (stacktrace != null) {
+                errorBox.append("<span onclick=\"__openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
+                errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
+                errorBox.append("<span title=\"");
+                errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
+                errorBox.append("\" class=\"hiddenStacktrace\" style=\"display:none;\"><pre><b>");
+                errorBox.append(exception.getLocalizedMessage());
+                errorBox.append("</b>\n\n");
+                errorBox.append(stacktrace);
+                errorBox.append("</pre></span></span>");
+            }
+            errorBox.append("</div>");
+            pageContext.getOut().print(errorBox.toString());
         }
     }
 
@@ -880,7 +906,11 @@ public class CmsJspTagContainer extends TagSupport {
                                 subelement.getSitePath(),
                                 subelementFormatter), e);
                         }
-                        printElementErrorTag(isOnline, subelement.getSitePath(), subelementFormatter.getJspRootPath());
+                        printElementErrorTag(
+                            isOnline,
+                            subelement.getSitePath(),
+                            subelementFormatter.getJspRootPath(),
+                            e);
                     }
                     printElementWrapperTagEnd(isOnline, false);
                 } catch (Exception e) {
@@ -915,7 +945,7 @@ public class CmsJspTagContainer extends TagSupport {
                         element.getSitePath(),
                         elementFormatter), e);
                 }
-                printElementErrorTag(isOnline, element.getSitePath(), elementFormatter);
+                printElementErrorTag(isOnline, element.getSitePath(), elementFormatter, e);
             }
             printElementWrapperTagEnd(isOnline, false);
         }

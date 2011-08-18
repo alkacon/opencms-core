@@ -173,6 +173,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERR_WORKPL_LABEL_READ_1 = "GUI_ERR_WORKPL_LABEL_READ_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_STACKTRACE_0 = "GUI_LABEL_STACKTRACE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAG_USER_ADDITIONALINFO_0 = "GUI_TAG_USER_ADDITIONALINFO_0";
 
     /** Message constant for key in the resource bundle. */
