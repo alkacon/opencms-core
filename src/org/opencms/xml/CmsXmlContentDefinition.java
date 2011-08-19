@@ -974,7 +974,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                 if (handlerElement != null) {
                     String className = handlerElement.attributeValue("class");
                     if (className != null) {
-                        contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(className, schemaLocation);
+                        contentHandler = OpenCms.getXmlContentTypeManager().getFreshContentHandler(className);
                     }
                 }
             }
@@ -982,9 +982,8 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         if (contentHandler == null) {
             // if no content handler is defined, the default handler is used
-            contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(
-                CmsDefaultXmlContentHandler.class.getName(),
-                schemaLocation);
+            contentHandler = OpenCms.getXmlContentTypeManager().getFreshContentHandler(
+                CmsDefaultXmlContentHandler.class.getName());
         }
 
         // analyze the app info node with the selected XML content handler
@@ -1479,4 +1478,5 @@ public class CmsXmlContentDefinition implements Cloneable {
         path = CmsXmlUtils.removeFirstXpathElement(elementPath);
         return nestedDefinition.getNestedContentDefinition().getSchemaType(path);
     }
+
 }

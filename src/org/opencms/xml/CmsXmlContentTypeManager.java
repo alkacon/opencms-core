@@ -185,9 +185,11 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
-                classClazz.getName()), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
+                    classClazz.getName()),
+                e);
             return;
         }
 
@@ -386,6 +388,33 @@ public class CmsXmlContentTypeManager {
     public I_CmsXmlSchemaType getContentType(String typeName) {
 
         return m_registeredTypes.get(typeName);
+    }
+
+    /**
+     * Returns a fresh XML content handler instance for the specified class name.<p>
+     * 
+     * @param className the name of the XML content handler to return
+     *  
+     * @return the XML content handler class
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public I_CmsXmlContentHandler getFreshContentHandler(String className) throws CmsXmlException {
+
+        I_CmsXmlContentHandler contentHandler;
+        // generate an instance for the content handler
+        try {
+            contentHandler = (I_CmsXmlContentHandler)Class.forName(className).newInstance();
+        } catch (InstantiationException e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, className));
+        } catch (IllegalAccessException e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, className));
+        } catch (ClassCastException e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, className));
+        } catch (ClassNotFoundException e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, className));
+        }
+        return contentHandler;
     }
 
     /** 
