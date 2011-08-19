@@ -29,7 +29,7 @@ package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,11 +47,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     @Override
     protected List getNotLocalizedBundles(Locale locale) {
 
-        List bundles = new ArrayList();
-        bundles.add(org.opencms.workplace.demos.Messages.get());
-        bundles.add(org.opencms.workplace.demos.list.Messages.get());
-        bundles.add(org.opencms.workplace.demos.widget.Messages.get());
-        return bundles;
+        return Collections.emptyList();
     }
 
     /**
@@ -73,11 +69,6 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
 
         return new I_CmsMessageBundle[] {
             org.opencms.editors.fckeditor.Messages.get(),
-            org.opencms.frontend.layoutpage.Messages.get(),
-            org.opencms.frontend.photoalbum.Messages.get(),
-            org.opencms.frontend.templateone.Messages.get(),
-            org.opencms.frontend.templateone.form.Messages.get(),
-            org.opencms.frontend.templateone.modules.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
             org.opencms.workplace.tools.accounts.Messages.get(),
             org.opencms.workplace.tools.cache.Messages.get(),

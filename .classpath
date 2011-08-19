@@ -68,9 +68,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/ehcache-core-2.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/ehcache-openjpa-0.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jsr305-1.3.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="modules/org.opencms.frontend.layoutpage/resources/system/modules/org.opencms.frontend.layoutpage/lib/freemarker-2.3.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="modules/org.opencms.frontend.templateone.form/resources/system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-1.0-all.jar"/>
-	<classpathentry exported="true" kind="lib" path="modules/org.opencms.frontend.templateone.form/resources/system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC6.jar"/>
 	<classpathentry exported="true" kind="lib" path="modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/upload.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/setup/database/as400/jt400.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/setup/database/db2/db2jcc_license_cu.jar"/>
