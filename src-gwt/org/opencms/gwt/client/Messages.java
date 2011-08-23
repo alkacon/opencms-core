@@ -169,6 +169,15 @@ public final class Messages {
     public static final String GUI_DONE_0 = "GUI_DONE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CLOSE_TEXT_0 = "GUI_EDITOR_CLOSE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_SAVE_BEFORE_LEAVING_1 = "GUI_EDITOR_SAVE_BEFORE_LEAVING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
@@ -214,13 +223,13 @@ public final class Messages {
     public static final String GUI_LOCK_OWNED_BY_1 = "GUI_LOCK_OWNED_BY_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_NOTHING_LOCKED_0 = "GUI_LOCK_REPORT_NOTHING_LOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_REPORT_TITLE_0 = "GUI_LOCK_REPORT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_REPORT_UNLOCK_MESSAGE_0 = "GUI_LOCK_REPORT_UNLOCK_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCK_REPORT_NOTHING_LOCKED_0 = "GUI_LOCK_REPORT_NOTHING_LOCKED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
@@ -307,6 +316,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_ADD_TO_FAVORITES_0 = "GUI_TOOLBAR_ADD_TO_FAVORITES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_BACK_0 = "GUI_TOOLBAR_BACK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -352,16 +364,13 @@ public final class Messages {
     public static final String GUI_TOOLBAR_SITEMAP_0 = "GUI_TOOLBAR_SITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_BACK_0 = "GUI_TOOLBAR_BACK_0";
+    public static final String GUI_UNLOCK_ALL_0 = "GUI_UNLOCK_ALL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNLOCK_ALL_0 = "GUI_UNLOCK_ALL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
@@ -377,12 +386,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CLOSE_TEXT_0 = "GUI_EDITOR_CLOSE_TEXT_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

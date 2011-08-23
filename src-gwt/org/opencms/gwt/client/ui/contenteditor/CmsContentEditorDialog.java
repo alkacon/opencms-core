@@ -46,8 +46,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -65,6 +68,9 @@ public final class CmsContentEditorDialog {
 
     /** The dialog instance. */
     private static CmsContentEditorDialog INSTANCE;
+
+    /** The window closing handler registration. */
+    private HandlerRegistration m_closingHandlerRegistrion;
 
     /** The popup instance. */
     private CmsPopup m_dialog;
@@ -177,6 +183,10 @@ public final class CmsContentEditorDialog {
             m_form.removeFromParent();
             m_form = null;
         }
+        if (m_closingHandlerRegistrion != null) {
+            m_closingHandlerRegistrion.removeHandler();
+            m_closingHandlerRegistrion = null;
+        }
     }
 
     /**
@@ -187,6 +197,20 @@ public final class CmsContentEditorDialog {
     protected I_CmsEditableData getEditableData() {
 
         return m_editableData;
+    }
+
+    /**
+     * Execute on window close.<p>
+     * Will ask the user if the edited content should be saved.<p>
+     */
+    protected void onWindowClose() {
+
+        boolean savePage = Window.confirm(Messages.get().key(
+            Messages.GUI_EDITOR_SAVE_BEFORE_LEAVING_1,
+            m_editableData.getSitePath()));
+        if (savePage) {
+            saveEditorContent();
+        }
     }
 
     /**
@@ -244,6 +268,15 @@ public final class CmsContentEditorDialog {
         m_form = generateForm();
         RootPanel.getBodyElement().appendChild(m_form);
         m_form.submit();
+
+        // adding on close handler
+        m_closingHandlerRegistrion = Window.addWindowClosingHandler(new ClosingHandler() {
+
+            public void onWindowClosing(ClosingEvent event) {
+
+                onWindowClose();
+            }
+        });
     }
 
     /**
@@ -284,4 +317,35 @@ public final class CmsContentEditorDialog {
             CmsCoreProvider.get().getContentEditorUrl()), "post", EDITOR_IFRAME_NAME, formVaules);
         return formElement;
     }
+
+    /**
+     * Saves the current editor content synchronously.<p>
+     */
+    private native void saveEditorContent() /*-{
+        var iFrame = $wnd.frames[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::EDITOR_IFRAME_NAME];
+        if (iFrame != null) {
+            var editFrame = iFrame["edit"];
+            if (editFrame != null) {
+                var editorFrame = editFrame.frames["editform"];
+                if (editorFrame != null) {
+                    var editForm = editorFrame.$("#EDITOR");
+                    editForm.find("input[name='action']").attr("value",
+                            "saveexit");
+                    if (editForm != null) {
+                        var data = editForm.serializeArray(editForm);
+                        editorFrame.$.ajax({
+                            type : 'POST',
+                            async : false,
+                            url : editForm.attr("action"),
+                            data : data,
+                            success : function(result) {
+                                // nothing to do
+                            },
+                            dataType : "html"
+                        });
+                    }
+                }
+            }
+        }
+    }-*/;
 }
