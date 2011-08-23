@@ -67,6 +67,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -96,7 +97,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         /** Container type node name. */
         Type,
         /** Element URI node name. */
-        Uri;
+        Uri,
+        /** Container attribute node name. */
+        Attribute,
+        /** Container attribute key node name. */
+        Key,
+        /** Container attribute value node name. */
+        Value;
     }
 
     /** The log object for this class. */
@@ -199,6 +206,23 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     }
 
     /**
+     * Saves a container page bean to the in-memory XML structure and returns the changed content.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param locale the locale for which the content should be replaced 
+     * @param cntPage the container page bean 
+     * @return the new content for the container page 
+     * @throws CmsException if something goes wrong 
+     */
+    public byte[] createContainerPageXml(CmsObject cms, Locale locale, CmsContainerPageBean cntPage)
+    throws CmsException {
+
+        writeContainerPage(cms, locale, cntPage);
+        return marshal();
+
+    }
+
+    /**
      * Returns the container page bean for the given locale.<p>
      *
      * @param cms the cms context
@@ -243,6 +267,21 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         // lock the file
         cms.lockResourceTemporary(cms.getSitePath(file));
+        byte[] data = createContainerPageXml(cms, locale, cntPage);
+        file.setContents(data);
+        cms.writeFile(file);
+    }
+
+    /**
+     * Saves a container page in in-memory XML structure.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param locale the locale for which the content should be replaced 
+     * @param cntPage the container page bean to save
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void writeContainerPage(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) throws CmsException {
 
         // keep unused containers
         CmsContainerPageBean savePage = addUnusedContainers(cms, locale, cntPage);
@@ -256,13 +295,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
         saveContainerPage(cms, parent, savePage);
-
-        // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
-
-        // write to VFS
-        file.setContents(marshal());
-        cms.writeFile(file);
     }
 
     /**
@@ -348,6 +381,16 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
                 for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, XmlNode.Containers.name()); itCnts.hasNext();) {
                     Element container = itCnts.next();
+                    Map<String, String> attributes = new HashMap<String, String>();
+                    for (Element attribute : CmsXmlGenericWrapper.elementIterable(container, XmlNode.Attribute.name())) {
+                        Element keyElem = (Element)attribute.selectSingleNode("Key");
+                        Element valElem = (Element)attribute.selectSingleNode("Value");
+                        Node keyContent = keyElem.selectSingleNode("text()");
+                        Node valContent = valElem.selectSingleNode("text()");
+                        String keyValue = keyContent.getText();
+                        String valValue = valContent.getText();
+                        attributes.put(keyValue, valValue);
+                    }
 
                     // container itself
                     int cntIndex = CmsXmlUtils.getXpathIndexInt(container.getUniquePath(cntPage));
@@ -374,9 +417,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
-                            element.getName(),
-                            elemIndex));
+                        String elemPath = CmsXmlUtils.concatXpath(
+                            cntPath,
+                            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -421,14 +464,17 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap, createNew));
                         }
                     }
-
-                    containers.add(new CmsContainerBean(name.getText(), type.getText(), elements));
+                    CmsContainerBean newContainerBean = new CmsContainerBean(name.getText(), type.getText(), elements);
+                    newContainerBean.setAttributes(attributes);
+                    containers.add(newContainerBean);
                 }
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }
@@ -453,7 +499,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             Element cntElement = parent.addElement(XmlNode.Containers.name());
             cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
-
+            for (Map.Entry<String, String> entry : container.getAttributes().entrySet()) {
+                Element attrElement = cntElement.addElement(XmlNode.Attribute.name());
+                attrElement.addElement(XmlNode.Key.name()).addCDATA(entry.getKey());
+                attrElement.addElement(XmlNode.Value.name()).addCDATA(entry.getValue());
+            }
             // the elements
             for (CmsContainerElementBean element : container.getElements()) {
                 Element elemElement = cntElement.addElement(XmlNode.Elements.name());

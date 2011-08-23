@@ -261,7 +261,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
         create(
             newEntry,
             m_data.getDefaultNewElementInfo().getId(),
-            m_data.getDefaultNewElementInfo().getCopyResourceId());
+            m_data.getDefaultNewElementInfo().getCopyResourceId(),
+            null);
     }
 
     /**
@@ -270,14 +271,21 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * @param newEntry the new entry
      * @param resourceTypeId the resource type id
      * @param copyResourceId the copy resource id
+     * @param parameter an additional parameter which may contain more information needed to create the new resource 
      */
-    public void create(final CmsClientSitemapEntry newEntry, final int resourceTypeId, final CmsUUID copyResourceId) {
+    public void create(
+        final CmsClientSitemapEntry newEntry,
+        final int resourceTypeId,
+        final CmsUUID copyResourceId,
+        String parameter) {
 
         final CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (parent != null);
         newEntry.setEditStatus(EditStatus.created);
-        applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId), null);
+        applyChange(
+            new CmsClientSitemapChangeNew(newEntry, parent.getId(), resourceTypeId, copyResourceId, parameter),
+            null);
     }
 
     /**

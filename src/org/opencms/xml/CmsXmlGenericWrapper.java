@@ -51,47 +51,6 @@ public final class CmsXmlGenericWrapper {
     }
 
     /**
-     * Provides a type safe / generic wrapper for {@link Element#elements()}.<p>
-     * 
-     * @param element the element to iterate
-     * 
-     * @return type safe access to {@link Element#elements()}.<p>
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Element> elements(Element element) {
-
-        return element.elements();
-    }
-
-    /**
-     * Provides a type safe / generic wrapper for {@link Element#elements(String)}.<p>
-     * 
-     * @param element the element to iterate
-     * @param name the element name to match
-     * 
-     * @return type safe access to {@link Element#elements(String)}.<p>
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Element> elements(Element element, String name) {
-
-        return element.elements(name);
-    }
-
-    /**
-     * Provides a type safe / generic wrapper for {@link Element#elements(org.dom4j.QName)}.<p>
-     * 
-     * @param element the element to iterate
-     * @param name the element name to match
-     * 
-     * @return type safe access to {@link Element#elements(org.dom4j.QName)}.<p>
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Element> elements(Element element, QName name) {
-
-        return element.elements(name);
-    }
-
-    /**
      * Provides a type safe / generic wrapper for {@link Element#content()}.<p>
      * 
      * @param element the element to get the content for
@@ -102,6 +61,17 @@ public final class CmsXmlGenericWrapper {
     public static List<Node> content(Element element) {
 
         return element.content();
+    }
+
+    public static Iterable<Element> elementIterable(final Element element, final String name) {
+
+        return new Iterable<Element>() {
+
+            public Iterator<Element> iterator() {
+
+                return elementIterator(element, name);
+            }
+        };
     }
 
     /**
@@ -129,6 +99,47 @@ public final class CmsXmlGenericWrapper {
     public static Iterator<Element> elementIterator(Element element, String name) {
 
         return element.elementIterator(name);
+    }
+
+    /**
+     * Provides a type safe / generic wrapper for {@link Element#elements()}.<p>
+     * 
+     * @param element the element to iterate
+     * 
+     * @return type safe access to {@link Element#elements()}.<p>
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Element> elements(Element element) {
+
+        return element.elements();
+    }
+
+    /**
+     * Provides a type safe / generic wrapper for {@link Element#elements(org.dom4j.QName)}.<p>
+     * 
+     * @param element the element to iterate
+     * @param name the element name to match
+     * 
+     * @return type safe access to {@link Element#elements(org.dom4j.QName)}.<p>
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Element> elements(Element element, QName name) {
+
+        return element.elements(name);
+    }
+
+    /**
+     * Provides a type safe / generic wrapper for {@link Element#elements(String)}.<p>
+     * 
+     * @param element the element to iterate
+     * @param name the element name to match
+     * 
+     * @return type safe access to {@link Element#elements(String)}.<p>
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Element> elements(Element element, String name) {
+
+        return element.elements(name);
     }
 
     /**

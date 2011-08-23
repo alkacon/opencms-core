@@ -62,6 +62,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The parent entry id. */
     private CmsUUID m_parentId;
 
+    /** An additional parameter which may contain information needed to create the new resource. */
+    private String m_parameter;
+
     /**
      * Constructor.<p>
      * 
@@ -69,17 +72,20 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      * @param parentId the parent entry id
      * @param resourceTypeId the resource type id
      * @param copyResourceId the copy resource id 
+     * @param parameter an additional parameter which may contain information needed to create the new resource 
      */
     public CmsClientSitemapChangeNew(
         CmsClientSitemapEntry entry,
         CmsUUID parentId,
         int resourceTypeId,
-        CmsUUID copyResourceId) {
+        CmsUUID copyResourceId,
+        String parameter) {
 
         m_entry = entry;
         m_parentId = parentId;
         m_newResourceTypeId = resourceTypeId;
         m_newCopyResourceId = copyResourceId;
+        m_parameter = parameter;
     }
 
     /**
@@ -150,6 +156,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         change.setOwnInternalProperties(m_entry.getOwnProperties());
         change.setDefaultFileInternalProperties(m_entry.getDefaultFileProperties());
         change.setTitle(m_entry.getTitle());
+        change.setCreateParameter(m_parameter);
         change.setNewResourceTypeId(m_newResourceTypeId);
         change.setNewCopyResourceId(m_newCopyResourceId);
         if (CmsSitemapView.getInstance().getController().isDetailPage(m_entry)) {

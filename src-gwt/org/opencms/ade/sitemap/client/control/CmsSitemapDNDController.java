@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.control;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
@@ -281,7 +282,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         String uniqueName = null;
         switch (createItem.getNewEntryType()) {
             case detailpage:
-                uniqueName = m_controller.ensureUniqueName(parent, typeInfo.getTypeName());
+                uniqueName = m_controller.ensureUniqueName(
+                    parent,
+                    CmsDetailPageInfo.removeFunctionPrefix(typeInfo.getTypeName()));
                 entry.setName(uniqueName);
                 entry.setSitePath(m_insertPath + uniqueName + "/");
                 entry.setDetailpageTypeName(typeInfo.getTypeName());
@@ -300,7 +303,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 entry.setSitePath(m_insertPath + uniqueName + "/");
                 entry.setResourceTypeName("folder");
         }
-        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
+        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId(), typeInfo.getCreateParameter());
     }
 
     /**

@@ -27,6 +27,8 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
@@ -43,11 +45,16 @@ import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
@@ -66,10 +73,10 @@ public final class CmsJspStandardContextBean {
     public static final String ATTRIBUTE_NAME = "cms";
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspStandardContextBean.class);
+    protected static final Log LOG = CmsLog.getLog(CmsJspStandardContextBean.class);
 
     /** OpenCms user context. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
@@ -231,6 +238,41 @@ public final class CmsJspStandardContextBean {
     public CmsContainerElementBean getElement() {
 
         return m_element;
+    }
+
+    /**
+     * Returns a lazy map which computes the detail page link as a value when given the name of a (named) dynamic function
+     * as a key.<p>
+     * 
+     * @return a lazy map for computing function detail page links  
+     */
+    public Map<String, String> getFunctionDetail() {
+
+        MapMaker mm = new MapMaker();
+        return mm.makeComputingMap(new Function<String, String>() {
+
+            public String apply(String key) {
+
+                String detailType = CmsDetailPageInfo.FUNCTION_PREFIX + key;
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                    m_cms,
+                    m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
+                List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(detailType);
+                if ((detailPages == null) || (detailPages.size() == 0)) {
+                    return "";
+                }
+                CmsDetailPageInfo mainDetailPage = detailPages.get(0);
+                CmsUUID id = mainDetailPage.getId();
+                CmsResource detailRes;
+                try {
+                    detailRes = m_cms.readResource(id);
+                    return OpenCms.getLinkManager().substituteLink(m_cms, detailRes);
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return "";
+                }
+            }
+        });
     }
 
     /**

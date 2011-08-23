@@ -111,6 +111,8 @@ public class CmsADEConfigData {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
 
+    private List<CmsFunctionReference> m_functionReferences;
+
     /** 
      * Default constructor to create an empty configuration.<p> 
      */
@@ -140,6 +142,7 @@ public class CmsADEConfigData {
         boolean discardInheritedProperties,
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages,
+        List<CmsFunctionReference> functionReferences,
         boolean discardInheritedModelPages,
         boolean createContentsLocally) {
 
@@ -148,6 +151,7 @@ public class CmsADEConfigData {
         m_ownPropertyConfigurations = propertyConfig;
         m_ownModelPageConfig = modelPages;
         m_ownDetailPages = detailPageInfos;
+        m_functionReferences = functionReferences;
 
         m_discardInheritedTypes = discardInheritedTypes;
         m_discardInheritedProperties = discardInheritedProperties;
@@ -362,6 +366,11 @@ public class CmsADEConfigData {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    public List<CmsFunctionReference> getFunctionReferences() {
+
+        return internalGetFunctionReferences();
     }
 
     /**
@@ -736,6 +745,23 @@ public class CmsADEConfigData {
         }
     }
 
+    protected List<CmsFunctionReference> internalGetFunctionReferences() {
+
+        checkInitialized();
+        CmsADEConfigData parentData = parent();
+        List<CmsFunctionReference> parentFunctionReferentces = null;
+        if ((parentData == null)) {
+            if (m_isModuleConfig) {
+                return Collections.unmodifiableList(m_functionReferences);
+            } else {
+                return Lists.newArrayList();
+            }
+        } else {
+            return parentData.internalGetFunctionReferences();
+
+        }
+    }
+
     /**
      * Helper method for getting the list of resource types.<p>
      * 
@@ -814,9 +840,17 @@ public class CmsADEConfigData {
             parentModelPages = Collections.emptyList();
         }
 
+        List<CmsFunctionReference> parentFunctionRefs = null;
+        if (parent != null) {
+            parentFunctionRefs = parent.m_functionReferences;
+        } else {
+            parentFunctionRefs = Collections.emptyList();
+        }
+
         m_ownResourceTypes = combineConfigurationElements(parentTypes, m_ownResourceTypes);
         m_ownPropertyConfigurations = combineConfigurationElements(parentProperties, m_ownPropertyConfigurations);
         m_ownModelPageConfig = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
+        m_functionReferences = combineConfigurationElements(parentFunctionRefs, m_functionReferences);
     }
 
     /**

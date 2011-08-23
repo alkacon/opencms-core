@@ -33,6 +33,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,7 +60,17 @@ public class CmsTestConfigData extends CmsADEConfigData {
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages) {
 
-        super(basePath, resourceTypeConfig, false, propertyConfig, false, detailPageInfos, modelPages, false, false);
+        super(
+            basePath,
+            resourceTypeConfig,
+            false,
+            propertyConfig,
+            false,
+            detailPageInfos,
+            modelPages,
+            new ArrayList<CmsFunctionReference>(),
+            false,
+            false);
     }
 
     /**

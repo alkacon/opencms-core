@@ -89,6 +89,8 @@ public class CmsConfigurationReader {
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
+    private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
+
     /** 
      * Creates a new configuration reader.<p>
      * 
@@ -97,6 +99,11 @@ public class CmsConfigurationReader {
     public CmsConfigurationReader(CmsObject cms) {
 
         m_cms = cms;
+    }
+
+    public List<CmsFunctionReference> getFunctionReferences() {
+
+        return new ArrayList<CmsFunctionReference>(m_functionReferences);
     }
 
     /**
@@ -131,6 +138,10 @@ public class CmsConfigurationReader {
             parseDetailPage(node);
         }
 
+        for (I_CmsXmlContentLocation node : root.getSubValues("FunctionRef")) {
+            parseFunctionReference(node);
+        }
+
         boolean discardInheritedTypes = getBoolean(root, "DiscardTypes");
         boolean discardInheritedProperties = getBoolean(root, "DiscardProperties");
         boolean discardInheritedModelPages = getBoolean(root, "DiscardModelPages");
@@ -145,6 +156,7 @@ public class CmsConfigurationReader {
             discardInheritedProperties,
             m_detailPageConfigs,
             m_modelPageConfigs,
+            m_functionReferences,
             discardInheritedModelPages,
             createContentsLocally);
         result.setResource(content.getFile());
@@ -381,6 +393,13 @@ public class CmsConfigurationReader {
         String typeName = getString(node.getSubValue("Type"));
         CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
         m_detailPageConfigs.add(detailPage);
+    }
+
+    protected void parseFunctionReference(I_CmsXmlContentLocation node) throws CmsException {
+
+        String name = node.getSubValue("Name").asString(m_cms);
+        CmsUUID functionId = node.getSubValue("Function").asId(m_cms);
+        m_functionReferences.add(new CmsFunctionReference(name, functionId));
     }
 
     /**

@@ -32,6 +32,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,17 +66,8 @@ public class CmsContainerBean {
     /** The container width set by the rendering container tag. */
     private String m_width;
 
-    /** 
-     * Creates a new container bean with an unlimited number of elements.<p> 
-     * 
-     * @param name the container name
-     * @param type the container type
-     * @param elements the elements
-     **/
-    public CmsContainerBean(String name, String type, List<CmsContainerElementBean> elements) {
-
-        this(name, type, -1, elements);
-    }
+    /** The container attributes. */
+    private Map<String, String> m_attributes = new HashMap<String, String>();
 
     /** 
      * Creates a new container bean.<p> 
@@ -95,6 +87,18 @@ public class CmsContainerBean {
         : Collections.unmodifiableList(elements));
     }
 
+    /** 
+     * Creates a new container bean with an unlimited number of elements.<p> 
+     * 
+     * @param name the container name
+     * @param type the container type
+     * @param elements the elements
+     **/
+    public CmsContainerBean(String name, String type, List<CmsContainerElementBean> elements) {
+
+        this(name, type, -1, elements);
+    }
+
     /**
      * Returns <code>true</code> if the element with the provided id is contained in this container.<p>
      *  
@@ -105,6 +109,16 @@ public class CmsContainerBean {
     public boolean containsElement(CmsUUID elementId) {
 
         return getElementIds().contains(elementId);
+    }
+
+    /**
+     * Gets the container attributes.<p>
+     * 
+     * @return the container attributes
+     */
+    public Map<String, String> getAttributes() {
+
+        return m_attributes;
     }
 
     /**
@@ -190,6 +204,20 @@ public class CmsContainerBean {
     public String getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Sets the container attributes.<p>
+     * 
+     * @param attributes the new container attributes 
+     */
+    public void setAttributes(Map<String, String> attributes) {
+
+        if (attributes != null) {
+            m_attributes = attributes;
+        } else {
+            m_attributes = new HashMap<String, String>();
+        }
     }
 
     /**

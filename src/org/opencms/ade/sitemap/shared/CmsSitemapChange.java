@@ -89,6 +89,9 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     /** The entry name. */
     private String m_name;
 
+    /** An additional parameter which may contain additional information for creating a new resource. */
+    private String m_parameter;
+
     /** The new entry copy resource structure id. */
     private CmsUUID m_newCopyResourceId;
 
@@ -250,9 +253,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         return m_defaultFileId;
     }
 
-    //    /** The entry's title. */
-    //    private String m_title;
-
     /**
      * Returns the change'S properties for the default file.<p>
      * 
@@ -272,6 +272,9 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return m_detailPageInfos;
     }
+
+    //    /** The entry's title. */
+    //    private String m_title;
 
     /**
      * Returns the entry id.<p>
@@ -331,6 +334,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public Map<String, CmsClientProperty> getOwnProperties() {
 
         return m_ownInternalProperties;
+    }
+
+    /**
+     * Returns an additional parameter for creating new resources.<p>
+     *  
+     * @return an additional parameter which may contain information needed to create new resources 
+     */
+    public String getCreateParameter() {
+
+        return m_parameter;
     }
 
     /**
@@ -415,16 +428,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    //    public String getTitle() {
-    //
-    //        return m_title;
-    //    }
-
-    /**
      * Returns if there are changed properties.<p>
      * 
      * @return <code>true</code> if there are changed properties
@@ -433,6 +436,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return (m_propertyModifications != null) && (m_propertyModifications.size() > 0);
     }
+
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    //    public String getTitle() {
+    //
+    //        return m_title;
+    //    }
 
     /**
      * Returns if detail page info's have changed.<p>
@@ -464,16 +477,6 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns if the entry title has changed.<p>
-     * 
-     * @return <code>true</code> if the entry title has changed
-     */
-    //    public boolean hasChangedTitle() {
-    //
-    //        return m_title != null;
-    //    }
-
-    /**
      * Returns if this is a deleting change.<p>
      * 
      * @return the is delete flag
@@ -482,6 +485,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return ChangeType.delete == m_changeType;
     }
+
+    /**
+     * Returns if the entry title has changed.<p>
+     * 
+     * @return <code>true</code> if the entry title has changed
+     */
+    //    public boolean hasChangedTitle() {
+    //
+    //        return m_title != null;
+    //    }
 
     /**
      * Returns if the entry to change is a leaf type entry.<p>
@@ -611,6 +624,17 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setOwnInternalProperties(Map<String, CmsClientProperty> props) {
 
         m_ownInternalProperties = props;
+    }
+
+    /**
+     * Sets additional info needed for creating new resources.<p>
+     * 
+     * @param parameter the additional resource creation information
+     */
+    public void setCreateParameter(String parameter) {
+
+        m_parameter = parameter;
+
     }
 
     /**

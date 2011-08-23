@@ -2,6 +2,7 @@
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/module_type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/module_field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/function_ref.xsd" />
 
     <xsd:element name="ModuleConfigurations" type="OpenCmsModuleConfigurations" />
 
@@ -15,6 +16,7 @@
         <xsd:sequence>
             <xsd:element name="ResourceType" type="OpenCmsModuleType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="Property" type="OpenCmsADEModuleField" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="FunctionRef" type="OpenCmsADEFunctionRef" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -24,6 +26,7 @@
 			<tabs>
 				<tab element="ResourceType" name="TabResourceTypes" collapse="false" />
 				<tab element="Property" name="TabPropertyConfiguration" collapse="false" />
+				<tab element="FunctionRef" name="TabFunctions" collapse="false" />
 			</tabs>  			 
         </xsd:appinfo>        
     </xsd:annotation>

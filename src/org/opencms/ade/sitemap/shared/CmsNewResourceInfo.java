@@ -64,6 +64,9 @@ public class CmsNewResourceInfo implements Serializable {
     /** Date. */
     private String m_date;
 
+    /** The additional parameter used for creating new resources. */
+    private String m_createParameter;
+
     /**
      * Instantiates a new resource type information bean.
      *
@@ -106,6 +109,16 @@ public class CmsNewResourceInfo implements Serializable {
     public CmsUUID getCopyResourceId() {
 
         return m_copyResourceId;
+    }
+
+    /**
+     * Gets the additional parameter for creating new resources.<p>
+     * 
+     * @return the additional parameter for creating new resources 
+     */
+    public String getCreateParameter() {
+
+        return m_createParameter;
     }
 
     /**
@@ -166,6 +179,11 @@ public class CmsNewResourceInfo implements Serializable {
     public String getVfsPath() {
 
         return m_vfsPath;
+    }
+
+    public void setAdditionalData(String additionalData) {
+
+        m_createParameter = additionalData;
     }
 
     public void setDate(String date) {

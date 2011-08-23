@@ -425,12 +425,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         String suffixTitle = null;
         switch (detailPageTable.getStatus(m_entry.getId())) {
             case firstDetailPage:
-                type = detailPageTable.get(m_entry.getId()).getType();
+                type = detailPageTable.get(m_entry.getId()).getDisplayType();
                 suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, type);
                 text = "(*" + type + ")";
                 break;
             case otherDetailPage:
-                type = detailPageTable.get(m_entry.getId()).getType();
+                type = detailPageTable.get(m_entry.getId()).getDisplayType();
                 suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, type);
                 text = "(" + type + ")";
                 break;

@@ -39,6 +39,7 @@ import org.opencms.gwt.client.util.CmsPositionBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
@@ -83,6 +84,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The wrapped widget. This will be a @link com.google.gwt.user.client.RootPanel. */
     private Widget m_widget;
 
+    private Map<String, String> m_attributes;
+
     /**
      * Constructor.<p>
      * 
@@ -94,6 +97,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_containerId = containerData.getName();
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
+        m_attributes = containerData.getAttributes();
         m_isDetailView = containerData.isDetailView();
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }

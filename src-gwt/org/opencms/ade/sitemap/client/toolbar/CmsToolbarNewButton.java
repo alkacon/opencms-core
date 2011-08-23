@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
@@ -40,6 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -62,6 +64,9 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /** The special elements list. */
     private CmsList<I_CmsListItem> m_specialList;
+
+    /** The function element list. */
+    private CmsList<I_CmsListItem> m_functionList;
 
     /**
      * Constructor.<p>
@@ -98,14 +103,30 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
         if (controller.getData().canEditDetailPages()) {
             for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
-                CmsCreatableListItem item = makeDetailPageItem(typeInfo);
-                m_specialList.add(item);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
+                    CmsCreatableListItem item = makeDetailPageItem(typeInfo);
+                    m_specialList.add(item);
+                }
             }
         }
         if (m_specialList.getWidgetCount() > 0) {
             hasTabs = true;
             addTab(createTab(m_specialList), Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
         }
+
+        m_functionList = new CmsList<I_CmsListItem>();
+        for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
+                CmsCreatableListItem item = makeDetailPageItem(typeInfo);
+                m_functionList.add(item);
+            }
+        }
+        if (m_functionList.getWidgetCount() > 0) {
+            hasTabs = true;
+            String tabLabel = Messages.get().key(Messages.GUI_FUNCTION_TAB_TITLE_0);
+            addTab(createTab(m_functionList), tabLabel);
+        }
+
         if (!hasTabs) {
             // no new elements available, show appropriate message
 
@@ -133,7 +154,11 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CmsIconUtil.getResourceIconClasses(typeInfo.getTypeName(), false));
+        String iconTypeName = typeInfo.getTypeName();
+        if (iconTypeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+            iconTypeName = "function";
+        }
+        widget.setIcon(CmsIconUtil.getResourceIconClasses(iconTypeName, false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.detailpage);
         listItem.addTag(TAG_SPECIAL);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());

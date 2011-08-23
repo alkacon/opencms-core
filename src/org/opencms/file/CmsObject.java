@@ -3705,7 +3705,7 @@ public final class CmsObject {
      * 
      * @see CmsRequestContext#addSiteRoot(String)
      */
-    private String addSiteRoot(String resourcename) {
+    public String addSiteRoot(String resourcename) {
 
         return m_context.addSiteRoot(resourcename);
     }

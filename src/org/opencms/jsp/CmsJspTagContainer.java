@@ -174,6 +174,11 @@ public class CmsJspTagContainer extends TagSupport {
         jsonContainer.put(CmsContainerJsonKeys.NAME, container.getName());
         jsonContainer.put(CmsContainerJsonKeys.TYPE, container.getType());
         jsonContainer.put(CmsContainerJsonKeys.MAXELEMENTS, container.getMaxElements());
+        JSONObject jsonContainerAttrs = new JSONObject();
+        for (Map.Entry<String, String> entry : container.getAttributes().entrySet()) {
+            jsonContainerAttrs.put(entry.getKey(), entry.getValue());
+        }
+        jsonContainer.put(CmsContainerJsonKeys.ATTRIBUTES, jsonContainerAttrs);
         jsonContainer.put(CmsContainerJsonKeys.DETAILVIEW, isDetailView);
         int width = -1;
         try {
@@ -338,11 +343,13 @@ public class CmsJspTagContainer extends TagSupport {
                     if (!isOnline) {
                         // add container data for the editor
                         try {
-                            pageContext.getOut().print(
-                                getContainerDataTag(
-                                    new CmsContainerBean(getName(), getType(), maxElements, allElements),
-                                    getWidth(),
-                                    isUsedAsDetailView));
+                            CmsContainerBean cntBean = new CmsContainerBean(
+                                getName(),
+                                getType(),
+                                maxElements,
+                                allElements);
+                            cntBean.setAttributes(container.getAttributes());
+                            pageContext.getOut().print(getContainerDataTag(cntBean, getWidth(), isUsedAsDetailView));
                         } catch (JSONException e) {
                             // should never happen
                             throw new JspException(e);
@@ -901,10 +908,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -940,10 +949,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        elementFormatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            elementFormatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), elementFormatter, e);
             }

@@ -27,6 +27,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import java.util.Map;
+
 /**
  * Interface representing the container methods to be used by overlay type CmsContainerJso and other types.<p>
  * 
@@ -45,6 +47,13 @@ public interface I_CmsContainer {
 
     /** Key 'type' used within the JSON representation of a container object. */
     String JSONKEY_TYPE = "type";
+
+    /**
+     * Gets the map of container attributes.<p>
+     * 
+     * @return the container attributes 
+     */
+    Map<String, String> getAttributes();
 
     /**
      * Returns the elements client id's contained in this container.<p>

@@ -41,6 +41,9 @@ public class CmsDetailPageInfo implements Serializable {
     /** ID for serialization. */
     private static final long serialVersionUID = 7714334294682534900L;
 
+    /** The prefix for dynamic function detail page types. */
+    public static final String FUNCTION_PREFIX = "function@";
+
     /** The id of the detail page. */
     private CmsUUID m_id;
 
@@ -72,6 +75,37 @@ public class CmsDetailPageInfo implements Serializable {
         // for serialization 
     }
 
+    /** 
+     * Removes the prefix for dynamic functions from a detail page type name.<p>
+     * 
+     * @param name the detail page type name 
+     * 
+     * @return the detail page type name withotu the function prefix 
+     */
+    public static String removeFunctionPrefix(String name) {
+
+        return name.replaceFirst("^" + FUNCTION_PREFIX, "");
+    }
+
+    /**
+     * Gets the type name to display to the user.<p>
+     * 
+     * @return the type name to display
+     */
+    public String getDisplayType() {
+
+        return m_type != null ? removeFunctionPrefix(m_type) : "";
+    }
+
+    public String getIconType() {
+
+        if (m_type.startsWith(FUNCTION_PREFIX)) {
+            return "function";
+        } else {
+            return m_type;
+        }
+    }
+
     /**
      * Returns the id of the detail page.<p>
      * 
@@ -101,5 +135,4 @@ public class CmsDetailPageInfo implements Serializable {
 
         return m_uri;
     }
-
 }

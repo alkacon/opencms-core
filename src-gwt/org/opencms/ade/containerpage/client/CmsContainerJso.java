@@ -29,6 +29,8 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
 
+import java.util.Map;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
@@ -53,56 +55,65 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
      * @return the containers
      */
     public static final native JsArray<CmsContainerJso> getContainers() /*-{
-        return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
+      return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
+    }-*/;
+
+    public final native Map<String, String> getAttributes() /*-{
+      var result = @java.util.HashMap::new()();
+      var attributes = this[@org.opencms.jsp.CmsContainerJsonKeys::ATTRIBUTES];
+      for (key in attributes) {
+         result.@java.util.HashMap::put(Ljava/lang/Object;Ljava/lang/Object;)(key, attributes[key]);
+      }
+      return result;
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getElements()
      */
     public final native String[] getElements() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getMaxElements()
      */
     public final native int getMaxElements() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::MAXELEMENTS];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::MAXELEMENTS];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getName()
      */
     public final native String getName() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::NAME];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::NAME];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getType()
      */
     public final native String getType() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::TYPE];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::TYPE];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getWidth()
      */
     public final native int getWidth() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::WIDTH];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::WIDTH];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#isDetailView()
      */
     public final native boolean isDetailView() /*-{
-        return this[@org.opencms.jsp.CmsContainerJsonKeys::DETAILVIEW];
+      return this[@org.opencms.jsp.CmsContainerJsonKeys::DETAILVIEW];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#setElements(java.lang.String[])
      */
     public final native void setElements(String[] elements) /*-{
-        this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS]=elements;
+      this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS] = elements;
     }-*/;
 
 }
