@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -48,8 +49,12 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -292,6 +297,19 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
+     * Gets the list of moved folders which are not subfolders of other moved folders in the publish list.<p>
+     * @param cms the current cms context 
+     * @return the moved folders which are not subfolders of other moved folders in the publish list  
+     * @throws CmsException if something goes wrong 
+     */
+    public List getTopMovedFolders(CmsObject cms) throws CmsException {
+
+        List movedFolders = getMovedFolders(cms);
+        List result = getTopFolders(movedFolders);
+        return result;
+    }
+
+    /**
      * Checks if this is a publish list is used for a "direct publish" operation.<p>
      * 
      * @return true if this is a publish list is used for a "direct publish" operation
@@ -513,6 +531,154 @@ public class CmsPublishList implements Externalizable {
         while (i.hasNext()) {
             add((CmsResource)i.next(), check);
         }
+    }
+
+    /**
+     * Checks whether the publish list contains all sub-resources of a list of folders.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param folders the folders which should be checked 
+     * @return a folder from the list if one of its sub-resources is not contained in the publish list, otherwise null
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsResource checkContainsSubResources(CmsObject cms, List folders) throws CmsException {
+
+        Iterator folderIt = folders.iterator();
+        while (folderIt.hasNext()) {
+            CmsResource folder = (CmsResource)folderIt.next();
+            if (!containsSubResources(cms, folder)) {
+                return folder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the publish list contains a resource.<p>
+     * 
+     * @param res the resource
+     * @return true if the publish list contains a resource 
+     */
+    protected boolean containsResource(CmsResource res) {
+
+        return m_deletedFolderList.contains(res) || m_folderList.contains(res) || m_fileList.contains(res);
+    }
+
+    /**
+     * Checks if the publish list contains all sub-resources of a given folder.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param folder the folder for which the check should be performed 
+     * @return true if the publish list contains all sub-resources of a given folder 
+     * @throws CmsException if something goes wrong 
+     */
+    protected boolean containsSubResources(CmsObject cms, CmsResource folder) throws CmsException {
+
+        String folderPath = cms.getSitePath(folder);
+        List subResources = cms.readResources(folderPath, CmsResourceFilter.ALL, true);
+        Iterator resourceIt = subResources.iterator();
+        while (resourceIt.hasNext()) {
+            Object resourceObj = resourceIt.next();
+            CmsResource resource = (CmsResource)resourceObj;
+            if (!containsResource(resource)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    @Override
+    protected void finalize() throws Throwable {
+
+        try {
+            if (m_fileList != null) {
+                m_fileList.clear();
+            }
+            if (m_folderList != null) {
+                m_folderList.clear();
+            }
+            if (m_deletedFolderList != null) {
+                m_deletedFolderList.clear();
+            }
+        } catch (Throwable t) {
+            // ignore
+        }
+
+        super.finalize();
+    }
+
+    /**
+     * Internal method to get the moved folders from the publish list.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the list of moved folders from the publish list 
+     * @throws CmsException if something goes wrong 
+     */
+    protected List getMovedFolders(CmsObject cms) throws CmsException {
+
+        Iterator folderIt = m_folderList.iterator();
+        CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        List movedFolders = new ArrayList();
+        while (folderIt.hasNext()) {
+            Object folderObj = folderIt.next();
+            CmsResource folder = (CmsResource)folderObj;
+            if (folder.getState().isChanged()) {
+                CmsProject oldProject = cms.getRequestContext().currentProject();
+                boolean isMoved = false;
+                try {
+                    cms.getRequestContext().setCurrentProject(onlineProject);
+                    CmsResource onlineResource = cms.readResource(folder.getStructureId());
+                    isMoved = !onlineResource.getRootPath().equals(folder.getRootPath());
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // resource not found online, this means it doesn't matter whether it has been moved 
+                } finally {
+                    cms.getRequestContext().setCurrentProject(oldProject);
+                }
+                if (isMoved) {
+                    movedFolders.add(folder);
+                }
+            }
+        }
+        return movedFolders;
+    }
+
+    /**
+     * Gives the "roots" of a list of folders, i.e. the list of folders which are not descendants of any other folders in the original list 
+     * @param folders the original list of folders 
+     * @return the root folders of the list 
+     */
+    protected List getTopFolders(List folders) {
+
+        Iterator folderIt = folders.iterator();
+        List folderPaths = new ArrayList();
+        List topFolders = new ArrayList();
+        Map foldersByPath = new HashMap();
+
+        while (folderIt.hasNext()) {
+            CmsResource folder = (CmsResource)folderIt.next();
+            folderPaths.add(folder.getRootPath());
+            foldersByPath.put(folder.getRootPath(), folder);
+        }
+        Collections.sort(folderPaths);
+        Set topFolderPaths = new HashSet(folderPaths);
+        for (int i = 0; i < folderPaths.size(); i++) {
+            for (int j = i + 1; j < folderPaths.size(); j++) {
+                if (((String)folderPaths.get(j)).startsWith((String)(folderPaths.get(i)))) {
+                    topFolderPaths.remove(folderPaths.get(j));
+                } else {
+                    break;
+                }
+            }
+        }
+        for (Iterator pathIt = topFolderPaths.iterator(); pathIt.hasNext();) {
+            String path = (String)pathIt.next();
+            topFolders.add(foldersByPath.get(path));
+        }
+        return topFolders;
     }
 
     /**

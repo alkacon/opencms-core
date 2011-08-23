@@ -814,6 +814,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_PARENT_FOLDER_NOT_PUBLISHED_1 = "RPT_PARENT_FOLDER_NOT_PUBLISHED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1 = "RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_REMOVED_RESOURCE_1 = "RPT_PUBLISH_REMOVED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
