@@ -173,8 +173,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         super(tabId);
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
-        CmsGalleryDialog.initCss();
-
         List<CmsPair<String, String>> sortList = getSortList();
         if (sortList != null) {
             m_sortSelectBox = new CmsSelectBox(sortList);

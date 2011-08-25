@@ -179,7 +179,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /**
      * Ensures all style sheets are loaded.<p>
      */
-    public static void initCss() {
+    private void initCss() {
 
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().ensureInjected();

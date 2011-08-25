@@ -5,10 +5,7 @@
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
 .cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockIcon, .lockClosed, .titleInput{}
 
-.lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockIcon, .lockClosed
-
-
-.imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
+.tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
 	display: none;
 }
 @if user.agent ie6 {
