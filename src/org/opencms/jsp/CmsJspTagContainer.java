@@ -849,6 +849,9 @@ public class CmsJspTagContainer extends TagSupport {
         element.initResource(cms);
         // writing elements to the session cache to improve performance of the container-page editor
         getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         if (element.isGroupContainer(cms)) {
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
                 cms,
@@ -872,9 +875,6 @@ public class CmsJspTagContainer extends TagSupport {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
                     getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
-                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-                        cms,
-                        cms.getRequestContext().getRootUri());
                     CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(subelement.getResource());
                     CmsFormatterBean subelementFormatter = subelementFormatters.getFormatter(
                         containerType,
@@ -908,12 +908,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -931,14 +929,34 @@ public class CmsJspTagContainer extends TagSupport {
             printElementWrapperTagEnd(isOnline, true);
 
         } else {
-            String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
+
+            String formatter = null;
+            try {
+                formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
+            } catch (CmsException e) {
+                // the formatter resource can not be found, try reading it form the configuration
+                CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(element.getResource());
+                CmsFormatterBean elementFormatterBean = elementFormatters.getFormatter(containerType, containerWidth);
+                if (elementFormatterBean == null) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                            element.getSitePath(),
+                            OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
+                            containerType)));
+                    }
+                    // skip this element, it has no formatter for this container type defined
+                    return;
+                }
+                formatter = elementFormatterBean.getJspRootPath();
+            }
             printElementWrapperTagStart(isOnline, cms, element, false);
             standardContext.setElement(element);
             try {
                 // execute the formatter jsp for the given element uri
                 CmsJspTagInclude.includeTagAction(
                     pageContext,
-                    elementFormatter,
+                    formatter,
                     null,
                     locale,
                     false,
@@ -949,14 +967,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            elementFormatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        formatter), e);
                 }
-                printElementErrorTag(isOnline, element.getSitePath(), elementFormatter, e);
+                printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
             }
             printElementWrapperTagEnd(isOnline, false);
         }
