@@ -24,6 +24,8 @@
 }
 .tilingList div.imageTile, .tilingList div.imageTile img {
 	display: block;
+	width: 142px;
+	height: 100px;
 }
 
 .tilingList .tilingItem{
