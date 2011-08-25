@@ -27,7 +27,6 @@
 
 package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -94,42 +93,24 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         width
     }
 
-    /** The controller. */
-    private CmsImagePreviewController m_controller;
-
     /** The cropping parameter. */
     private CmsCroppingParamBean m_croppingParam;
 
     /** The image format handler. */
     private CmsImageFormatHandler m_formatHandler;
 
-    /** The dialog. */
+    /** The preview dialog. */
     private CmsImagePreviewDialog m_previewDialog;
 
     /**
      * Constructor.<p>
      * 
-     * @param previewDialog the reference to the preview dialog 
      * @param resourcePreview the resource preview instance
-     * @param previewParentId the preview parent element id
      */
-    public CmsImagePreviewHandler(
-        CmsImagePreviewDialog previewDialog,
-        I_CmsResourcePreview resourcePreview,
-        String previewParentId) {
+    public CmsImagePreviewHandler(CmsImageResourcePreview resourcePreview) {
 
-        super(resourcePreview, previewParentId);
-        m_previewDialog = previewDialog;
-        m_previewDialog.init(this);
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getController()
-     */
-    @Override
-    public A_CmsPreviewController<CmsImageInfoBean> getController() {
-
-        return m_controller;
+        super(resourcePreview);
+        m_previewDialog = resourcePreview.getPreviewDialog();
     }
 
     /**
@@ -140,15 +121,6 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     public CmsCroppingParamBean getCroppingParam() {
 
         return m_croppingParam;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getDialog()
-     */
-    @Override
-    public A_CmsPreviewDialog<CmsImageInfoBean> getDialog() {
-
-        return m_previewDialog;
     }
 
     /**
@@ -208,37 +180,14 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
-     * Initializes the preview handler.<p>
-     * 
-     * @param controller the preview controller
-     */
-    public void init(CmsImagePreviewController controller) {
-
-        m_controller = controller;
-    }
-
-    /**
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
     public void onValueChange(ValueChangeEvent<CmsCroppingParamBean> event) {
 
         m_croppingParam = event.getValue();
-        m_previewDialog.resetPreviewImage(CmsCoreProvider.get().link(m_controller.getResourcePath())
+        m_previewDialog.resetPreviewImage(CmsCoreProvider.get().link(m_resourcePreview.getResourcePath())
             + "?"
             + getPreviewScaleParam());
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#removePreview()
-     */
-    @Override
-    public void removePreview() {
-
-        super.removePreview();
-        m_controller = null;
-        m_croppingParam = null;
-        m_formatHandler = null;
-        m_previewDialog = null;
     }
 
     /**

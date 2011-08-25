@@ -28,8 +28,6 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsBinaryPreviewHandler;
-import org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview;
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.client.ui.CmsResultsTab;
 import org.opencms.ade.galleries.client.ui.CmsResultsTab.DeleteHandler;
@@ -123,13 +121,8 @@ public class CmsBinaryPreviewContent extends Composite {
      */
     public CmsBinaryPreviewContent(CmsResourceInfoBean info, CmsBinaryPreviewHandler previewHandler) {
 
-        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
-        CmsDNDHandler dndHandler = null;
-        if (galleryDialog != null) {
-            dndHandler = galleryDialog.getResultsTab().getDNDHandler();
-        }
-        CmsListItem listItem = createListItem(info, dndHandler);
         m_binaryPreviewHandler = previewHandler;
+        CmsListItem listItem = createListItem(info, m_binaryPreviewHandler.getGalleryDialog().getDndHandler());
         initWidget(uiBinder.createAndBindUi(this));
         CmsUUID structureId = info.getStructureId();
 
@@ -192,21 +185,18 @@ public class CmsBinaryPreviewContent extends Composite {
         if (dndHandler != null) {
             result.initMoveHandle(dndHandler);
         }
-        CmsGalleryDialog galleryDialog = CmsBinaryResourcePreview.getInstance().getGalleryDialog();
-        if (galleryDialog != null) {
-            CmsResultsTab resultsTab = galleryDialog.getResultsTab();
-            final DeleteHandler deleteHandler = resultsTab.makeDeleteHandler(resourceInfo.getResourcePath());
-            ClickHandler handler = new ClickHandler() {
+        CmsResultsTab resultsTab = m_binaryPreviewHandler.getGalleryDialog().getResultsTab();
+        final DeleteHandler deleteHandler = resultsTab.makeDeleteHandler(resourceInfo.getResourcePath());
+        ClickHandler handler = new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+            public void onClick(ClickEvent event) {
 
-                    deleteHandler.onClick(event);
-                    m_binaryPreviewHandler.closePreview();
-                }
-            };
-            button.addClickHandler(handler);
-            itemWidget.addButton(button);
-        }
+                deleteHandler.onClick(event);
+                m_binaryPreviewHandler.closePreview();
+            }
+        };
+        button.addClickHandler(handler);
+        itemWidget.addButton(button);
         return result;
     }
 }

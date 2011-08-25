@@ -27,6 +27,8 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewFactory;
+import org.opencms.ade.galleries.client.preview.I_CmsResourcePreview;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -50,10 +52,10 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.gwt.shared.sort.CmsComparatorType;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,12 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
 
+    /** The preview factory registration. */
+    private static Map<String, I_CmsPreviewFactory> m_previewFactoryRegistration = new HashMap<String, I_CmsPreviewFactory>();
+
+    /** The current load results call id. */
+    protected int m_currentCallId;
+
     /** The gallery dialog bean. */
     protected CmsGalleryDataBean m_dialogBean;
 
@@ -91,8 +99,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The gallery controller handler. */
     protected CmsGalleryControllerHandler m_handler;
 
+    /** Flag to indicate that a load results request is currently running. */
+    protected boolean m_loading;
+
     /** The gallery search object. */
     protected CmsGallerySearchBean m_searchObject;
+
+    /** The current resource preview. */
+    private I_CmsResourcePreview<?> m_currentPreview;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -102,12 +116,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /** The vfs service. */
     private I_CmsVfsServiceAsync m_vfsService;
-
-    /** The current load results call id. */
-    protected int m_currentCallId;
-
-    /** Flag to indicate that a load results request is currently running. */
-    protected boolean m_loading;
 
     /**
      * Constructor.<p>
@@ -135,6 +143,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(handler);
+    }
+
+    /**
+     * Registers a preview factory for the given name.
+     * 
+     * @param previewProviderName the preview provider name
+     * @param factory the preview factory
+     */
+    public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
+
+        m_previewFactoryRegistration.put(previewProviderName, factory);
     }
 
     /**
@@ -364,6 +383,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the gallery dialog mode.<p>
+     *
+     * @return the gallery dialog mode
+     */
+    public I_CmsGalleryProviderConstants.GalleryMode getDialogMode() {
+
+        return m_dialogMode;
+    }
+
+    /**
      * Returns the search locale.<p>
      * 
      * @return the search locale
@@ -474,23 +503,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public void openPreview(String resourcePath, String resourceType) {
 
-        String provider = getProviderName(resourceType);
-        if (provider != null) {
-            String message = openPreview(
-                provider,
-                m_dialogMode.name(),
-                resourcePath,
-                getSearchLocale(),
-                m_handler.getDialogElementId());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
-                // should never happen
-                CmsDebugLog.getInstance().printLine(message);
-            }
-            m_handler.hideShowPreviewButton(false);
-            return;
+        if (m_currentPreview != null) {
+            m_currentPreview.removePreview();
         }
-        // should never be reached
-        CmsDebugLog.getInstance().printLine("No provider available");
+        String provider = getProviderName(resourceType);
+        if (m_previewFactoryRegistration.containsKey(provider)) {
+            m_currentPreview = m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog);
+            m_currentPreview.openPreview(resourcePath);
+            m_handler.hideShowPreviewButton(false);
+        } else {
+            CmsDebugLog.getInstance().printLine(
+                "Preview provider \"" + provider + "\" has not been registered properly.");
+        }
     }
 
     /**
@@ -551,16 +575,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void selectResource(String resourcePath, String title, String resourceType) {
 
         String provider = getProviderName(resourceType);
-        if (provider != null) {
-            String message = selectResource(provider, m_dialogMode.name(), resourcePath, getSearchLocale(), title);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
-                // should never happen
-                CmsDebugLog.getInstance().printLine(message);
-            }
-            return;
+        if (m_previewFactoryRegistration.containsKey(provider)) {
+            m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog).selectResource(
+                resourcePath,
+                title);
+
+        } else {
+            CmsDebugLog.getInstance().printLine("No provider available");
         }
-        // should never be reached
-        CmsDebugLog.getInstance().printLine("No provider available");
     }
 
     /**
@@ -1040,99 +1062,4 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         return null;
     }
-
-    /**
-     * Opens the resource preview for the given resource.<p>
-     * 
-     * @param previewName the name of the preview provider
-     * @param galleryMode the gallery mode
-     * @param resourcePath the resource path
-     * @param locale the content locale
-     * @param parentElementId the id of the dialog element to insert the preview into
-     * 
-     * @return debug message
-     */
-    private native String openPreview(
-        String previewName,
-        String galleryMode,
-        String resourcePath,
-        String locale,
-        String parentElementId)/*-{
-        try {
-            var openPreview = null;
-            var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-            if (providerList) {
-                var provider = providerList[previewName];
-                if (provider) {
-                    openPreview = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
-                    var removePrevious = $wnd["removePreview" + parentElementId];
-                    if (removePrevious != null
-                            && typeof (removePrevious) == 'function') {
-                        try {
-                            removePrevious();
-                            $wnd["removePreview" + parentElementId] = null;
-                        } catch (err) {
-                            // should not happen, ignore
-                        }
-                    }
-                    if (openPreview && typeof (openPreview) == 'function') {
-                        try {
-                            openPreview(galleryMode, resourcePath, locale,
-                                    parentElementId);
-                        } catch (err) {
-                            return "ERROR: " + err.description;
-                        }
-                        return null;
-                    } else {
-                        return "Open function not available";
-                    }
-                } else {
-                    return "Provider " + previewName + " not available";
-                }
-            } else {
-                return "Provider list not available";
-            }
-        } catch (err) {
-            return err.description;
-        }
-    }-*/;
-
-    /**
-     * Selects the given resource and sets its path into the xml-content field or editor link.<p>
-     * 
-     * @param previewName the name of the preview provider
-     * @param galleryMode the gallery mode
-     * @param resourcePath the resource path
-     * @param title the resource title
-     * 
-     * @return an error message if an error occurred
-     */
-    private native String selectResource(
-        String previewName,
-        String galleryMode,
-        String resourcePath,
-        String locale,
-        String title)/*-{
-        var providerList = $wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-        if (providerList) {
-            var provider = providerList[previewName];
-            if (provider) {
-                var selectResource = provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
-                if (selectResource) {
-                    try {
-                        selectResource(galleryMode, resourcePath, locale, title);
-                    } catch (err) {
-                        return err.description;
-                    }
-                    return null;
-                } else {
-                    return "Select function not available";
-                }
-            } else {
-                return "Provider " + previewName + " not available";
-            }
-        } else {
-            return "Provider list not available";
-        }
-    }-*/;
 }

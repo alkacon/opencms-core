@@ -27,7 +27,6 @@
 
 package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
@@ -53,21 +52,16 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     protected T m_resourceInfo;
 
     /** The resource preview instance. */
-    protected I_CmsResourcePreview m_resourcePreview;
-
-    /** The id of the preview parent. */
-    private String m_previewParentId;
+    protected I_CmsResourcePreview<T> m_resourcePreview;
 
     /**
      * Constructor.<p>
      * 
      * @param resourcePreview the resource preview instance
-     * @param previewParentId the preview parent element id
      */
-    public A_CmsPreviewHandler(I_CmsResourcePreview resourcePreview, String previewParentId) {
+    public A_CmsPreviewHandler(I_CmsResourcePreview<T> resourcePreview) {
 
         m_resourcePreview = resourcePreview;
-        m_previewParentId = previewParentId;
     }
 
     /**
@@ -75,35 +69,19 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void closePreview() {
 
-        if (getDialog().getGalleryMode() == GalleryMode.editor) {
+        if (m_resourcePreview.getPreviewDialog().getGalleryMode() == GalleryMode.editor) {
             CmsPreviewUtil.enableEditorOk(false);
         }
-        CmsGalleryDialog.getPreviewParent(m_previewParentId).addStyleName(
+        m_resourcePreview.getGalleryDialog().getParentPanel().addStyleName(
             I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
     }
 
     /**
-     *  Returns the controller.<p>
-     *  
-     * @return the controller
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler#getGalleryDialog()
      */
-    public abstract A_CmsPreviewController<T> getController();
+    public CmsGalleryDialog getGalleryDialog() {
 
-    /**
-     * Returns the dialog.<p>
-     * 
-     * @return the dialog
-     */
-    public abstract A_CmsPreviewDialog<T> getDialog();
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler#removePreview()
-     */
-    public void removePreview() {
-
-        getDialog().removePreview();
-        m_resourceInfo = null;
-        m_resourcePreview.clear();
+        return m_resourcePreview.getGalleryDialog();
     }
 
     /**
@@ -111,7 +89,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void saveProperties(Map<String, String> properties) {
 
-        getController().saveProperties(properties);
+        m_resourcePreview.saveProperties(properties);
     }
 
     /**
@@ -119,7 +97,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void selectResource() {
 
-        getController().setResource(getDialog().getGalleryMode());
+        m_resourcePreview.setResource();
     }
 
     /**
@@ -127,9 +105,9 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public boolean setDataInEditor() {
 
-        if (getDialog().getGalleryMode() == GalleryMode.editor) {
-            if (getDialog().hasChanges()) {
-                getDialog().confirmSaveChanges(
+        if (m_resourcePreview.getGalleryMode() == GalleryMode.editor) {
+            if (m_resourcePreview.getPreviewDialog().hasChanges()) {
+                m_resourcePreview.getPreviewDialog().confirmSaveChanges(
                     Messages.get().key(Messages.GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0),
                     new Command() {
 
@@ -144,7 +122,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
                     null);
                 return false;
             } else {
-                getController().setResource(getDialog().getGalleryMode());
+                m_resourcePreview.setResource();
                 return true;
             }
         } else {
@@ -159,9 +137,9 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
 
         m_resourceInfo = resourceInfo;
         // once the resource info is displayed, enable the OK button for editor mode
-        if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
+        if (m_resourcePreview.getGalleryMode().equals(GalleryMode.editor)) {
             CmsPreviewUtil.enableEditorOk(true);
         }
-        getDialog().fillContent(resourceInfo);
+        m_resourcePreview.getPreviewDialog().fillContent(resourceInfo);
     }
 }

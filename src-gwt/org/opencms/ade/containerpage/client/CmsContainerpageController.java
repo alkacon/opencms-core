@@ -38,7 +38,6 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
-import org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -927,7 +926,6 @@ public final class CmsContainerpageController {
                 }
             }
         });
-        CmsBinaryResourcePreview.setDNDHandler(dndHandler);
     }
 
     /**

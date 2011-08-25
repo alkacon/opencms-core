@@ -30,11 +30,13 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
-import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -43,49 +45,42 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @since 8.0.0
  */
-public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
+public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImageInfoBean> {
 
-    /** The preview instance. */
-    private static CmsImageResourcePreview m_instance;
+    /** The image preview handler. */
+    private CmsImagePreviewHandler m_handler;
 
-    /** The preview controller. */
-    private CmsImagePreviewController m_controller;
+    /** The preview dialog widget. */
+    private CmsImagePreviewDialog m_previewDialog;
 
     /**
      * Constructor.<p>
-     */
-    private CmsImageResourcePreview() {
-
-        // hiding constructor
-    }
-
-    /**
-     * Initializes this class.<p>
-     */
-    public static void initClass() {
-
-        CmsPreviewUtil.exportFunctions(getInstance().getPreviewName(), getInstance());
-    }
-
-    /**
-     * Returns the resource preview instance.<p>
      * 
-     * @return the resource preview instance
+     * @param galleryDialog the gallery dialog
      */
-    private static CmsImageResourcePreview getInstance() {
+    public CmsImageResourcePreview(CmsGalleryDialog galleryDialog) {
 
-        if (m_instance == null) {
-            m_instance = new CmsImageResourcePreview();
-        }
-        return m_instance;
+        super(galleryDialog);
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#clear()
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#getHandler()
      */
-    public void clear() {
+    @Override
+    public I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
 
-        m_controller = null;
+        if (m_handler == null) {
+            throw new UnsupportedOperationException("Preview handler not initialized");
+        }
+        return m_handler;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getPreviewDialog()
+     */
+    public CmsImagePreviewDialog getPreviewDialog() {
+
+        return m_previewDialog;
     }
 
     /**
@@ -97,68 +92,228 @@ public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_Cm
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String, String, String, String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#loadResourceInfo(java.lang.String)
      */
-    public void openPreview(String galleryMode, String resourcePath, String locale, String parentElementId) {
+    public void loadResourceInfo(final String resourcePath) {
 
-        FlowPanel parentPanel = CmsGalleryDialog.getPreviewParent(parentElementId);
+        CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
 
-        // inserting the preview into the DOM
-        GalleryMode mode = GalleryMode.valueOf(galleryMode);
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
 
-        CmsImagePreviewDialog preview = new CmsImagePreviewDialog(
-            mode,
+                A_CmsResourcePreview.getService().getImageInfo(resourcePath, getLocale(), this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsImageInfoBean result) {
+
+                result.setSelectedPath(resourcePath);
+                showData(result);
+            }
+        };
+        action.execute();
+
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String)
+     */
+    public void openPreview(String resourcePath) {
+
+        if (m_previewDialog != null) {
+            m_previewDialog.removeFromParent();
+        }
+        FlowPanel parentPanel = getGalleryDialog().getParentPanel();
+        m_previewDialog = new CmsImagePreviewDialog(
+            getGalleryDialog().getController().getDialogMode(),
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
         // initialize the controller and controller handler
-        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this, parentElementId), locale);
-        exportRemovePreview(parentElementId);
+        m_handler = new CmsImagePreviewHandler(this);
+        m_previewDialog.init(m_handler);
         CmsPreviewUtil.exportFunctions(getPreviewName(), this);
-        parentPanel.add(preview);
+        parentPanel.add(m_previewDialog);
         parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         //load preview data
-        m_controller.loadResourceInfo(resourcePath);
+        loadResourceInfo(resourcePath);
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#removePreview()
      */
-    public void selectResource(String galleryMode, String resourcePath, String locale, String title) {
+    @Override
+    public void removePreview() {
 
-        GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
-        CmsImagePreviewController controller = new CmsImagePreviewController(locale);
-        controller.select(mode, resourcePath, title);
+        super.removePreview();
+        m_handler = null;
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#setDataInEditor()
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#saveProperties(java.util.Map)
      */
-    public boolean setDataInEditor() {
+    public void saveProperties(final Map<String, String> properties) {
 
-        CmsDebugLog.getInstance().printLine("Setting data");
-        if (m_controller == null) {
-            return true;
-        }
-        return m_controller.closeGalleryDialog();
-    }
+        CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
 
-    /**
-     * Exports the remove preview function.<p>
-     * 
-     * @param parentId the previews parent element id
-     */
-    private native void exportRemovePreview(String parentId) /*-{
-        $wnd["removePreview" + parentId] = function() {
-            @org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::m_instance.@org.opencms.ade.galleries.client.preview.CmsImageResourcePreview::removePreview()();
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().updateImageProperties(getResourcePath(), getLocale(), properties, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsImageInfoBean result) {
+
+                showData(result);
+            }
         };
-    }-*/;
+        action.execute();
+
+    }
 
     /**
-     * Removes the preview.<p>
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#selectResource(java.lang.String, java.lang.String)
      */
-    private void removePreview() {
+    @Override
+    public void selectResource(String resourcePath, String title) {
 
-        m_controller.removePreview();
-        m_controller = null;
+        CmsCroppingParamBean param;
+        switch (getGalleryMode()) {
+            case widget:
+                param = getInitialCroppingParameter(resourcePath);
+                if (CmsPreviewUtil.isAdvancedWidget()) {
+                    CmsPreviewUtil.setVfsImage(
+                        resourcePath,
+                        param.getScaleParam(),
+                        param.getFormatName(),
+                        ((double)param.getTargetWidth() / param.getTargetHeight()) + "");
+                } else {
+                    CmsPreviewUtil.setResourcePath(resourcePath
+                        + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
+                }
+                break;
+            case editor:
+                Map<String, String> attributes = new HashMap<String, String>();
+                attributes.put("title", title);
+                param = getInitialCroppingParameter(resourcePath);
+                attributes.put("width", String.valueOf(param.getResultingWidth()));
+                attributes.put("height", String.valueOf(param.getResultingHeight()));
+                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(resourcePath), attributes);
+                CmsPreviewUtil.closeDialog();
+                break;
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#setResource()
+     */
+    @Override
+    public void setResource() {
+
+        if (m_handler == null) {
+            throw new UnsupportedOperationException("Preview handler not initialized");
+        }
+        CmsCroppingParamBean croppingParam = m_handler.getCroppingParam();
+
+        switch (getGalleryMode()) {
+            case widget:
+                if (CmsPreviewUtil.isAdvancedWidget()) {
+                    CmsPreviewUtil.setVfsImage(
+                        m_infoBean.getResourcePath(),
+                        croppingParam.getScaleParam(),
+                        croppingParam.getFormatName(),
+                        ((double)croppingParam.getTargetWidth() / croppingParam.getTargetHeight()) + "");
+                } else {
+                    CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath()
+                        + ((croppingParam.isCropped() || croppingParam.isScaled())
+                        ? "?" + croppingParam.toString()
+                        : ""));
+                }
+                break;
+            case editor:
+                Map<String, String> attributes = m_handler.getImageAttributes();
+                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(
+                    m_infoBean.getResourcePath()
+                        + ((croppingParam.isCropped() || croppingParam.isScaled())
+                        ? "?" + croppingParam.toString()
+                        : "")), attributes);
+                break;
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
+    }
+
+    /**
+     * Returns the image info bean for the given resource.<p>
+     * 
+     * @param resourcePath the resource path
+     * 
+     * @return the image info bean
+     */
+    private CmsImageInfoBean getImageInfo(final String resourcePath) {
+
+        CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                A_CmsResourcePreview.getService().syncGetImageInfo(resourcePath, getLocale(), this);
+                start(0, true);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsImageInfoBean result) {
+
+                stop(false);
+            }
+        };
+        return action.executeSync();
+    }
+
+    /**
+     * Returns the initial cropping parameter bean for a given resource.<p>
+     * 
+     * @param galleryMode the gallery mode
+     * @param resourcePath the resource path
+     * 
+     * @return the cropping parameter bean
+     */
+    private CmsCroppingParamBean getInitialCroppingParameter(String resourcePath) {
+
+        CmsImageInfoBean imageInfo = getImageInfo(resourcePath);
+        CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
+            getGalleryMode(),
+            resourcePath,
+            imageInfo.getHeight(),
+            imageInfo.getWidth());
+        CmsCroppingParamBean param = formatHandler.getCroppingParam();
+        formatHandler.getFormats().values().iterator().next().adjustCroppingParam(param);
+        return param;
     }
 }

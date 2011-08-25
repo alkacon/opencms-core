@@ -27,26 +27,56 @@
 
 package org.opencms.ade.galleries.client.preview;
 
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+
+import java.util.Map;
+
 /**
  * Interface for resource preview within the galleries dialog.<p>
  * 
+ * @param <T> the resource info bean type
+ * 
  * @since 8.0.0
  */
-public interface I_CmsResourcePreview {
-
-    /** The open preview function key. */
-    String KEY_OPEN_PREVIEW_FUNCTION = "openPreview";
-
-    /** The preview provider list key. */
-    String KEY_PREVIEW_PROVIDER_LIST = "__CMS_PREVIEW_PROVIDER_LIST";
-
-    /** The select resource function key. */
-    String KEY_SELECT_RESOURCE_FUNCTION = "selectResource";
+public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
 
     /**
-     * Clears all instance fields.<p>
+     * Returns the gallery mode.<p>
+     * 
+     * @return the gallery mode
      */
-    void clear();
+    public GalleryMode getGalleryMode();
+
+    /**
+     * Gets the gallery dialog in which this preview is displayed.<p>
+     * 
+     * @return the gallery dialog  
+     */
+    CmsGalleryDialog getGalleryDialog();
+
+    /**
+     * Returns the preview handler.<p>
+     * 
+     * @return the preview handler
+     */
+    I_CmsPreviewHandler<T> getHandler();
+
+    /**
+     * Returns the current locale.<p>
+     * 
+     * @return the current locale
+     */
+    String getLocale();
+
+    /**
+     * Returns the preview dialog widget.<p>
+     * 
+     * @return the preview dialog widget
+     */
+    A_CmsPreviewDialog<T> getPreviewDialog();
 
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()}.<p>
@@ -56,24 +86,45 @@ public interface I_CmsResourcePreview {
     String getPreviewName();
 
     /**
+     * Returns the resource path of the current resource.<p>
+     * 
+     * @return the resource path
+     */
+    String getResourcePath();
+
+    /**
+     * Loads the resource info and displays the retrieved data.<p>
+     * 
+     * @param resourcePath the resource path
+     */
+    void loadResourceInfo(String resourcePath);
+
+    /**
      * Opens the preview for the given resource in the given gallery mode.<p>
      * 
-     * @param galleryMode the gallery mode
      * @param resourcePath the resource path
-     * @param locale the content locale
-     * @param parentElementId the dom element id to insert the preview into
      */
-    void openPreview(String galleryMode, String resourcePath, String locale, String parentElementId);
+    void openPreview(String resourcePath);
+
+    /**
+     * Removes the preview widget.<p>
+     */
+    void removePreview();
+
+    /**
+     * Saves the changed properties.<p>
+     * 
+     * @param properties the changed properties 
+     */
+    void saveProperties(Map<String, String> properties);
 
     /**
      * Sets the selected resource in the opening editor for the given gallery mode.<p>
      * 
-     * @param galleryMode the gallery mode
      * @param resourcePath the resource path
-     * @param locale the content locale
      * @param title the resource title
      */
-    void selectResource(String galleryMode, String resourcePath, String locale, String title);
+    void selectResource(String resourcePath, String title);
 
     /**
      * Checks if further user input is required and other wise sets the selected resource
@@ -84,4 +135,16 @@ public interface I_CmsResourcePreview {
      * @return <code>true</code> when all data has been set, <code>false</code> if there were any changes that need saving
      */
     boolean setDataInEditor();
+
+    /**
+     * Sets the current resource within the editor or xml-content.<p>
+     */
+    void setResource();
+
+    /**
+     * Calls the preview handler to display the given data.<p>
+     * 
+     * @param resourceInfo the resource info data
+     */
+    void showData(T resourceInfo);
 }

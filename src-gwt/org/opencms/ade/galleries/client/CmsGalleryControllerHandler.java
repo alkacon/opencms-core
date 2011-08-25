@@ -80,16 +80,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
-     * Returns the dialog root element id.<p>
-     * 
-     * @return the dialog root element id
-     */
-    public String getDialogElementId() {
-
-        return m_galleryDialog.getDialogElementId();
-    }
-
-    /**
      * Hides or shows the show-preview-button.<p>
      * 
      * @param hide <code>true</code> to hide the button
@@ -404,7 +394,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 

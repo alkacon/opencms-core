@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.client.preview;
 
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 
 /**
@@ -41,14 +42,16 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_CmsPropertiesHandler {
 
     /**
+     * Returns the gallery dialog.<p>
+     *
+     * @return the gallery dialog
+     */
+    public CmsGalleryDialog getGalleryDialog();
+
+    /**
      * Closes the preview.<p>
      */
     void closePreview();
-
-    /**
-     * Removes the preview.<p>
-     */
-    void removePreview();
 
     /**
      * Returns false, if the dialog may not be closed due to unsaved properties.<p>

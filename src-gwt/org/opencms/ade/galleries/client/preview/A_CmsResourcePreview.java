@@ -27,22 +27,154 @@
 
 package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.shared.property.CmsClientProperty;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
- * Entry point class to be extended by resource preview modules.<p>
+ * Preview dialog controller.<p>
+ * 
+ * This class handles the communication between preview dialog and the server.  
+ * 
+ * @param <T> the resource info bean type
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsResourcePreview extends A_CmsEntryPoint implements I_CmsResourcePreview {
+public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implements I_CmsResourcePreview<T> {
+
+    /** The preview service. */
+    private static I_CmsPreviewServiceAsync m_previewService;
+
+    /** The info bean of the binary preview dialog. */
+    protected T m_infoBean;
+
+    /** The gallery dialog in which this preview is displayed. */
+    private CmsGalleryDialog m_galleryDialog;
 
     /**
-     * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+     * Constructor.<p>
+     * 
+     * @param galleryDialog the gallery dialog instance
      */
-    @Override
-    public void onModuleLoad() {
+    protected A_CmsResourcePreview(CmsGalleryDialog galleryDialog) {
 
-        super.onModuleLoad();
-        CmsPreviewUtil.exportFunctions(this.getPreviewName(), this);
+        m_galleryDialog = galleryDialog;
+    }
+
+    /**
+     * Returns the preview service.<p>
+     * 
+     * @return the preview service
+     */
+    protected static I_CmsPreviewServiceAsync getService() {
+
+        if (m_previewService == null) {
+            m_previewService = GWT.create(I_CmsPreviewService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsPreviewService.gwt");
+            ((ServiceDefTarget)m_previewService).setServiceEntryPoint(serviceUrl);
+        }
+        return m_previewService;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getGalleryDialog()
+     */
+    public CmsGalleryDialog getGalleryDialog() {
+
+        return m_galleryDialog;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getGalleryMode()
+     */
+    public GalleryMode getGalleryMode() {
+
+        return m_galleryDialog.getController().getDialogMode();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getHandler()
+     */
+    public abstract I_CmsPreviewHandler<T> getHandler();
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getLocale()
+     */
+    public String getLocale() {
+
+        return m_galleryDialog.getController().getSearchLocale();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getResourcePath()
+     */
+    public String getResourcePath() {
+
+        return m_infoBean.getResourcePath();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#removePreview()
+     */
+    public void removePreview() {
+
+        getPreviewDialog().removeFromParent();
+        m_infoBean = null;
+        m_previewService = null;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String)
+     */
+    public void selectResource(String resourcePath, String title) {
+
+        switch (getGalleryMode()) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(resourcePath);
+                break;
+            case editor:
+                CmsPreviewUtil.setLink(resourcePath, title, null);
+                CmsPreviewUtil.closeDialog();
+                break;
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#setDataInEditor()
+     */
+    public boolean setDataInEditor() {
+
+        return getHandler().setDataInEditor();
+    }
+
+    /**
+     * Sets the current resource within the editor or xml-content.<p>
+     */
+    public void setResource() {
+
+        selectResource(m_infoBean.getResourcePath(), m_infoBean.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
+    }
+
+    /**
+     * Calls the preview handler to display the given data.<p>
+     * 
+     * @param resourceInfo the resource info data
+     */
+    public void showData(T resourceInfo) {
+
+        m_infoBean = resourceInfo;
+        getHandler().showData(resourceInfo);
     }
 }

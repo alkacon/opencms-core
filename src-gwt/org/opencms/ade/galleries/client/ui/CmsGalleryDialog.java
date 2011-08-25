@@ -34,7 +34,6 @@ import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
-import org.opencms.ade.galleries.client.preview.CmsBinaryResourcePreview;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -45,10 +44,8 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -83,9 +80,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
 
-    /** The dialog instances. */
-    private static Map<String, CmsGalleryDialog> m_instances = new HashMap<String, CmsGalleryDialog>();
-
     /** The parent panel for the gallery dialog. */
     protected FlowPanel m_parentPanel;
 
@@ -104,7 +98,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The HTML id of the dialog element. */
     private String m_dialogElementId;
 
-    /** The dnd manager. */
+    /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
     /** The galleries tab. */
@@ -159,7 +153,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
-        m_instances.put(m_dialogElementId, this);
         // set the default height of the dialog
         m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
         // tabs
@@ -180,23 +173,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
-        CmsBinaryResourcePreview.getInstance().setGalleryDialog(this);
         addResizeHandler(this);
-    }
-
-    /**
-     * Returns the preview dialog parent panel.<p>
-     * 
-     * @param dialogId the dialog id
-     * 
-     * @return the preview parent panel
-     */
-    public static FlowPanel getPreviewParent(String dialogId) {
-
-        if (m_instances.get(dialogId) != null) {
-            return m_instances.get(dialogId).getParentPanel();
-        }
-        return null;
     }
 
     /**
@@ -346,13 +323,23 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
-     * Returns the dialog element id.<p>
-     *
-     * @return the dialog element id
+     * Returns the HTML id of the dialog element
+     * 
+     * @return the HTML id of the dialog element
      */
-    public String getDialogElementId() {
+    public String getDialogId() {
 
         return m_dialogElementId;
+    }
+
+    /**
+     * Returns the drag and drop handler.<p>
+     *
+     * @return the drag and drop handler
+     */
+    public CmsDNDHandler getDndHandler() {
+
+        return m_dndHandler;
     }
 
     /**
