@@ -258,8 +258,7 @@ public class CmsUploadBean extends CmsJspBean {
                     }
                 } else {
                     // create the resource
-                    String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
-                    createSingleResource(newResname, content);
+                    String newResname = createSingleResource(fileName, targetFolder, content);
                     // add the name of the created resource to the list of successful created resources
                     m_resourcesCreated.add(newResname);
                 }
@@ -272,23 +271,26 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
-     * Creates a single resource.<p>
+     * Creates a single resource and returns the site path of the new resource.<p>
      * 
      * @param newResname the name of the resource to create
      * @param content the content of the resource to create
+     * 
+     * @return the new resource site path
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsLoaderException if something goes wrong
      * @throws CmsDbSqlException if something goes wrong
      */
-    private void createSingleResource(String newResname, byte[] content)
+    private String createSingleResource(String fileName, String targetFolder, byte[] content)
     throws CmsException, CmsLoaderException, CmsDbSqlException {
 
+        String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
         int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
         int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
 
         // determine Title property value to set on new resource
-        String title = CmsResource.getName(newResname);
+        String title = fileName;
         if (title.lastIndexOf('.') != -1) {
             title = title.substring(0, title.lastIndexOf('.'));
         }
@@ -336,6 +338,7 @@ public class CmsUploadBean extends CmsJspBean {
                 throw sqlExc;
             }
         }
+        return newResname;
     }
 
     /**
