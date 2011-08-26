@@ -39,7 +39,7 @@ dialogCommand.prototype.Execute = function() {
 			'<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
 			imageGalleryDialogUrl(),
 			685,
-			573
+			575
 		);
 	command.Execute();
 }
