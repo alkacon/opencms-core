@@ -156,8 +156,8 @@ function getAvailableModules() {
 			}
 			form.installModules.value = installModules.join("|");
 		} else {
-			if (form.availableComponents != null) {
-				form.installModules.value = componentModules[i];
+			if (form.availableComponents!= null && form.availableComponents.checked) {
+				form.installModules.value = componentModules[0];
 			}
 		}
 	} else {
@@ -170,8 +170,8 @@ function getAvailableModules() {
 			}
 			form.installModules.value = installModules.join("|");
 		} else {
-			if (form.availableModules != null) {
-				form.installModules.value = form.availableModules.value;
+			if (form.availableModules != null && form.availableModules.checked) {
+				form.installModules.value = modulePackageNames[0];
 			}
 		}
 	}
