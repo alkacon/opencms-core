@@ -37,6 +37,60 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0 = "GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_ATTRIBUTES_0 = "GUI_ADVANCED_TAB_LABEL_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_DESCRIPTION_0 = "GUI_ADVANCED_TAB_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_ID_0 = "GUI_ADVANCED_TAB_LABEL_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_LANGUAGE_CODE_0 = "GUI_ADVANCED_TAB_LABEL_LANGUAGE_CODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_SET_LINK_0 = "GUI_ADVANCED_TAB_LABEL_SET_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_STYLE_CLASSES_0 = "GUI_ADVANCED_TAB_LABEL_STYLE_CLASSES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_STYLE_RULES_0 = "GUI_ADVANCED_TAB_LABEL_STYLE_RULES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_TARGET_0 = "GUI_ADVANCED_TAB_LABEL_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_TEXT_DIRECTION_0 = "GUI_ADVANCED_TAB_LABEL_TEXT_DIRECTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_LABEL_URL_0 = "GUI_ADVANCED_TAB_LABEL_URL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_LEFT_TO_RIGHT_0 = "GUI_ADVANCED_TAB_VALUE_LEFT_TO_RIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_NEW_WINDOW_0 = "GUI_ADVANCED_TAB_VALUE_NEW_WINDOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_NOT_SET_0 = "GUI_ADVANCED_TAB_VALUE_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_PARENT_WINDOW_0 = "GUI_ADVANCED_TAB_VALUE_PARENT_WINDOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_RIGHT_TO_LEFT_0 = "GUI_ADVANCED_TAB_VALUE_RIGHT_TO_LEFT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_SELF_WINDOW_0 = "GUI_ADVANCED_TAB_VALUE_SELF_WINDOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADVANCED_TAB_VALUE_TOP_WINDOW_0 = "GUI_ADVANCED_TAB_VALUE_TOP_WINDOW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_NO_PARAMS_0 = "GUI_GALLERY_NO_PARAMS_0";
 
     /** Message constant for key in the resource bundle. */
