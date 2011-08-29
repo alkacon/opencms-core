@@ -39,7 +39,7 @@ dialogCommand.prototype.Execute = function() {
 			'<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
 			downloadGalleryDialogUrl(),
 			685,
-			575
+			577
 		);
 	command.Execute();
 }

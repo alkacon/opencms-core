@@ -23,7 +23,7 @@ div.editorGallery {}
 	div.editorGallery{
 	}
 }
-.galleryBody {
+div.galleryBody {
 	margin:0px;
 	padding:0px;
 	overflow: hidden;
@@ -34,23 +34,23 @@ body.galleryBody *{
 	background-color:transparent;
 }
 }
-.resultTabUpload{
+div.resultTabUpload{
 	float: right;
 	margin: 1px 1px 0 0;
 } 
 /* The height is set as inline style. */
-.parentPanel {
+div.parentPanel {
 	position:relative;
 	overflow: hidden;
 }
 
-.showPreview{
+div.showPreview{
 	position: absolute;
 	top: 2px;
 	right: 0px;
 }
 
-.criteriaList {
+div.criteriaList {
 	border:1px solid value("constants.css.borderColor");
 	height:414px;
 	overflow: auto;
@@ -63,15 +63,15 @@ body.galleryBody *{
 	height: 441px;
 }
 
-.selectboxWidth {
+div.selectboxWidth {
 	width: 200px;
 }
 
-.listIcon {
+div.listIcon {
 	margin:7px;
 }
 
-@sprite .showParams {
+@sprite div.showParams {
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
@@ -82,12 +82,12 @@ body.galleryBody *{
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
-.tabParamsPanel {
+div.tabParamsPanel {
 	margin-bottom: 5px;
 	padding-right: 25px;
 }
 
-.tabOptions {
+div.tabOptions {
 	clear: both;
 	margin-bottom: 5px;
 }
@@ -100,7 +100,7 @@ body.galleryBody *{
 	vertical-align: top !important;
 }
 
-.paramsText {
+div.paramsText {
 	margin-right:5px;
 	max-width: 600px;
 }
@@ -116,33 +116,38 @@ body.galleryBody *{
 	}
 }
 
-.searchTabRow {
+div.searchTabRow {
 	clear: both;
 	height: 24px;
+	margin-bottom: 5px;
 }
-.searchTabRowRightAlign {
+div.searchTabRowRightAlign {
 	clear: both;
 	text-align: right;
 }
-.searchTabLabelLeft {
+div.searchTabLabelLeft {
 	width: 120px;
 	float: left;
 	margin-top: 2px;
 }
-.searchTabLabelRight {
+div.searchTabLabelRight {
 	width: 120px;
 	float: right;
 	margin-top: 2px;
 }
-.searchTabInputLeft {
+div.searchTabInputLeft {
 	width: 166px;
 	float: left;
 }
-.searchTabInputRight {
+div.searchTabInputRight {
 	width: 166px;
 	float: right;
 }
-.searchTabBorderLayer {
+div.searchTabInputWide {
+	width: 497px;
+	float: right;
+}
+div.searchTabBorderLayer {
 	position:absolute; 
 	top:0px; 
 	right:0px; 
@@ -153,18 +158,18 @@ body.galleryBody *{
 	background: value("constants.css.backgroundColorDialog");
 	margin: value("constants.css.defaultSpace");
 }
-.searchTabDesMargin {
+div.searchTabDesMargin {
 	margin-bottom: 10px;
 }
 
-.infoLabel {
+div.infoLabel {
 	float: right;
 	margin-top: 5px;
 	margin-right: 5px;
 	text-align: right;
 }
 
-.noParamsMessage {
+div.noParamsMessage {
 	position: absolute;
     top: 0;
     right: 0;
@@ -175,7 +180,7 @@ body.galleryBody *{
     margin: 6px;
     padding: 6px;
 }
-.noParamsMessage > table {
+div.noParamsMessage > table {
 	height: 90px;
 	margin: auto;
 }
