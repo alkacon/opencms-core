@@ -280,7 +280,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                         new CmsSearchTabHandler(controller),
                         m_autoHideParent,
                         m_controller.getStartLocale(),
-                        m_controller.getAvailableLocales());
+                        m_controller.getAvailableLocales(),
+                        m_controller.getSearchScope());
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
@@ -323,7 +324,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
-     * Returns the HTML id of the dialog element
+     * Returns the HTML id of the dialog element.<p>
      * 
      * @return the HTML id of the dialog element
      */

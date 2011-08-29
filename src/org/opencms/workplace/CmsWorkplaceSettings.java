@@ -27,6 +27,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
@@ -76,6 +77,8 @@ public class CmsWorkplaceSettings {
     private CmsUserSettings m_userSettings;
     private String m_viewStartup;
     private String m_viewUri;
+
+    private CmsGallerySearchScope m_scope;
 
     /**
      * Constructor, only package visible.<p>
@@ -226,6 +229,14 @@ public class CmsWorkplaceSettings {
     public String getGalleryType() {
 
         return m_galleryType;
+    }
+
+    public CmsGallerySearchScope getLastSearchScope() {
+
+        if (m_scope == null) {
+            return CmsGallerySearchScope.siteShared;
+        }
+        return m_scope;
     }
 
     /**
@@ -547,6 +558,11 @@ public class CmsWorkplaceSettings {
     public void setGalleryType(String currentGallery) {
 
         m_galleryType = currentGallery;
+    }
+
+    public void setLastSearchScope(CmsGallerySearchScope scope) {
+
+        m_scope = scope;
     }
 
     /**

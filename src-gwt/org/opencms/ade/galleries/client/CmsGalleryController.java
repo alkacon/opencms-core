@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -253,6 +254,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Sets the search scope in the search object.<p>
+     *
+     * @param scope the search scope 
+     */
+    public void addScope(CmsGallerySearchScope scope) {
+
+        m_searchObject.setScope(scope);
+        m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
      * Adds the search query from the search tab.<p>
      * 
      * @param searchQuery the search query
@@ -400,6 +413,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public String getSearchLocale() {
 
         return m_searchObject.getLocale();
+    }
+
+    /**
+     * Returns the gallery search scope.<p>
+     * 
+     * @return the gallery search scope 
+     */
+    public CmsGallerySearchScope getSearchScope() {
+
+        return m_dialogBean.getScope();
     }
 
     /**
@@ -882,6 +905,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     CmsGallerySearchBean prepareSearchObject() {
 
         CmsGallerySearchBean preparedSearchObj = new CmsGallerySearchBean(m_searchObject);
+        preparedSearchObj.setReferencePath(m_dialogBean.getReferenceSitePath());
         // add the available types to the search object used for next search, 
         // if the criteria for types are empty
         if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {

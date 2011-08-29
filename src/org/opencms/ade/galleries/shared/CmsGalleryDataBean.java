@@ -84,6 +84,8 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
+    private CmsGallerySearchScope m_scope;
+
     /**
      * Returns the categories.<p>
      *
@@ -154,6 +156,11 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getReferenceSitePath() {
 
         return m_referenceSitePath;
+    }
+
+    public CmsGallerySearchScope getScope() {
+
+        return m_scope;
     }
 
     /**
@@ -265,6 +272,11 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setReferenceSitePath(String referenceSitePath) {
 
         this.m_referenceSitePath = referenceSitePath;
+    }
+
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_scope = scope;
     }
 
     /**

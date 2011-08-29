@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -240,6 +241,22 @@ public class CmsSearchTab extends A_CmsTab {
         }
     }
 
+    /**
+     * Internal handler for search scope changes.<p>
+     */
+    protected class ScopeChangeHandler implements ValueChangeHandler<String> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            String value = event.getValue();
+            m_tabHandler.setScope(CmsGallerySearchScope.valueOf(value));
+
+        }
+    }
+
     /** The ui-binder interface. */
     interface I_CmsSearchTabUiBinder extends UiBinder<HTMLPanel, CmsSearchTab> {
         // GWT interface, nothing to do here
@@ -295,6 +312,18 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected HTMLPanel m_localeRow;
 
+    /** The row for the search scope selection. */
+    @UiField
+    protected HTMLPanel m_scopeRow;
+
+    /** The label for the search scope selection. */
+    @UiField
+    protected Label m_scopeLabel;
+
+    /** The select box for the search scope selection. */
+    @UiField
+    protected CmsSelectBox m_scopeSelection;
+
     /** The select box for the language selection. */
     @UiField
     protected CmsSelectBox m_localeSelection;
@@ -319,6 +348,9 @@ public class CmsSearchTab extends A_CmsTab {
     /** The search parameter panel for this tab. */
     private CmsSearchParamPanel m_paramPanel;
 
+    /** The search scope. */
+    private CmsGallerySearchScope m_scope;
+
     /** The tab panel. */
     private HTMLPanel m_tab;
 
@@ -332,12 +364,14 @@ public class CmsSearchTab extends A_CmsTab {
      * @param autoHideParent the auto-hide parent to this dialog if present
      * @param currentLocale the current content locale
      * @param availableLocales the available locales
+     * @param scope the search scope 
      */
     public CmsSearchTab(
         CmsSearchTabHandler tabHandler,
         I_CmsAutoHider autoHideParent,
         String currentLocale,
-        Map<String, String> availableLocales) {
+        Map<String, String> availableLocales,
+        CmsGallerySearchScope scope) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search.name());
@@ -348,6 +382,17 @@ public class CmsSearchTab extends A_CmsTab {
         m_autoHideParent = autoHideParent;
         m_currentLocale = currentLocale;
         m_availableLocales = availableLocales;
+        m_scope = scope;
+
+        //add search roots selection
+        m_scopeLabel.setText("Search scope");
+        for (CmsGallerySearchScope choice : CmsGallerySearchScope.values()) {
+            String name = Messages.get().key(choice.getKey());
+            m_scopeSelection.addOption(choice.name(), name);
+        }
+        m_scopeSelection.setFormValueAsString(m_scope.name());
+
+        m_scopeSelection.addValueChangeHandler(new ScopeChangeHandler());
 
         // add the language selection
         m_localeLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0));
@@ -357,8 +402,9 @@ public class CmsSearchTab extends A_CmsTab {
         m_localeSelection.addOption(notSelectedCell);
         for (Map.Entry<String, String> entry : availableLocales.entrySet()) {
             m_localeSelection.addOption(entry.getKey(), entry.getValue());
-            m_localeSelection.addValueChangeHandler(new LanguageChangeHandler());
         }
+        m_localeSelection.addValueChangeHandler(new LanguageChangeHandler());
+
         // hide language selection if only one locale is available 
         if (availableLocales.size() <= 1) {
             m_localeRow.getElement().getStyle().setDisplay(Display.NONE);

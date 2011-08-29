@@ -27,6 +27,7 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
@@ -333,6 +334,12 @@ public class CmsGallerySearchParameters {
     /** Search words to search for. */
     private String m_words;
 
+    /** The gallery search scope. */
+    private CmsGallerySearchScope m_scope;
+
+    /** The sitemap reference path. */
+    private String m_referencePath;
+
     /**
      * Default constructor.<p>
      */
@@ -463,6 +470,16 @@ public class CmsGallerySearchParameters {
     }
 
     /**
+     * Gets the reference path.<p>
+     * 
+     * @return the gallery reference path 
+     */
+    public String getReferencePath() {
+
+        return m_referencePath;
+    }
+
+    /**
      * Returns the names of the resource types that have been included in the search result.<p>
      *
      * If no resource types have been set, then <code>null</code> is returned.<p>
@@ -486,6 +503,16 @@ public class CmsGallerySearchParameters {
     public int getResultPage() {
 
         return m_resultPage;
+    }
+
+    /**
+     * The gallery search scope.<p>
+     * 
+     * @return the gallery search scope 
+     */
+    public CmsGallerySearchScope getScope() {
+
+        return m_scope;
     }
 
     /**
@@ -692,6 +719,16 @@ public class CmsGallerySearchParameters {
         m_matchesPerPage = matchesPerPage;
     }
 
+    /** 
+     * Sets the gallery reference path.<p>
+     * 
+     * @param referencePath the gallery reference path 
+     */
+    public void setReferencePath(String referencePath) {
+
+        m_referencePath = referencePath;
+    }
+
     /**
      * Sets the names of the resource types to include in the search result.<p>
      *
@@ -720,6 +757,16 @@ public class CmsGallerySearchParameters {
     public void setResultPage(int resultPage) {
 
         m_resultPage = resultPage;
+    }
+
+    /** 
+     * Sets the search scope.<p>
+     * 
+     * @param scope the search scope 
+     */
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_scope = scope;
     }
 
     /**

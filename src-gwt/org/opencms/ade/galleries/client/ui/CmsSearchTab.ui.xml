@@ -10,6 +10,12 @@
 	
 	<g:HTMLPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
+		    <g:HTMLPanel ui:field="m_scopeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
+				<g:Label ui:field="m_scopeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}" style="margin-bottom: 15px; width: 506px;">
+					<input:CmsSelectBox ui:field="m_scopeSelection" />
+				</div>
+			</g:HTMLPanel>
 			<g:HTMLPanel ui:field="m_localeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_localeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
 				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}" style="margin-bottom: 15px; width: 506px;">

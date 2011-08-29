@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -259,6 +260,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setLocales(buildLocalesMap());
         data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
+        data.setScope(getWorkplaceSettings().getLastSearchScope());
         //  data.setReferenceSitePath(referenceSitePath)
         List<CmsResourceTypeBean> types = getResourceTypeBeans();
         switch (m_galleryMode) {
@@ -354,6 +356,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         try {
             gSearchObj = search(searchObj);
+            getWorkplaceSettings().setLastSearchScope(searchObj.getScope());
             setLastOpenedGallery(gSearchObj);
         } catch (Throwable e) {
             error(e);
@@ -383,6 +386,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         return null;
     }
 
+    /**
+     * Adds galleries for a given type.<p>
+     * 
+     * @param galleryTypeInfos the gallery type infos 
+     * @param typeName the type name 
+     * 
+     * @throws CmsLoaderException if something goes wrong 
+     */
     private void addGalleriesForType(Map<String, CmsGalleryTypeInfo> galleryTypeInfos, String typeName)
     throws CmsLoaderException {
 
@@ -518,21 +529,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String description = sResult.getDescription();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
                     bean.setDescription(description);
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
+                        description);
                 } else {
                     bean.setDescription(resourceTypeDisplayName);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
+                    resourceTypeDisplayName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_SIZE_0), (sResult.getLength() / 1000) + " kb");
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
+                    (sResult.getLength() / 1000) + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -540,15 +554,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(
+                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
+                            temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
-                    sResult.getDateLastModified(),
-                    DateFormat.SHORT,
-                    getWorkplaceLocale()));
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
+                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
@@ -565,10 +578,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * The map uses resource type name as the key and stores the CmsTypesListInfoBean as the value.
      * 
      * @param types the resource types
+     * @param creatableTypes the creatable types 
      * 
      * @return the map containing the available resource types
-     * 
-     * @throws CmsRpcException 
      */
     private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types, List<String> creatableTypes) {
 
@@ -589,9 +601,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.ERROR_BUILD_TYPE_LIST_1,
-                        type.getTypeName()), e);
+                    log(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.ERROR_BUILD_TYPE_LIST_1,
+                            type.getTypeName()),
+                        e);
                 }
             }
         }
@@ -602,6 +616,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Creates a resource type bean for the given type.<p>
      * 
      * @param type the resource type
+     * @param preview the preview provider 
      * @param creatable if the type may be created by the current user
      * 
      * @return the resource type bean
@@ -635,7 +650,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the search object containing the list with search results and the path to the specified resource.<p>
      * 
      * @param resourceName the given resource
-     * @param initialSearchObj the initial search object
+     * @param data the gallery data bean 
      * 
      * @return the gallery search object containing the current search parameter and the search result list
      */
@@ -751,7 +766,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Reads the preview provider configuration and generates needed type-provider mappings.<p>
      * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
+     * @param types the resource types 
+     * 
+     * @return a map from resource types to preview providers 
      */
     private Map<I_CmsResourceType, I_CmsPreviewProvider> getPreviewProviderForTypes(List<I_CmsResourceType> types) {
 
@@ -944,6 +961,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
         }
         params.setSortOrder(sortOrder);
+        if (searchData.getScope() == null) {
+            params.setScope(CmsGallerySearchScope.siteShared);
+        } else {
+            params.setScope(searchData.getScope());
+        }
+        params.setReferencePath(searchData.getReferencePath());
 
         // set the selected folders to the parameters
         params.setFolders(searchData.getFolders());

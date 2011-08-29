@@ -108,6 +108,12 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
 
+    /** The search scope. */
+    private CmsGallerySearchScope m_scope;
+
+    /** The gallery reference path. */
+    private String m_referencePath;
+
     /**
      * Empty default constructor. <p>
      */
@@ -140,6 +146,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setDateCreatedStart(searchObj.getDateCreatedStart());
         setDateModifiedEnd(searchObj.getDateModifiedEnd());
         setDateModifiedStart(searchObj.getDateModifiedStart());
+        setScope(searchObj.getScope());
     }
 
     /**
@@ -346,6 +353,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Gets the gallery reference path.<p>
+     * 
+     * @return the gallery reference path
+     */
+    public String getReferencePath() {
+
+        return m_referencePath;
+    }
+
+    /**
      * Returns the path to the selected resource in the current search.<p>
      *
      * @return the path to the selected resource
@@ -386,6 +403,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Gets the search scope.<p>
+     * 
+     * @return the search scope 
+     */
+    public CmsGallerySearchScope getScope() {
+
+        return m_scope;
+    }
+
+    /**
      * Returns the sort order of the search results.<p>
      *
      * @return the sortOrder
@@ -422,7 +449,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public boolean hasMore() {
 
-        return (m_resultCount > m_page * m_matchesPerPage);
+        return (m_resultCount > (m_page * m_matchesPerPage));
     }
 
     /**
@@ -606,6 +633,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Sets the gallery reference path.<p>
+     * 
+     * @param referencePath the gallery reference path 
+     */
+    public void setReferencePath(String referencePath) {
+
+        m_referencePath = referencePath;
+    }
+
+    /**
      * Sets the resourcePath.<p>
      *
      * @param resourcePath the resourcePath to set
@@ -643,6 +680,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setResults(List<CmsResultItemBean> results) {
 
         m_results = results;
+    }
+
+    /**
+     * Sets the search scope.<p>
+     * 
+     * @param scope the search scope 
+     */
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_scope = scope;
     }
 
     /**

@@ -27,6 +27,8 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+
 /**
  * The full text search tab handler.<p>
  * 
@@ -133,6 +135,16 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Sets the search scope.<p>
+     * 
+     * @param scope the search scope 
+     */
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_controller.addScope(scope);
+    }
+
+    /**
      * Delegates the clear input action (click on the clear button) to the controller.<p>
      * 
      * @param searchQuery the search query
@@ -141,4 +153,5 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
 
         m_controller.addSearchQuery(searchQuery);
     }
+
 }
