@@ -28,8 +28,10 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
+import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -159,29 +161,26 @@ public class CmsImageAdvancedForm extends Composite {
 
         initWidget(m_uiBinder.createAndBindUi(this));
 
-        m_labelUrl.setText("Url:");
-        m_labelTarget.setText("Target:");
-        m_labelId.setText("Id:");
-        m_labelStyleClasses.setText("Style classes:");
-        m_labelStyle.setText("Style rules:");
-        m_labelSetLink.setText("Set image as link:");
-        m_labelTagAttributes.setText("Additional image tag attributes:");
-        m_labelDescription.setText("Description:");
-        m_labelAdvisoryTitle.setText("Advisory Title:");
-        m_labelLanguageCode.setText("Language code:");
-        m_labelTextDirection.setText("Text direction:");
+        m_labelUrl.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_URL_0));
+        m_labelTarget.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_TARGET_0));
+        m_labelId.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_ID_0));
+        m_labelStyleClasses.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_STYLE_CLASSES_0));
+        m_labelStyle.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_STYLE_RULES_0));
+        m_labelSetLink.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_SET_LINK_0));
+        m_labelTagAttributes.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_ATTRIBUTES_0));
+        m_labelDescription.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_DESCRIPTION_0));
+        m_labelAdvisoryTitle.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0));
+        m_labelLanguageCode.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_LANGUAGE_CODE_0));
+        m_labelTextDirection.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_TEXT_DIRECTION_0));
 
-        m_selectTarget.addOption("", "not set");
-        m_selectTarget.addOption("_blank", "New window");
-        m_selectTarget.addOption("_top", "Topmost window");
-        m_selectTarget.addOption("_self", "Same window");
-        m_selectTarget.addOption("_parent", "Parent window");
+        m_selectTarget.addOption("", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_NOT_SET_0));
+        m_selectTarget.addOption("_blank", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_NEW_WINDOW_0));
+        m_selectTarget.addOption("_top", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_TOP_WINDOW_0));
+        m_selectTarget.addOption("_self", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_SELF_WINDOW_0));
+        m_selectTarget.addOption("_parent", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_PARENT_WINDOW_0));
 
-        m_selectTextDirection.addOption("ltr", "left to right");
-        m_selectTextDirection.addOption("rtl", "Right to left");
-        // buttons        
-
-        //        m_buttonBrowse.setText("Browse server");
+        m_selectTextDirection.addOption("ltr", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_LEFT_TO_RIGHT_0));
+        m_selectTextDirection.addOption("rtl", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_RIGHT_TO_LEFT_0));
         m_inputUrl.setButtonSize(Size.small);
         m_inputUrl.addInputStyleName(I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().input());
         m_fields = new HashMap<Attribute, I_CmsFormWidget>();
@@ -207,7 +206,11 @@ public class CmsImageAdvancedForm extends Composite {
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = imageAttributes.getString(entry.getKey().name());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
-                entry.getValue().setFormValueAsString(val);
+                if ((entry.getKey() == Attribute.linkPath) && val.startsWith(CmsCoreProvider.get().getVfsPrefix())) {
+                    entry.getValue().setFormValueAsString(val.substring(CmsCoreProvider.get().getVfsPrefix().length()));
+                } else {
+                    entry.getValue().setFormValueAsString(val);
+                }
             } else {
                 if (entry.getKey() == Attribute.title) {
                     entry.getValue().setFormValueAsString(
@@ -230,7 +233,11 @@ public class CmsImageAdvancedForm extends Composite {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(val)) {
                 continue;
             }
-            attributes.put(entry.getKey().name(), val);
+            if (entry.getKey() == Attribute.linkPath) {
+                attributes.put(entry.getKey().name(), CmsCoreProvider.get().substituteLinkForRootPath(val));
+            } else {
+                attributes.put(entry.getKey().name(), val);
+            }
         }
         return attributes;
     }

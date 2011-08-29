@@ -39,6 +39,7 @@ import org.opencms.util.CmsUUID;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * An asynchronous service interface for retrieving information about the VFS tree.<p>
@@ -150,5 +151,15 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback);
+
+    /**
+     * Returns the absolute link to the given root path.<p>
+     * 
+     * @param currentSiteRoot the current site
+     * @param rootPath the root path
+     * @param callback the asynchronous callback 
+     */
+    @SynchronizedRpcRequest
+    void substituteLinkForRootPath(String currentSiteRoot, String rootPath, AsyncCallback<String> callback);
 
 }

@@ -112,7 +112,9 @@ public interface I_CmsCoreService extends RemoteService {
      * Given a return code, returns the link to the page which corresponds to the return code.<p>
      * 
      * @param returnCode the return code 
+     * 
      * @return the link for the return code 
+     * 
      * @throws CmsRpcException if something goes wrong 
      */
     CmsReturnLinkInfo getLinkForReturnCode(String returnCode) throws CmsRpcException;

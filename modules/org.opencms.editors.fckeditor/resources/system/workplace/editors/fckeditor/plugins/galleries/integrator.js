@@ -6,7 +6,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
  *
  * Following function needs to be provided by the gallery dialog:<p>
  * 
- * boolean closeGalleryDialog()<p>
+ * boolean setDataInEditor()<p>
  * 
  * This should check if further user input is required and other wise set the selected resource via the provided functions <code>setLink</code> and <code>setImage</code>.<p>
  * Returning <code>true</code> when all data has been set and the dialog should be closed.<p>

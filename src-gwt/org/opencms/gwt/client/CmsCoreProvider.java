@@ -359,6 +359,32 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Returns the absolute link to the given root path.<p>
+     * 
+     * @param rootPath the root path
+     * 
+     * @return the absolute link
+     */
+    public String substituteLinkForRootPath(final String rootPath) {
+
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            @Override
+            public void execute() {
+
+                getVfsService().substituteLinkForRootPath(getSiteRoot(), rootPath, this);
+            }
+
+            @Override
+            protected void onResponse(String result) {
+
+                // nothing to do here
+            }
+        };
+        return action.executeSync();
+    }
+
+    /**
      * Unlocks the current resource.<p>
      * 
      * @return <code>true</code> if succeeded

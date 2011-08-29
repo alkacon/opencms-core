@@ -181,4 +181,16 @@ public interface I_CmsVfsService extends RemoteService {
      */
     void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException;
 
+    /**
+     * Returns the absolute link to the given root path.<p>
+     * 
+     * @param currentSiteRoot the current site
+     * @param rootPath the root path
+     * 
+     * @return the absolute link
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException;
+
 }

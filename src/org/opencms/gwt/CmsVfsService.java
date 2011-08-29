@@ -38,10 +38,10 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
-import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -408,6 +408,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#substituteLinkForRootPath(java.lang.String, java.lang.String)
+     */
+    public String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException {
+
+        String result = null;
+        try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot(currentSiteRoot);
+            result = OpenCms.getLinkManager().substituteLinkForRootPath(cms, rootPath);
+        } catch (CmsException e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -834,5 +850,4 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
                 properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
-
 }
