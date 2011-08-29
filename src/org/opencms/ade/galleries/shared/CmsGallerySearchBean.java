@@ -31,7 +31,9 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -70,7 +72,7 @@ public class CmsGallerySearchBean implements IsSerializable {
     private long m_dateModifiedStart = -1L;
 
     /** The list of selected vfs folders. */
-    private List<String> m_folders = new ArrayList<String>();
+    private Set<String> m_folders = new HashSet<String>();
 
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
@@ -294,7 +296,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      * 
      * @return the list of selected VFS folders 
      */
-    public List<String> getFolders() {
+    public Set<String> getFolders() {
 
         return m_folders;
     }
@@ -460,7 +462,7 @@ public class CmsGallerySearchBean implements IsSerializable {
     @SuppressWarnings("unchecked")
     public boolean isEmpty() {
 
-        List<String>[] params = new List[] {m_types, m_galleries, m_categories, m_folders};
+        List<String>[] params = new List[] {m_types, m_galleries, m_categories, new ArrayList<String>(m_folders)};
         for (List<String> paramList : params) {
             if ((paramList == null) || paramList.isEmpty()) {
                 return false;
@@ -577,7 +579,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      * 
      * @param folders the folders
      */
-    public void setFolders(List<String> folders) {
+    public void setFolders(Set<String> folders) {
 
         m_folders = folders;
     }

@@ -45,6 +45,8 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -140,7 +142,7 @@ public class CmsVfsTab extends A_CmsListTab {
         if (m_paramPanel == null) {
             m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_FOLDERS_0), this);
         }
-        String content = getVfsParams(searchObj.getFolders());
+        String content = getVfsParams(new ArrayList<String>(searchObj.getFolders()));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_paramPanel.setContent(content);
             return m_paramPanel;
@@ -168,7 +170,7 @@ public class CmsVfsTab extends A_CmsListTab {
      * 
      * @param folders the folders for which the checkboxes should be unchecked 
      */
-    public void uncheckFolders(List<String> folders) {
+    public void uncheckFolders(Collection<String> folders) {
 
         for (String folder : folders) {
             CmsLazyTreeItem item = m_itemsByPath.get(folder);

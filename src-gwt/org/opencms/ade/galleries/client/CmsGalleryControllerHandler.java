@@ -44,6 +44,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * 
      * @param folders the folders which have been cleared 
      */
-    public void onClearFolders(List<String> folders) {
+    public void onClearFolders(Collection<String> folders) {
 
         m_galleryDialog.getVfsTab().uncheckFolders(folders);
     }
@@ -394,7 +395,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 

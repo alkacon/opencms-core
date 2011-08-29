@@ -74,6 +74,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -688,7 +689,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (galleries.isEmpty()) {
             ArrayList<String> vfsFolders = new ArrayList<String>();
             vfsFolders.add(CmsResource.getFolderPath(resName));
-            initialSearchObj.setFolders(vfsFolders);
+            initialSearchObj.setFolders(new HashSet<String>(vfsFolders));
         }
         initialSearchObj.setLocale(data.getLocale());
         CmsGallerySearchBean searchObj = new CmsGallerySearchBean(initialSearchObj);
@@ -972,7 +973,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         params.setReferencePath(searchData.getReferencePath());
 
         // set the selected folders to the parameters
-        params.setFolders(searchData.getFolders());
+        params.setFolders(new ArrayList<String>(searchData.getFolders()));
 
         // set the categories to the parameters
         if (searchData.getCategories() != null) {

@@ -32,9 +32,9 @@ import org.opencms.ade.galleries.client.preview.I_CmsResourcePreview;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -60,6 +60,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -314,7 +315,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public void clearFolders() {
 
-        List<String> selectedFolders = m_searchObject.getFolders();
+        Set<String> selectedFolders = m_searchObject.getFolders();
         m_handler.onClearFolders(selectedFolders);
         m_searchObject.clearFolders();
         updateResultsTab(false);
