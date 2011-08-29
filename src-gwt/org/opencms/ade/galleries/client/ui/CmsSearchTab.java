@@ -385,7 +385,8 @@ public class CmsSearchTab extends A_CmsTab {
         m_scope = scope;
 
         //add search roots selection
-        m_scopeLabel.setText("Search scope");
+        String scopeLabelText = Messages.get().key(Messages.GUI_SEARCH_SCOPE_0);
+        m_scopeLabel.setText(scopeLabelText);
         for (CmsGallerySearchScope choice : CmsGallerySearchScope.values()) {
             String name = Messages.get().key(choice.getKey());
             m_scopeSelection.addOption(choice.name(), name);

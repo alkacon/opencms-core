@@ -33,9 +33,9 @@ import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -335,6 +335,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     result.setTypes(types);
                     result.setLocale(data.getLocale());
+                    if (data.getMode() == GalleryMode.view) {
+                        result.setScope(CmsGallerySearchScope.siteShared);
+                    }
                     result = search(result);
                 }
                 // remove all types

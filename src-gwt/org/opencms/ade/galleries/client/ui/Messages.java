@@ -304,6 +304,9 @@ public final class Messages {
     public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCH_SCOPE_0 = "GUI_SEARCH_SCOPE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0";
 
     /** Message constant for key in the resource bundle. */
