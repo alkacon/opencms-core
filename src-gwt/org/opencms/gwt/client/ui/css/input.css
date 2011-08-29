@@ -1,7 +1,7 @@
 @external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 /* inner text box of the text box widget */
-.textBox {
+input.textBox {
 	border: none;
 	width: 100%;
 	background: transparent;
@@ -18,7 +18,7 @@
 
 .textBoxWidget, .checkBox {}
 
-.textBoxReadOnly {
+input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
 

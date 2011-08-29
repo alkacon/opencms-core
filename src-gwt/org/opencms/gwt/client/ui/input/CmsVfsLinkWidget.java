@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -34,17 +35,13 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The vfs-link widget.<p>
@@ -85,7 +82,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
             public void onClick(ClickEvent event) {
 
-                openSelector();
+                openSelector(getSelectorUrl());
             }
         });
         m_main.add(m_browseButton);
@@ -257,33 +254,40 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
-     * Opens the vfs-selector.<p>
+     * Returns the URL to the link selector popup.<p>
+     * 
+     * @return the URL to the link selector popup
      */
-    protected void openSelector() {
+    protected String getSelectorUrl() {
 
-        m_browseButton.disable(Messages.get().key(Messages.GUI_BROWSING_0));
-        if (m_vfsSelector == null) {
-            m_vfsSelector = new CmsVfsSelector();
-            m_vfsSelector.setSelectCallback(new I_CmsSimpleCallback<String>() {
-
-                public void execute(String path) {
-
-                    m_textbox.setFormValueAsString(path);
-                    m_vfsSelector.hide();
-                    m_browseButton.enable();
-
-                }
-            });
-            m_vfsSelector.setAutoHideEnabled(true);
-            m_vfsSelector.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-                public void onClose(CloseEvent<PopupPanel> event) {
-
-                    m_browseButton.enable();
-                }
-            });
-        }
-        m_vfsSelector.center();
+        StringBuffer result = new StringBuffer(128);
+        result.append(CmsCoreProvider.get().link("/system/workplace/views/explorer/tree_fs.jsp"));
+        result.append("?type=vfswidget&includefiles=true&showsiteselector=true&projectaware=false&treesite=");
+        result.append(CmsCoreProvider.get().getSiteRoot());
+        return result.toString();
     }
+
+    /**
+     * Opens the vfs-selector.<p>
+     * 
+     * @param selectorUrl the URL to the link selector popup
+     */
+    protected native void openSelector(String selectorUrl)/*-{
+        var newwin = $wnd
+                .open(
+                        selectorUrl,
+                        "file_selector",
+                        "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=300,height=450");
+        if (newwin != null) {
+            if (newwin.opener == null) {
+                newwin.opener = $wnd.self;
+            }
+        }
+        newwin.focus();
+        var self = this;
+        $wnd.setFormValue = function(fileName) {
+            self.@org.opencms.gwt.client.ui.input.CmsVfsLinkWidget::setFormValueAsString(Ljava/lang/String;)(fileName);
+        }
+    }-*/;
 
 }
