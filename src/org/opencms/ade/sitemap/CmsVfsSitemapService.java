@@ -619,6 +619,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     containerBeans.add(cntBean);
                 }
             }
+            if (!foundContainer) {
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
+                    pageRes.getRootPath()));
+            }
             CmsContainerPageBean bean2 = new CmsContainerPageBean(locale, new ArrayList<CmsContainerBean>(
                 containerBeans));
             page.writeContainerPage(cms, locale, bean2);
@@ -1313,11 +1318,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsResource baseFolder = cms.readResource(cms.getRequestContext().removeSiteRoot(basePath));
         CmsResource defaultFile = cms.readDefaultFile(baseFolder);
         String title = cms.readPropertyObject(baseFolder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title) && (defaultFile != null)) {
             title = cms.readPropertyObject(defaultFile, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         }
         String description = cms.readPropertyObject(baseFolder, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description) && (defaultFile != null)) {
             description = cms.readPropertyObject(defaultFile, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
         }
         return new CmsSitemapInfo(

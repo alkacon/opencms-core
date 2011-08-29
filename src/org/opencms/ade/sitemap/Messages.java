@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_TITLE_MUST_NOT_BE_EMPTY_0 = "ERR_TITLE_MUST_NOT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_FUNCTION_DETAIL_CONTAINER_1 = "ERR_NO_FUNCTION_DETAIL_CONTAINER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_1 = "GUI_EDITOR_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
