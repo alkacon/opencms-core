@@ -43,11 +43,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xercesImpl-2.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xml-apis-2.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xmlbeans-2.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queries-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queries-3.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/pdfbox-1.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/fontbox-1.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/poi-3.7.jar"/>

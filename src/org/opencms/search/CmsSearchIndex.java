@@ -194,7 +194,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_31;
+    public static final Version LUCENE_VERSION = Version.LUCENE_33;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
