@@ -99,7 +99,6 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             addTab(createTab(m_newElementsList), Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
         }
         m_specialList = new CmsList<I_CmsListItem>();
-        m_specialList.add(makeRedirectItem());
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
         if (controller.getData().canEditDetailPages()) {
             for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
@@ -115,6 +114,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
 
         m_functionList = new CmsList<I_CmsListItem>();
+        m_functionList.add(makeRedirectItem());
         for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
                 CmsCreatableListItem item = makeDetailPageItem(typeInfo);
@@ -204,9 +204,6 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(typeInfo.getTypeName());
-        if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
-            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0), typeInfo.getDescription());
-        }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);
