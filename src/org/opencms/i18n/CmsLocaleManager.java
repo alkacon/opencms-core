@@ -247,6 +247,43 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Utility method to get the primary locale for a given resource.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource for which the locale should be retrieved
+     *  
+     * @return the primary locale 
+     */
+    public static Locale getMainLocale(CmsObject cms, CmsResource res) {
+
+        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
+        List<Locale> defaultLocales = null;
+        // must switch project id in stored Admin context to match current project
+        String defaultNames = null;
+        try {
+            defaultNames = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        if (defaultNames != null) {
+            defaultLocales = localeManager.getAvailableLocales(defaultNames);
+        }
+
+        if ((defaultLocales == null) || (defaultLocales.isEmpty())) {
+            // no default locales could be determined
+            defaultLocales = localeManager.getDefaultLocales();
+        }
+        Locale locale;
+        // return the first default locale name 
+        if ((defaultLocales != null) && (defaultLocales.size() > 0)) {
+            locale = defaultLocales.get(0);
+        } else {
+            locale = CmsLocaleManager.getDefaultLocale();
+        }
+        return locale;
+    }
+
+    /**
      * Returns the content encoding set for the given resource.<p>
      * 
      * The content encoding is controlled by the property {@link CmsPropertyDefinition#PROPERTY_CONTENT_ENCODING},
@@ -320,10 +357,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
             } catch (Exception e) {
                 // any Exception: the locale has not been changed, so there may be issues with the English
                 // localization but OpenCms will run in general
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.LOG_UNABLE_TO_SET_DEFAULT_LOCALE_2,
-                    Locale.ENGLISH,
-                    oldLocale), e);
+                CmsLog.INIT.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_UNABLE_TO_SET_DEFAULT_LOCALE_2,
+                        Locale.ENGLISH,
+                        oldLocale),
+                    e);
             }
         } else {
             if (CmsLog.INIT.isInfoEnabled()) {

@@ -60,6 +60,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -84,6 +85,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -150,7 +152,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
 
         /**
-         * Returns true if the lock was just locked 
+         * Returns true if the lock was just locked.<p> 
          * 
          * @return true if the lock was just locked 
          */
@@ -553,6 +555,34 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Removes unnecessary locales from a container page.<p>
+     * 
+     * @param containerPage the container page which should be changed 
+     * @param localeRes the resource used to determine the locale 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    void ensureSingleLocale(CmsXmlContainerPage containerPage, CmsResource localeRes) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        Locale mainLocale = CmsLocaleManager.getMainLocale(cms, localeRes);
+        OpenCms.getLocaleManager();
+        Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
+        if (containerPage.hasLocale(mainLocale)) {
+            removeAllLocalesExcept(containerPage, mainLocale);
+            // remove other locales 
+        } else if (containerPage.hasLocale(defaultLocale)) {
+            containerPage.copyLocale(defaultLocale, mainLocale);
+            removeAllLocalesExcept(containerPage, mainLocale);
+        } else if (containerPage.getLocales().size() > 0) {
+            containerPage.copyLocale(containerPage.getLocales().get(0), mainLocale);
+            removeAllLocalesExcept(containerPage, mainLocale);
+        } else {
+            containerPage.addLocale(cms, mainLocale);
+        }
+    }
+
+    /**
      * Gets the properties of a resource as a map of client properties.<p>
      * 
      * @param cms the CMS context to use 
@@ -572,27 +602,20 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Creates the data for a new container page by adding a new element to a designated container of an existing 
-     * container page.
+     * Adds a function detail element to a container page.<p>
      * 
-     * @param pageRes the original container page 
-     * @param elementId the structure id of the element to insert 
+     * @param cms the current CMS context 
+     * @param page the container page which should be changed 
+     * @param elementId the structure id of the element to add  
      * @param formatterId the structure id of the formatter for the element
      *  
-     * @return the content of the new container page 
      * @throws CmsException if something goes wrong 
      */
-    private byte[] addElementToContainerPage(CmsResource pageRes, CmsUUID elementId, CmsUUID formatterId)
-    throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsFile pageFile = cms.readFile(pageRes);
-        // explicity don't use the container page cache, because we are going to modify the XML in memory without saving 
-        // it back to the original file 
-        CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(cms, pageFile, true, true);
-
-        // we really only need to add a single element to a single container, the rest of the loops
-        // are merely for copying the other containers/elements to the new beans
+    private void addFunctionDetailElement(
+        CmsObject cms,
+        CmsXmlContainerPage page,
+        CmsUUID elementId,
+        CmsUUID formatterId) throws CmsException {
 
         List<Locale> pageLocales = page.getLocales();
         for (Locale locale : pageLocales) {
@@ -622,14 +645,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (!foundContainer) {
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
-                    pageRes.getRootPath()));
+                    page.getFile().getRootPath()));
             }
             CmsContainerPageBean bean2 = new CmsContainerPageBean(locale, new ArrayList<CmsContainerBean>(
                 containerBeans));
             page.writeContainerPage(cms, locale, bean2);
         }
-        byte[] data = page.marshal();
-        return data;
     }
 
     /**
@@ -637,6 +658,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @param entryPoint the sitemap entry-point
      * @param change the change
+     * 
+     * @return the updated entry 
      * 
      * @throws CmsException if something goes wrong
      */
@@ -746,6 +769,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param entryPoint the site-map entry-point
      * @param change the new change
      * 
+     * @return the updated entry 
+     * 
      * @throws CmsException if something goes wrong
      */
     private CmsClientSitemapEntry createNewEntry(String entryPoint, CmsSitemapChange change) throws CmsException {
@@ -814,17 +839,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
                 applyNavigationChanges(change, entryFolder);
                 entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
-                boolean isFunctionDetail = (change.getCreateParameter() != null)
-                    && CmsUUID.isValidUUID(change.getCreateParameter());
-                if (isFunctionDetail) {
-                    CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
-                    CmsResource functionFormatter = cms.readResource(CmsXmlDynamicFunctionHandler.FORMATTER_PATH);
-                    if (copyPage != null) {
-                        content = addElementToContainerPage(
-                            copyPage,
-                            functionStructureId,
-                            functionFormatter.getStructureId());
+                boolean isContainerPage = change.getNewResourceTypeId() == CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely();
+                if (isContainerPage && (copyPage != null)) {
+
+                    // do *NOT* get this from the cache, because we perform some destructive operation on the XML content 
+                    CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(
+                        cms,
+                        cms.readFile(copyPage),
+                        true,
+                        true);
+                    ensureSingleLocale(page, entryFolder);
+                    boolean isFunctionDetail = (change.getCreateParameter() != null)
+                        && CmsUUID.isValidUUID(change.getCreateParameter());
+                    if (isFunctionDetail) {
+                        CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
+                        CmsResource functionFormatter = cms.readResource(CmsXmlDynamicFunctionHandler.FORMATTER_PATH);
+                        addFunctionDetailElement(cms, page, functionStructureId, functionFormatter.getStructureId());
                     }
+                    content = page.marshal();
                 }
                 newRes = cms.createResource(entryPath, change.getNewResourceTypeId(), content, properties);
                 cms.writePropertyObjects(newRes, generateOwnProperties(change));
@@ -913,6 +945,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Deletes a resource according to the change data.<p>
      * 
      * @param change the change data
+     * 
+     * @return CmsClientSitemapEntry always null
      * 
      * 
      * @throws CmsException if something goes wrong
@@ -1010,7 +1044,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * Generates a list of property values inherited to the site-map root entry.<p>
      * 
-     * @param propertyConfig the property configuration
      * @param rootPath the root entry name
      * 
      * @return the list of property values inherited to the site-map root entry
@@ -1191,7 +1224,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Returns the new resource infos.<p>
      * 
      * @param cms the current CMS context 
-     * @param entryPoint the sitemap entry-point
+     * @param configData the configuration data from which the new resource infos should be read 
      * 
      * @return the new resource infos
      * 
@@ -1230,13 +1263,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * Gets the resource type info beans for types for which new detail pages can be created.<p>
      * 
-     * @param cms the current CMS context 
-     * @param entryPoint the sitemap entry-point 
-     * @param copyResource the copy resource
+     * @param cms the current CMS context
+     * @param configData the configuration data from which the resource type infos should be read  
      * 
      * @return the resource type info beans for types for which new detail pages can be created 
-     * 
-     * @throws CmsException if something goes wrong 
      */
     private List<CmsNewResourceInfo> getResourceTypeInfos(CmsObject cms, CmsADEConfigData configData) {
 
@@ -1257,7 +1287,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         for (CmsFunctionReference functionRef : functionRefs) {
             try {
                 CmsResource functionRes = cms.readResource(functionRef.getStructureId());
-                List<CmsProperty> props = cms.readPropertyObjects(functionRes, false);
                 CmsNewResourceInfo info = new CmsNewResourceInfo(
                     configData.getDefaultModelPage().getResource().getTypeId(),
                     CmsDetailPageInfo.FUNCTION_PREFIX + functionRef.getName(),
@@ -1351,12 +1380,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         return result;
     }
 
+    /**
+     * Checks whether the sitemap change has default file changes.<p>
+     * 
+     * @param change a sitemap change 
+     * @return true if the change would change the default file 
+     */
     private boolean hasDefaultFileChanges(CmsSitemapChange change) {
 
         return (change.getDefaultFileId() != null) && !change.isNew();
         //TODO: optimize this!
     }
 
+    /**
+     * Checks whether the sitemap change has changes for the sitemap entry resource.<p>
+     * 
+     * @param change the sitemap change 
+     * @return true if the change would change the original sitemap entry resource 
+     */
     private boolean hasOwnChanges(CmsSitemapChange change) {
 
         return !change.isNew();
@@ -1512,6 +1553,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Helper method for removing all locales except one from a container page.<p>
+     * 
+     * @param page the container page to proces
+     * @param localeToKeep the locale which should be kept 
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    private void removeAllLocalesExcept(CmsXmlContainerPage page, Locale localeToKeep) throws CmsXmlException {
+
+        List<Locale> locales = page.getLocales();
+        for (Locale locale : locales) {
+            if (!locale.equals(localeToKeep)) {
+                page.removeLocale(locale);
+            }
+        }
+    }
+
+    /**
      * Applys the given remove change.<p>
      * 
      * @param change the change to apply
@@ -1544,6 +1603,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @param detailPages saves the detailpage configuration
      * @param resource the configuration file resource
+     * @param newId the structure id to use for new detail page entries 
      * 
      * @throws CmsException
      */
