@@ -98,6 +98,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INDEX_SEARCHER_1 = "ERR_INDEX_SEARCHER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_SEARCHER_CLOSE_1 = "ERR_INDEX_SEARCHER_CLOSE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_SEARCHER_REOPEN_1 = "ERR_INDEX_SEARCHER_REOPEN_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_SHUTDOWN_1 = "ERR_INDEX_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */

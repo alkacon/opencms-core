@@ -109,6 +109,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected class LazyContentReader extends FilterIndexReader {
 
+        /** The initial index reader. */
+        private IndexReader m_reader;
+
         /**
          * Create a new lazy content reader.<p>
          * 
@@ -117,6 +120,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         public LazyContentReader(IndexReader indexReader) {
 
             super(indexReader);
+            m_reader = indexReader;
         }
 
         /**
@@ -126,6 +130,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         public Document document(int n) throws CorruptIndexException, IOException {
 
             return super.document(n, CONTENT_SELECTOR);
+        }
+
+        /**
+         * @see org.apache.lucene.index.IndexReader#reopen()
+         */
+        @Override
+        public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
+
+            return m_reader.reopen();
         }
     }
 
@@ -2017,15 +2030,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected synchronized void indexSearcherClose() {
 
-        // in case there is an index searcher available close it
-        if ((m_searcher != null) && (m_searcher.getIndexReader() != null)) {
-            try {
-                m_searcher.getIndexReader().close();
-                m_searcher.close();
-            } catch (Exception e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, getName()), e);
-            }
-        }
+        indexSearcherClose(m_searcher);
     }
 
     /**
@@ -2043,19 +2048,42 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected synchronized void indexSearcherOpen(String path) {
 
-        // first close the current searcher instance
-        indexSearcherClose();
-
-        // create the index searcher
+        IndexSearcher oldSearcher = null;
         try {
             Directory indexDirectory = FSDirectory.open(new File(path));
             if (IndexReader.indexExists(indexDirectory)) {
                 IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
+                if (m_searcher != null) {
+                    // store old searcher instance to close it later
+                    oldSearcher = m_searcher;
+                }
                 m_searcher = new IndexSearcher(reader);
                 m_displayFilters = new HashMap<String, Filter>();
             }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
+        }
+        if (oldSearcher != null) {
+            // close the old searcher if required
+            indexSearcherClose(oldSearcher);
+        }
+    }
+
+    /**
+     * Reopens the Lucene index search reader for this index, required after the index has been changed.<p>
+     * 
+     * @see #indexSearcherOpen(String)
+     */
+    protected synchronized void indexSearcherUpdate() {
+
+        // in case there is an index searcher available close it
+        if ((m_searcher != null) && (m_searcher.getIndexReader() != null)) {
+            try {
+                IndexReader newReader = m_searcher.getIndexReader().reopen();
+                m_searcher = new IndexSearcher(newReader);
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
+            }
         }
     }
 
@@ -2128,6 +2156,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             CmsFileUtil.purgeDirectory(file);
         } catch (Exception e) {
             // TODO: logging etc. 
+        }
+    }
+
+    /**
+     * Closes the given Lucene index searcher.<p>
+     * 
+     * @param searcher the searcher to close
+     */
+    private void indexSearcherClose(IndexSearcher searcher) {
+
+        // in case there is an index searcher available close it
+        if ((searcher != null) && (searcher.getIndexReader() != null)) {
+            try {
+                searcher.getIndexReader().close();
+                searcher.close();
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_CLOSE_1, getName()), e);
+            }
         }
     }
 }
