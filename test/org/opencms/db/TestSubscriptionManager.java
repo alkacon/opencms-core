@@ -128,9 +128,9 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
 
         subscribedUserResources = subMan.readSubscribedResources(cms, filter);
         assertEquals(2, subscribedUserResources.size());
-
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         subMan.markResourceAsVisitedBy(cms, "/folder2/page1.html", user);
-        Thread.sleep(WAIT_FOR_DB_MILLIS * 10);
+        Thread.sleep(WAIT_FOR_DB_MILLIS);
         filter.setMode(CmsSubscriptionReadMode.VISITED);
         subscribedUserResources = subMan.readSubscribedResources(cms, filter);
         assertEquals(1, subscribedUserResources.size());
