@@ -336,9 +336,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     result.setTypes(types);
                     result.setLocale(data.getLocale());
-                    if (data.getMode() == GalleryMode.view) {
-                        result.setScope(CmsGallerySearchScope.siteShared);
-                    }
+                    result.setScope(CmsGallerySearchScope.siteShared);
                     result = search(result);
                 }
                 // remove all types
@@ -1113,6 +1111,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         // set only the result dependent search params for this search
         // the user dependent params(galleries, types etc.) remain unchanged
         searchObjBean.setSortOrder(params.getSortOrder().name());
+        searchObjBean.setScope(params.getScope());
         searchObjBean.setResultCount(searchResults.getHitCount());
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setResults(buildSearchResultList(searchResults));
