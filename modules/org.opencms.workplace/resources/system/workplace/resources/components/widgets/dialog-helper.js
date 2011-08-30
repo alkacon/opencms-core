@@ -105,7 +105,7 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
 	 // 'allowtransparency' attribute needs to be set for IE7+IE8, 
 	 // this attribute and the 'name' attribute also can not be assigned after element creation,
 	 // it wouldn't have any effect in IE7+IE8
-	 var _iframe = $('<iframe '+ ($.browser.msie ? 'allowtransparency="true" ':'')+'src="'+dialogUrl+'" name="cms_iframe_' + fieldId+'" style="width: 100%; height: 100%; border: none;" frameborder="0" framespacing="0"/>');
+	 var _iframe = $('<iframe '+ ($.browser.msie ? 'allowtransparency="true" ':'')+'src="'+dialogUrl+'" name="cms_iframe_' + fieldId+'" style="width: 100%; height: 100%; border: none;" scrolling="no" frameborder="0" framespacing="0"/>');
      var _iframeBox = $('<div/>').appendTo(document.body);
          _iframeBox.css({
             'width': '100%',
