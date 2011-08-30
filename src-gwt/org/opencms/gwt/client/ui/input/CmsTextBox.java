@@ -82,11 +82,32 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The widget type identifier for this widget. */
     public static final String WIDGET_TYPE = "string";
 
+    /** Key codes for functional keys. */
+    protected static final int[] navigationCodes = {
+        KeyCodes.KEY_ALT,
+        KeyCodes.KEY_CTRL,
+        KeyCodes.KEY_DOWN,
+        KeyCodes.KEY_END,
+        KeyCodes.KEY_ENTER,
+        KeyCodes.KEY_ESCAPE,
+        KeyCodes.KEY_HOME,
+        KeyCodes.KEY_LEFT,
+        KeyCodes.KEY_RIGHT,
+        KeyCodes.KEY_SHIFT,
+        KeyCodes.KEY_TAB,
+        KeyCodes.KEY_UP};
+
     /** Default pseudo-padding for text boxes. */
     private static final int DEFAULT_PADDING = 4;
 
     /** A counter used for giving text box widgets ids. */
     private static int idCounter;
+
+    /** Flag for ghost mode. */
+    protected boolean m_ghostMode;
+
+    /** The ghost value. */
+    protected String m_ghostValue;
 
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
@@ -106,33 +127,14 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The width of the error message. */
     private String m_errorMessageWidth;
 
-    /** Flag for ghost mode. */
-    private boolean m_ghostMode;
-
     /** The container for the textbox container and error widget. */
     private FlowPanel m_panel = new FlowPanel();
 
     /** Signals whether the error message will be shown on mouse over. */
     private boolean m_preventShowError;
 
-    private String m_ghostValue;
-
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
-
-    protected static final int[] navigationCodes = {
-        KeyCodes.KEY_ALT,
-        KeyCodes.KEY_CTRL,
-        KeyCodes.KEY_DOWN,
-        KeyCodes.KEY_END,
-        KeyCodes.KEY_ENTER,
-        KeyCodes.KEY_ESCAPE,
-        KeyCodes.KEY_HOME,
-        KeyCodes.KEY_LEFT,
-        KeyCodes.KEY_RIGHT,
-        KeyCodes.KEY_SHIFT,
-        KeyCodes.KEY_TAB,
-        KeyCodes.KEY_UP};
 
     /**
      * Constructs a new instance of this widget.
@@ -621,6 +623,13 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_error.hideError();
     }
 
+    /**
+     * Checks if the given key code represents a functional key.<p>
+     * 
+     * @param keyCode the key code to check
+     * 
+     * @return <code>true</code> if the given key code represents a functional key
+     */
     protected boolean isNavigationKey(int keyCode) {
 
         for (int i = 0; i < navigationCodes.length; i++) {
