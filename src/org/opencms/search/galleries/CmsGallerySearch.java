@@ -29,13 +29,10 @@ package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.Messages;
 import org.opencms.util.CmsStringUtil;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Contains the functions for the gallery search.<p>
@@ -44,14 +41,8 @@ import org.apache.commons.logging.Log;
  */
 public class CmsGallerySearch {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsGallerySearch.class);
-
     /** The OpenCms object used for the search. */
     protected transient CmsObject m_cms;
-
-    /** The latest exception. */
-    protected Exception m_lastException;
 
     /** The gallery search index used for the gallery search. */
     CmsGallerySearchIndex m_index;
@@ -67,46 +58,29 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Returns the last exception that occurred during the last search operation.<p>
-     * 
-     * @return the last exception that occurred during the last search operation
-     */
-    public Exception getLastException() {
-
-        return m_lastException;
-    }
-
-    /**
      * Returns the gallery search result list.<p>
      *
      * @param params the gallery search parameters
      *
      * @return the gallery search result list
+     * 
+     * @throws CmsException if the search failed
      */
-    public CmsGallerySearchResultList getResult(CmsGallerySearchParameters params) {
+    public CmsGallerySearchResultList getResult(CmsGallerySearchParameters params) throws CmsException {
 
         CmsGallerySearchResultList result = null;
-        if ((m_cms != null) && (m_index != null)) {
+        if ((m_cms == null) && (m_index == null)) {
+            throw new CmsException(Messages.get().container(Messages.ERR_SEARCH_NOT_INITIALIZED_0));
+        }
 
-            try {
+        result = m_index.searchGallery(m_cms, params);
 
-                result = m_index.searchGallery(m_cms, params);
+        if (result.size() > 0) {
 
-                if (result.size() > 0) {
+            result.calculatePages(params.getResultPage(), params.getMatchesPerPage());
 
-                    result.calculatePages(params.getResultPage(), params.getMatchesPerPage());
-
-                } else {
-                    result = new CmsGallerySearchResultList();
-                }
-            } catch (Exception exc) {
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCHING_FAILED_0), exc);
-                }
-
-                m_lastException = exc;
-            }
+        } else {
+            result = new CmsGallerySearchResultList();
         }
 
         return result;
@@ -130,7 +104,6 @@ public class CmsGallerySearch {
     public void init(CmsObject cms) {
 
         m_cms = cms;
-        m_lastException = null;
     }
 
     /**
@@ -139,28 +112,25 @@ public class CmsGallerySearch {
      * A former search result will be deleted.<p>
      * 
      * @param indexName the name of the index
+     * 
+     * @throws CmsException if the index was not found or was not an instance of @link {@link org.opencms.search.galleries.CmsGallerySearchIndex}
      */
-    public void setIndex(String indexName) {
+    public void setIndex(String indexName) throws CmsException {
 
-        if (CmsStringUtil.isNotEmpty(indexName)) {
-            try {
-                CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                if (index == null) {
-                    throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
-                }
-                if (!(index instanceof CmsGallerySearchIndex)) {
-                    throw new CmsException(Messages.get().container(
-                        Messages.ERR_INDEX_WRONG_CLASS_2,
-                        indexName,
-                        CmsGallerySearchIndex.class.getName()));
-                }
-                m_index = (CmsGallerySearchIndex)index;
-            } catch (Exception exc) {
-                m_lastException = exc;
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
-                }
-            }
+        if (CmsStringUtil.isEmpty(indexName)) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INDEXSOURCE_CREATE_MISSING_NAME_0));
         }
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+        if (index == null) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
+        }
+        if (!(index instanceof CmsGallerySearchIndex)) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_INDEX_WRONG_CLASS_2,
+                indexName,
+                CmsGallerySearchIndex.class.getName()));
+        }
+        m_index = (CmsGallerySearchIndex)index;
+
     }
 }

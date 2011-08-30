@@ -128,6 +128,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_QUERY_TOO_SHORT_1 = "ERR_QUERY_TOO_SHORT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEARCH_NOT_INITIALIZED_0 = "ERR_SEARCH_NOT_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCH_PARAMS_1 = "ERR_SEARCH_PARAMS_1";
 
     /** Message constant for key in the resource bundle. */

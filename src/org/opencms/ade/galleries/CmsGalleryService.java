@@ -316,31 +316,36 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case view:
             case widget:
                 String currentelement = data.getCurrentElement();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
-                    log("looking up:" + currentelement);
-                    // removing the servlet context if present
-                    if (currentelement.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                        currentelement = currentelement.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                        log("removed context - result: " + currentelement);
+                try {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
+                        log("looking up:" + currentelement);
+                        // removing the servlet context if present
+                        if (currentelement.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                            currentelement = currentelement.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                            log("removed context - result: " + currentelement);
+                        }
+                        // get search results given resource path
+                        result = findResourceInGallery(currentelement, data);
                     }
-                    // get search results given resource path
-                    result = findResourceInGallery(currentelement, data);
-                }
-                if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
-                    result = new CmsGallerySearchBean();
-                    String gallery = data.getStartGallery();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(gallery)) {
-                        List<String> galleries = new ArrayList<String>();
-                        galleries.add(gallery);
-                        result.setGalleries(galleries);
+                    if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
+                        result = new CmsGallerySearchBean();
+                        String gallery = data.getStartGallery();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(gallery)) {
+                            List<String> galleries = new ArrayList<String>();
+                            galleries.add(gallery);
+                            result.setGalleries(galleries);
+                        }
+                        result.setTypes(types);
+                        result.setLocale(data.getLocale());
+                        result.setScope(CmsGallerySearchScope.siteShared);
+                        result = search(result);
                     }
-                    result.setTypes(types);
-                    result.setLocale(data.getLocale());
-                    result.setScope(CmsGallerySearchScope.siteShared);
-                    result = search(result);
+                    // remove all types
+                    result.setTypes(null);
+                } catch (CmsException e) {
+                    logError(e);
+                    result = null;
                 }
-                // remove all types
-                result.setTypes(null);
                 break;
             case ade:
             default:
@@ -531,24 +536,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String description = sResult.getDescription();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
                     bean.setDescription(description);
-                    bean.addAdditionalInfo(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
-                        description);
+                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
                 } else {
                     bean.setDescription(resourceTypeDisplayName);
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
-                    resourceTypeDisplayName);
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
-                    (sResult.getLength() / 1000) + " kb");
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_SIZE_0), (sResult.getLength() / 1000) + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -556,14 +558,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(
-                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
-                            temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
-                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
+                    sResult.getDateLastModified(),
+                    DateFormat.SHORT,
+                    getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
@@ -603,11 +606,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.ERROR_BUILD_TYPE_LIST_1,
-                            type.getTypeName()),
-                        e);
+                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.ERROR_BUILD_TYPE_LIST_1,
+                        type.getTypeName()), e);
                 }
             }
         }
@@ -655,8 +656,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param data the gallery data bean 
      * 
      * @return the gallery search object containing the current search parameter and the search result list
+     * 
+     * @throws CmsException if the search fails 
      */
-    private CmsGallerySearchBean findResourceInGallery(String resourceName, CmsGalleryDataBean data) {
+    private CmsGallerySearchBean findResourceInGallery(String resourceName, CmsGalleryDataBean data)
+    throws CmsException {
 
         CmsResource resource = null;
         int pos = resourceName.indexOf("?");
@@ -1095,8 +1099,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param searchObj the current search object 
      * 
      * @return the search result
+     * 
+     * @throws CmsException if the search fails 
      */
-    private CmsGallerySearchBean search(CmsGallerySearchBean searchObj) {
+    private CmsGallerySearchBean search(CmsGallerySearchBean searchObj) throws CmsException {
 
         CmsGallerySearchBean searchObjBean = new CmsGallerySearchBean(searchObj);
         if (searchObj == null) {
