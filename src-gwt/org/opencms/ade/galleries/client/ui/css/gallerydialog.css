@@ -23,15 +23,19 @@ div.editorGallery {}
 	div.editorGallery{
 	}
 }
-div.galleryBody {
+body.galleryBody, div.galleryBody {
 	margin:0px;
 	padding:0px;
 	overflow: hidden;
 }
+
 @if user.agent ie6 {
 body.galleryBody *{
 	zoom: 1;
 	background-color:transparent;
+}
+body.galleryBody{
+	height: 499px;
 }
 }
 div.resultTabUpload{
