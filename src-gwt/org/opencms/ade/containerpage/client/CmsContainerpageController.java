@@ -508,6 +508,7 @@ public final class CmsContainerpageController {
                 element.setNewType(null);
                 element.setId(result.getClientId());
                 element.setSitePath(result.getSitePath());
+                setPageChanged();
                 getHandler().hidePageOverlay();
                 getHandler().openEditorForElement(element);
             }
