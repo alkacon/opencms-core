@@ -226,19 +226,22 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
-        CmsGallerySearch gallerySearch = new CmsGallerySearch();
-        gallerySearch.init(m_cms);
-        gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsUUID structureId = resUtil.getResource().getStructureId();
-        CmsGallerySearchResult searchResult = gallerySearch.searchById(
-            structureId,
-            m_cms.getRequestContext().getLocale());
+        String title = resUtil.getTitle();
+        if (!structureId.isNullUUID()) {
+            CmsGallerySearch gallerySearch = new CmsGallerySearch();
+            gallerySearch.init(m_cms);
+            gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+            CmsGallerySearchResult searchResult = gallerySearch.searchById(
+                structureId,
+                m_cms.getRequestContext().getLocale());
+            title = searchResult.getTitle();
+        }
 
         CmsContainerElementData elementBean = new CmsContainerElementData();
         elementBean.setClientId(element.editorHash());
@@ -246,8 +249,7 @@ public class CmsElementUtil {
         elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
         elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
-        elementBean.setTitle(searchResult.getTitle());
-        elementBean.setDescription(searchResult.getDescription());
+        elementBean.setTitle(title);
         elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName());
         Set<String> cssResources = new LinkedHashSet<String>();
         for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
