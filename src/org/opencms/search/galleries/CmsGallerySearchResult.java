@@ -27,16 +27,26 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
@@ -50,6 +60,9 @@ import org.apache.lucene.document.Fieldable;
  *
  */
 public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult> {
+
+    /** The logger instance for this class. */
+    public static final Log LOG = CmsLog.getLog(CmsGallerySearchResult.class);
 
     /** The additional information for the gallery search index. */
     protected String m_additonalInfo;
@@ -106,14 +119,55 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     protected String m_userLastModified;
 
     /**
+     * Creates a fake gallery search result by reading the necessary data from a VFS resource.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource from which the data should be read 
+     */
+    public CmsGallerySearchResult(CmsObject cms, CmsResource res) {
+
+        try {
+            Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(res, true));
+            m_title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+            m_description = props.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (m_description == null) {
+            m_description = "";
+        }
+        if (m_title == null) {
+            m_title = "";
+        }
+        m_dateCreated = new Date(res.getDateCreated());
+        m_dateExpired = new Date(res.getDateExpired());
+        m_dateLastModified = new Date(res.getDateLastModified());
+        m_dateReleased = new Date(res.getDateReleased());
+        m_length = res.getLength();
+        m_locales = null;
+        m_path = res.getRootPath();
+        try {
+            m_resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        } catch (CmsLoaderException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+
+        }
+        m_state = res.getState().getState();
+        m_structureId = res.getStructureId().toString();
+        m_userCreated = res.getUserCreated().toString();
+        m_userLastModified = res.getUserLastModified().toString();
+    }
+
+    /**
      * Creates a new gallery search result.<p>
      * 
+     * @param cms the current CMS context (used for reading information missing from the index)
      * @param score the score of this search result
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
      * @param locale the locale to create the result for
      */
-    public CmsGallerySearchResult(int score, Document doc, String excerpt, Locale locale) {
+    public CmsGallerySearchResult(CmsObject cms, int score, Document doc, String excerpt, Locale locale) {
 
         m_score = score;
         m_excerpt = excerpt;
@@ -260,6 +314,22 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             String locales = f.stringValue();
             m_locales = CmsStringUtil.splitAsList(locales, ' ');
         }
+        if (cms != null) {
+            initializeMissingFieldsFromVfs(cms, new CmsUUID(m_structureId));
+        }
+    }
+
+    /**
+     * Creates a new gallery search result.<p>
+     * 
+     * @param score the score of this search result
+     * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
+     * @param excerpt the excerpt of the search result's content
+     * @param locale the locale to create the result for
+     */
+    public CmsGallerySearchResult(int score, Document doc, String excerpt, Locale locale) {
+
+        this(null, score, doc, excerpt, locale);
     }
 
     /**
@@ -497,5 +567,37 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     public int hashCode() {
 
         return m_path.hashCode();
+    }
+
+    /**
+     * Initializes missing fields by reading the information from the VFS.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param structureId the current structure id 
+     */
+    protected void initializeMissingFieldsFromVfs(CmsObject cms, CmsUUID structureId) {
+
+        if (structureId == null) {
+            return;
+        }
+        if ((m_title != null) && (m_description != null)) {
+            return;
+        }
+
+        try {
+            CmsResource res = cms.readResource(structureId);
+            if (m_description == null) {
+                CmsProperty descProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, true);
+                m_description = descProp.getValue();
+            }
+
+            if (m_title == null) {
+                CmsProperty titleProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, true);
+                m_title = titleProp.getValue();
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return;
+        }
     }
 }

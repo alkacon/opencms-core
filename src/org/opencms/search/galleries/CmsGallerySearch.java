@@ -28,11 +28,17 @@
 package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.Messages;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
+import java.util.Locale;
+
+import org.apache.lucene.document.Document;
 
 /**
  * Contains the functions for the gallery search.<p>
@@ -104,6 +110,29 @@ public class CmsGallerySearch {
     public void init(CmsObject cms) {
 
         m_cms = cms;
+    }
+
+    /**
+     * Searches by structure id.<p>
+     * 
+     * @param id the structure id of the document to search for 
+     * @param locale the locale for which the search result should be returned
+     *  
+     * @return the search result 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsGallerySearchResult searchById(CmsUUID id, Locale locale) throws CmsException {
+
+        Document doc = m_index.getDocument(id);
+        CmsGallerySearchResult result = null;
+        if (doc != null) {
+            result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);
+        } else {
+            CmsResource res = m_cms.readResource(id);
+            result = new CmsGallerySearchResult(m_cms, res);
+        }
+        return result;
     }
 
     /**

@@ -122,6 +122,9 @@ public enum CmsGallerySearchScope {
         if (m_shared && (sharedParam != null)) {
             result.add(sharedParam);
         }
+        if (this == CmsGallerySearchScope.siteShared) {
+            result.add("/system/modules/");
+        }
         return result;
     }
 }

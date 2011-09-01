@@ -512,6 +512,9 @@ public class CmsGallerySearchParameters {
      */
     public CmsGallerySearchScope getScope() {
 
+        if (m_scope == null) {
+            return CmsGallerySearchScope.siteShared;
+        }
         return m_scope;
     }
 

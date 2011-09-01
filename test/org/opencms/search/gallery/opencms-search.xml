@@ -9,7 +9,7 @@
 		<forceunlock>onlyfull</forceunlock>		
 		<excerpt>1024</excerpt>
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
-		<maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>	
+		<maxModificationsBeforeCommit>200</maxModificationsBeforeCommit>	
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>		
 		<documenttypes>		
 			<documenttype>
@@ -46,39 +46,6 @@
 					<resourcetype>jsp</resourcetype>
 				</resourcetypes>
 			</documenttype>		
-			<documenttype>
-				<name>msexcel</name>
-				<class>org.opencms.search.documents.CmsDocumentMsExcel</class>
-				<mimetypes>
-					<mimetype>application/vnd.ms-excel</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>		
-			<documenttype>
-				<name>mspowerpoint</name>
-				<class>org.opencms.search.documents.CmsDocumentMsPowerPoint</class>
-				<mimetypes>
-					<mimetype>application/vnd.ms-powerpoint</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>
-			<documenttype>
-				<name>msword</name>
-				<class>org.opencms.search.documents.CmsDocumentMsWord</class>
-				<mimetypes>
-					<mimetype>application/msword</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>	
 			<documenttype>
 				<name>pdf</name>
 				<class>org.opencms.search.documents.CmsDocumentPdf</class>
@@ -158,6 +125,32 @@
 				</resourcetypes>
 			</documenttype>		
 			<documenttype>
+				<name>msoffice-ole2</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
+				<mimetypes>
+					<mimetype>application/vnd.ms-powerpoint</mimetype>
+					<mimetype>application/msword</mimetype>		
+					<mimetype>application/vnd.ms-excel</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>					
+			<documenttype>
+				<name>msoffice-ooxml</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>
+				<mimetypes>				
+					<mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
+		        	<mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
+		        	<mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>					
+			<documenttype>
 				<name>openoffice</name>
 				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
 				<mimetypes>
@@ -195,8 +188,8 @@
 		</analyzers>
 		<indexes>
 			<index>
-				<name>Online project (VFS)</name>
-				<rebuild>manual</rebuild>
+				<name>Online project EN (VFS)</name>
+				<rebuild>auto</rebuild>
 				<project>Online</project>
 				<locale>en</locale>			
 				<sources>
@@ -204,15 +197,32 @@
 				</sources>		
 			</index>
 			<index>
-				<name>Offline project (VFS)</name>
-				<rebuild>manual</rebuild>
-				<project>Offline</project>
-				<locale>en</locale>		
-				<configuration>standard</configuration>	
+				<name>Online project DE (VFS)</name>
+				<rebuild>auto</rebuild>
+				<project>Online</project>
+				<locale>de</locale>			
 				<sources>
 					<source>source1</source>
 				</sources>		
 			</index>
+			<index>
+				<name>Offline project EN (VFS)</name>
+				<rebuild>offline</rebuild>
+				<project>Offline</project>
+				<locale>en</locale>			
+				<sources>
+					<source>source1</source>
+				</sources>		
+			</index>
+			<index>
+				<name>German online help</name>
+				<rebuild>auto</rebuild>
+				<project>Online</project>
+				<locale>de</locale>			
+				<sources>
+					<source>source2</source>
+				</sources>		
+			</index>	
             <index class="org.opencms.search.galleries.CmsGallerySearchIndex">
 				<name>Gallery Index</name>
 				<rebuild>offline</rebuild>
@@ -229,7 +239,7 @@
 				<name>source1</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
-					<resource>/sites/default/</resource>
+					<resource>/sites/</resource>
 				</resources>
 				<documenttypes-indexed>
 	                <name>xmlpage</name>
@@ -239,11 +249,11 @@
 	                <name>pdf</name>
 	                <name>rtf</name>
 	                <name>html</name>
-	                <name>msword</name>
-	                <name>msexcel</name>
-	                <name>mspowerpoint</name>
 	                <name>image</name>
-	                <name>generic</name>			
+	                <name>generic</name>		
+	                <name>msoffice-ole2</name>
+	                <name>msoffice-ooxml</name>
+	            	<name>openoffice</name>	                	
 				</documenttypes-indexed>				
 			</indexsource>
 			<indexsource>
@@ -266,16 +276,15 @@
 				<documenttypes-indexed>
 	                <name>xmlpage-galleries</name>
 					<name>xmlcontent-galleries</name>
-	                <name>page</name>
+					<name>jsp</name>
 	                <name>text</name>
 	                <name>pdf</name>
 	                <name>rtf</name>
 	                <name>html</name>
-	                <name>msword</name>
-	                <name>msexcel</name>
-	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>
+	                <name>msoffice-ole2</name>
+	                <name>msoffice-ooxml</name>
 	                <name>openoffice</name>
 				</documenttypes-indexed>				
 			</indexsource>     
@@ -283,54 +292,46 @@
 		<fieldconfigurations>		
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>The standard OpenCms search index field configuration.</description>
+				<description>The standard OpenCms 8.0 search index field configuration.</description>
 				<fields>
-					<field name="content" store="compress" index="true" excerpt="true">
+					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
 					</field>	
-					<field name="title-key" store="true" index="untokenized" boost="0.0">
+					<field name="title-key" display="-" store="true" index="untokenized" boost="0.0">
 						<mapping type="property">Title</mapping>
 					</field>	
-					<field name="title" store="false" index="true">
+					<field name="title" display="%(key.field.title)" store="false" index="true">
 						<mapping type="property">Title</mapping>
 					</field>	
-					<field name="keywords" store="true" index="true">
+					<field name="keywords" display="%(key.field.keywords)" store="true" index="true">
 						<mapping type="property">Keywords</mapping>
 					</field>	
-					<field name="description" store="true" index="true">
+					<field name="description" display="%(key.field.description)" store="true" index="true">
 						<mapping type="property">Description</mapping>
-					</field>						
-					<field name="meta" store="false" index="true">
+					</field>					
+					<field name="meta" display="%(key.field.meta)" store="false" index="true">
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Keywords</mapping>
 						<mapping type="property">Description</mapping>
-					</field>	
-					<field name="special" store="true" index="true">	
-						<mapping type="item">special</mapping>
-						<mapping type="item">Teaser[1]</mapping>
-						<mapping type="item">Teaser[2]</mapping>
-						<mapping type="item">Teaser[3]</mapping>
-						<mapping type="property">NavText</mapping>
-						<mapping type="property-search">search.special</mapping>
-					</field>	
+					</field>			
 				</fields>
-			</fieldconfiguration>
+			</fieldconfiguration>	
 			<fieldconfiguration class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
 				<name>gallery_fields</name>
 				<description>The OpenCms gallery search index field configuration.</description>
 				<fields>
-					<field name="content" store="compress" index="true" excerpt="true">
-						<mapping type="content" />
-					</field>	
-					<field name="title-key" store="true" index="untokenized" boost="0.0">
-						<mapping type="property">Title</mapping>
-					</field>	
-					<field name="title" store="false" index="true">
-						<mapping type="property">Title</mapping>
-					</field>
-					<field name="description" store="true" index="true">
-						<mapping type="property">Description</mapping>
-					</field>						
+					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
+                        <mapping type="content"/>
+                    </field>
+                    <field name="title-key" store="true" index="untokenized" boost="0.0">
+                        <mapping type="property">Title</mapping>
+                    </field>
+                    <field name="title" display="%(key.field.title)" store="false" index="true">
+                        <mapping type="property">Title</mapping>
+                    </field>
+                    <field name="description" display="%(key.field.description)" store="true" index="true">
+                        <mapping type="property">Description</mapping>
+                    </field>						
 					<field name="meta" store="false" index="true">
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Description</mapping>
@@ -347,7 +348,7 @@
 					<field name="res_state" store="true" index="untokenized">
 						<mapping type="attribute">state</mapping>
 					</field>
-                    <field name="res_structureId" store="true" index="false">
+                    <field name="res_structureId" store="true" index="untokenized">
 						<mapping type="attribute">structureId</mapping>
 					</field>									
 					<field name="res_userCreated" store="true" index="untokenized">

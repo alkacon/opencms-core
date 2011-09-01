@@ -35,13 +35,14 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
+import org.opencms.search.galleries.CmsGallerySearchParameters.CmsGallerySortParam;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
-import org.opencms.search.galleries.CmsGallerySearchParameters.CmsGallerySortParam;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.text.DateFormat;
 import java.util.Iterator;
@@ -121,8 +122,9 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(""
-                    + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+                System.out.print(CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                    17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {
@@ -145,6 +147,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
+        suite.addTest(new TestCmsGallerySearchBasic("testSearchById"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -343,5 +346,23 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             }
             lastLength = res.getLength();
         }
+    }
+
+    /**
+     * Tests searching documents by their structure ID.<p>
+     * 
+     * @throws Exception
+     */
+    public void testSearchById() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search by id");
+        CmsGallerySearch search = new CmsGallerySearch();
+        search.init(cms);
+        search.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        CmsGallerySearchResult result = search.searchById(
+            new CmsUUID("7d6c22cd-4e3a-11db-9016-5bf59c6009b3"),
+            new Locale("en"));
+        assertTrue(result.getPath().endsWith("/index.html"));
     }
 }

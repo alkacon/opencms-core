@@ -41,8 +41,12 @@ import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchIndex;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -109,6 +113,7 @@ public class CmsElementUtil {
     /** The http response. */
     private HttpServletResponse m_res;
 
+    /** The standard context bean. */
     private CmsJspStandardContextBean m_standardContext;
 
     /**
@@ -221,18 +226,28 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
+        CmsGallerySearch gallerySearch = new CmsGallerySearch();
+        gallerySearch.init(m_cms);
+        gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
+        CmsUUID structureId = resUtil.getResource().getStructureId();
+        CmsGallerySearchResult searchResult = gallerySearch.searchById(
+            structureId,
+            m_cms.getRequestContext().getLocale());
+
         CmsContainerElementData elementBean = new CmsContainerElementData();
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
         elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
         elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
-        elementBean.setTitle(resUtil.getTitle());
+        elementBean.setTitle(searchResult.getTitle());
+        elementBean.setDescription(searchResult.getDescription());
         elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName());
         Set<String> cssResources = new LinkedHashSet<String>();
         for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
@@ -329,11 +344,13 @@ public class CmsElementUtil {
      * 
      * @param element the element bean
      * @param formatter the formatter uri
+     * @param container the container for which the element content should be retrieved 
      * 
      * @return generated html code
      * 
      * @throws CmsException if an cms related error occurs
      * @throws ServletException if a jsp related error occurs
+     * 
      * @throws IOException if a jsp related error occurs
      */
     private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)

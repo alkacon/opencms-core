@@ -44,20 +44,26 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.util.CmsUUID;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilterClause;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
 
 /**
@@ -106,6 +112,32 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         super();
         setName(name);
         setRequireViewPermission(true);
+    }
+
+    /**
+     * Returns the Lucene document with the given root path from the index.<p>
+     * 
+     * @param structureId the structure id of the document to retrieve  
+     * 
+     * @return the Lucene document with the given root path from the index
+     */
+    public Document getDocument(CmsUUID structureId) {
+
+        Document result = null;
+        IndexSearcher searcher = getSearcher();
+        if (searcher != null) {
+            // search for an exact match on the document root path
+            Term idTerm = new Term(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
+            try {
+                TopDocs hits = searcher.search(new TermQuery(idTerm), 1);
+                if (hits.scoreDocs.length > 0) {
+                    result = searcher.doc(hits.scoreDocs[0].doc);
+                }
+            } catch (IOException e) {
+                // ignore, return null and assume document was not found
+            }
+        }
+        return result;
     }
 
     /**
@@ -186,11 +218,9 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             if (params.getFolders() != null) {
                 folders.addAll(params.getFolders());
             }
-
             if (params.getGalleries() != null) {
                 folders.addAll(params.getGalleries());
             }
-
             filter = appendPathFilter(searchCms, filter, folders);
 
             String shared = OpenCms.getSiteManager().getSharedFolder();
@@ -381,6 +411,43 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
+     * Appends the a VFS path filter to the given filter clause that matches all given root paths.<p>
+     * 
+     * In case the provided List is null or empty, the current request context site root is appended.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param roots the VFS root paths that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    @Override
+    protected BooleanFilter appendPathFilter(CmsObject cms, BooleanFilter filter, List<String> roots) {
+
+        // complete the search root
+        TermsFilter pathFilter = new TermsFilter();
+        if ((roots != null) && (roots.size() > 0)) {
+            // add the all configured search roots with will request context
+            for (int i = 0; i < roots.size(); i++) {
+                String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                extendPathFilter(pathFilter, searchRoot);
+            }
+        } else {
+            // use the current site root as the search root
+            extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
+            // also add the shared folder (v 8.0)
+            extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+            extendPathFilter(pathFilter, "/system/modules/");
+        }
+
+        // add the calculated path filter for the root path
+        filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
+        return filter;
+    }
+
+    /**
      * Checks if the provided resource should be excluded from this search index.<p> 
      *
      * With the introduction of the gallery search index in OpenCms 8, the meaning 
@@ -466,4 +533,5 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         }
         return result;
     }
+
 }
