@@ -50,6 +50,7 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -111,6 +113,7 @@ public class CmsADEConfigData {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
 
+    /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences;
 
     /** 
@@ -131,6 +134,7 @@ public class CmsADEConfigData {
      * @param discardInheritedProperties the "discard inherited properties" flag  
      * @param detailPageInfos the detail page configuration
      * @param modelPages the model page configuration
+     * @param functionReferences the function reference configuration 
      * @param discardInheritedModelPages the "discard  inherited model pages" flag 
      * @param createContentsLocally the "create contents locally" flag 
      */
@@ -349,6 +353,13 @@ public class CmsADEConfigData {
         return result;
     }
 
+    /**
+     * Gets the formatter configuration for a resource.<p>
+     * 
+     * @param res the resource for which the formatter configuration should be retrieved  
+     * 
+     * @return the configuration of formatters for the resource 
+     */
     public CmsFormatterConfiguration getFormatters(CmsResource res) {
 
         int resTypeId = res.getTypeId();
@@ -368,6 +379,11 @@ public class CmsADEConfigData {
         }
     }
 
+    /**
+     * Gets the list of configured function references.<p>
+     * 
+     * @return the list of configured function references 
+     */
     public List<CmsFunctionReference> getFunctionReferences() {
 
         return internalGetFunctionReferences();
@@ -734,6 +750,13 @@ public class CmsADEConfigData {
         return typeConfig.getFormatterConfiguration();
     }
 
+    /**
+     * Gets the formatters from the schema.<p>
+     * 
+     * @param res the resource for which the formatters should be retrieved 
+     * 
+     * @return the formatters from the schema 
+     */
     protected CmsFormatterConfiguration getFormattersFromSchema(CmsResource res) {
 
         try {
@@ -745,11 +768,15 @@ public class CmsADEConfigData {
         }
     }
 
+    /**
+     * Internal method for getting the function references.<p>
+     *  
+     * @return the function references 
+     */
     protected List<CmsFunctionReference> internalGetFunctionReferences() {
 
         checkInitialized();
         CmsADEConfigData parentData = parent();
-        List<CmsFunctionReference> parentFunctionReferentces = null;
         if ((parentData == null)) {
             if (m_isModuleConfig) {
                 return Collections.unmodifiableList(m_functionReferences);
@@ -851,6 +878,38 @@ public class CmsADEConfigData {
         m_ownPropertyConfigurations = combineConfigurationElements(parentProperties, m_ownPropertyConfigurations);
         m_ownModelPageConfig = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
         m_functionReferences = combineConfigurationElements(parentFunctionRefs, m_functionReferences);
+    }
+
+    /**
+     * Handle the ordering from the module configurations.<p>
+     */
+    protected void processModuleOrdering() {
+
+        Collections.sort(m_ownResourceTypes, new Comparator<CmsResourceTypeConfig>() {
+
+            public int compare(CmsResourceTypeConfig a, CmsResourceTypeConfig b) {
+
+                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(
+                    a.getTypeName(),
+                    b.getTypeName()).result();
+            }
+        });
+
+        Collections.sort(m_ownPropertyConfigurations, new Comparator<CmsPropertyConfig>() {
+
+            public int compare(CmsPropertyConfig a, CmsPropertyConfig b) {
+
+                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
+            }
+        });
+
+        Collections.sort(m_functionReferences, new Comparator<CmsFunctionReference>() {
+
+            public int compare(CmsFunctionReference a, CmsFunctionReference b) {
+
+                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
+            }
+        });
     }
 
     /**

@@ -50,17 +50,32 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     /** True if this property is disabled. */
     private boolean m_disabled;
 
+    /** The order. **/
+    private int m_order;
+
     /**
-     * Creates a new property configuration bean.<p> 
+     * Creates a new propery configuration bean.<p>
      * 
-     * @param propData the property data
-     *  
+     * @param propData the property data 
      * @param disabled true if this property is disabled 
      */
     public CmsPropertyConfig(CmsXmlContentProperty propData, boolean disabled) {
 
+        this(propData, disabled, 100);
+    }
+
+    /**
+     * Creates a new property configuration bean.<p> 
+     * 
+     * @param propData the property data
+     * @param disabled true if this property is disabled
+     * @param order the number used for sorting the property configurations   
+     */
+    public CmsPropertyConfig(CmsXmlContentProperty propData, boolean disabled, int order) {
+
         m_propData = propData;
         m_disabled = disabled;
+        m_order = order;
     }
 
     /**
@@ -69,7 +84,7 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     @Override
     public CmsPropertyConfig clone() {
 
-        return new CmsPropertyConfig(m_propData, m_disabled);
+        return new CmsPropertyConfig(m_propData, m_disabled, m_order);
     }
 
     /**
@@ -88,6 +103,16 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     public String getName() {
 
         return m_propData.getName();
+    }
+
+    /**
+     * Gets the order.<p>
+     * 
+     * @return the order 
+     */
+    public int getOrder() {
+
+        return m_order;
     }
 
     /** 

@@ -89,6 +89,7 @@ public class CmsConfigurationReader {
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
+    /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
 
     /** 
@@ -101,6 +102,11 @@ public class CmsConfigurationReader {
         m_cms = cms;
     }
 
+    /**
+     * Returns the list of function references.<p>
+     * 
+     * @return the list of function references 
+     */
     public List<CmsFunctionReference> getFunctionReferences() {
 
         return new ArrayList<CmsFunctionReference>(m_functionReferences);
@@ -264,6 +270,17 @@ public class CmsConfigurationReader {
             detailPagesDisabled = Boolean.parseBoolean(detailPagesDisabledStr);
         }
 
+        int order = 100;
+        I_CmsXmlContentValueLocation orderLoc = node.getSubValue("Order");
+        if (orderLoc != null) {
+            try {
+                String orderStr = orderLoc.asString(m_cms);
+                order = Integer.parseInt(orderStr);
+            } catch (NumberFormatException e) {
+                // noop
+            }
+        }
+
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues("Formatter")) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -276,7 +293,8 @@ public class CmsConfigurationReader {
             folderOrName,
             namePattern,
             formatterConfig,
-            detailPagesDisabled);
+            detailPagesDisabled,
+            order);
         m_resourceTypeConfigs.add(typeConfig);
     }
 
@@ -374,7 +392,9 @@ public class CmsConfigurationReader {
         for (int i = 0; i < (configurations.size() - 1); i++) {
             configurations.get(i + 1).mergeParent(configurations.get(i));
         }
-        return configurations.get(configurations.size() - 1);
+        CmsADEConfigData result = configurations.get(configurations.size() - 1);
+        result.processModuleOrdering();
+        return result;
     }
 
     /**
@@ -395,11 +415,27 @@ public class CmsConfigurationReader {
         m_detailPageConfigs.add(detailPage);
     }
 
-    protected void parseFunctionReference(I_CmsXmlContentLocation node) throws CmsException {
+    /**
+     * Parses a function reference node.<p>
+     * 
+     * @param node the function reference node 
+     */
+    protected void parseFunctionReference(I_CmsXmlContentLocation node) {
 
         String name = node.getSubValue("Name").asString(m_cms);
         CmsUUID functionId = node.getSubValue("Function").asId(m_cms);
-        m_functionReferences.add(new CmsFunctionReference(name, functionId));
+
+        I_CmsXmlContentValueLocation orderNode = node.getSubValue("Order");
+        int order = 100;
+        if (orderNode != null) {
+            String orderStr = orderNode.asString(m_cms);
+            try {
+                order = Integer.parseInt(orderStr);
+            } catch (NumberFormatException e) {
+                // noop
+            }
+        }
+        m_functionReferences.add(new CmsFunctionReference(name, functionId, order));
     }
 
     /**
@@ -423,6 +459,14 @@ public class CmsConfigurationReader {
         String disabledStr = getString(field.getSubValue("Disabled"));
         boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
 
+        String orderStr = getString(field.getSubValue("Order"));
+        int order = 100;
+        try {
+            order = Integer.parseInt(orderStr);
+        } catch (NumberFormatException e) {
+            // noop 
+        }
+
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             "string",
@@ -435,10 +479,8 @@ public class CmsConfigurationReader {
             description,
             error,
             preferFolder);
-
         // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
-
-        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled);
+        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
         m_propertyConfigs.add(propConfig);
     }
 

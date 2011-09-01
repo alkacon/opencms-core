@@ -44,16 +44,21 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
     /** The function resource structure id. */
     private CmsUUID m_structureId;
 
+    /** A number used for sorting the function references.<p>*/
+    private int m_order;
+
     /**
      * Creates a new function reference.<p>
      * 
      * @param name the name of the function reference 
      * @param structureId the structure id of the function 
+     * @param order the number used for sorting the function references 
      */
-    public CmsFunctionReference(String name, CmsUUID structureId) {
+    public CmsFunctionReference(String name, CmsUUID structureId, int order) {
 
         m_name = name;
         m_structureId = structureId;
+        m_order = order;
     }
 
     /**
@@ -72,6 +77,16 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * The order information for sorting the function references.<p>
+     * 
+     * @return the order information 
+     */
+    public int getOrder() {
+
+        return m_order;
     }
 
     /**
@@ -99,5 +114,4 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
 
         return child;
     }
-
 }

@@ -84,6 +84,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The CMS object used for VFS operations. */
     protected CmsObject m_cms;
 
+    /** The number used for sorting the resource type configurations. */
+    private int m_order;
+
     /** 
      * Creates a new resource type configuration.<p>
      * 
@@ -100,7 +103,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         CmsFormatterConfiguration formatterConfig) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false);
+        this(typeName, disabled, folder, pattern, formatterConfig, false, 100);
     }
 
     /** 
@@ -111,6 +114,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param folder the folder reference 
      * @param pattern the name pattern 
      * @param formatterConfig the formatter configuration 
+     * @param detailPagesDisabled true if detail page creation should be disabled for this type
+     * @param order the number used for sorting resource types from modules  
      */
     public CmsResourceTypeConfig(
         String typeName,
@@ -118,7 +123,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsFolderOrName folder,
         String pattern,
         CmsFormatterConfiguration formatterConfig,
-        boolean detailPagesDisabled) {
+        boolean detailPagesDisabled,
+        int order) {
 
         m_typeName = typeName;
         m_disabled = disabled;
@@ -126,6 +132,28 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_namePattern = pattern;
         m_formatterConfig = formatterConfig;
         m_detailPagesDisabled = detailPagesDisabled;
+        m_order = order;
+    }
+
+    /** 
+     * Creates a new resource type configuration.<p>
+     * 
+     * @param typeName the resource type name 
+     * @param disabled true if this is a disabled configuration 
+     * @param folder the folder reference 
+     * @param pattern the name pattern 
+     * @param formatterConfig the formatter configuration 
+     * @param order the number used for sorting resource types from modules 
+     */
+    public CmsResourceTypeConfig(
+        String typeName,
+        boolean disabled,
+        CmsFolderOrName folder,
+        String pattern,
+        CmsFormatterConfiguration formatterConfig,
+        int order) {
+
+        this(typeName, disabled, folder, pattern, formatterConfig, false, order);
     }
 
     /** 
@@ -277,6 +305,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return createdResource;
     }
 
+    /**
+     * True if the detail page creation should be disabled for this resource type.<p>
+     * 
+     * @return true if detail page creation should be disabled for this type 
+     */
     public boolean getDetailPagesDisabled() {
 
         return m_detailPagesDisabled;
@@ -326,6 +359,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return m_typeName + "-%(number).html";
         }
         return null;
+    }
+
+    /**
+     * Returns the number used for sorting module resource types.<p>
+     * 
+     * @return the number used for sorting module resource types 
+     */
+    public int getOrder() {
+
+        return m_order;
     }
 
     /**
@@ -385,7 +428,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             folderOrName,
             namePattern,
             formatterConfig,
-            getDetailPagesDisabled() || childConfig.getDetailPagesDisabled());
+            getDetailPagesDisabled() || childConfig.getDetailPagesDisabled(),
+            m_order);
     }
 
     /**
@@ -401,7 +445,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             getFolderOrName(),
             m_namePattern,
             m_formatterConfig,
-            m_detailPagesDisabled);
+            m_detailPagesDisabled,
+            m_order);
     }
 
     /**
