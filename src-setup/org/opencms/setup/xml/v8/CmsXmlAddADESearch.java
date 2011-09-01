@@ -40,13 +40,17 @@ import org.opencms.search.galleries.CmsGallerySearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.setup.xml.A_CmsXmlSearch;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.setup.xml.CmsXmlUpdateAction;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
@@ -57,8 +61,111 @@ import org.dom4j.io.SAXReader;
  */
 public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
-    /** List of xpaths to update. */
-    private List<String> m_xpaths;
+    /**
+     * Action to add the gallery modules index source.<p>
+     */
+    public static class CmsAddGalleryModuleIndexSourceAction extends CmsXmlUpdateAction {
+
+        /**
+         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+         */
+        @Override
+        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+            Element node = (Element)doc.selectSingleNode("/opencms/search/indexsources");
+            if (!node.selectNodes("indexsource[name='gallery_modules_source']").isEmpty()) {
+                return false;
+            }
+            String galleryModulesSource = "            <indexsource>\n"
+                + "                <name>gallery_modules_source</name>\n"
+                + "                <indexer class=\"org.opencms.search.CmsVfsIndexer\" />\n"
+                + "                <resources>\n"
+                + "                    <resource>/system/modules/</resource>\n"
+                + "                </resources>\n"
+                + "                <documenttypes-indexed>\n"
+                + "                    <name>xmlcontent-galleries</name>\n"
+                + "                </documenttypes-indexed>                \n"
+                + "            </indexsource>              \n";
+            try {
+                Element sourceElem = createElementFromXml(galleryModulesSource);
+                node.add(sourceElem);
+                return true;
+            } catch (DocumentException e) {
+                System.err.println("Failed to add gallery_modules_source");
+                return false;
+            }
+        }
+
+    }
+
+    /**
+     * Action for updating the office document types in the index sources.<p>
+     */
+    public static final class CmsIndexSourceTypeUpdateAction extends CmsXmlUpdateAction {
+
+        /**
+         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+            List<Node> nodes = doc.selectNodes("/opencms/search/indexsources/indexsource");
+            boolean result = false;
+            for (Node node : nodes) {
+                if (containsOldType(node)) {
+                    result = true;
+                    removeTypes(node);
+                    addNewTypes(node);
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Adds new office document types.<p>
+         * 
+         * @param node the node to add the document types to 
+         */
+        protected void addNewTypes(Node node) {
+
+            Element element = (Element)(node.selectSingleNode("documenttypes-indexed"));
+            for (String type : new String[] {"openoffice", "msoffice-ole2", "msoffice-ooxml"}) {
+                element.addElement("name").addText(type);
+            }
+        }
+
+        /**
+         * Checks whether a node contains the old office document types.<p>
+         * 
+         * @param node the node which should be checked
+         *  
+         * @return true if the node contains old office document types  
+         */
+        protected boolean containsOldType(Node node) {
+
+            @SuppressWarnings("unchecked")
+            List<Node> nodes = node.selectNodes("documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint']");
+            return !nodes.isEmpty();
+        }
+
+        /**
+         * Removes the office document types from a node.<p>
+         * 
+         * @param node the node from which to remove the document types 
+         */
+        protected void removeTypes(Node node) {
+
+            @SuppressWarnings("unchecked")
+            List<Node> nodes = node.selectNodes("documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint' or text()='msoffice-ooxml' or text()='openoffice' or text()='msoffice-ole2']");
+            for (Node nodeToRemove : nodes) {
+                nodeToRemove.detach();
+            }
+        }
+    }
+
+    /** A map from xpaths to XML update actions.<p> */
+    private Map<String, CmsXmlUpdateAction> m_actions;
 
     /**
      * Creates a dom4j element from an XML string.<p>
@@ -83,289 +190,111 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         return "Add the ADE containerpage and gallery search nodes";
     }
 
-    protected String buildXpathForDocumentType(String documentType) {
-
-        // /opencms/search/documenttypes/documenttype[name='msoffice-ole2']    (0)
-        StringBuffer xp = new StringBuffer(256);
-        xp.append(getCommonPath());
-        xp.append("/");
-        xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES);
-        xp.append("/");
-        xp.append(CmsSearchConfiguration.N_DOCUMENTTYPE);
-        xp.append("[");
-        xp.append(I_CmsXmlConfiguration.N_NAME);
-        xp.append("='msoffice-ole2']");
-        return xp.toString();
-    }
-
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        Node node = document.selectSingleNode(xpath);
-        if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(1))) {
-                // create analyzer
-                createAnalyzer(document, xpath, CmsGallerySearchAnalyzer.class, "all");
-            } else if (xpath.equals(getXPathsToUpdate().get(2))) {
-                // create doc type
-                createIndex(
-                    document,
-                    xpath,
-                    CmsGallerySearchIndex.class,
-                    CmsGallerySearchIndex.GALLERY_INDEX_NAME,
-                    "offline",
-                    "Offline",
-                    "all",
-                    "gallery_fields",
-                    new String[] {"gallery_source"});
-            } else if (xpath.equals(getXPathsToUpdate().get(3))) {
-                // create doc type
-                createIndexSource(document, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {
-                    "/sites/",
-                    "/shared/"}, new String[] {
-                    "xmlpage-galleries",
-                    "xmlcontent-galleries",
-                    "jsp",
-                    "page",
-                    "text",
-                    "pdf",
-                    "rtf",
-                    "html",
-                    "image",
-                    "generic",
-                    "openoffice",
-                    "msoffice-ole2",
-                    "msoffice-ooxml"});
-            } else if (xpath.equals(getXPathsToUpdate().get(4))) {
-                // create field config
-                CmsSearchFieldConfiguration fieldConf = new CmsSearchFieldConfiguration();
-                fieldConf.setName("gallery_fields");
-                fieldConf.setDescription("The standard OpenCms search index field configuration.");
-                CmsSearchField field = new CmsSearchField();
-                // <field name="content" store="compress" index="true" excerpt="true">
-                field.setName("content");
-                field.setStored("compress");
-                field.setIndexed("true");
-                field.setInExcerpt("true");
-                // <mapping type="content" />
-                CmsSearchFieldMapping mapping = new CmsSearchFieldMapping();
-                mapping.setType("content");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="title-key" store="true" index="untokenized" boost="0.0">
-                field = new CmsSearchField();
-                field.setName("title-key");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                field.setBoost("0.0");
-                // <mapping type="property">Title</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("property");
-                mapping.setParam("Title");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="title" store="false" index="true">
-                field = new CmsSearchField();
-                field.setName("title");
-                field.setStored("false");
-                field.setIndexed("true");
-                // <mapping type="property">Title</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("property");
-                mapping.setParam("Title");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="description" store="true" index="true">
-                field = new CmsSearchField();
-                field.setName("description");
-                field.setStored("true");
-                field.setIndexed("true");
-                // <mapping type="property">Description</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("property");
-                mapping.setParam("Description");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="meta" store="false" index="true">
-                field = new CmsSearchField();
-                field.setName("meta");
-                field.setStored("false");
-                field.setIndexed("true");
-                // <mapping type="property">Title</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("property");
-                mapping.setParam("Title");
-                field.addMapping(mapping);
-                // <mapping type="property">Description</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("property");
-                mapping.setParam("Description");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_dateExpired" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_dateExpired");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">dateExpired</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("dateExpired");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_dateReleased" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_dateReleased");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">dateReleased</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("dateReleased");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_length" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_length");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">length</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("length");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_state" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_state");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">state</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("state");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_structureId" store="true" index="false">
-                field = new CmsSearchField();
-                field.setName("res_structureId");
-                field.setStored("true");
-                field.setIndexed("false");
-                // <mapping type="attribute">structureId</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("structureId");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_userCreated" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_userCreated");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">userCreated</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("userCreated");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_userLastModified" store="true" index="untokenized">
-                field = new CmsSearchField();
-                field.setName("res_userLastModified");
-                field.setStored("true");
-                field.setIndexed("untokenized");
-                // <mapping type="attribute">userLastModified</mapping>
-                mapping = new CmsSearchFieldMapping();
-                mapping.setType("attribute");
-                mapping.setParam("userLastModified");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
-                field = new CmsSearchField();
-                field.setName("res_locales");
-                field.setStored("true");
-                field.setIndexed("true");
-                try {
-                    field.setAnalyzer("WhitespaceAnalyzer");
-                } catch (Exception e) {
-                    // ignore
-                    e.printStackTrace();
+        CmsXmlUpdateAction action = m_actions.get(xpath);
+        if (action == null) {
+            return false;
+        }
+        return action.executeUpdate(document, xpath, forReal);
+
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    @Override
+    protected String getCommonPath() {
+
+        // /opencms/search
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsSearchConfiguration.N_SEARCH).toString();
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     */
+    @Override
+    protected List<String> getXPathsToUpdate() {
+
+        if (m_actions == null) {
+            initActions();
+        }
+        return new ArrayList<String>(m_actions.keySet());
+    }
+
+    /**
+     * Builds the xpath for the documenttypes node.<p>
+     * 
+     * @return the xpath for the documenttypes node 
+     */
+    private String buildXpathForDoctypes() {
+
+        return getCommonPath() + "/" + CmsSearchConfiguration.N_DOCUMENTTYPES;
+    }
+
+    /**
+     * Builds an xpath for a document type node in an index source.<p>
+     * 
+     * @param source the name of the index source 
+     * @param doctype the document type 
+     * 
+     * @return the xpath 
+     */
+    private String buildXpathForIndexedDocumentType(String source, String doctype) {
+
+        StringBuffer xp = new StringBuffer(256);
+        xp.append(getCommonPath());
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
+        xp.append("[");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("='" + source + "']");
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES_INDEXED);
+        xp.append("/");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("[text()='" + doctype + "']");
+        return xp.toString();
+    }
+
+    private CmsXmlUpdateAction createIndexedTypeAction(final String type) {
+
+        return new CmsXmlUpdateAction() {
+
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                Node node = doc.selectSingleNode(xpath);
+                if (node != null) {
+                    return false;
                 }
-                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
-                mapping = new CmsGallerySearchFieldMapping();
-                mapping.setType("dynamic");
-                mapping.setParam("res_locales");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="additional_info" store="true" index="false">
-                field = new CmsSearchField();
-                field.setName("additional_info");
-                field.setStored("true");
-                field.setIndexed("false");
-                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
-                mapping = new CmsGallerySearchFieldMapping();
-                mapping.setType("dynamic");
-                mapping.setParam("additional_info");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                // <field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
-                field = new CmsSearchField();
-                field.setName("container_types");
-                field.setStored("true");
-                field.setIndexed("true");
-                try {
-                    field.setAnalyzer("WhitespaceAnalyzer");
-                } catch (Exception e) {
-                    // ignore
-                    e.printStackTrace();
-                }
-                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
-                mapping = new CmsGallerySearchFieldMapping();
-                mapping.setType("dynamic");
-                mapping.setParam("container_types");
-                field.addMapping(mapping);
-                fieldConf.addField(field);
-                createFieldConfig(document, xpath, fieldConf, CmsGallerySearchFieldConfiguration.class);
-            } else if (xpath.equals(getXPathsToUpdate().get(5))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "containerpage");
-            } else if (xpath.equals(getXPathsToUpdate().get(6))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
-            } else if (xpath.equals(getXPathsToUpdate().get(7))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ole2");
-            } else if (xpath.equals(getXPathsToUpdate().get(8))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ooxml");
-            } else if (xpath.equals(getXPathsToUpdate().get(9))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
-            } else if (xpath.equals(getXPathsToUpdate().get(16))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ole2");
-            } else if (xpath.equals(getXPathsToUpdate().get(17))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "msoffice-ooxml");
-            } else if (xpath.equals(getXPathsToUpdate().get(18))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/text()", "openoffice");
+                CmsSetupXmlHelper.setValue(doc, xpath + "/text()", type);
+                return true;
+
             }
-            return true;
-        } else {
-            if (xpath.equals(getXPathsToUpdate().get(10))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(11))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(12))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(13))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(14))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(15))) {
-                CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            } else if (xpath.equals(getXPathsToUpdate().get(0))) {
+        };
+    }
+
+    /**
+     * Initializes the map of XML update actions.<p>
+     */
+    private void initActions() {
+
+        m_actions = new LinkedHashMap<String, CmsXmlUpdateAction>();
+        StringBuffer xp;
+        CmsXmlUpdateAction action0 = new CmsXmlUpdateAction() {
+
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                Node node = doc.selectSingleNode(xpath);
                 org.dom4j.Element parent = node.getParent();
                 int position = parent.indexOf(node);
                 parent.remove(node);
@@ -527,112 +456,106 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 } catch (DocumentException e) {
                     System.out.println("failed to update document types.");
                 }
+                return true;
 
             }
-        }
-        return false;
-    }
+        };
+        m_actions.put(buildXpathForDoctypes(), action0);
+        //
+        //=============================================================================================================
+        //
+        CmsXmlUpdateAction action1 = new CmsXmlUpdateAction() {
 
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
-     */
-    @Override
-    protected String getCommonPath() {
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
-        // /opencms/search
-        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsSearchConfiguration.N_SEARCH).toString();
-    }
+                Node node = doc.selectSingleNode(xpath);
+                if (node == null) {
+                    createAnalyzer(doc, xpath, CmsGallerySearchAnalyzer.class, "all");
+                    return true;
+                }
+                return false;
+            };
+        };
+        xp = new StringBuffer(256);
+        xp.append(getCommonPath());
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_ANALYZERS);
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_ANALYZER);
+        xp.append("[");
+        xp.append(CmsSearchConfiguration.N_CLASS);
+        xp.append("='").append(CmsGallerySearchAnalyzer.class.getName()).append("']");
+        m_actions.put(xp.toString(), action1);
+        //
+        //=============================================================================================================
+        //
+        CmsXmlUpdateAction action2 = new CmsXmlUpdateAction() {
 
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
-     */
-    @Override
-    protected List<String> getXPathsToUpdate() {
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
-        if (m_xpaths == null) {
-            m_xpaths = new ArrayList<String>();
-            StringBuffer xp = new StringBuffer(256);
-            m_xpaths.add(buildXpathForDoctypes()); // 0
-            // /opencms/search/analyzers/analyzer[class='org.opencms.search.galleries.CmsGallerySearchAnalyzer']  (1)
-            xp = new StringBuffer(256);
-            xp.append(getCommonPath());
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_ANALYZERS);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_ANALYZER);
-            xp.append("[");
-            xp.append(CmsSearchConfiguration.N_CLASS);
-            xp.append("='").append(CmsGallerySearchAnalyzer.class.getName()).append("']");
-            m_xpaths.add(xp.toString());
-            // /opencms/search/indexes/index[name='ADE Gallery Index']   (2)
-            xp = new StringBuffer(256);
-            xp.append(getCommonPath());
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXES);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEX);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='").append(CmsGallerySearchIndex.GALLERY_INDEX_NAME).append("']");
-            m_xpaths.add(xp.toString());
-            // /opencms/search/indexsources/indexsource[name='gallery_source']    (3)
-            xp = new StringBuffer(256);
-            xp.append(getCommonPath());
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='gallery_source']");
-            m_xpaths.add(xp.toString());
-            // /opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']  (4)
-            xp = new StringBuffer(256);
-            xp.append(getCommonPath());
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATIONS);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATION);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='gallery_fields']");
-            m_xpaths.add(xp.toString());
+                Node node = doc.selectSingleNode(xpath);
+                if (node != null) {
+                    node.detach();
+                }
+                createIndex(
+                    doc,
+                    xpath,
+                    CmsGallerySearchIndex.class,
+                    CmsGallerySearchIndex.GALLERY_INDEX_NAME,
+                    "offline",
+                    "Offline",
+                    "all",
+                    "gallery_fields",
+                    new String[] {"gallery_source", "gallery_modules_source"});
+                return true;
+            };
+        };
+        xp = new StringBuffer(256);
+        xp.append(getCommonPath());
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEXES);
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEX);
+        xp.append("[");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("='").append(CmsGallerySearchIndex.GALLERY_INDEX_NAME).append("']");
+        m_actions.put(xp.toString(), action2);
+        //
+        //=============================================================================================================
+        //
+        CmsXmlUpdateAction action3 = new CmsXmlUpdateAction() {
 
-            // /opencms/search/indexsources/indxsource[name='source1']/documenttypes_indexed/name[text()='containerpage']    (5) 
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "containerpage"));
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
-            // /opencms/search/indexsources/indxsource[name='source1']/documenttypes_indexed/name[text()='openoffice']     (6)
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "openoffice"));
+                Node node = doc.selectSingleNode(xpath);
+                if (node != null) {
+                    return false;
+                }
+                // create doc type
+                createIndexSource(doc, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {
+                    "/sites/",
+                    "/shared/"}, new String[] {
+                    "xmlpage-galleries",
+                    "xmlcontent-galleries",
+                    "jsp",
+                    "page",
+                    "text",
+                    "pdf",
+                    "rtf",
+                    "html",
+                    "image",
+                    "generic",
+                    "openoffice",
+                    "msoffice-ole2",
+                    "msoffice-ooxml"});
+                return true;
 
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msoffice-ole2")); // (7) 
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msoffice-ooxml")); // (8)
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "openoffice")); // (9)
-
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msword")); // (10)
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "msexcel")); // (11)
-            m_xpaths.add(buildXpathForIndexedDocumentType("source1", "mspowerpoint")); // (12)
-
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msword")); // (13)
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msexcel")); // (14)
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "mspowerpoint")); // (15)
-
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msoffice-ole2")); // (16) 
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "msoffice-ooxml")); // (17)
-            m_xpaths.add(buildXpathForIndexedDocumentType("gallery_source", "openoffice")); // (18)
-
-        }
-        return m_xpaths;
-    }
-
-    private String buildXpathForDoctypes() {
-
-        return getCommonPath() + "/" + CmsSearchConfiguration.N_DOCUMENTTYPES;
-    }
-
-    private String buildXpathForIndexedDocumentType(String source, String doctype) {
-
-        StringBuffer xp = new StringBuffer(256);
+            }
+        };
+        xp = new StringBuffer(256);
         xp.append(getCommonPath());
         xp.append("/");
         xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
@@ -640,13 +563,234 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
         xp.append("[");
         xp.append(I_CmsXmlConfiguration.N_NAME);
-        xp.append("='" + source + "']");
-        xp.append("/");
-        xp.append(CmsSearchConfiguration.N_DOCUMENTTYPES_INDEXED);
-        xp.append("/");
-        xp.append(I_CmsXmlConfiguration.N_NAME);
-        xp.append("[text()='" + doctype + "']");
-        return xp.toString();
-    }
+        xp.append("='gallery_source']");
+        m_actions.put(xp.toString(), action3);
+        //
+        //=============================================================================================================
+        //
+        CmsXmlUpdateAction action4 = new CmsXmlUpdateAction() {
 
+            @Override
+            public boolean executeUpdate(Document document, String xpath, boolean forReal) {
+
+                Node node = document.selectSingleNode(xpath);
+
+                if (node != null) {
+                    node.detach();
+                }
+                // create field config
+                CmsSearchFieldConfiguration fieldConf = new CmsSearchFieldConfiguration();
+                fieldConf.setName("gallery_fields");
+                fieldConf.setDescription("The standard OpenCms search index field configuration.");
+                CmsSearchField field = new CmsSearchField();
+                // <field name="content" store="compress" index="true" excerpt="true">
+                field.setName("content");
+                field.setStored("compress");
+                field.setIndexed("true");
+                field.setInExcerpt("true");
+                // <mapping type="content" />
+                CmsSearchFieldMapping mapping = new CmsSearchFieldMapping();
+                mapping.setType("content");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="title-key" store="true" index="untokenized" boost="0.0">
+                field = new CmsSearchField();
+                field.setName("title-key");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                field.setBoost("0.0");
+                // <mapping type="property">Title</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Title");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="title" store="false" index="true">
+                field = new CmsSearchField();
+                field.setName("title");
+                field.setStored("false");
+                field.setIndexed("true");
+                // <mapping type="property">Title</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Title");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="description" store="true" index="true">
+                field = new CmsSearchField();
+                field.setName("description");
+                field.setStored("true");
+                field.setIndexed("true");
+                // <mapping type="property">Description</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Description");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="meta" store="false" index="true">
+                field = new CmsSearchField();
+                field.setName("meta");
+                field.setStored("false");
+                field.setIndexed("true");
+                // <mapping type="property">Title</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Title");
+                field.addMapping(mapping);
+                // <mapping type="property">Description</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Description");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_dateExpired" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_dateExpired");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">dateExpired</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("dateExpired");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_dateReleased" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_dateReleased");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">dateReleased</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("dateReleased");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_length" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_length");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">length</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("length");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_state" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_state");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">state</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("state");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_structureId" store="true" index="false">
+                field = new CmsSearchField();
+                field.setName("res_structureId");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">structureId</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("structureId");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_userCreated" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_userCreated");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">userCreated</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("userCreated");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_userLastModified" store="true" index="untokenized">
+                field = new CmsSearchField();
+                field.setName("res_userLastModified");
+                field.setStored("true");
+                field.setIndexed("untokenized");
+                // <mapping type="attribute">userLastModified</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("userLastModified");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
+                field = new CmsSearchField();
+                field.setName("res_locales");
+                field.setStored("true");
+                field.setIndexed("true");
+                try {
+                    field.setAnalyzer("WhitespaceAnalyzer");
+                } catch (Exception e) {
+                    // ignore
+                    e.printStackTrace();
+                }
+                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
+                mapping = new CmsGallerySearchFieldMapping();
+                mapping.setType("dynamic");
+                mapping.setParam("res_locales");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="additional_info" store="true" index="false">
+                field = new CmsSearchField();
+                field.setName("additional_info");
+                field.setStored("true");
+                field.setIndexed("false");
+                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
+                mapping = new CmsGallerySearchFieldMapping();
+                mapping.setType("dynamic");
+                mapping.setParam("additional_info");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                // <field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
+                field = new CmsSearchField();
+                field.setName("container_types");
+                field.setStored("true");
+                field.setIndexed("true");
+                try {
+                    field.setAnalyzer("WhitespaceAnalyzer");
+                } catch (Exception e) {
+                    // ignore
+                    e.printStackTrace();
+                }
+                // <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
+                mapping = new CmsGallerySearchFieldMapping();
+                mapping.setType("dynamic");
+                mapping.setParam("container_types");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+                createFieldConfig(document, xpath, fieldConf, CmsGallerySearchFieldConfiguration.class);
+                return true;
+            }
+        };
+
+        xp = new StringBuffer(256);
+        xp.append(getCommonPath());
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATIONS);
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATION);
+        xp.append("[");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("='gallery_fields']");
+        m_actions.put(xp.toString(), action4);
+        //
+        //=============================================================================================================
+        //
+
+        m_actions.put("/opencms/search/indexsources", new CmsIndexSourceTypeUpdateAction());
+
+        // use dummy check [1=1] to make the xpaths unique 
+        m_actions.put("/opencms/search/indexsources[1=1]", new CmsAddGalleryModuleIndexSourceAction());
+        m_actions.put(
+            buildXpathForIndexedDocumentType("source1", "containerpage"),
+            createIndexedTypeAction("containerpage"));
+
+    }
 }

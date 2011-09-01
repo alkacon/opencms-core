@@ -50,6 +50,39 @@ import org.dom4j.Document;
 public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
+     * Creates a new fieldconfiguration node.<p>
+     * 
+     * @param document the document to modify
+     * @param xpath the xpath to the fieldconfiguration, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']</code>
+     * @param fieldConf the field configuration
+     * @param clazz the optional class attribute value
+     */
+    public void createFieldConfig(Document document, String xpath, CmsSearchFieldConfiguration fieldConf, Class<?> clazz) {
+
+        if (clazz != null) {
+            CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
+        }
+        CmsSetupXmlHelper.setValue(document, xpath + "/" + I_CmsXmlConfiguration.N_NAME, fieldConf.getName());
+        CmsSetupXmlHelper.setValue(
+            document,
+            xpath + "/" + CmsSearchConfiguration.N_DESCRIPTION,
+            fieldConf.getDescription());
+        for (CmsSearchField field : fieldConf.getFields()) {
+            String fieldPath = xpath
+                + "/"
+                + CmsSearchConfiguration.N_FIELDS
+                + "/"
+                + CmsSearchConfiguration.N_FIELD
+                + "[@"
+                + I_CmsXmlConfiguration.A_NAME
+                + "='"
+                + field.getName()
+                + "']";
+            createField(document, fieldPath, field);
+        }
+    }
+
+    /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getXmlFilename()
      */
     public String getXmlFilename() {
@@ -196,43 +229,6 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
                 mappingPath += "[text()='" + mapping.getParam() + "']";
             }
             createFieldMapping(document, mappingPath, mapping);
-        }
-    }
-
-    /**
-     * Creates a new fieldconfiguration node.<p>
-     * 
-     * @param document the document to modify
-     * @param xpath the xpath to the fieldconfiguration, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']</code>
-     * @param fieldConf the field configuration
-     * @param clazz the optional class attribute value
-     */
-    protected void createFieldConfig(
-        Document document,
-        String xpath,
-        CmsSearchFieldConfiguration fieldConf,
-        Class<?> clazz) {
-
-        if (clazz != null) {
-            CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
-        }
-        CmsSetupXmlHelper.setValue(document, xpath + "/" + I_CmsXmlConfiguration.N_NAME, fieldConf.getName());
-        CmsSetupXmlHelper.setValue(
-            document,
-            xpath + "/" + CmsSearchConfiguration.N_DESCRIPTION,
-            fieldConf.getDescription());
-        for (CmsSearchField field : fieldConf.getFields()) {
-            String fieldPath = xpath
-                + "/"
-                + CmsSearchConfiguration.N_FIELDS
-                + "/"
-                + CmsSearchConfiguration.N_FIELD
-                + "[@"
-                + I_CmsXmlConfiguration.A_NAME
-                + "='"
-                + field.getName()
-                + "']";
-            createField(document, fieldPath, field);
         }
     }
 

@@ -231,6 +231,7 @@
 				<configuration>gallery_fields</configuration>	
 				<sources>
 					<source>gallery_source</source>
+					<source>gallery_modules_source</source>
 				</sources>			
 			</index>
 		</indexes>
@@ -288,6 +289,16 @@
 	                <name>openoffice</name>
 				</documenttypes-indexed>				
 			</indexsource>     
+            <indexsource>
+				<name>gallery_modules_source</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/system/modules/</resource>
+				</resources>
+				<documenttypes-indexed>
+					<name>xmlcontent-galleries</name>
+				</documenttypes-indexed>				
+			</indexsource>  			
 		</indexsources>		
 		<fieldconfigurations>		
 			<fieldconfiguration>
@@ -348,7 +359,7 @@
 					<field name="res_state" store="true" index="untokenized">
 						<mapping type="attribute">state</mapping>
 					</field>
-                    <field name="res_structureId" store="true" index="false">
+                    <field name="res_structureId" store="true" index="untokenized">
 						<mapping type="attribute">structureId</mapping>
 					</field>									
 					<field name="res_userCreated" store="true" index="untokenized">
