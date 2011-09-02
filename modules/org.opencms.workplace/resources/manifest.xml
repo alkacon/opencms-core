@@ -30,7 +30,9 @@
 			<resource uri="/system/modules/org.opencms.workplace/"/>
 			<resource uri="/system/shared/page.dtd"/>
 			<resource uri="/system/shared/showversion"/>
-			<resource uri="/system/workplace/admin/notification/"/>
+			<resource uri="/system/workplace/admin/notification/notification"/>
+			<resource uri="/system/workplace/admin/notification/notification.xsd"/>
+			<resource uri="/system/workplace/admin/notification/publish-notification"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/commons/template/"/>
