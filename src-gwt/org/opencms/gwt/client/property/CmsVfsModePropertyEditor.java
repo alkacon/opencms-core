@@ -449,8 +449,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
         Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        keys.remove(CmsClientProperty.PROPERTY_NAVTEXT);
-        keys.add(0, CmsClientProperty.PROPERTY_NAVTEXT);
+        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
+        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
+        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
         for (String propName : keys) {
             buildField(ownProps, propName, Mode.effective);
         }
@@ -478,6 +479,20 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         internalBuildFields(Mode.structure);
         if (m_showResourceProperties) {
             internalBuildFields(Mode.resource);
+        }
+    }
+
+    /**
+     * Moves the given property name to the top of the keys if present.<p>
+     * 
+     * @param keys the list of keys
+     * @param propertyName the property name to move
+     */
+    private void moveToTop(List<String> keys, String propertyName) {
+
+        if (keys.contains(propertyName)) {
+            keys.remove(propertyName);
+            keys.add(0, propertyName);
         }
     }
 

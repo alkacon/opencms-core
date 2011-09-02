@@ -44,6 +44,7 @@ public class CmsNewResourceInfo implements Serializable {
     /** The structure id of the copy resource. */
     private CmsUUID m_copyResourceId;
 
+    /** The description. */
     private String m_description;
 
     /** The id. */
@@ -51,6 +52,9 @@ public class CmsNewResourceInfo implements Serializable {
 
     /** The type name. */
     private String m_typeName;
+
+    /** Navigation position, used for ordering. */
+    private Float m_navPos;
 
     /** The title. */
     private String m_title;
@@ -66,6 +70,9 @@ public class CmsNewResourceInfo implements Serializable {
 
     /** The additional parameter used for creating new resources. */
     private String m_createParameter;
+
+    /** The flag which determines whether this bean is for a function page or for a normal detail page. */
+    private boolean m_isFunction;
 
     /**
      * Instantiates a new resource type information bean.
@@ -151,6 +158,21 @@ public class CmsNewResourceInfo implements Serializable {
         return m_id;
     }
 
+    /**
+     * Gets the navigation position (used for ordering).<p>
+     * 
+     * @return the navigation position 
+     */
+    public Float getNavPos() {
+
+        return m_navPos;
+    }
+
+    /**
+     * Gets the subtitle.<p>
+     * 
+     * @return the subtitle 
+     */
     public String getSubTitle() {
 
         return m_subtitle;
@@ -176,26 +198,81 @@ public class CmsNewResourceInfo implements Serializable {
         return m_typeName;
     }
 
+    /**
+     * Gets the VFS path.<p>
+     * 
+     * @return the VFS path  
+     */
     public String getVfsPath() {
 
         return m_vfsPath;
     }
 
+    /**
+     * Returns true if this is a resource info bean for a function page.<p>
+     * 
+     * @return true if this is a resource info bean for a function page 
+     */
+    public boolean isFunction() {
+
+        return m_isFunction;
+    }
+
+    /**
+     * Sets the additional data used for creating new pages.<p>
+     * 
+     * @param additionalData the additional data used for creating new pages 
+     */
     public void setAdditionalData(String additionalData) {
 
         m_createParameter = additionalData;
     }
 
+    /** 
+     * Sets the modification date string.<p>
+     * 
+     * @param date the modification date string 
+     */
     public void setDate(String date) {
 
         m_date = date;
     }
 
+    /**
+     * Sets the "function page" flag.<p>
+     * 
+     * @param isFunction the new value for the function page flag 
+     */
+    public void setIsFunction(boolean isFunction) {
+
+        m_isFunction = isFunction;
+    }
+
+    /**
+     * Sets the navigation position.<p>
+     * 
+     * @param navPos the navigation position 
+     */
+    public void setNavPos(Float navPos) {
+
+        m_navPos = navPos;
+    }
+
+    /**
+     * Sets the subtitle.<p>
+     * 
+     * @param subtitle the subtitle 
+     */
     public void setSubTitle(String subtitle) {
 
         m_subtitle = subtitle;
     }
 
+    /**
+     * Sets the VFS path.<p>
+     * 
+     * @param vfsPath the VFS path
+     */
     public void setVfsPath(String vfsPath) {
 
         m_vfsPath = vfsPath;

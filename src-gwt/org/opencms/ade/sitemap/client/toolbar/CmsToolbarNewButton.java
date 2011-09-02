@@ -59,14 +59,14 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     /** The tag for identifying items from the special tab. */
     public static final String TAG_SPECIAL = "special";
 
+    /** The function element list. */
+    private CmsList<I_CmsListItem> m_functionList;
+
     /** The new-elements list. */
     private CmsList<I_CmsListItem> m_newElementsList;
 
     /** The special elements list. */
     private CmsList<I_CmsListItem> m_specialList;
-
-    /** The function element list. */
-    private CmsList<I_CmsListItem> m_functionList;
 
     /**
      * Constructor.<p>
@@ -150,7 +150,10 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
         CmsListInfoBean info = new CmsListInfoBean();
         String subtitle = typeInfo.getSubTitle();
-        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
+        String title = Messages.get().key(
+            typeInfo.isFunction() ? Messages.GUI_FUNCTION_PAGE_TITLE_1 : Messages.GUI_DETAIL_PAGE_TITLE_1,
+            typeInfo.getTitle());
+
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
@@ -203,7 +206,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         CmsNewResourceInfo typeInfo = getController().getData().getNewRedirectElementInfo();
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(typeInfo.getTitle());
-        info.setSubTitle(typeInfo.getTypeName());
+        info.setSubTitle(Messages.get().key(Messages.GUI_REDIRECT_SUBTITLE_0));
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);

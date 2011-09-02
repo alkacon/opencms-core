@@ -109,6 +109,12 @@ public final class Messages {
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FUNCTION_PAGE_TITLE_1 = "GUI_FUNCTION_PAGE_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FUNCTION_TAB_TITLE_0 = "GUI_FUNCTION_TAB_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_AVAILABILITY_0 = "GUI_HOVERBAR_AVAILABILITY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -163,10 +169,13 @@ public final class Messages {
     public static final String GUI_INHERIT_PROPERTY_2 = "GUI_INHERIT_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_0 = "GUI_LABEL_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_DATE_0 = "GUI_LABEL_DATE_0";
+    public static final String GUI_LABEL_VFSPATH_0 = "GUI_LABEL_VFSPATH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MAIN_DETAIL_PAGE_TITLE_1 = "GUI_MAIN_DETAIL_PAGE_TITLE_1";
@@ -297,13 +306,8 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     protected static final String GUI_ADDINFO_REDIRECT_0 = "GUI_ADDINFO_REDIRECT_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FUNCTION_TAB_TITLE_0 = "GUI_FUNCTION_TAB_TITLE_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
-
-    public static final String GUI_LABEL_VFSPATH_0 = "GUI_LABEL_VFSPATH_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;
