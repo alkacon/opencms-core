@@ -35,7 +35,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsServlet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -71,10 +70,6 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
 
-        if (resourceName.endsWith(OpenCmsServlet.HANDLE_GWT)) {
-            // handle GWT rpc services, return a default info object
-            return new CmsI18nInfo(CmsLocaleManager.getDefaultLocale(), req.getCharacterEncoding());
-        }
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         List<Locale> defaultLocales = null;
         String encoding = null;
