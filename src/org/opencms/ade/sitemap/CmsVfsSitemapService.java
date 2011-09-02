@@ -1359,7 +1359,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     CmsGallerySearch search = new CmsGallerySearch();
                     search.init(cms);
                     search.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-                    CmsGallerySearchResult searchResult = search.searchById(functionRef.getStructureId(), locale);
+                    CmsGallerySearchResult searchResult = search.searchById(
+                        functionRef.getStructureId(),
+                        getWorkplaceLocale());
                     subtitle = searchResult.getDescription();
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);

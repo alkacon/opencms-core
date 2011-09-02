@@ -44,14 +44,14 @@ import org.opencms.xml.content.CmsXmlContentProperty;
  */
 public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyConfig> {
 
-    /** The internal property data. */
-    private CmsXmlContentProperty m_propData;
-
     /** True if this property is disabled. */
     private boolean m_disabled;
 
     /** The order. **/
     private int m_order;
+
+    /** The internal property data. */
+    private CmsXmlContentProperty m_propData;
 
     /**
      * Creates a new propery configuration bean.<p>
@@ -61,7 +61,7 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
      */
     public CmsPropertyConfig(CmsXmlContentProperty propData, boolean disabled) {
 
-        this(propData, disabled, 100);
+        this(propData, disabled, I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
     /**

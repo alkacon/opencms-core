@@ -61,31 +61,31 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResourceTypeConfig> {
 
-    /** The name of the resource type. */
-    private String m_typeName;
-
-    /** A reference to a folder of folder name. */
-    private CmsFolderOrName m_folderOrName;
-
-    /** True if this is a disabled configuration. */
-    private boolean m_disabled;
-    /** The name pattern .*/
-    private String m_namePattern;
-
-    /** The formatter configuration. */
-    private CmsFormatterConfiguration m_formatterConfig;
-
-    /** The flag for disabling detail pages. */
-    private boolean m_detailPagesDisabled;
-
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
     /** The CMS object used for VFS operations. */
     protected CmsObject m_cms;
 
+    /** The flag for disabling detail pages. */
+    private boolean m_detailPagesDisabled;
+    /** True if this is a disabled configuration. */
+    private boolean m_disabled;
+
+    /** A reference to a folder of folder name. */
+    private CmsFolderOrName m_folderOrName;
+
+    /** The formatter configuration. */
+    private CmsFormatterConfiguration m_formatterConfig;
+
+    /** The name pattern .*/
+    private String m_namePattern;
+
     /** The number used for sorting the resource type configurations. */
     private int m_order;
+
+    /** The name of the resource type. */
+    private String m_typeName;
 
     /** 
      * Creates a new resource type configuration.<p>
@@ -103,7 +103,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         CmsFormatterConfiguration formatterConfig) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false, 100);
+        this(typeName, disabled, folder, pattern, formatterConfig, false, I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
     /** 

@@ -41,6 +41,9 @@ package org.opencms.ade.configuration;
  */
 public interface I_CmsConfigurationObject<X extends I_CmsConfigurationObject<X>> {
 
+    /** Default order constant for module configurations. */
+    int DEFAULT_ORDER = 10000;
+
     /**
      * The name of the configuration object.<p>
      * 

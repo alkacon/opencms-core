@@ -59,6 +59,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsConfigurationReader {
 
+    /** The default locale for configuration objects. */
+    public static final Locale DEFAULT_LOCALE = new Locale("en");
+
     /** The Name node name. */
     public static final String N_FOLDER_NAME = "Name";
 
@@ -68,29 +71,26 @@ public class CmsConfigurationReader {
     /** The Type node name. */
     public static final String N_RESOURCE_TYPE = "Type";
 
-    /** The resource type configuration objects. */
-    private List<CmsResourceTypeConfig> m_resourceTypeConfigs = new ArrayList<CmsResourceTypeConfig>();
-
-    /** The parsed property configuration elements. */
-    private List<CmsPropertyConfig> m_propertyConfigs = new ArrayList<CmsPropertyConfig>();
-
-    /** The parsed detail page configuration elements. */
-    private List<CmsDetailPageInfo> m_detailPageConfigs = new ArrayList<CmsDetailPageInfo>();
-
-    /** The parsed model page configuration elements. */
-    private List<CmsModelPageConfig> m_modelPageConfigs = new ArrayList<CmsModelPageConfig>();
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
-
-    /** The default locale for configuration objects. */
-    public static final Locale DEFAULT_LOCALE = new Locale("en");
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
+    /** The parsed detail page configuration elements. */
+    private List<CmsDetailPageInfo> m_detailPageConfigs = new ArrayList<CmsDetailPageInfo>();
+
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
+
+    /** The parsed model page configuration elements. */
+    private List<CmsModelPageConfig> m_modelPageConfigs = new ArrayList<CmsModelPageConfig>();
+
+    /** The parsed property configuration elements. */
+    private List<CmsPropertyConfig> m_propertyConfigs = new ArrayList<CmsPropertyConfig>();
+
+    /** The resource type configuration objects. */
+    private List<CmsResourceTypeConfig> m_resourceTypeConfigs = new ArrayList<CmsResourceTypeConfig>();
 
     /** 
      * Creates a new configuration reader.<p>
@@ -270,7 +270,7 @@ public class CmsConfigurationReader {
             detailPagesDisabled = Boolean.parseBoolean(detailPagesDisabledStr);
         }
 
-        int order = 100;
+        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
         I_CmsXmlContentValueLocation orderLoc = node.getSubValue("Order");
         if (orderLoc != null) {
             try {
@@ -426,7 +426,7 @@ public class CmsConfigurationReader {
         CmsUUID functionId = node.getSubValue("Function").asId(m_cms);
 
         I_CmsXmlContentValueLocation orderNode = node.getSubValue("Order");
-        int order = 100;
+        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
         if (orderNode != null) {
             String orderStr = orderNode.asString(m_cms);
             try {
@@ -460,7 +460,8 @@ public class CmsConfigurationReader {
         boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
 
         String orderStr = getString(field.getSubValue("Order"));
-        int order = 100;
+        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
+
         try {
             order = Integer.parseInt(orderStr);
         } catch (NumberFormatException e) {
