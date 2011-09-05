@@ -111,12 +111,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param folder the folder reference 
      * @param pattern the name pattern 
      * @param formatterConfig the formatter configuration 
-    <<<<<<< OURS
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param order the number used for sorting resource types from modules  
-    =======
-     * @param detailPagesDisabled if detail pages are disabled
-    >>>>>>> THEIRS
      */
     public CmsResourceTypeConfig(
         String typeName,
