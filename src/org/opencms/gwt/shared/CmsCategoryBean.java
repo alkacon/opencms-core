@@ -180,6 +180,19 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     }
 
     /**
+     * Returns if the category matches the given filter.<p>
+     * 
+     * @param filter the filter to match
+     * 
+     * @return <code>true</code> if the gallery matches the given filter.<p>
+     */
+    public boolean matchesFilter(String filter) {
+
+        filter = filter.toLowerCase();
+        return m_title.toLowerCase().contains(filter) || m_path.toLowerCase().contains(filter);
+    }
+
+    /**
      * Sets the description.<p>
      *
      * @param description the description to set

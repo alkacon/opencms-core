@@ -39,9 +39,6 @@ import java.util.List;
  */
 public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
-    /** The serialization id. */
-    private static final long serialVersionUID = 3787936028869506095L;
-
     /** The children. */
     private List<CmsCategoryTreeEntry> m_children;
 
