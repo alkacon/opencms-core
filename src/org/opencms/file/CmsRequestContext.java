@@ -54,6 +54,10 @@ public final class CmsRequestContext {
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_MODEL = CmsRequestContext.class.getName() + ".ATTRIBUTE_MODEL";
 
+    /** Request context attribute for indicating content locale for a create resource operation. */
+    public static final String ATTRIBUTE_NEW_RESOURCE_LOCALE = CmsRequestContext.class.getName()
+        + ".NEW_RESOURCE_LOCALE";
+
     /** A map for storing (optional) request context attributes. */
     private Map<String, Object> m_attributeMap;
 

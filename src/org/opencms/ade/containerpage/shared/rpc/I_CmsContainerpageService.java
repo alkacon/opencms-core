@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
@@ -67,19 +68,43 @@ public interface I_CmsContainerpageService extends RemoteService {
     void addToRecentList(String clientId) throws CmsRpcException;
 
     /**
-     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.
+     * Returns a bean containing either the new element data or a list of model resources to select.<p>
      * 
      * @param pageStructureId the container page structure id 
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
      * @param locale the content locale
      * 
+     * @return the bean containing either the new element data or a list of model resources to select
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    CmsCreateElementData checkCreateNewElement(
+        CmsUUID pageStructureId,
+        String clientId,
+        String resourceType,
+        String locale) throws CmsRpcException;
+
+    /**
+     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * 
+     * @param pageStructureId the container page structure id 
+     * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
+     * @param resourceType the resource tape of the new element
+     * @param modelResourceStructureId the model resource structure id
+     * @param locale the content locale
+     * 
      * @return the new element data containing structure id and site path
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContainerElement createNewElement(CmsUUID pageStructureId, String clientId, String resourceType, String locale)
-    throws CmsRpcException;
+    CmsContainerElement createNewElement(
+        CmsUUID pageStructureId,
+        String clientId,
+        String resourceType,
+        CmsUUID modelResourceStructureId,
+        String locale) throws CmsRpcException;
 
     /**
      * Returns container element data by client id.<p>

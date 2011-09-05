@@ -37,6 +37,15 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0 = "GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_PATH_0 = "GUI_LABEL_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0 = "GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.messages";
 

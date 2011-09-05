@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
@@ -483,7 +484,7 @@ public final class CmsContainerpageController {
             return;
         }
         m_handler.showPageOverlay();
-        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+        CmsRpcAction<CmsCreateElementData> action = new CmsRpcAction<CmsCreateElementData>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -491,26 +492,61 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().createNewElement(
+                getContainerpageService().checkCreateNewElement(
                     CmsCoreProvider.get().getStructureId(),
                     element.getId(),
                     element.getNewType(),
                     getLocale(),
                     this);
+
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
+            protected void onResponse(CmsCreateElementData result) {
+
+                if (result.needsModelSelection()) {
+                    getHandler().openModelResourceSelect(element, result.getModelResources());
+                } else {
+                    openEditorForNewElement(element, result.getCreatedElement());
+                }
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Creates a new resource for crag container elements with the status new and opens the content editor.<p>
+     * 
+     * @param element the container element
+     * @param modelResourceStructureId the model resource structure id
+     */
+    public void createAndEditNewElement(
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element,
+        final CmsUUID modelResourceStructureId) {
+
+        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().createNewElement(
+                    CmsCoreProvider.get().getStructureId(),
+                    element.getId(),
+                    element.getNewType(),
+                    modelResourceStructureId,
+                    getLocale(),
+                    this);
+
+            }
+
+            @Override
             protected void onResponse(CmsContainerElement result) {
 
-                element.setNewType(null);
-                element.setId(result.getClientId());
-                element.setSitePath(result.getSitePath());
-                setPageChanged();
-                getHandler().hidePageOverlay();
-                getHandler().openEditorForElement(element);
+                openEditorForNewElement(element, result);
+
             }
         };
         action.execute();
@@ -1584,6 +1620,24 @@ public final class CmsContainerpageController {
     protected String getRequestParams() {
 
         return m_data.getRequestParams();
+    }
+
+    /**
+     * Opens the editor for the newly created element.<p>
+     * 
+     * @param element the container element
+     * @param newElementData the new element data
+     */
+    protected void openEditorForNewElement(
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element,
+        CmsContainerElement newElementData) {
+
+        element.setNewType(null);
+        element.setId(newElementData.getClientId());
+        element.setSitePath(newElementData.getSitePath());
+        setPageChanged();
+        getHandler().hidePageOverlay();
+        getHandler().openEditorForElement(element);
     }
 
     /**

@@ -54,6 +54,26 @@ public class CmsGallerySearch {
     CmsGallerySearchIndex m_index;
 
     /**
+     * Searches by structure id.<p>
+     * 
+     * @param cms the OpenCms context to use for the search
+     * @param structureId the structure id of the document to search for 
+     * @param locale the locale for which the search result should be returned
+     *  
+     * @return the search result 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static CmsGallerySearchResult searchById(CmsObject cms, CmsUUID structureId, Locale locale)
+    throws CmsException {
+
+        CmsGallerySearch gallerySearch = new CmsGallerySearch();
+        gallerySearch.init(cms);
+        gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        return gallerySearch.searchById(structureId, locale);
+    }
+
+    /**
      * Returns the name of the current search index.<p>
      * 
      * @return the name of the current search index

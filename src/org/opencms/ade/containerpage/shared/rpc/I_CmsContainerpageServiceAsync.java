@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.util.CmsUUID;
 
@@ -65,7 +66,8 @@ public interface I_CmsContainerpageServiceAsync {
     void addToRecentList(String clientId, AsyncCallback<Void> callback);
 
     /**
-     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.
+     * Returns a bean containing either the new element data or a list of model resources to select.<p>
      * 
      * @param pageStructureId the container page structure id 
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
@@ -73,10 +75,28 @@ public interface I_CmsContainerpageServiceAsync {
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
+    void checkCreateNewElement(
+        CmsUUID pageStructureId,
+        String clientId,
+        String resourceType,
+        String locale,
+        AsyncCallback<CmsCreateElementData> callback);
+
+    /**
+     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * 
+     * @param pageStructureId the container page structure id 
+     * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
+     * @param resourceType the resource tape of the new element
+     * @param modelResourceStructureId the model resource structure id
+     * @param locale the content locale
+     * @param callback the call-back executed on response
+     */
     void createNewElement(
         CmsUUID pageStructureId,
         String clientId,
         String resourceType,
+        CmsUUID modelResourceStructureId,
         String locale,
         AsyncCallback<CmsContainerElement> callback);
 

@@ -34,7 +34,9 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsModelResourceInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
@@ -50,8 +52,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
@@ -146,6 +151,35 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#checkCreateNewElement(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public CmsCreateElementData checkCreateNewElement(
+        CmsUUID pageStructureId,
+        String clientId,
+        String resourceType,
+        String locale) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsCreateElementData result = new CmsCreateElementData();
+        try {
+            CmsResource currentPage = cms.readResource(pageStructureId);
+
+            List<CmsResource> modelResources = CmsNewResourceXmlContent.getModelFiles(
+                getCmsObject(),
+                CmsResource.getFolderPath(cms.getSitePath(currentPage)),
+                resourceType);
+            if (modelResources.isEmpty()) {
+                result.setCreatedElement(createNewElement(pageStructureId, clientId, resourceType, null, locale));
+            } else {
+                result.setModelResources(generateModelResourceList(resourceType, modelResources, new Locale(locale)));
+            }
+        } catch (CmsException e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
      * Parses an element id.<p>
      * 
      * @param id the element id
@@ -175,12 +209,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createNewElement(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createNewElement(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
     public CmsContainerElement createNewElement(
         CmsUUID pageStructureId,
         String clientId,
         String resourceType,
+        CmsUUID modelResourceStructureId,
         String locale) throws CmsRpcException {
 
         CmsContainerElement element = null;
@@ -192,7 +227,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceType);
             CmsObject cloneCms = OpenCms.initCmsObject(cms);
             cloneCms.getRequestContext().setLocale(new Locale(locale));
-            CmsResource newResource = typeConfig.createNewElement(cloneCms);
+            CmsResource modelResource = null;
+            if (modelResourceStructureId != null) {
+                modelResource = cms.readResource(modelResourceStructureId);
+            }
+            CmsResource newResource = typeConfig.createNewElement(cloneCms, modelResource);
             CmsContainerElementBean bean = getCachedElement(clientId);
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
@@ -257,9 +296,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(
-                elementBean,
-                convertSettingValues(elementBean.getResource(), settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
+                elementBean.getResource(),
+                settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -470,12 +509,55 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(
-                    settingName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
+                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    getCmsObject(),
+                    settingType,
+                    entry.getValue()));
             }
         }
         return changedSettings;
+    }
+
+    /**
+     * Generates the model resource data list.<p>
+     * 
+     * @param resourceType the resource type name
+     * @param modelResources the model resource
+     * @param contentLocale the content locale
+     * 
+     * @return the model resources data
+     * 
+     * @throws CmsException if something goes wrong reading the resource information
+     */
+    private List<CmsModelResourceInfo> generateModelResourceList(
+        String resourceType,
+        List<CmsResource> modelResources,
+        Locale contentLocale) throws CmsException {
+
+        List<CmsModelResourceInfo> result = new ArrayList<CmsModelResourceInfo>();
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        CmsModelResourceInfo defaultInfo = new CmsModelResourceInfo(Messages.get().getBundle(wpLocale).key(
+            Messages.GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0), Messages.get().getBundle(wpLocale).key(
+            Messages.GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0), null);
+        defaultInfo.setResourceType(resourceType);
+        result.add(defaultInfo);
+        for (CmsResource model : modelResources) {
+            CmsGallerySearchResult searchInfo = CmsGallerySearch.searchById(
+                getCmsObject(),
+                model.getStructureId(),
+                contentLocale);
+            CmsModelResourceInfo modelInfo = new CmsModelResourceInfo(
+                searchInfo.getTitle(),
+                searchInfo.getDescription(),
+                null);
+            modelInfo.addAdditionalInfo(
+                Messages.get().getBundle(wpLocale).key(Messages.GUI_LABEL_PATH_0),
+                getCmsObject().getSitePath(model));
+            modelInfo.setResourceType(resourceType);
+            modelInfo.setStructureId(model.getStructureId());
+            result.add(modelInfo);
+        }
+        return result;
     }
 
     /**
@@ -561,6 +643,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                             containerpage.getStructureId(),
                             elementData.getClientId(),
                             elementData.getResourceType(),
+                            null,
                             locale);
                     }
                 }
@@ -712,6 +795,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         pageStructureId,
                         elementData.getClientId(),
                         elementData.getResourceType(),
+                        null,
                         locale);
                 }
                 CmsContainerElementBean element = getCachedElement(elementData.getClientId());

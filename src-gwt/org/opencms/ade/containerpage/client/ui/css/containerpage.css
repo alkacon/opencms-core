@@ -15,14 +15,19 @@
 	border: none;	
 }
 
-ul.clipboardList{
+ul.clipboardList, ul.modelSelectList{
 	overflow: auto;
 	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
 	position: relative;
-	height: 441px;
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
+}
+ul.clipboardList{
+	height: 441px;
+}
+ul.modelSelectList{
+	margin-top: 5px;
 }
 
 .showButtons {}

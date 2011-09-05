@@ -109,6 +109,12 @@ public final class Messages {
     public static final String GUI_GROUPCONTAINER_LOADING_DATA_0 = "GUI_GROUPCONTAINER_LOADING_DATA_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_SELECT_TITLE_0 = "GUI_MODEL_SELECT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_SELECT_MESSAGE_0 = "GUI_MODEL_SELECT_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
 
     /** Message constant for key in the resource bundle. */
