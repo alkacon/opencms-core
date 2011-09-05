@@ -1334,7 +1334,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
         for (CmsResourceTypeConfig typeConfig : configData.getResourceTypes()) {
-            if (typeConfig.getDetailPagesDisabled()) {
+            if (typeConfig.isDetailPagesDisabled()) {
                 continue;
             }
             String typeName = typeConfig.getTypeName();

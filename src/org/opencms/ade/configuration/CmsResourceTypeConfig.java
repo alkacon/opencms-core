@@ -29,12 +29,12 @@ package org.opencms.ade.configuration;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -43,11 +43,8 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +111,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param folder the folder reference 
      * @param pattern the name pattern 
      * @param formatterConfig the formatter configuration 
+    <<<<<<< OURS
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param order the number used for sorting resource types from modules  
+    =======
+     * @param detailPagesDisabled if detail pages are disabled
+    >>>>>>> THEIRS
      */
     public CmsResourceTypeConfig(
         String typeName,
@@ -264,43 +265,47 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Creates a new element.<p>
      * 
      * @param userCms the CMS context to use
+     * 
      * @return the created resource
      *  
      * @throws CmsException if something goes wrong 
      */
     public CmsResource createNewElement(CmsObject userCms) throws CmsException {
 
+        return createNewElement(userCms, null);
+    }
+
+    /**
+     * Creates a new element.<p>
+     * 
+     * @param userCms the CMS context to use
+     * @param modelResource the model resource to use
+     * 
+     * @return the created resource
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsResource createNewElement(CmsObject userCms, CmsResource modelResource) throws CmsException {
+
         checkOffline(userCms);
         checkInitialized();
-        CmsObject cms = rootCms(userCms);
+        CmsObject rootCms = rootCms(userCms);
         String folderPath = getFolderPath(userCms);
         createFolder(m_cms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
-        String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, destination, 5);
-
-        // make sure the content is created for the current locale
-        byte[] content = null;
-        if (getType() instanceof CmsResourceTypeXmlContent) {
-            String schema = ((CmsResourceTypeXmlContent)getType()).getSchema();
-            if (schema != null) {
-                // must set URI of OpenCms context to parent folder of created resource, 
-                // in order to allow reading of properties for default values
-                CmsObject newCms = OpenCms.initCmsObject(cms);
-                newCms.getRequestContext().setUri(folderPath);
-                // unmarshal the content definition for the new resource
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
-                CmsXmlContent xmlContent = CmsXmlContentFactory.createDocument(
-                    newCms,
-                    userCms.getRequestContext().getLocale(),
-                    OpenCms.getSystemInfo().getDefaultEncoding(),
-                    contentDefinition);
-                content = xmlContent.marshal();
-            }
+        String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(rootCms, destination, 5);
+        // set the content locale
+        rootCms.getRequestContext().setAttribute(
+            CmsRequestContext.ATTRIBUTE_NEW_RESOURCE_LOCALE,
+            userCms.getRequestContext().getLocale());
+        if (modelResource != null) {
+            // set the model resource
+            rootCms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, modelResource.getRootPath());
         }
-        CmsResource createdResource = cms.createResource(
+        CmsResource createdResource = rootCms.createResource(
             creationPath,
             getType().getTypeId(),
-            content,
+            null,
             new ArrayList<CmsProperty>(0));
         return createdResource;
     }
@@ -310,7 +315,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * 
      * @return true if detail page creation should be disabled for this type 
      */
-    public boolean getDetailPagesDisabled() {
+    public boolean isDetailPagesDisabled() {
 
         return m_detailPagesDisabled;
     }
@@ -428,8 +433,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             folderOrName,
             namePattern,
             formatterConfig,
-            getDetailPagesDisabled() || childConfig.getDetailPagesDisabled(),
+            isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             m_order);
+
     }
 
     /**
