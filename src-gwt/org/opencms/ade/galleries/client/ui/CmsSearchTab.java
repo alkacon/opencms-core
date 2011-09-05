@@ -452,7 +452,7 @@ public class CmsSearchTab extends A_CmsTab {
      */
     public void clearInput() {
 
-        m_searchInput.setText("");
+        m_searchInput.setFormValueAsString("");
         ValueChangeEvent.fire(m_searchInput, "");
         m_dateCreatedStartDateBox.setValue(null, true);
         m_dateCreatedEndDateBox.setValue(null, true);

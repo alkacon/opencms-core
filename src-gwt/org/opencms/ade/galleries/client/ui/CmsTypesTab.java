@@ -245,4 +245,13 @@ public class CmsTypesTab extends A_CmsListTab {
         return m_tabHandler;
     }
 
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        // quick filter not available for this tab
+        return false;
+    }
 }

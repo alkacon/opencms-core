@@ -173,6 +173,16 @@ div.infoLabel {
 	text-align: right;
 }
 
+div.quickFilterBox {
+	float: right;
+	width: 200px;
+}
+div.quickFilterBox > div{
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+
 div.noParamsMessage {
 	position: absolute;
     top: 0;

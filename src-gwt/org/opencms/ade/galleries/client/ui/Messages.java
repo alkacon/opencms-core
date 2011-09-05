@@ -253,7 +253,13 @@ public final class Messages {
     public static final String GUI_PRIVIEW_BUTTON_RATIO_FIXED_0 = "GUI_PRIVIEW_BUTTON_RATIO_FIXED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCH_SCOPE_0 = "GUI_SEARCH_SCOPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0";
@@ -286,6 +292,12 @@ public final class Messages {
     public static final String GUI_SORT_LABEL_TYPE_DESC_0 = "GUI_SORT_LABEL_TYPE_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_CATEGORIES_IS_EMPTY_0 = "GUI_TAB_CATEGORIES_IS_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_GALLERIES_IS_EMPTY_0 = "GUI_TAB_GALLERIES_IS_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_BUTTON_CLEAR_0 = "GUI_TAB_SEARCH_BUTTON_CLEAR_0";
 
     /** Message constant for key in the resource bundle. */
@@ -302,9 +314,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SEARCH_SCOPE_0 = "GUI_SEARCH_SCOPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0";

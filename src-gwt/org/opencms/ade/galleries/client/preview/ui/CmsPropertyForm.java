@@ -102,7 +102,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
         m_inputPanel.getElement().getStyle().setWidth(getInputWidth(), Unit.PX);
         m_inputPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().inputField());
         m_textBox = new CmsTextBox();
-        m_textBox.setText(m_originalValue);
+        m_textBox.setFormValueAsString(m_originalValue);
         m_textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             /**

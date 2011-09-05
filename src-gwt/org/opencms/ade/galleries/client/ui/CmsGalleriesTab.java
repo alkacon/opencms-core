@@ -51,6 +51,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Provides the widget for the galleries(folder) tab.<p>
@@ -236,28 +237,28 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
     }
 
+    /** The batch size for adding new elements to the tab.<p> */
+    protected static final int LOAD_BATCH_SIZE = 50;
+
     /** Text metrics key. */
     private static final String TM_GALLERY_TAB = "GalleryTab";
+
+    /** An iterator which produces new list items which should be added to the tab.<p> */
+    protected Iterator<CmsTreeItem> m_itemIterator;
+    /** List of selected galleries. */
+    protected List<String> m_selectedGalleries;
 
     /** Map of gallery folders by path. */
     private Map<String, CmsGalleryFolderBean> m_galleries;
 
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
-    /** The tab handler. */
-    private CmsGalleriesTabHandler m_tabHandler;
-
-    /** List of selected galleries. */
-    protected List<String> m_selectedGalleries;
-
     /** Flag which indicates whether new elements are currently being inserted into the galleries tab.<p> */
     private boolean m_loading;
 
-    /** The batch size for adding new elements to the tab.<p> */
-    protected static final int LOAD_BATCH_SIZE = 50;
+    /** The search parameter panel for this tab. */
+    private CmsSearchParamPanel m_paramPanel;
 
-    /** An iterator which produces new list items which should be added to the tab.<p> */
-    protected Iterator<CmsTreeItem> m_itemIterator;
+    /** The tab handler. */
+    private CmsGalleriesTabHandler m_tabHandler;
 
     /**
      * Constructor.<p>
@@ -290,12 +291,17 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
 
         m_galleries.clear();
-        for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
-            m_galleries.put(galleryInfo.getPath(), galleryInfo);
-        }
         m_selectedGalleries = selectedGalleries;
-        m_itemIterator = new ListItemGenerator(galleryInfos);
-        loadMoreItems();
+        if (!galleryInfos.isEmpty()) {
+            for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
+                m_galleries.put(galleryInfo.getPath(), galleryInfo);
+            }
+
+            m_itemIterator = new ListItemGenerator(galleryInfos);
+            loadMoreItems();
+        } else {
+            showIsEmptyLabel();
+        }
     }
 
     /**
@@ -398,8 +404,13 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void updateTreeContent(List<CmsGalleryTreeEntry> galleryTreeEntries, List<String> selectedGalleries) {
 
         clearList();
-        m_itemIterator = new TreeItemGenerator(galleryTreeEntries);
-        loadMoreItems();
+        m_selectedGalleries = selectedGalleries;
+        if (!galleryTreeEntries.isEmpty()) {
+            m_itemIterator = new TreeItemGenerator(galleryTreeEntries);
+            loadMoreItems();
+        } else {
+            showIsEmptyLabel();
+        }
     }
 
     /**
@@ -489,6 +500,16 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        // allow filter if not in tree mode
+        return SortParams.tree != SortParams.valueOf(m_sortSelectBox.getFormValueAsString());
+    }
+
+    /**
      * Adds more gallery list items to display in the tab, if available.<p>
      */
     protected void loadMoreItems() {
@@ -509,5 +530,14 @@ public class CmsGalleriesTab extends A_CmsListTab {
             item.setOpen(true);
             openParents(item.getParentItem());
         }
+    }
+
+    /**
+     * Shows the tab list is empty label.<p>
+     */
+    private void showIsEmptyLabel() {
+
+        Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_GALLERIES_IS_EMPTY_0));
+        m_scrollList.add(isEmptyLabel);
     }
 }

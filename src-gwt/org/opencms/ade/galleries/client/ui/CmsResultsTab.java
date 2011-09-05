@@ -404,6 +404,16 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        // quick filter not available for this tab
+        return false;
+    }
+
+    /**
      * Helper for setting the scroll position of the scroll panel.<p>
      * 
      * @param pos the scroll position
@@ -576,5 +586,4 @@ public class CmsResultsTab extends A_CmsListTab {
         }
 
     }
-
 }

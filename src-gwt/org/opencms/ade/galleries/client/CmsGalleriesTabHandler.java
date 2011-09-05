@@ -27,7 +27,6 @@
 
 package org.opencms.ade.galleries.client;
 
-
 /**
  * The galleries(folders) tab handler.<p>
  * 
@@ -87,11 +86,11 @@ public class CmsGalleriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String,java.lang.String)
      */
     @Override
-    public void onSort(String sortParams) {
+    public void onSort(String sortParams, String filter) {
 
-        m_controller.sortGalleries(sortParams);
+        m_controller.sortGalleries(sortParams, filter);
     }
 }

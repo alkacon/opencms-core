@@ -53,6 +53,7 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.gwt.shared.sort.CmsComparatorType;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -631,8 +632,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Sorts the categories according to given parameters and updates the list.<p>
      * 
      * @param sortParams the sort parameters
+     * @param filter the filter to apply before sorting
      */
-    public void sortCategories(String sortParams) {
+    public void sortCategories(String sortParams, String filter) {
 
         List<CmsCategoryBean> categories;
         SortParams sort = SortParams.valueOf(sortParams);
@@ -641,14 +643,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 m_handler.onUpdateCategoriesTree(m_dialogBean.getCategories(), m_searchObject.getCategories());
                 break;
             case title_asc:
-                categories = new ArrayList<CmsCategoryBean>();
-                categoryTreeToList(categories, m_dialogBean.getCategories());
+                categories = getFilteredCategories(filter);
                 Collections.sort(categories, new CmsComparatorTitle(true));
                 m_handler.onUpdateCategoriesList(categories, m_searchObject.getCategories());
                 break;
             case title_desc:
-                categories = new ArrayList<CmsCategoryBean>();
-                categoryTreeToList(categories, m_dialogBean.getCategories());
+                categories = getFilteredCategories(filter);
                 Collections.sort(categories, new CmsComparatorTitle(false));
                 m_handler.onUpdateCategoriesList(categories, m_searchObject.getCategories());
                 break;
@@ -663,14 +663,48 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
     }
 
+    private List<CmsCategoryBean> getFilteredCategories(String filter) {
+
+        List<CmsCategoryBean> result;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            result = new ArrayList<CmsCategoryBean>();
+            for (CmsCategoryBean category : getCategoryList()) {
+                if (category.matchesFilter(filter)) {
+                    result.add(category);
+                }
+            }
+        } else {
+            result = getCategoryList();
+        }
+        return result;
+    }
+
+    private List<CmsCategoryBean> getCategoryList() {
+
+        List<CmsCategoryBean> result = new ArrayList<CmsCategoryBean>();
+        categoryTreeToList(result, m_dialogBean.getCategories());
+        return result;
+    }
+
     /**
      * Sorts the galleries according to given parameters and updates the list.<p>
      * 
      * @param sortParams the sort parameters
+     * @param filter the filter to apply before sorting
      */
-    public void sortGalleries(String sortParams) {
+    public void sortGalleries(String sortParams, String filter) {
 
-        List<CmsGalleryFolderBean> galleries = m_dialogBean.getGalleries();
+        List<CmsGalleryFolderBean> galleries;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            galleries = new ArrayList<CmsGalleryFolderBean>();
+            for (CmsGalleryFolderBean galleryBean : m_dialogBean.getGalleries()) {
+                if (galleryBean.matchesFilter(filter)) {
+                    galleries.add(galleryBean);
+                }
+            }
+        } else {
+            galleries = m_dialogBean.getGalleries();
+        }
         SortParams sort = SortParams.valueOf(sortParams);
         switch (sort) {
             case title_asc:

@@ -37,8 +37,10 @@ import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -51,6 +53,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
@@ -126,6 +129,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** The css bundle used for this widget. */
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
+    private static final int FILTER_DELAY = 200;
+
     /** Text metrics key. */
     private static final String TM_GALLERY_SORT = "gallerySort";
 
@@ -143,15 +148,21 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     @UiField
     protected FlowPanel m_options;
 
+    /** The Quick filter text box. */
+    protected CmsTextBox m_quickFilter;
+
     /** The scrollable list panel. */
     protected CmsList<? extends I_CmsListItem> m_scrollList;
+
+    /** The select box to change the sort order. */
+    protected CmsSelectBox m_sortSelectBox;
 
     /** The option panel. */
     @UiField
     protected FlowPanel m_tab;
 
-    /** The select box to change the sort order. */
-    protected CmsSelectBox m_sortSelectBox;
+    /** The quick filter timer. */
+    private Timer m_filterTimer;
 
     /**
      * The default constructor with drag handler.<p>
@@ -184,7 +195,24 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             infoLabel.setStyleName(DIALOG_CSS.infoLabel());
             m_infoLabel = infoLabel;
             m_options.insert(infoLabel, 0);
+            m_quickFilter = new CmsTextBox();
+            m_quickFilter.setVisible(hasQuickFilter());
+            m_quickFilter.addValueChangeHandler(this);
+            m_quickFilter.addStyleName(DIALOG_CSS.quickFilterBox());
+            m_quickFilter.setTriggerChangeOnKeyPress(true);
+            m_quickFilter.setGhostValue("Search", true);
+            m_quickFilter.setGhostModeClear(true);
+            m_options.insert(m_quickFilter, 0);
         }
+        m_filterTimer = new Timer() {
+
+            @Override
+            public void run() {
+
+                getTabHandler().onSort(m_sortSelectBox.getFormValueAsString(), m_quickFilter.getFormValueAsString());
+
+            }
+        };
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
     }
@@ -206,9 +234,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     public void onValueChange(ValueChangeEvent<String> event) {
 
+        cancelQuickFilterTimer();
         if (event.getSource() == m_sortSelectBox) {
-            getTabHandler().onSort(event.getValue());
+            getTabHandler().onSort(event.getValue(), hasQuickFilter() ? m_quickFilter.getFormValueAsString() : null);
         }
+        if ((event.getSource() == m_quickFilter)
+            && (CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
+            // only act if filter length is at least 3 characters or empty
+            scheduleQuickFilterTimer();
+        }
+        m_quickFilter.setVisible(hasQuickFilter());
     }
 
     /**
@@ -231,6 +266,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToOptions(Widget widget) {
 
         m_options.add(widget);
+    }
+
+    /**
+     * Cancels the quick filter timer.<p>
+     */
+    protected void cancelQuickFilterTimer() {
+
+        m_filterTimer.cancel();
     }
 
     /**
@@ -275,6 +318,21 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * @return list of sort order value/text pairs
      */
     protected abstract List<CmsPair<String, String>> getSortList();
+
+    /**
+     * Returns if this tab has quick filter enabled.<p>
+     * 
+     * @return <code>true</code> if this tab has quick filter enabled
+     */
+    protected abstract boolean hasQuickFilter();
+
+    /**
+     * Schedules the quick filter action.<p>
+     */
+    protected void scheduleQuickFilterTimer() {
+
+        m_filterTimer.schedule(FILTER_DELAY);
+    }
 
     /**
      * Searches in the categories tree or list the item and returns it.<p>

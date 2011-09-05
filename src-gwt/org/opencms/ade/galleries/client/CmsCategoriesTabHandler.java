@@ -86,11 +86,11 @@ public class CmsCategoriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String,java.lang.String)
      */
     @Override
-    public void onSort(String sortParams) {
+    public void onSort(String sortParams, String filter) {
 
-        m_controller.sortCategories(sortParams);
+        m_controller.sortCategories(sortParams, filter);
     }
 }

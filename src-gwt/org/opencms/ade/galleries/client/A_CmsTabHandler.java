@@ -72,8 +72,9 @@ public abstract class A_CmsTabHandler {
      * Sorts the list, if present.<p>
      * 
      * @param sortParams the sort parameters
+     * @param filter the filter phrase
      */
-    public abstract void onSort(String sortParams);
+    public abstract void onSort(String sortParams, String filter);
 
     /**
      * Selects the result tab.<p>

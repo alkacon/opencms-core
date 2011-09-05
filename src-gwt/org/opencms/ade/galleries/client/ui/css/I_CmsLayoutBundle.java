@@ -140,6 +140,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String quickFilterBox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String resultTabUpload();
 
         /** Access method.<p>

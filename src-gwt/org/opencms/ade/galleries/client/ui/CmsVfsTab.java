@@ -179,6 +179,16 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
+     * Clears the contents of the tab and resets the mapping from tree items to VFS beans.<p>
+     */
+    protected void clear() {
+
+        clearList();
+        m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
+
+    }
+
+    /**
      * Helper method for creating a VFS tree item widget from a VFS entry bean.<p>
      * 
      * @param vfsEntry the VFS entry bean 
@@ -274,13 +284,12 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
-     * Clears the contents of the tab and resets the mapping from tree items to VFS beans.<p>
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
      */
-    void clear() {
+    @Override
+    protected boolean hasQuickFilter() {
 
-        clearList();
-        m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
-
+        // quick filter not available for this tab
+        return false;
     }
-
 }

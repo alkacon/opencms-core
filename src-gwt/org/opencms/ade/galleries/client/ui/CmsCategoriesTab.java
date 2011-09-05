@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.Label;
+
 /**
  * Provides the widget for the categories tab.<p>
  * 
@@ -232,27 +234,32 @@ public class CmsCategoriesTab extends A_CmsListTab {
         if (m_categories == null) {
             m_categories = new HashMap<String, CmsCategoryBean>();
         }
-        for (CmsCategoryBean categoryBean : categoriesBeans) {
-            m_categories.put(categoryBean.getPath(), categoryBean);
-            // set the list item widget
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
-                categoryBean.getTitle(),
-                CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
-                ? categoryBean.getDescription()
-                : categoryBean.getPath(), null));
-            listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
-            // the checkbox
-            CmsCheckBox checkBox = new CmsCheckBox();
-            if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
-                checkBox.setChecked(true);
+        if ((categoriesBeans != null) && !categoriesBeans.isEmpty()) {
+            for (CmsCategoryBean categoryBean : categoriesBeans) {
+                m_categories.put(categoryBean.getPath(), categoryBean);
+                // set the list item widget
+                CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
+                    categoryBean.getTitle(),
+                    CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
+                    ? categoryBean.getDescription()
+                    : categoryBean.getPath(),
+                    null));
+                listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
+                // the checkbox
+                CmsCheckBox checkBox = new CmsCheckBox();
+                if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
+                    checkBox.setChecked(true);
+                }
+                SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
+                checkBox.addClickHandler(selectionHandler);
+                listItemWidget.addDoubleClickHandler(selectionHandler);
+                // set the category list item and add to list 
+                CmsTreeItem listItem = new CmsTreeItem(false, checkBox, listItemWidget);
+                listItem.setId(categoryBean.getPath());
+                addWidgetToList(listItem);
             }
-            SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
-            checkBox.addClickHandler(selectionHandler);
-            listItemWidget.addDoubleClickHandler(selectionHandler);
-            // set the category list item and add to list 
-            CmsTreeItem listItem = new CmsTreeItem(false, checkBox, listItemWidget);
-            listItem.setId(categoryBean.getPath());
-            addWidgetToList(listItem);
+        } else {
+            showIsEmptyLabel();
         }
     }
 
@@ -268,7 +275,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         if (m_categories == null) {
             m_categories = new HashMap<String, CmsCategoryBean>();
         }
-        if (treeEntries != null) {
+        if ((treeEntries != null) && !treeEntries.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list 
@@ -277,6 +284,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 addWidgetToList(treeItem);
                 treeItem.setOpen(true);
             }
+        } else {
+            showIsEmptyLabel();
         }
     }
 
@@ -304,6 +313,16 @@ public class CmsCategoriesTab extends A_CmsListTab {
     protected CmsCategoriesTabHandler getTabHandler() {
 
         return m_tabHandler;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        // allow filter if not in tree mode
+        return SortParams.tree != SortParams.valueOf(m_sortSelectBox.getFormValueAsString());
     }
 
     /**
@@ -343,7 +362,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
-            : category.getPath(), null);
+            : category.getPath(),
+            null);
         m_categories.put(category.getPath(), category);
         // set the list item widget
         CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
@@ -373,5 +393,14 @@ public class CmsCategoriesTab extends A_CmsListTab {
             item.setOpen(true);
             openParents(item.getParentItem());
         }
+    }
+
+    /**
+     * Shows the tab list is empty label.<p>
+     */
+    private void showIsEmptyLabel() {
+
+        Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_CATEGORIES_IS_EMPTY_0));
+        m_scrollList.add(isEmptyLabel);
     }
 }
