@@ -178,7 +178,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void setFormValueAsString(String value) {
 
-        m_textbox.setText(value);
+        m_textbox.setFormValueAsString(value);
 
     }
 

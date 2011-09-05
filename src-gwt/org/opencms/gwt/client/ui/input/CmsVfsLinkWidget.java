@@ -233,7 +233,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
      */
     public void setFormValueAsString(String value) {
 
-        m_textbox.setText(value);
+        m_textbox.setFormValueAsString(value);
 
     }
 

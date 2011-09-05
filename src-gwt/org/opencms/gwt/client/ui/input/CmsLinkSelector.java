@@ -267,7 +267,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
             link = tokens.get(1);
         }
         setInternal(internal);
-        m_textbox.setText(link);
+        m_textbox.setFormValueAsString(link);
 
     }
 
@@ -312,7 +312,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         if (link == null) {
             link = "";
         }
-        m_textbox.setText(link);
+        m_textbox.setFormValueAsString(link);
     }
 
     /**
@@ -325,7 +325,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         if (link == null) {
             link = new CmsLinkBean("", true);
         }
-        m_textbox.setText(link.getLink());
+        m_textbox.setFormValueAsString(link.getLink());
         setInternal(link.isInternal());
     }
 
@@ -390,7 +390,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
     protected void userChangedExternal(boolean external) {
 
         if (!external) {
-            m_textbox.setText("");
+            m_textbox.setFormValueAsString("");
         }
         setInternal(!external);
     }

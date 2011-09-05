@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -75,6 +77,113 @@ import com.google.gwt.user.client.ui.TextBox;
 public class CmsTextBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasFocusHandlers, HasBlurHandlers, HasValueChangeHandlers<String>,
 HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
+
+    /**
+     * Event handler for this text box.<p>
+     */
+    private class TextBoxHandler
+    implements MouseOverHandler, MouseOutHandler, FocusHandler, BlurHandler, ValueChangeHandler<String>,
+    KeyPressHandler {
+
+        /** The current text box value. */
+        private String m_currentValue;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param currentValue the current text box value
+         */
+        protected TextBoxHandler(String currentValue) {
+
+            m_currentValue = currentValue;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+         */
+        public void onBlur(BlurEvent event) {
+
+            if (!m_ghostMode && m_textbox.getText().equals("")) {
+                setGhostValue(m_ghostValue, true);
+            }
+            checkForChange();
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.FocusHandler#onFocus(com.google.gwt.event.dom.client.FocusEvent)
+         */
+        public void onFocus(FocusEvent event) {
+
+            setGhostStyleEnabled(false);
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+         */
+        public void onKeyPress(KeyPressEvent event) {
+
+            int keyCode = event.getNativeEvent().getKeyCode();
+            if (!isNavigationKey(keyCode)) {
+                setGhostMode(false);
+            }
+            if (isTriggerChangeOnKeyPress()) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        checkForChange();
+                    }
+                });
+
+            }
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+         */
+        public void onMouseOut(MouseOutEvent event) {
+
+            hideError();
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+         */
+        public void onMouseOver(MouseOverEvent event) {
+
+            if (!isPreventShowError()) {
+                showError();
+            }
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            setGhostMode(false);
+            if ((m_ghostValue != null) && "".equals(m_textbox.getValue())) {
+                m_ghostMode = true;
+                setGhostStyleEnabled(true);
+                m_textbox.setValue(m_ghostValue);
+            }
+            if (!event.getValue().equals(m_currentValue)) {
+                m_currentValue = event.getValue();
+                fireValueChangedEvent();
+            }
+        }
+
+        /**
+         * Checks if the current text box value has changed and fires the value changed event.<p>
+         */
+        protected void checkForChange() {
+
+            if (!m_textbox.getValue().equals(m_currentValue)) {
+                m_currentValue = getFormValueAsString();
+                fireValueChangedEvent();
+            }
+        }
+    }
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -112,6 +221,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
 
+    /** Flag indicating if the text box should be cleared when leaving the ghost mode. */
+    private boolean m_clearOnChangeMode;
+
     /** A list of the click handler registrations for this text box. */
     private List<HandlerRegistration> m_clickHandlerRegistrations = new ArrayList<HandlerRegistration>();
 
@@ -136,6 +248,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
 
+    /** Flag indicating if the value change event should also be fired after key press events. */
+    private boolean m_triggerChangeOnKeyPress;
+
     /**
      * Constructs a new instance of this widget.
      */
@@ -144,44 +259,14 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         setEnabled(true);
         m_textbox.setStyleName(CSS.textBox());
         m_textbox.getElement().setId("CmsTextBox_" + (idCounter++));
-        m_textbox.addMouseOverHandler(new MouseOverHandler() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
-             */
-            public void onMouseOver(MouseOverEvent event) {
-
-                if (!isPreventShowError()) {
-                    showError();
-                }
-            }
-        });
-        m_textbox.addMouseOutHandler(new MouseOutHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
-             */
-            public void onMouseOut(MouseOutEvent event) {
-
-                hideError();
-            }
-        });
-
-        m_textbox.addFocusHandler(new FocusHandler() {
-
-            public void onFocus(FocusEvent event) {
-
-                setGhostStyleEnabled(false);
-            }
-        });
-
-        m_textbox.addBlurHandler(new BlurHandler() {
-
-            public void onBlur(BlurEvent event) {
-
-                setGhostStyleEnabled(m_ghostMode);
-            }
-        });
+        TextBoxHandler handler = new TextBoxHandler("");
+        m_textbox.addMouseOverHandler(handler);
+        m_textbox.addMouseOutHandler(handler);
+        m_textbox.addFocusHandler(handler);
+        m_textbox.addBlurHandler(handler);
+        m_textbox.addValueChangeHandler(handler);
+        m_textbox.addKeyPressHandler(handler);
 
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -191,36 +276,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_textboxContainer.add(m_textbox);
         m_textboxContainer.setPaddingX(4);
         initWidget(m_panel);
-
-        m_textbox.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            /**
-             * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
-             */
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                setGhostMode(false);
-                if ((m_ghostValue != null) && "".equals(m_textbox.getValue())) {
-                    m_ghostMode = true;
-                    setGhostStyleEnabled(true);
-                    m_textbox.setValue(m_ghostValue);
-                }
-                fireValueChangedEvent();
-            }
-        });
-        m_textbox.addKeyPressHandler(new KeyPressHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-             */
-            public void onKeyPress(KeyPressEvent event) {
-
-                int keyCode = event.getNativeEvent().getKeyCode();
-                if (!isNavigationKey(keyCode)) {
-                    setGhostMode(false);
-                }
-            }
-        });
     }
 
     /**
@@ -397,6 +452,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Returns if the text box is set to trigger the value changed event on key press and not on blur only.<p>
+     * 
+     * @return <code>true</code> if the text box is set to trigger the value changed event on key press
+     */
+    public boolean isTriggerChangeOnKeyPress() {
+
+        return m_triggerChangeOnKeyPress;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -531,6 +596,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Sets if the input field should be cleared when leaving the ghost mode.<p>
+     * 
+     * @param clearOnChangeMode <code>true</code> to clear on leaving the ghost mode
+     */
+    public void setGhostModeClear(boolean clearOnChangeMode) {
+
+        m_clearOnChangeMode = clearOnChangeMode;
+    }
+
+    /**
      * Enables or disables the "ghost mode" style.<p>
      * 
      * This *only* changes the style, not the actual mode.
@@ -543,6 +618,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             m_textbox.addStyleName(CSS.textboxGhostMode());
         } else {
             m_textbox.removeStyleName(CSS.textboxGhostMode());
+            if (m_clearOnChangeMode) {
+                setText("");
+            }
         }
     }
 
@@ -589,13 +667,13 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
-     * Sets the text in the text box.<p>
+     * Sets if the value changed event should be triggered on key press and not on blur only.<p>
      * 
-     * @param text the new text
+     * @param triggerOnKeyPress <code>true</code> if the value changed event should be triggered on key press
      */
-    public void setText(String text) {
+    public void setTriggerChangeOnKeyPress(boolean triggerOnKeyPress) {
 
-        m_textbox.setText(text);
+        m_triggerChangeOnKeyPress = triggerOnKeyPress;
     }
 
     /**
@@ -612,7 +690,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     protected void fireValueChangedEvent() {
 
-        ValueChangeEvent.fire(this, getText());
+        ValueChangeEvent.fire(this, getFormValueAsString());
     }
 
     /**
@@ -646,6 +724,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     protected void showError() {
 
         m_error.showError();
+    }
+
+    /**
+     * Sets the text in the text box.<p>
+     * 
+     * @param text the new text
+     */
+    private void setText(String text) {
+
+        m_textbox.setText(text);
     }
 
 }

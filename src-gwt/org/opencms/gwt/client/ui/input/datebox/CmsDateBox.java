@@ -440,7 +440,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         if (!enabled) {
             m_tmpValue = getValue();
-            m_box.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
+            m_box.setFormValueAsString(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
         } else {
             setValue(m_tmpValue);
         }
@@ -494,7 +494,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             fireChange(getValue(), value);
             m_oldValue = value;
         }
-        m_box.setText(CmsDateConverter.toString(value));
+        m_box.setFormValueAsString(CmsDateConverter.toString(value));
     }
 
     /**
@@ -704,7 +704,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     private void checkTime() {
 
         if (!isValidTime()) {
-            m_time.setErrorMessageWidth(m_popup.getOffsetWidth() - 32 + Unit.PX.toString());
+            m_time.setErrorMessageWidth((m_popup.getOffsetWidth() - 32) + Unit.PX.toString());
             m_time.setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_0));
         } else if (isValidTime()) {
             m_time.setErrorMessage(null);
@@ -769,7 +769,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         }
         m_picker.setValue(date, fireEvents);
         m_picker.setCurrentMonth(date);
-        m_time.setText(CmsDateConverter.cutSuffix(CmsDateConverter.getTime(date)).trim());
+        m_time.setFormValueAsString(CmsDateConverter.cutSuffix(CmsDateConverter.getTime(date)).trim());
         if (CmsDateConverter.isAm(date)) {
             m_ampmGroup.selectButton(m_am);
         } else {

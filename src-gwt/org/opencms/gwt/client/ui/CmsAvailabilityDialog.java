@@ -247,11 +247,11 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
     protected void onNotificationCheckboxClick() {
 
         if (m_notificationEnabled.isChecked()) {
-            m_notificationInterval.setText(m_tmpNotificationInterval);
+            m_notificationInterval.setFormValueAsString(m_tmpNotificationInterval);
             m_notificationInterval.setEnabled(true);
         } else {
             m_tmpNotificationInterval = m_notificationInterval.getText();
-            m_notificationInterval.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
+            m_notificationInterval.setFormValueAsString(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
             m_notificationInterval.setEnabled(false);
         }
     }
@@ -579,9 +579,9 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
         m_tmpNotificationInterval = Integer.toString(m_availabilityInfo.getNotificationInterval());
         if (m_availabilityInfo.isNotificationEnabled()) {
-            m_notificationInterval.setText(m_tmpNotificationInterval);
+            m_notificationInterval.setFormValueAsString(m_tmpNotificationInterval);
         } else {
-            m_notificationInterval.setText(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
+            m_notificationInterval.setFormValueAsString(Messages.get().key(Messages.GUI_INPUT_NOT_USED_0));
         }
         m_notificationInterval.setEnabled(m_availabilityInfo.isNotificationEnabled());
         m_notificationEnabled.setChecked(m_availabilityInfo.isNotificationEnabled());
