@@ -28,8 +28,14 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.scheduler/lib" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/scheduler/"/>
-			<resource uri="/system/workplace/resources/tools/scheduler/"/>
+            <resource uri="/system/workplace/admin/scheduler/edit.jsp"/>
+            <resource uri="/system/workplace/admin/scheduler/index.jsp"/>
+            <resource uri="/system/workplace/admin/scheduler/new.jsp"/>
+            <resource uri="/system/workplace/resources/tools/scheduler/buttons/copy.png"/>
+            <resource uri="/system/workplace/resources/tools/scheduler/buttons/edit.png"/>
+            <resource uri="/system/workplace/resources/tools/scheduler/icons/big/scheduler.png"/>
+            <resource uri="/system/workplace/resources/tools/scheduler/icons/big/scheduler_new.png"/>
+            <resource uri="/system/workplace/resources/tools/scheduler/icons/small/scheduler.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.scheduler/"/>
 		</resources>
 		<parameters/>

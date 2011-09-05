@@ -28,8 +28,17 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.link/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/linkvalidation/"/>
-			<resource uri="/system/workplace/resources/tools/linkvalidation/"/>
+            <resource uri="/system/workplace/admin/linkvalidation/internallinks-list.jsp"/>
+            <resource uri="/system/workplace/admin/linkvalidation/internallinks.jsp"/>
+            <resource uri="/system/workplace/admin/linkvalidation/external/validateexternallinks.jsp"/>
+            <resource uri="/system/workplace/admin/linkvalidation/external/viewresults.jsp"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link_extern.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link_extern_results.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link_extern_validate.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link_intern.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/big/link_intern_validate.png"/>
+            <resource uri="/system/workplace/resources/tools/linkvalidation/icons/small/link.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.link/"/>
 			<resource uri="/system/shared/linkexcludes"/>
 		</resources>

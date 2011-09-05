@@ -28,8 +28,22 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.cache/lib" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/cache/"/>
-			<resource uri="/system/workplace/resources/tools/cache/"/>
+            <resource uri="/system/workplace/admin/cache/corecache_flush.jsp"/>
+            <resource uri="/system/workplace/admin/cache/flexcache.jsp"/>
+            <resource uri="/system/workplace/admin/cache/flexcache_flush.jsp"/>
+            <resource uri="/system/workplace/admin/cache/images.jsp"/>
+            <resource uri="/system/workplace/admin/cache/images_flush.jsp"/>
+            <resource uri="/system/workplace/admin/cache/jsprepository.jsp"/>
+            <resource uri="/system/workplace/resources/tools/cache/buttons/flexentry.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/buttons/imageentry.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/cache.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/core.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/flexcache.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/flexcache_clean.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/images.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/images_flush.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/big/jsp_repository.png"/>
+            <resource uri="/system/workplace/resources/tools/cache/icons/small/cache.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.cache/"/>
 		</resources>
 		<parameters/>

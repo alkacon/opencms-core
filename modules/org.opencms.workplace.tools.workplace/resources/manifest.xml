@@ -28,8 +28,41 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.workplace/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/workplace/"/>
-			<resource uri="/system/workplace/resources/tools/workplace/"/>
+            <resource uri="/system/workplace/admin/workplace/broadcast_message.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/broadcast_message_all.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/groups_send_email.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/groups_send_popup.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/loginmessage.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/reinitialize.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/send_email.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/send_email_all.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/send_mail_groups.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/send_popup_groups.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/sessions.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/synchronize.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/logfileview/dodownload.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/logfileview/download.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/logfileview/index.jsp"/>
+            <resource uri="/system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp"/>
+            <resource uri="/system/workplace/resources/tools/workplace/buttons/message_notpending.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/buttons/message_pending.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_email.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_message.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/buttons/send_message.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_download.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_settings.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_view.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/folder_refresh.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email_groups.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_message.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_popup_groups.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_broadcast.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_loginmessage.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_reload.png"/>
+            <resource uri="/system/workplace/resources/tools/workplace/icons/small/workplace.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.workplace/"/>
 		</resources>
 		<parameters/>

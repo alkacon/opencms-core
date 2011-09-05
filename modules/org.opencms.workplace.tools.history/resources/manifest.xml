@@ -28,8 +28,14 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.history/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/history/"/>
-			<resource uri="/system/workplace/resources/tools/history/icons/"/>
+            <resource uri="/system/workplace/admin/history/clearhistory/index.jsp"/>
+            <resource uri="/system/workplace/admin/history/reports/clearhistory.jsp"/>
+            <resource uri="/system/workplace/admin/history/settings/index.jsp"/>
+            <resource uri="/system/workplace/resources/tools/history/icons/big/history.png"/>
+            <resource uri="/system/workplace/resources/tools/history/icons/big/history_clear.png"/>
+            <resource uri="/system/workplace/resources/tools/history/icons/big/history_clear_disabled.png"/>
+            <resource uri="/system/workplace/resources/tools/history/icons/big/history_settings.png"/>
+            <resource uri="/system/workplace/resources/tools/history/icons/small/history.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.history/"/>
 		</resources>
 		<parameters/>

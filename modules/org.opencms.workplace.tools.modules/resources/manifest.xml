@@ -28,8 +28,47 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.modules/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/modules/"/>
-			<resource uri="/system/workplace/resources/tools/modules/"/>
+            <resource uri="/system/workplace/admin/modules/dependencies_edit.jsp"/>
+            <resource uri="/system/workplace/admin/modules/dependencies_list.jsp"/>
+            <resource uri="/system/workplace/admin/modules/dependencies_new.jsp"/>
+            <resource uri="/system/workplace/admin/modules/exportpoints_edit.jsp"/>
+            <resource uri="/system/workplace/admin/modules/exportpoints_list.jsp"/>
+            <resource uri="/system/workplace/admin/modules/exportpoints_new.jsp"/>
+            <resource uri="/system/workplace/admin/modules/index.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_delete.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_edit.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_edit_parameters.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_edit_resources.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_export.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_import.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_import_server.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_new.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_overview.jsp"/>
+            <resource uri="/system/workplace/admin/modules/reports/delete.jsp"/>
+            <resource uri="/system/workplace/admin/modules/reports/export.jsp"/>
+            <resource uri="/system/workplace/admin/modules/reports/import.jsp"/>
+            <resource uri="/system/workplace/admin/modules/reports/replace.jsp"/>
+            <resource uri="/system/workplace/resources/tools/modules/buttons/contextinfo.gif"/>
+            <resource uri="/system/workplace/resources/tools/modules/buttons/export.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/buttons/module_dependencies.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/buttons/module_exportpoints.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/buttons/modules.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_add.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_delete.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies_add.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_edit.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_export.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_exportpoints.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_exportpoints_add.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_import_http.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_import_server.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_parameters.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_resources.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/modules.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/small/module_dependencies.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/small/module_exportpoints.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/small/modules.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.modules/"/>
 		</resources>
 		<parameters/>

@@ -28,8 +28,18 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.galleryoverview/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/galleryoverview/"/>
-			<resource uri="/system/workplace/resources/tools/galleryoverview/"/>
+            <resource uri="/system/workplace/admin/galleryoverview/downloadgallery/index.jsp"/>
+            <resource uri="/system/workplace/admin/galleryoverview/htmlgallery/index.jsp"/>
+            <resource uri="/system/workplace/admin/galleryoverview/imagegallery/index.jsp"/>
+            <resource uri="/system/workplace/admin/galleryoverview/linkgallery/index.jsp"/>
+            <resource uri="/system/workplace/admin/galleryoverview/tablegallery/index.jsp"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_html.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_image.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_link.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_manage.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_table.png"/>
+            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.galleryoverview/"/>
 		</resources>
 		<parameters/>
