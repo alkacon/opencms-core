@@ -26,7 +26,8 @@
  */
 
 package org.opencms.setup.xml.v7;
-import org.opencms.configuration.CmsConfigurationManager;
+
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -44,10 +45,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
-
 
 /**
  * Adds new context menu item nodes.<p>
@@ -60,18 +62,14 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
     private List<String> m_xpaths;
 
     /**
-     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
-     */
-    public String getName() {
-
-        return "Add new context menu items";
-    }
-
-    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
-    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
+    public boolean executeUpdate(Document document, String xpath, boolean forReal) {
+
+        if (forReal && !checkExplorerType(document, xpath)) {
+            return false;
+        }
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
@@ -129,21 +127,18 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
      */
-    @Override
-    protected String getCommonPath() {
+    public String getName() {
 
-        // /opencms/workplace/explorertypes
-        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+        return "Add new context menu items";
     }
 
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     @Override
-    protected List<String> getXPathsToUpdate() {
+    public List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/entry[@uri='commons/${res}.jsp']
@@ -212,5 +207,48 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
             m_xpaths.add(xp.toString());
         }
         return m_xpaths;
+    }
+
+    /**
+     * Checks whether the explorer type referenced by an xpath exists in the document.<p>
+     * 
+     * @param doc the document  
+     * @param xpath the xpath, potentially referencing an explorertype 
+     * @return true if the xpath references no explorertype, or the referenced explorertype is contained in the document 
+     */
+    protected boolean checkExplorerType(Document doc, String xpath) {
+
+        Pattern pattern = Pattern.compile("^.*explorertype\\[@name='(.*?)'\\].*$");
+        Matcher matcher = pattern.matcher(xpath);
+        if (matcher.matches()) {
+            String etype = matcher.group(1);
+            return existsExplorerType(doc, etype);
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether a given explorertype exists in the document.<p>
+     * 
+     * @param doc the XML document 
+     * @param explorertype the explorertype to check
+     *  
+     * @return true if the explorertype exists 
+     */
+    protected boolean existsExplorerType(Document doc, String explorertype) {
+
+        Node etype = doc.selectSingleNode("/opencms/workplace/explorertypes/explorertype[@name='" + explorertype + "']");
+        return etype != null;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    @Override
+    protected String getCommonPath() {
+
+        // /opencms/workplace/explorertypes
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 }
