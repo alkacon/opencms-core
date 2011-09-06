@@ -626,6 +626,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @param cms the current CMS context 
      * @param page the container page which should be changed 
+     * @param containerName the name of the container which should be used for function detail elements 
      * @param elementId the structure id of the element to add  
      * @param formatterId the structure id of the formatter for the element
      *  
@@ -634,6 +635,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private void addFunctionDetailElement(
         CmsObject cms,
         CmsXmlContainerPage page,
+        String containerName,
         CmsUUID elementId,
         CmsUUID formatterId) throws CmsException {
 
@@ -643,8 +645,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
             boolean foundContainer = false;
             for (CmsContainerBean cntBean : bean.getContainers().values()) {
-                Map<String, String> attributes = cntBean.getAttributes();
-                boolean isDetailTarget = attributes.containsKey("FunctionDetail");
+                boolean isDetailTarget = cntBean.getName().equals(containerName);
                 if (isDetailTarget && !foundContainer) {
                     foundContainer = true;
                     List<CmsContainerElementBean> newElems = new ArrayList<CmsContainerElementBean>();
@@ -830,6 +831,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     // need this for calculateNavPosition, even though the id will get overwritten 
                     change.setEntryId(new CmsUUID());
                 }
+
+                boolean isFunctionDetail = (change.getCreateParameter() != null)
+                    && CmsUUID.isValidUUID(change.getCreateParameter());
+                String functionDetailContainer = null;
+                if (isFunctionDetail) {
+                    functionDetailContainer = getFunctionDetailContainerName(parentFolder);
+                }
+
                 entryFolder = new CmsResource(
                     change.getEntryId(),
                     new CmsUUID(),
@@ -869,12 +878,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         true,
                         true);
                     ensureSingleLocale(page, entryFolder);
-                    boolean isFunctionDetail = (change.getCreateParameter() != null)
-                        && CmsUUID.isValidUUID(change.getCreateParameter());
                     if (isFunctionDetail) {
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
                         CmsResource functionFormatter = cms.readResource(CmsXmlDynamicFunctionHandler.FORMATTER_PATH);
-                        addFunctionDetailElement(cms, page, functionStructureId, functionFormatter.getStructureId());
+                        addFunctionDetailElement(
+                            cms,
+                            page,
+                            functionDetailContainer,
+                            functionStructureId,
+                            functionFormatter.getStructureId());
                     }
                     content = page.marshal();
                 }
@@ -1225,6 +1237,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Gets the function detail container name, and throws an exception if it couldn't be found.<p>
+     * 
+     * @param parent the parent folder 
+     * @return the function detail container name
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private String getFunctionDetailContainerName(CmsResource parent) throws CmsException {
+
+        String result = internalGetFunctionDetailContainerName(parent);
+        if (result == null) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_FUNCTION_DETAIL_UNDEFINED_1,
+                parent.getRootPath()));
+        }
+        return result;
+    }
+
+    /**
      * Returns the modified list from the current user.<p>
      * 
      * @return the modified list
@@ -1483,6 +1514,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         return !change.isNew();
         //TODO: optimize this! 
+    }
+
+    /**
+     * Gets the container name for function detail elements depending on the parent folder.<p>
+     * 
+     * @param parent the parent folder 
+     * @return the name of the function detail container
+     */
+    private String internalGetFunctionDetailContainerName(CmsResource parent) {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsProperty templateProp = cms.readPropertyObject(parent, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
+            String templateVal = templateProp.getValue();
+            if (templateVal == null) {
+                return null;
+            }
+            CmsResource templateRes;
+            try {
+                templateRes = cms.readResource(templateVal);
+            } catch (CmsVfsResourceNotFoundException e) {
+                templateRes = rootCms.readResource(templateVal);
+            }
+            CmsProperty functionDetailProp = cms.readPropertyObject(
+                templateRes,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_FUNCTIONDETAIL,
+                true);
+            return functionDetailProp.getValue();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

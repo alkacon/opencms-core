@@ -16,7 +16,6 @@
 		<xsd:sequence>
 			<xsd:element name="Name" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Type" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-			<xsd:element name="Attribute" type="OpenCmsAlkaconContainerAttribute" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Elements" type="OpenCmsAlkaconContainerElement" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
