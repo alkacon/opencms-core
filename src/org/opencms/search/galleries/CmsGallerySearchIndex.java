@@ -226,10 +226,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             String shared = OpenCms.getSiteManager().getSharedFolder();
             String subsite = null;
             if (params.getReferencePath() != null) {
-                subsite = OpenCms.getADEManager().lookupConfiguration(
+                subsite = OpenCms.getADEManager().getSubSiteRoot(
                     cms,
-                    cms.getRequestContext().addSiteRoot(params.getReferencePath())).getBasePath();
-                subsite = cms.getRequestContext().removeSiteRoot(subsite);
+                    cms.getRequestContext().addSiteRoot(params.getReferencePath()));
+                if (subsite != null) {
+                    subsite = cms.getRequestContext().removeSiteRoot(subsite);
+                }
             }
             List<String> scopeFolders = params.getScope().getSearchRoots("/", subsite, shared);
             filter = appendPathFilter(searchCms, filter, scopeFolders);

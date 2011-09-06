@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -537,7 +538,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
      */
     private void showIsEmptyLabel() {
 
+        CmsSimpleListItem item = new CmsSimpleListItem();
         Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_GALLERIES_IS_EMPTY_0));
-        m_scrollList.add(isEmptyLabel);
+        item.add(isEmptyLabel);
+        m_scrollList.add(item);
     }
 }

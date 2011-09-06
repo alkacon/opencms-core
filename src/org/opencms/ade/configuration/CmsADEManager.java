@@ -92,16 +92,22 @@ public class CmsADEManager implements I_CmsEventListener {
      * A status enum for the initialization status.<p>
      */
     protected enum Status {
-        /** not initialized. */
-        notInitialized,
+        /** already initialized. */
+        initialized,
         /** currently initializing. */
         initializing,
-        /** already initialized. */
-        initialized
+        /** not initialized. */
+        notInitialized
     }
 
-    /** The initialization status. */
-    private Status m_initStatus = Status.notInitialized;
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_FAVORITE_LIST_SIZE = "ADE_FAVORITE_LIST_SIZE";
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_RECENT_LIST_SIZE = "ADE_RECENT_LIST_SIZE";
+
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_SEARCH_PAGE_SIZE = "ADE_SEARCH_PAGE_SIZE";
+
     /** The client id separator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
 
@@ -123,6 +129,12 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_TYPE = "sitemap_config";
 
+    /** Default favorite list size constant. */
+    public static final int DEFAULT_FAVORITE_LIST_SIZE = 10;
+
+    /** Default recent list size constant. */
+    public static final int DEFAULT_RECENT_LIST_SIZE = 10;
+
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
 
@@ -130,31 +142,7 @@ public class CmsADEManager implements I_CmsEventListener {
     public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
 
     /** User additional info key constant. */
-    public static final String ADDINFO_ADE_FAVORITE_LIST_SIZE = "ADE_FAVORITE_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_RECENT_LIST_SIZE = "ADE_RECENT_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_SEARCH_PAGE_SIZE = "ADE_SEARCH_PAGE_SIZE";
-
-    /** Default favorite list size constant. */
-    public static final int DEFAULT_FAVORITE_LIST_SIZE = 10;
-
-    /** Default recent list size constant. */
-    public static final int DEFAULT_RECENT_LIST_SIZE = 10;
-
-    /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
-
-    /** The cache instance. */
-    private CmsADECache m_cache;
-
-    /** The offline cache instance. */
-    private CmsConfigurationCache m_onlineCache;
-
-    /** The online cache instance. */
-    private CmsConfigurationCache m_offlineCache;
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_RECENT_LIST = "ADE_RECENT_LIST";
@@ -162,20 +150,32 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
 
-    /** The online CMS context. */
-    private CmsObject m_onlineCms;
-
-    /** The offline CMS context. */
-    private CmsObject m_offlineCms;
-
-    /** The detail page finder. */
-    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+    /** The cache instance. */
+    private CmsADECache m_cache;
 
     /** The sitemap configuration file type. */
     private I_CmsResourceType m_configType;
 
+    /** The detail page finder. */
+    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+
+    /** The initialization status. */
+    private Status m_initStatus = Status.notInitialized;
+
     /** The module configuration file type. */
     private I_CmsResourceType m_moduleConfigType;
+
+    /** The online cache instance. */
+    private CmsConfigurationCache m_offlineCache;
+
+    /** The offline CMS context. */
+    private CmsObject m_offlineCms;
+
+    /** The offline cache instance. */
+    private CmsConfigurationCache m_onlineCache;
+
+    /** The online CMS context. */
+    private CmsObject m_onlineCms;
 
     /**
      * Creates a new ADE manager.<p>
@@ -538,6 +538,25 @@ public class CmsADEManager implements I_CmsEventListener {
             maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
         }
         return maxElems.intValue();
+    }
+
+    /**
+     * Tries to get the subsite root for a given resource root path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param rootPath the root path for which the subsite root should be found 
+     * 
+     * @return the subsite root 
+     */
+    public String getSubSiteRoot(CmsObject cms, String rootPath) {
+
+        CmsADEConfigData configData = lookupConfiguration(cms, rootPath);
+        String basePath = configData.getBasePath();
+        if (basePath == null) {
+            return OpenCms.getSiteManager().getSiteRoot(rootPath);
+        } else {
+            return basePath;
+        }
     }
 
     /**
