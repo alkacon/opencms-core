@@ -306,6 +306,17 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the subsite path for the currently requested URI.<p>
+     * 
+     * @return the subsite path
+     */
+    public String getSubSitePath() {
+
+        return m_cms.getRequestContext().removeSiteRoot(
+            OpenCms.getADEManager().getSubSiteRoot(m_cms, m_cms.getRequestContext().getRootUri()));
+    }
+
+    /**
      * Returns an initialized VFS access bean.<p>
      * 
      * @return an initialized VFS access bean
