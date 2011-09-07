@@ -205,6 +205,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddContextMenuItems());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlFixContextMenuItems());
 
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddUnknownFile());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWizardETypeDesc());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateOpenGallery());
 
