@@ -29,8 +29,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
 
-import java.util.Map;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
@@ -56,15 +54,6 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
      */
     public static final native JsArray<CmsContainerJso> getContainers() /*-{
       return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
-    }-*/;
-
-    public final native Map<String, String> getAttributes() /*-{
-      var result = @java.util.HashMap::new()();
-      var attributes = this[@org.opencms.jsp.CmsContainerJsonKeys::ATTRIBUTES];
-      for (key in attributes) {
-         result.@java.util.HashMap::put(Ljava/lang/Object;Ljava/lang/Object;)(key, attributes[key]);
-      }
-      return result;
     }-*/;
 
     /**

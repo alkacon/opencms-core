@@ -34,6 +34,9 @@ package org.opencms.jsp;
  */
 public final class CmsContainerJsonKeys {
 
+    /** Key 'isDetailView' used within the JSON representation of a container object. */
+    public static final String DETAILVIEW = "isDetailView";
+
     /** Key 'elements' used within the JSON representation of a container object. */
     public static final String ELEMENTS = "elements";
 
@@ -48,11 +51,6 @@ public final class CmsContainerJsonKeys {
 
     /** Key 'width' used within the JSON representation of a container object. */
     public static final String WIDTH = "width";
-
-    /** Key 'isDetailView' used within the JSON representation of a container object. */
-    public static final String DETAILVIEW = "isDetailView";
-
-    public static final String ATTRIBUTES = "attributes";
 
     /**
      * Hidden constructor.<p>

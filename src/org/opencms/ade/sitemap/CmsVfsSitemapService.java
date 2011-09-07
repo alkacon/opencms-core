@@ -657,7 +657,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         false);
                     newElems.add(0, newElement);
                     CmsContainerBean newCntBean = new CmsContainerBean(cntBean.getName(), cntBean.getType(), newElems);
-                    newCntBean.setAttributes(cntBean.getAttributes());
                     containerBeans.add(newCntBean);
                 } else {
                     containerBeans.add(cntBean);

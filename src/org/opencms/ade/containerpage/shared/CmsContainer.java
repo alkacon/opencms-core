@@ -27,9 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -49,9 +47,6 @@ public class CmsContainer implements IsSerializable {
     /** The maximum number of elements. */
     private int m_maxElements;
 
-    /** The container attributes. */
-    private Map<String, String> m_attributes;
-
     /** The container name. */
     private String m_name;
 
@@ -69,22 +64,14 @@ public class CmsContainer implements IsSerializable {
      * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
      * @param elements the container elements id's
-     * @param attributes the container attributes 
      */
-    public CmsContainer(
-        String name,
-        String type,
-        int width,
-        int maxElements,
-        List<CmsContainerElement> elements,
-        Map<String, String> attributes) {
+    public CmsContainer(String name, String type, int width, int maxElements, List<CmsContainerElement> elements) {
 
         m_elements = elements;
         m_name = name;
         m_type = type;
         m_maxElements = maxElements;
         m_width = width;
-        m_attributes = (attributes != null) ? attributes : new HashMap<String, String>();
     }
 
     /**
@@ -93,16 +80,6 @@ public class CmsContainer implements IsSerializable {
     protected CmsContainer() {
 
         // do nothing 
-    }
-
-    /**
-     * Gets the container's attributes.<p>
-     * 
-     * @return the container attributes 
-     */
-    public Map<String, String> getAttributes() {
-
-        return m_attributes;
     }
 
     /**

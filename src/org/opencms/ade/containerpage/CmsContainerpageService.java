@@ -296,9 +296,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
-                elementBean.getResource(),
-                settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(
+                elementBean,
+                convertSettingValues(elementBean.getResource(), settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -509,10 +509,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    getCmsObject(),
-                    settingType,
-                    entry.getValue()));
+                changedSettings.put(
+                    settingName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
             }
         }
         return changedSettings;
@@ -679,7 +678,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), elements);
-        result.setAttributes(container.getAttributes());
         return result;
     }
 

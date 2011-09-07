@@ -67,7 +67,6 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -381,16 +380,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
                 for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, XmlNode.Containers.name()); itCnts.hasNext();) {
                     Element container = itCnts.next();
-                    Map<String, String> attributes = new HashMap<String, String>();
-                    for (Element attribute : CmsXmlGenericWrapper.elementIterable(container, XmlNode.Attribute.name())) {
-                        Element keyElem = (Element)attribute.selectSingleNode("Key");
-                        Element valElem = (Element)attribute.selectSingleNode("Value");
-                        Node keyContent = keyElem.selectSingleNode("text()");
-                        Node valContent = valElem.selectSingleNode("text()");
-                        String keyValue = keyContent.getText();
-                        String valValue = valContent.getText();
-                        attributes.put(keyValue, valValue);
-                    }
 
                     // container itself
                     int cntIndex = CmsXmlUtils.getXpathIndexInt(container.getUniquePath(cntPage));
@@ -465,7 +454,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         }
                     }
                     CmsContainerBean newContainerBean = new CmsContainerBean(name.getText(), type.getText(), elements);
-                    newContainerBean.setAttributes(attributes);
                     containers.add(newContainerBean);
                 }
 

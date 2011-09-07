@@ -1604,8 +1604,7 @@ public final class CmsContainerpageController {
                     cnt.getType(),
                     cnt.getWidth(),
                     cnt.getMaxElements(),
-                    elements,
-                    cnt.getAttributes()));
+                    elements));
             }
 
         }
@@ -1789,7 +1788,6 @@ public final class CmsContainerpageController {
                 containerJso.getType(),
                 containerJso.getWidth(),
                 containerJso.getMaxElements(),
-                null,
                 null);
             result.add(container);
         }
