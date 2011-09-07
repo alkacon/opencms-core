@@ -200,7 +200,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_quickFilter.addValueChangeHandler(this);
             m_quickFilter.addStyleName(DIALOG_CSS.quickFilterBox());
             m_quickFilter.setTriggerChangeOnKeyPress(true);
-            m_quickFilter.setGhostValue("Search", true);
+            m_quickFilter.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
             m_quickFilter.setGhostModeClear(true);
             m_options.insert(m_quickFilter, 0);
         }
