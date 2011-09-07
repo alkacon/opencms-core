@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
@@ -400,7 +401,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
      */
     private void showIsEmptyLabel() {
 
+        CmsSimpleListItem item = new CmsSimpleListItem();
         Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_CATEGORIES_IS_EMPTY_0));
-        m_scrollList.add(isEmptyLabel);
+        item.add(isEmptyLabel);
+        m_scrollList.add(item);
     }
 }
