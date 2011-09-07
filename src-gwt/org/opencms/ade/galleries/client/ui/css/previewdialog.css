@@ -98,13 +98,14 @@ div.previewDialog {
     visibility: hidden;
 }
 
-.infoTable{
+table.infoTable{
 	width: 100%;
 	border: none;
 	padding: 3px;
+	clear: both;
 }
 
-.infoTable tr, .infoTable td{
+table.infoTable tr, table.infoTable td{
 	border: none;
 }
 

@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -50,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -321,6 +323,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void addButton(Widget w) {
 
         m_buttonPanel.add(w);
+        if (CmsCoreProvider.get().isIe7()) {
+            m_buttonPanel.getElement().getStyle().setWidth(m_buttonPanel.getWidgetCount() * 22, Unit.PX);
+        }
     }
 
     /**
@@ -331,6 +336,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void addButtonToFront(Widget w) {
 
         m_buttonPanel.insert(w, 0);
+        if (CmsCoreProvider.get().isIe7()) {
+            m_buttonPanel.getElement().getStyle().setWidth(m_buttonPanel.getWidgetCount() * 22, Unit.PX);
+        }
     }
 
     /**
@@ -516,6 +524,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void removeButton(Widget w) {
 
         m_buttonPanel.remove(w);
+        if (CmsCoreProvider.get().isIe7()) {
+            m_buttonPanel.getElement().getStyle().setWidth(m_buttonPanel.getWidgetCount() * 22, Unit.PX);
+        }
     }
 
     /**

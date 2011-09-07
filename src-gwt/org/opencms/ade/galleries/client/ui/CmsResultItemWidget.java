@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -117,12 +118,12 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     private String generateTooltipHtml(CmsListInfoBean infoBean) {
 
         StringBuffer result = new StringBuffer();
-        result.append("<p><b>").append(infoBean.getTitle()).append("</b></p>");
-        result.append("<p>").append(infoBean.getSubTitle()).append("</p>");
+        result.append("<p><b>").append(CmsClientStringUtil.shortenString(infoBean.getTitle(), 70)).append("</b></p>");
         if (infoBean.hasAdditionalInfo()) {
             for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
-                result.append("<p>").append(additionalInfo.getName()).append(":&nbsp;").append(
-                    additionalInfo.getValue()).append("</p>");
+                result.append("<p>").append(additionalInfo.getName()).append(":&nbsp;");
+                // shorten the value to max 45 characters
+                result.append(CmsClientStringUtil.shortenString(additionalInfo.getValue(), 45)).append("</p>");
             }
         }
         return result.toString();

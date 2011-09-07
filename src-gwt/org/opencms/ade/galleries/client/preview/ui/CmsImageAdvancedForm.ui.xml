@@ -6,6 +6,7 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{galleryResources.imageAdvancedFormCss.main}">
+	<div>
 		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{galleryResources.imageAdvancedFormCss.descriptionLabel} {resources.generalCss.textMedium}" ui:field="m_labelSetLink" />
 		<table class="{galleryResources.previewDialogCss.infoTable}">
 			<colgroup>
@@ -56,5 +57,6 @@
 				<td><input:CmsSelectBox addStyleNames="{galleryResources.imageAdvancedFormCss.selectBox}" ui:field="m_selectTextDirection" /></td>
 			</tr>
 		</table>
+		</div>
 	</g:HTMLPanel>	
 </ui:UiBinder> 

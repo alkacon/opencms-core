@@ -6,21 +6,28 @@
 	right: 0; 
 	overflow: auto;
 }
-.descriptionLabel{
+div.descriptionLabel{
 	margin: 4px 6px 0px;
 }
-.input{
-	display: inline-block;
+div.input{
 	width: 320px;
 	margin-right: 10px;
 	vertical-align: middle;
 }
-.selectBox{
-	display: inline-block;
+div.selectBox{
 	width: 150px;
 	vertical-align: middle;
 }
-.selectBox *{
+div.selectBox *{
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 12px;
+}
+@if user.agent ie6 {
+	div.input, div.selectBox{
+		display: inline;
+	}
+} @else {
+	div.input, div.selectBox{
+		display: inline-block;
+	}
 }
