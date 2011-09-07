@@ -105,6 +105,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
             if (!m_ghostMode && m_textbox.getText().equals("")) {
                 setGhostValue(m_ghostValue, true);
+            } else if (m_ghostMode) {
+                setGhostStyleEnabled(true);
             }
             checkForChange();
         }
