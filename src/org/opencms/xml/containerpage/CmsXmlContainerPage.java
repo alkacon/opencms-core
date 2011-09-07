@@ -84,24 +84,24 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     /** XML node name constants. */
     public enum XmlNode {
 
-        /** The create new element node name. */
-        CreateNew,
+        /** Container attribute node name. */
+        Attribute,
         /** Main node name. */
         Containers,
+        /** The create new element node name. */
+        CreateNew,
         /** Container elements node name. */
         Elements,
         /** Element formatter node name. */
         Formatter,
+        /** Container attribute key node name. */
+        Key,
         /** Container name node name. */
         Name,
         /** Container type node name. */
         Type,
         /** Element URI node name. */
         Uri,
-        /** Container attribute node name. */
-        Attribute,
-        /** Container attribute key node name. */
-        Key,
         /** Container attribute value node name. */
         Value;
     }
@@ -499,11 +499,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             Element cntElement = parent.addElement(XmlNode.Containers.name());
             cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
-            for (Map.Entry<String, String> entry : container.getAttributes().entrySet()) {
-                Element attrElement = cntElement.addElement(XmlNode.Attribute.name());
-                attrElement.addElement(XmlNode.Key.name()).addCDATA(entry.getKey());
-                attrElement.addElement(XmlNode.Value.name()).addCDATA(entry.getValue());
-            }
+
+            //            for (Map.Entry<String, String> entry : container.getAttributes().entrySet()) {
+            //                Element attrElement = cntElement.addElement(XmlNode.Attribute.name());
+            //                attrElement.addElement(XmlNode.Key.name()).addCDATA(entry.getKey());
+            //                attrElement.addElement(XmlNode.Value.name()).addCDATA(entry.getValue());
+            //            }
+
             // the elements
             for (CmsContainerElementBean element : container.getElements()) {
                 Element elemElement = cntElement.addElement(XmlNode.Elements.name());
