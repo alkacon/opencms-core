@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.util.CmsStringUtil;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -140,4 +142,34 @@ public final class CmsClientStringUtil {
     public static native void pushArray(JavaScriptObject array, String s) /*-{
         array.push(s);
     }-*/;
+
+    /**
+     * Shortens the string to the given maximum length.<p>
+     * 
+     * Will include HTML entity ellipses replacing the cut off text.<p>
+     * 
+     * @param text the string to shorten
+     * @param maxLength the maximum length
+     * 
+     * @return the shortened string
+     */
+    public static String shortenString(String text, int maxLength) {
+
+        if (text.length() <= maxLength) {
+            return text;
+        }
+        String newText = text.substring(0, maxLength - 1);
+        if (text.startsWith("/")) {
+            // file name?
+            newText = CmsStringUtil.formatResourceName(text, maxLength);
+        } else if (maxLength > 2) {
+            // enough space for ellipsis?
+            newText += CmsDomUtil.Entity.hellip.html();
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(newText)) {
+            // if empty, it could break the layout
+            newText = CmsDomUtil.Entity.nbsp.html();
+        }
+        return newText;
+    }
 }

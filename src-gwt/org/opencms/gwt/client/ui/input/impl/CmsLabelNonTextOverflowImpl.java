@@ -28,9 +28,8 @@
 package org.opencms.gwt.client.ui.input.impl;
 
 import org.opencms.gwt.client.ui.input.CmsLabel;
-import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsTextMetrics;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
 
@@ -91,24 +90,12 @@ public class CmsLabelNonTextOverflowImpl extends CmsLabel {
         updateTitle(true);
 
         // if the text does not have enough space, fix it
-        int maxChars = (int)((float)labelWidth / (float)textWidth * text.length());
+        int maxChars = (int)(((float)labelWidth / (float)textWidth) * text.length());
         if (maxChars < 1) {
             maxChars = 1;
         }
-        String newText = text.substring(0, maxChars - 1);
-        if (text.startsWith("/")) {
-            // file name?
-            newText = CmsStringUtil.formatResourceName(text, maxChars);
-        } else if (maxChars > 2) {
-            // enough space for ellipsis?
-            newText += CmsDomUtil.Entity.hellip.html();
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(newText)) {
-            // if empty, it could break the layout
-            newText = CmsDomUtil.Entity.nbsp.html();
-        }
         // use html instead of text because of the entities
-        setHTML(newText);
+        setHTML(CmsClientStringUtil.shortenString(text, maxChars));
     }
 
 }
