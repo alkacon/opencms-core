@@ -53,11 +53,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public final class CmsCoreProvider extends CmsCoreData {
 
-    /** Path to system folder. */
-    public static final String VFS_PATH_SYSTEM = "/system/";
-
     /** The parameter name for the return code. */
     public static final String PARAM_RETURNCODE = "returncode";
+
+    /** Path to system folder. */
+    public static final String VFS_PATH_SYSTEM = "/system/";
 
     /** Internal instance. */
     private static CmsCoreProvider INSTANCE;
@@ -71,6 +71,9 @@ public final class CmsCoreProvider extends CmsCoreData {
     /** The client time when the data is loaded. */
     private long m_clientTime;
 
+    /** Flag which indicates whether we are in Internet Explorer 7. */
+    private boolean m_isIe7;
+
     /**
      * Prevent instantiation.<p> 
      */
@@ -78,6 +81,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         super((CmsCoreData)CmsRpcPrefetcher.getSerializedObject(getService(), DICT_NAME));
         m_clientTime = System.currentTimeMillis();
+
+        I_CmsUserAgentInfo userAgentInfo = GWT.create(I_CmsUserAgentInfo.class);
+        m_isIe7 = userAgentInfo.isIE7();
     }
 
     /**
@@ -242,6 +248,16 @@ public final class CmsCoreProvider extends CmsCoreData {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Returns if the current user agent is IE7.<p>
+     *
+     * @return <code>true</code> if the current user agent is IE7
+     */
+    public boolean isIe7() {
+
+        return m_isIe7;
     }
 
     /**
