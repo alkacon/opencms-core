@@ -32,8 +32,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -78,7 +78,8 @@ public class CmsContainerPageBean {
     public CmsContainerPageBean(Locale locale, List<CmsContainerBean> containers) {
 
         m_locale = locale;
-        Map<String, CmsContainerBean> cnts = new HashMap<String, CmsContainerBean>();
+        // we want to preserve container order 
+        Map<String, CmsContainerBean> cnts = new LinkedHashMap<String, CmsContainerBean>();
         Set<String> types = new HashSet<String>();
         List<String> names = new ArrayList<String>();
         for (CmsContainerBean container : containers) {

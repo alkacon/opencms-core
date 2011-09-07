@@ -192,7 +192,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
 
     /** Property to define the function detail container for a template. */
-    public static final String PROPERTY_TEMPLATE_FUNCTIONDETAIL = "template.function.detail";
+    public static final String PROPERTY_CONTAINER_INFO = "container.info";
 
     /** Property for the template image. */
     public static final String PROPERTY_TEMPLATE_IMAGE = "template.image";

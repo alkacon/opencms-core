@@ -101,6 +101,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -168,6 +169,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             return m_wasJustLocked;
         }
     }
+
+    /** The configuration key for the functionDetail attribute in the container.info property. */
+    public static final String KEY_FUNCTION_DETAIL = "functionDetail";
 
     /** The additional user info key for deleted list. */
     private static final String ADDINFO_ADE_DELETED_LIST = "ADE_DELETED_LIST";
@@ -643,8 +647,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         for (Locale locale : pageLocales) {
             CmsContainerPageBean bean = page.getContainerPage(cms, locale);
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+            Collection<CmsContainerBean> originalContainers = bean.getContainers().values();
+            if ((containerName == null) && !originalContainers.isEmpty()) {
+                CmsContainerBean firstContainer = originalContainers.iterator().next();
+                containerName = firstContainer.getName();
+            }
             boolean foundContainer = false;
-            for (CmsContainerBean cntBean : bean.getContainers().values()) {
+            for (CmsContainerBean cntBean : originalContainers) {
                 boolean isDetailTarget = cntBean.getName().equals(containerName);
                 if (isDetailTarget && !foundContainer) {
                     foundContainer = true;
@@ -833,10 +842,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
                 boolean isFunctionDetail = (change.getCreateParameter() != null)
                     && CmsUUID.isValidUUID(change.getCreateParameter());
-                String functionDetailContainer = null;
-                if (isFunctionDetail) {
-                    functionDetailContainer = getFunctionDetailContainerName(parentFolder);
-                }
 
                 entryFolder = new CmsResource(
                     change.getEntryId(),
@@ -878,6 +883,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         true);
                     ensureSingleLocale(page, entryFolder);
                     if (isFunctionDetail) {
+                        String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
                         CmsResource functionFormatter = cms.readResource(CmsXmlDynamicFunctionHandler.FORMATTER_PATH);
                         addFunctionDetailElement(
@@ -1138,7 +1144,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the sitemap children for the given path with all descendants up to the given level, ie. 
-     * <dl><dt>levels=1</dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
+     * <dl><dt>levels=1 </dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
      * and so on.<p>
      * 
      * @param root the site relative root
@@ -1236,22 +1242,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Gets the function detail container name, and throws an exception if it couldn't be found.<p>
+     * Gets the container name for function detail elements depending on the parent folder.<p>
      * 
      * @param parent the parent folder 
-     * @return the function detail container name
-     * 
-     * @throws CmsException if something goes wrong 
+     * @return the name of the function detail container
      */
-    private String getFunctionDetailContainerName(CmsResource parent) throws CmsException {
+    private String getFunctionDetailContainerName(CmsResource parent) {
 
-        String result = internalGetFunctionDetailContainerName(parent);
-        if (result == null) {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_FUNCTION_DETAIL_UNDEFINED_1,
-                parent.getRootPath()));
+        try {
+            CmsObject cms = getCmsObject();
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsProperty templateProp = cms.readPropertyObject(parent, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
+            String templateVal = templateProp.getValue();
+            if (templateVal == null) {
+                return null;
+            }
+            CmsResource templateRes;
+            try {
+                templateRes = cms.readResource(templateVal);
+            } catch (CmsVfsResourceNotFoundException e) {
+                templateRes = rootCms.readResource(templateVal);
+            }
+            CmsProperty containerInfoProp = cms.readPropertyObject(
+                templateRes,
+                CmsPropertyDefinition.PROPERTY_CONTAINER_INFO,
+                true);
+            String containerInfo = containerInfoProp.getValue() == null ? "" : containerInfoProp.getValue();
+            Map<String, String> attrs = CmsStringUtil.splitAsMap(containerInfo, "|", "=");
+            String functionDetailContainerName = attrs.get(KEY_FUNCTION_DETAIL);
+            return functionDetailContainerName;
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
         }
-        return result;
     }
 
     /**
@@ -1513,40 +1537,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         return !change.isNew();
         //TODO: optimize this! 
-    }
-
-    /**
-     * Gets the container name for function detail elements depending on the parent folder.<p>
-     * 
-     * @param parent the parent folder 
-     * @return the name of the function detail container
-     */
-    private String internalGetFunctionDetailContainerName(CmsResource parent) {
-
-        try {
-            CmsObject cms = getCmsObject();
-            CmsObject rootCms = OpenCms.initCmsObject(cms);
-            rootCms.getRequestContext().setSiteRoot("");
-            CmsProperty templateProp = cms.readPropertyObject(parent, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
-            String templateVal = templateProp.getValue();
-            if (templateVal == null) {
-                return null;
-            }
-            CmsResource templateRes;
-            try {
-                templateRes = cms.readResource(templateVal);
-            } catch (CmsVfsResourceNotFoundException e) {
-                templateRes = rootCms.readResource(templateVal);
-            }
-            CmsProperty functionDetailProp = cms.readPropertyObject(
-                templateRes,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_FUNCTIONDETAIL,
-                true);
-            return functionDetailProp.getValue();
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return null;
-        }
     }
 
     /**
