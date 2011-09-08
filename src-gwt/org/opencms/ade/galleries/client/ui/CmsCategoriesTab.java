@@ -194,9 +194,11 @@ public class CmsCategoriesTab extends A_CmsListTab {
      */
     public void openFirstLevel() {
 
-        for (int i = 0; i < m_scrollList.getWidgetCount(); i++) {
-            CmsTreeItem item = (CmsTreeItem)m_scrollList.getItem(i);
-            item.setOpen(true);
+        if (!m_categories.isEmpty()) {
+            for (int i = 0; i < m_scrollList.getWidgetCount(); i++) {
+                CmsTreeItem item = (CmsTreeItem)m_scrollList.getItem(i);
+                item.setOpen(true);
+            }
         }
     }
 

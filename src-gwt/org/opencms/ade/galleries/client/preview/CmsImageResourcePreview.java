@@ -313,7 +313,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             imageInfo.getHeight(),
             imageInfo.getWidth());
         CmsCroppingParamBean param = formatHandler.getCroppingParam();
-        formatHandler.getFormats().values().iterator().next().adjustCroppingParam(param);
+        if (formatHandler.isUseFormats()) {
+            formatHandler.getFormats().values().iterator().next().adjustCroppingParam(param);
+        }
         return param;
     }
 }

@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.CmsVfsLinkWidget;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.util.CmsJSONMap;
-import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -67,14 +66,6 @@ public class CmsImageAdvancedForm extends Composite {
     /** Ui binder instance. */
     private static I_CmsImageAdvancedFormUiBinder m_uiBinder = GWT.create(I_CmsImageAdvancedFormUiBinder.class);
 
-    //    /** Browse button. */
-    //    @UiField
-    //    protected CmsPushButton m_buttonBrowse;
-
-    /** Advisory title input field. */
-    @UiField
-    protected CmsTextBox m_inputAdvisoryTitle;
-
     /** Description input field. */
     @UiField
     protected CmsTextBox m_inputDescription;
@@ -98,10 +89,6 @@ public class CmsImageAdvancedForm extends Composite {
     /** URL input field. */
     @UiField
     protected CmsVfsLinkWidget m_inputUrl;
-
-    /** Advisory title field label. */
-    @UiField
-    protected Label m_labelAdvisoryTitle;
 
     /** Description field label. */
     @UiField
@@ -169,7 +156,6 @@ public class CmsImageAdvancedForm extends Composite {
         m_labelSetLink.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_SET_LINK_0));
         m_labelTagAttributes.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_ATTRIBUTES_0));
         m_labelDescription.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_DESCRIPTION_0));
-        m_labelAdvisoryTitle.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0));
         m_labelLanguageCode.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_LANGUAGE_CODE_0));
         m_labelTextDirection.setText(Messages.get().key(Messages.GUI_ADVANCED_TAB_LABEL_TEXT_DIRECTION_0));
 
@@ -190,7 +176,6 @@ public class CmsImageAdvancedForm extends Composite {
         m_fields.put(Attribute.longDesc, m_inputDescription);
         m_fields.put(Attribute.style, m_inputStyle);
         m_fields.put(Attribute.clazz, m_inputStyleClasses);
-        m_fields.put(Attribute.title, m_inputAdvisoryTitle);
         m_fields.put(Attribute.id, m_inputId);
         m_fields.put(Attribute.lang, m_inputLanguageCode);
     }
@@ -200,8 +185,9 @@ public class CmsImageAdvancedForm extends Composite {
      * 
      * @param imageInfo the image information
      * @param imageAttributes the image attributes
+     * @param initialFill flag to indicate that a new image has been selected 
      */
-    public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes) {
+    public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes, boolean initialFill) {
 
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = imageAttributes.getString(entry.getKey().name());
@@ -210,11 +196,6 @@ public class CmsImageAdvancedForm extends Composite {
                     entry.getValue().setFormValueAsString(val.substring(CmsCoreProvider.get().getVfsPrefix().length()));
                 } else {
                     entry.getValue().setFormValueAsString(val);
-                }
-            } else {
-                if (entry.getKey() == Attribute.title) {
-                    entry.getValue().setFormValueAsString(
-                        imageInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
                 }
             }
         }

@@ -10,8 +10,8 @@
 		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{galleryResources.imageAdvancedFormCss.descriptionLabel} {resources.generalCss.textMedium}" ui:field="m_labelSetLink" />
 		<table class="{galleryResources.previewDialogCss.infoTable}">
 			<colgroup>
-    			<col width="25%" />
-    			<col width="75%" />
+    			<col style="width: 25%;" />
+    			<col style="width: 75%;" />
 	  		</colgroup>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelUrl" /></td>
@@ -25,8 +25,8 @@
 		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{galleryResources.imageAdvancedFormCss.descriptionLabel} {resources.generalCss.textMedium}"  ui:field="m_labelTagAttributes" />
 		<table class="{galleryResources.previewDialogCss.infoTable}">
 			<colgroup>
-    			<col width="25%" />
-    			<col width="75%" />
+    			<col style="width: 25%;" />
+    			<col style="width: 75%;" />
 	  		</colgroup>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelId" /></td>
@@ -43,10 +43,6 @@
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelDescription" /></td>
 				<td><input:CmsTextBox ui:field="m_inputDescription" /></td>
-			</tr>
-			<tr>
-				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelAdvisoryTitle" /></td>
-				<td><input:CmsTextBox ui:field="m_inputAdvisoryTitle" /></td>
 			</tr>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelLanguageCode" /></td>

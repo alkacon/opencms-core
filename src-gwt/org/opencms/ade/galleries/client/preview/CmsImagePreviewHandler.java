@@ -59,6 +59,8 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         copyright,
         /** Image direction attribute. */
         dir,
+        /** No image selected if this attribute is present. */
+        emptySelection,
         /** The image hash. */
         hash,
         /** Image height attribute. */

@@ -196,8 +196,9 @@ public class CmsImageEditorForm extends Composite {
      * 
      * @param imageInfo the image information
      * @param imageAttributes the image attributes
+     * @param initialFill flag to indicate that a new image has been selected 
      */
-    public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes) {
+    public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes, boolean initialFill) {
 
         m_initialImageAttributes = imageAttributes;
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
@@ -211,6 +212,9 @@ public class CmsImageEditorForm extends Composite {
                 }
                 if (entry.getKey() == Attribute.copyright) {
                     entry.getValue().setFormValueAsString(imageInfo.getCopyright());
+                }
+                if (initialFill && (entry.getKey() == Attribute.align)) {
+                    entry.getValue().setFormValueAsString("left");
                 }
             }
         }

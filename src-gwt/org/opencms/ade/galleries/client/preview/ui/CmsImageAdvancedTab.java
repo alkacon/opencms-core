@@ -72,13 +72,16 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
 
-        CmsJSONMap imageInfos = CmsPreviewUtil.getImageInfo();
+        CmsJSONMap imageAttributes = CmsPreviewUtil.getImageAttributes();
+        boolean inititalFill = false;
         // checking if selected image resource is the same as previewed resource
-        if (imageInfos.containsKey(Attribute.hash.name())
-            && !imageInfos.getString(Attribute.hash.name()).equals(String.valueOf(m_handler.getImageIdHash()))) {
-            imageInfos = CmsJSONMap.createJSONMap();
+        if (imageAttributes.containsKey(Attribute.emptySelection.name())
+            || (imageAttributes.containsKey(Attribute.hash.name()) && !imageAttributes.getString(Attribute.hash.name()).equals(
+                String.valueOf(m_handler.getImageIdHash())))) {
+            imageAttributes = CmsJSONMap.createJSONMap();
+            inititalFill = true;
         }
-        m_form.fillContent(imageInfo, imageInfos);
+        m_form.fillContent(imageInfo, imageAttributes, inititalFill);
     }
 
     /**

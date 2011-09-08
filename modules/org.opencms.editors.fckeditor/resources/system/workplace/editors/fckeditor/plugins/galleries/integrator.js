@@ -92,7 +92,7 @@ function enableDialogOk(enabled){
 function getImageInfo(){
     var image=_getSelectedImage()
     if (image==null){
-        return {};
+        return {emptySelection: "emptySelection"};
     }
     var result={};
     _collectAttributes(image, result);

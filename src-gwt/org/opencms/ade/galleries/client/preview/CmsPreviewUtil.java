@@ -162,7 +162,7 @@ public final class CmsPreviewUtil {
      *          all keys represent a tag attribute by the same name, only linkPath and linkTarget contain
      *          information on an surrounding link tag
      */
-    public static native CmsJSONMap getImageInfo() /*-{
+    public static native CmsJSONMap getImageAttributes() /*-{
         return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_GET_IMAGE_INFO_FUNCTION]
                 ();
     }-*/;

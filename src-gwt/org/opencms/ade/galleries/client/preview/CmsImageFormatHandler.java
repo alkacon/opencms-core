@@ -267,6 +267,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     }
 
     /**
+     * Returns if scaling formats may be selected for the image.<p>
+     * 
+     * @return <code>true</code> if scaling formats may be selected for the image
+     */
+    public boolean isUseFormats() {
+
+        return m_useFormats;
+    }
+
+    /**
      * Execute on format change.<p>
      * 
      * @param formatKey the new format value
