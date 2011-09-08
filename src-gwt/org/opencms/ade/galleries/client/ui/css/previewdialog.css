@@ -103,6 +103,7 @@ table.infoTable{
 	border: none;
 	padding: 3px;
 	clear: both;
+	table-layout: fixed;
 }
 
 table.infoTable tr, table.infoTable td{

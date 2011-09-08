@@ -40,7 +40,7 @@
 	width: 100%;
 	z-index: value("constants.css.zIndexInline");
 }
-@sprite .popupContent{
+@sprite div.popup.popupContent, div.popupContent{
 	gwt-image: "backgrounds.dialogBackground";
 	background-position: top;
     height: auto;

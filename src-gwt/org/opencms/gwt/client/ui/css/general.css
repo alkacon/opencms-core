@@ -34,7 +34,7 @@
 	white-space: normal;
 }
 
-div.toolTip{
+div.toolTip.cornerAll, div.toolTip{
 	position: absolute;
 	z-index: value("constants.css.zIndexDND");
 	border: 1px solid value("constants.css.borderColor");
