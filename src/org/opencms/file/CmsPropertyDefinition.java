@@ -104,6 +104,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the sitemap configuration file path. */
     public static final String PROPERTY_CONFIG_SITEMAP = "config.sitemap";
 
+    /** Property to define the function detail container for a template. */
+    public static final String PROPERTY_CONTAINER_INFO = "container.info";
+
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
 
@@ -190,9 +193,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property to control the template elements. */
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
-
-    /** Property to define the function detail container for a template. */
-    public static final String PROPERTY_CONTAINER_INFO = "container.info";
 
     /** Property for the template image. */
     public static final String PROPERTY_TEMPLATE_IMAGE = "template.image";
