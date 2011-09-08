@@ -75,6 +75,11 @@
         <name>link</name>
         <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
         <body-content>JSP</body-content>    
+        <attribute>
+            <name>baseUri</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>          
     </tag>   
     
     <tag>

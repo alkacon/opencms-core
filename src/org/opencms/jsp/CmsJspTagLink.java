@@ -29,9 +29,11 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -55,10 +57,15 @@ public class CmsJspTagLink extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -2361021288258405388L;
 
+    /** The optional base URI to create the link from. */
+    private String m_baseUri;
+
     /**
      * Returns a link to a file in the OpenCms VFS 
      * that has been adjusted according to the web application path and the 
      * OpenCms static export rules.<p>
+     * 
+     * The current OpenCms user context URI will be used as source of the link.</p>
      * 
      * Since OpenCms version 7.0.2, you can also use this method in case you are not sure
      * if the link is internal or external, as  
@@ -76,11 +83,43 @@ public class CmsJspTagLink extends BodyTagSupport {
      */
     public static String linkTagAction(String target, ServletRequest req) {
 
+        return linkTagAction(target, req, null);
+    }
+
+    /**
+     * Returns a link to a file in the OpenCms VFS
+     * that has been adjusted according to the web application path and the 
+     * OpenCms static export rules.<p>
+     * 
+     * If the <code>baseUri</code> parameter is provided, this will be treated as the source of the link,
+     * if this is <code>null</code> then the current OpenCms user context URI will be used as source.</p>
+     * 
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     * 
+     * @param target the link that should be calculated, can be relative or absolute
+     * @param req the current request
+     * @param baseUri the base URI for the link source 
+     * 
+     * @return the target link adjusted according to the web application path and the OpenCms static export rules
+     * 
+     * @see #linkTagAction(String, ServletRequest)
+     * 
+     * @since 8.0.3
+     */
+    public static String linkTagAction(String target, ServletRequest req, String baseUri) {
+
         CmsFlexController controller = CmsFlexController.getController(req);
         // be sure the link is absolute
         String uri = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
         CmsObject cms = controller.getCmsObject();
-        //uri = subsituteSitemapUri(uri, cms);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseUri)) {
+            try {
+                cms = OpenCms.initCmsObject(cms);
+                cms.getRequestContext().setUri(baseUri);
+            } catch (CmsException e) {
+                // should not happen, if it does we can't do anything useful and will just keep the original object                
+            }
+        }
         // generate the link
         return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
     }
@@ -104,7 +143,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, req);
+                String newlink = linkTagAction(link, req, getBaseUri());
                 // Write the result back to the page                
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
@@ -120,11 +159,31 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
+     * Returns the base URI used to create the link target.<p>
+     * 
+     * @return  the base URI used to create the link target
+     */
+    public String getBaseUri() {
+
+        return m_baseUri;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {
 
         super.release();
+    }
+
+    /**
+     * Sets the base URI used to create the link target.<p>
+     * 
+     * @param baseUri the base URI used to create the link target
+     */
+    public void setBaseUri(String baseUri) {
+
+        m_baseUri = baseUri;
     }
 }
