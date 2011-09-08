@@ -32,6 +32,7 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
+import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -173,6 +174,17 @@ public interface I_CmsVfsService extends RemoteService {
     CmsPropertiesBean loadPropertyData(CmsUUID id) throws CmsRpcException;
 
     /**
+     * Prepares to edit a file in the XML content editor.<p>
+     * 
+     * @param currentPage the current page from which the editor should be opened 
+     * @param fileNameWithMacros the file name, which may contain macros
+     *  
+     * @return a bean with more information about the file to edit
+     * @throws CmsRpcException  
+     */
+    CmsPrepareEditResponse prepareEdit(CmsUUID currentPage, String fileNameWithMacros) throws CmsRpcException;
+
+    /**
      * Saves  a set of property changes.<p>
      * 
      * @param changes a set of property changes
@@ -192,5 +204,4 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException;
-
 }

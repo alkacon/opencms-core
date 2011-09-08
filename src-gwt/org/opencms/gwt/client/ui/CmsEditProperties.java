@@ -34,6 +34,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
@@ -62,7 +63,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
         return new I_CmsContextMenuCommand() {
 
-            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler) {
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
                 if (handler.ensureLockOnResource(structureId)) {
                     editProperties(structureId, handler);

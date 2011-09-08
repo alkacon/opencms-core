@@ -27,7 +27,9 @@
 
 package org.opencms.gwt.shared;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -50,6 +52,9 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /** The name of the menu entry. */
     private String m_name;
+
+    /** The map of parameters for the context menu command. */
+    private Map<String, String> m_params = new HashMap<String, String>();
 
     /** The reason for de-activation of the menu entry. */
     private String m_reason;
@@ -144,6 +149,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public String getName() {
 
         return m_name;
+    }
+
+    /** 
+     * Gets the parameters for the context menu command.<p>
+     * 
+     * @return the parameters 
+     */
+    public Map<String, String> getParams() {
+
+        return m_params;
     }
 
     /**
@@ -254,6 +269,18 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the parameters for the context menu command.<p>
+     * 
+     * @param params the parameters for the context menu command 
+     */
+    public void setParams(Map<String, String> params) {
+
+        if (params != null) {
+            m_params = params;
+        }
     }
 
     /**

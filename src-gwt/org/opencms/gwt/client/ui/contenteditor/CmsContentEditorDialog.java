@@ -70,7 +70,7 @@ public final class CmsContentEditorDialog {
     private static CmsContentEditorDialog INSTANCE;
 
     /** The window closing handler registration. */
-    private HandlerRegistration m_closingHandlerRegistrion;
+    private HandlerRegistration m_closingHandlerRegistration;
 
     /** The popup instance. */
     private CmsPopup m_dialog;
@@ -183,9 +183,9 @@ public final class CmsContentEditorDialog {
             m_form.removeFromParent();
             m_form = null;
         }
-        if (m_closingHandlerRegistrion != null) {
-            m_closingHandlerRegistrion.removeHandler();
-            m_closingHandlerRegistrion = null;
+        if (m_closingHandlerRegistration != null) {
+            m_closingHandlerRegistration.removeHandler();
+            m_closingHandlerRegistration = null;
         }
     }
 
@@ -270,7 +270,7 @@ public final class CmsContentEditorDialog {
         m_form.submit();
 
         // adding on close handler
-        m_closingHandlerRegistrion = Window.addWindowClosingHandler(new ClosingHandler() {
+        m_closingHandlerRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
 
             public void onWindowClosing(ClosingEvent event) {
 
@@ -296,25 +296,25 @@ public final class CmsContentEditorDialog {
     private FormElement generateForm() {
 
         // create a form to submit a post request to the editor JSP
-        Map<String, String> formVaules = new HashMap<String, String>();
+        Map<String, String> formValues = new HashMap<String, String>();
         if (m_editableData.getSitePath() != null) {
-            formVaules.put("resource", m_editableData.getSitePath());
+            formValues.put("resource", m_editableData.getSitePath());
         }
         if (m_editableData.getElementLanguage() != null) {
-            formVaules.put("elementlanguage", m_editableData.getElementLanguage());
+            formValues.put("elementlanguage", m_editableData.getElementLanguage());
         }
         if (m_editableData.getElementName() != null) {
-            formVaules.put("elementname", m_editableData.getElementName());
+            formValues.put("elementname", m_editableData.getElementName());
         }
-        formVaules.put("backlink", CmsCoreProvider.get().getContentEditorBacklinkUrl());
-        formVaules.put("redirect", "true");
-        formVaules.put("directedit", "true");
+        formValues.put("backlink", CmsCoreProvider.get().getContentEditorBacklinkUrl());
+        formValues.put("redirect", "true");
+        formValues.put("directedit", "true");
         if (m_isNew) {
-            formVaules.put("newlink", m_editableData.getNewLink());
-            formVaules.put("editortitle", m_editableData.getNewTitle());
+            formValues.put("newlink", m_editableData.getNewLink());
+            formValues.put("editortitle", m_editableData.getNewTitle());
         }
         FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
-            CmsCoreProvider.get().getContentEditorUrl()), "post", EDITOR_IFRAME_NAME, formVaules);
+            CmsCoreProvider.get().getContentEditorUrl()), "post", EDITOR_IFRAME_NAME, formValues);
         return formElement;
     }
 

@@ -28,6 +28,7 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
@@ -53,6 +54,23 @@ public abstract class A_CmsMenuItemRule implements I_CmsMenuItemRule {
     }
 
     /**
+     * Gets the visibility depending on resource utilities and the current menu item data.<p>
+     * 
+     * @param cms the CMS context 
+     * @param resourceUtil the resource utilities 
+     * @param menuItem the context menu item 
+     * 
+     * @return the visibility 
+     */
+    public CmsMenuItemVisibilityMode getVisibility(
+        CmsObject cms,
+        CmsResourceUtil[] resourceUtil,
+        CmsExplorerContextMenuItem menuItem) {
+
+        return getVisibility(cms, resourceUtil);
+    }
+
+    /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, org.opencms.workplace.explorer.CmsResourceUtil[], org.opencms.workplace.explorer.menu.I_CmsMenuItemRule[])
      */
     public CmsMenuItemVisibilityMode getVisibility(
@@ -63,4 +81,5 @@ public abstract class A_CmsMenuItemRule implements I_CmsMenuItemRule {
         // by default ignore the additional item rules
         return getVisibility(cms, resourceUtil);
     }
+
 }

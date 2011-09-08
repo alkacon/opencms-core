@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.explorer.menu.A_CmsMenuItemRule;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.CmsMenuRuleTranslator;
@@ -358,7 +359,11 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCms(), resUtil);
                         if (itemRule != null) {
                             // found a rule, get visibility mode and store it for later usage
-                            mode = itemRule.getVisibility(getCms(), resUtil);
+                            if (itemRule instanceof A_CmsMenuItemRule) {
+                                mode = ((A_CmsMenuItemRule)itemRule).getVisibility(getCms(), resUtil, item);
+                            } else {
+                                mode = itemRule.getVisibility(getCms(), resUtil);
+                            }
                             storedModes.put(item.getRule(), mode);
                         }
                     }

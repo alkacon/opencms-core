@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -41,8 +42,9 @@ public interface I_CmsContextMenuCommand {
      * 
      * @param structureId the structure id of the resource
      * @param handler the context menu handler
+     * @param bean the context menu entry bean 
      */
-    void execute(CmsUUID structureId, I_CmsContextMenuHandler handler);
+    void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean);
 
     /**
      * Returns the icon class for this command.<p>

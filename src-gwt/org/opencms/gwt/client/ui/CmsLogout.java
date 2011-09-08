@@ -32,6 +32,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -59,7 +60,7 @@ public final class CmsLogout implements I_CmsHasContextMenuCommand {
 
         return new I_CmsContextMenuCommand() {
 
-            public void execute(CmsUUID structureId, final I_CmsContextMenuHandler handler) {
+            public void execute(CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
                 CmsConfirmDialog dialog = new CmsConfirmDialog(
                     Messages.get().key(Messages.GUI_DIALOG_LOGOUT_TITLE_0),

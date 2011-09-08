@@ -72,6 +72,7 @@ import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.explorer.menu.A_CmsMenuItemRule;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
@@ -102,6 +103,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
+    /** The default login URL. */
     private static final String DEFAULT_LOGIN_URL = "/system/login/index.html";
 
     /** The editor back-link URI. */
@@ -839,7 +841,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * Modifies the availability of the given resource.<p>
      * 
-     * @param vfsPath the resource to change
+     * @param resource the resource whose availability should be modified 
      * @param dateReleased the date released
      * @param dateExpired the date expired
      * 
@@ -855,7 +857,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * Modifies the notification properties of the given resource.<p>
      * 
-     * @param resourceSitePath the site path of the resource to modify
+     * @param resource the resource whose notification properties should be modified 
      * @param notificationInterval the modification interval
      * @param notificationEnabled signals whether the notification is enabled or disabled
      * @param modifySiblings signals whether siblings should be also modified
@@ -897,7 +899,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * Creates a temporary project and adds the given resource to it. Afterwards a scheduled job is created
      * and the project is assigned to it. Then the publish job is enqueued.<p>
      * 
-     * @param resourceSitePath the site path of the resource to modify 
+     * @param resource the resource which should be scheduled for publishing  
      * @param pubDate the date when the resource should be published
      * 
      * @throws CmsException if something goes wrong
@@ -1008,7 +1010,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @param resource the resource to modify
      * @param bean the bean with the information of the dialog
      * 
-     * @throws CmsRpcException if the RPC call goes wrong 
+     * @throws CmsException if something goes wrong  
      */
     private void setAvailabilityInfo(CmsResource resource, CmsAvailabilityInfoBean bean) throws CmsException {
 
@@ -1077,12 +1079,18 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                                 getSubItemRules(item, itemRules, resUtil);
                                 I_CmsMenuItemRule[] itemRulesArray = new I_CmsMenuItemRule[itemRules.size()];
                                 // determine the visibility for the parent item
+
                                 mode = itemRule.getVisibility(
                                     getCmsObject(),
                                     resUtil,
                                     itemRules.toArray(itemRulesArray));
                             } else {
-                                mode = itemRule.getVisibility(getCmsObject(), resUtil);
+                                if (itemRule instanceof A_CmsMenuItemRule) {
+                                    mode = ((A_CmsMenuItemRule)itemRule).getVisibility(getCmsObject(), resUtil, item);
+                                } else {
+                                    mode = itemRule.getVisibility(getCmsObject(), resUtil);
+                                }
+
                             }
                         }
                     }
@@ -1115,6 +1123,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     }
                 }
                 bean.setJspPath(jspPath);
+
+                String params = item.getParams();
+                if (params != null) {
+                    bean.setParams(CmsStringUtil.splitAsMap(params, "|", "="));
+
+                }
 
                 // get the name of the item and set it to the bean
                 bean.setName(item.getName());

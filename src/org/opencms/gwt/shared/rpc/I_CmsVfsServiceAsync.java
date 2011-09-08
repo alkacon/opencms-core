@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
+import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -142,6 +143,16 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback  
      */
     void loadPropertyData(CmsUUID id, AsyncCallback<CmsPropertiesBean> callback);
+
+    /**
+     * Prepares to edit a file in the XML content editor.<p>
+     * 
+     * @param currentPage the current page from which the editor should be opened 
+     * @param fileNameWithMacros the file name, which may contain macros 
+     * 
+     * @param callback the asynchronous callback 
+     */
+    void prepareEdit(CmsUUID currentPage, String fileNameWithMacros, AsyncCallback<CmsPrepareEditResponse> callback);
 
     /**
      * Saves a set of property changes.<p>

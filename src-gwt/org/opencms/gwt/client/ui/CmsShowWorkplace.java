@@ -32,6 +32,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
@@ -61,7 +62,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
         return new I_CmsContextMenuCommand() {
 
-            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler) {
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
                 if (handler.ensureLockOnResource(structureId)) {
                     openWorkplace(structureId);
@@ -121,21 +122,21 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      */
     protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-        if ($wnd.opener && $wnd.opener != self) {
-            $wnd.opener.location.href = path;
-            $wnd.opener.focus();
-        } else {
-            var openerStr = 'width='
-                    + winWidth
-                    + ',height='
-                    + winHeight
-                    + ',left='
-                    + winLeft
-                    + ',top='
-                    + winTop
-                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-            deWindow.focus();
-        }
+      if ($wnd.opener && $wnd.opener != self) {
+         $wnd.opener.location.href = path;
+         $wnd.opener.focus();
+      } else {
+         var openerStr = 'width='
+               + winWidth
+               + ',height='
+               + winHeight
+               + ',left='
+               + winLeft
+               + ',top='
+               + winTop
+               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+         deWindow.focus();
+      }
     }-*/;
 }

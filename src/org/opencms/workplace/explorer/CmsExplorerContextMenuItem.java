@@ -27,8 +27,12 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides information about a single context menu item for a resource type in the OpenCms explorer view.<p>
@@ -53,6 +57,9 @@ public class CmsExplorerContextMenuItem {
 
     /** The name of the current item. */
     private String m_name;
+
+    /** The parameters for the context menu command. */
+    private String m_params;
 
     /** The parent menu item. */
     private CmsExplorerContextMenuItem m_parent;
@@ -131,6 +138,24 @@ public class CmsExplorerContextMenuItem {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Gets the parameters for the context menu command.<p>
+     * 
+     * @return the parameter string for the context menu command 
+     */
+    public String getParams() {
+
+        return m_params;
+    }
+
+    public Map<String, String> getParamsMap() {
+
+        if (m_params == null) {
+            return Collections.emptyMap();
+        }
+        return CmsStringUtil.splitAsMap(m_params, "|", "=");
     }
 
     /**
@@ -254,6 +279,16 @@ public class CmsExplorerContextMenuItem {
     }
 
     /**
+     * Sets the parameter string for the context menu command.<p>
+     * 
+     * @param params the parameter string for the context menu command 
+     */
+    public void setParams(String params) {
+
+        m_params = params;
+    }
+
+    /**
      * Sets the name of the menu rule set.<p>
      * 
      * @param rule the name of the menu rule set
@@ -328,4 +363,5 @@ public class CmsExplorerContextMenuItem {
 
         m_parent = parent;
     }
+
 }

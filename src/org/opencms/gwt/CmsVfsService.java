@@ -40,6 +40,7 @@ import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
+import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -58,6 +59,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -89,6 +91,26 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
+
+    /**
+     * Processes a file path, which may have macros in it, so it can be opened by the XML content editor.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource for which the context menu option has been selected 
+     * @param pathWithMacros the file path which may contain macros
+     *  
+     * @return the processed file path 
+     */
+    public static String prepareFileNameForEditor(CmsObject cms, CmsResource res, String pathWithMacros) {
+
+        String subsite = OpenCms.getADEManager().getSubSiteRoot(cms, res.getRootPath());
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        if (subsite != null) {
+            resolver.addMacro("subsite", cms.getRequestContext().removeSiteRoot(subsite));
+        }
+        String path = resolver.resolveMacros(pathWithMacros).replaceAll("/+", "/");
+        return path;
+    }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(java.lang.String)
@@ -399,6 +421,28 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#prepareEdit(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public CmsPrepareEditResponse prepareEdit(CmsUUID currentPageId, String pathWithMacros) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource currentPage = cms.readResource(currentPageId);
+            String path = prepareFileNameForEditor(cms, currentPage, pathWithMacros);
+            CmsResource resource = cms.readResource(path);
+            ensureLock(resource);
+            CmsPrepareEditResponse result = new CmsPrepareEditResponse();
+            result.setRootPath(resource.getRootPath());
+            result.setSitePath(cms.getSitePath(resource));
+            result.setStructureId(resource.getStructureId());
+            return result;
+        } catch (CmsException e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet)
      */
     public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
@@ -638,7 +682,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 
-     * @param cms the CMS context to use 
      * @param res the resource to get the page info for
      * 
      * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
@@ -684,8 +727,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
      * 
-     * @param cms the CMS context to use 
-     * @param res the resource to get the page info for
+     * @param resource the resource to get the page info for
      * 
      * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
      * 

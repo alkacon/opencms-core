@@ -127,6 +127,7 @@
 	order CDATA #IMPLIED 
 	target CDATA #IMPLIED
 	name CDATA #IMPLIED
+	params CDATA #IMPLIED
 	parent CDATA #IMPLIED
 	icon CDATA #IMPLIED
 	isxml (true|false|TRUE|FALSE) #IMPLIED>

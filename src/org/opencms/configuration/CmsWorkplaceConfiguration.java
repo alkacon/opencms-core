@@ -731,8 +731,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_RULE);
         digester.addCallMethod(xPath, "setTarget", 1);
         digester.addCallParam(xPath, 0, A_TARGET);
+
         digester.addCallMethod(xPath, "setName", 1);
         digester.addCallParam(xPath, 0, A_NAME);
+
+        digester.addCallMethod(xPath, "setParams", 1);
+        digester.addCallParam(xPath, 0, A_PARAMS);
+
         digester.addCallMethod(xPath, "setIcon", 1);
         digester.addCallParam(xPath, 0, A_ICON);
         digester.addSetNext(xPath, "addContextMenuEntry");
@@ -770,6 +775,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             if (item.getTarget() != null) {
                 itemElement.addAttribute(A_TARGET, item.getTarget());
             }
+
+            if (item.getParams() != null) {
+                itemElement.addAttribute(A_PARAMS, item.getParams());
+            }
+
             String rule = item.getRule();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
                 itemElement.addAttribute(A_RULE, rule);

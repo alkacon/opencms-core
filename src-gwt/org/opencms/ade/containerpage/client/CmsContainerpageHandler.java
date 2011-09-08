@@ -113,7 +113,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public CmsContainerpageHandler(CmsContainerpageController controller, CmsContainerpageEditor editor) {
 
         m_controller = controller;
-
         m_editor = editor;
     }
 

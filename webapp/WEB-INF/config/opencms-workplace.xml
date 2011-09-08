@@ -822,6 +822,10 @@
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
+    	<menurule name="adecheckfile">
+    	    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable" />
+    	    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
    	  </menurules>
     </explorertypes>
     <default-preferences>
