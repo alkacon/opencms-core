@@ -592,8 +592,7 @@ public class CmsJspTagContainer extends TagSupport {
                 cms,
                 cms.getRequestContext().getRootUri()).getResourceType(typeName);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && (typeConfig != null)
-                && !typeConfig.checkCreatable(cms)) {
+                && ((typeConfig == null) || !typeConfig.checkCreatable(cms))) {
                 String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
                 noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
             }
