@@ -169,7 +169,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
         }
         String reloadStr = params.get(CmsMenuCommandParameters.PARAM_RELOAD);
         m_reload = Boolean.parseBoolean(reloadStr);
-
+        if (handler instanceof I_CmsToolbarHandler) {
+            ((I_CmsToolbarHandler)handler).deactivateCurrentButton();
+        }
         CmsRpcAction<CmsPrepareEditResponse> prepareEdit = new CmsRpcAction<CmsPrepareEditResponse>() {
 
             @Override
