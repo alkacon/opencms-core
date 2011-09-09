@@ -150,6 +150,11 @@ public class CmsExplorerContextMenuItem {
         return m_params;
     }
 
+    /**
+     * Gets the parameters as a map of strings.<p>
+     * 
+     * @return the parameters as a map of strings
+     */
     public Map<String, String> getParamsMap() {
 
         if (m_params == null) {
