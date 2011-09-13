@@ -131,6 +131,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         m_croppingParam = CmsCroppingParamBean.parseImagePath(selectedPath);
         m_croppingParam.setOrgHeight(imageHeight);
         m_croppingParam.setOrgWidth(imageWidth);
+        m_ratioLocked = true;
         readFormatsConfig(galleryMode);
         if (m_useFormats) {
             generateFormats();
