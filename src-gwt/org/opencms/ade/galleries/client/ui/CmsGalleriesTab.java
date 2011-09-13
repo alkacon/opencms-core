@@ -291,7 +291,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
      */
     public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
 
-        m_galleries.clear();
         m_selectedGalleries = selectedGalleries;
         if (!galleryInfos.isEmpty()) {
             for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
