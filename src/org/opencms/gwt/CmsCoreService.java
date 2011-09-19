@@ -813,9 +813,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 // this is a standard entry, get the matching rule to add to the list
                 String subItemRuleName = subItem.getRule();
                 CmsMenuRule subItemRule = OpenCms.getWorkplaceManager().getMenuRule(subItemRuleName);
-                I_CmsMenuItemRule rule = subItemRule.getMatchingRule(getCmsObject(), resourceUtil);
-                if (rule != null) {
-                    itemRules.add(rule);
+                if (subItemRule != null) {
+                    I_CmsMenuItemRule rule = subItemRule.getMatchingRule(getCmsObject(), resourceUtil);
+                    if (rule != null) {
+                        itemRules.add(rule);
+                    }
                 }
             }
         }
