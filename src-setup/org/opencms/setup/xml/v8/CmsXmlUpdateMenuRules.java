@@ -176,12 +176,43 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                     Element elem = (Element)doc.selectSingleNode(xpath);
                     if (elem == null) {
-                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
-                            "containerpage",
-                            "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"), "");
-                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
-                            "containerpage",
-                            "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"), "");
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "containerpage",
+                                "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"),
+                            "");
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "containerpage",
+                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
+                            "");
+                    }
+                    return false;
+                }
+
+            });
+
+            m_updateActions.put(xpathForMenuRule("adecheckfile"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    if (elem == null) {
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "adecheckfile",
+                                "org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable"),
+                            "");
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "adecheckfile",
+                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
+                            "");
                     }
                     return false;
                 }
