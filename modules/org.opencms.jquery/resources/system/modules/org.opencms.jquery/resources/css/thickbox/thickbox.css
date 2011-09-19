@@ -74,7 +74,7 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 }
 
 #TB_caption{
-	height:25px;
+	height:45px;
 	padding:7px 30px 10px 25px;
 	float:left;
 }
