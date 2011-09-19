@@ -588,6 +588,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.setStored("compress");
                 field.setIndexed("true");
                 field.setInExcerpt("true");
+                field.setDisplayNameForConfiguration("%(key.field.content)");
                 // <mapping type="content" />
                 CmsSearchFieldMapping mapping = new CmsSearchFieldMapping();
                 mapping.setType("content");
@@ -610,6 +611,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.setName("title");
                 field.setStored("false");
                 field.setIndexed("true");
+                field.setDisplayNameForConfiguration("%(key.field.title)");
                 // <mapping type="property">Title</mapping>
                 mapping = new CmsSearchFieldMapping();
                 mapping.setType("property");
@@ -621,6 +623,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.setName("description");
                 field.setStored("true");
                 field.setIndexed("true");
+                field.setDisplayNameForConfiguration("%(key.field.description)");
                 // <mapping type="property">Description</mapping>
                 mapping = new CmsSearchFieldMapping();
                 mapping.setType("property");
