@@ -665,7 +665,7 @@ public class CmsJspTagContainer extends TagSupport {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().getRootUri());
-            CmsFormatterConfiguration formatters = config.getFormatters(detailContent);
+            CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
             CmsFormatterBean formatter = formatters.getFormatter(getType(), getContainerWidth());
             if (formatter != null) {
                 // create element bean
@@ -701,7 +701,6 @@ public class CmsJspTagContainer extends TagSupport {
      * Parses the maximum element number from the current container and returns the resulting number.<p>
      *  
      * @param requestUri the requested URI
-     * @param locale the current locale
      *  
      * @return the maximum number of elements of the container 
      */
@@ -868,7 +867,9 @@ public class CmsJspTagContainer extends TagSupport {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
                     getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
-                    CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(subelement.getResource());
+                    CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
+                        cms,
+                        subelement.getResource());
                     CmsFormatterBean subelementFormatter = subelementFormatters.getFormatter(
                         containerType,
                         containerWidth);
@@ -930,7 +931,7 @@ public class CmsJspTagContainer extends TagSupport {
                 formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
             } catch (CmsException e) {
                 // the formatter resource can not be found, try reading it form the configuration
-                CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(element.getResource());
+                CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
                 CmsFormatterBean elementFormatterBean = elementFormatters.getFormatter(containerType, containerWidth);
                 if (elementFormatterBean == null) {
                     if (LOG.isErrorEnabled()) {

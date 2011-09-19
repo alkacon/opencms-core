@@ -655,7 +655,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 int containerWidth = container.getWidth();
 
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
-                CmsFormatterConfiguration formatters = config.getFormatters(resource);
+                CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
                 String containerType = null;
                 if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
                     resource).getTypeName())) {
@@ -944,7 +944,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Internal method for saving a group container
+     * Internal method for saving a group container.<p>
      * 
      * @param cms the cms context 
      * @param pageStructureId the container page structure id 

@@ -71,50 +71,50 @@ public class CmsADEConfigData {
     /** The content folder name. */
     public static final String CONTENT_FOLDER_NAME = ".content";
 
-    /** The resource from which the configuration data was read. */
-    private CmsResource m_resource;
-
-    /** The internal model page entries. */
-    private List<CmsModelPageConfig> m_ownModelPageConfig = new ArrayList<CmsModelPageConfig>();
-
-    /** The internal resource type entries. */
-    private List<CmsResourceTypeConfig> m_ownResourceTypes = new ArrayList<CmsResourceTypeConfig>();
-
-    /** The internal property configuration. */
-    private List<CmsPropertyConfig> m_ownPropertyConfigurations = new ArrayList<CmsPropertyConfig>();
-
-    /** The internal detail page configuration. */
-    private List<CmsDetailPageInfo> m_ownDetailPages = new ArrayList<CmsDetailPageInfo>();
-
-    /** A flag which keeps track of whether this instance has already been initialized. */
-    private boolean m_initialized;
-
-    /** The base path of this configuration. */
-    private String m_basePath;
-
-    /** Should inherited types be discarded? */
-    protected boolean m_discardInheritedTypes;
-
-    /** Should inherited properties be discard? */
-    protected boolean m_discardInheritedProperties;
-
-    /** Should inherited model pages be discarded? */
-    protected boolean m_discardInheritedModelPages;
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
 
     /** The "create contents locally" flag. */
     protected boolean m_createContentsLocally;
 
-    /** True if this is a module configuration, not a normal sitemap configuration. */
-    private boolean m_isModuleConfig;
+    /** Should inherited model pages be discarded? */
+    protected boolean m_discardInheritedModelPages;
+
+    /** Should inherited properties be discard? */
+    protected boolean m_discardInheritedProperties;
+
+    /** Should inherited types be discarded? */
+    protected boolean m_discardInheritedTypes;
+
+    /** The base path of this configuration. */
+    private String m_basePath;
 
     /** The cms context used for reading the configuration data. */
     private CmsObject m_cms;
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
-
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences;
+
+    /** A flag which keeps track of whether this instance has already been initialized. */
+    private boolean m_initialized;
+
+    /** True if this is a module configuration, not a normal sitemap configuration. */
+    private boolean m_isModuleConfig;
+
+    /** The internal detail page configuration. */
+    private List<CmsDetailPageInfo> m_ownDetailPages = new ArrayList<CmsDetailPageInfo>();
+
+    /** The internal model page entries. */
+    private List<CmsModelPageConfig> m_ownModelPageConfig = new ArrayList<CmsModelPageConfig>();
+
+    /** The internal property configuration. */
+    private List<CmsPropertyConfig> m_ownPropertyConfigurations = new ArrayList<CmsPropertyConfig>();
+
+    /** The internal resource type entries. */
+    private List<CmsResourceTypeConfig> m_ownResourceTypes = new ArrayList<CmsResourceTypeConfig>();
+
+    /** The resource from which the configuration data was read. */
+    private CmsResource m_resource;
 
     /** 
      * Default constructor to create an empty configuration.<p> 
@@ -355,12 +355,13 @@ public class CmsADEConfigData {
 
     /**
      * Gets the formatter configuration for a resource.<p>
-     * 
+     *
+     * @param cms the current CMS context 
      * @param res the resource for which the formatter configuration should be retrieved  
      * 
      * @return the configuration of formatters for the resource 
      */
-    public CmsFormatterConfiguration getFormatters(CmsResource res) {
+    public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
         int resTypeId = res.getTypeId();
         try {
@@ -372,7 +373,7 @@ public class CmsADEConfigData {
                 && !typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty()) {
                 return typeConfig.getFormatterConfiguration();
             }
-            return getFormattersFromSchema(res);
+            return getFormattersFromSchema(cms, res);
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
@@ -753,15 +754,16 @@ public class CmsADEConfigData {
     /**
      * Gets the formatters from the schema.<p>
      * 
+     * @param cms the current CMS context 
      * @param res the resource for which the formatters should be retrieved 
      * 
      * @return the formatters from the schema 
      */
-    protected CmsFormatterConfiguration getFormattersFromSchema(CmsResource res) {
+    protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
 
         try {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, res);
-            return contentHandler.getFormatterConfiguration(m_cms, res);
+            return contentHandler.getFormatterConfiguration(cms, res);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return CmsFormatterConfiguration.EMPTY_CONFIGURATION;

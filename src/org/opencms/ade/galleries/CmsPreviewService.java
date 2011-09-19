@@ -236,7 +236,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     cms,
                     cms.getRequestContext().getRootUri());
 
-                CmsFormatterConfiguration formatters = adeConfig.getFormatters(resource);
+                CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, resource);
                 CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
 
                 if (formatter != null) {

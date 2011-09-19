@@ -62,11 +62,11 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
     /** The path of the formatter which calls the JSP. */
     public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.containerpage/formatters/function.jsp";
 
-    /** The resource type for dynamic functions. */
-    public static final String TYPE_FUNCTION = "function";
-
     /** The node name for the formatter settings. */
     public static final String N_CONTAINER_SETTINGS = "ContainerSettings";
+
+    /** The resource type for dynamic functions. */
+    public static final String TYPE_FUNCTION = "function";
 
     /**
      * Default constructor.<p>
@@ -86,18 +86,16 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
             CmsFile file = cms.readFile(resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
             Locale locale = new Locale("en");
-            I_CmsXmlContentValue value = content.getValue("ContainerSettings", new Locale("en"));
+            if (content.hasLocale(cms.getRequestContext().getLocale())) {
+                locale = cms.getRequestContext().getLocale();
+            }
+            I_CmsXmlContentValue value = content.getValue("ContainerSettings", locale);
             CmsFormatterBean formatterBean;
             CmsResource jspResource = cms.readResource(FORMATTER_PATH);
             if (value == null) {
                 formatterBean = new CmsFormatterBean(
-                    "*",
                     jspResource.getRootPath(),
                     jspResource.getStructureId(),
-                    -1,
-                    Integer.MAX_VALUE,
-                    false,
-                    false,
                     resource.getRootPath());
             } else {
                 String type = "";

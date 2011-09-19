@@ -181,6 +181,13 @@ public final class CmsFormatterConfiguration {
                 }
             }
         }
+        if (result == null) {
+            for (CmsFormatterBean f : m_widthFormatters) {
+                if (f.isMatchAll()) {
+                    result = f;
+                }
+            }
+        }
         return result;
     }
 

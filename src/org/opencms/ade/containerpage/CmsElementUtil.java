@@ -192,7 +192,7 @@ public class CmsElementUtil {
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             m_cms,
             m_cms.getRequestContext().addSiteRoot(m_currentPageUri));
-        CmsFormatterConfiguration configs = adeConfig.getFormatters(element.getResource());
+        CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
             String name = container.getName();

@@ -64,6 +64,9 @@ public class CmsFormatterBean {
     /** The location this formatter was configured in. */
     private String m_location;
 
+    /** If true, will match any container/width combination. */
+    private boolean m_matchAll;
+
     /** The formatter max width. */
     private int m_maxWidth;
 
@@ -167,6 +170,19 @@ public class CmsFormatterBean {
         : Boolean.valueOf(searchContent).booleanValue();
 
         m_location = location;
+    }
+
+    /**
+     * Constructor for creating a formatter bean which matches all container/width combinations.<p>
+     * 
+     * @param jspRootPath the jsp root path 
+     * @param jspStructureId the jsp structure id 
+     * @param location the formatter location 
+     */
+    CmsFormatterBean(String jspRootPath, CmsUUID jspStructureId, String location) {
+
+        this("*", jspRootPath, jspStructureId, -1, Integer.MAX_VALUE, false, false, location);
+        m_matchAll = true;
     }
 
     /**
@@ -284,6 +300,16 @@ public class CmsFormatterBean {
     public int hashCode() {
 
         return m_containerType.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+    }
+
+    /** 
+     * Returns true if this formatter should match all type/width combinations.<p>
+     * 
+     * @return true if this formatter should match all type/width combinations 
+     */
+    public boolean isMatchAll() {
+
+        return m_matchAll;
     }
 
     /**
