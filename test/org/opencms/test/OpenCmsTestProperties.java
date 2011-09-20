@@ -155,7 +155,6 @@ public final class OpenCmsTestProperties {
             return;
         }
 
-        String testPropPath;
         m_testSingleton = new OpenCmsTestProperties();
 
         m_testSingleton.m_basePath = basePath;
@@ -164,7 +163,17 @@ public final class OpenCmsTestProperties {
         }
 
         try {
-            testPropPath = OpenCmsTestProperties.getResourcePathFromClassloader("test.properties");
+            String testPropPath = null;
+            String propertiesFileName = "test.properties";
+
+            if (basePath != null) {
+                testPropPath = CmsFileUtil.addTrailingSeparator(basePath) + propertiesFileName;
+                File propFile = new File(testPropPath);
+                if (!propFile.exists()) {
+                    testPropPath = OpenCmsTestProperties.getResourcePathFromClassloader(propertiesFileName);
+                }
+            }
+
             if (testPropPath == null) {
                 throw new RuntimeException(
                     "Test property file ('test.properties') could not be found by context Classloader.");
