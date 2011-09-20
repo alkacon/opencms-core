@@ -1177,9 +1177,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatementForSql(
-                conn,
-                m_sqlManager.readQuery(projectId, "C_READ_RESOURCE_OUS"));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery(
+                projectId,
+                "C_READ_RESOURCE_OUS"));
             stmt.setInt(1, CmsRelationType.OU_RESOURCE.getId());
             stmt.setString(2, resName);
             res = stmt.executeQuery();
@@ -1196,9 +1196,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         for (CmsRelation rel : rels) {
             try {
-                ous.add(m_driverManager.readOrganizationalUnit(
-                    dbc,
-                    rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
+                    CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -2344,8 +2343,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setString(2, path + "%");
                 stmt.setString(3, "%" + value + "%");
                 stmt.setString(4, propertyDef.toString());
-                stmt.setString(5, "%" + path + "%");
-                stmt.setString(6, value + "%");
+                stmt.setString(5, path + "%");
+                stmt.setString(6, "%" + value + "%");
             }
             res = stmt.executeQuery();
 
