@@ -629,6 +629,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Sets the search object changed flag to <code>true</code>.<p>
+     */
+    public void setSearchObjectChanged() {
+
+        m_searchObjectChanged = true;
+    }
+
+    /**
      * Sorts the categories according to given parameters and updates the list.<p>
      * 
      * @param sortParams the sort parameters
@@ -661,29 +669,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
             default:
         }
-    }
-
-    private List<CmsCategoryBean> getFilteredCategories(String filter) {
-
-        List<CmsCategoryBean> result;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
-            result = new ArrayList<CmsCategoryBean>();
-            for (CmsCategoryBean category : getCategoryList()) {
-                if (category.matchesFilter(filter)) {
-                    result.add(category);
-                }
-            }
-        } else {
-            result = getCategoryList();
-        }
-        return result;
-    }
-
-    private List<CmsCategoryBean> getCategoryList() {
-
-        List<CmsCategoryBean> result = new ArrayList<CmsCategoryBean>();
-        categoryTreeToList(result, m_dialogBean.getCategories());
-        return result;
     }
 
     /**
@@ -1029,6 +1014,29 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 result.add(current);
             }
             previous = current;
+        }
+        return result;
+    }
+
+    private List<CmsCategoryBean> getCategoryList() {
+
+        List<CmsCategoryBean> result = new ArrayList<CmsCategoryBean>();
+        categoryTreeToList(result, m_dialogBean.getCategories());
+        return result;
+    }
+
+    private List<CmsCategoryBean> getFilteredCategories(String filter) {
+
+        List<CmsCategoryBean> result;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            result = new ArrayList<CmsCategoryBean>();
+            for (CmsCategoryBean category : getCategoryList()) {
+                if (category.matchesFilter(filter)) {
+                    result.add(category);
+                }
+            }
+        } else {
+            result = getCategoryList();
         }
         return result;
     }

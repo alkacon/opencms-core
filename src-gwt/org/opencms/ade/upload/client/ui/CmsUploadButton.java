@@ -43,12 +43,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides a upload button.<p>
@@ -93,6 +95,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /** Stores the button style. */
     private ButtonStyle m_buttonStyle;
+
+    /** The dialog close handler. */
+    private CloseHandler<PopupPanel> m_closeHandler;
 
     /** Stores the button color. */
     private I_CmsButton.ButtonColor m_color;
@@ -309,6 +314,19 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
+     * Sets the upload dialog close handler.<p>
+     * 
+     * @param closeHandler the close handler to set
+     */
+    public void setDialogCloseHandler(CloseHandler<PopupPanel> closeHandler) {
+
+        m_closeHandler = closeHandler;
+        if (m_uploadDialog != null) {
+            m_uploadDialog.addCloseHandler(m_closeHandler);
+        }
+    }
+
+    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -356,6 +374,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public void setTargetFolder(String targetFolder) {
 
         m_targetFolder = targetFolder;
+        if (m_uploadDialog != null) {
+            m_uploadDialog.setTargetFolder(m_targetFolder);
+        }
     }
 
     /**
@@ -477,9 +498,12 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     protected void onChangeAction() {
 
         if (m_uploadDialog == null) {
-            A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-            dialog.setTargetFolder(m_targetFolder);
-            dialog.addFileInput(m_fileInput);
+            m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
+            m_uploadDialog.setTargetFolder(m_targetFolder);
+            m_uploadDialog.addFileInput(m_fileInput);
+            if (m_closeHandler != null) {
+                m_uploadDialog.addCloseHandler(m_closeHandler);
+            }
         } else {
             m_uploadDialog.addFileInput(m_fileInput);
         }

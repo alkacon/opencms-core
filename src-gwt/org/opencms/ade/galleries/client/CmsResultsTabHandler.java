@@ -27,6 +27,9 @@
 
 package org.opencms.ade.galleries.client;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.user.client.ui.PopupPanel;
+
 /**
  * The results tab handler.<p>
  * 
@@ -84,6 +87,15 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public boolean isLoading() {
 
         return m_controller.isLoading();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+     */
+    @Override
+    public void onClose(CloseEvent<PopupPanel> event) {
+
+        m_controller.updateResultsTab(false);
     }
 
     /**

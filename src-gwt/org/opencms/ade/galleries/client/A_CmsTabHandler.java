@@ -27,6 +27,10 @@
 
 package org.opencms.ade.galleries.client;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
+
 /**
  * The abstract class for the tab handler.<p>
  * 
@@ -35,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsTabHandler {
+public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /** The gallery controller. */
     protected CmsGalleryController m_controller;
@@ -54,6 +58,16 @@ public abstract class A_CmsTabHandler {
      * Clears the search parameters of this tab.<p>
      */
     public abstract void clearParams();
+
+    /**
+     * Execute when the upload dialog is closed.<p> 
+     * 
+     * @param event the close event 
+     */
+    public void onClose(CloseEvent<PopupPanel> event) {
+
+        m_controller.setSearchObjectChanged();
+    }
 
     /**
      * Will be triggered when the tab is deselected.<p> 
