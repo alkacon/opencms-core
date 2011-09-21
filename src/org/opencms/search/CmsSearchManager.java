@@ -72,7 +72,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
@@ -503,18 +502,35 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Returns an analyzer for the given class name.<p>
      * 
-     * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
-     * can not be created by a simple <code>newInstance()</code> call.
-     * This method will create analyzers by name for the {@link CmsSearchIndex#LUCENE_VERSION} version.<p>
-     * 
      * @param className the class name of the analyzer
-     * @param snowballStemmer the optional snowball stemmer parameter required for the snowball analyzer
      * 
      * @return the appropriate lucene analyzer
      * 
      * @throws Exception if something goes wrong
      */
-    public static Analyzer getAnalyzer(String className, String snowballStemmer) throws Exception {
+    public static Analyzer getAnalyzer(String className) throws Exception {
+
+        return getAnalyzer(className, null);
+    }
+
+    /**
+     * Returns an analyzer for the given class name.<p>
+     * 
+     * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
+     * can not be created by a simple <code>newInstance()</code> call.
+     * This method will create analyzers by name for the {@link CmsSearchIndex#LUCENE_VERSION} version.<p>
+     * 
+     * @param className the class name of the analyzer
+     * @param stemmer the optional stemmer parameter required for the snowball analyzer
+     * 
+     * @return the appropriate lucene analyzer
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @deprecated The stemmer parameter is used only by the snownall analyzer, which is deprecated in Lucene 3.
+     */
+    @Deprecated
+    public static Analyzer getAnalyzer(String className, String stemmer) throws Exception {
 
         Analyzer analyzer = null;
         Class<?> analyzerClass;
@@ -532,12 +548,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
             // OpenCms gallery multiple language analyzer
             analyzer = new CmsGallerySearchAnalyzer(CmsSearchIndex.LUCENE_VERSION);
-        } else if ((snowballStemmer != null) && SnowballAnalyzer.class.equals(analyzerClass)) {
-            // the Snowball analyzer is used
-            analyzer = new SnowballAnalyzer(CmsSearchIndex.LUCENE_VERSION, snowballStemmer);
         } else {
             boolean hasEmpty = false;
             boolean hasVersion = false;
+            boolean hasVersionWithString = false;
             // another analyzer is used, check if we find a suitable constructor 
             Constructor<?>[] constructors = analyzerClass.getConstructors();
             for (int i = 0; i < constructors.length; i++) {
@@ -551,14 +565,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // a constructor with a Lucene version parameter has been found
                     hasVersion = true;
                 }
-                if (hasVersion) {
-                    // a constructor with a Lucene version parameter has been found
-                    analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
-                        CmsSearchIndex.LUCENE_VERSION);
-                } else if (hasEmpty) {
-                    // an empty constructor has been found
-                    analyzer = (Analyzer)analyzerClass.newInstance();
+                if ((stemmer != null)
+                    && (parameters.length == 2)
+                    && parameters[0].equals(Version.class)
+                    && parameters[1].equals(String.class)) {
+                    // a constructor with a Lucene version parameter and a String has been found
+                    hasVersionWithString = true;
                 }
+            }
+            if (hasVersionWithString) {
+                // a constructor with a Lucene version parameter and a String has been found
+                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class, String.class}).newInstance(
+                    CmsSearchIndex.LUCENE_VERSION,
+                    stemmer);
+            } else if (hasVersion) {
+                // a constructor with a Lucene version parameter has been found
+                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
+                    CmsSearchIndex.LUCENE_VERSION);
+            } else if (hasEmpty) {
+                // an empty constructor has been found
+                analyzer = (Analyzer)analyzerClass.newInstance();
             }
         }
         return analyzer;
