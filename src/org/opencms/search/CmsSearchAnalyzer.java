@@ -45,7 +45,7 @@ public class CmsSearchAnalyzer {
     /** A locale as a key to select the analyzer. */
     private Locale m_locale;
 
-    /** The stemmer algorithm to be used. */
+    /** The stemmer algorithm to be used (only for the deprecated SnowBall analyzer). */
     private String m_stemmerAlgorithm;
 
     /**
@@ -82,6 +82,9 @@ public class CmsSearchAnalyzer {
 
     /**
      * Returns the stemmer algorithm.<p>
+     *
+     * This is required only for the SnowBall analyzer, which is deprecated in Lucene and should not longer be 
+     * used since all languages have special analyzers now.<p>
      *
      * @return the stemmer algorithm
      */
@@ -124,6 +127,9 @@ public class CmsSearchAnalyzer {
 
     /**
      * Sets the stemmer algorithm.<p>
+     *
+     * This is required only for the SnowBall analyzer, which is deprecated in Lucene and should not longer be 
+     * used since all languages have special analyzers now.<p>
      *
      * @param stemmerAlgorithm the stemmer algorithm
      */

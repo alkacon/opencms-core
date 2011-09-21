@@ -593,7 +593,7 @@ public class CmsSearchField {
      */
     public void setAnalyzer(String analyzer) throws Exception {
 
-        setAnalyzer(CmsSearchManager.getAnalyzer(analyzer, null));
+        setAnalyzer(CmsSearchManager.getAnalyzer(analyzer));
     }
 
     /**
