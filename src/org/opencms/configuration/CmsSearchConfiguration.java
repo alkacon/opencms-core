@@ -44,9 +44,8 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.digester.Digester;
 
@@ -370,10 +369,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <documenttypes> 
         Element documenttypesElement = searchElement.addElement(N_DOCUMENTTYPES);
-        List docTypeKeyList = m_searchManager.getDocumentTypeConfigs();
-        Iterator docTypeIterator = docTypeKeyList.iterator();
-        while (docTypeIterator.hasNext()) {
-            CmsSearchDocumentType currSearchDocType = (CmsSearchDocumentType)docTypeIterator.next();
+        for (CmsSearchDocumentType currSearchDocType : m_searchManager.getDocumentTypeConfigs()) {
             // add the next <documenttype> element
             Element documenttypeElement = documenttypesElement.addElement(N_DOCUMENTTYPE);
             // add <name> element
@@ -383,30 +379,30 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             // add <mimetypes> element
             Element mimetypesElement = documenttypeElement.addElement(N_MIMETYPES);
             // get the list of mimetypes to trigger the document factory class 
-            Iterator mimeTypesIterator = currSearchDocType.getMimeTypes().iterator();
+            Iterator<String> mimeTypesIterator = currSearchDocType.getMimeTypes().iterator();
             while (mimeTypesIterator.hasNext()) {
                 // add <mimetype> element(s)
-                mimetypesElement.addElement(N_MIMETYPE).addText((String)mimeTypesIterator.next());
+                mimetypesElement.addElement(N_MIMETYPE).addText(mimeTypesIterator.next());
             }
             // add <resourcetypes> element
             Element restypesElement = documenttypeElement.addElement(N_RESOURCETYPES);
             // get the list of Cms resource types to trigger the document factory
-            Iterator resTypesIterator = currSearchDocType.getResourceTypes().iterator();
+            Iterator<String> resTypesIterator = currSearchDocType.getResourceTypes().iterator();
             while (resTypesIterator.hasNext()) {
                 // add <resourcetype> element(s)
-                restypesElement.addElement(N_RESOURCETYPE).addText((String)resTypesIterator.next());
+                restypesElement.addElement(N_RESOURCETYPE).addText(resTypesIterator.next());
             }
         }
         // </documenttypes> 
 
         // <analyzers> 
         Element analyzersElement = searchElement.addElement(N_ANALYZERS);
-        List analyzerLocaleList = new ArrayList(m_searchManager.getAnalyzers().keySet());
+        ArrayList<Locale> analyzerLocaleList = new ArrayList<Locale>(m_searchManager.getAnalyzers().keySet());
         // sort Analyzers in ascending order
         Collections.sort(analyzerLocaleList, CmsLocaleComparator.getComparator());
-        Iterator analyzersLocaleInterator = analyzerLocaleList.iterator();
+        Iterator<Locale> analyzersLocaleInterator = analyzerLocaleList.iterator();
         while (analyzersLocaleInterator.hasNext()) {
-            CmsSearchAnalyzer searchAnalyzer = m_searchManager.getCmsSearchAnalyzer((Locale)analyzersLocaleInterator.next());
+            CmsSearchAnalyzer searchAnalyzer = m_searchManager.getCmsSearchAnalyzer(analyzersLocaleInterator.next());
             // add the next <analyzer> element
             Element analyzerElement = analyzersElement.addElement(N_ANALYZER);
             // add <class> element
@@ -422,9 +418,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <indexes>
         Element indexesElement = searchElement.addElement(N_INDEXES);
-        Iterator indexIterator = m_searchManager.getSearchIndexes().iterator();
-        while (indexIterator.hasNext()) {
-            CmsSearchIndex searchIndex = (CmsSearchIndex)indexIterator.next();
+        for (CmsSearchIndex searchIndex : m_searchManager.getSearchIndexes()) {
             // add the next <index> element
             Element indexElement = indexesElement.addElement(N_INDEX);
             // add class attribute (if required)
@@ -447,10 +441,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             // add <sources> element
             Element sourcesElement = indexElement.addElement(N_SOURCES);
             // iterate above sourcenames
-            Iterator sourcesIterator = searchIndex.getSourceNames().iterator();
+            Iterator<String> sourcesIterator = searchIndex.getSourceNames().iterator();
             while (sourcesIterator.hasNext()) {
                 // add <source> element
-                sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
+                sourcesElement.addElement(N_SOURCE).addText(sourcesIterator.next());
             }
             // iterate additional params
             CmsParameterConfiguration indexConfiguration = searchIndex.getConfiguration();
@@ -462,10 +456,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <indexsources>
         Element indexsourcesElement = searchElement.addElement(N_INDEXSOURCES);
-        List indexSources = new ArrayList(m_searchManager.getSearchIndexSources().values());
-        Iterator indexsourceIterator = indexSources.iterator();
-        while (indexsourceIterator.hasNext()) {
-            CmsSearchIndexSource searchIndexSource = (CmsSearchIndexSource)indexsourceIterator.next();
+        for (CmsSearchIndexSource searchIndexSource : m_searchManager.getSearchIndexSources().values()) {
             // add <indexsource> element(s)
             Element indexsourceElement = indexsourcesElement.addElement(N_INDEXSOURCE);
             // add <name> element
@@ -474,39 +465,32 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             Element indexerElement = indexsourceElement.addElement(N_INDEXER).addAttribute(
                 N_CLASS,
                 searchIndexSource.getIndexerClassName());
-            Map params = searchIndexSource.getParams();
-            Iterator paramIterator = params.entrySet().iterator();
-            while (paramIterator.hasNext()) {
-                Map.Entry entry = (Map.Entry)paramIterator.next();
-                String name = (String)entry.getKey();
-                String value = (String)entry.getValue();
+            for (Entry<String, String> entry : searchIndexSource.getParams().entrySet()) {
                 // add <param name=""> element(s)                
                 indexerElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(
                     I_CmsXmlConfiguration.A_NAME,
-                    name).addText(value);
+                    entry.getKey()).addText(entry.getValue());
             }
             // add <resources> element
             Element resourcesElement = indexsourceElement.addElement(N_RESOURCES);
-            Iterator resourceIterator = searchIndexSource.getResourcesNames().iterator();
+            Iterator<String> resourceIterator = searchIndexSource.getResourcesNames().iterator();
             while (resourceIterator.hasNext()) {
                 // add <resource> element(s)
-                resourcesElement.addElement(N_RESOURCE).addText((String)resourceIterator.next());
+                resourcesElement.addElement(N_RESOURCE).addText(resourceIterator.next());
             }
             // add <documenttypes-indexed> element
             Element doctypes_indexedElement = indexsourceElement.addElement(N_DOCUMENTTYPES_INDEXED);
-            Iterator doctypesIterator = searchIndexSource.getDocumentTypes().iterator();
+            Iterator<String> doctypesIterator = searchIndexSource.getDocumentTypes().iterator();
             while (doctypesIterator.hasNext()) {
                 // add <name> element(s)
-                doctypes_indexedElement.addElement(N_NAME).addText((String)doctypesIterator.next());
+                doctypes_indexedElement.addElement(N_NAME).addText(doctypesIterator.next());
             }
         }
         // </indexsources>
 
         // <fieldconfigurations>
         Element fieldConfigurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
-        Iterator configs = m_searchManager.getFieldConfigurations().iterator();
-        while (configs.hasNext()) {
-            CmsSearchFieldConfiguration fieldConfiguration = (CmsSearchFieldConfiguration)configs.next();
+        for (CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
             Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
             // add class attribute (if required)
             if (!fieldConfiguration.getClass().equals(CmsSearchFieldConfiguration.class)) {
@@ -518,9 +502,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             }
             // search fields
             Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
-            Iterator fields = fieldConfiguration.getFields().iterator();
-            while (fields.hasNext()) {
-                CmsSearchField field = (CmsSearchField)fields.next();
+            for (CmsSearchField field : fieldConfiguration.getFields()) {
                 Element fieldElement = fieldsElement.addElement(N_FIELD);
                 fieldElement.addAttribute(A_NAME, field.getName());
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
@@ -562,9 +544,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                     fieldElement.addAttribute(A_ANALYZER, className);
                 }
                 // field mappings
-                Iterator mappings = field.getMappings().iterator();
-                while (mappings.hasNext()) {
-                    CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
+                for (CmsSearchFieldMapping mapping : field.getMappings()) {
                     Element mappingElement = fieldElement.addElement(N_MAPPING);
                     mappingElement.addAttribute(A_TYPE, mapping.getType().toString());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getDefaultValue())) {
