@@ -1,8 +1,11 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/parameter.xsd"  />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_settings.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/setting_config.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function_format.xsd" />
+    
     <xsd:element name="DynamicFunctions" type="OpenCmsDynamicFunctions" />
     
     <xsd:complexType name="OpenCmsDynamicFunctions">
@@ -17,8 +20,9 @@
         	<xsd:element name="FunctionProvider" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
         	<xsd:element name="Parameter" type="OpenCmsDynamicFunctionParameter" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="ContainerSettings" type="OpenCmsContainerSettings" minOccurs="0" maxOccurs="1" />
+	       	<xsd:element name="AdditionalFormat" type="OpenCmsAdditionalFormat" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="SettingConfig" type="OpenCmsDynamicFunctionSettingConfig" minOccurs="0" maxOccurs="unbounded" />
-        </xsd:sequence>
+       </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
     <xsd:annotation>

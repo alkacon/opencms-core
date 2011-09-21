@@ -31,24 +31,13 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.content.CmsXmlContentValueLocation;
-import org.opencms.xml.content.I_CmsXmlContentLocation;
-import org.opencms.xml.content.I_CmsXmlContentValueLocation;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -83,48 +72,9 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
     public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource resource) {
 
         try {
-            CmsFile file = cms.readFile(resource);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-            Locale locale = new Locale("en");
-            if (content.hasLocale(cms.getRequestContext().getLocale())) {
-                locale = cms.getRequestContext().getLocale();
-            }
-            I_CmsXmlContentValue value = content.getValue("ContainerSettings", locale);
-            CmsFormatterBean formatterBean;
-            CmsResource jspResource = cms.readResource(FORMATTER_PATH);
-            if (value == null) {
-                formatterBean = new CmsFormatterBean(
-                    jspResource.getRootPath(),
-                    jspResource.getStructureId(),
-                    resource.getRootPath());
-            } else {
-                String type = "";
-                String minWidth = "";
-                String maxWidth = "";
-                I_CmsXmlContentValue typeVal = content.getValue(N_CONTAINER_SETTINGS + "/Type", locale);
-                if (typeVal != null) {
-                    type = typeVal.getStringValue(cms);
-                }
-                I_CmsXmlContentValue minWidthVal = content.getValue(N_CONTAINER_SETTINGS + "/MinWidth", locale);
-                if (minWidthVal != null) {
-                    minWidth = minWidthVal.getStringValue(cms);
-                }
-                I_CmsXmlContentValue maxWidthVal = content.getValue(N_CONTAINER_SETTINGS + "/MaxWidth", locale);
-                if (maxWidthVal != null) {
-                    maxWidth = maxWidthVal.getStringValue(cms);
-                }
-
-                formatterBean = new CmsFormatterBean(
-                    type,
-                    FORMATTER_PATH,
-                    minWidth,
-                    maxWidth,
-                    "false",
-                    "false",
-                    resource.getRootPath());
-                formatterBean.setJspStructureId(jspResource.getStructureId());
-            }
-            return CmsFormatterConfiguration.create(cms, Collections.singletonList(formatterBean));
+            CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+            CmsDynamicFunctionBean functionBean = parser.parseFunctionBean(cms, resource);
+            return functionBean.getFormatterConfiguration(cms);
         } catch (CmsException e) {
             return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
@@ -137,81 +87,12 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
     public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource res) {
 
         try {
-            CmsFile file = cms.readFile(res);
-            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
-            Locale locale = cms.getRequestContext().getLocale();
-            if (!xmlContent.hasLocale(locale)) {
-                locale = new Locale("en");
-            }
-            LinkedHashMap<String, CmsXmlContentProperty> settingConfigs = new LinkedHashMap<String, CmsXmlContentProperty>();
-            List<I_CmsXmlContentValue> values = xmlContent.getValues("SettingConfig", locale);
-            for (I_CmsXmlContentValue settingConfig : values) {
-                CmsXmlContentValueLocation location = new CmsXmlContentValueLocation(settingConfig);
-                CmsXmlContentProperty settingConfigBean = parseProperty(cms, location);
-                settingConfigs.put(settingConfigBean.getName(), settingConfigBean);
-            }
-            return settingConfigs;
+            CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+            CmsDynamicFunctionBean functionBean = parser.parseFunctionBean(cms, res);
+            return functionBean.getSettings();
         } catch (CmsException e) {
             return Collections.<String, CmsXmlContentProperty> emptyMap();
         }
-    }
-
-    /**
-     * Gets the string value of an XML content location.<p>
-     *
-     * @param cms the current CMS context 
-     * @param location an XML content location 
-     * 
-     * @return the string value of that XML content location 
-     */
-    protected String getString(CmsObject cms, I_CmsXmlContentValueLocation location) {
-
-        if (location == null) {
-            return null;
-        }
-        return location.asString(cms);
-    }
-
-    /**
-     * Helper method for parsing a settings definition.<p>
-     * 
-     * @param cms the current CMS context
-     * @param field the node from which to read the settings definition 
-     * 
-     * @return the parsed setting definition 
-     */
-    protected CmsXmlContentProperty parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
-
-        String name = getString(cms, field.getSubValue("PropertyName"));
-        String widget = getString(cms, field.getSubValue("Widget"));
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(widget)) {
-            widget = "string";
-        }
-        String type = getString(cms, field.getSubValue("Type"));
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
-            type = "string";
-        }
-        String widgetConfig = getString(cms, field.getSubValue("WidgetConfig"));
-        String ruleRegex = getString(cms, field.getSubValue("RuleRegex"));
-        String ruleType = getString(cms, field.getSubValue("RuleType"));
-        String default1 = getString(cms, field.getSubValue("Default"));
-        String error = getString(cms, field.getSubValue("Error"));
-        String niceName = getString(cms, field.getSubValue("DisplayName"));
-        String description = getString(cms, field.getSubValue("Description"));
-
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(
-            name,
-            type,
-            widget,
-            widgetConfig,
-            ruleRegex,
-            ruleType,
-            default1,
-            niceName,
-            description,
-            error,
-            "true");
-        return prop;
     }
 
 }

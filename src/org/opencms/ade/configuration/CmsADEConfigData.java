@@ -380,6 +380,17 @@ public class CmsADEConfigData {
         }
     }
 
+    public CmsFunctionReference getFunctionReference(String name) {
+
+        List<CmsFunctionReference> functionReferences = getFunctionReferences();
+        for (CmsFunctionReference functionRef : functionReferences) {
+            if (functionRef.getName().equals(name)) {
+                return functionRef;
+            }
+        }
+        return null;
+    }
+
     /**
      * Gets the list of configured function references.<p>
      * 
