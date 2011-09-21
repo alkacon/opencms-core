@@ -169,7 +169,7 @@
 				<locale>de</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+				<class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
 				<locale>en</locale>
 			</analyzer>
 			<analyzer>
@@ -177,8 +177,7 @@
                 <locale>fr</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-				<stemmer>Italian</stemmer>
+				<class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
 				<locale>it</locale>
 			</analyzer>
             <analyzer>
