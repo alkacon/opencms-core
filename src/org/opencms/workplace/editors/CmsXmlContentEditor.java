@@ -2036,6 +2036,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     // close row
                     result.append("</tr>\n");
 
+                    // remove disabled element to avoid eventual side effects, e.g. in widget configurations
+                    if (disabledElement) {
+                        elementSequence.removeValue(0);
+                    }
+
                 }
             }
             // close table
