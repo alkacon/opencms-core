@@ -32,21 +32,25 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -60,11 +64,13 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
+    private boolean m_checkingEditables;
+
     /** The elements client id. */
     private String m_clientId;
 
     /** The direct edit bar instances. */
-    private List<CmsListCollectorEditor> m_editables;
+    private Map<Element, CmsListCollectorEditor> m_editables;
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
@@ -83,6 +89,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
 
     /** The element resource site-path. */
     private String m_sitePath;
+
+    private JavaScriptObject m_nodeInsertHandler;
 
     /**
      * Indicates if the current user has view permissions on the element resource. 
@@ -259,7 +267,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     public void hideEditableListButtons() {
 
         if (m_editables != null) {
-            for (CmsListCollectorEditor editor : m_editables) {
+            for (CmsListCollectorEditor editor : m_editables.values()) {
                 editor.getElement().getStyle().setDisplay(Display.NONE);
             }
         }
@@ -413,28 +421,87 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void showEditableListButtons() {
 
+        m_checkingEditables = true;
         if (m_editables == null) {
-            m_editables = new ArrayList<CmsListCollectorEditor>();
+            m_editables = new HashMap<Element, CmsListCollectorEditor>();
             List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
-                    try {
+                    CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
+                    add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                    editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                    m_editables.put(editable, editor);
+                }
+
+            }
+        } else {
+
+            Iterator<Entry<Element, CmsListCollectorEditor>> it = m_editables.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<Element, CmsListCollectorEditor> entry = it.next();
+                if (!entry.getValue().isValid()) {
+                    entry.getValue().removeFromParent();
+                    it.remove();
+                } else if (CmsDomUtil.hasDimension(entry.getValue().getElement().getParentElement())) {
+                    entry.getValue().getElement().getStyle().clearDisplay();
+                    entry.getValue().setPosition(
+                        CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()),
+                        getElement());
+                }
+            }
+            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            if (editables.size() > m_editables.size()) {
+                for (Element editable : editables) {
+                    if (!m_editables.containsKey(editable)) {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                        add(editor);
-                        com.google.gwt.user.client.Element thisElement = getElement();
-                        editor.setPosition(CmsDomUtil.getEditablePosition(editable), thisElement);
-                        m_editables.add(editor);
-                    } catch (UnsupportedOperationException e) {
-                        CmsDebugLog.getInstance().printLine(e.getMessage());
+                        add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                        editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                        m_editables.put(editable, editor);
+
                     }
                 }
             }
-        } else {
-            for (CmsListCollectorEditor editor : m_editables) {
-                editor.getElement().getStyle().clearDisplay();
-                editor.setPosition(CmsDomUtil.getEditablePosition(editor.getMarkerTag()), getElement());
+
+        }
+        m_checkingEditables = false;
+        resetNodeInsertedHandler();
+    }
+
+    /**
+     * Checks for changes in the list collector direct edit content.<p>
+     */
+    protected void checkForEditableChanges() {
+
+        if (!m_checkingEditables) {
+            m_checkingEditables = true;
+            Timer timer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    showEditableListButtons();
+                }
+            };
+            timer.schedule(500);
+        }
+    }
+
+    /**
+     * Returns if the list collector direct edit content has changed.<p>
+     * 
+     * @return <code>true</code> if the list collector direct edit content has changed
+     */
+    protected boolean hasChangedEditables() {
+
+        if (m_editables == null) {
+            return true;
+        }
+        for (CmsListCollectorEditor editor : m_editables.values()) {
+            if (!editor.isValid()) {
+                return true;
             }
         }
+        return CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement()).size() > m_editables.size();
     }
 
     /**
@@ -459,6 +526,31 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         CmsDomUtil.clearOpacity(getElement());
         getElement().getStyle().clearDisplay();
     }
+
+    private native void resetNodeInsertedHandler()/*-{
+        var $this = this;
+        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::getElement()();
+        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::m_nodeInsertHandler;
+        if (handler == null) {
+            handler = function(event) {
+                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::checkForEditableChanges()();
+            };
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::m_nodeInsertHandler = handler;
+        } else {
+            if (element.removeEventLister) {
+                element.removeEventListener("DOMNodeInserted", handler);
+            } else if (element.detachEvent) {
+                // IE specific
+                element.detachEvent("onDOMNodeInserted", handler);
+            }
+        }
+        if (element.addEventListener) {
+            element.addEventListener("DOMNodeInserted", handler, false);
+        } else if (element.attachEvent) {
+            // IE specific
+            element.attachEvent("onDOMNodeInserted", handler);
+        }
+    }-*/;
 
     /**
      * Returns if the option bar position collides with any iframe child elements.<p>
@@ -503,4 +595,5 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
             insert(m_elementOptionBar, 0);
         }
     }
+
 }
