@@ -589,6 +589,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     */
+    public void resetEditableListButtons() {
+
+        m_controller.resetEditableListButtons();
+    }
+
+    /**
      * Resets the container-page to it's previous state.<p>
      */
     public void resetPage() {

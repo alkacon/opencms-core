@@ -429,7 +429,11 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
                 for (Element editable : editables) {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                     add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
-                    editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                    if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                        editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                    } else {
+                        editor.getElement().getStyle().setDisplay(Display.NONE);
+                    }
                     m_editables.put(editable, editor);
                 }
 
@@ -455,7 +459,11 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
                     if (!m_editables.containsKey(editable)) {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                         add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
-                        editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                        if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                            editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+                        } else {
+                            editor.getElement().getStyle().setDisplay(Display.NONE);
+                        }
                         m_editables.put(editable, editor);
 
                     }
