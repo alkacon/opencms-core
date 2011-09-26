@@ -34,10 +34,12 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
@@ -312,6 +314,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The name of the search field configuration used by this index. */
     private String m_fieldConfigurationName;
 
+    /** The Lucene index searcher to use. */
+    private IndexSearcher m_indexSearcher;
+
+    /** The Lucene index writer to use. */
+    private I_CmsIndexWriter m_indexWriter;
+
     /** The locale of this index. */
     private Locale m_locale;
 
@@ -344,9 +352,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The rebuild mode for this index. */
     private String m_rebuild;
-
-    /** The Lucene index searcher to use. */
-    private IndexSearcher m_searcher;
 
     /** The configured sources for this index. */
     private List<String> m_sourceNames;
@@ -794,63 +799,47 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Returns a new index writer for this index.<p>
      * 
+     * @param report the report to write error messages on
      * @param create if <code>true</code> a whole new index is created, if <code>false</code> an existing index is updated
      * 
      * @return a new instance of IndexWriter
      * @throws CmsIndexException if the index can not be opened
      */
-    public I_CmsIndexWriter getIndexWriter(boolean create) throws CmsIndexException {
+    public I_CmsIndexWriter getIndexWriter(I_CmsReport report, boolean create) throws CmsIndexException {
 
-        IndexWriter indexWriter;
+        // note - create will be: 
+        //   true if the index is to be fully rebuild, 
+        //   false if the index is to be incrementally updated
 
-        try {
-
-            // check if the target directory already exists
-            File f = new File(m_path);
-            if (!f.exists()) {
-                // index does not exist yet
-                f = f.getParentFile();
-                if ((f != null) && !f.exists()) {
-                    // create the parent folders if required
-                    f.mkdirs();
-                }
-                // create must be true if the directory does not exist
-                create = true;
-            }
-
-            // open file directory for Lucene
-            FSDirectory dir = FSDirectory.open(new File(m_path));
-            // create Lucene merge policy
-            LogMergePolicy mergePolicy = new LogByteSizeMergePolicy();
-            if (m_luceneMaxMergeDocs != null) {
-                mergePolicy.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
-            }
-            if (m_luceneMergeFactor != null) {
-                mergePolicy.setMergeFactor(m_luceneMergeFactor.intValue());
-            }
-            if (m_luceneUseCompoundFile != null) {
-                mergePolicy.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
-            }
-            // create a new Lucene index configuration
-            IndexWriterConfig indexConfig = new IndexWriterConfig(LUCENE_VERSION, getAnalyzer());
-            // set the index configuration parameters if required 
-            if (m_luceneRAMBufferSizeMB != null) {
-                indexConfig.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
-            }
-            if (create) {
-                indexConfig.setOpenMode(OpenMode.CREATE);
+        if (m_indexWriter != null) {
+            if (!create) {
+                /// re-use existing index writer
+                return m_indexWriter;
             } else {
-                indexConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+                // need to close the index writer if create is "true"
+                try {
+                    m_indexWriter.close();
+                    m_indexWriter = null;
+                } catch (IOException e) {
+                    // if we can't close the index we are busted!
+                    throw new CmsIndexException(Messages.get().container(
+                        Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
+                        getPath(),
+                        getName()), e);
+                }
             }
-            // create the index
-            indexWriter = new IndexWriter(dir, indexConfig);
-        } catch (Exception e) {
-            throw new CmsIndexException(
-                Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
-                e);
         }
 
-        return new CmsLuceneIndexWriter(indexWriter);
+        indexWriterUnlock(report);
+        // now create is true of false, but the index writer is definitely null / closed
+        I_CmsIndexWriter indexWriter = indexWriterCreate(create);
+
+        if (!create) {
+            // if not create we re-use the index writer for the next incremental updates
+            m_indexWriter = indexWriter;
+        }
+
+        return indexWriter;
     }
 
     /**
@@ -971,7 +960,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public IndexSearcher getSearcher() {
 
-        return m_searcher;
+        return m_indexSearcher;
     }
 
     /**
@@ -1607,6 +1596,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public void shutDown() {
 
+        // close the index writer
+        if (m_indexWriter != null) {
+            try {
+                m_indexWriter.commit();
+                m_indexWriter.close();
+            } catch (IOException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_IO_INDEX_WRITER_CLOSE_2, getPath(), getName()), e);
+            }
+        }
         indexSearcherClose();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_INDEX_1, getName()));
@@ -2030,7 +2028,25 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected synchronized void indexSearcherClose() {
 
-        indexSearcherClose(m_searcher);
+        indexSearcherClose(m_indexSearcher);
+    }
+
+    /**
+     * Closes the given Lucene index searcher.<p>
+     * 
+     * @param searcher the searcher to close
+     */
+    protected void indexSearcherClose(IndexSearcher searcher) {
+
+        // in case there is an index searcher available close it
+        if ((searcher != null) && (searcher.getIndexReader() != null)) {
+            try {
+                searcher.getIndexReader().close();
+                searcher.close();
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_CLOSE_1, getName()), e);
+            }
+        }
     }
 
     /**
@@ -2053,11 +2069,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             Directory indexDirectory = FSDirectory.open(new File(path));
             if (IndexReader.indexExists(indexDirectory)) {
                 IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
-                if (m_searcher != null) {
+                if (m_indexSearcher != null) {
                     // store old searcher instance to close it later
-                    oldSearcher = m_searcher;
+                    oldSearcher = m_indexSearcher;
                 }
-                m_searcher = new IndexSearcher(reader);
+                m_indexSearcher = new IndexSearcher(reader);
                 m_displayFilters = new HashMap<String, Filter>();
             }
         } catch (IOException e) {
@@ -2077,12 +2093,111 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     protected synchronized void indexSearcherUpdate() {
 
         // in case there is an index searcher available close it
-        if ((m_searcher != null) && (m_searcher.getIndexReader() != null)) {
+        if ((m_indexSearcher != null) && (m_indexSearcher.getIndexReader() != null)) {
             try {
-                IndexReader newReader = m_searcher.getIndexReader().reopen();
-                m_searcher = new IndexSearcher(newReader);
+                IndexReader newReader = m_indexSearcher.getIndexReader().reopen();
+                m_indexSearcher = new IndexSearcher(newReader);
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
+            }
+        }
+    }
+
+    /**
+     * Creates a new index writer.<p>
+     * 
+     * @param create if <code>true</code> a whole new index is created, if <code>false</code> an existing index is updated
+     * 
+     * @return the created new index writer
+     * 
+     * @throws CmsIndexException in case the writer could not be created
+     * 
+     * @see #getIndexWriter(I_CmsReport, boolean)
+     */
+    protected I_CmsIndexWriter indexWriterCreate(boolean create) throws CmsIndexException {
+
+        IndexWriter indexWriter;
+        try {
+            // check if the target directory already exists
+            File f = new File(m_path);
+            if (!f.exists()) {
+                // index does not exist yet
+                f = f.getParentFile();
+                if ((f != null) && !f.exists()) {
+                    // create the parent folders if required
+                    f.mkdirs();
+                }
+                // create must be true if the directory does not exist
+                create = true;
+            }
+
+            // open file directory for Lucene
+            FSDirectory dir = FSDirectory.open(new File(m_path));
+            // create Lucene merge policy
+            LogMergePolicy mergePolicy = new LogByteSizeMergePolicy();
+            if (m_luceneMaxMergeDocs != null) {
+                mergePolicy.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
+            }
+            if (m_luceneMergeFactor != null) {
+                mergePolicy.setMergeFactor(m_luceneMergeFactor.intValue());
+            }
+            if (m_luceneUseCompoundFile != null) {
+                mergePolicy.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
+            }
+            // create a new Lucene index configuration
+            IndexWriterConfig indexConfig = new IndexWriterConfig(LUCENE_VERSION, getAnalyzer());
+            // set the index configuration parameters if required 
+            if (m_luceneRAMBufferSizeMB != null) {
+                indexConfig.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
+            }
+            if (create) {
+                indexConfig.setOpenMode(OpenMode.CREATE);
+            } else {
+                indexConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+            }
+            // create the index
+            indexWriter = new IndexWriter(dir, indexConfig);
+        } catch (Exception e) {
+            throw new CmsIndexException(
+                Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
+                e);
+        }
+        return new CmsLuceneIndexWriter(indexWriter);
+    }
+
+    /**
+     * Unlocks the Lucene index writer of this index if required.<p>
+     * 
+     * @param report the report to write error messages on
+     * 
+     * @throws CmsIndexException if unlocking of the index is impossible for any reason
+     */
+    protected void indexWriterUnlock(I_CmsReport report) throws CmsIndexException {
+
+        File indexPath = new File(getPath());
+        boolean indexLocked = true;
+        // check if the target index path already exists
+        if (indexPath.exists()) {
+            Directory indexDirectory = null;
+            // get the lock state of the given index            
+            try {
+                indexDirectory = FSDirectory.open(indexPath);
+                indexLocked = IndexWriter.isLocked(indexDirectory);
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_IO_INDEX_READER_OPEN_2, getPath(), getName()), e);
+            }
+
+            // if index is locked try unlocking
+            if (indexLocked) {
+                try {
+                    // try to force unlock on the index
+                    IndexWriter.unlock(indexDirectory);
+                } catch (Exception e) {
+                    // unable to force unlock of Lucene index, we can't continue this way
+                    CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, getName());
+                    report.println(msg, I_CmsReport.FORMAT_ERROR);
+                    throw new CmsIndexException(msg, e);
+                }
             }
         }
     }
@@ -2156,24 +2271,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             CmsFileUtil.purgeDirectory(file);
         } catch (Exception e) {
             // TODO: logging etc. 
-        }
-    }
-
-    /**
-     * Closes the given Lucene index searcher.<p>
-     * 
-     * @param searcher the searcher to close
-     */
-    private void indexSearcherClose(IndexSearcher searcher) {
-
-        // in case there is an index searcher available close it
-        if ((searcher != null) && (searcher.getIndexReader() != null)) {
-            try {
-                searcher.getIndexReader().close();
-                searcher.close();
-            } catch (Exception e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_CLOSE_1, getName()), e);
-            }
         }
     }
 }
