@@ -251,6 +251,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INVALID_PARAM_3 = "LOG_INVALID_PARAM_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_BACKUP_CREATE_3 = "LOG_IO_INDEX_BACKUP_CREATE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_BACKUP_REMOVE_2 = "LOG_IO_INDEX_BACKUP_REMOVE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_IO_INDEX_DOCUMENT_DELETE_2 = "LOG_IO_INDEX_DOCUMENT_DELETE_2";
 
     /** Message constant for key in the resource bundle. */
