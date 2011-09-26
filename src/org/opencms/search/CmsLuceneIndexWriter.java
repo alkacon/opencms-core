@@ -34,6 +34,7 @@ import java.io.IOException;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.store.Directory;
 
 /**
  * Delegates indexing to a standard Lucene IndexWriter.<p>
@@ -59,7 +60,15 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
      */
     public void close() throws IOException {
 
-        m_indexWriter.close();
+        // make sure directory is unlocked when it is closed
+        Directory dir = m_indexWriter.getDirectory();
+        try {
+            m_indexWriter.close();
+        } finally {
+            if ((dir != null) && IndexWriter.isLocked(dir)) {
+                IndexWriter.unlock(dir);
+            }
+        }
     }
 
     /**
