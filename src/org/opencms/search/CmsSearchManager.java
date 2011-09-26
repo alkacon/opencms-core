@@ -2048,19 +2048,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         }
                     }
 
-                    // optimize and commit the index after each index source has been finished
-                    try {
-                        writer.optimize();
-                    } catch (IOException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
-                                    index.getName(),
-                                    index.getPath()),
-                                e);
-                        }
-                    }
+                    // commit and optimize the index after each index source has been finished
                     try {
                         writer.commit();
                     } catch (IOException e) {
@@ -2068,6 +2056,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             LOG.warn(
                                 Messages.get().getBundle().key(
                                     Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                                    index.getName(),
+                                    index.getPath()),
+                                e);
+                        }
+                    }
+                    try {
+                        writer.optimize();
+                        writer.commit();
+                    } catch (IOException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
                                     index.getName(),
                                     index.getPath()),
                                 e);
