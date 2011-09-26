@@ -1826,12 +1826,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         // check if the target directory already exists
-        File file = new File(m_path);
+        File file = new File(getPath());
         if (!file.exists()) {
             // index does not exist yet, so we can't backup it
             return null;
         }
-        String backupPath = m_path + "_backup";
+        String backupPath = getPath() + "_backup";
         try {
             // open file directory for Lucene
             FSDirectory oldDir = FSDirectory.open(file);
@@ -1840,7 +1840,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            // TODO: logging etc. 
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
+                e);
             backupPath = null;
         }
         return backupPath;
@@ -2270,7 +2272,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             dir.close();
             CmsFileUtil.purgeDirectory(file);
         } catch (Exception e) {
-            // TODO: logging etc. 
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_REMOVE_2, getName(), path), e);
         }
     }
 }

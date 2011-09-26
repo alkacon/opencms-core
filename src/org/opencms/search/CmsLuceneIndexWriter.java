@@ -43,7 +43,14 @@ import org.apache.lucene.store.Directory;
  */
 public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
+    /** The threshold for the commits until optimize is called. */
+    public static final int COMMIT_OPTIMIZE_THRESHOLD = 1000;
+
+    /** The Lucene index writer to use. */
     private final IndexWriter m_indexWriter;
+
+    /** A counter for the commits until optimize is called. */
+    private int m_optimizeCounter;
 
     /**
      * Creates a new index writer based on the provided standard Lucene IndexWriter.<p>
@@ -53,6 +60,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public CmsLuceneIndexWriter(IndexWriter indexWriter) {
 
         m_indexWriter = indexWriter;
+        m_optimizeCounter = 0;
     }
 
     /**
@@ -77,6 +85,13 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public void commit() throws IOException {
 
         m_indexWriter.commit();
+        m_optimizeCounter++;
+        if (m_optimizeCounter >= COMMIT_OPTIMIZE_THRESHOLD) {
+            // optimize the search index when the threshold is reached
+            m_indexWriter.optimize();
+            m_indexWriter.commit();
+            m_optimizeCounter = 0;
+        }
     }
 
     /**
