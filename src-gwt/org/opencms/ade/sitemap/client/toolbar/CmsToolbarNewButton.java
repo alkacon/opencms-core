@@ -35,14 +35,21 @@ import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -140,6 +147,45 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     }
 
     /**
+     * Opens the confirmation dialog for editing a model page.<p>
+     * 
+     * @param resourceInfo the resource information bean which belongs to the model page to edit 
+     */
+    protected void openEditConfirmDialog(final CmsNewResourceInfo resourceInfo) {
+
+        I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+
+            public void onClose() {
+
+                // noop 
+            }
+
+            public void onOk() {
+
+                String resourcePath = resourceInfo.getVfsPath();
+                String siteRoot = CmsCoreProvider.get().getSiteRoot();
+                if (resourcePath.startsWith(siteRoot)) {
+                    resourcePath = resourcePath.substring(siteRoot.length());
+                    // prepend slash if necessary
+                    if (!resourcePath.startsWith("/")) {
+                        resourcePath = "/" + resourcePath;
+                    }
+                }
+                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                controller.leaveEditor(resourcePath);
+            }
+        };
+        String dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
+        String dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
+        String buttonText = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_OK_0);
+
+        CmsConfirmDialog dialog = new CmsConfirmDialog(dialogTitle, dialogContent);
+        dialog.getOkButton().setText(buttonText);
+        dialog.setHandler(handler);
+        dialog.center();
+    }
+
+    /**
      * Creates a list item representing a detail page to be created.<p>
      * 
      * @param typeInfo the bean for the type for which the detail page item should be created
@@ -175,7 +221,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      * 
      * @return the list item
      */
-    private CmsCreatableListItem makeNewElementItem(CmsNewResourceInfo typeInfo) {
+    private CmsCreatableListItem makeNewElementItem(final CmsNewResourceInfo typeInfo) {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(typeInfo.getTitle());
@@ -190,9 +236,21 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DATE_0), typeInfo.getDate());
         }
         CmsListItemWidget widget = new CmsListItemWidget(info);
+        CmsPushButton button = new CmsPushButton();
+        button.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().editIcon());
+        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        button.setTitle(Messages.get().key(Messages.GUI_EDIT_MODELPAGE_BUTTON_TITLE_0));
+        button.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                openEditConfirmDialog(typeInfo);
+            }
+        });
+        widget.addButtonToFront(button);
         widget.setIcon(CmsIconUtil.getResourceIconClasses("containerpage", false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
-        listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
+        listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler(), true);
         return listItem;
     }
 

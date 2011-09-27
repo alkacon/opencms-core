@@ -102,6 +102,14 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_ENTRY_TITLE_0 = "GUI_EDIT_ENTRY_TITLE_0";
 
+    public static final String GUI_EDIT_MODELPAGE_BUTTON_TITLE_0 = "GUI_EDIT_MODELPAGE_BUTTON_TITLE_0";
+
+    public static final String GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0 = "GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0";
+
+    public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
+
+    public static final String GUI_EDIT_MODELPAGE_OK_0 = "GUI_EDIT_MODELPAGE_OK_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0 = "GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0";
 
