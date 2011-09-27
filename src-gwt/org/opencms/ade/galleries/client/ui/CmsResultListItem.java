@@ -37,6 +37,9 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsIconUtil;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Provides the specific list item for the results list.<p>
@@ -137,6 +140,18 @@ public class CmsResultListItem extends CmsListItem {
     public void addDeleteClickHandler(ClickHandler handler) {
 
         m_deleteButton.addClickHandler(handler);
+    }
+
+    /**
+     * Adds a double click event handler.<p>
+     * 
+     * @param handler the event handler to add
+     *  
+     * @return the handler registration for removing the event handler 
+     */
+    public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
+
+        return addDomHandler(handler, DoubleClickEvent.getType());
     }
 
     /**

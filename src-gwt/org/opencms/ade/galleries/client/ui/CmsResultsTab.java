@@ -50,6 +50,8 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -178,7 +180,7 @@ public class CmsResultsTab extends A_CmsListTab {
     /**
      * Special click handler to use with select button.<p>
      */
-    protected class SelectHandler implements ClickHandler {
+    protected class SelectHandler implements ClickHandler, DoubleClickHandler {
 
         /** The id of the selected item. */
         private String m_resourcePath;
@@ -207,6 +209,14 @@ public class CmsResultsTab extends A_CmsListTab {
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
         public void onClick(ClickEvent event) {
+
+            getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.DoubleClickHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         */
+        public void onDoubleClick(DoubleClickEvent event) {
 
             getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
         }
@@ -454,10 +464,14 @@ public class CmsResultsTab extends A_CmsListTab {
             listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
             listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
             if (m_tabHandler.hasSelectResource()) {
-                listItem.addSelectClickHandler(new SelectHandler(
+                SelectHandler selectHandler = new SelectHandler(
                     resultItem.getPath(),
                     resultItem.getTitle(),
-                    resultItem.getType()));
+                    resultItem.getType());
+                listItem.addSelectClickHandler(selectHandler);
+
+                // this affects both tiled and non-tiled result lists. 
+                listItem.addDoubleClickHandler(selectHandler);
             }
             addWidgetToList(listItem);
         }
