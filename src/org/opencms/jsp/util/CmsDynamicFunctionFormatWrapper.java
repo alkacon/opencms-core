@@ -108,6 +108,16 @@ public class CmsDynamicFunctionFormatWrapper {
      * 
      * @return the map of parameters for the dynamic function 
      */
+    public Map<String, String> getParam() {
+
+        return getParameters();
+    }
+
+    /**
+     * Gets the parameters for this dynamic function format.<p>
+     * 
+     * @return the map of parameters for the dynamic function 
+     */
     public Map<String, String> getParameters() {
 
         if (m_format != null) {

@@ -120,6 +120,16 @@ public class CmsDynamicFunctionBeanWrapper {
      * 
      * @return the map of parameters 
      */
+    public Map<String, String> getParam() {
+
+        return getParameters();
+    }
+
+    /**
+     * Gets the parameters of the wrapped dynamic function bean's main format.<p>
+     * 
+     * @return the map of parameters 
+     */
     public Map<String, String> getParameters() {
 
         if (m_functionBean == null) {
