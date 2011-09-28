@@ -249,15 +249,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          */
         protected synchronized void reIndexResources(List<CmsResource> resources) {
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_OI_UPDATE_EVENT_1,
-                    Integer.valueOf(resources.size())));
-            }
             List<CmsPublishedResource> resourcesToIndex = new ArrayList<CmsPublishedResource>(resources.size());
-            Iterator<CmsResource> r = resources.iterator();
-            while (r.hasNext()) {
-                CmsResource res = r.next();
+            for (CmsResource res : resources) {
                 CmsPublishedResource pubRes = new CmsPublishedResource(res);
                 resourcesToIndex.add(pubRes);
             }

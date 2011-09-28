@@ -232,6 +232,7 @@
 				<sources>
 					<source>gallery_source</source>
 				</sources>			
+                <param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>				
 			</index>
 		</indexes>
 		<indexsources>				
