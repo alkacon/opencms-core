@@ -236,18 +236,21 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DATE_0), typeInfo.getDate());
         }
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        CmsPushButton button = new CmsPushButton();
-        button.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().editIcon());
-        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        button.setTitle(Messages.get().key(Messages.GUI_EDIT_MODELPAGE_BUTTON_TITLE_0));
-        button.addClickHandler(new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+        if (typeInfo.isEditable()) {
+            CmsPushButton button = new CmsPushButton();
+            button.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().editIcon());
+            button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            button.setTitle(Messages.get().key(Messages.GUI_EDIT_MODELPAGE_BUTTON_TITLE_0));
+            button.addClickHandler(new ClickHandler() {
 
-                openEditConfirmDialog(typeInfo);
-            }
-        });
-        widget.addButtonToFront(button);
+                public void onClick(ClickEvent event) {
+
+                    openEditConfirmDialog(typeInfo);
+                }
+            });
+            widget.addButtonToFront(button);
+        }
         widget.setIcon(CmsIconUtil.getResourceIconClasses("containerpage", false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler(), true);

@@ -82,6 +82,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsDateUtil;
@@ -949,14 +950,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             LOG.warn(e.getLocalizedMessage(), e);
         }
 
+        boolean editable = false;
+        try {
+            CmsResource freshModelResource = cms.readResource(modelResource.getStructureId());
+            editable = cms.hasPermissions(
+                freshModelResource,
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.DEFAULT);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
         CmsNewResourceInfo info = new CmsNewResourceInfo(
             typeId,
             name,
             title,
             description,
             modelResource.getStructureId(),
+            editable,
             description);
-
         Float navpos = null;
         try {
             CmsProperty navposProp = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_NAVPOS, true);
@@ -1000,6 +1012,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsWorkplaceMessages.getResourceTypeName(locale, name),
                 CmsWorkplaceMessages.getResourceTypeDescription(locale, name),
                 copyResource.getStructureId(),
+                false,
                 CmsWorkplaceMessages.getResourceTypeName(locale, name));
         } else {
             return new CmsNewResourceInfo(
@@ -1008,6 +1021,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsWorkplaceMessages.getResourceTypeName(locale, name),
                 CmsWorkplaceMessages.getResourceTypeDescription(locale, name),
                 null,
+                false,
                 CmsWorkplaceMessages.getResourceTypeName(locale, name));
         }
     }
@@ -1427,6 +1441,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     functionRef.getName(),
                     description,
                     configData.getDefaultModelPage().getResource().getStructureId(),
+                    false,
                     subtitle);
                 info.setAdditionalData(functionRef.getStructureId().toString());
                 info.setIsFunction(true);
