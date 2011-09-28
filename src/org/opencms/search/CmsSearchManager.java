@@ -200,9 +200,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          */
         protected synchronized List<CmsPublishedResource> getResourcesToIndex() {
 
-            List<CmsPublishedResource> temp = m_resourcesToIndex;
+            List<CmsPublishedResource> result = m_resourcesToIndex;
             m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
-            return temp;
+            return result;
         }
 
         /**
@@ -249,6 +249,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          */
         protected synchronized void reIndexResources(List<CmsResource> resources) {
 
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_OI_UPDATE_EVENT_1,
+                    Integer.valueOf(resources.size())));
+            }
             List<CmsPublishedResource> resourcesToIndex = new ArrayList<CmsPublishedResource>(resources.size());
             Iterator<CmsResource> r = resources.iterator();
             while (r.hasNext()) {
@@ -293,7 +298,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             // create a log report for the output
             I_CmsReport report = new CmsLogReport(m_adminCms.getRequestContext().getLocale(), CmsSearchManager.class);
-            long offlineUpdateFrequency = OpenCms.getSearchManager().getOfflineUpdateFrequency();
+            long offlineUpdateFrequency = getOfflineUpdateFrequency();
             boolean frequencyChange = false;
             try {
                 while (m_isAlive) {
@@ -306,12 +311,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             // the thread has been shut down while sleeping
                             continue;
                         }
-                        if (offlineUpdateFrequency != OpenCms.getSearchManager().getOfflineUpdateFrequency()) {
+                        if (offlineUpdateFrequency != getOfflineUpdateFrequency()) {
                             // offline update frequency change - clear interrupt status
                             frequencyChange = interrupted();
-                            offlineUpdateFrequency = OpenCms.getSearchManager().getOfflineUpdateFrequency();
+                            offlineUpdateFrequency = getOfflineUpdateFrequency();
                         }
-                        if (interrupted()) {
+                        if (!interrupted()) {
                             // this is just called to clear the interrupt status of the thread
                         }
                     }
@@ -319,7 +324,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
                         if (resourcesToIndex.size() > 0) {
                             // only start indexing if there is at least one resource
-                            updateIndexOffline(report, resourcesToIndex);
+                            startOfflineUpdateThread(report, resourcesToIndex);
                         }
                     }
                 }
@@ -351,10 +356,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             List<CmsPublishedResource> resourcesToIndex = m_handler.getResourcesToIndex();
             List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>(resourcesToIndex.size());
 
-            Iterator<CmsPublishedResource> i = resourcesToIndex.iterator();
-            while (i.hasNext()) {
-                Object o = i.next();
-                CmsPublishedResource pubRes = (CmsPublishedResource)o;
+            for (CmsPublishedResource pubRes : resourcesToIndex) {
                 int pos = result.indexOf(pubRes);
                 if (pos < 0) {
                     // resource not already contained in the update list
@@ -380,6 +382,84 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             m_isAlive = false;
             interrupt();
+        }
+
+        /**
+         * Updates the offline search indexes for the given list of resources.<p>
+         * 
+         * @param report the report to write the index information to
+         * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
+         */
+        protected void startOfflineUpdateThread(I_CmsReport report, List<CmsPublishedResource> resourcesToIndex) {
+
+            CmsSearchOfflineIndexWorkThread thread = new CmsSearchOfflineIndexWorkThread(report, resourcesToIndex);
+            long startTime = System.currentTimeMillis();
+            long waitTime = getOfflineUpdateFrequency() / 2;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_OI_UPDATE_START_1,
+                    Integer.valueOf(resourcesToIndex.size())));
+            }
+            thread.start();
+
+            do {
+                try {
+                    // wait half the time of the offline index frequency for the thread to finish
+                    thread.join(waitTime);
+                } catch (InterruptedException e) {
+                    // continue
+                }
+                if (thread.isAlive()) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_OI_UPDATE_LONG_2,
+                        Integer.valueOf(resourcesToIndex.size()),
+                        Long.valueOf(System.currentTimeMillis() - startTime)));
+                }
+            } while (thread.isAlive());
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_OI_UPDATE_FINISH_2,
+                    Integer.valueOf(resourcesToIndex.size()),
+                    Long.valueOf(System.currentTimeMillis() - startTime)));
+            }
+        }
+    }
+
+    /**
+     * An offline index worker Thread runs each time for every offline index update action.<p>
+     * 
+     * This was decoupled from the main {@link CmsSearchOfflineIndexThread} in order to avoid 
+     * problems if a single operation "hangs" the Tread.<p>
+     */
+    protected class CmsSearchOfflineIndexWorkThread extends Thread {
+
+        /** The report to write the index information to. */
+        I_CmsReport m_report;
+
+        /** The list of {@link CmsPublishedResource} objects to index. */
+        List<CmsPublishedResource> m_resourcesToIndex;
+
+        /**
+         * Updates the offline search indexes for the given list of resources.<p>
+         * 
+         * @param report the report to write the index information to
+         * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
+         */
+        protected CmsSearchOfflineIndexWorkThread(I_CmsReport report, List<CmsPublishedResource> resourcesToIndex) {
+
+            super("OpenCms: Offline Search Index Worker");
+            m_report = report;
+            m_resourcesToIndex = resourcesToIndex;
+        }
+
+        /**
+         * @see java.lang.Thread#run()
+         */
+        @Override
+        public void run() {
+
+            updateIndexOffline(m_report, m_resourcesToIndex);
         }
     }
 
@@ -1699,6 +1779,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if ((m_offlineIndexThread != null) && m_offlineIndexThread.isAlive()) {
             // notify existing thread of update frequency change
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_OI_UPDATE_INTERRUPT_0));
+            }
             m_offlineIndexThread.interrupt();
         }
     }
@@ -2042,7 +2125,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // wait for indexing threads to finish
                     while (threadManager.isRunning()) {
                         try {
-                            wait(1000);
+                            Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
                         }
@@ -2202,7 +2285,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // wait for indexing threads to finish
                     while (threadManager.isRunning()) {
                         try {
-                            wait(1000);
+                            Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
                         }

@@ -94,7 +94,7 @@ public class CmsPublishedResource implements Serializable, Comparable<CmsPublish
     /** Indicates if the published resource is a folder or a file. */
     private boolean m_isFolder;
 
-    /** falg to signal if the resource was moved. */
+    /** Flag to signal if the resource was moved. */
     private boolean m_isMoved;
 
     /** The publish tag of the published resource. */
