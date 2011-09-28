@@ -50,6 +50,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -216,16 +217,27 @@ public class CmsSearchTab extends A_CmsTab {
          */
         public void onKeyPress(KeyPressEvent event) {
 
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
+                    public void execute() {
 
-                    ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
-                }
-            });
+                        m_tabHandler.selectResultTab();
+                    }
+                });
+            } else {
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
+                    }
+                });
+            }
         }
 
         /**
@@ -272,6 +284,9 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected CmsPushButton m_clearButton;
 
+    /** The current locale. */
+    protected String m_currentLocale;
+
     /** The date box for the created until date. */
     @UiField
     protected CmsDateBox m_dateCreatedEndDateBox;
@@ -312,21 +327,21 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected HTMLPanel m_localeRow;
 
-    /** The row for the search scope selection. */
+    /** The select box for the language selection. */
     @UiField
-    protected HTMLPanel m_scopeRow;
+    protected CmsSelectBox m_localeSelection;
 
     /** The label for the search scope selection. */
     @UiField
     protected Label m_scopeLabel;
 
+    /** The row for the search scope selection. */
+    @UiField
+    protected HTMLPanel m_scopeRow;
+
     /** The select box for the search scope selection. */
     @UiField
     protected CmsSelectBox m_scopeSelection;
-
-    /** The select box for the language selection. */
-    @UiField
-    protected CmsSelectBox m_localeSelection;
 
     /** The input field for the search query. */
     @UiField
@@ -353,9 +368,6 @@ public class CmsSearchTab extends A_CmsTab {
 
     /** The tab panel. */
     private HTMLPanel m_tab;
-
-    /** The current locale. */
-    protected String m_currentLocale;
 
     /**
      * Constructor for the search tab.<p>
