@@ -66,8 +66,11 @@ public final class CmsLog {
     /** Log for initialization messages. */
     public static final Log INIT = LogFactory.getLog("org.opencms.init");
 
-    /** The  abolute path to the OpenCms log file (in the "real" file system). */
+    /** The absolute path to the OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsPath;
+
+    /** The absolute path to the folder of the main OpenCms log file (in the "real" file system). */
+    private static String m_logFileRfsFolder;
 
     /**
      * Hides the public constructor.<p>
@@ -103,7 +106,9 @@ public final class CmsLog {
                         String logFilePath = CmsFileUtil.normalizePath(webInfPath + FOLDER_LOGS + FILE_LOG, '/');
                         File logFile = new File(logFilePath);
                         m_logFileRfsPath = logFile.getAbsolutePath();
+                        m_logFileRfsFolder = CmsFileUtil.normalizePath(logFile.getParent() + '/', '/');
                         System.setProperty("opencms.logfile", m_logFileRfsPath);
+                        System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available
                         PropertyConfigurator.configure(path);
                     }
@@ -141,12 +146,12 @@ public final class CmsLog {
     }
 
     /**
-     * Returns the filename of the logfile (in the "real" file system).<p>
+     * Returns the filename of the log file (in the "real" file system).<p>
      * 
      * If the method returns <code>null</code>, this means that the log
      * file is not managed by OpenCms.<p>
      * 
-     * @return the filename of the logfile (in the "real" file system)
+     * @return the filename of the log file (in the "real" file system)
      */
     protected static String getLogFileRfsPath() {
 
