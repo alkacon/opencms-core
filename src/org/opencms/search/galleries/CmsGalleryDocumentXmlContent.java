@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.CmsDocumentXmlContent;
@@ -50,6 +51,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.lucene.document.Document;
+
 /**
  * Special document text extraction factory for the gallery index that creates multiple fields for the content
  * in all the languages available in an XML content.<p>
@@ -57,6 +61,9 @@ import java.util.Map;
  * @since 8.0.0 
  */
 public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDocumentXmlContent.class);
 
     /**
      * Creates a new instance of this Lucene document factory.<p>
@@ -66,6 +73,32 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     public CmsGalleryDocumentXmlContent(String name) {
 
         super(name);
+    }
+
+    /**
+     * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
+     * 
+     * For gallery document generators, we never check for {@link CmsSearchIndex#isExtractingContent()} since
+     * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
+     * 
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, I_CmsExtractionResult)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
+     */
+    @Override
+    public Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException {
+
+        // extract the content from the resource
+        I_CmsExtractionResult content = null;
+
+        // extraction result has not been attached to the resource
+        try {
+            content = extractContent(cms, resource, index);
+        } catch (Exception e) {
+            // text extraction failed for document - continue indexing meta information only
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+        }
+        // create the Lucene document according to the index field configuration
+        return index.getFieldConfiguration().createDocument(cms, resource, index, content);
     }
 
     /**
@@ -123,9 +156,9 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                             fieldName = CmsSearchField.FIELD_DESCRIPTION;
                                         }
                                         // append language individual property field
-                                        items.put(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(
-                                            fieldName,
-                                            locale), extracted);
+                                        items.put(
+                                            CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, locale),
+                                            extracted);
                                     }
                                 }
                             }
@@ -134,9 +167,9 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 }
                 if (content.length() > 0) {
                     // append language individual content field
-                    items.put(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(
-                        CmsSearchField.FIELD_CONTENT,
-                        locale), content.toString());
+                    items.put(
+                        CmsGallerySearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
+                        content.toString());
                 }
                 // store the locales
                 items.put(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES, locales.toString());
