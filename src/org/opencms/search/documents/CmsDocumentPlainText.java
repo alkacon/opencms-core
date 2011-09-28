@@ -65,6 +65,7 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        logContentExtraction(resource, index);
         CmsFile file = readFile(cms, resource);
         try {
             CmsProperty encProp = cms.readPropertyObject(

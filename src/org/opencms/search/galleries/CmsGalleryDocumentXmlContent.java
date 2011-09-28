@@ -115,6 +115,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        logContentExtraction(resource, index);
         try {
             CmsFile file = readFile(cms, resource);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
