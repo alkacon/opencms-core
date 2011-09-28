@@ -732,14 +732,14 @@ public class CmsPublishManager {
         // wait until it is done or time is over
         synchronized (this) {
             try {
-                this.wait(100); // wait a bit to give the publish engine the chance to actualize the state
+                Thread.sleep(100); // wait a bit to give the publish engine the chance to actualize the state
             } catch (InterruptedException e) {
                 // ignore
                 e.printStackTrace();
             }
             while (isRunning() && ((MS_ONE_SECOND * i) <= ms)) {
                 try {
-                    this.wait(MS_ONE_SECOND); // wait a second
+                    Thread.sleep(MS_ONE_SECOND); // wait a second
                 } catch (InterruptedException e) {
                     // ignore
                     e.printStackTrace();

@@ -164,7 +164,7 @@ public final class CmsPublishEngine {
 
         // give the finishing publish thread enough time to clean up
         try {
-            wait(200);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             // ignore
         }
@@ -341,7 +341,7 @@ public final class CmsPublishEngine {
             if (m_publishQueueShutdowntime > 0) {
                 synchronized (this) {
                     try {
-                        wait(m_publishQueueShutdowntime * 1000);
+                        Thread.sleep(m_publishQueueShutdowntime * 1000);
                     } catch (InterruptedException exc) {
                         // ignore
                     }
