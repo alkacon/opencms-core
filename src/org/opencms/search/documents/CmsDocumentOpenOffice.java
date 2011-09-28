@@ -62,8 +62,8 @@ public class CmsDocumentOpenOffice extends A_CmsVfsDocument {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
+        logContentExtraction(resource, index);
         CmsFile file = readFile(cms, resource);
-
         try {
             return CmsExtractorOpenOffice.getExtractor().extractText(file.getContents());
         } catch (Exception e) {

@@ -112,6 +112,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        logContentExtraction(resource, index);
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);

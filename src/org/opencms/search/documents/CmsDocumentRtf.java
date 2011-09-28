@@ -63,6 +63,7 @@ public class CmsDocumentRtf extends A_CmsVfsDocument {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        logContentExtraction(resource, index);
         CmsFile file = readFile(cms, resource);
         try {
             return CmsExtractorRtf.getExtractor().extractText(file.getContents());
