@@ -453,6 +453,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @SuppressWarnings("unused")
+    public Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException {
+
+        return getCSSHeadIncludes();
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, I_CmsXmlContentValue, java.util.Locale)
      */
     public String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale) {
@@ -513,6 +522,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public Set<String> getJSHeadIncludes() {
 
         return Collections.<String> unmodifiableSet(m_jsHeadIncludes);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getJSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @SuppressWarnings("unused")
+    public Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException {
+
+        return getJSHeadIncludes();
     }
 
     /**
@@ -2614,4 +2632,5 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         return file;
     }
+
 }

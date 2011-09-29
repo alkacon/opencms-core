@@ -20,6 +20,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<handler class="org.opencms.xml.containerpage.CmsXmlGroupContainerHandler"/>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<mappings>
 				<mapping element="GroupContainers/Title" mapto="property:Title" />
