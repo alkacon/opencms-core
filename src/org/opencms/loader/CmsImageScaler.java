@@ -1099,6 +1099,12 @@ public class CmsImageScaler {
                         // don't keep image proportions, use exact target size
                         image = scaler.resize(image, getWidth(), getHeight(), false);
                         break;
+                    case 5:
+                        // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
+                        // image proportions have already been calculated so should not be a problem, use 
+                        // 'false' to make sure image size exactly matches height and width attributes of generated tag
+                        image = scaler.resize(image, getWidth(), getHeight(), false);
+                        break;
                     default:
                         // scale to exact target size with background padding
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
