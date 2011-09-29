@@ -109,4 +109,65 @@ public class TestCmsImageScaler extends TestCase {
         downScaler = new CmsImageScaler("w:400,h:500,t:1,q:80");
         assertTrue(image.isDownScaleRequired(downScaler));
     }
+
+    /**
+     * Tests the image scaling type 5.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testScaleType5() throws Exception {
+
+        CmsImageScaler baseImage;
+        CmsImageScaler rescaler;
+        CmsImageScaler resultScaler;
+
+        // Test with a square image
+        baseImage = new CmsImageScaler("w:250,h:250");
+        // Rescaler allows 100 to 150 Pixel size
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setMaxHeight(150);
+        rescaler.setMaxWidth(150);
+        rescaler.setType(5);
+
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+
+        // Test with rectangular images
+        baseImage = new CmsImageScaler("w:200,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(150, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:450,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:350,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(86, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+
+        // Test with small images
+        baseImage = new CmsImageScaler("w:50,h:100");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:50,h:150");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(150, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:150,h:50");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(50, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+    }
 }

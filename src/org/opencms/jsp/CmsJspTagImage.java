@@ -79,6 +79,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private static final String SCALE_ATTR_COLOR = "scalecolor";
     private static final String SCALE_ATTR_FILTER = "scalefilter";
     private static final String SCALE_ATTR_HEIGHT = "height";
+    private static final String SCALE_ATTR_MAXHEIGHT = "maxHeight";
+    private static final String SCALE_ATTR_MAXWIDTH = "maxWidth";
     private static final String SCALE_ATTR_PARTIALTAG = "partialtag";
     private static final String SCALE_ATTR_POSITION = "scaleposition";
     private static final String SCALE_ATTR_QUALITY = "scalequality";
@@ -98,7 +100,10 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         SCALE_ATTR_RENDERMODE,
         SCALE_ATTR_SRC,
         SCALE_ATTR_TYPE,
-        SCALE_ATTR_WIDTH};
+        SCALE_ATTR_WIDTH,
+        SCALE_ATTR_MAXHEIGHT,
+        SCALE_ATTR_MAXWIDTH};
+
     private static final List<String> SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
 
     /** Serial version UID required for safe serialization. */
@@ -165,7 +170,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         }
 
         // calculate target scale dimensions (if required)  
-        if ((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) {
+        if (((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) || ((scaler.getType() == 5) && scaler.isValid())) {
             // read the image properties for the selected resource
             CmsImageScaler original = new CmsImageScaler(cms, imageRes);
             if (original.isValid()) {
@@ -394,6 +399,26 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public String getLongdesc() {
 
         return getAttribute(ATTR_LONGDESC);
+    }
+
+    /**
+     * Returns the maximum scaling height for the image, only needed if scale type is 5.<p>
+     * 
+     * @return the maximum scaling height for the image
+     */
+    public String getMaxHeight() {
+
+        return String.valueOf(m_scaler.getMaxHeight());
+    }
+
+    /**
+     * Returns the maximum scaling width for the image, only needed if scale type is 5.<p>
+     * 
+     * @return the maximum scaling width for the image
+     */
+    public String getMaxWidth() {
+
+        return String.valueOf(m_scaler.getMaxWidth());
     }
 
     /** 
@@ -637,6 +662,30 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         setAttribute(ATTR_LONGDESC, value);
 
+    }
+
+    /**
+     * Sets the maximum scaling height for the image, only needed if scale type is 5.<p>
+     * 
+     * If no valid integer is given, then the value of {@link #getHeight()} is used as value.<p>
+     * 
+     * @param value the maximum scaling height for the image to set
+     */
+    public void setMaxHeight(String value) {
+
+        m_scaler.setMaxHeight(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXHEIGHT));
+    }
+
+    /**
+     * Sets the maximum scaling width for the image, only needed if scale type is 5.<p>
+     * 
+     * If no valid integer is given, then the value of {@link #getWidth()} is used as value.<p>
+     * 
+     * @param value the maximum scaling width for the image to set
+     */
+    public void setMaxWidth(String value) {
+
+        m_scaler.setMaxWidth(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXWIDTH));
     }
 
     /** 
