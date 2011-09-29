@@ -42,6 +42,9 @@
 						<mapping suffix=".class" />
 						<mapping suffix=".ppt" />
 						<mapping suffix=".doc" />
+						<mapping suffix=".docx" />
+						<mapping suffix=".xlsx" />
+						<mapping suffix=".pptx" />
 						<mapping suffix=".xls" />
 						<mapping suffix=".jar" />
 						<mapping suffix=".flv" />
