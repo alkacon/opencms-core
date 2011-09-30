@@ -124,7 +124,7 @@ public class CmsImageScaler {
     private Color m_color;
 
     /** The height for image cropping. */
-    private int m_cropHeigt;
+    private int m_cropHeight;
 
     /** The width for image cropping. */
     private int m_cropWidth;
@@ -369,9 +369,9 @@ public class CmsImageScaler {
      *
      * @return the crop area height
      */
-    public int getCropHeigt() {
+    public int getCropHeight() {
 
-        return m_cropHeigt;
+        return m_cropHeight;
     }
 
     /**
@@ -391,7 +391,7 @@ public class CmsImageScaler {
         // first re-scale the image (if required)
         CmsImageScaler result = getReScaler(target);
         // now use the crop area from the original
-        result.setCropArea(m_cropX, m_cropY, m_cropWidth, m_cropHeigt);
+        result.setCropArea(m_cropX, m_cropY, m_cropWidth, m_cropHeight);
         return result;
     }
 
@@ -831,7 +831,7 @@ public class CmsImageScaler {
      */
     public boolean isCropping() {
 
-        return (m_cropX >= 0) && (m_cropY >= 0) && (m_cropHeigt > 0) && (m_cropWidth > 0);
+        return (m_cropX >= 0) && (m_cropY >= 0) && (m_cropHeight > 0) && (m_cropWidth > 0);
     }
 
     /**
@@ -914,7 +914,7 @@ public class CmsImageScaler {
         m_cropX = -1;
         m_cropY = -1;
         m_cropWidth = -1;
-        m_cropHeigt = -1;
+        m_cropHeight = -1;
 
         List<String> tokens = CmsStringUtil.splitAsList(parameters, ',');
         Iterator<String> it = tokens.iterator();
@@ -951,7 +951,7 @@ public class CmsImageScaler {
                     m_cropWidth = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_CROP_HEIGHT.equals(k)) {
                     // crop height
-                    m_cropHeigt = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                    m_cropHeight = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_TYPE.equals(k)) {
                     // scaling type
                     setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
@@ -1038,7 +1038,7 @@ public class CmsImageScaler {
 
             if (isCropping()) {
                 // check if the crop width / height are not larger then the source image
-                if ((m_cropHeigt > image.getHeight()) || (m_cropWidth > image.getWidth())) {
+                if ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth())) {
                     // crop height / width is outside of image - return image unchanged
                     return result;
                 }
@@ -1075,7 +1075,7 @@ public class CmsImageScaler {
                     m_cropX,
                     m_cropY,
                     m_cropWidth,
-                    m_cropHeigt,
+                    m_cropHeight,
                     getWidth(),
                     getHeight(),
                     color);
@@ -1181,7 +1181,7 @@ public class CmsImageScaler {
         m_cropX = x;
         m_cropY = y;
         m_cropWidth = width;
-        m_cropHeigt = height;
+        m_cropHeight = height;
     }
 
     /**
@@ -1378,9 +1378,9 @@ public class CmsImageScaler {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_CROP_HEIGHT);
             result.append(':');
-            result.append(m_cropHeigt);
+            result.append(m_cropHeight);
         }
-        if (!isCropping() || ((m_width != m_cropWidth) || (m_height != m_cropHeigt))) {
+        if (!isCropping() || ((m_width != m_cropWidth) || (m_height != m_cropHeight))) {
             if (isCropping()) {
                 result.append(',');
             }
@@ -1501,7 +1501,7 @@ public class CmsImageScaler {
         m_quality = 0;
         m_cropX = -1;
         m_cropY = -1;
-        m_cropHeigt = -1;
+        m_cropHeight = -1;
         m_cropWidth = -1;
         m_color = Color.WHITE;
         m_filters = new ArrayList<String>();
@@ -1524,7 +1524,7 @@ public class CmsImageScaler {
                 m_width = m_cropWidth;
             }
             if (m_height < 0) {
-                m_height = m_cropHeigt;
+                m_height = m_cropHeight;
             }
             // set type to 0 - scale type is ignored when using crop
             setType(0);
@@ -1547,7 +1547,7 @@ public class CmsImageScaler {
         m_color = source.m_color;
         m_filters = new ArrayList<String>(source.m_filters);
         m_maxBlurSize = source.m_maxBlurSize;
-        m_cropHeigt = source.m_cropHeigt;
+        m_cropHeight = source.m_cropHeight;
         m_cropWidth = source.m_cropWidth;
         m_cropX = source.m_cropX;
         m_cropY = source.m_cropY;

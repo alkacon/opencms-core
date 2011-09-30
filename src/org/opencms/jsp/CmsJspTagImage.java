@@ -131,6 +131,39 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
+     * Creates the images scaler used by this image tag.<p>
+     * 
+     * @param scaler the scaler created from this tags parameters
+     * @param original a scaler that contains the original image dimensions
+     * @param scaleParam optional scaler parameters for cropping
+     * 
+     * @return the images scaler used by this image tag
+     */
+    public static CmsImageScaler getScaler(CmsImageScaler scaler, CmsImageScaler original, String scaleParam) {
+
+        if (scaleParam != null) {
+            CmsImageScaler cropScaler = null;
+            // use cropped image as a base for scaling
+            cropScaler = new CmsImageScaler(scaleParam);
+            if (scaler.getType() == 5) {
+                // must reset height / width parameters in crop scaler for type 5
+                cropScaler.setWidth(cropScaler.getCropWidth());
+                cropScaler.setHeight(cropScaler.getCropHeight());
+            }
+            scaler = cropScaler.getCropScaler(scaler);
+        }
+        // calculate target scale dimensions (if required)  
+        if (((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0))
+            || ((scaler.getType() == 5) && scaler.isValid() && !scaler.isCropping())) {
+            // read the image properties for the selected resource
+            if (original.isValid()) {
+                scaler = original.getReScaler(scaler);
+            }
+        }
+        return scaler;
+    }
+
+    /**
      * Internal action method to create the tag content.<p>
      * 
      * @param src the image source
@@ -157,26 +190,18 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
         CmsUriSplitter splitSrc = new CmsUriSplitter(src);
 
-        CmsResource imageRes = cms.readResource(splitSrc.getPrefix());
-        CmsImageScaler reScaler = null;
+        String scaleParam = null;
         if (splitSrc.getQuery() != null) {
             // check if the original URI already has parameters, this is true if original has been cropped
             String[] scaleStr = CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(CmsImageScaler.PARAM_SCALE);
             if (scaleStr != null) {
-                // use cropped image as a base for scaling
-                reScaler = new CmsImageScaler(scaleStr[0]);
-                scaler = reScaler.getCropScaler(scaler);
+                scaleParam = scaleStr[0];
             }
         }
 
-        // calculate target scale dimensions (if required)  
-        if (((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) || ((scaler.getType() == 5) && scaler.isValid())) {
-            // read the image properties for the selected resource
-            CmsImageScaler original = new CmsImageScaler(cms, imageRes);
-            if (original.isValid()) {
-                scaler = original.getReScaler(scaler);
-            }
-        }
+        CmsResource imageRes = cms.readResource(splitSrc.getPrefix());
+        CmsImageScaler original = new CmsImageScaler(cms, imageRes);
+        scaler = getScaler(scaler, original, scaleParam);
 
         StringBuffer result = new StringBuffer(128);
         if (!partialTag) {
