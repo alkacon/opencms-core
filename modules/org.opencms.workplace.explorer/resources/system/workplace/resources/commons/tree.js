@@ -30,12 +30,30 @@ var treeHeadHtml1 =
     "<html>\n<head>\n" +
     "<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=";
 
+var mousedownHandler = "function(e) {"+
+"var target;"+
+"if (!e) var e = window.event;"+
+"if (e.target) {"+  
+"   target = e.target;"+ 
+"} else if (e.srcElement) {"+ 
+"target = e.srcElement;"+ 
+"}"+
+"if (target.nodeType == 3) {"+
+    "target = target.parentNode;"+
+"}"+
+"if (target && target.tagName && target.tagName.match(/HTML/i)) {"+
+"   return true;"+
+"}"+
+"return false;"+ 
+"}";
+
+
 var treeHeadHtml2 =
     "\">\n" +
     "<title>OpenCms explorer tree</title>\n" +
     "<script type=\"text/javascript\">\n" +
     "document.oncontextmenu = new Function('return false;');\n" +
-    "document.onmousedown = new Function('return false;');\n" +
+    "document.onmousedown = " + mousedownHandler + ";\n" +
     "document.onmouseup = new Function('return false;');\n" +
     "function linkOver(obj) {\n" +
     "var cls = obj.className;\n" +

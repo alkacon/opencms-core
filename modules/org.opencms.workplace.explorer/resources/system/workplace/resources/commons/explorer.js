@@ -608,6 +608,25 @@ function printList(wo) {
         if ((win.fileswin.location.href.indexOf('list-explorer.jsp') >= 0) || (win.fileswin.location.href.indexOf('mode=galleryview') >= 0)) {
            top.active_target = '_parent';
         }
+        
+   // can't just return false because we have to bypass Chrome scrollbar bug 
+   var mousedownHandler = "function(e) {"+
+      "var target;"+
+      "if (!e) var e = window.event;"+
+      "if (e.target) {"+  
+      "   target = e.target;"+ 
+      "} else if (e.srcElement) {"+ 
+      "target = e.srcElement;"+ 
+      "}"+
+      "if (target.nodeType == 3) {"+
+          "target = target.parentNode;"+
+      "}"+
+      "if (target && target.tagName && target.tagName.match(/HTML/i)) {"+
+      "   return true;"+
+      "}"+
+      "return false;"+ 
+   "}";
+
 
 	var temp =
 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"
@@ -617,7 +636,7 @@ function printList(wo) {
 	+ "\">\n"
 	+ "<script type=\"text/javascript\" language=\"JavaScript\">\n"
 	+ "document.oncontextmenu = new Function('return false;');\n"
-	+ "document.onmousedown = new Function('return false;');\n"
+	+ "document.onmousedown = " + mousedownHandler + ";\n"
 	+ "document.onmouseup = top.handleOnClick;\n"
 	+ "</script>\n"
 	+ "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>\n"
