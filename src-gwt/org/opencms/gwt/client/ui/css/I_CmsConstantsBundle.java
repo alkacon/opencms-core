@@ -60,13 +60,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String backgroundColorListItem();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
         String backgroundColorDisabled();
 
         /** 
@@ -96,6 +89,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String backgroundColorInputError();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String backgroundColorListItem();
 
         /** 
          * Access method.<p>
@@ -361,6 +361,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        String notificationErrorBorder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         String notificationErrorColor();
 
         /** 
@@ -382,20 +389,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String notificationWarningBorder();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String notificationErrorBorder();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
         String notificationNormalColor();
 
         /** 
@@ -404,6 +397,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String notificationWarningBg();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String notificationWarningBorder();
 
         /** 
          * Access method.<p>
@@ -487,14 +487,14 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        int zIndexPopup();
+        int zIndexDND();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS constant value
          */
-        int zIndexDND();
+        int zIndexGroupContainer();
 
         /** 
          * Access method.<p>
@@ -509,6 +509,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         int zIndexInline();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        int zIndexPopup();
     }
 
     /** The bundle instance. */
