@@ -79,6 +79,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private static final String SCALE_ATTR_COLOR = "scalecolor";
     private static final String SCALE_ATTR_FILTER = "scalefilter";
     private static final String SCALE_ATTR_HEIGHT = "height";
+    private static final String SCALE_ATTR_MAXHEIGHT = "maxHeight";
+    private static final String SCALE_ATTR_MAXWIDTH = "maxWidth";
     private static final String SCALE_ATTR_PARTIALTAG = "partialtag";
     private static final String SCALE_ATTR_POSITION = "scaleposition";
     private static final String SCALE_ATTR_QUALITY = "scalequality";
@@ -98,7 +100,10 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         SCALE_ATTR_RENDERMODE,
         SCALE_ATTR_SRC,
         SCALE_ATTR_TYPE,
-        SCALE_ATTR_WIDTH};
+        SCALE_ATTR_WIDTH,
+        SCALE_ATTR_MAXHEIGHT,
+        SCALE_ATTR_MAXWIDTH};
+
     private static final List<String> SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
 
     /** Serial version UID required for safe serialization. */
@@ -123,6 +128,39 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         // initialize the image scaler parameter container
         m_scaler = new CmsImageScaler();
+    }
+
+    /**
+     * Creates the images scaler used by this image tag.<p>
+     * 
+     * @param scaler the scaler created from this tags parameters
+     * @param original a scaler that contains the original image dimensions
+     * @param scaleParam optional scaler parameters for cropping
+     * 
+     * @return the images scaler used by this image tag
+     */
+    public static CmsImageScaler getScaler(CmsImageScaler scaler, CmsImageScaler original, String scaleParam) {
+
+        if (scaleParam != null) {
+            CmsImageScaler cropScaler = null;
+            // use cropped image as a base for scaling
+            cropScaler = new CmsImageScaler(scaleParam);
+            if (scaler.getType() == 5) {
+                // must reset height / width parameters in crop scaler for type 5
+                cropScaler.setWidth(cropScaler.getCropWidth());
+                cropScaler.setHeight(cropScaler.getCropHeight());
+            }
+            scaler = cropScaler.getCropScaler(scaler);
+        }
+        // calculate target scale dimensions (if required)  
+        if (((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0))
+            || ((scaler.getType() == 5) && scaler.isValid() && !scaler.isCropping())) {
+            // read the image properties for the selected resource
+            if (original.isValid()) {
+                scaler = original.getReScaler(scaler);
+            }
+        }
+        return scaler;
     }
 
     /**
@@ -152,26 +190,18 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
         CmsUriSplitter splitSrc = new CmsUriSplitter(src);
 
-        CmsResource imageRes = cms.readResource(splitSrc.getPrefix());
-        CmsImageScaler reScaler = null;
+        String scaleParam = null;
         if (splitSrc.getQuery() != null) {
             // check if the original URI already has parameters, this is true if original has been cropped
             String[] scaleStr = CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(CmsImageScaler.PARAM_SCALE);
             if (scaleStr != null) {
-                // use cropped image as a base for scaling
-                reScaler = new CmsImageScaler(scaleStr[0]);
-                scaler = reScaler.getCropScaler(scaler);
+                scaleParam = scaleStr[0];
             }
         }
 
-        // calculate target scale dimensions (if required)  
-        if ((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) {
-            // read the image properties for the selected resource
-            CmsImageScaler original = new CmsImageScaler(cms, imageRes);
-            if (original.isValid()) {
-                scaler = original.getReScaler(scaler);
-            }
-        }
+        CmsResource imageRes = cms.readResource(splitSrc.getPrefix());
+        CmsImageScaler original = new CmsImageScaler(cms, imageRes);
+        scaler = getScaler(scaler, original, scaleParam);
 
         StringBuffer result = new StringBuffer(128);
         if (!partialTag) {
@@ -394,6 +424,26 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public String getLongdesc() {
 
         return getAttribute(ATTR_LONGDESC);
+    }
+
+    /**
+     * Returns the maximum scaling height for the image, only needed if scale type is 5.<p>
+     * 
+     * @return the maximum scaling height for the image
+     */
+    public String getMaxHeight() {
+
+        return String.valueOf(m_scaler.getMaxHeight());
+    }
+
+    /**
+     * Returns the maximum scaling width for the image, only needed if scale type is 5.<p>
+     * 
+     * @return the maximum scaling width for the image
+     */
+    public String getMaxWidth() {
+
+        return String.valueOf(m_scaler.getMaxWidth());
     }
 
     /** 
@@ -637,6 +687,30 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         setAttribute(ATTR_LONGDESC, value);
 
+    }
+
+    /**
+     * Sets the maximum scaling height for the image, only needed if scale type is 5.<p>
+     * 
+     * If no valid integer is given, then the value of {@link #getHeight()} is used as value.<p>
+     * 
+     * @param value the maximum scaling height for the image to set
+     */
+    public void setMaxHeight(String value) {
+
+        m_scaler.setMaxHeight(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXHEIGHT));
+    }
+
+    /**
+     * Sets the maximum scaling width for the image, only needed if scale type is 5.<p>
+     * 
+     * If no valid integer is given, then the value of {@link #getWidth()} is used as value.<p>
+     * 
+     * @param value the maximum scaling width for the image to set
+     */
+    public void setMaxWidth(String value) {
+
+        m_scaler.setMaxWidth(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXWIDTH));
     }
 
     /** 

@@ -246,13 +246,18 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     private static String translateLegacySystemId(String systemId) {
 
+        String result = systemId;
         for (String[] translation : m_legacyTranslations) {
             if (systemId.startsWith(translation[0])) {
                 // replace prefix with second component if it matches the first component
-                return translation[1] + systemId.substring(translation[0].length());
+                result = translation[1] + systemId.substring(translation[0].length());
+                break;
             }
         }
-        return systemId;
+        if (OpenCms.getRepositoryManager() != null) {
+            result = OpenCms.getResourceManager().getXsdTranslator().translateResource(result);
+        }
+        return result;
     }
 
     /**

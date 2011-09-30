@@ -240,6 +240,22 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
+     * Logs content extraction for the specified resource and index.<p>
+     * 
+     * @param resource the resource to log content extraction for
+     * @param index the search index to log content extraction for
+     */
+    protected void logContentExtraction(CmsResource resource, CmsSearchIndex index) {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_EXTRACT_CONTENT_2,
+                resource.getRootPath(),
+                index.getName()));
+        }
+    }
+
+    /**
      * Upgrades the given resource to a {@link CmsFile} with content.<p>
      * 
      * @param cms the current users OpenCms context

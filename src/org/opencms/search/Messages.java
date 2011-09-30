@@ -281,6 +281,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NO_INDEX_WITH_NAME_1 = "LOG_NO_INDEX_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_UPDATE_EVENT_1 = "LOG_OI_UPDATE_EVENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_UPDATE_FINISH_2 = "LOG_OI_UPDATE_FINISH_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_UPDATE_INTERRUPT_0 = "LOG_OI_UPDATE_INTERRUPT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_UPDATE_LONG_2 = "LOG_OI_UPDATE_LONG_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_UPDATE_START_1 = "LOG_OI_UPDATE_START_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_2 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_2";
 
     /** Message constant for key in the resource bundle. */

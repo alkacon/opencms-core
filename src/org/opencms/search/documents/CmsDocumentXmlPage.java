@@ -72,6 +72,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        logContentExtraction(resource, index);
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
