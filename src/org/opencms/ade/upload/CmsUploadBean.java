@@ -185,7 +185,7 @@ public class CmsUploadBean extends CmsJspBean {
             // try to create the resources on the VFS
             createResources(listener);
             // trigger update offline indexes, important for gallery search
-            OpenCms.getSearchManager().updateOfflineIndexes();
+            OpenCms.getSearchManager().updateOfflineIndexes(2500);
         } catch (CmsException e) {
             // an error occurred while creating the resources on the VFS, create a special error message
             LOG.error(e.getMessage(), e);

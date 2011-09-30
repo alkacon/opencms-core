@@ -272,6 +272,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /** Indicates if this thread is still alive. */
         boolean m_isAlive;
 
+        /** If true a manual update (after file upload) was triggered. */
+        private boolean m_updateTriggered;
+
         /**
          * Constructor.<p>
          * 
@@ -284,6 +287,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         /**
+         * @see java.lang.Thread#interrupt()
+         */
+        @Override
+        public void interrupt() {
+
+            super.interrupt();
+            m_updateTriggered = true;
+        }
+
+        /**
          * @see java.lang.Thread#run()
          */
         @Override
@@ -292,33 +305,35 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // create a log report for the output
             I_CmsReport report = new CmsLogReport(m_adminCms.getRequestContext().getLocale(), CmsSearchManager.class);
             long offlineUpdateFrequency = getOfflineUpdateFrequency();
-            boolean frequencyChange = false;
+            m_updateTriggered = false;
             try {
                 while (m_isAlive) {
-                    try {
-                        frequencyChange = false;
-                        sleep(offlineUpdateFrequency);
-                    } catch (InterruptedException e) {
-                        // continue the thread after interruption
-                        if (!m_isAlive) {
-                            // the thread has been shut down while sleeping
-                            continue;
-                        }
-                        if (offlineUpdateFrequency != getOfflineUpdateFrequency()) {
-                            // offline update frequency change - clear interrupt status
-                            frequencyChange = interrupted();
-                            offlineUpdateFrequency = getOfflineUpdateFrequency();
-                        }
-                        if (!interrupted()) {
-                            // this is just called to clear the interrupt status of the thread
+                    if (!m_updateTriggered) {
+                        try {
+                            sleep(offlineUpdateFrequency);
+                        } catch (InterruptedException e) {
+                            // continue the thread after interruption
+                            if (!m_isAlive) {
+                                // the thread has been shut down while sleeping
+                                continue;
+                            }
+                            if (offlineUpdateFrequency != getOfflineUpdateFrequency()) {
+                                // offline update frequency change - clear interrupt status
+                                offlineUpdateFrequency = getOfflineUpdateFrequency();
+                            }
                         }
                     }
-                    if (m_isAlive && !frequencyChange) {
+                    if (m_isAlive) {
+                        // set update trigger to false since we do the update now
+                        m_updateTriggered = false;
+                        // get list of resource to update
                         List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
                         if (resourcesToIndex.size() > 0) {
                             // only start indexing if there is at least one resource
                             startOfflineUpdateThread(report, resourcesToIndex);
                         }
+                        // this is just called to clear the interrupt status of the thread
+                        interrupted();
                     }
                 }
             } finally {
@@ -1687,7 +1702,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void setOfflineUpdateFrequency(long offlineUpdateFrequency) {
 
         m_offlineUpdateFrequency = offlineUpdateFrequency;
-        updateOfflineIndexes();
+        updateOfflineIndexes(0);
     }
 
     /**
@@ -1767,8 +1782,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * Can be used to force an index update when it's not convenient to wait until the 
      * offline update interval has eclipsed.<p>
+     * 
+     * Since the offline index will still need some time to update the new resources even if it runs directly, 
+     * a wait time of 2500 or so should be given in order to make sure the index finished updating.
+     * 
+     * @param waitTime milliseconds to wait after the offline update index was notified of the changes
      */
-    public void updateOfflineIndexes() {
+    public void updateOfflineIndexes(long waitTime) {
 
         if ((m_offlineIndexThread != null) && m_offlineIndexThread.isAlive()) {
             // notify existing thread of update frequency change
@@ -1776,6 +1796,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_OI_UPDATE_INTERRUPT_0));
             }
             m_offlineIndexThread.interrupt();
+            if (waitTime > 0) {
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    // clear interrupt status of the current Thread and continue
+                    Thread.interrupted();
+                }
+            }
         }
     }
 
