@@ -43,8 +43,8 @@ public class CmsFileInputImpl implements I_CmsFileInputService {
     public native JsArray<CmsFileInfo> getFiles(InputElement inputElement) /*-{
         var name = inputElement.value.replace(/^.*\\/, '')
         return inputElement.value && inputElement.value != "" ? [ {
-            fileName : name,
-            fileSize : -1
+            name : name,
+            size : -1
         } ] : [];
     }-*/;
 
