@@ -129,6 +129,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** The css bundle used for this widget. */
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
+    /** The filtering delay. */
     private static final int FILTER_DELAY = 200;
 
     /** Text metrics key. */
@@ -139,6 +140,10 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
+
+    /** Text field for debug messages. */
+    @UiField
+    protected Label m_label;
 
     /** The borded panel to hold the scrollable list. */
     @UiField
@@ -244,6 +249,17 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             scheduleQuickFilterTimer();
         }
         m_quickFilter.setVisible(hasQuickFilter());
+    }
+
+    /**
+     * Adds a widget to the front of the list.<p>
+     * 
+     * @param listItem the list item to add 
+     */
+    protected void addWidgetToFrontOfList(Widget listItem) {
+
+        m_scrollList.insert(listItem, 0);
+
     }
 
     /**

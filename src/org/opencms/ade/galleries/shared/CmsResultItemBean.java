@@ -48,6 +48,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The result item description. */
     private String m_description;
 
+    /** A flag which indicates whether this result item corresponds to a preset value in the editor.<p> */
+    private boolean m_isPreset;
+
     /** The reason this resource may not be edited. Editable if empty. */
     private String m_noEditReson;
 
@@ -118,6 +121,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
+     * True if this is result item corresponds to a preset value in the editor.<p>
+     * 
+     * @return true if this corresponds to a preset value 
+     */
+    public boolean isPreset() {
+
+        return m_isPreset;
+    }
+
+    /**
      * Sets the structure id.<p>
      *
      * @param clientId the structure id to set
@@ -158,6 +171,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setPath(String path) {
 
         m_path = path;
+    }
+
+    /**
+     * Sets the "is preset" flag.<p>
+     * 
+     * @param preset the "is preset" flag 
+     */
+    public void setPreset(boolean preset) {
+
+        m_isPreset = preset;
     }
 
     /**

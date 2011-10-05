@@ -77,6 +77,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
+    /** The index of the last search results page. */
+    private int m_lastPage;
+
     /** The selected locale for search. */
     private String m_locale;
 
@@ -88,6 +91,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The search query string. */
     private String m_query;
+
+    /** The gallery reference path. */
+    private String m_referencePath;
 
     /** The path to the selected resource. */
     private String m_resourcePath;
@@ -101,6 +107,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The results to display in the list of search results. */
     private List<CmsResultItemBean> m_results;
 
+    /** The search scope. */
+    private CmsGallerySearchScope m_scope;
+
     /** The sort order of the search result. */
     private String m_sortOrder;
 
@@ -109,12 +118,6 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
-
-    /** The search scope. */
-    private CmsGallerySearchScope m_scope;
-
-    /** The gallery reference path. */
-    private String m_referencePath;
 
     /**
      * Empty default constructor. <p>
@@ -144,6 +147,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setSortOrder(searchObj.getSortOrder());
         setTabId(searchObj.getTabId());
         setPage(searchObj.getPage());
+        setLastPage(searchObj.getLastPage());
         setDateCreatedEnd(searchObj.getDateCreatedEnd());
         setDateCreatedStart(searchObj.getDateCreatedStart());
         setDateModifiedEnd(searchObj.getDateModifiedEnd());
@@ -309,6 +313,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Gets the index of the last search results page.<p> 
+     * 
+     * @return the index of the last search results page 
+     */
+    public int getLastPage() {
+
+        return m_lastPage;
     }
 
     /**
@@ -592,6 +606,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the index of the last search result page.<p>
+     *  
+     * @param lastPage the index of the last search result page 
+     */
+    public void setLastPage(int lastPage) {
+
+        m_lastPage = lastPage;
     }
 
     /**

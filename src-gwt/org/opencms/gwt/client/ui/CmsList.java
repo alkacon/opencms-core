@@ -239,16 +239,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * Checks if dropping is enabled.<p>
-     *
-     * @return <code>true</code> if dropping is enabled
-     */
-    public boolean isDropEnabled() {
-
-        return m_dropEnabled;
-    }
-
-    /**
      * Returns if the list will always return <code>true</code> on check target requests within drag and drop.<p>
      * 
      * @return <code>true</code> if take all is enabled for drag and drop
@@ -256,6 +246,16 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public boolean isDNDTakeAll() {
 
         return m_takeAll;
+    }
+
+    /**
+     * Checks if dropping is enabled.<p>
+     *
+     * @return <code>true</code> if dropping is enabled
+     */
+    public boolean isDropEnabled() {
+
+        return m_dropEnabled;
     }
 
     /**

@@ -67,6 +67,17 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     }
 
     /**
+     * Appends the results from another search result list.<p>
+     * 
+     * @param moreResults the second search result list 
+     */
+    public void append(CmsGallerySearchResultList moreResults) {
+
+        addAll(moreResults);
+        m_hitCount = moreResults.getHitCount();
+    }
+
+    /**
      * Returns the hit count of all results found in the last search.<p>
      * 
      * Since this list will only contain the result objects for the current display page,
