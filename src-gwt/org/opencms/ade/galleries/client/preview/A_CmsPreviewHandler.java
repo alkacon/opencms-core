@@ -85,11 +85,11 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler#saveProperties(java.util.Map)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler#saveProperties(java.util.Map, com.google.gwt.user.client.Command)
      */
-    public void saveProperties(Map<String, String> properties) {
+    public void saveProperties(Map<String, String> properties, Command afterSaveCallback) {
 
-        m_resourcePreview.saveProperties(properties);
+        m_resourcePreview.saveProperties(properties, afterSaveCallback);
     }
 
     /**
@@ -116,7 +116,13 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
                          */
                         public void execute() {
 
-                            CmsPreviewUtil.setDataAndCloseDialog();
+                            m_resourcePreview.getPreviewDialog().saveChanges(new Command() {
+
+                                public void execute() {
+
+                                    CmsPreviewUtil.setDataAndCloseDialog();
+                                }
+                            });
                         }
                     },
                     null);

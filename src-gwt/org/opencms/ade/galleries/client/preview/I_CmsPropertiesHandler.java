@@ -29,6 +29,8 @@ package org.opencms.ade.galleries.client.preview;
 
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
+
 /**
  * The properties tab handler of the preview dialog.<p>
  * 
@@ -43,8 +45,9 @@ public interface I_CmsPropertiesHandler {
      * Saves the properties.<p>
      * 
      * @param properties the properties to save 
+     * @param afterSaveCommand the command to execute after saving the properties 
      */
-    void saveProperties(Map<String, String> properties);
+    void saveProperties(Map<String, String> properties, Command afterSaveCommand);
 
     /**
      * Selects the current resource and sets its path into the xml-content field or editor link, depending on the gallery mode.<p>
