@@ -12,35 +12,73 @@
 		<name>org.opencms.ade.config</name>
 		<nicename><![CDATA[OpenCms 8 ADE Configuration]]></nicename>
 		<group>OpenCms ADE</group>
-		<class/>
+		<class />
 		<description><![CDATA[Configuration for OpenCms websites]]></description>
 		<version>8.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
-		<datecreated/>
-		<userinstalled/>
-		<dateinstalled/>
-		<dependencies/>
+		<datecreated />
+		<userinstalled />
+		<dateinstalled />
+		<dependencies />
 		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
+				destination="WEB-INF/classes/" />
 		</exportpoints>
 		<resources>
-			<resource uri="/system/modules/org.opencms.ade.config/"/>
-			<resource uri="/system/workplace/resources/filetypes/configfolder.png"/>
-			<resource uri="/system/workplace/resources/filetypes/configfolder_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/module_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/module_config_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/sitemap_config_big.png"/>
+			<resource uri="/system/modules/org.opencms.ade.config/" />
+			<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/configfolder_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/module_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
 		</resources>
-		<parameters/>
+		<parameters />
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="content_folder" id="24">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
+				name="containerpage" id="13">
+				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="groupcontainer" id="17">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template"
+				id="21" />
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="function" id="22">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="htmlredirect" id="15">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
+				name="subsitemap" id="23" />
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
+				name="content_folder" id="24">
 				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/.config" type="new"/>
+					<copy-resource
+						source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config"
+						target="${resource.folder.path}/.config" type="new" />
 				</copy-resources>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="14">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="sitemap_config" id="14">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -51,9 +89,11 @@
 						<value><![CDATA[en]]></value>
 					</property>
 				</properties>
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd
+				</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="28">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="module_config" id="28">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -64,26 +104,191 @@
 						<value><![CDATA[en]]></value>
 					</property>
 				</properties>
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
+				</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="content_folder" key="fileicon.configfolder" icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=content_folder" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
+
+			<explorertype name="subsitemap" key="fileicon.subsitemap"
+				icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
+				<newresource page="extendedfolder"
+					uri="newresource.jsp?newresourcetype=subsitemap" order="490"
+					autosetnavigation="false" autosettitle="false" info="desc.subsitemap" />
+			</explorertype>
+			<explorertype name="htmlredirect" key="fileicon.htmlredirect"
+				icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect"
+					order="27" autosetnavigation="true" autosettitle="true"
+					info="desc.htmlredirect" />
 				<accesscontrol>
-					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+
+
+			<explorertype name="containerpage" key="fileicon.containerpage"
+				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=containerpage"
+					order="25" autosetnavigation="false" autosettitle="false"
+					info="desc.containerpage" />
 				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<defaultproperty name="Title" />
+						<defaultproperty name="Keywords" />
+						<defaultproperty name="Description" />
+					</defaultproperties>
+					<contextmenu>
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
+							rule="lock" />
+						<entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp"
+							rule="changelock" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp"
+							rule="unlock" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
+							rule="copytoproject" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp"
+							rule="directpublish" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
+							rule="publishscheduled" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp"
+							target="_top" rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"
+							rule="copy" />
+						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp"
+							rule="undochanges" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp"
+							rule="undelete" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource"
+								rule="standard" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings"
+								rule="showsiblings" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories"
+								rule="standard" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp"
+							rule="permissions" />
+						<entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp"
+							rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
+								rule="standard" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp"
+								rule="standard" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true"
+								target="_top" rule="editcontrolcode" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
+							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.CmsAvailabilityDialog"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0" name="org.opencms.gwt.client.ui.CmsShowWorkplace"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
+							name="org.opencms.gwt.client.ui.CmsEditProperties" rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.CmsLogout"
+							rule="containerpage" />
+					</contextmenu>
+				</editoptions>
+			</explorertype>
+			<explorertype name="groupcontainer" key="fileicon.groupcontainer"
+				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
+				reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer"
+					order="26" autosetnavigation="false" autosettitle="false"
+					info="desc.groupcontainer" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="module_config" key="fileicon.module_config" icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=module_config" order="22" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+			<explorertype name="function" key="fileicon.function"
+				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+				<newresource page="structurecontent"
+					uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999"
+					autosetnavigation="false" autosettitle="false" info="desc.function" />
 				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v-w-c" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="containerpage_template" key="fileicon.containerpage_template"
+				icon="containerpage_template.png" bigicon="containerpage_template_big.png"
+				reference="jsp">
+				<newresource page="otheroptions"
+					uri="newresource.jsp?newresourcetype=containerpage_template" order="22"
+					autosetnavigation="false" autosettitle="false"
+					info="desc.containerpage_template" />
+			</explorertype>
+
+			<explorertype name="content_folder" key="fileicon.configfolder"
+				icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
+				<newresource page="extendedfolder"
+					uri="newresource.jsp?newresourcetype=content_folder" order="491"
+					autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
+				<accesscontrol>
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="sitemap_config" key="fileicon.sitemap_config"
+				icon="sitemap_config.png" bigicon="sitemap_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config"
+					order="21" autosetnavigation="false" autosettitle="false"
+					info="desc.sitemap_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="module_config" key="fileicon.module_config"
+				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
+					order="22" autosetnavigation="false" autosettitle="false"
+					info="desc.module_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
@@ -98,8 +303,8 @@
 			<datecreated>Wed, 29 Jun 2011 08:21:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
+			<properties />
+			<relations />
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
@@ -120,8 +325,8 @@
 			<datecreated>Wed, 29 Jun 2011 08:21:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
+			<properties />
+			<relations />
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
@@ -142,12 +347,13 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes</destination>
+			<destination>system/modules/org.opencms.ade.config/classes
+			</destination>
 			<type>folder</type>
 			<uuidstructure>59a974c5-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -155,12 +361,13 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org</destination>
+			<destination>system/modules/org.opencms.ade.config/classes/org
+			</destination>
 			<type>folder</type>
 			<uuidstructure>59abbeb7-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -168,12 +375,13 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms</destination>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms
+			</destination>
 			<type>folder</type>
 			<uuidstructure>59ae2fb9-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -181,12 +389,13 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade</destination>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade
+			</destination>
 			<type>folder</type>
 			<uuidstructure>59b0a0bb-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -194,12 +403,13 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config</destination>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config
+			</destination>
 			<type>folder</type>
 			<uuidstructure>59b2eaad-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -207,13 +417,15 @@
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</source>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</destination>
+			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties
+			</source>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties
+			</destination>
 			<type>plain</type>
 			<uuidstructure>d789bd73-70d8-11e0-8f1f-91706a02fba1</uuidstructure>
 			<uuidresource>d789bd74-70d8-11e0-8f1f-91706a02fba1</uuidresource>
@@ -228,11 +440,12 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources</destination>
+			<destination>system/modules/org.opencms.ade.config/copyresources
+			</destination>
 			<type>folder</type>
 			<uuidstructure>9d49825f-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:52:39 GMT</datelastmodified>
@@ -240,13 +453,15 @@
 			<datecreated>Wed, 27 Apr 2011 13:52:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/sitemap.config</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap.config</destination>
+			<source>system/modules/org.opencms.ade.config/copyresources/sitemap.config
+			</source>
+			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap.config
+			</destination>
 			<type>sitemap_config</type>
 			<uuidstructure>c9949dfa-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<uuidresource>c9949dfb-70d5-11e0-9709-91706a02fba1</uuidresource>
@@ -273,11 +488,12 @@
 					<value><![CDATA[all]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models</destination>
+			<destination>system/modules/org.opencms.ade.config/copyresources/models
+			</destination>
 			<type>folder</type>
 			<uuidstructure>c913fc31-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:53:52 GMT</datelastmodified>
@@ -291,11 +507,12 @@
 					<value><![CDATA[Model folder]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models/pages</destination>
+			<destination>system/modules/org.opencms.ade.config/copyresources/models/pages
+			</destination>
 			<type>folder</type>
 			<uuidstructure>c91fe314-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:53:52 GMT</datelastmodified>
@@ -309,8 +526,8 @@
 					<value><![CDATA[Models for container pages]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
 			<destination>system/workplace</destination>
@@ -335,7 +552,7 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations />
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>ALL_OTHERS</uuidprincipal>
@@ -364,9 +581,9 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
@@ -377,13 +594,15 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/configfolder.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder.png</destination>
+			<source>system/workplace/resources/filetypes/configfolder.png
+			</source>
+			<destination>system/workplace/resources/filetypes/configfolder.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>22e6582d-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
 			<uuidresource>22e6582e-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
@@ -398,12 +617,14 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/configfolder_big.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder_big.png</destination>
+			<source>system/workplace/resources/filetypes/configfolder_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/configfolder_big.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>d05e83de-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
 			<uuidresource>d05e83df-7649-11e0-89d1-5b4e51806a5b</uuidresource>
@@ -418,12 +639,14 @@
 					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/module_config.png</source>
-			<destination>system/workplace/resources/filetypes/module_config.png</destination>
+			<source>system/workplace/resources/filetypes/module_config.png
+			</source>
+			<destination>system/workplace/resources/filetypes/module_config.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>7f364afd-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
 			<uuidresource>7f364afe-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
@@ -438,12 +661,14 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/module_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/module_config_big.png</destination>
+			<source>system/workplace/resources/filetypes/module_config_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/module_config_big.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>7f3b05f1-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
 			<uuidresource>7f3b05f2-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
@@ -458,12 +683,14 @@
 					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config.png</destination>
+			<source>system/workplace/resources/filetypes/sitemap_config.png
+			</source>
+			<destination>system/workplace/resources/filetypes/sitemap_config.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>231864b1-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
 			<uuidresource>231864b2-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
@@ -478,12 +705,14 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config_big.png</destination>
+			<source>system/workplace/resources/filetypes/sitemap_config_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/sitemap_config_big.png
+			</destination>
 			<type>image</type>
 			<uuidstructure>d0afb15e-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
 			<uuidresource>d0afb15f-7649-11e0-89d1-5b4e51806a5b</uuidresource>
@@ -498,8 +727,8 @@
 					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 	</files>
 </export>
