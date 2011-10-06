@@ -25,20 +25,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.ui;
+package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageController;
-import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.CmsModelResourceInfo;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -111,14 +104,11 @@ public class CmsModelSelectDialog extends CmsPopup {
     /** The text metrics key. */
     private static final String TEXT_METRICS_KEY = "CMS_MODEL_SELECT_DIALOG_METRICS";
 
+    /** The handler instance for selecting a model. */
+    protected I_CmsModelSelectHandler m_selectHandler;
+
     /** The close button. */
     private CmsPushButton m_cancelButton;
-
-    /** The container page controller. */
-    private CmsContainerpageController m_controller;
-
-    /** The element widget. */
-    private CmsContainerPageElement m_element;
 
     /** The scroll panel. */
     private CmsList<CmsListItem> m_listPanel;
@@ -134,20 +124,20 @@ public class CmsModelSelectDialog extends CmsPopup {
 
     /**
      * Constructor.<p>
-     * 
-     * @param controller the container page controller
-     * @param element the edited element widget
+     *
+     * @param selectHandler the handler object for handling model selection 
      * @param modelResources the available resource models
+     * @param title the title for the model selection dialog 
+     * @param message the message to display in the model selection dialog 
      */
     public CmsModelSelectDialog(
-        CmsContainerpageController controller,
-        CmsContainerPageElement element,
-        List<CmsModelResourceInfo> modelResources) {
+        I_CmsModelSelectHandler selectHandler,
+        List<CmsModelResourceInfo> modelResources,
+        String title,
+        String message) {
 
-        super(org.opencms.ade.containerpage.client.Messages.get().key(
-            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_TITLE_0), DIALOG_WIDTH);
-        m_controller = controller;
-        m_element = element;
+        super(title, DIALOG_WIDTH);
+        m_selectHandler = selectHandler;
         m_cancelButton = new CmsPushButton();
         m_cancelButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
         m_cancelButton.setUseMinWidth(true);
@@ -181,11 +171,11 @@ public class CmsModelSelectDialog extends CmsPopup {
         addButton(m_okButton);
         setGlassEnabled(true);
         FlowPanel content = new FlowPanel();
-        m_messageLabel = new Label(org.opencms.ade.containerpage.client.Messages.get().key(
-            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_MESSAGE_0));
+        m_messageLabel = new Label(message);
+
         content.add(m_messageLabel);
         m_listPanel = new CmsList<CmsListItem>();
-        m_listPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().modelSelectList());
+        m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().modelSelectList());
         m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         content.add(m_listPanel);
         for (CmsModelResourceInfo modelInfo : modelResources) {
@@ -230,7 +220,7 @@ public class CmsModelSelectDialog extends CmsPopup {
      */
     protected void createSelectedModel() {
 
-        m_controller.createAndEditNewElement(m_element, m_modelStructureId);
+        m_selectHandler.onModelSelect(m_modelStructureId);
         hide();
     }
 

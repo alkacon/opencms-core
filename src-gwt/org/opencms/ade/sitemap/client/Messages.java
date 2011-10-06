@@ -102,12 +102,16 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_ENTRY_TITLE_0 = "GUI_EDIT_ENTRY_TITLE_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_BUTTON_TITLE_0 = "GUI_EDIT_MODELPAGE_BUTTON_TITLE_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0 = "GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_OK_0 = "GUI_EDIT_MODELPAGE_OK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -250,6 +254,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SAVING_0 = "GUI_SAVING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_MODEL_MESSAGE_0 = "GUI_SELECT_MODEL_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_MODEL_TITLE_0 = "GUI_SELECT_MODEL_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";

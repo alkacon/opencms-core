@@ -101,12 +101,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String modelSelectList();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String toolbarContext();
 
         /** Access method.<p>

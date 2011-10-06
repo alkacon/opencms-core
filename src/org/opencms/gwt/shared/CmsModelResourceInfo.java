@@ -25,10 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.shared;
+package org.opencms.gwt.shared;
 
-import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;

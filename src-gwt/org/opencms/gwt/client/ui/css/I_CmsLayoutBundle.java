@@ -458,6 +458,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String modelSelectList();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String popupButtonPanel();
 
         /** 
@@ -953,55 +960,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return a CSS class
          **/
-        String normal();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String open();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String permaVisible();
-
-        /**
-         * CSS class accessor.<p>
-         * 
-         * @return a CSS class
-         **/
-        String redirect();
-
-        /**
-         * CSS class accessor.<p>
-         * 
-         * @return a CSS class
-         **/
-        String secure();
-
-        /**
-         * CSS class accessor.<p>
-         * 
-         * @return a CSS class
-         **/
-        String titleInput();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String titleRow();
-
-        /**
-         * CSS class accessor.<p>
-         * 
-         * @return a CSS class
-         **/
         String lockClosed();
 
         /**
@@ -1037,7 +995,56 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return a CSS class
          **/
+        String normal();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String open();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String permaVisible();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String redirect();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String secure();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
         String stateIcon();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String titleInput();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String titleRow();
 
     }
 
