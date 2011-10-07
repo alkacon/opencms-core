@@ -406,6 +406,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the workplace locale from the current user's settings.<p>
+     * 
+     * @return returns the workplace locale from the current user's settings
+     */
+    public Locale getWorkplaceLocale() {
+
+        return OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+    }
+
+    /**
      * Checks whether a detail page is available for the container element.<p>
      * 
      * @return true if there is a detail page for the container element
