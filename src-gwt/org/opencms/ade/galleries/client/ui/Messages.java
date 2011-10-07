@@ -136,6 +136,9 @@ public final class Messages {
     public static final String GUI_IMAGE_NO_AREA_SELECTED_0 = "GUI_IMAGE_NO_AREA_SELECTED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_NO_FORMATS_AVAILABLE_0 = "GUI_IMAGE_NO_FORMATS_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0 = "GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0";
 
     /** Message constant for key in the resource bundle. */

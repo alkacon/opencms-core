@@ -129,7 +129,6 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
         initWidget(uiBinder.createAndBindUi(this));
 
         m_formatHandler = formatHandler;
-
         m_selectBoxLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_FORMAT_0));
         m_selectBoxLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
 
@@ -338,7 +337,13 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
         m_selectBox.setEnabled(enabled);
         m_heightBox.setEnabled(enabled);
         m_widthBox.setEnabled(enabled);
-
+        if (enabled) {
+            m_cropButton.enable();
+            m_removeCropButton.enable();
+        } else {
+            m_cropButton.disable(Messages.get().key(Messages.GUI_IMAGE_NO_FORMATS_AVAILABLE_0));
+            m_removeCropButton.disable(Messages.get().key(Messages.GUI_IMAGE_NO_FORMATS_AVAILABLE_0));
+        }
     }
 
     /**
