@@ -141,6 +141,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
             m_searchObject.setLocale(m_dialogBean.getLocale());
+            m_searchObject.setScope(m_dialogBean.getScope());
         }
         m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
 
