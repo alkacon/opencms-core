@@ -160,6 +160,9 @@
 			<resource uri="/system/workplace/resources/filetypes/text_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/document_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/document.png"/>
+			
 			<resource uri="/system/workplace/views/top_foot.jsp"/>
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
@@ -7273,6 +7276,58 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+				<file>
+			<source>system/workplace/resources/filetypes/document.png</source>
+			<destination>system/workplace/resources/filetypes/document.png</destination>
+			<type>image</type>
+			<uuidstructure>57d7c9c4-ad9f-410e-8961-cb59f0a5698b</uuidstructure>
+			<uuidresource>5537bd4b-e721-4168-a533-5fb9946f8055</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/document_big.png</source>
+			<destination>system/workplace/resources/filetypes/document_big.png</destination>
+			<type>image</type>
+			<uuidstructure>caad3fe5-ec79-4311-a457-c06bcb6ebe6f</uuidstructure>
+			<uuidresource>00a77c09-0341-4ed6-abfd-55ef078a0032</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Feb 2011 16:23:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<source>system/workplace/resources/filetypes/unknown_file.png</source>
 			<destination>system/workplace/resources/filetypes/unknown_file.png</destination>

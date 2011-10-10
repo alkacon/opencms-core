@@ -631,7 +631,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
                 explorerTypeElement.addAttribute(A_NAME, settings.getName());
                 explorerTypeElement.addAttribute(A_KEY, settings.getKey());
-                explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+                String originalIcon = settings.getOriginalIcon();
+                if (CmsStringUtil.isNotEmpty(originalIcon)) {
+                    explorerTypeElement.addAttribute(A_ICON, settings.getOriginalIcon());
+                }
                 if (CmsStringUtil.isNotEmpty(settings.getBigIcon())) {
                     explorerTypeElement.addAttribute(A_BIGICON, settings.getBigIcon());
                 }
