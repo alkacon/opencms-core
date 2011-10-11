@@ -124,7 +124,7 @@ public class CmsConfigurationReader {
     public CmsADEConfigData parseConfiguration(String basePath, CmsXmlContent content) throws CmsException {
 
         if (!content.hasLocale(DEFAULT_LOCALE)) {
-            return CmsADEConfigData.emptyConfiguration();
+            return CmsADEConfigData.emptyConfiguration(basePath);
         }
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, DEFAULT_LOCALE);
         for (I_CmsXmlContentValueLocation node : root.getSubValues("ResourceType")) {

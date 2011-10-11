@@ -139,9 +139,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
 
             // read the default locale for the new resource
-            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(
-                0);
-
+            Locale locale = getLocaleForNewContent(cms, securityManager, resourcename, properties);
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
 
             // must set URI of OpenCms user context to parent folder of created resource, 
@@ -363,6 +361,25 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         // now write the file
         return super.writeFile(cms, securityManager, resource);
+    }
+
+    /**
+     * Gets the locale which should be used for creating an empty content.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param securityManager the security manager
+     * @param resourcename the name of the resource to create 
+     * @param properties the properties for the resource to create 
+     * 
+     * @return the locale to use 
+     */
+    protected Locale getLocaleForNewContent(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        List<CmsProperty> properties) {
+
+        return OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(0);
     }
 
     /**

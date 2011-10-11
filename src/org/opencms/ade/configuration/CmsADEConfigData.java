@@ -125,6 +125,16 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Creates an empty configuration data object with a given base path.<p>
+     * 
+     * @param basePath the base path 
+     */
+    public CmsADEConfigData(String basePath) {
+
+        m_basePath = basePath;
+    }
+
+    /**
      * Creates a new configuration data instance.<p>
      * 
      * @param basePath the base path 
@@ -164,13 +174,15 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Creates an empty configuration object.<p>
+     * Creates an empty configuration for a given base path.<p>
      * 
-     * @return an empty configuration object 
+     * @param basePath the base path 
+     * 
+     * @return the empty configuration object 
      */
-    public static CmsADEConfigData emptyConfiguration() {
+    public static CmsADEConfigData emptyConfiguration(String basePath) {
 
-        return new CmsADEConfigData();
+        return new CmsADEConfigData(basePath);
     }
 
     /**
