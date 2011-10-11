@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 
 /**
@@ -54,6 +55,63 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
    * The content type to be used in HTTP requests.
    */
   private static final String RPC_CONTENT_TYPE = "text/x-gwt-rpc; charset=utf-8";
+  
+  /**
+   * A helper class that prepares the service to serialize data.
+   */
+  public class ServiceHelper {
+
+    private final String fullServiceName;
+    private final String methodName;
+    private final RpcStatsContext statsContext;
+    private SerializationStreamWriter streamWriter;
+
+    public ServiceHelper(String serviceName, String methodName) {
+      this.fullServiceName = serviceName + "." + methodName;
+      this.methodName = methodName;
+      this.statsContext = new RpcStatsContext();
+    }
+
+    /**
+     * Finishes the serialization.
+     */
+    public Request finish(AsyncCallback callback, ResponseReader responseHeader)
+        throws SerializationException {
+      String payload = streamWriter.toString();
+      boolean toss = statsContext.isStatsAvailable()
+          && statsContext.stats(statsContext.timeStat(fullServiceName,  "requestSerialized"));
+      return doInvoke(responseHeader, fullServiceName, statsContext, payload, callback);
+    }
+
+    /**
+     * Finishes the serialization and return a RequestBuilder.
+     */
+    public RequestBuilder finishForRequestBuilder(AsyncCallback callback,
+        ResponseReader responseHeader) throws SerializationException {
+      String payload = streamWriter.toString();
+      boolean toss = statsContext.isStatsAvailable()
+          && statsContext.stats(statsContext.timeStat(fullServiceName,  "requestSerialized"));
+      return doPrepareRequestBuilder(
+          responseHeader, fullServiceName, statsContext, payload, callback);
+    }
+
+    /**
+     * Starts the serialization.
+     */
+    public SerializationStreamWriter start(String remoteServiceInterfaceName,
+        int paramCount) throws SerializationException {
+      boolean toss = statsContext.isStatsAvailable()
+          && statsContext.stats(statsContext.timeStat(fullServiceName, "begin"));
+      streamWriter = createStreamWriter();
+      if (getRpcToken() != null) {
+        streamWriter.writeObject(getRpcToken());
+      }
+      streamWriter.writeString(remoteServiceInterfaceName);
+      streamWriter.writeString(methodName);
+      streamWriter.writeInt(paramCount);
+      return streamWriter;
+    }
+  }
 
   /**
    * @deprecated use {@link RpcStatsContext}.
@@ -323,9 +381,10 @@ public abstract class RemoteServiceProxy implements SerializationStreamFactory,
     try {
       return rb.send();
     } catch (RequestException ex) {
-      InvocationException iex = new InvocationException(
-          "Unable to initiate the asynchronous service invocation -- check the network connection",
-          ex);
+        InvocationException iex = new InvocationException(
+            "Unable to initiate the asynchronous service invocation (" +
+            methodName + ") -- check the network connection",
+            ex);
       callback.onFailure(iex);
     } finally {
       if (statsContext.isStatsAvailable()) {

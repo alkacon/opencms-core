@@ -216,6 +216,16 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     }
 
     /**
+     * Returns if this edit button is still valid.<p>
+     * 
+     * @return <code>true</code> if this edit button is valid
+     */
+    public boolean isValid() {
+
+        return RootPanel.getBodyElement().isOrHasChild(m_markerTag);
+    }
+
+    /**
      * Puts a highlighting border around the element.<p>
      */
     public void highlightElement() {
@@ -261,9 +271,8 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         Element parent = CmsDomUtil.getPositioningParent(getElement());
 
         Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth() - (m_position.getLeft() + m_position.getWidth() - parent.getAbsoluteLeft()),
-            Unit.PX);
+        style.setRight(parent.getOffsetWidth()
+            - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25

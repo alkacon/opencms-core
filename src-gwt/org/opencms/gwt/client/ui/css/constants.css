@@ -176,6 +176,8 @@
  
  /** Used for popups and overlays. */
 @def zIndexPopup 2000000;
+
+@def zIndexGroupContainer 1900000;
 /** Used during drag and drop. */
 @def zIndexDND 2500000;
 /** Used for highlighting. */

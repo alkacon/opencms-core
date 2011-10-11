@@ -176,6 +176,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
 
         /**
+         * Sets the current value.<p>
+         * 
+         * @param value the current value 
+         */
+        public void setValue(String value) {
+
+            m_currentValue = value;
+        }
+
+        /**
          * Checks if the current text box value has changed and fires the value changed event.<p>
          */
         protected void checkForChange() {
@@ -194,7 +204,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public static final String WIDGET_TYPE = "string";
 
     /** Key codes for functional keys. */
-    protected static final int[] navigationCodes = {
+    protected static final int[] NAVIGATION_CODES = {
         KeyCodes.KEY_ALT,
         KeyCodes.KEY_CTRL,
         KeyCodes.KEY_DOWN,
@@ -241,6 +251,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The width of the error message. */
     private String m_errorMessageWidth;
 
+    /** The text box handler instance. */
+    private TextBoxHandler m_handler;
+
     /** The container for the textbox container and error widget. */
     private FlowPanel m_panel = new FlowPanel();
 
@@ -269,6 +282,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_textbox.addBlurHandler(handler);
         m_textbox.addValueChangeHandler(handler);
         m_textbox.addKeyPressHandler(handler);
+        m_handler = handler;
 
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -712,8 +726,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     protected boolean isNavigationKey(int keyCode) {
 
-        for (int i = 0; i < navigationCodes.length; i++) {
-            if (navigationCodes[i] == keyCode) {
+        for (int i = 0; i < NAVIGATION_CODES.length; i++) {
+            if (NAVIGATION_CODES[i] == keyCode) {
                 return true;
             }
         }
@@ -736,6 +750,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     private void setText(String text) {
 
         m_textbox.setText(text);
+        m_handler.setValue(text);
     }
 
 }

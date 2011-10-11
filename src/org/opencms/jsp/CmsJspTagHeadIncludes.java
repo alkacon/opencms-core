@@ -139,8 +139,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
                     cms,
                     resource);
-                return contentDefinition.getContentHandler().getCSSHeadIncludes();
+                return contentDefinition.getContentHandler().getCSSHeadIncludes(cms, resource);
             } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 // NOOP, use the empty set
             }
         }
@@ -165,8 +166,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
                     cms,
                     resource);
-                return contentDefinition.getContentHandler().getJSHeadIncludes();
+                return contentDefinition.getContentHandler().getJSHeadIncludes(cms, resource);
             } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 // NOOP, use the empty set
             }
         }
@@ -301,9 +303,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        element.getSitePath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
                 }
             }
         }
@@ -313,9 +315,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                    standardContext.getDetailContentId()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        standardContext.getDetailContentId()),
+                    e);
             }
         }
         for (String cssUri : cssIncludes) {
@@ -323,7 +327,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 "<link href=\""
                     + CmsJspTagLink.linkTagAction(cssUri, req)
                     + generateReqParams()
-                    + "\" rel=\"stylesheet\" type=\"text/css\">");
+                    + "\" rel=\"stylesheet\" type=\"text/css\"></link>");
         }
     }
 
@@ -354,9 +358,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     element.initResource(cms);
                     jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        element.getSitePath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
+                        e);
                 }
             }
         }
@@ -366,9 +370,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                    standardContext.getDetailContentId()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        standardContext.getDetailContentId()),
+                    e);
             }
         }
         for (String jsUri : jsIncludes) {

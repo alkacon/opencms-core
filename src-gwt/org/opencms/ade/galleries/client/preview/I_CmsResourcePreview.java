@@ -34,6 +34,8 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
+
 /**
  * Interface for resource preview within the galleries dialog.<p>
  * 
@@ -44,18 +46,18 @@ import java.util.Map;
 public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
 
     /**
-     * Returns the gallery mode.<p>
-     * 
-     * @return the gallery mode
-     */
-    public GalleryMode getGalleryMode();
-
-    /**
      * Gets the gallery dialog in which this preview is displayed.<p>
      * 
      * @return the gallery dialog  
      */
     CmsGalleryDialog getGalleryDialog();
+
+    /**
+     * Returns the gallery mode.<p>
+     * 
+     * @return the gallery mode
+     */
+    GalleryMode getGalleryMode();
 
     /**
      * Returns the preview handler.<p>
@@ -114,9 +116,10 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
     /**
      * Saves the changed properties.<p>
      * 
-     * @param properties the changed properties 
+     * @param properties the changed properties
+     * @param afterSaveCommand the command to execute after saving the properties  
      */
-    void saveProperties(Map<String, String> properties);
+    void saveProperties(Map<String, String> properties, Command afterSaveCommand);
 
     /**
      * Sets the selected resource in the opening editor for the given gallery mode.<p>

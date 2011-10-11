@@ -521,7 +521,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                 m_allFiles.put(file.getFileName(), file);
 
                 // add those files to the list of files to upload that potential candidates
-                if (!isTooLarge(file) && !file.isFolder() && (file.getFileSize() != 0)) {
+                if (!isTooLarge(file) && (file.getFileSize() != 0)) {
                     m_filesToUpload.put(file.getFileName(), file);
                 }
 
@@ -539,7 +539,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             Collections.sort(sortedFileNames, String.CASE_INSENSITIVE_ORDER);
             for (String filename : sortedFileNames) {
                 CmsFileInfo file = m_allFiles.get(filename);
-                addFileToList(file, false, isTooLarge(file), file.isFolder());
+                addFileToList(file, false, isTooLarge(file));
             }
         }
         loadAndShow();
@@ -725,9 +725,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      */
     protected String getResourceType(CmsFileInfo file) {
 
-        if (file.isFolder()) {
-            return "folder";
-        }
         String typeName = null;
         typeName = CmsCoreProvider.get().getExtensionMapping().get(file.getFileSuffix().toLowerCase());
         if (typeName == null) {
@@ -1029,7 +1026,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      * @param isTooLarge signals if the file size limit is exceeded
      * @param isFolder signals if the file is a folder
      */
-    private void addFileToList(final CmsFileInfo file, boolean invalid, boolean isTooLarge, boolean isFolder) {
+    private void addFileToList(final CmsFileInfo file, boolean invalid, boolean isTooLarge) {
 
         CmsListInfoBean infoBean = createInfoBean(file);
         CmsListItemWidget listItemWidget = new CmsListItemWidget(infoBean);
@@ -1038,7 +1035,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
         CmsCheckBox check = new CmsCheckBox();
         check.setChecked(false);
-        if (!invalid && !isTooLarge && !isFolder) {
+        if (!invalid && !isTooLarge) {
             if (file.getFileSize() == 0) {
                 check.setChecked(false);
             }
@@ -1053,11 +1050,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             }
         } else if (isTooLarge) {
             String message = getFileSizeTooLargeMessage(file);
-            check.disable(message);
-            listItemWidget.setBackground(Background.RED);
-            listItemWidget.setSubtitleLabel(message);
-        } else if (isFolder) {
-            String message = Messages.get().key(Messages.GUI_UPLOAD_FOLDER_0);
             check.disable(message);
             listItemWidget.setBackground(Background.RED);
             listItemWidget.setSubtitleLabel(message);
@@ -1327,14 +1319,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         List<String> existings = new ArrayList<String>(infoBean.getExistingResourceNames());
         Collections.sort(existings, String.CASE_INSENSITIVE_ORDER);
         for (String filename : existings) {
-            addFileToList(m_filesToUpload.get(filename), false, false, false);
+            addFileToList(m_filesToUpload.get(filename), false, false);
         }
 
         // handle the invalid files
         List<String> invalids = new ArrayList<String>(infoBean.getInvalidFileNames());
         Collections.sort(invalids, String.CASE_INSENSITIVE_ORDER);
         for (String filename : invalids) {
-            addFileToList(m_filesToUpload.get(filename), true, false, false);
+            addFileToList(m_filesToUpload.get(filename), true, false);
             m_filesToUpload.remove(filename);
         }
 

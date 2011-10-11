@@ -501,22 +501,27 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the list of beans for the given search results.<p>
      * 
      * @param searchResult the list of search results
+     * @param presetResult the search result which corresponds to a preset value in the editor 
      * 
      * @return the list with the current search results
      */
-    private List<CmsResultItemBean> buildSearchResultList(List<CmsGallerySearchResult> searchResult) {
+    private List<CmsResultItemBean> buildSearchResultList(
+        List<CmsGallerySearchResult> searchResult,
+        CmsGallerySearchResult presetResult) {
 
         ArrayList<CmsResultItemBean> list = new ArrayList<CmsResultItemBean>();
         if ((searchResult == null) || (searchResult.size() == 0)) {
             return list;
         }
         CmsObject cms = getCmsObject();
-        Iterator<CmsGallerySearchResult> iSearchResult = searchResult.iterator();
-        while (iSearchResult.hasNext()) {
+        for (CmsGallerySearchResult sResult : searchResult) {
             try {
                 Locale wpLocale = getWorkplaceLocale();
-                CmsGallerySearchResult sResult = iSearchResult.next();
                 CmsResultItemBean bean = new CmsResultItemBean();
+                if (sResult == presetResult) {
+                    bean.setPreset(true);
+                }
+
                 String path = sResult.getPath();
                 path = cms.getRequestContext().removeSiteRoot(path);
 
@@ -536,21 +541,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String description = sResult.getDescription();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
                     bean.setDescription(description);
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
+                        description);
                 } else {
                     bean.setDescription(resourceTypeDisplayName);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
+                    resourceTypeDisplayName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_SIZE_0), (sResult.getLength() / 1000) + " kb");
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
+                    (sResult.getLength() / 1000) + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -558,15 +566,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(
+                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
+                            temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
-                    sResult.getDateLastModified(),
-                    DateFormat.SHORT,
-                    getWorkplaceLocale()));
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
+                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
@@ -606,9 +613,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.ERROR_BUILD_TYPE_LIST_1,
-                        type.getTypeName()), e);
+                    log(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.ERROR_BUILD_TYPE_LIST_1,
+                            type.getTypeName()),
+                        e);
                 }
             }
         }
@@ -705,14 +714,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
 
         CmsGallerySearchResultList searchResults = null;
+        CmsGallerySearchResultList totalResults = new CmsGallerySearchResultList();
+        CmsGallerySearchResult foundItem = null;
         while (!found) {
             params.setResultPage(currentPage);
             searchResults = searchBean.getResult(params);
             Iterator<CmsGallerySearchResult> resultsIt = searchResults.listIterator();
+            totalResults.append(searchResults);
             while (resultsIt.hasNext()) {
                 CmsGallerySearchResult searchResult = resultsIt.next();
                 if (searchResult.getPath().equals(resource.getRootPath())) {
                     found = true;
+                    foundItem = searchResult;
                     break;
                 }
             }
@@ -722,12 +735,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             }
         }
-        if (found && (searchResults != null)) {
+        boolean hasResults = searchResults != null;
+        searchResults = totalResults;
+        if (found && hasResults) {
             initialSearchObj.setSortOrder(params.getSortOrder().name());
             initialSearchObj.setResultCount(searchResults.getHitCount());
             initialSearchObj.setPage(params.getResultPage());
-            initialSearchObj.setResults(buildSearchResultList(searchResults));
-            initialSearchObj.setPage(currentPage);
+            initialSearchObj.setResults(buildSearchResultList(searchResults, foundItem));
+            initialSearchObj.setPage(1);
+            initialSearchObj.setLastPage(currentPage);
             initialSearchObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
             initialSearchObj.setResourcePath(resourceName);
             initialSearchObj.setResourceType(resType);
@@ -1120,7 +1136,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setScope(params.getScope());
         searchObjBean.setResultCount(searchResults.getHitCount());
         searchObjBean.setPage(params.getResultPage());
-        searchObjBean.setResults(buildSearchResultList(searchResults));
+        searchObjBean.setLastPage(params.getResultPage());
+        searchObjBean.setResults(buildSearchResultList(searchResults, null));
 
         return searchObjBean;
     }

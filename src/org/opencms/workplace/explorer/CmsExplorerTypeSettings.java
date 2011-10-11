@@ -56,6 +56,12 @@ import org.apache.commons.logging.Log;
  */
 public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings> {
 
+    /** File name for the big default icon. */
+    public static final String DEFAULT_BIG_ICON = "document_big.png";
+
+    /** File name for the normal default icon. */
+    public static final String DEFAULT_NORMAL_ICON = "document.png";
+
     /** The default order start value for context menu entries. */
     public static final int ORDER_VALUE_DEFAULT_START = 100000;
 
@@ -64,9 +70,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class);
-
     private CmsExplorerTypeAccess m_access;
-
     /** Flag for showing that this is an additional resource type which defined in a module. */
     private boolean m_addititionalModuleExplorerType;
     private boolean m_autoSetNavigation;
@@ -74,18 +78,18 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The name of the big icon for this explorer type. */
     private String m_bigIcon;
     private CmsExplorerContextMenu m_contextMenu;
+
     private List<CmsExplorerContextMenuItem> m_contextMenuEntries;
+
     private String m_descriptionImage;
 
     private boolean m_hasEditOptions;
-
     private String m_icon;
-
     /** The icon rules for this explorer type. */
     private Map<String, CmsIconRule> m_iconRules;
+
     private String m_info;
     private String m_key;
-
     private String m_name;
     /** Optional class name for a new resource handler. */
     private String m_newResourceHandlerClassName;
@@ -93,7 +97,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     private String m_newResourcePage;
     private String m_newResourceUri;
     private List<String> m_properties;
+
     private boolean m_propertiesEnabled;
+
     private String m_reference;
 
     private boolean m_showNavigation;
@@ -262,7 +268,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      */
     public String getBigIconIfAvailable() {
 
-        return m_bigIcon != null ? m_bigIcon : m_icon;
+        return m_bigIcon != null ? m_bigIcon : (m_icon != null ? m_icon : DEFAULT_BIG_ICON);
     }
 
     /**
@@ -304,7 +310,11 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      */
     public String getIcon() {
 
-        return m_icon;
+        if (m_icon != null) {
+
+            return m_icon;
+        }
+        return DEFAULT_NORMAL_ICON;
     }
 
     /**
@@ -413,6 +423,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public String getNewResourceUri() {
 
         return m_newResourceUri;
+    }
+
+    /**
+     * Gets the original icon name from the configuration.<p>
+     * 
+     * @return an icon name 
+     */
+    public String getOriginalIcon() {
+
+        return m_icon;
     }
 
     /**

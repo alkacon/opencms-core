@@ -226,10 +226,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Constant for additional parameter to set the thread priority during search. */
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
-    /** Special value for the search.eclude property. */
+    /** Special value for the search.exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
 
-    /** Special value for the search.eclude property. */
+    /** Special value for the search.exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
 
     /** Automatic ("auto") index rebuild mode. */

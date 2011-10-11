@@ -30,9 +30,7 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsGroupcontainerEditor;
-import org.opencms.ade.containerpage.client.ui.CmsModelSelectDialog;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.containerpage.shared.CmsModelResourceInfo;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -44,9 +42,11 @@ import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsEditProperties;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -64,6 +64,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -532,7 +533,18 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void openModelResourceSelect(final CmsContainerPageElement element, List<CmsModelResourceInfo> modelResources) {
 
-        CmsModelSelectDialog dialog = new CmsModelSelectDialog(m_controller, element, modelResources);
+        I_CmsModelSelectHandler handler = new I_CmsModelSelectHandler() {
+
+            public void onModelSelect(CmsUUID modelStructureId) {
+
+                m_controller.createAndEditNewElement(element, modelStructureId);
+            }
+        };
+        String title = org.opencms.ade.containerpage.client.Messages.get().key(
+            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_TITLE_0);
+        String message = org.opencms.ade.containerpage.client.Messages.get().key(
+            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
+        CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, modelResources, title, message);
         dialog.center();
     }
 
@@ -586,6 +598,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void removeElement(CmsContainerPageElement element) {
 
         m_controller.removeElement(element);
+    }
+
+    /**
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     */
+    public void resetEditableListButtons() {
+
+        m_controller.resetEditableListButtons();
     }
 
     /**

@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -51,11 +52,11 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     /** Text metrics key. */
     private static final String TM_PREVIEW_TAB_PROPERTIES = "PropertiesTab";
 
-    /** The panel for the properties. */
-    private FlowPanel m_propertiesPanel;
-
     /** The tab handler. */
     private I_CmsPreviewHandler<?> m_handler;
+
+    /** The panel for the properties. */
+    private FlowPanel m_propertiesPanel;
 
     /**
      * The constructor.<p>
@@ -113,9 +114,19 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     }
 
     /**
-     * Will be triggered, when the save button is clicked.<p>
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
-    public void saveProperties() {
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        setChanged(true);
+    }
+
+    /**
+     * Will be triggered, when the save button is clicked.<p>
+     * 
+     * @param afterSaveCommand the command to execute after the properties have been saved 
+     */
+    public void saveProperties(Command afterSaveCommand) {
 
         Map<String, String> properties = new HashMap<String, String>();
         for (Widget property : m_propertiesPanel) {
@@ -124,15 +135,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
                 properties.put(form.getId(), form.getValue());
             }
         }
-        m_handler.saveProperties(properties);
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        setChanged(true);
+        m_handler.saveProperties(properties, afterSaveCommand);
     }
 
     /**

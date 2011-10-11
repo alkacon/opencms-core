@@ -38,6 +38,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -155,9 +156,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#saveProperties(java.util.Map)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#saveProperties(java.util.Map, com.google.gwt.user.client.Command)
      */
-    public void saveProperties(final Map<String, String> properties) {
+    public void saveProperties(final Map<String, String> properties, final Command afterSaveCallback) {
 
         CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
 
@@ -177,6 +178,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             protected void onResponse(CmsImageInfoBean result) {
 
                 showData(result);
+                if (afterSaveCallback != null) {
+                    afterSaveCallback.execute();
+                }
             }
         };
         action.execute();
@@ -249,11 +253,13 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 break;
             case editor:
                 Map<String, String> attributes = m_handler.getImageAttributes();
-                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(
-                    m_infoBean.getResourcePath()
-                        + ((croppingParam.isCropped() || croppingParam.isScaled())
-                        ? "?" + croppingParam.toString()
-                        : "")), attributes);
+                CmsPreviewUtil.setImage(
+                    CmsCoreProvider.get().link(
+                        m_infoBean.getResourcePath()
+                            + ((croppingParam.isCropped() || croppingParam.isScaled())
+                            ? "?" + croppingParam.toString()
+                            : "")),
+                    attributes);
                 break;
             case ade:
             case view:
@@ -299,7 +305,6 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
     /**
      * Returns the initial cropping parameter bean for a given resource.<p>
      * 
-     * @param galleryMode the gallery mode
      * @param resourcePath the resource path
      * 
      * @return the cropping parameter bean

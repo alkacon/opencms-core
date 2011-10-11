@@ -39,6 +39,7 @@ import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -171,7 +172,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
             public void onClick(ClickEvent event) {
 
-                saveChanges();
+                saveChanges(null);
             }
         });
         m_tabbedPanel.add(m_propertiesTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
@@ -201,13 +202,13 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges()
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges(com.google.gwt.user.client.Command)
      */
     @Override
-    public void saveChanges() {
+    public void saveChanges(Command afterSaveCommand) {
 
         if (hasChanges()) {
-            m_propertiesTab.saveProperties();
+            m_propertiesTab.saveProperties(afterSaveCommand);
         }
     }
 

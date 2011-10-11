@@ -577,6 +577,14 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <name>maxWidth</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
+        <attribute>
+            <name>maxHeight</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>  
+        <attribute>
             <name>scaleType</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>   

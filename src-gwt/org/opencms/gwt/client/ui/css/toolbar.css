@@ -13,7 +13,7 @@
 
 .simpleToolbarShow {} 
 
-.toolbar, .toolbar * {
+.toolbar, .toolbar *, .toolbar table tr td {
 	margin: 0;
 	padding: 0;
 	border: none;

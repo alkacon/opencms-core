@@ -1236,6 +1236,19 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns if the given element has any dimension.<p>
+     * All visible elements should have a dimension.<p>
+     * 
+     * @param element the element to test
+     * 
+     * @return <code>true</code> if the given element has any dimension
+     */
+    public static boolean hasDimension(Element element) {
+
+        return (element.getOffsetHeight() > 0) || (element.getOffsetWidth() > 0);
+    }
+
+    /**
      * Gives an element the overflow:auto property.<p>
      * 
      * @param elem a DOM element

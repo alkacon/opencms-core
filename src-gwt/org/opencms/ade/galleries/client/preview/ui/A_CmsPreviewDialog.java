@@ -196,6 +196,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
                 }
             }
         });
+        confirmDialog.center();
     }
 
     /**
@@ -230,7 +231,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiHandler("m_closePreview")
     public void onCloseClick(ClickEvent event) {
 
-        saveChanges();
+        saveChanges(null);
         getHandler().closePreview();
     }
 
@@ -242,7 +243,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiHandler("m_selectButton")
     public void onSelectClick(ClickEvent event) {
 
-        saveChanges();
+        saveChanges(null);
         getHandler().selectResource();
     }
 
@@ -256,8 +257,10 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Saves the changes for this dialog.<p>
+     * 
+     * @param afterSaveCommand the command to execute after saving the changes 
      */
-    public abstract void saveChanges();
+    public abstract void saveChanges(Command afterSaveCommand);
 
     /**
      * Returns the preview handler.<p>

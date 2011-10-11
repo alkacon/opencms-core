@@ -51,7 +51,7 @@ public class CmsFileInfo extends JavaScriptObject {
      */
     public final native String getFileName() /*-{
 
-        return this.fileName;
+        return this.name ? this.name : this.fileName;
 
     }-*/;
 
@@ -62,7 +62,7 @@ public class CmsFileInfo extends JavaScriptObject {
      */
     public final native int getFileSize() /*-{
 
-        return this.fileSize;
+        return this.size ? this.size : this.fileSize;
 
     }-*/;
 
@@ -73,29 +73,12 @@ public class CmsFileInfo extends JavaScriptObject {
      */
     public final native String getFileSuffix() /*-{
 
-        var filename = this.fileName;
+        var filename = this.name ? this.name : this.fileName;
         var dot = filename.lastIndexOf(".");
         if (dot >= 0) {
             return filename.substr(dot, filename.length);
         }
         return "";
-
-    }-*/;
-
-    /**
-     * Returns <code>true</code> if this file is a folder <code>false</code> otherwise.<p>
-     * 
-     * TODO: Replace with a better logic
-     * 
-     * @return <code>true</code> if this file is a folder <code>false</code> otherwise
-     */
-    public final native boolean isFolder() /*-{
-
-        var dot = this.fileName.lastIndexOf(".");
-        if ((this.fileSize == 0) && (dot < 0)) {
-            return true;
-        }
-        return false;
 
     }-*/;
 }

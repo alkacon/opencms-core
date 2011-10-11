@@ -35,6 +35,8 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
@@ -44,14 +46,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -178,7 +184,7 @@ public class CmsResultsTab extends A_CmsListTab {
     /**
      * Special click handler to use with select button.<p>
      */
-    protected class SelectHandler implements ClickHandler {
+    protected class SelectHandler implements ClickHandler, DoubleClickHandler {
 
         /** The id of the selected item. */
         private String m_resourcePath;
@@ -210,13 +216,27 @@ public class CmsResultsTab extends A_CmsListTab {
 
             getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
         }
+
+        /**
+         * @see com.google.gwt.event.dom.client.DoubleClickHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         */
+        public void onDoubleClick(DoubleClickEvent event) {
+
+            getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
+        }
     }
 
     /** Text metrics key. */
     private static final String TM_RESULT_TAB = "ResultTab";
 
+    /** The handler for scrolling to the top of the scroll panel. */
+    protected CmsResultsBackwardsScrollHandler m_backwardScrollHandler = new CmsResultsBackwardsScrollHandler(this);
+
     /** Stores the information if more results in the search object are available. */
     protected boolean m_hasMoreResults;
+
+    /** The result list item which corresponds to a preset value in the editor. */
+    protected CmsResultListItem m_preset;
 
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
@@ -254,6 +274,7 @@ public class CmsResultsTab extends A_CmsListTab {
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabParamsPanel());
         m_tab.insert(m_params, 0);
         getList().addScrollHandler(new CmsAsynchronousScrollToBottomHandler());
+        getList().addScrollHandler(m_backwardScrollHandler);
     }
 
     /**
@@ -271,18 +292,20 @@ public class CmsResultsTab extends A_CmsListTab {
      * @param searchObj the current search object containing search results
      * @param paramPanels list of search parameter panels to show
      */
-    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
+    public void fillContent(final CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
         removeNoParamMessage();
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
+            m_preset = null;
             getList().scrollToTop();
             getList().getElement().getStyle().setDisplay(Display.NONE);
             clearList();
             showParams(paramPanels);
-            addContent(searchObj);
+            m_backwardScrollHandler.updateSearchBean(searchObj);
             getList().getElement().getStyle().clearDisplay();
+            scrollToPreset();
         } else {
             showParams(paramPanels);
             addContent(searchObj);
@@ -376,6 +399,79 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Appends the list items for the search results from a search bean.<p>
+     * 
+     * @param searchBean a search bean containing results 
+     */
+    protected void addContent(CmsGallerySearchBean searchBean) {
+
+        if (searchBean.getResults() != null) {
+            addContentItems(searchBean.getResults(), false);
+        }
+    }
+
+    /**
+     * Adds list items for a list of search results.<p>
+     * 
+     * @param list the list of search results
+     *  
+     * @param front if true, list items will be added to the front of the list, else at the back 
+     */
+    protected void addContentItems(List<CmsResultItemBean> list, boolean front) {
+
+        if (front) {
+            list = Lists.reverse(list);
+        }
+        for (CmsResultItemBean resultItem : list) {
+            addSingleResult(resultItem, front);
+        }
+        String selectValue = m_sortSelectBox.getFormValueAsString();
+        if (m_types.size() == 1) {
+            getList().addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
+                m_sortSelectBox.setItems(getSortList(false));
+            }
+        } else {
+            getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
+                m_sortSelectBox.setItems(getSortList(true));
+            }
+        }
+    }
+
+    /**
+     * Adds a list item for a single search result.<p>
+     * 
+     * @param resultItem the search result 
+     * @param front if true, adds the list item to the front of the list, else at the back 
+     */
+    protected void addSingleResult(CmsResultItemBean resultItem, boolean front) {
+
+        m_types.add(resultItem.getType());
+        CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dndHandler);
+        if (resultItem.isPreset()) {
+            m_preset = listItem;
+        }
+        listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
+        listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
+        if (m_tabHandler.hasSelectResource()) {
+            SelectHandler selectHandler = new SelectHandler(
+                resultItem.getPath(),
+                resultItem.getTitle(),
+                resultItem.getType());
+            listItem.addSelectClickHandler(selectHandler);
+
+            // this affects both tiled and non-tiled result lists. 
+            listItem.addDoubleClickHandler(selectHandler);
+        }
+        if (front) {
+            addWidgetToFrontOfList(listItem);
+        } else {
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#clearList()
      */
     @Override
@@ -383,6 +479,16 @@ public class CmsResultsTab extends A_CmsListTab {
 
         super.clearList();
         m_types.clear();
+    }
+
+    /**
+     * Helper function to display a debug message.<p>
+     * 
+     * @param message the debug message 
+     */
+    protected void debug(String message) {
+
+        m_label.setText(message);
     }
 
     /**
@@ -414,6 +520,41 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Scrolls to the result which corresponds to a preset value in the editor.<p>
+     */
+    protected void scrollToPreset() {
+
+        final ScrollPanel scrollPanel = getList();
+        if (m_preset != null) {
+            Widget child = scrollPanel.getWidget();
+            if (child instanceof CmsList<?>) {
+                @SuppressWarnings("unchecked")
+                CmsList<I_CmsListItem> list = (CmsList<I_CmsListItem>)child;
+                if (list.getWidgetCount() > 0) {
+                    final Widget first = (Widget)list.getItem(0);
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+
+                            int firstTop = first.getElement().getAbsoluteTop();
+                            int presetTop = m_preset.getElement().getAbsoluteTop();
+                            final int offset = presetTop - firstTop;
+                            if (offset >= 0) {
+                                scrollPanel.setVerticalScrollPosition(offset);
+                            } else {
+                                // something is seriously wrong with the positioning if this case occurs   
+                                scrollPanel.scrollToBottom();
+                            }
+                        }
+                    };
+                    timer.schedule(10);
+                }
+            }
+        }
+    }
+
+    /**
      * Helper for setting the scroll position of the scroll panel.<p>
      * 
      * @param pos the scroll position
@@ -435,44 +576,6 @@ public class CmsResultsTab extends A_CmsListTab {
             }
         });
 
-    }
-
-    /**
-     * Generates the result list items and adds them to the widget.<p>
-     * 
-     * @param searchObj the current search object containing search results
-     */
-    private void addContent(CmsGallerySearchBean searchObj) {
-
-        List<CmsResultItemBean> list = searchObj.getResults();
-        if (list == null) {
-            return;
-        }
-        for (CmsResultItemBean resultItem : list) {
-            m_types.add(resultItem.getType());
-            CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dndHandler);
-            listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
-            listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
-            if (m_tabHandler.hasSelectResource()) {
-                listItem.addSelectClickHandler(new SelectHandler(
-                    resultItem.getPath(),
-                    resultItem.getTitle(),
-                    resultItem.getType()));
-            }
-            addWidgetToList(listItem);
-        }
-        String selectValue = m_sortSelectBox.getFormValueAsString();
-        if (m_types.size() == 1) {
-            getList().addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
-                m_sortSelectBox.setItems(getSortList(false));
-            }
-        } else {
-            getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
-                m_sortSelectBox.setItems(getSortList(true));
-            }
-        }
     }
 
     /**
@@ -499,7 +602,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private int getResultsDisplayed(CmsGallerySearchBean searchObj) {
 
-        int resultsDisplayed = searchObj.getMatchesPerPage() * searchObj.getPage();
+        int resultsDisplayed = searchObj.getMatchesPerPage() * searchObj.getLastPage();
         return (resultsDisplayed > searchObj.getResultCount()) ? searchObj.getResultCount() : resultsDisplayed;
     }
 

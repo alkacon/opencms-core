@@ -141,6 +141,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
             m_searchObject.setLocale(m_dialogBean.getLocale());
+            m_searchObject.setScope(m_dialogBean.getScope());
         }
         m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
 
@@ -823,7 +824,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_loading = true;
                     CmsGallerySearchBean preparedObject = prepareSearchObject();
                     if (isNextPage) {
-                        preparedObject.setPage(preparedObject.getPage() + 1);
+                        preparedObject.setPage(preparedObject.getLastPage() + 1);
                     } else {
                         preparedObject.setPage(1);
                     }
@@ -847,6 +848,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_searchObject.setResultCount(searchObj.getResultCount());
                     m_searchObject.setSortOrder(searchObj.getSortOrder());
                     m_searchObject.setPage(searchObj.getPage());
+                    m_searchObject.setLastPage(searchObj.getLastPage());
                     m_handler.onResultTabSelection(m_searchObject);
                 }
             };
@@ -1018,6 +1020,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         return result;
     }
 
+    /**
+     * Gets the list of categories.<p>
+     * 
+     * @return a list of category beans 
+     */
     private List<CmsCategoryBean> getCategoryList() {
 
         List<CmsCategoryBean> result = new ArrayList<CmsCategoryBean>();
@@ -1025,6 +1032,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         return result;
     }
 
+    /**
+     * Gets the filtered list of categories.<p>
+     * 
+     * @param filter the search string to use for filtering 
+     * 
+     * @return the filtered category beans 
+     */
     private List<CmsCategoryBean> getFilteredCategories(String filter) {
 
         List<CmsCategoryBean> result;

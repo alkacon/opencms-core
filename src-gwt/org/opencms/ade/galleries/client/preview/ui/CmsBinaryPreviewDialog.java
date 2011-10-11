@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 
 /**
  * Provides a widget for the binary preview dialog .<p>
@@ -103,7 +104,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
 
             public void onClick(ClickEvent event) {
 
-                saveChanges();
+                saveChanges(null);
 
             }
         });
@@ -112,13 +113,13 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges()
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#saveChanges(com.google.gwt.user.client.Command)
      */
     @Override
-    public void saveChanges() {
+    public void saveChanges(Command afterSaveCommand) {
 
         if (hasChanges()) {
-            m_propertiesTab.saveProperties();
+            m_propertiesTab.saveProperties(afterSaveCommand);
         }
     }
 

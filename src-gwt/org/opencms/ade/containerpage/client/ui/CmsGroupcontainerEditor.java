@@ -203,7 +203,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         style.setLeft(m_groupContainerPosition.getLeft(), Unit.PX);
         style.setTop(m_groupContainerPosition.getTop(), Unit.PX);
         style.setWidth(m_groupContainerPosition.getWidth(), Unit.PX);
-        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup());
+        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexGroupContainer());
         m_containerMarker.getStyle().setLeft(m_groupContainerPosition.getLeft() - 3, Unit.PX);
         m_containerMarker.getStyle().setTop(m_groupContainerPosition.getTop() - 4, Unit.PX);
         m_containerMarker.getStyle().setWidth(m_groupContainerPosition.getWidth() + 4, Unit.PX);
@@ -526,9 +526,9 @@ public final class CmsGroupcontainerEditor extends Composite {
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft()
-                    + m_groupContainerPosition.getWidth()
-                    + 20, m_groupContainerPosition.getTop() - 1);
+                m_editorDialog.setPopupPosition(
+                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
+                    m_groupContainerPosition.getTop() - 1);
             }
             m_editorDialog.show();
         } else {

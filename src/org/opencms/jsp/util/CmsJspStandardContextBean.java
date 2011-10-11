@@ -28,6 +28,7 @@
 package org.opencms.jsp.util;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
@@ -44,6 +45,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
+import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +93,9 @@ public final class CmsJspStandardContextBean {
 
     /** The currently rendered element. */
     private CmsContainerElementBean m_element;
+
+    /** Cached object for the EL 'function' accessor. */
+    private Object m_function;
 
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
@@ -241,6 +248,37 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns a map which allows access to dynamic function beans using the JSP EL.<p>
+     * 
+     * When given a key, the returned map will look up the corresponding dynamic function in the module configuration.<p>
+     * 
+     * @return  a map which allows access to dynamic function beans
+     */
+    public Object getFunction() {
+
+        if (m_function != null) {
+            return m_function;
+        }
+        MapMaker mm = new MapMaker();
+        m_function = mm.makeComputingMap(new Function<String, Object>() {
+
+            public Object apply(String key) {
+
+                try {
+                    CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean(key);
+                    CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(m_cms, dynamicFunction);
+                    return wrapper;
+
+                } catch (CmsException e) {
+                    return new CmsDynamicFunctionBeanWrapper(m_cms, null);
+                }
+            }
+        });
+        return m_function;
+
+    }
+
+    /**
      * Returns a lazy map which computes the detail page link as a value when given the name of a (named) dynamic function
      * as a key.<p>
      * 
@@ -273,6 +311,43 @@ public final class CmsJspStandardContextBean {
                 }
             }
         });
+    }
+
+    /**
+     * Returns a lazy map which creates a wrapper object for a dynamic function format when given an XML content
+     * as a key.<p>
+     * 
+     * @return a lazy map for accessing function formats for a content 
+     */
+    public Map<CmsJspContentAccessBean, CmsDynamicFunctionFormatWrapper> getFunctionFormatFromContent() {
+
+        MapMaker mm = new MapMaker();
+        return mm.makeComputingMap(new Function<CmsJspContentAccessBean, CmsDynamicFunctionFormatWrapper>() {
+
+            public CmsDynamicFunctionFormatWrapper apply(CmsJspContentAccessBean contentAccess) {
+
+                CmsXmlContent content = (CmsXmlContent)(contentAccess.getRawContent());
+                CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+                CmsDynamicFunctionBean functionBean = null;
+                try {
+                    functionBean = parser.parseFunctionBean(m_cms, content);
+                } catch (CmsException e) {
+                    return new CmsDynamicFunctionFormatWrapper(m_cms, null);
+                }
+                String type = getContainer().getType();
+                String width = getContainer().getWidth();
+                int widthNum = -1;
+                try {
+                    widthNum = Integer.parseInt(width);
+                } catch (NumberFormatException e) {
+                    // NOOP 
+                }
+                CmsDynamicFunctionBean.Format format = functionBean.getFormatForContainer(m_cms, type, widthNum);
+                CmsDynamicFunctionFormatWrapper wrapper = new CmsDynamicFunctionFormatWrapper(m_cms, format);
+                return wrapper;
+            }
+        });
+
     }
 
     /**
@@ -328,6 +403,16 @@ public final class CmsJspStandardContextBean {
             m_vfsBean = CmsJspVfsAccessBean.create(m_cms);
         }
         return m_vfsBean;
+    }
+
+    /**
+     * Returns the workplace locale from the current user's settings.<p>
+     * 
+     * @return returns the workplace locale from the current user's settings
+     */
+    public Locale getWorkplaceLocale() {
+
+        return OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
     }
 
     /**
@@ -439,4 +524,28 @@ public final class CmsJspStandardContextBean {
             m_cms = cms;
         }
     }
+
+    /**
+     * Reads a dynamic function bean, given its name in the module configuration.<p>
+     * 
+     * @param configuredName the name of the dynamic function in the module configuration  
+     * @return the dynamic function bean for the dynamic function configured under that name 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsDynamicFunctionBean readDynamicFunctionBean(String configuredName) throws CmsException {
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            m_cms,
+            m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
+        CmsFunctionReference functionRef = config.getFunctionReference(configuredName);
+        if (functionRef == null) {
+            return null;
+        }
+        CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+        CmsResource functionResource = m_cms.readResource(functionRef.getStructureId());
+        CmsDynamicFunctionBean result = parser.parseFunctionBean(m_cms, functionResource);
+        return result;
+    }
+
 }

@@ -29,7 +29,6 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
@@ -96,17 +95,7 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         for (String filename : getFilesToUnzip(false)) {
             CmsClientStringUtil.pushArray(filesToUnzip, filename);
         }
-
-        // trigger the upload
-        upload(
-            getUploadUri(),
-            I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG,
-            I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME,
-            I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME,
-            getTargetFolder(),
-            filesToUpload,
-            filesToUnzip,
-            this);
+        upload(getUploadUri(), getTargetFolder(), filesToUpload, filesToUnzip, this);
     }
 
     /**
@@ -174,8 +163,6 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
      * Sends a post request to the upload JSP.<p>
      * 
      * @param uploadUri the URI of the JSP that performs the upload
-     * @param encodedFieldName the field name that stores the encoded flag
-     * @param targetFolderFieldName the field name that stores the target folder
      * @param targetFolder the target folder to upload
      * @param filesToUpload the file names to upload
      * @param filesToUnzip the file names that should be unziped
@@ -183,13 +170,18 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
      */
     private native void upload(
         String uploadUri,
-        String encodedFieldName,
-        String targetFolderFieldName,
-        String unzipFilesFieldName,
         String targetFolder,
         JsArray<CmsFileInfo> filesToUpload,
         JavaScriptObject filesToUnzip,
         CmsUploadDialogFileApiImpl dialog) /*-{
+
+        function addPlainField(requestBody, fieldName, fieldValue) {
+            requestBody += "Content-Disposition: form-data; name=" + fieldName
+                    + "\r\n";
+            requestBody += "Content-Type: text/plain\r\n\r\n";
+            requestBody += fieldValue + "\r\n";
+            requestBody += "--" + boundary + "--";
+        }
 
         // is executed when there was an error during reading the file
         function errorHandler(evt) {
@@ -204,7 +196,13 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             if (fileData == null) {
                 fileData = "";
             }
-            body += "Content-Disposition: form-data; name=\"file_" + curIndex
+            var fileInputName = "file_" + curIndex;
+            addPlainField(
+                    body,
+                    fileInputName
+                            + @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                    encodeURI(fileName));
+            body += "Content-Disposition: form-data; name=\"" + fileInputName
                     + "\"; filename=\"" + encodeURI(fileName) + "\"\r\n";
             body += "Content-Type: application/octet-stream\r\n\r\n";
             body += fileData + "\r\n";
@@ -239,27 +237,18 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         // appends the infos to the request body 
         // should be called at end of creating the body because the boundary is closed here
         function appendInfos() {
-
-            body += "Content-Disposition: form-data; name=" + encodedFieldName
-                    + "\r\n";
-            body += "Content-Type: text/plain\r\n\r\n";
-            body += "true\r\n";
-            body += "--" + boundary + "\r\n";
-
             for ( var i = 0; i < filesToUnzip.length; ++i) {
                 var filename = filesToUnzip[i];
-                body += "Content-Disposition: form-data; name="
-                        + unzipFilesFieldName + "\r\n";
-                body += "Content-Type: text/plain\r\n\r\n";
-                body += encodeURI(filename) + "\r\n";
-                body += "--" + boundary + "\r\n";
+                addPlainField(
+                        body,
+                        @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                        encodeURI(filename));
             }
 
-            body += "Content-Disposition: form-data; name="
-                    + targetFolderFieldName + "\r\n";
-            body += "Content-Type: text/plain\r\n\r\n";
-            body += targetFolder + "\r\n";
-            body += "--" + boundary + "--";
+            addPlainField(
+                    body,
+                    @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                    targetFolder);
         }
 
         // the uri to call

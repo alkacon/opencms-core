@@ -131,12 +131,22 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
                 cssSmall.setImageUri(getIconUri(settings.getIcon()));
                 cssSmall.addSelectorForType(typeName, true);
                 cssSmall.writeCss(m_buffer);
-            } else {
+            } else if (settings.getOriginalIcon() != null) {
                 CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
                 css.setImageUri(getIconUri(settings.getIcon()));
                 css.addSelectorForType(typeName, true);
                 css.addSelectorForType(typeName, false);
                 css.writeCss(m_buffer);
+            } else {
+                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
+                css.setImageUri(getIconUri(CmsExplorerTypeSettings.DEFAULT_BIG_ICON));
+                css.addSelectorForType(typeName, false);
+                css.writeCss(m_buffer);
+
+                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
+                cssSmall.setImageUri(getIconUri(CmsExplorerTypeSettings.DEFAULT_NORMAL_ICON));
+                cssSmall.addSelectorForType(typeName, true);
+                cssSmall.writeCss(m_buffer);
             }
 
             Map<String, CmsIconRule> iconRules = settings.getIconRules();

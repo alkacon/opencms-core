@@ -93,7 +93,7 @@ public class CmsADEConfigData {
     private CmsObject m_cms;
 
     /** The list of configured function references. */
-    private List<CmsFunctionReference> m_functionReferences;
+    private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
 
     /** A flag which keeps track of whether this instance has already been initialized. */
     private boolean m_initialized;
@@ -205,6 +205,9 @@ public class CmsADEConfigData {
             for (C parent : Lists.reverse(parentConfigs)) {
                 map.put(parent.getKey(), parent);
             }
+        }
+        if (childConfigs == null) {
+            childConfigs = Collections.emptyList();
         }
         for (C child : Lists.reverse(childConfigs)) {
             String childKey = child.getKey();
@@ -378,6 +381,24 @@ public class CmsADEConfigData {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Gets a named function reference.<p>
+     * 
+     * @param name the name of the function reference 
+     * 
+     * @return the function reference for the given name 
+     */
+    public CmsFunctionReference getFunctionReference(String name) {
+
+        List<CmsFunctionReference> functionReferences = getFunctionReferences();
+        for (CmsFunctionReference functionRef : functionReferences) {
+            if (functionRef.getName().equals(name)) {
+                return functionRef;
+            }
+        }
+        return null;
     }
 
     /**

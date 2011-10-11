@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.jsp.CmsJspTagImage;
 import org.opencms.util.CmsFileUtil;
 
 import junit.framework.TestCase;
@@ -108,5 +109,131 @@ public class TestCmsImageScaler extends TestCase {
         assertFalse(image.isDownScaleRequired(downScaler));
         downScaler = new CmsImageScaler("w:400,h:500,t:1,q:80");
         assertTrue(image.isDownScaleRequired(downScaler));
+    }
+
+    /**
+     * Tests the image scaling type 5.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testScaleType5() throws Exception {
+
+        CmsImageScaler baseImage;
+        CmsImageScaler rescaler;
+        CmsImageScaler resultScaler;
+
+        // Test with a square image
+        baseImage = new CmsImageScaler("w:250,h:250");
+        // Rescaler allows 100 to 150 Pixel size
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setMaxHeight(150);
+        rescaler.setMaxWidth(150);
+        rescaler.setType(5);
+
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+
+        // Test with rectangular images
+        baseImage = new CmsImageScaler("w:200,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(150, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:450,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:350,h:300");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(86, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+
+        // Test with small images
+        baseImage = new CmsImageScaler("w:50,h:100");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:50,h:150");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(150, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+        baseImage = new CmsImageScaler("w:150,h:50");
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(50, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+    }
+
+    /**
+     * Tests the image scaling type 5 in the image tag (with cropping).<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testScaleType5InImageTag() throws Exception {
+
+        CmsImageScaler baseImage;
+        CmsImageScaler rescaler;
+        CmsImageScaler resultScaler;
+
+        // Test with a square image
+        baseImage = new CmsImageScaler("w:250,h:250");
+        // Rescaler allows 100 to 150 Pixel size
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setMaxHeight(150);
+        rescaler.setMaxWidth(150);
+        rescaler.setType(5);
+
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, null);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(5, resultScaler.getType());
+
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "cw:175,ch:175,cx:25,cy:25");
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
+
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "cw:200,ch:50,cx:25,cy:25");
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(38, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
+
+        // check what happens if the rescale parameter already contain the original image height / width
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "h:250,w:250,cw:200,ch:50,cx:25,cy:25");
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(38, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
+
+        // check what happens if the rescale parameter contain some random height / width
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "h:999,w:999,cw:50,ch:200,cx:25,cy:25");
+        assertEquals(38, resultScaler.getWidth());
+        assertEquals(150, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
+
+        // check what happens if the crop is smaller then the target box, in this case the smaller image size prevails
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "cw:50,ch:75,cx:25,cy:25");
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(75, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
+        resultScaler = CmsJspTagImage.getScaler(rescaler, baseImage, "cw:150,ch:100,cx:25,cy:25");
+        assertEquals(150, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertTrue(resultScaler.isCropping());
+        assertEquals(5, resultScaler.getType());
     }
 }

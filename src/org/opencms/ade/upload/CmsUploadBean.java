@@ -185,7 +185,7 @@ public class CmsUploadBean extends CmsJspBean {
             // try to create the resources on the VFS
             createResources(listener);
             // trigger update offline indexes, important for gallery search
-            OpenCms.getSearchManager().updateOfflineIndexes();
+            OpenCms.getSearchManager().updateOfflineIndexes(2500);
         } catch (CmsException e) {
             // an error occurred while creating the resources on the VFS, create a special error message
             LOG.error(e.getMessage(), e);
@@ -231,22 +231,20 @@ public class CmsUploadBean extends CmsJspBean {
         // get the target folder
         String targetFolder = getTargetFolder();
 
-        boolean isEncoded = isFileNameEncoded();
-        List<String> filesToUnzip = getFilesToUnzip(isEncoded);
+        List<String> filesToUnzip = getFilesToUnzip();
 
         // iterate over the list of files to upload and create each single resource
-        for (FileItem fi : m_multiPartFileItems) {
-            if ((fi != null) && (!fi.isFormField())) {
-
+        for (FileItem fileItem : m_multiPartFileItems) {
+            if ((fileItem != null) && (!fileItem.isFormField())) {
                 // read the content of the file
-                byte[] content = fi.get();
-                fi.delete();
+                byte[] content = fileItem.get();
+                fileItem.delete();
 
                 // determine the new resource name
-                String fileName = fi.getName();
-                if (isEncoded) {
-                    fileName = URLDecoder.decode(fi.getName(), "UTF-8");
-                }
+                String fileName = m_parameterMap.get(fileItem.getFieldName()
+                    + I_CmsUploadConstants.UPLOAD_FILENAME_ENCODED_SUFFIX)[0];
+                fileName = URLDecoder.decode(fileName, "UTF-8");
+
                 if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
                     // import the zip
                     CmsImportFolder importZip = new CmsImportFolder();
@@ -406,18 +404,14 @@ public class CmsUploadBean extends CmsJspBean {
      * 
      * @throws UnsupportedEncodingException if something goes wrong
      */
-    private List<String> getFilesToUnzip(boolean isEncoded) throws UnsupportedEncodingException {
+    private List<String> getFilesToUnzip() throws UnsupportedEncodingException {
 
         if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME) != null) {
             String[] filesToUnzip = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME);
             if (filesToUnzip != null) {
                 List<String> result = new ArrayList<String>();
                 for (String filename : filesToUnzip) {
-                    if (isEncoded) {
-                        result.add(URLDecoder.decode(filename, "UTF-8"));
-                    } else {
-                        result.add(filename);
-                    }
+                    result.add(URLDecoder.decode(filename, "UTF-8"));
                 }
                 return result;
             }
@@ -457,25 +451,6 @@ public class CmsUploadBean extends CmsJspBean {
             targetFolder += "/";
         }
         return targetFolder;
-    }
-
-    /**
-     * Gets the encoding flag from the request parameters and returns <code>true</code>
-     * if the value of the according field is set to <code>true</code>.<p> 
-     * 
-     * @return <code>true</code> if the flag is set to true
-     */
-    private boolean isFileNameEncoded() {
-
-        if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG) != null) {
-            String flag = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_FILE_NAME_URL_ENCODED_FLAG)[0];
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(flag)) {
-                if (flag.equalsIgnoreCase(Boolean.TRUE.toString())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**

@@ -29,12 +29,15 @@ package org.opencms.ade.sitemap;
 
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Helper class for recalculating navigation positions when a user has changed the order of navigation entries in the sitemap
@@ -111,11 +114,14 @@ public class CmsSitemapNavPosCalculator {
         }
     }
 
-    /** The insert position in the final result list. */
-    private int m_insertPositionInResult;
-
     /** Dummy file name for the inserted dummy navigation element. */
     public static final String DUMMY_PATH = "@moved@";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSitemapNavPosCalculator.class);
+
+    /** The insert position in the final result list. */
+    private int m_insertPositionInResult;
 
     /** The final result list. */
     private List<CmsJspNavElement> m_resultList;
@@ -299,10 +305,28 @@ public class CmsSitemapNavPosCalculator {
     private List<Float> interpolateDownwards(float max, int steps) {
 
         List<Float> result = new ArrayList<Float>();
-        for (int i = 0; i < steps; i++) {
-            result.add(new Float(max - 1 - i));
+        if (max > 0) {
+            // We try to generate a "nice" descending list of non-negative floats
+            // where the step size is bigger for bigger "max" values. 
+            float base = (max > 1) ? (float)Math.floor(max) : max;
+            float stepSize = 1000f;
+
+            // reduce step size until the smallest element is greater than max/10.
+            while ((base - (steps * stepSize)) < (max / 10.0f)) {
+                stepSize = reduceStepSize(stepSize);
+            }
+            // we have determined the step size, now we generate the actual numbers 
+            for (int i = 0; i < steps; i++) {
+                result.add(new Float(base - ((i + 1) * stepSize)));
+            }
+            Collections.reverse(result);
+        } else {
+            LOG.warn("Invalid navpos value: " + max);
+            for (int i = 0; i < steps; i++) {
+                result.add(new Float(max - (i + 1)));
+            }
+            Collections.reverse(result);
         }
-        Collections.reverse(result);
         return result;
     }
 
@@ -374,5 +398,22 @@ public class CmsSitemapNavPosCalculator {
             result.add(new Float(min + 1 + i));
         }
         return result;
+    }
+
+    /**
+     * Reduces the step size for generating descending navpos sequences.<p>
+     * 
+     * @param oldStepSize the previous step size
+     *   
+     * @return the new (smaller) step size 
+     */
+    private float reduceStepSize(float oldStepSize) {
+
+        if (oldStepSize > 1) {
+            // try to reduce unnecessary digits after the decimal point 
+            return oldStepSize / 10f;
+        } else {
+            return oldStepSize / 2f;
+        }
     }
 }

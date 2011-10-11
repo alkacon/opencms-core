@@ -255,14 +255,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Registers a new sitemap entry.<p>
      * 
      * @param newEntry the new entry
+     * @param structureId the structure id of the model page (if null, uses default model page)
      */
-    public void create(final CmsClientSitemapEntry newEntry) {
+    public void create(final CmsClientSitemapEntry newEntry, CmsUUID structureId) {
 
-        create(
-            newEntry,
-            m_data.getDefaultNewElementInfo().getId(),
-            m_data.getDefaultNewElementInfo().getCopyResourceId(),
-            null);
+        if (structureId == null) {
+            structureId = m_data.getDefaultNewElementInfo().getCopyResourceId();
+        }
+        create(newEntry, m_data.getDefaultNewElementInfo().getId(), structureId, null);
     }
 
     /**
@@ -295,6 +295,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void createSubEntry(final CmsClientSitemapEntry parent) {
 
+        createSubEntry(parent, null);
+    }
+
+    /**
+     * Creates a new sub-entry of an existing sitemap entry.<p>
+     * 
+     * @param parent the entry to which a new sub-entry should be added
+     * @param structureId the structure id of the model page (if null, uses default model page) 
+     */
+    public void createSubEntry(final CmsClientSitemapEntry parent, final CmsUUID structureId) {
+
         final CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
         CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(parent.getId());
         AsyncCallback<CmsClientSitemapEntry> callback = new AsyncCallback<CmsClientSitemapEntry>() {
@@ -316,7 +327,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 newEntry.setNew(true);
                 newEntry.setInNavigation(true);
                 newEntry.setResourceTypeName("folder");
-                create(newEntry);
+                create(newEntry, structureId);
             }
         };
 
@@ -325,7 +336,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         } else {
             callback.onSuccess(parent);
         }
-
     }
 
     /**

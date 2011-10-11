@@ -124,7 +124,7 @@ public class CmsImageScaler {
     private Color m_color;
 
     /** The height for image cropping. */
-    private int m_cropHeigt;
+    private int m_cropHeight;
 
     /** The width for image cropping. */
     private int m_cropWidth;
@@ -143,6 +143,12 @@ public class CmsImageScaler {
 
     /** The maximum image size (width * height) to apply image blurring when down scaling (setting this to high may case "out of memory" errors). */
     private int m_maxBlurSize;
+
+    /** The maximum target height (for scale type '5'). */
+    private int m_maxHeight;
+
+    /** The maximum target width (for scale type '5'). */
+    private int m_maxWidth;
 
     /** The target position (optional). */
     private int m_position;
@@ -363,9 +369,9 @@ public class CmsImageScaler {
      *
      * @return the crop area height
      */
-    public int getCropHeigt() {
+    public int getCropHeight() {
 
-        return m_cropHeigt;
+        return m_cropHeight;
     }
 
     /**
@@ -385,7 +391,7 @@ public class CmsImageScaler {
         // first re-scale the image (if required)
         CmsImageScaler result = getReScaler(target);
         // now use the crop area from the original
-        result.setCropArea(m_cropX, m_cropY, m_cropWidth, m_cropHeigt);
+        result.setCropArea(m_cropX, m_cropY, m_cropWidth, m_cropHeight);
         return result;
     }
 
@@ -552,6 +558,26 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns the maximum target height (for scale type '5').<p>
+     *
+     * @return the maximum target height (for scale type '5')
+     */
+    public int getMaxHeight() {
+
+        return m_maxHeight;
+    }
+
+    /**
+     * Returns the maximum target width (for scale type '5').<p>
+     *
+     * @return the maximum target width (for scale type '5').
+     */
+    public int getMaxWidth() {
+
+        return m_maxWidth;
+    }
+
+    /**
      * Returns the image pixel count, that is the image with multiplied by the image height.<p>
      * 
      * If this scaler is not valid (see {@link #isValid()}) the result is undefined.<p>
@@ -622,22 +648,59 @@ public class CmsImageScaler {
 
         int height = target.getHeight();
         int width = target.getWidth();
+        int type = target.getType();
 
-        if ((width > 0) && (getWidth() > 0)) {
-            // width is known, calculate height
-            float scale = (float)width / (float)getWidth();
-            height = Math.round(getHeight() * scale);
-        } else if ((height > 0) && (getHeight() > 0)) {
-            // height is known, calculate width
-            float scale = (float)height / (float)getHeight();
-            width = Math.round(getWidth() * scale);
-        } else if (isValid() && !target.isValid()) {
-            // scaler is not valid but original is, so use original size of image
-            width = getWidth();
-            height = getHeight();
+        if (type == 5) {
+            // best fit option without upscale in the provided dimensions
+            if (target.isValid()) {
+                // ensure we have sensible values for maxWidth / minWidth even if one has not been set
+                float maxWidth = target.getMaxWidth() > 0 ? target.getMaxWidth() : height;
+                float maxHeight = target.getMaxHeight() > 0 ? target.getMaxHeight() : width;
+                // calculate the factor of the image and the 3 possible target dimensions 
+                float scaleOfImage = (float)getWidth() / (float)getHeight();
+                float[] scales = new float[3];
+                scales[0] = (float)width / (float)height;
+                scales[1] = width / maxHeight;
+                scales[2] = maxWidth / height;
+                int useScale = calculateClosest(scaleOfImage, scales);
+                int[] dimensions;
+                switch (useScale) {
+                    case 0:
+                    default:
+                        dimensions = calculateDimension(getWidth(), getHeight(), width, height);
+                        break;
+                    case 1:
+                        dimensions = calculateDimension(getWidth(), getHeight(), width, (int)maxHeight);
+                        break;
+                    case 2:
+                        dimensions = calculateDimension(getWidth(), getHeight(), (int)maxWidth, height);
+                        break;
+                }
+                width = dimensions[0];
+                height = dimensions[1];
+            } else {
+                // target not valid, switch type to 1 (no upscale)
+                type = 1;
+            }
         }
 
-        if ((target.getType() == 1) && (!target.isValid())) {
+        if (type != 5) {
+            if ((width > 0) && (getWidth() > 0)) {
+                // width is known, calculate height
+                float scale = (float)width / (float)getWidth();
+                height = Math.round(getHeight() * scale);
+            } else if ((height > 0) && (getHeight() > 0)) {
+                // height is known, calculate width
+                float scale = (float)height / (float)getHeight();
+                width = Math.round(getWidth() * scale);
+            } else if (isValid() && !target.isValid()) {
+                // scaler is not valid but original is, so use original size of image
+                width = getWidth();
+                height = getHeight();
+            }
+        }
+
+        if ((type == 1) && (!target.isValid())) {
             // "no upscale" has been requested, only one target dimension was given
             if ((target.getWidth() > 0) && (getWidth() < width)) {
                 // target width was given, target image should have this width 
@@ -649,7 +712,10 @@ public class CmsImageScaler {
         }
 
         // now create and initialize the result scaler
-        return new CmsImageScaler(target, width, height);
+        CmsImageScaler result = new CmsImageScaler(target, width, height);
+        // type may have been switched
+        result.setType(type);
+        return result;
     }
 
     /**
@@ -689,6 +755,13 @@ public class CmsImageScaler {
      * <li>don't keep image aspect ratio / proportions intact
      * <li>the image will be scaled exactly to the given target size and likely will be loose proportions</ul></dd>
      * </dl>
+     * 
+     * <dt>5: Scale and keep image proportions without enlargement, target size variable with optional max width and height</dt><dd><ul>
+     * <li>dont't enlarge image
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / proportions intact
+     * <li>best fit into target width / height _OR_ width / maxHeight _OR_ maxWidth / height
+     * <li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
      * 
      * @return the type
      */
@@ -758,7 +831,7 @@ public class CmsImageScaler {
      */
     public boolean isCropping() {
 
-        return (m_cropX >= 0) && (m_cropY >= 0) && (m_cropHeigt > 0) && (m_cropWidth > 0);
+        return (m_cropX >= 0) && (m_cropY >= 0) && (m_cropHeight > 0) && (m_cropWidth > 0);
     }
 
     /**
@@ -841,7 +914,7 @@ public class CmsImageScaler {
         m_cropX = -1;
         m_cropY = -1;
         m_cropWidth = -1;
-        m_cropHeigt = -1;
+        m_cropHeight = -1;
 
         List<String> tokens = CmsStringUtil.splitAsList(parameters, ',');
         Iterator<String> it = tokens.iterator();
@@ -878,7 +951,7 @@ public class CmsImageScaler {
                     m_cropWidth = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_CROP_HEIGHT.equals(k)) {
                     // crop height
-                    m_cropHeigt = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                    m_cropHeight = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_TYPE.equals(k)) {
                     // scaling type
                     setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
@@ -965,7 +1038,7 @@ public class CmsImageScaler {
 
             if (isCropping()) {
                 // check if the crop width / height are not larger then the source image
-                if ((m_cropHeigt > image.getHeight()) || (m_cropWidth > image.getWidth())) {
+                if ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth())) {
                     // crop height / width is outside of image - return image unchanged
                     return result;
                 }
@@ -1002,14 +1075,14 @@ public class CmsImageScaler {
                     m_cropX,
                     m_cropY,
                     m_cropWidth,
-                    m_cropHeigt,
+                    m_cropHeight,
                     getWidth(),
                     getHeight(),
                     color);
             } else {
                 // image rescale operation
                 switch (getType()) {
-                    // select the "right" method of scaling according to the "t" parameter
+                // select the "right" method of scaling according to the "t" parameter
                     case 1:
                         // thumbnail generation mode (like 0 but no image enlargement)
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
@@ -1024,6 +1097,12 @@ public class CmsImageScaler {
                         break;
                     case 4:
                         // don't keep image proportions, use exact target size
+                        image = scaler.resize(image, getWidth(), getHeight(), false);
+                        break;
+                    case 5:
+                        // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
+                        // image proportions have already been calculated so should not be a problem, use 
+                        // 'false' to make sure image size exactly matches height and width attributes of generated tag
                         image = scaler.resize(image, getWidth(), getHeight(), false);
                         break;
                     default:
@@ -1102,7 +1181,7 @@ public class CmsImageScaler {
         m_cropX = x;
         m_cropY = y;
         m_cropWidth = width;
-        m_cropHeigt = height;
+        m_cropHeight = height;
     }
 
     /**
@@ -1150,6 +1229,26 @@ public class CmsImageScaler {
     public void setMaxBlurSize(int maxBlurSize) {
 
         m_maxBlurSize = maxBlurSize;
+    }
+
+    /**
+     * Sets the maximum target height (for scale type '5').<p>
+     *
+     * @param maxHeight the maximum target height to set
+     */
+    public void setMaxHeight(int maxHeight) {
+
+        m_maxHeight = maxHeight;
+    }
+
+    /**
+     * Sets the  maximum target width (for scale type '5').<p>
+     *
+     * @param maxWidth the maximum target width to set
+     */
+    public void setMaxWidth(int maxWidth) {
+
+        m_maxWidth = maxWidth;
     }
 
     /**
@@ -1216,7 +1315,7 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        if ((type < 0) || (type > 4)) {
+        if ((type < 0) || (type > 5)) {
             // invalid type, use 0
             m_type = 0;
         } else {
@@ -1279,9 +1378,9 @@ public class CmsImageScaler {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_CROP_HEIGHT);
             result.append(':');
-            result.append(m_cropHeigt);
+            result.append(m_cropHeight);
         }
-        if (!isCropping() || ((m_width != m_cropWidth) || (m_height != m_cropHeigt))) {
+        if (!isCropping() || ((m_width != m_cropWidth) || (m_height != m_cropHeight))) {
             if (isCropping()) {
                 result.append(',');
             }
@@ -1334,19 +1433,75 @@ public class CmsImageScaler {
     }
 
     /**
+     * Calculate the closest match of the given base float with the list of others.<p>
+     *  
+     * @param base the base float to compare the other with
+     * @param others the list of floats to compate to the base
+     * 
+     * @return the array index of the closest match
+     */
+    private int calculateClosest(float base, float[] others) {
+
+        int result = -1;
+        float bestMatch = Float.MAX_VALUE;
+        for (int count = 0; count < others.length; count++) {
+            float difference = Math.abs(base - others[count]);
+            if (difference < bestMatch) {
+                // new best match found
+                bestMatch = difference;
+                result = count;
+            }
+            if (bestMatch == 0f) {
+                // it does not get better then this
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calculate the width and height of a source image if scaled inside the given box.<p>
+     *  
+     * @param sourceWidth the width of the source image
+     * @param sourceHeight the height of the source image
+     * @param boxWidth the width of the target box
+     * @param boxHeight the height of the target box
+     * 
+     * @return the width [0] and height [1] of the source image if scaled inside the given box
+     */
+    private int[] calculateDimension(int sourceWidth, int sourceHeight, int boxWidth, int boxHeight) {
+
+        int result[] = new int[2];
+        if ((sourceWidth <= boxWidth) && (sourceHeight <= boxHeight)) {
+            result[0] = sourceWidth;
+            result[1] = sourceHeight;
+        } else {
+            float scaleWidth = (float)boxWidth / (float)sourceWidth;
+            float scaleHeight = (float)boxHeight / (float)sourceHeight;
+            float scale = Math.min(scaleHeight, scaleWidth);
+            result[0] = Math.round(sourceWidth * scale);
+            result[1] = Math.round(sourceHeight * scale);
+        }
+
+        return result;
+    }
+
+    /**
      * Initializes the members with the default values.<p>
      */
     private void init() {
 
         m_height = -1;
         m_width = -1;
+        m_maxHeight = -1;
+        m_maxWidth = -1;
         m_type = 0;
         m_position = 0;
         m_renderMode = 0;
         m_quality = 0;
         m_cropX = -1;
         m_cropY = -1;
-        m_cropHeigt = -1;
+        m_cropHeight = -1;
         m_cropWidth = -1;
         m_color = Color.WHITE;
         m_filters = new ArrayList<String>();
@@ -1369,7 +1524,7 @@ public class CmsImageScaler {
                 m_width = m_cropWidth;
             }
             if (m_height < 0) {
-                m_height = m_cropHeigt;
+                m_height = m_cropHeight;
             }
             // set type to 0 - scale type is ignored when using crop
             setType(0);
@@ -1392,7 +1547,7 @@ public class CmsImageScaler {
         m_color = source.m_color;
         m_filters = new ArrayList<String>(source.m_filters);
         m_maxBlurSize = source.m_maxBlurSize;
-        m_cropHeigt = source.m_cropHeigt;
+        m_cropHeight = source.m_cropHeight;
         m_cropWidth = source.m_cropWidth;
         m_cropX = source.m_cropX;
         m_cropY = source.m_cropY;

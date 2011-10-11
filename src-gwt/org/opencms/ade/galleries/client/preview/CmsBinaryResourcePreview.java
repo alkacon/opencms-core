@@ -36,6 +36,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -150,9 +151,9 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#saveProperties(java.util.Map)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#saveProperties(java.util.Map, com.google.gwt.user.client.Command)
      */
-    public void saveProperties(final Map<String, String> properties) {
+    public void saveProperties(final Map<String, String> properties, final Command afterSaveCallback) {
 
         CmsRpcAction<CmsResourceInfoBean> action = new CmsRpcAction<CmsResourceInfoBean>() {
 
@@ -172,6 +173,10 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
             protected void onResponse(CmsResourceInfoBean result) {
 
                 showData(result);
+                if (afterSaveCallback != null) {
+                    afterSaveCallback.execute();
+                }
+
             }
         };
         action.execute();

@@ -2,7 +2,7 @@
     z-index: value("constants.css.zIndexPopup");
 }
 
-.popup, .popup *{
+.popup, .popup *, .popup table tr td{
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -181,7 +181,7 @@
 
 
 .alertMainContent table {
-	height: 90px;
+	min-height: 90px;
 }
 .alertTopContent {
 	margin-bottom: value("constants.css.defaultSpace");
@@ -211,4 +211,14 @@
     top: 0;
     border:1px solid value("constants.css.borderColor");
     background-color: value("constants.css.backgroundColorDialog");
+}
+
+ul.modelSelectList{
+	overflow: auto;
+	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
+	position: relative;
+	border: 1px solid value("constants.css.borderColor");
+	padding: 0 2px;
+	background: value("constants.css.backgroundColorDialog");
+	margin-top: 5px;
 }

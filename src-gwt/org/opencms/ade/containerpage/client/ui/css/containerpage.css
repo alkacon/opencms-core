@@ -15,7 +15,7 @@
 	border: none;	
 }
 
-ul.clipboardList, ul.modelSelectList{
+ul.clipboardList {
 	overflow: auto;
 	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
 	position: relative;
@@ -25,9 +25,6 @@ ul.clipboardList, ul.modelSelectList{
 }
 ul.clipboardList{
 	height: 441px;
-}
-ul.modelSelectList{
-	margin-top: 5px;
 }
 
 .showButtons {}

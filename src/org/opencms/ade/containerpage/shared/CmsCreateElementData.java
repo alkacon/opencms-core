@@ -27,6 +27,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsModelResourceInfo;
+
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

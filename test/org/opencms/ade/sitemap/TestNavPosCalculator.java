@@ -47,19 +47,9 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
      * Test constructor.<p>
      */
     public TestNavPosCalculator() {
+
         super("TestNavPosCalculator");
     }
-
-    //    /**
-    //     * Generates the test suite.<p>
-    //     * 
-    //     * @return the test suite 
-    //     */
-    //    public static Test suite() {
-    //
-    //        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-    //        return generateSetupTestWrapper(TestNavPosCalculator.class, "systemtest", "/");
-    //    }
 
     /**
      * Helper method to create a list.<p>
@@ -211,7 +201,6 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
         List<CmsJspNavElement> navs = npc.getResultList();
         int pos = npc.getInsertPositionInResult();
         checkIntegrity(navs, pos);
-
         assertTrue(checkIncreasing(navs));
         System.out.print("testInsertFrontNormal=");
         printNav(navs);
@@ -274,6 +263,9 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
             assertTrue(navs.get(insertPosition + 1).getNavPosition() > navPos);
         }
         assertTrue(checkNonDecreasing(navs));
+        for (int i = 0; i < navs.size(); i++) {
+            assertTrue(navs.get(i).getNavPosition() > 0);
+        }
     }
 
     /**

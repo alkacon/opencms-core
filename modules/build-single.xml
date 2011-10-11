@@ -400,7 +400,7 @@
 					</sourcefiles>
 					<targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
 					<sequential>
-						<!-- echo message="Deleting GWT output folder: ${module.gwt.output}"/ -->
+						<echo message="Deleting GWT output folder: ${module.gwt.output}"/>
 						<delete dir="${module.gwt.output}" failonerror="false" />
 
 						<!-- GWT compiling -->
@@ -444,6 +444,7 @@
 							</classpath>
 						</java>
 						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />
+						<delete dir="${module.gwt.output}/../../gwt-unitCache" failonerror="false" />
 					</sequential>
 				</outofdate>
 			</then>

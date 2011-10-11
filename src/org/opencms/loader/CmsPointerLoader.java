@@ -61,7 +61,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     public static final String CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED = "pointer.requestparamsupport.enabled";
 
     /** The id of this loader. */
-    public static final int RESOURCE_LOADER_ID = 4;
+    public static final int RESOURCE_POINTER_LOADER_ID = 4;
 
     /**
      * Flag that controls if parameters in requests to pointer resources are
@@ -120,7 +120,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
      * @param req
      *            the original request to the pointer
      * 
-     * @return the pointer with the parameters (if {@link #
+     * @return the pointer with the parameters
      */
     @SuppressWarnings("unchecked")
     private static String appendLinkParams(String pointerLink, HttpServletRequest req) {
@@ -138,6 +138,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
@@ -150,6 +151,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /** 
      * Destroy this ResourceLoder, this is a NOOP so far.<p>
      */
+    @Override
     public void destroy() {
 
         // NOOP
@@ -158,6 +160,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public byte[] dump(
         CmsObject cms,
         CmsResource resource,
@@ -172,6 +175,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
@@ -211,9 +215,10 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
-        return RESOURCE_LOADER_ID;
+        return RESOURCE_POINTER_LOADER_ID;
     }
 
     /**
@@ -223,6 +228,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
      * 
      * @return a describing String for the ResourceLoader 
      */
+    @Override
     public String getResourceLoaderInfo() {
 
         return Messages.get().getBundle().key(Messages.GUI_LOADER_POINTER_DEFAULT_DESC_0);
@@ -231,6 +237,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
+    @Override
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -248,6 +255,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
      *
      * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
+    @Override
     public boolean isStaticExportEnabled() {
 
         return !m_requestParamSupportEnabled;
@@ -256,6 +264,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
      */
+    @Override
     public boolean isStaticExportProcessable() {
 
         return false;
@@ -264,6 +273,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
+    @Override
     public boolean isUsableForTemplates() {
 
         return false;
@@ -272,6 +282,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
      */
+    @Override
     public boolean isUsingUriWhenLoadingTemplate() {
 
         return false;
@@ -280,6 +291,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
@@ -306,6 +318,7 @@ public class CmsPointerLoader extends CmsDumpLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
+    @Override
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) {
 
         throw new CmsRuntimeException(

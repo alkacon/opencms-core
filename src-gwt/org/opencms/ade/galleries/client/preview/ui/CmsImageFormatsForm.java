@@ -119,6 +119,9 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
     /** The image format handler. */
     private CmsImageFormatHandler m_formatHandler;
 
+    /** Flag to indicate if the formats form is enabled. */
+    private boolean m_formEnabled;
+
     /**
      * Constructor.<p>
      * 
@@ -129,7 +132,6 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
         initWidget(uiBinder.createAndBindUi(this));
 
         m_formatHandler = formatHandler;
-
         m_selectBoxLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_FORMAT_0));
         m_selectBoxLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
 
@@ -305,16 +307,20 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
             m_selectBox.setEnabled(false);
             m_resetSize.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
             m_ratioLock.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
-            m_removeCropButton.enable();
+            if (m_formEnabled) {
+                m_removeCropButton.enable();
+            }
             m_removeCropButton.setVisible(true);
             return;
         }
-        m_cropButton.enable();
-        m_heightBox.setEnabled(true);
-        m_widthBox.setEnabled(true);
-        m_selectBox.setEnabled(true);
-        m_resetSize.enable();
-        m_ratioLock.enable();
+        if (m_formEnabled) {
+            m_cropButton.enable();
+            m_heightBox.setEnabled(true);
+            m_widthBox.setEnabled(true);
+            m_selectBox.setEnabled(true);
+            m_resetSize.enable();
+            m_ratioLock.enable();
+        }
         m_removeCropButton.setVisible(false);
     }
 
@@ -335,10 +341,17 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
      */
     public void setFormEnabled(boolean enabled) {
 
+        m_formEnabled = enabled;
         m_selectBox.setEnabled(enabled);
         m_heightBox.setEnabled(enabled);
         m_widthBox.setEnabled(enabled);
-
+        if (enabled) {
+            m_cropButton.enable();
+            m_removeCropButton.enable();
+        } else {
+            m_cropButton.disable(Messages.get().key(Messages.GUI_IMAGE_NO_FORMATS_AVAILABLE_0));
+            m_removeCropButton.disable(Messages.get().key(Messages.GUI_IMAGE_NO_FORMATS_AVAILABLE_0));
+        }
     }
 
     /**

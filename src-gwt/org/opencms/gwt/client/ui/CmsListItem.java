@@ -350,6 +350,22 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public boolean initMoveHandle(CmsDNDHandler dndHandler) {
 
+        return initMoveHandle(dndHandler, false);
+    }
+
+    /**
+     * Initializes the move handle with the given drag and drop handler and adds it to the list item widget.<p>
+     * 
+     * This method will not work for list items that don't have a list-item-widget.<p>
+     * 
+     * @param dndHandler the drag and drop handler
+     * 
+     * @param addFirst if true, adds the move handle as first child 
+     * 
+     * @return <code>true</code> if initialization was successful
+     */
+    public boolean initMoveHandle(CmsDNDHandler dndHandler, boolean addFirst) {
+
         if (m_moveHandle != null) {
             return true;
         }
@@ -357,7 +373,12 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             return false;
         }
         m_moveHandle = new MoveHandle(this);
-        m_listItemWidget.addButton(m_moveHandle);
+        if (addFirst) {
+            m_listItemWidget.addButtonToFront(m_moveHandle);
+        } else {
+            m_listItemWidget.addButton(m_moveHandle);
+        }
+
         m_moveHandle.addMouseDownHandler(dndHandler);
         return true;
     }

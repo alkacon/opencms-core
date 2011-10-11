@@ -99,11 +99,23 @@ public interface I_CmsXmlContentHandler {
     String getConfiguration(I_CmsXmlSchemaType type);
 
     /**
-     * Returns the CSS resources to include into the html-page head.<p>
+     * Returns the resource-independent CSS resources to include into the html-page head.<p>
      * 
      * @return the CSS resources to include into the html-page head
      */
     Set<String> getCSSHeadIncludes();
+
+    /**
+     * Returns all the CSS resources to include into the html-page head.<p>
+     * 
+     * @param cms the current CMS context
+     * @param resource the resource from which to get the head includes 
+     * 
+     * @throws CmsException if something goes wrong 
+     * 
+     * @return the CSS resources to include into the html-page head
+     */
+    Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
      * Returns the default String value for the given XML content schema type object in the given XML content.<p> 
@@ -131,11 +143,23 @@ public interface I_CmsXmlContentHandler {
     CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource res);
 
     /**
-     * Returns the java-script resources to include into the html-page head.<p>
+     * Returns the resource-independent javascript resources to include into the html-page head.<p>
      * 
-     * @return the java-script resources to include into the html-page head
+     * @return the javascript resources to include into the html-page head
      */
     Set<String> getJSHeadIncludes();
+
+    /**
+     * Returns all the javascript resources to include into the html-page head.<p>
+     * 
+     * @param cms the current CMS context
+     * @param resource the resource for which the head includes should be retrieved 
+     * 
+     * @return the javascript resources to include into the html-page head
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
      * Returns the all mappings defined for the given element xpath.<p>
