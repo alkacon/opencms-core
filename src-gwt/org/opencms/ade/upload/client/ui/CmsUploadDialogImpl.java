@@ -37,11 +37,13 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Provides the default upload dialog without multiple file selection.<p>
@@ -147,6 +149,21 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
     }
 
     /**
+     * Creates a hidden input field with the given name and value and adds it to the form panel.<p>
+     * 
+     * @param form the form panel
+     * @param fieldName the field name
+     * @param fieldValue the field value
+     */
+    private void addHiddenField(Panel form, String fieldName, String fieldValue) {
+
+        Hidden inputField = new Hidden();
+        inputField.setName(fieldName);
+        inputField.setValue(fieldValue);
+        form.add(inputField);
+    }
+
+    /**
      * Creates a form that contains the file input fields and the target folder.<p>
      * 
      * @return the form
@@ -158,31 +175,25 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         form.setAction(getUploadUri());
         form.setEncoding(FormPanel.ENCODING_MULTIPART);
         form.setMethod(FormPanel.METHOD_POST);
-
         // create a panel that contains the file input fields and the target folder
         FlowPanel inputFieldsPanel = new FlowPanel();
         int count = 0;
         for (CmsFileInput input : m_inputsToUpload.values()) {
             String filename = input.getFiles()[0].getFileName();
-            input.setName("file_" + count++);
+            String fieldName = "file_" + count++;
+            input.setName(fieldName);
             if (getFilesToUpload().containsKey(filename)) {
                 inputFieldsPanel.add(input);
             }
+            addHiddenField(
+                inputFieldsPanel,
+                fieldName + I_CmsUploadConstants.UPLOAD_FILENAME_ENCODED_SUFFIX,
+                URL.encode(filename));
         }
-
         for (String filename : getFilesToUnzip(false)) {
-            final Hidden filesToUnzip = new Hidden();
-            filesToUnzip.setName(I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME);
-            filesToUnzip.setValue(filename);
-            inputFieldsPanel.add(filesToUnzip);
+            addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME, URL.encode(filename));
         }
-
-        final Hidden targetFolder = new Hidden();
-        targetFolder.setName(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME);
-        targetFolder.setValue(getTargetFolder());
-        inputFieldsPanel.add(targetFolder);
-
-        // make the form using the panel as widget
+        addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME, getTargetFolder());
         form.setWidget(inputFieldsPanel);
         return form;
     }

@@ -29,7 +29,6 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
@@ -120,15 +119,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         for (String filename : getFilesToUnzip(false)) {
             CmsClientStringUtil.pushArray(filesToUnzip, filename);
         }
-
-        upload(
-            getUploadUri(),
-            I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME,
-            I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME,
-            getTargetFolder(),
-            filesToUpload,
-            filesToUnzip,
-            this);
+        upload(getUploadUri(), getTargetFolder(), filesToUpload, filesToUnzip, this);
     }
 
     /**
@@ -270,8 +261,6 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      */
     private native void upload(
         String uploadUri,
-        String targetFolderFieldName,
-        String unzipFilesFieldName,
         String targetFolder,
         JsArray<CmsFileInfo> filesToUpload,
         JavaScriptObject filesToUnzip,
@@ -280,12 +269,24 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         var data = new FormData();
 
         for (i = 0; i < filesToUpload.length; i++) {
-            data.append("file_" + i, filesToUpload[i]);
+            var fieldName = "file_" + i;
+            data.append(fieldName, filesToUpload[i]);
+            data
+                    .append(
+                            fieldName
+                                    + @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                            encodeURI(filesToUpload[i].name));
         }
-        data.append(targetFolderFieldName, targetFolder);
+        data
+                .append(
+                        @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                        targetFolder);
 
         for ( var i = 0; i < filesToUnzip.length; ++i) {
-            data.append(unzipFilesFieldName, filesToUnzip[i]);
+            data
+                    .append(
+                            @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                            encodeURI(filesToUnzip[i]));
         }
 
         var xhr = new XMLHttpRequest();

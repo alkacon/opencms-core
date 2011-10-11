@@ -63,8 +63,8 @@ public interface I_CmsUploadConstants extends IsSerializable {
     /** Upload action JSP URI. */
     String UPLOAD_ACTION_JSP_URI = "/system/modules/org.opencms.ade.upload/uploadAction.jsp";
 
-    /** The name of the form field that stores the flag that signals if the filename is URL encoded. */
-    String UPLOAD_FILE_NAME_URL_ENCODED_FLAG = "upload_encoding_flag";
+    /** The encoded file name field name suffix. */
+    String UPLOAD_FILENAME_ENCODED_SUFFIX = "_filename_encoded";
 
     /** Upload JSP URI. */
     String UPLOAD_JSP_URI = "/system/modules/org.opencms.ade.upload/upload.jsp";
