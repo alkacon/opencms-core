@@ -1840,11 +1840,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
-                getName(),
-                getPath(),
-                backupPath), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
+                e);
             backupPath = null;
         }
         return backupPath;
