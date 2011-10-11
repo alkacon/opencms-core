@@ -30,10 +30,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Sitemap context menu goto sub sitemap entry.<p>
@@ -61,16 +58,7 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         String sitePath = getHoverbar().getSitePath();
-        if (!sitePath.endsWith("/")) {
-            sitePath += "/";
-        }
-        CmsSitemapController controller = getHoverbar().getController();
-        String uri = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
-        final String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
-        if ((returnCode != null) && (returnCode.length() != 0)) {
-            uri += "&returncode=" + returnCode;
-        }
-        controller.leaveEditor(uri);
+        getHoverbar().getController().openSubSiteMap(sitePath);
     }
 
     /**

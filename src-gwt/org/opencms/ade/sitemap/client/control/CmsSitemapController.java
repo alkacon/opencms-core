@@ -973,7 +973,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * 
      * @param target the leaving target
      */
-    public void leaveEditor(final String target) {
+    public void leaveEditor(String target) {
 
         Window.Location.assign(CmsCoreProvider.get().link(target));
     }
@@ -1027,6 +1027,24 @@ public class CmsSitemapController implements I_CmsSitemapController {
         if (change != null) {
             applyChange(change, null);
         }
+    }
+
+    /**
+     * Opens the sub-sitemap specified.<p>
+     * 
+     * @param sitePath the site path to the sub-sitemap folder
+     */
+    public void openSubSiteMap(String sitePath) {
+
+        if (!sitePath.endsWith("/")) {
+            sitePath += "/";
+        }
+        String uri = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
+        String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(returnCode)) {
+            uri += "&returncode=" + returnCode;
+        }
+        leaveEditor(uri);
     }
 
     /**

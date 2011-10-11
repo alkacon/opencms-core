@@ -366,6 +366,18 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Adds a mouse click handler to the icon panel.<p>
+     * 
+     * @param handler the click handler
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addIconClickHandler(ClickHandler handler) {
+
+        return m_iconPanel.addDomHandler(handler, ClickEvent.getType());
+    }
+
+    /**
      * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
      */
     public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {

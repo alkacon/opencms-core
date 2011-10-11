@@ -73,6 +73,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
@@ -155,6 +157,20 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
         itemWidget.setIcon(getIconForEntry(entry));
+        itemWidget.setIconTitle(entry.isSubSitemapType()
+        ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
+        : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        itemWidget.addIconClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if (entry.isSubSitemapType()) {
+                    getController().openSubSiteMap(entry.getSitePath());
+                } else {
+                    getController().leaveEditor(entry.getSitePath());
+                }
+            }
+        });
         final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry);
         itemWidget.setAdditionalInfoLoader(new I_CmsAdditionalInfoLoader() {
 
