@@ -49,6 +49,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -585,8 +586,8 @@ public class CmsJspTagContainer extends TagSupport {
         }
         result.append(" clientId='").append(elementBean.editorHash()).append("'");
         result.append(" alt='").append(elementBean.getSitePath()).append("'");
+        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
         if (elementBean.isCreateNew()) {
-            String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
             result.append(" newType='").append(typeName).append("'");
             CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
                 cms,
@@ -598,11 +599,13 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         result.append(" hasprops='").append(hasProperties(cms, elementBean.getResource())).append("'");
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
         boolean viewPermission = cms.hasPermissions(
             elementBean.getResource(),
             CmsPermissionSet.ACCESS_VIEW,
             false,
-            CmsResourceFilter.DEFAULT_ONLY_VISIBLE);
+            CmsResourceFilter.DEFAULT_ONLY_VISIBLE)
+            && settings.getAccess().getPermissions(cms, elementBean.getResource()).requiresViewPermission();
         result.append(" hasviewpermission='").append(viewPermission).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
         if (isGroupcontainer) {
@@ -902,12 +905,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -963,12 +964,10 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            formatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        formatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
             }

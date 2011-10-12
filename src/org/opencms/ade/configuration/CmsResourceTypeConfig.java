@@ -159,7 +159,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Checks if this resource type is creatable.<p>
      * 
      * @param cms the current CMS context 
-     * @return true if the resource type is creatable 
+     * 
+     * @return <code>true</code> if the resource type is creatable 
      * 
      * @throws CmsException if something goes wrong 
      */
@@ -198,6 +199,26 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return false;
         } finally {
             cms.getRequestContext().setSiteRoot(oldSiteRoot);
+        }
+    }
+
+    /**
+     * Checks if a resource type is viewable for the current user. 
+     * If not, this resource type should not be available at all within the ADE 'add-wizard'.<p>
+     * 
+     * @param cms the current CMS context 
+     * 
+     * @return <code>true</code> if the resource type is viewable 
+     */
+    public boolean checkViewable(CmsObject cms) {
+
+        try {
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
+            CmsResource siteRoot = cms.readResource("/");
+            return settings.getAccess().getPermissions(cms, siteRoot).requiresViewPermission();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
         }
     }
 
