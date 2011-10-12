@@ -699,6 +699,25 @@ public final class CmsStringUtil {
         return result;
     }
 
+    public static String getRelativeSubPath(String base, String path) {
+
+        String result = null;
+        base = CmsStringUtil.joinPaths(base, "/");
+        path = CmsStringUtil.joinPaths(path, "/");
+        if (path.startsWith(base)) {
+            result = path.substring(base.length());
+        }
+        if (result != null) {
+            if (result.endsWith("/")) {
+                result = result.substring(0, result.length() - 1);
+            }
+            if (!result.startsWith("/")) {
+                result = "/" + result;
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or the empty String <code>""</code>.<p> 

@@ -239,6 +239,31 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("/demopages/search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 41));
     }
 
+    public void testGetRelativeSubPath() throws Exception {
+
+        assertEquals("/", CmsStringUtil.getRelativeSubPath("/foo", "/foo/"));
+        assertEquals("/", CmsStringUtil.getRelativeSubPath("/foo", "/foo"));
+        assertEquals("/foo", CmsStringUtil.getRelativeSubPath("/bar", "/bar/foo"));
+        assertEquals("/foo", CmsStringUtil.getRelativeSubPath("/bar", "/bar/foo/"));
+        assertEquals("/foo", CmsStringUtil.getRelativeSubPath("/bar/", "/bar/foo/"));
+        assertEquals(null, CmsStringUtil.getRelativeSubPath("/foo", "/foo1"));
+        assertEquals(null, CmsStringUtil.getRelativeSubPath("/foo", "/bar"));
+    }
+
+    /**
+     * Test case for {@link CmsStringUtil#lastIndexOf(String, char[])} method.<p>
+     */
+    public void testLastIndexOf() {
+
+        int result;
+
+        result = CmsStringUtil.lastIndexOf("This is a Text", CmsStringUtil.SENTENCE_ENDING_CHARS);
+        assertEquals(-1, result);
+
+        result = CmsStringUtil.lastIndexOf("This ! is ? a . Text", CmsStringUtil.SENTENCE_ENDING_CHARS);
+        assertEquals(14, result);
+    }
+
     /**
      * Further tests.<p> 
      */
@@ -660,20 +685,6 @@ public class TestCmsStringUtil extends TestCase {
     }
 
     /**
-     * Test case for {@link CmsStringUtil#lastIndexOf(String, char[])} method.<p>
-     */
-    public void testLastIndexOf() {
-
-        int result;
-
-        result = CmsStringUtil.lastIndexOf("This is a Text", CmsStringUtil.SENTENCE_ENDING_CHARS);
-        assertEquals(-1, result);
-
-        result = CmsStringUtil.lastIndexOf("This ! is ? a . Text", CmsStringUtil.SENTENCE_ENDING_CHARS);
-        assertEquals(14, result);
-    }
-
-    /**
      * Test case for {@link CmsStringUtil#trimToSize(String, int, int, String)}.<p>
      */
     public void testTrimToSizeText() {
@@ -695,4 +706,5 @@ public class TestCmsStringUtil extends TestCase {
         result = CmsStringUtil.trimToSize(text, 75, 75, " ...");
         assertEquals(expected, result);
     }
+
 }

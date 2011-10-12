@@ -63,6 +63,9 @@ import org.safehaus.uuid.UUIDGenerator;
  */
 public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable<CmsUUID>, Externalizable {
 
+    /** A regular expression for matching UUIDs. */
+    public static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUUID.class);
 

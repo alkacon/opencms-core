@@ -43,6 +43,8 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
     // indicates if a logged error / fatal message should cause a test to fail
     private static boolean m_breakOnError;
 
+    private static I_CmsLogHandler m_handler;
+
     /**
      * Sets the "break on error" status.<p>
      * 
@@ -53,6 +55,11 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
         m_breakOnError = value;
     }
 
+    public static void setHandler(I_CmsLogHandler handler) {
+
+        m_handler = handler;
+    }
+
     /**
      * @see org.apache.log4j.WriterAppender#append(org.apache.log4j.spi.LoggingEvent)
      */
@@ -61,6 +68,9 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
 
         // first log the event as usual
         super.append(logEvent);
+        if (m_handler != null) {
+            m_handler.handleLogEvent(logEvent);
+        }
 
         if (m_breakOnError) {
             int logLevel = logEvent.getLevel().toInt();

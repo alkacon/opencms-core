@@ -94,6 +94,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROPERTY_FROZEN_1 = "ERR_PROPERTY_FROZEN_1";
 
+    public static final String ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1 = "ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REWRITE_LINKS_ROOTS_DEPENDENT_2 = "ERR_REWRITE_LINKS_ROOTS_DEPENDENT_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SECURITY_LOGIN_FAILED_1 = "ERR_SECURITY_LOGIN_FAILED_1";
 

@@ -130,6 +130,21 @@ public final class CmsObject {
     }
 
     /**
+     * Convenience method to add the site root from the current user's 
+     * request context to the given resource name.<p>
+     *
+     * @param resourcename the resource name
+     * 
+     * @return the resource name with the site root added
+     * 
+     * @see CmsRequestContext#addSiteRoot(String)
+     */
+    public String addSiteRoot(String resourcename) {
+
+        return m_context.addSiteRoot(resourcename);
+    }
+
+    /**
      * Adds a user to a group.<p>
      * 
      * @param username the name of the user that is to be added to the group
@@ -140,6 +155,69 @@ public final class CmsObject {
     public void addUserToGroup(String username, String groupname) throws CmsException {
 
         m_securityManager.addUserToGroup(m_context, username, groupname, false);
+    }
+
+    /**
+     * This method works just like {@link CmsObject#adjustLinks(String, String)}, but you can specify multiple source
+     * files, and the target folder is interpreted as the folder into which the source files have been copied.<p>
+     * 
+     * @param sourceFiles the list of source files 
+     * @param targetParentFolder the folder into which the source files have been copied
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public void adjustLinks(List<String> sourceFiles, String targetParentFolder) throws CmsException {
+
+        CmsObject cms = OpenCms.initCmsObject(this);
+        cms.getRequestContext().setSiteRoot("");
+        List<String> rootSourceFiles = new ArrayList<String>();
+        for (String sourceFile : sourceFiles) {
+            rootSourceFiles.add(addSiteRoot(sourceFile));
+        }
+        String rootTargetParentFolder = addSiteRoot(targetParentFolder);
+
+        CmsLinkRewriter rewriter = new CmsLinkRewriter(cms, rootSourceFiles, rootTargetParentFolder);
+        rewriter.rewriteLinks();
+    }
+
+    /**
+     * Adjusts all links in the target folder that point to the source folder 
+     * so that they are kept "relative" in the target folder where possible.
+     * 
+     * If a link is found from the target folder to the source folder, 
+     * then the target folder is checked if a target of the same name 
+     * is found also "relative" inside the target Folder, and if so,
+     * the link is changed to that "relative" target. This is mainly used to keep 
+     * relative links inside a copied folder structure intact. 
+     * 
+     * Example: Image we have folder /folderA/ that contains files 
+     * /folderA/x1 and /folderA/y1. x1 has a link to y1 and y1 to x1. 
+     * Now someone copies /folderA/ to /folderB/. So we end up with 
+     * /folderB/x2 and /folderB/y2. Because of the link mechanism in OpenCms, 
+     * x2 will have a link to y1 and y2 to x1. By using this method, 
+     * the links from x2 to y1 will be replaced by a link x2 to y2, 
+     * and y2 to x1 with y2 to x2.
+     * 
+     * Link replacement works for links in XML files as well as relation only
+     * type links.
+     * 
+     * @param sourceFolder the source folder
+     * @param targetFolder the target folder
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void adjustLinks(String sourceFolder, String targetFolder) throws CmsException {
+
+        String rootSourceFolder = addSiteRoot(sourceFolder);
+        String rootTargetFolder = addSiteRoot(targetFolder);
+        String siteRoot = getRequestContext().getSiteRoot();
+        getRequestContext().setSiteRoot("");
+        try {
+            CmsLinkRewriter linkRewriter = new CmsLinkRewriter(this, rootSourceFolder, rootTargetFolder);
+            linkRewriter.rewriteLinks();
+        } finally {
+            getRequestContext().setSiteRoot(siteRoot);
+        }
     }
 
     /**
@@ -1242,9 +1320,14 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
-        ? ""
-        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
+        return m_securityManager.getGroupsOfUser(
+            m_context,
+            username,
+            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
+            includeOtherOus,
+            false,
+            directGroupsOnly,
+            remoteAddress);
     }
 
     /**
@@ -3006,6 +3089,24 @@ public final class CmsObject {
      * Returns a list of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
+     * @param resource the resource
+     * @param filter a resource filter
+     * 
+     * @return a list of <code>{@link CmsResource}</code>s that 
+     *          are siblings to the specified resource, 
+     *          including the specified resource itself.
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readSiblings(CmsResource resource, CmsResourceFilter filter) throws CmsException {
+
+        return m_securityManager.readSiblings(m_context, resource, filter);
+    }
+
+    /**
+     * Returns a list of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
+     * 
      * @param resourcename the name of the specified resource
      * @param filter a resource filter
      * 
@@ -3019,24 +3120,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, filter);
         return readSiblings(resource, filter);
-    }
-
-    /**
-     * Returns a list of all siblings of the specified resource,
-     * the specified resource being always part of the result set.<p>
-     * 
-     * @param resource the resource
-     * @param filter a resource filter
-     * 
-     * @return a list of <code>{@link CmsResource}</code>s that 
-     *          are siblings to the specified resource, 
-     *          including the specified resource itself.
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List<CmsResource> readSiblings(CmsResource resource, CmsResourceFilter filter) throws CmsException {
-
-        return m_securityManager.readSiblings(m_context, resource, filter);
     }
 
     /**
@@ -3693,21 +3776,6 @@ public final class CmsObject {
     public void writeUser(CmsUser user) throws CmsException {
 
         m_securityManager.writeUser(m_context, user);
-    }
-
-    /**
-     * Convenience method to add the site root from the current user's 
-     * request context to the given resource name.<p>
-     *
-     * @param resourcename the resource name
-     * 
-     * @return the resource name with the site root added
-     * 
-     * @see CmsRequestContext#addSiteRoot(String)
-     */
-    public String addSiteRoot(String resourcename) {
-
-        return m_context.addSiteRoot(resourcename);
     }
 
     /**
