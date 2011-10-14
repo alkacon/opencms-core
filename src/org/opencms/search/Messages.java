@@ -239,6 +239,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INDEX_ACCESS_FAILED_1 = "LOG_INDEX_ACCESS_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_CLOSE_2 = "LOG_INDEX_WRITER_MSG_CLOSE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_COMMIT_2 = "LOG_INDEX_WRITER_MSG_COMMIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_CREATE_2 = "LOG_INDEX_WRITER_MSG_CREATE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_DOC_DELETE_3 = "LOG_INDEX_WRITER_MSG_DOC_DELETE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_DOC_UPDATE_3 = "LOG_INDEX_WRITER_MSG_DOC_UPDATE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEX_WRITER_MSG_OPTIMIZE_2 = "LOG_INDEX_WRITER_MSG_OPTIMIZE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXER_CREATION_FAILED_1 = "LOG_INDEXER_CREATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */

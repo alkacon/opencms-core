@@ -2164,7 +2164,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
                 e);
         }
-        return new CmsLuceneIndexWriter(indexWriter);
+        return new CmsLuceneIndexWriter(indexWriter, this);
     }
 
     /**

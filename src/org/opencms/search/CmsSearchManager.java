@@ -1969,7 +1969,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected synchronized void updateAllIndexes(CmsObject adminCms, CmsUUID publishHistoryId, I_CmsReport report) {
 
-        int oldPrio = Thread.currentThread().getPriority();
+        int oldPriority = Thread.currentThread().getPriority();
         try {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             List<CmsPublishedResource> publishedResources;
@@ -2063,7 +2063,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // clean up the extraction result cache
             cleanExtractionCache();
         } finally {
-            Thread.currentThread().setPriority(oldPrio);
+            Thread.currentThread().setPriority(oldPriority);
         }
     }
 
@@ -2167,7 +2167,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                     try {
                         writer.optimize();
-                        writer.commit();
                     } catch (IOException e) {
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(
@@ -2321,8 +2320,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         LOG.error(
                             Messages.get().getBundle().key(
                                 Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                                index.getPath(),
-                                index.getName()),
+                                index.getName(),
+                                index.getPath()),
                             e);
                     }
                 }
