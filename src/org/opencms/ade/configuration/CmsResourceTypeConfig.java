@@ -36,6 +36,7 @@ import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -66,6 +67,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /** The flag for disabling detail pages. */
     private boolean m_detailPagesDisabled;
+
     /** True if this is a disabled configuration. */
     private boolean m_disabled;
 
@@ -174,9 +176,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String folderPath = getFolderPath(cms);
         CmsObject createCms = OpenCms.initCmsObject(m_cms);
         createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
-        createFolder(createCms, folderPath);
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("");
+        tryToUnlock(cms, folderPath);
+        createFolder(createCms, folderPath);
         try {
             CmsResource permissionCheckFolder = cms.readResource(folderPath);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
@@ -307,16 +310,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * True if the detail page creation should be disabled for this resource type.<p>
-     * 
-     * @return true if detail page creation should be disabled for this type 
-     */
-    public boolean isDetailPagesDisabled() {
-
-        return m_detailPagesDisabled;
-    }
-
-    /**
      * Computes the folder path for this resource type.<p>
      * 
      * @param cms the cms context to use 
@@ -403,6 +396,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         m_cms = cms;
 
+    }
+
+    /**
+     * True if the detail page creation should be disabled for this resource type.<p>
+     * 
+     * @return true if detail page creation should be disabled for this type 
+     */
+    public boolean isDetailPagesDisabled() {
+
+        return m_detailPagesDisabled;
     }
 
     /**
@@ -495,6 +498,34 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsObject result = OpenCms.initCmsObject(cms);
         result.getRequestContext().setSiteRoot("");
         return result;
+    }
+
+    /**
+     * Tries to remove a lock on an ancestor of a given path owned by the current user.<p>
+     * 
+     * @param cms the CMS context 
+     * @param folderPath the path for which the lock should be removed 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void tryToUnlock(CmsObject cms, String folderPath) throws CmsException {
+
+        // Get path of first ancestor that actually exists 
+        while (!cms.existsResource(folderPath)) {
+            folderPath = CmsResource.getParentFolder(folderPath);
+        }
+        CmsResource resource = cms.readResource(folderPath);
+        CmsLock lock = cms.getLock(resource);
+        // we are only interested in locks we can safely unlock, i.e. locks by the current user  
+        if (lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+            // walk up the tree until we get to the location from which the lock is inherited 
+            while (lock.isInherited()) {
+                folderPath = CmsResource.getParentFolder(folderPath);
+                resource = cms.readResource(folderPath);
+                lock = cms.getLock(resource);
+            }
+            cms.unlockResource(folderPath);
+        }
     }
 
     /**
