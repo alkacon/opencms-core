@@ -62,6 +62,9 @@ import org.dom4j.Element;
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
+    /** The adjust-links-folder attribute. */
+    public static final String A_ADJUST_LINKS_FOLDER = "adjust-links-folder";
+
     /** The widget configuration attribute. */
     public static final String A_CONFIGURATION = "configuration";
 
@@ -305,6 +308,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             1);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, 0, A_SUFFIX);
 
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES,
+            "setAdjustLinksFolder",
+            1);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES, 0, A_ADJUST_LINKS_FOLDER);
+
         // copy resource rules
         digester.addCallMethod(
             "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
@@ -376,6 +385,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                 if ((copyRes != null) && (copyRes.size() > 0)) {
                     Element copyResNode = resourceType.addElement(N_COPY_RESOURCES);
                     Iterator<CmsConfigurationCopyResource> p = copyRes.iterator();
+                    String adjustLinksFolder = resType.getAdjustLinksFolder();
+                    if (adjustLinksFolder != null) {
+                        copyResNode.addAttribute(A_ADJUST_LINKS_FOLDER, adjustLinksFolder);
+                    }
                     while (p.hasNext()) {
                         CmsConfigurationCopyResource cRes = p.next();
                         Element cNode = copyResNode.addElement(N_COPY_RESOURCE);

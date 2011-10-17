@@ -625,6 +625,35 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Gets the common prefix path of two paths.<p>
+     * 
+     * @param first the first path 
+     * @param second the second path
+     *  
+     * @return the common prefix path 
+     */
+    public static String getCommonPrefixPath(String first, String second) {
+
+        List<String> firstComponents = getPathComponents(first);
+        List<String> secondComponents = getPathComponents(second);
+        int minSize = Math.min(firstComponents.size(), secondComponents.size());
+        StringBuffer resultBuffer = new StringBuffer();
+        for (int i = 0; i < minSize; i++) {
+            if (firstComponents.get(i).equals(secondComponents.get(i))) {
+                resultBuffer.append("/");
+                resultBuffer.append(firstComponents.get(i));
+            } else {
+                break;
+            }
+        }
+        String result = resultBuffer.toString();
+        if (result.length() == 0) {
+            result = "/";
+        }
+        return result;
+    }
+
+    /**
      * Returns the Integer (int) value for the given String value.<p> 
      * 
      * All parse errors are caught and the given default value is returned in this case.<p>
@@ -699,6 +728,36 @@ public final class CmsStringUtil {
         return result;
     }
 
+    /**
+     * Splits a path into its non-empty path components.<p>
+     * 
+     * If the path is the root path, an empty list will be returned.<p>
+     * 
+     * @param path the path to split
+     * 
+     * @return the list of non-empty path components 
+     */
+    public static List<String> getPathComponents(String path) {
+
+        List<String> result = CmsStringUtil.splitAsList(path, "/");
+        Iterator<String> iter = result.iterator();
+        while (iter.hasNext()) {
+            String token = iter.next();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(token)) {
+                iter.remove();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Converts a given path to a path relative to a base folder, but only if it actually is a sub-path of the latter, otherwise null is returned.<p>
+     * 
+     * @param base the base path 
+     * @param path the path which should be converted to a relative path 
+     * 
+     * @return 'path' converted to a path relative to 'base', or null if 'path' is not a sub-folder of 'base'
+     */
     public static String getRelativeSubPath(String base, String path) {
 
         String result = null;

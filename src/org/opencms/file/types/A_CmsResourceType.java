@@ -56,8 +56,10 @@ import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -133,6 +135,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The configured name of this resource type. */
     protected String m_typeName;
+
+    /** The folder for which links should be adjusted after copying the copy-resources. */
+    private String m_adjustLinksFolder;
 
     /** The gallery preview provider. */
     private String m_galleryPreviewProvider;
@@ -412,6 +417,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             }
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getAdjustLinksFolder()
+     */
+    public String getAdjustLinksFolder() {
+
+        return m_adjustLinksFolder;
     }
 
     /**
@@ -778,6 +791,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#setAdjustLinksFolder(String)
+     */
+    public void setAdjustLinksFolder(String adjustLinksFolder) {
+
+        m_adjustLinksFolder = adjustLinksFolder;
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
     public void setDateExpired(
@@ -1000,6 +1021,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected void processCopyResources(CmsObject cms, String resourcename, CmsMacroResolver resolver) {
 
         Iterator<CmsConfigurationCopyResource> i = m_copyResources.iterator();
+        Map<String, String> copiedResources = new HashMap<String, String>();
         while (i.hasNext()) {
             CmsConfigurationCopyResource copyResource = i.next();
 
@@ -1019,6 +1041,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             try {
                 // copy the resource
                 cms.copyResource(copyResource.getSource(), target, copyResource.getType());
+                copiedResources.put(copyResource.getSource(), target);
                 if (CmsMacroResolver.isMacro(oriTarget, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
                     // copied resources should be touched in order to be able to do additional stuff
                     CmsResource res = cms.readResource(target);
@@ -1057,6 +1080,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                         target));
                 }
             }
+        }
+        // only adjust links for successfully copied resources and if the feature is enabled
+        try {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_adjustLinksFolder) && !copiedResources.isEmpty()) {
+                String realAdjustFolderPath = resolver.resolveMacros(m_adjustLinksFolder);
+                cms.adjustLinks(copiedResources, realAdjustFolderPath);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        } catch (CmsIllegalArgumentException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 

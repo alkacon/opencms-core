@@ -113,6 +113,20 @@ public class CmsLinkRewriter {
     }
 
     /**
+     * Creates a new link rewriter for a list of sources and corresponding targets.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param targetPath the target root path 
+     * @param sourceTargetPairs the list of source-target pairs
+     */
+    public CmsLinkRewriter(CmsObject cms, String targetPath, List<CmsPair<String, String>> sourceTargetPairs) {
+
+        m_cms = cms;
+        m_targetPath = targetPath;
+        m_sourceTargetPairs = sourceTargetPairs;
+    }
+
+    /**
      * Creates a link rewriter for use after a single copy operation.<p>
      * 
      * @param cms the current CMS context 

@@ -239,6 +239,28 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("/demopages/search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 41));
     }
 
+    /**
+     * Test for getting the common prefix of two paths.
+     */
+    public void testGetCommonPrefixPath() {
+
+        assertEquals("/", CmsStringUtil.getCommonPrefixPath("/foo", "/bar"));
+        assertEquals("/foo", CmsStringUtil.getCommonPrefixPath("/foo/bar", "/foo/baz"));
+        assertEquals("/foo", CmsStringUtil.getCommonPrefixPath("/foo/bar/", "/foo/baz"));
+        assertEquals("/foo", CmsStringUtil.getCommonPrefixPath("/foo/bar/", "/foo/baz/"));
+        assertEquals("/foo/bar", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz/qux", "/foo/bar/xyzzy/narf"));
+        assertEquals("/foo/bar", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz/qux", "/foo/bar/"));
+        assertEquals("/foo/bar", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz/qux", "/foo/bar/xyzzy/narf/quop"));
+        assertEquals("/foo/bar", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz", "/foo/bar/baz1"));
+        assertEquals("/", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz/qux", "/qux/baz/bar/foo"));
+        assertEquals("/", CmsStringUtil.getCommonPrefixPath("/foo/bar/baz/qux", "/"));
+    }
+
+    /**
+     * Test for the getRelativeSubPath utility method.<p>
+     * 
+     * @throws Exception
+     */
     public void testGetRelativeSubPath() throws Exception {
 
         assertEquals("/", CmsStringUtil.getRelativeSubPath("/foo", "/foo/"));

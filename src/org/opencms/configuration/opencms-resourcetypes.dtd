@@ -38,5 +38,6 @@
 -->	
 
 <!ELEMENT copy-resources (copy-resource*)>
+<!ATTLIST copy-resources adjust-links-folder CDATA #IMPLIED>
 <!ELEMENT copy-resource EMPTY>
 <!ATTLIST copy-resource source CDATA #REQUIRED target CDATA #IMPLIED type (new|sibling|preserve) #IMPLIED>

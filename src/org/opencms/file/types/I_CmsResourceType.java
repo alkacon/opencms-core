@@ -350,6 +350,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException;
 
     /**
+     * Gets the folder for which the links should be adjusted after processing the copy resources.<p>
+     * 
+     * @return the path of the folder for which the links should be adjusted 
+     */
+    String getAdjustLinksFolder();
+
+    /**
      * Returns the default for the <code>cache</code> property setting of this resource type.<p>
      * 
      * The <code>cache</code> property is used by the Flex cache implementation 
@@ -667,6 +674,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param additionalType true or false
      */
     void setAdditionalModuleResourceType(boolean additionalType);
+
+    /**
+     * Sets the folder for adjusting links after copying the copy-resources.<p>
+     * 
+     * @param adjustLinksFolder the folder for which links should be adjusted 
+     */
+    void setAdjustLinksFolder(String adjustLinksFolder);
 
     /**
      * Changes the "expire" date of a resource.<p>

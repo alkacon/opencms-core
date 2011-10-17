@@ -57,6 +57,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -177,6 +178,31 @@ public final class CmsObject {
         String rootTargetParentFolder = addSiteRoot(targetParentFolder);
 
         CmsLinkRewriter rewriter = new CmsLinkRewriter(cms, rootSourceFiles, rootTargetParentFolder);
+        rewriter.rewriteLinks();
+    }
+
+    /**
+     * This method works just like {@link CmsObject#adjustLinks(String, String)}, but instead of specifying 
+     * a single source and target folder, you can specify multiple sources and the corresponding targets in 
+     * a map of strings.
+     * 
+     * @param sourceTargetMap a map with the source files as keys and the corresponding targets as values
+     * @param targetParentFolder the folder into which the source files have been copied
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public void adjustLinks(Map<String, String> sourceTargetMap, String targetParentFolder) throws CmsException {
+
+        CmsObject cms = OpenCms.initCmsObject(this);
+        cms.getRequestContext().setSiteRoot("");
+        List<CmsPair<String, String>> sourcesAndTargets = new ArrayList<CmsPair<String, String>>();
+        for (Map.Entry<String, String> entry : sourceTargetMap.entrySet()) {
+            String rootSource = addSiteRoot(entry.getKey());
+            String rootTarget = addSiteRoot(entry.getValue());
+            sourcesAndTargets.add(CmsPair.create(rootSource, rootTarget));
+        }
+        String rootTargetParentFolder = addSiteRoot(targetParentFolder);
+        CmsLinkRewriter rewriter = new CmsLinkRewriter(cms, rootTargetParentFolder, sourcesAndTargets);
         rewriter.rewriteLinks();
     }
 
