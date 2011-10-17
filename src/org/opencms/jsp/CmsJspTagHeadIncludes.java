@@ -83,6 +83,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     /** Serial version UID required for safe serialisation. */
     private static final long serialVersionUID = 5496349529835666345L;
 
+    /** The value of the closetags attribute. */
+    private String m_closeTags;
+
     /** The default include resources separated by '|'. */
     private String m_defaults;
 
@@ -256,6 +259,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     }
 
     /**
+     * Sets the value of the closetags attribute.<p>
+     * 
+     * @param closeTags the value of the closetags attribute 
+     */
+    public void setClosetags(String closeTags) {
+
+        m_closeTags = closeTags;
+    }
+
+    /**
      * Sets the default include resources separated by '|'.<p>
      *
      * @param defaults the default include resources to set
@@ -273,6 +286,19 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     public void setType(String type) {
 
         m_type = type;
+    }
+
+    /**
+     * Returns true if the headincludes tag should be closed.<p>
+     * 
+     * @return true if the headincludes tag should be closed 
+     */
+    public boolean shouldCloseTags() {
+
+        if (m_closeTags == null) {
+            return true;
+        }
+        return Boolean.parseBoolean(m_closeTags);
     }
 
     /**
@@ -327,7 +353,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 "<link href=\""
                     + CmsJspTagLink.linkTagAction(cssUri, req)
                     + generateReqParams()
-                    + "\" rel=\"stylesheet\" type=\"text/css\"></link>");
+                    + "\" rel=\"stylesheet\" type=\"text/css\">");
+            if (shouldCloseTags()) {
+                pageContext.getOut().print("</link>");
+            }
         }
     }
 
