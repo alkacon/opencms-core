@@ -645,6 +645,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void setIncludeExpired(boolean includeExpired) {
 
         m_searchObject.setIncludeExpired(includeExpired);
+        m_searchObjectChanged = true;
+        ValueChangeEvent.fire(this, m_searchObject);
     }
 
     /**

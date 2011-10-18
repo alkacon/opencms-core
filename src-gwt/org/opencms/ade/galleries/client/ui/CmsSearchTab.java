@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -46,6 +47,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -188,6 +190,21 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * Internal handler for the include expired check-box.<p>
+     */
+    protected class IncludeExpiredChangeHandler implements ValueChangeHandler<Boolean> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+            Boolean value = event.getValue();
+            m_tabHandler.setIncludeExpired(value.booleanValue());
+        }
+    }
+
+    /**
      * The language selection handler.<p>
      * 
      * Delegates the methods to the search tab handler.<p>
@@ -269,22 +286,6 @@ public class CmsSearchTab extends A_CmsTab {
         }
     }
 
-    /**
-     * Internal handler for the include expired check-box.<p>
-     */
-    protected class IncludeExpiredChangeHandler implements ValueChangeHandler<String> {
-
-        /**
-         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-         */
-        public void onValueChange(ValueChangeEvent<String> event) {
-
-            String value = event.getValue();
-            m_tabHandler.setIncludeExpired(Boolean.parseBoolean(value));
-
-        }
-    }
-
     /** The ui-binder interface. */
     interface I_CmsSearchTabUiBinder extends UiBinder<HTMLPanel, CmsSearchTab> {
         // GWT interface, nothing to do here
@@ -334,6 +335,14 @@ public class CmsSearchTab extends A_CmsTab {
     /** The label for the modified since date. */
     @UiField
     protected Label m_dateModifiedStartLabel;
+
+    /** The include expired resources check-box. */
+    @UiField
+    protected CmsCheckBox m_includeExpiredCheckBox;
+
+    /** The include expired resources form row. */
+    @UiField
+    protected DivElement m_includeExpiredRow;
 
     /** The label for the language selection. */
     @UiField
@@ -444,7 +453,9 @@ public class CmsSearchTab extends A_CmsTab {
         QueryChangedHandler queryHandler = new QueryChangedHandler();
         m_searchInput.addValueChangeHandler(queryHandler);
         m_searchInput.addKeyPressHandler(queryHandler);
-
+        m_includeExpiredCheckBox.setChecked(false);
+        m_includeExpiredCheckBox.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0));
+        m_includeExpiredCheckBox.addValueChangeHandler(new IncludeExpiredChangeHandler());
         // set the labels for the date box widgets
         m_dateCreatedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0));
         m_dateCreatedEndLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0));
@@ -486,7 +497,18 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateCreatedEndDateBox.setValue(null, true);
         m_dateModifiedStartDateBox.setValue(null, true);
         m_dateModifiedEndDateBox.setValue(null, true);
+        m_includeExpiredCheckBox.setChecked(false);
         m_localeSelection.reset();
+    }
+
+    /**
+     * Enables the include expired resources form input.<p>
+     * 
+     * @param enable <code>true</code> to enable the include expired resources form input
+     */
+    public void enableExpiredResourcesSearch(boolean enable) {
+
+        m_includeExpiredRow.getStyle().setDisplay(enable ? Display.BLOCK : Display.NONE);
     }
 
     /**
@@ -576,6 +598,12 @@ public class CmsSearchTab extends A_CmsTab {
         }
         result.append(modifiedResult);
 
+        if (m_includeExpiredCheckBox.getFormValue().booleanValue()) {
+            if (result.length() > 0) {
+                result.append(", ");
+            }
+            result.append(Messages.get().key(Messages.GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0));
+        }
         return result.toString();
     }
 

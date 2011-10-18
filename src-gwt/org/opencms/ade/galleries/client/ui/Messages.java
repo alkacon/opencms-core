@@ -178,6 +178,9 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_GALLERIES_0 = "GUI_PARAMS_LABEL_GALLERIES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0 = "GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_SEARCH_0 = "GUI_PARAMS_LABEL_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
@@ -311,6 +314,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0 = "GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0 = "GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0";

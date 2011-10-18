@@ -28,6 +28,12 @@
 					<input:CmsTextBox ui:field="m_searchInput" />
 				</div>
 			</div>
+			<div ui:field="m_includeExpiredRow" class="{galleryResources.galleryDialogCss.searchTabRow}">
+				<div  class="{galleryResources.galleryDialogCss.searchTabLabelLeft}">&nbsp;</div>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
+					<input:CmsCheckBox ui:field="m_includeExpiredCheckBox" />
+				</div>
+			</div>
 			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_dateCreatedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
 				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">

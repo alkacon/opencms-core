@@ -129,21 +129,21 @@ div.searchTabRowRightAlign {
 	text-align: right;
 }
 div.searchTabLabelLeft {
-	width: 115px;
+	width: 129px;
 	float: left;
 	margin-top: 2px;
 }
 div.searchTabLabelRight {
-	width: 120px;
+	width: 134px;
 	float: right;
 	margin-top: 2px;
 }
 div.searchTabInputLeft {
-	width: 166px;
+	width: 152px;
 	float: left;
 }
 div.searchTabInputRight {
-	width: 166px;
+	width: 152px;
 	float: right;
 }
 div.searchTabInputWide {

@@ -156,6 +156,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setDateModifiedEnd(searchObj.getDateModifiedEnd());
         setDateModifiedStart(searchObj.getDateModifiedStart());
         setScope(searchObj.getScope());
+        setIncludeExpired(searchObj.isIncludeExpired());
     }
 
     /**
