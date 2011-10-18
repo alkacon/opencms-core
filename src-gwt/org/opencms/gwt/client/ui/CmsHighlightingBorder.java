@@ -36,6 +36,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -133,11 +134,7 @@ public class CmsHighlightingBorder extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         getWidget().addStyleName(color.getCssClass());
-        Style style = getElement().getStyle();
-        style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
-        style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight(height + 2 * BORDER_OFFSET - BORDER_WIDTH);
-        setWidth(width + 2 * BORDER_OFFSET - BORDER_WIDTH);
+        setPosition(height, width, positionLeft, positionTop);
     }
 
     /**
@@ -161,19 +158,6 @@ public class CmsHighlightingBorder extends Composite {
     /**
      * Sets the border position.<p>
      * 
-     * @param positionLeft the absolute left position
-     * @param positionTop the absolute top position
-     */
-    public void setPosition(int positionLeft, int positionTop) {
-
-        Style style = getElement().getStyle();
-        style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
-        style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-    }
-
-    /**
-     * Sets the border position.<p>
-     * 
      * @param height the height
      * @param width the width
      * @param positionLeft the absolute left position
@@ -181,11 +165,24 @@ public class CmsHighlightingBorder extends Composite {
      */
     public void setPosition(int height, int width, int positionLeft, int positionTop) {
 
+        positionLeft -= BORDER_OFFSET;
+
+        // make sure highlighting does not introduce additional horizontal scroll-bars
+        if (positionLeft < 0) {
+            // position left should not be negative
+            width += positionLeft;
+            positionLeft = 0;
+        }
+        width += (2 * BORDER_OFFSET) - BORDER_WIDTH;
+        if ((Window.getClientWidth() < (width + positionLeft)) && (Window.getScrollLeft() == 0)) {
+            // highlighting should not extend over the right hand 
+            width = Window.getClientWidth() - (positionLeft + BORDER_WIDTH);
+        }
         Style style = getElement().getStyle();
-        style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
+        style.setLeft(positionLeft, Unit.PX);
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight(height + 2 * BORDER_OFFSET - BORDER_WIDTH);
-        setWidth(width + 2 * BORDER_OFFSET - BORDER_WIDTH);
+        setHeight((height + (2 * BORDER_OFFSET)) - BORDER_WIDTH);
+        setWidth(width);
     }
 
     /**
