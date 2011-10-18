@@ -38,9 +38,14 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -56,7 +61,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * @since 8.0.0
  */
 public class CmsCheckBox extends Composite
-implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignment {
+implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignment, HasValueChangeHandlers<Boolean> {
 
     /** Type string for this widget. */
     public static final String WIDGET_TYPE = "checkbox";
@@ -111,6 +116,22 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         initWidget(m_root);
         addStyleName(CSS.checkBox());
         addStyleName(CSS.inlineBlock());
+        addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        fireValueChangedEvent();
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -139,6 +160,14 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
         return addDomHandler(handler, ClickEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -309,5 +338,13 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public void setText(String text) {
 
         m_button.setText(text);
+    }
+
+    /** 
+     * Helper method for firing a 'value changed' event.<p>
+     */
+    protected void fireValueChangedEvent() {
+
+        ValueChangeEvent.fire(this, getFormValue());
     }
 }
