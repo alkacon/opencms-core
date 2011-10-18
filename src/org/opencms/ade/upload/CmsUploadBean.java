@@ -292,6 +292,21 @@ public class CmsUploadBean extends CmsJspBean {
         if (title.lastIndexOf('.') != -1) {
             title = title.substring(0, title.lastIndexOf('.'));
         }
+
+        // fileName really shouldn't contain the full path, but for some reason it does sometimes when the client is 
+        // running on IE7, so we eliminate anything before and including the last slash or backslash in the title 
+        // before setting it as a property.
+
+        int backslashIndex = title.lastIndexOf('\\');
+        if (backslashIndex != -1) {
+            title = title.substring(backslashIndex + 1);
+        }
+
+        int slashIndex = title.lastIndexOf('/');
+        if (slashIndex != -1) {
+            title = title.substring(slashIndex + 1);
+        }
+
         List<CmsProperty> properties = new ArrayList<CmsProperty>(1);
         CmsProperty titleProp = new CmsProperty();
         titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
