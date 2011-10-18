@@ -115,7 +115,9 @@ public class CmsResultListItem extends CmsListItem {
 
         // add file icon
         resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
-
+        if (!resultItem.isReleasedAndNotExpired()) {
+            addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expired());
+        }
     }
 
     /**

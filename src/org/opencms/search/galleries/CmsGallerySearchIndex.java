@@ -206,6 +206,8 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         try {
             // copy the user OpenCms context
             CmsObject searchCms = OpenCms.initCmsObject(cms);
+            // make sure to keep the request time when evaluating resource expiration
+            searchCms.getRequestContext().setRequestTime(cms.getRequestContext().getRequestTime());
 
             // change the project     
             searchCms.getRequestContext().setCurrentProject(searchCms.readProject(getProject()));

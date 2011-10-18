@@ -588,7 +588,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     sResult.getDateLastModified(),
                     DateFormat.SHORT,
                     getWorkplaceLocale()));
-                bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(
+                    path,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     cms)));
                 list.add(bean);
             } catch (Exception e) {
@@ -691,7 +693,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         try {
             log("reading resource: " + resName);
-            resource = getCmsObject().readResource(resName);
+            resource = getCmsObject().readResource(resName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         } catch (CmsException e) {
             logError(e);
             return null;
