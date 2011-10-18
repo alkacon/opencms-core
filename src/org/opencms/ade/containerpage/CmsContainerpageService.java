@@ -296,9 +296,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(
-                elementBean,
-                convertSettingValues(elementBean.getResource(), settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
+                elementBean.getResource(),
+                settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -509,9 +509,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(
-                    settingName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
+                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    getCmsObject(),
+                    settingType,
+                    entry.getValue()));
             }
         }
         return changedSettings;
@@ -649,7 +650,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsContainerElementBean element = getCachedElement(elementData.getClientId());
 
                 // make sure resource is readable, 
-                CmsResource resource = cms.readResource(element.getId());
+                CmsResource resource = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
 
                 // check if there is a valid formatter
                 int containerWidth = container.getWidth();
@@ -799,7 +800,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsContainerElementBean element = getCachedElement(elementData.getClientId());
 
                 // make sure resource is readable, 
-                if (cms.existsResource(element.getId())) {
+                if (cms.existsResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                     elements.add(element);
                 }
 
@@ -963,7 +964,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String locale) throws CmsException, CmsXmlException {
 
         ensureSession();
-        CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+        CmsResource pageResource = getCmsObject().readResource(pageStructureId, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsResource groupContainerResource = null;
         if (groupContainer.isNew()) {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
@@ -977,7 +978,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         if (groupContainerResource == null) {
             CmsUUID id = convertToServerId(groupContainer.getClientId());
-            groupContainerResource = cms.readResource(id);
+            groupContainerResource = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         }
         CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
             groupContainer,

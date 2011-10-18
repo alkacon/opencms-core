@@ -77,6 +77,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
+    /** Flag indicating if the search should include expired or unreleased resources. */
+    private boolean m_includeExpired;
+
     /** The index of the last search results page. */
     private int m_lastPage;
 
@@ -499,6 +502,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns if the search should include expired or unreleased resources.<p>
+     *
+     * @return <code>true</code> if the search should include expired or unreleased resources
+     */
+    public boolean isIncludeExpired() {
+
+        return m_includeExpired;
+    }
+
+    /**
      * Removes a category from the categories list.<p>
      * 
      * @param category the category
@@ -606,6 +619,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets if the search should include expired or unreleased resources.<p>
+     *
+     * @param includeExpired if the search should include expired or unreleased resources
+     */
+    public void setIncludeExpired(boolean includeExpired) {
+
+        m_includeExpired = includeExpired;
     }
 
     /**

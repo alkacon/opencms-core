@@ -67,6 +67,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String emptyGroupContainer();
 
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String expired();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String expiredOverlay();
+
         /** Access method.<p>
          * 
          * @return the CSS class name

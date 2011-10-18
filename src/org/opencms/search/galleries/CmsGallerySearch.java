@@ -29,6 +29,7 @@ package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
@@ -149,7 +150,7 @@ public class CmsGallerySearch {
         if (doc != null) {
             result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);
         } else {
-            CmsResource res = m_cms.readResource(id);
+            CmsResource res = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
             result = new CmsGallerySearchResult(m_cms, res);
         }
         return result;

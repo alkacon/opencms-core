@@ -57,6 +57,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The resource path as a unique resource id. */
     private String m_path;
 
+    /** Flag indicating if the result item resource is currently released and not expired. */
+    private boolean m_releasedAndNotExpired;
+
     /** The resource type name. */
     private String m_type;
 
@@ -131,6 +134,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
+     * Returns if the result item resource is currently released and not expired.<p>
+     *
+     * @return <code>true</code> if the result item resource is currently released and not expired
+     */
+    public boolean isReleasedAndNotExpired() {
+
+        return m_releasedAndNotExpired;
+    }
+
+    /**
      * Sets the structure id.<p>
      *
      * @param clientId the structure id to set
@@ -181,6 +194,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setPreset(boolean preset) {
 
         m_isPreset = preset;
+    }
+
+    /**
+     * Sets if the result item resource is currently released and not expired.<p>
+     *
+     * @param releasedAndNotExpired if the result item resource is currently released and not expired
+     */
+    public void setReleasedAndNotExpired(boolean releasedAndNotExpired) {
+
+        m_releasedAndNotExpired = releasedAndNotExpired;
     }
 
     /**

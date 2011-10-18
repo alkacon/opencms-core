@@ -42,7 +42,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -234,16 +233,12 @@ public class CmsElementUtil {
         CmsUUID structureId = resUtil.getResource().getStructureId();
         String title = resUtil.getTitle();
         if (!structureId.isNullUUID()) {
-            CmsGallerySearch gallerySearch = new CmsGallerySearch();
-            gallerySearch.init(m_cms);
-            gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-            CmsGallerySearchResult searchResult = gallerySearch.searchById(
-                structureId,
-                m_cms.getRequestContext().getLocale());
+            CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(m_cms, structureId, requestLocale);
             title = searchResult.getTitle();
         }
 
         CmsContainerElementData elementBean = new CmsContainerElementData();
+        elementBean.setReleasedAndNotExpired(element.isReleasedAndNotExpired());
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
         elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
@@ -270,12 +265,13 @@ public class CmsElementUtil {
                 element.getResource(),
                 CmsPermissionSet.ACCESS_VIEW,
                 false,
-                CmsResourceFilter.DEFAULT_ONLY_VISIBLE));
+                CmsResourceFilter.IGNORE_EXPIRATION));
         String noEditReason = "";
         if (CmsResourceTypeXmlContent.isXmlContent(element.getResource())) {
             if (!element.isInMemoryOnly()) {
-                noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-                    m_cms)));
+                noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms),
+                    true));
             }
         } else {
             noEditReason = org.opencms.jsp.Messages.get().getBundle().key(

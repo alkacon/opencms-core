@@ -269,6 +269,22 @@ public class CmsSearchTab extends A_CmsTab {
         }
     }
 
+    /**
+     * Internal handler for the include expired check-box.<p>
+     */
+    protected class IncludeExpiredChangeHandler implements ValueChangeHandler<String> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            String value = event.getValue();
+            m_tabHandler.setIncludeExpired(Boolean.parseBoolean(value));
+
+        }
+    }
+
     /** The ui-binder interface. */
     interface I_CmsSearchTabUiBinder extends UiBinder<HTMLPanel, CmsSearchTab> {
         // GWT interface, nothing to do here

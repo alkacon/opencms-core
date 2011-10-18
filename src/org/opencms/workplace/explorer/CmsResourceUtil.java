@@ -610,10 +610,27 @@ public final class CmsResourceUtil {
      */
     public String getNoEditReason(Locale locale) throws CmsException {
 
+        return getNoEditReason(locale, false);
+    }
+
+    /**
+     * Checks is the current resource can be edited by the current user.<p>
+     * 
+     * @param locale the locale to use for the messages 
+     * @param ignoreExpiration <code>true</code> to ignore resource release and expiration date
+     * 
+     * @return an empty string if editable, or a localized string with the reason
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String getNoEditReason(Locale locale, boolean ignoreExpiration) throws CmsException {
+
         String reason = "";
         if (m_resource instanceof I_CmsHistoryResource) {
             reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_HISTORY_0);
-        } else if (!m_cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.DEFAULT)
+        } else if (!m_cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_WRITE, false, ignoreExpiration
+        ? CmsResourceFilter.IGNORE_EXPIRATION
+        : CmsResourceFilter.DEFAULT)
             || !isEditable()) {
             reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_PERMISSION_0);
         } else if (!getLock().isLockableBy(m_cms.getRequestContext().getCurrentUser())) {

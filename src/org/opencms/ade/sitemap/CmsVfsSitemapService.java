@@ -80,7 +80,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
@@ -224,9 +223,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/");
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
-                cms.createResource(
-                    folderName,
-                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+                cms.createResource(folderName, OpenCms.getResourceManager().getResourceType(
+                    CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
             }
             I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
             if (cms.existsResource(sitemapConfigName)) {
@@ -238,9 +236,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         CmsADEManager.CONFIG_TYPE));
                 }
             } else {
-                cms.createResource(
-                    sitemapConfigName,
-                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
+                cms.createResource(sitemapConfigName, OpenCms.getResourceManager().getResourceType(
+                    CmsADEManager.CONFIG_TYPE).getTypeId());
             }
             subSitemapFolder.setType(getEntryPointType());
             cms.writeResource(subSitemapFolder);
@@ -277,9 +274,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         REDIRECT_LINK_TARGET_XPATH,
                         getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
                     Map<String, String> additional = new HashMap<String, String>();
-                    additional.put(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_REDIRECT_TARGET_LABEL_0),
-                        link);
+                    additional.put(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.GUI_REDIRECT_TARGET_LABEL_0), link);
                     result.setAdditional(additional);
                 }
             } catch (CmsVfsResourceNotFoundException ne) {
@@ -339,9 +335,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(
-                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
-                false);
+            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
+                cms.getSitePath(subSitemapFolder)), false);
             clipboard.addModified(entry);
             setClipboardData(clipboard);
 
@@ -863,11 +858,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0,
                     System.currentTimeMillis(),
                     0);
-                entryFolder = cms.createResource(
-                    entryFolderPath,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId(),
-                    null,
-                    generateInheritProperties(change, entryFolder));
+                entryFolder = cms.createResource(entryFolderPath, OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolder.getStaticTypeName()).getTypeId(), null, generateInheritProperties(
+                    change,
+                    entryFolder));
                 if (idWasNull) {
                     change.setEntryId(entryFolder.getStructureId());
                 }
@@ -936,10 +930,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String description = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
 
         try {
-            CmsGallerySearch search = new CmsGallerySearch();
-            search.init(cms);
-            search.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-            CmsGallerySearchResult result = search.searchById(modelResource.getStructureId(), locale);
+            CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, modelResource.getStructureId(), locale);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
                 title = result.getTitle();
             }
@@ -1424,10 +1415,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     false).getValue();
                 String subtitle = description;
                 try {
-                    CmsGallerySearch search = new CmsGallerySearch();
-                    search.init(cms);
-                    search.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-                    CmsGallerySearchResult searchResult = search.searchById(
+                    CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
+                        cms,
                         functionRef.getStructureId(),
                         getWorkplaceLocale());
                     subtitle = searchResult.getDescription();

@@ -2017,7 +2017,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         String contextPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
-        if (m_requireViewPermission) {
+        if (isRequireViewPermission()) {
             filter = CmsResourceFilter.DEFAULT_ONLY_VISIBLE;
         }
         return cms.existsResource(contextPath, filter);

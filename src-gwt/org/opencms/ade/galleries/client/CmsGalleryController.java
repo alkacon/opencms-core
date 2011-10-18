@@ -638,6 +638,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Sets if the search should include expired or unreleased resources.<p>
+     * 
+     * @param includeExpired if the search should include expired or unreleased resources
+     */
+    public void setIncludeExpired(boolean includeExpired) {
+
+        m_searchObject.setIncludeExpired(includeExpired);
+    }
+
+    /**
      * Sorts the categories according to given parameters and updates the list.<p>
      * 
      * @param sortParams the sort parameters

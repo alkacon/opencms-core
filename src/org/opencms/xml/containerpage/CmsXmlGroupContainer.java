@@ -288,7 +288,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
             xpath = xpath.substring(pos + 1);
         }
         CmsRelationType type = getHandler().getRelationType(xpath);
-        CmsResource res = cms.readResource(resourceId);
+        CmsResource res = cms.readResource(resourceId, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
         return res;
     }

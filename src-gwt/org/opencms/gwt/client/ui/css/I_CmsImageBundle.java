@@ -266,13 +266,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String warningIcon();
+        String warningBigIcon();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String warningBigIcon();
+        String warningIcon();
     }
 
     /** The bundle instance. */
@@ -372,6 +372,15 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/informationBigImage.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource informationBigImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/invalidElement.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource invalidElement();
 
     /**
      * Access method.<p>

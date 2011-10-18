@@ -118,6 +118,7 @@ public class CmsContainerpageUtil {
                 String newType = child.getAttribute("newType");
                 boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
                 boolean hasViewPermission = Boolean.parseBoolean(child.getAttribute("hasviewpermission"));
+                boolean releasedAndNotExpired = Boolean.parseBoolean(child.getAttribute("releasedandnotexpired"));
                 if (isContainerElement) {
                     // searching for content element root
                     Element elementRoot = (Element)child.getNextSibling();
@@ -176,7 +177,8 @@ public class CmsContainerpageUtil {
                             sitePath,
                             noEditReason,
                             hasProps,
-                            hasViewPermission);
+                            hasViewPermission,
+                            releasedAndNotExpired);
                         if ((newType != null) && (newType.length() > 0)) {
                             containerElement.setNewType(newType);
                         }
@@ -195,7 +197,8 @@ public class CmsContainerpageUtil {
                         sitePath,
                         noEditReason,
                         hasProps,
-                        hasViewPermission);
+                        hasViewPermission,
+                        releasedAndNotExpired);
                     groupContainer.setContainerId(container.getContainerId());
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
@@ -272,7 +275,8 @@ public class CmsContainerpageUtil {
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
             hasProps,
-            containerElement.hasViewPermission());
+            containerElement.hasViewPermission(),
+            containerElement.isReleasedAndNotExpired());
     }
 
     /**
@@ -302,7 +306,8 @@ public class CmsContainerpageUtil {
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
             hasProps,
-            containerElement.hasViewPermission());
+            containerElement.hasViewPermission(),
+            containerElement.isReleasedAndNotExpired());
         groupContainer.setContainerId(container.getContainerId());
         //adding sub-elements
         Iterator<CmsContainerElementData> it = subElements.iterator();
@@ -354,7 +359,8 @@ public class CmsContainerpageUtil {
         String sitePath,
         String noEditReason,
         boolean hasProps,
-        boolean hasViewPermission) {
+        boolean hasViewPermission,
+        boolean releasedAndNotExpired) {
 
         CmsContainerPageElement dragElement = new CmsContainerPageElement(
             element,
@@ -363,7 +369,8 @@ public class CmsContainerpageUtil {
             sitePath,
             noEditReason,
             hasProps,
-            hasViewPermission);
+            hasViewPermission,
+            releasedAndNotExpired);
         //        enableDragHandler(dragElement);
         addOptionBar(dragElement);
         return dragElement;
@@ -389,7 +396,8 @@ public class CmsContainerpageUtil {
         String sitePath,
         String noEditReason,
         boolean hasProps,
-        boolean hasViewPermission) {
+        boolean hasViewPermission,
+        boolean releasedAndNotExpired) {
 
         CmsGroupContainerElement groupContainer = new CmsGroupContainerElement(
             element,
@@ -398,7 +406,8 @@ public class CmsContainerpageUtil {
             sitePath,
             noEditReason,
             hasProps,
-            hasViewPermission);
+            hasViewPermission,
+            releasedAndNotExpired);
         return groupContainer;
     }
 

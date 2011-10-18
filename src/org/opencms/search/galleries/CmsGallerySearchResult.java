@@ -570,6 +570,20 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     }
 
     /**
+     * Returns if the related resource is released and not expired.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return <code>true</code> if the related resource is released and not expired
+     */
+    public boolean isReleaseAndNotExpired(CmsObject cms) {
+
+        long time = cms.getRequestContext().getRequestTime();
+        return (time == CmsResource.DATE_RELEASED_EXPIRED_IGNORE)
+            || ((time > m_dateReleased.getTime()) && (time < m_dateExpired.getTime()));
+    }
+
+    /**
      * Initializes missing fields by reading the information from the VFS.<p>
      * 
      * @param cms the current CMS context 

@@ -74,6 +74,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
     public CmsGroupContainerElement(
         Element element,
@@ -82,9 +83,10 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         String sitePath,
         String noEditReason,
         boolean hasSettings,
-        boolean hasViewPermission) {
+        boolean hasViewPermission,
+        boolean releasedAndNotExpired) {
 
-        super(element, parent, clientId, sitePath, noEditReason, hasSettings, hasViewPermission);
+        super(element, parent, clientId, sitePath, noEditReason, hasSettings, hasViewPermission, releasedAndNotExpired);
 
     }
 

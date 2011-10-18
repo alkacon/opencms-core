@@ -42,6 +42,9 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag indicating a new element. */
     private boolean m_new;
 
+    /** Flag indicating if the given resource is released and not expired. */
+    private boolean m_releasedAndNotExpired = true;
+
     /** The resource type for new elements. If this field is not empty, the element is regarded as new and not created yet. */
     private String m_resourceType;
 
@@ -89,6 +92,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Returns if the given resource is released and not expired.<p>
+     *
+     * @return <code>true</code> if the given resource is released and not expired
+     */
+    public boolean isReleasedAndNotExpired() {
+
+        return m_releasedAndNotExpired;
+    }
+
+    /**
      * Sets the client id.<p>
      *
      * @param clientId the client id to set
@@ -106,6 +119,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setNew(boolean isNew) {
 
         m_new = isNew;
+    }
+
+    /**
+     * Sets if the given resource is released and not expired.<p>
+     *
+     * @param releasedAndNotExpired <code>true</code> if the given resource is released and not expired
+     */
+    public void setReleasedAndNotExpired(boolean releasedAndNotExpired) {
+
+        m_releasedAndNotExpired = releasedAndNotExpired;
     }
 
     /**

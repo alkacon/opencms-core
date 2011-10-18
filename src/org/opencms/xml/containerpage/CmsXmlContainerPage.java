@@ -347,7 +347,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             xpath = xpath.substring(pos + 1);
         }
         CmsRelationType type = getHandler().getRelationType(xpath);
-        CmsResource res = cms.readResource(resourceId);
+        CmsResource res = cms.readResource(resourceId, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
         return res;
     }
@@ -406,9 +406,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.concatXpath(
-                            cntPath,
-                            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
+                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
+                            element.getName(),
+                            elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -459,10 +459,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
             } catch (NullPointerException e) {
-                LOG.error(
-                    org.opencms.xml.content.Messages.get().getBundle().key(
-                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
-                    e);
+                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
     }

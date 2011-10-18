@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -152,14 +153,12 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
         m_isEditingFavorites = true;
         getHandler().enableFavoriteEditing(true, m_dndController);
-
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.setMoveIconStyle(
-                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
-                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
+            element.setMoveIconStyle(I_CmsImageBundle.INSTANCE.style().changeOrderIcon(), Messages.get().key(
+                Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
             element.showRemoveButton();
         }
     }
@@ -169,6 +168,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
      */
     public void onToolbarActivate() {
 
+        Document.get().getBody().addClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
         getHandler().loadFavorites();
         getHandler().loadRecent();
     }
@@ -181,6 +181,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         if (m_isEditingFavorites) {
             m_favorites.saveFavorites();
         }
+        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
     }
 
     /**

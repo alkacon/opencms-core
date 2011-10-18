@@ -580,7 +580,7 @@ public class CmsJspTagContainer extends TagSupport {
         // reinitializing resource to avoid caching issues
         elementBean.initResource(cms);
         if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale);
+            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
         } else {
             noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
         }
@@ -604,9 +604,10 @@ public class CmsJspTagContainer extends TagSupport {
             elementBean.getResource(),
             CmsPermissionSet.ACCESS_VIEW,
             false,
-            CmsResourceFilter.DEFAULT_ONLY_VISIBLE)
+            CmsResourceFilter.IGNORE_EXPIRATION)
             && settings.getAccess().getPermissions(cms, elementBean.getResource()).requiresViewPermission();
         result.append(" hasviewpermission='").append(viewPermission).append("'");
+        result.append(" releasedandnotexpired='").append(elementBean.isReleasedAndNotExpired()).append("'");
         result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
         if (isGroupcontainer) {
             result.append("'>");

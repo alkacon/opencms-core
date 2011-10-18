@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -80,6 +81,9 @@ public class CmsContainerElementBean {
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
+
+    /** Indicating if the element resource is released and not expired. */
+    private boolean m_releasedAndNotExpired;
 
     /**
      * Creates a new container page element bean.<p> 
@@ -325,14 +329,26 @@ public class CmsContainerElementBean {
     public void initResource(CmsObject cms) throws CmsException {
 
         if (m_resource == null) {
-            m_resource = cms.readResource(getId());
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                m_resource = cms.readResource(getId());
+                m_releasedAndNotExpired = true;
+            } else {
+                m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
+            }
         } else if (!isInMemoryOnly()) {
             CmsUUID id = m_resource.getStructureId();
             if (id == null) {
                 id = getId();
             }
             // the resource object may have a wrong root path, e.g. if it was created before the resource was moved
-            m_resource = cms.readResource(id);
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                m_resource = cms.readResource(getId());
+                m_releasedAndNotExpired = true;
+            } else {
+                m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
+            }
         }
         if (m_settings == null) {
             m_settings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
@@ -362,7 +378,9 @@ public class CmsContainerElementBean {
      */
     public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
-        initResource(cms);
+        if (m_resource == null) {
+            initResource(cms);
+        }
         return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
             m_resource).getTypeName());
     }
@@ -375,6 +393,16 @@ public class CmsContainerElementBean {
     public boolean isInMemoryOnly() {
 
         return m_inMemoryOnly;
+    }
+
+    /**
+     * Returns if the element resource is released and not expired.<p>
+     * 
+     * @return <code>true</code> if the element resource is released and not expired
+     */
+    public boolean isReleasedAndNotExpired() {
+
+        return isInMemoryOnly() || m_releasedAndNotExpired;
     }
 
     /**

@@ -94,7 +94,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.singleLineItemCss().ensureInjected();
         bundle.menuButtonCss().ensureInjected();
         bundle.progressBarCss().ensureInjected();
-        bundle.directEditCss().ensureInjected();
         bundle.propertiesCss().ensureInjected();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();

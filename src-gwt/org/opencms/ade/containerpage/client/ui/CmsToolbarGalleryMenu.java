@@ -34,6 +34,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -72,6 +73,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      */
     public void onToolbarActivate() {
 
+        Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
         if (!m_initialized) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
@@ -86,7 +88,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      */
     public void onToolbarDeactivate() {
 
-        // nothing to do
+        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.ADD.getIconClass());
     }
 
 }

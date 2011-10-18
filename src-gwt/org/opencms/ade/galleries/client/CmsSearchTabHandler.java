@@ -145,6 +145,16 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Sets if the search should include expired or unreleased resources.<p>
+     * 
+     * @param includeExpired if the search should include expired or unreleased resources
+     */
+    public void setIncludeExpired(boolean includeExpired) {
+
+        m_controller.setIncludeExpired(includeExpired);
+    }
+
+    /**
      * Delegates the clear input action (click on the clear button) to the controller.<p>
      * 
      * @param searchQuery the search query

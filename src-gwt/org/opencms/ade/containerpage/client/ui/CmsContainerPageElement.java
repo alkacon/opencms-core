@@ -50,6 +50,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -81,16 +82,23 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     /** The is new element type. */
     private String m_newType;
 
+    /** The registered node insert event handler. */
+    private JavaScriptObject m_nodeInsertHandler;
+
     /** The no edit reason, if empty editing is allowed. */
     private String m_noEditReason;
 
     /** The parent drop target. */
     private I_CmsDropContainer m_parent;
 
+    /** Flag indicating if the element resource is currently released and not expired. */
+    private boolean m_releasedAndNotExpired;
+
     /** The element resource site-path. */
     private String m_sitePath;
 
-    private JavaScriptObject m_nodeInsertHandler;
+    /** The overlay for expired elements. */
+    private Element m_expiredOverlay;
 
     /**
      * Indicates if the current user has view permissions on the element resource. 
@@ -108,6 +116,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
     public CmsContainerPageElement(
         Element element,
@@ -116,7 +125,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         String sitePath,
         String noEditReason,
         boolean hasSettings,
-        boolean hasViewPermission) {
+        boolean hasViewPermission,
+        boolean releasedAndNotExpired) {
 
         super((com.google.gwt.user.client.Element)element);
         m_clientId = clientId;
@@ -125,6 +135,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         m_hasSettings = hasSettings;
         m_parent = parent;
         setViewPermission(hasViewPermission);
+        setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
     }
 
@@ -208,6 +219,16 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         Element placeholder = CmsDomUtil.clone(getElement());
         placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         return placeholder;
+    }
+
+    /**
+     * Returns if the element resource is currently released and not expired.<p>
+     * 
+     * @return <code>true</code> if the element resource is currently released and not expired
+     */
+    public boolean getReleasedAndNotExpired() {
+
+        return m_releasedAndNotExpired;
     }
 
     /**
@@ -397,6 +418,30 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * Sets if the element resource is currently released and not expired.<p>
+     * 
+     * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
+     */
+    public void setReleasedAndNotExpired(boolean releasedAndNotExpired) {
+
+        m_releasedAndNotExpired = releasedAndNotExpired;
+        if (m_releasedAndNotExpired) {
+            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            if (m_expiredOverlay != null) {
+                m_expiredOverlay.removeFromParent();
+                m_expiredOverlay = null;
+            }
+
+        } else {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            m_expiredOverlay = DOM.createDiv();
+            m_expiredOverlay.setTitle("Expired resource");
+            m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay());
+            getElement().appendChild(m_expiredOverlay);
+        }
+    }
+
+    /**
      * Sets the site path.<p>
      *
      * @param sitePath the site path to set
@@ -535,6 +580,26 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         getElement().getStyle().clearDisplay();
     }
 
+    /**
+     * Returns if the option bar position collides with any iframe child elements.<p>
+     * 
+     * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
+     */
+    private boolean isOptionbarIFrameCollision() {
+
+        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            int elementTop = getElement().getAbsoluteTop();
+            NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
+            for (int i = 0; i < frames.getLength(); i++) {
+
+                if ((frames.getItem(i).getAbsoluteTop() - elementTop) < 25) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private native void resetNodeInsertedHandler()/*-{
         var $this = this;
         var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::getElement()();
@@ -559,26 +624,6 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
             element.attachEvent("onDOMNodeInserted", handler);
         }
     }-*/;
-
-    /**
-     * Returns if the option bar position collides with any iframe child elements.<p>
-     * 
-     * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
-     */
-    private boolean isOptionbarIFrameCollision() {
-
-        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            int elementTop = getElement().getAbsoluteTop();
-            NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
-            for (int i = 0; i < frames.getLength(); i++) {
-
-                if ((frames.getItem(i).getAbsoluteTop() - elementTop) < 25) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>

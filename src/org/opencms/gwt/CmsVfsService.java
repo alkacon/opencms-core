@@ -334,7 +334,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public String getSitePath(CmsUUID structureId) {
 
         try {
-            CmsResource resource = getCmsObject().readResource(structureId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             return getCmsObject().getSitePath(resource);
         } catch (CmsException e) {
             if (LOG.isWarnEnabled()) {

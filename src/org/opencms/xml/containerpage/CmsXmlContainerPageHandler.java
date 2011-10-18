@@ -28,11 +28,17 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.relations.CmsLink;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Iterator;
@@ -51,6 +57,93 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
     public CmsXmlContainerPageHandler() {
 
         super();
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
+     */
+    @Override
+    public CmsXmlContentErrorHandler resolveValidation(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        CmsXmlContentErrorHandler errorHandler) {
+
+        if (errorHandler == null) {
+            // init a new error handler if required
+            errorHandler = new CmsXmlContentErrorHandler();
+        }
+
+        // we only have to validate containers
+        if ((value != null)
+            && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsXmlContainerPage.XmlNode.Containers.name())) {
+            CmsXmlContent content = (CmsXmlContent)value.getDocument();
+            try {
+                validateNames(cms, value, content);
+            } catch (CmsXmlException e) {
+                errorHandler.addError(value, e.getLocalizedMessage());
+            }
+        }
+
+        return errorHandler;
+    }
+
+    /**
+     * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#validateLink(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
+     */
+    @Override
+    protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
+
+        // if there is a value of type file reference
+        if ((value == null) || (!(value instanceof CmsXmlVfsFileValue) && !(value instanceof CmsXmlVarLinkValue))) {
+            return false;
+        }
+        // if the value has a link (this will automatically fix, for instance, the path of moved resources)
+        CmsLink link = null;
+        if (value instanceof CmsXmlVfsFileValue) {
+            link = ((CmsXmlVfsFileValue)value).getLink(cms);
+        } else if (value instanceof CmsXmlVarLinkValue) {
+            link = ((CmsXmlVarLinkValue)value).getLink(cms);
+        }
+        if ((link == null) || !link.isInternal()) {
+            return false;
+        }
+        try {
+            String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
+            // validate the link for error
+            CmsResource res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+            // ignore expiration for offline project
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                // check the time range 
+                if (res != null) {
+                    long time = System.currentTimeMillis();
+                    if (!res.isReleased(time)) {
+                        if (errorHandler != null) {
+                            // generate warning message
+                            errorHandler.addWarning(value, org.opencms.xml.content.Messages.get().getBundle(
+                                value.getLocale()).key(
+                                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        }
+                        return true;
+                    } else if (res.isExpired(time)) {
+                        if (errorHandler != null) {
+                            // generate warning message
+                            errorHandler.addWarning(value, org.opencms.xml.content.Messages.get().getBundle(
+                                value.getLocale()).key(
+                                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        }
+                        return true;
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            if (errorHandler != null) {
+                // generate error message
+                errorHandler.addError(value, org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
+                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -87,33 +180,5 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
                 throw new CmsXmlException(Messages.get().container(Messages.ERR_DUPLICATE_NAME_1, name));
             }
         }
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
-     */
-    @Override
-    public CmsXmlContentErrorHandler resolveValidation(
-        CmsObject cms,
-        I_CmsXmlContentValue value,
-        CmsXmlContentErrorHandler errorHandler) {
-
-        if (errorHandler == null) {
-            // init a new error handler if required
-            errorHandler = new CmsXmlContentErrorHandler();
-        }
-
-        // we only have to validate containers
-        if ((value != null)
-            && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsXmlContainerPage.XmlNode.Containers.name())) {
-            CmsXmlContent content = (CmsXmlContent)value.getDocument();
-            try {
-                validateNames(cms, value, content);
-            } catch (CmsXmlException e) {
-                errorHandler.addError(value, e.getLocalizedMessage());
-            }
-        }
-
-        return errorHandler;
     }
 }
