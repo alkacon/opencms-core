@@ -577,7 +577,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
                 if (sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT) {
                     bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DATE_RELEASED_0), CmsDateUtil.getDate(
+                        Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0), CmsDateUtil.getDate(
                         sResult.getDateExpired(),
                         DateFormat.SHORT,
                         getWorkplaceLocale()));
