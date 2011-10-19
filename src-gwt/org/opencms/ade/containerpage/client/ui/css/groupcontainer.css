@@ -11,12 +11,10 @@
 .inputLabel{
 	font-weight: bold;
 	vertical-align: middle;
-	display: inline-block;
 	width: 150px;
 }
 .inputBox{
 	vertical-align: middle;
-	display: inline-block;
 	width: 300px;
 }
 .containerMarker{
@@ -29,12 +27,21 @@
 	.containerMarker {
 		filter: literal("alpha(opacity = 60)");
 	}
+	.inputBox, .inputLabel{
+		display: inline;
+	}
 } @elif user.agent ie8 {
 	.containerMarker {
 		-ms-filter: "alpha(opacity = 60)";
 	}
+	.inputBox, .inputLabel{
+		display: inline-block;
+	}
 } @else {
 	.containerMarker {
         opacity: 0.6;
+	}
+	.inputBox, .inputLabel{
+		display: inline-block;
 	}
 }

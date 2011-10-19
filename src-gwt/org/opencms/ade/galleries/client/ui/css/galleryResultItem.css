@@ -6,8 +6,10 @@
 .cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockIcon, .lockClosed, .titleInput{}
 
 
-@sprite div.expired div.titleRow{
-	gwt-image: "gwtImages.invalidElement";
+@sprite li.expired div.itemContent{
+	gwt-image: "backgrounds.invalidStateBackground";
+	background-position: 50% 50%;
+	height: auto;
 }
 
 .tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{

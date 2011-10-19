@@ -1,3 +1,5 @@
+@external html-face;
+
 div.editorGallery {}
 @if user.agent gecko1_8 gecko{
 	div.editorGallery{
@@ -123,6 +125,9 @@ div.searchTabRow {
 	clear: both;
 	height: 24px;
 	margin-bottom: 5px;
+}
+div.searchTabRow div.searchTabInputWide div.html-face{
+	font-weight: normal;
 }
 div.searchTabRowRightAlign {
 	clear: both;

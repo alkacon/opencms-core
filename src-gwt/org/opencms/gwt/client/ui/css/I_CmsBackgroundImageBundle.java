@@ -66,6 +66,15 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/backgrounds/invalidStateBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource invalidStateBackground();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/backgrounds/sitemapBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource sitemapBackground();
