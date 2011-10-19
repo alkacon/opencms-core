@@ -657,7 +657,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         handler.setCursorOffsetX(info.getOffsetX());
         handler.setCursorOffsetY(info.getOffsetY());
         handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
-        handler.getPlaceholder().getStyle().setDisplay(Display.BLOCK);
+        handler.getPlaceholder().getStyle().clearDisplay();
     }
 
     /**
@@ -698,7 +698,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void showOriginalPositionPlaceholder(I_CmsDraggable draggable, boolean withOverlay) {
 
-        draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+        draggable.getElement().getStyle().clearDisplay();
         CmsDomUtil.showOverlay(draggable.getElement(), withOverlay);
     }
 
