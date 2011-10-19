@@ -58,6 +58,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionHandler {
 
+    /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
+     *  The getRootPath method clears this attribute when called. 
+     */
+    public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
 
@@ -191,7 +196,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // check if we need relative links in the exported pages
             if (exportManager.relativeLinksInExport(cms.getRequestContext().getSiteRoot() + oriUri)) {
                 // try to get base URI from cache  
-                String cacheKey = exportManager.getCacheKey(cms.getRequestContext().getSiteRoot(), oriUri);
+                String cacheKey = exportManager.getCacheKey(targetSiteRoot, oriUri);
                 uriBaseName = exportManager.getCachedOnlineLink(cacheKey);
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
@@ -212,7 +217,15 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
             String detailPagePart = detailPage == null ? "" : detailPage + ":";
             // check if we have the absolute VFS name for the link target cached
-            String cacheKey = cms.getRequestContext().getSiteRoot() + ":" + detailPagePart + absoluteLink;
+            // (We really need the target site root in the cache key, because different resources with the same site paths
+            // but in different sites may have different export settings. It seems we don't really need the site root 
+            // from the request context as part of the key, but we'll leave it in to make sure we don't break anything.)
+            String cacheKey = cms.getRequestContext().getSiteRoot()
+                + ":"
+                + targetSiteRoot
+                + ":"
+                + detailPagePart
+                + absoluteLink;
             resultLink = exportManager.getCachedOnlineLink(cacheKey);
             if (resultLink == null) {
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
@@ -371,7 +384,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher)) {
+                String ignoreWorkplaceStr = (String)cms.getRequestContext().getAttribute(
+                    DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS);
+                boolean ignoreWorkplace = Boolean.parseBoolean(ignoreWorkplaceStr);
+                cms.getRequestContext().setAttribute(DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS, "false");
+                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher) && !ignoreWorkplace) {
                     // workplace URL, use current site root
                     // this is required since the workplace site does not have a site root to set 
                     return cms.getRequestContext().addSiteRoot(path + suffix);

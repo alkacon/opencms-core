@@ -2379,8 +2379,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
             // validate the link for error
-            CmsResource res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-
+            CmsResource res = null;
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(link.getTarget());
+            // the link target may be a root path for a resource in another site 
+            if (site != null) {
+                CmsObject rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("");
+                res = rootCms.readResource(link.getTarget(), CmsResourceFilter.IGNORE_EXPIRATION);
+            } else {
+                res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+            }
             // check the time range 
             if (res != null) {
                 long time = System.currentTimeMillis();

@@ -336,6 +336,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 if (CmsStringUtil.isNotEmpty(targetUri)) {
                     String internalUri = null;
                     if (!CmsMacroResolver.isMacro(targetUri)) {
+                        m_cms.getRequestContext().setAttribute(
+                            CmsDefaultLinkSubstitutionHandler.DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS,
+                            "true");
                         internalUri = OpenCms.getLinkManager().getRootPath(m_cms, targetUri, m_relativePath);
                     }
                     // HACK: to distinguish link parameters the link itself has to end with '&' or '?'
