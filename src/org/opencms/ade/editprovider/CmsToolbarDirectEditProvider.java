@@ -27,7 +27,6 @@
 
 package org.opencms.ade.editprovider;
 
-import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -69,15 +68,10 @@ public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider 
      */
     public String getIncludes(PageContext context, CmsDirectEditParams params) throws Exception {
 
-        CmsPublishActionElement actionElement = new CmsPublishActionElement(
+        return new CmsEditProviderActionElement(
             context,
             (HttpServletRequest)context.getRequest(),
-            (HttpServletResponse)context.getResponse());
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(actionElement.createNoCacheScript(MODULE_NAME));
-        String exportedData = actionElement.exportAll();
-        buffer.append(exportedData);
-        return buffer.toString();
+            (HttpServletResponse)context.getResponse()).exportAll();
     }
 
     /**
