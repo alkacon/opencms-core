@@ -32,6 +32,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -221,23 +222,25 @@ public class CmsSessionsList extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
-        List manageableUsers = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
         List ret = new ArrayList();
         // get content
         List sessionInfos = OpenCms.getSessionManager().getSessionInfos();
         Iterator itSessions = sessionInfos.iterator();
+        List<CmsOrganizationalUnit> manageableOus = OpenCms.getRoleManager().getManageableOrgUnits(
+            getCms(),
+            "",
+            true,
+            false);
         while (itSessions.hasNext()) {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
             CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             CmsUser user = getCms().readUser(sessionInfo.getUserId());
-            if (!manageableUsers.contains(user)) {
+            CmsOrganizationalUnit userOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn());
+            if (!(manageableOus.contains(userOu) && !user.isWebuser())) {
                 continue;
             }
             item.set(LIST_COLUMN_USER, user.getFullName());
-            item.set(
-                LIST_COLUMN_ORGUNIT,
-                OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn()).getDisplayName(
-                    getLocale()));
+            item.set(LIST_COLUMN_ORGUNIT, userOu.getDisplayName(getLocale()));
             item.set(LIST_COLUMN_CREATION, new Date(sessionInfo.getTimeCreated()));
             item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
             try {
@@ -248,7 +251,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_SITE, sessionInfo.getSiteRoot());
             ret.add(item);
         }
-        
+
         // hide ou column if only one ou exists
         try {
             if (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).isEmpty()) {
