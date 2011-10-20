@@ -86,6 +86,8 @@ import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
@@ -1340,9 +1342,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // perform the search operation          
-            if (params.getSort() == null) {
+            if ((params.getSort() == null) || (params.getSort() == CmsSearchParameters.SORT_DEFAULT)) {
+                // apparently scoring is always enabled by Lucene if no sort order is provided
                 hits = getSearcher().search(query, filter, m_maxHits);
             } else {
+                // if  a sort order is provided, we must check if scoring must be calculated by the searcher
+                prepareSortScoring(m_indexSearcher, params.getSort());
                 hits = getSearcher().search(query, filter, m_maxHits, params.getSort());
             }
 
@@ -2245,6 +2250,41 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return true;
+    }
+
+    /**
+     * Checks if the score for the results must be calculated based on the provided sort option.<p>  
+     * 
+     * Since Lucene 3 apparently the score is no longer calculated by default, but only if the 
+     * searcher is explicitly told so. This methods checks if, based on the given sort, 
+     * the score must be calculated.<p> 
+     * 
+     * @param searcher the index searcher to prepare 
+     * @param sort the sort option to use
+     */
+    protected void prepareSortScoring(IndexSearcher searcher, Sort sort) {
+
+        boolean doScoring = false;
+        if (sort != null) {
+            if ((sort == CmsSearchParameters.SORT_DEFAULT) || (sort == CmsSearchParameters.SORT_TITLE)) {
+                // these default sorts do need score calculation
+                doScoring = true;
+            } else if ((sort == CmsSearchParameters.SORT_DATE_CREATED)
+                || (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED)) {
+                // these default sorts don't need score calculation
+                doScoring = false;
+            } else {
+                // for all non-defaults: check if the score field is present, in that case we must calculate the score
+                SortField[] fields = sort.getSort();
+                for (SortField field : fields) {
+                    if (field == SortField.FIELD_SCORE) {
+                        doScoring = true;
+                        break;
+                    }
+                }
+            }
+        }
+        searcher.setDefaultFieldSortScoring(doScoring, doScoring);
     }
 
     /**

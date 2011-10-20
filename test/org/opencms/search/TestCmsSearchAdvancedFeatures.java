@@ -247,7 +247,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         assertEquals(2, searchResult.size());
 
         // check max date created (must move back one day because of granularity level in optimized date range search)
-        searchBean.getParameters().setMaxDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMaxDateCreated(stamp.getTime() - (1000 * 60 * 60 * 24));
         searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
 
         searchBean.init(cms);
@@ -264,7 +264,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         // check min date last modified
         stamp = new Date();
         // move to tomorrow because of granularity level in optimized date search
-        searchBean.getParameters().setMinDateLastModified(stamp.getTime() + 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateLastModified(stamp.getTime() + (1000 * 60 * 60 * 24));
 
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
@@ -282,7 +282,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         assertEquals(2, searchResult.size());
 
         // check max date last modified
-        searchBean.getParameters().setMaxDateLastModified(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMaxDateLastModified(stamp.getTime() - (1000 * 60 * 60 * 24));
         searchBean.getParameters().setMinDateLastModified(Long.MIN_VALUE);
 
         searchBean.init(cms);
@@ -320,7 +320,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // query all files created since yesterday, this should be 2 because of previous tests
         Date stamp = new Date();
-        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - (1000 * 60 * 60 * 24));
 
         searchResult = searchBean.getSearchResult();
         assertEquals(2, searchResult.size());
@@ -334,14 +334,14 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // now do a search for all documents of type "plain" created since yesterday    
         searchBean.setResourceType(CmsResourceTypePlain.getStaticTypeName());
-        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - (1000 * 60 * 60 * 24));
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
         assertEquals(2, searchResult.size());
 
         // now do a search for all documents of type "binary" created since yesterday      
         searchBean.setResourceType(CmsResourceTypeBinary.getStaticTypeName());
-        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - (1000 * 60 * 60 * 24));
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
         assertEquals(0, searchResult.size());
@@ -657,6 +657,18 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by relevance:");
         TestCmsSearch.printResults(searchResult, cms);
+        assertTrue(
+            "Best match by sore must always be 100 but is " + searchResult.get(0).getScore(),
+            searchResult.get(0).getScore() == 100);
+        for (int i = 1; i < searchResult.size(); i++) {
+            assertTrue("Resource "
+                + searchResult.get(i - 1).getPath()
+                + " not sorted as expected - index ["
+                + (i - 1)
+                + "/"
+                + i
+                + "]", searchResult.get(i - 1).getScore() >= searchResult.get(i).getScore());
+        }
 
         // second run use Title sort order
         String lastTitle = null;

@@ -204,17 +204,19 @@ public class CmsSearchParameters {
     }
 
     /** Sort result documents by date of creation, then score. */
-    public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
-        new SortField(CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true),
-        SortField.FIELD_SCORE});
+    public static final Sort SORT_DATE_CREATED = new Sort(new SortField(
+        CmsSearchField.FIELD_DATE_CREATED,
+        SortField.STRING,
+        true));
 
     /** Sort result documents by date of last modification, then score. */
-    public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
-        new SortField(CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true),
-        SortField.FIELD_SCORE});
+    public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField(
+        CmsSearchField.FIELD_DATE_LASTMODIFIED,
+        SortField.STRING,
+        true));
 
-    /** Default sort order (by document score - for this <code>null</code> gave best performance). */
-    public static final Sort SORT_DEFAULT = null;
+    /** Default sort order (by document score). */
+    public static final Sort SORT_DEFAULT = Sort.RELEVANCE;
 
     /** Names of the default sort options. */
     public static final String[] SORT_NAMES = {
