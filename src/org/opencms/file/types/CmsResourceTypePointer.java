@@ -86,7 +86,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     @Override
     public int getLoaderId() {
 
-        return CmsPointerLoader.RESOURCE_LOADER_ID;
+        return CmsPointerLoader.RESOURCE_POINTER_LOADER_ID;
     }
 
     /**
