@@ -62,10 +62,15 @@ line-height:12px;
 	padding-left: 0px;
 }
 
-.list {
+ul.list {
 	list-style-type: none;
 	margin: 0px;
 	padding: 0px;
+}
+
+ul.list, ul.listTreeItemChildren{
+	list-style-image: none;
+	list-style-position: outside;
 }
 
 .listTreeItemOpen {
