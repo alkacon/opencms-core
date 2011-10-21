@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -70,8 +71,13 @@ public class CmsContainerElementBean {
     /** The configured properties. */
     private final Map<String, String> m_individualSettings;
 
+    private CmsInheritanceInfo m_inheritanceInfo;
+
     /** Indicates whether the represented resource is in memory only and not in the VFS. */
     private boolean m_inMemoryOnly;
+
+    /** Indicating if the element resource is released and not expired. */
+    private boolean m_releasedAndNotExpired;
 
     /** The resource of this element. */
     private transient CmsResource m_resource;
@@ -81,9 +87,6 @@ public class CmsContainerElementBean {
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
-
-    /** Indicating if the element resource is released and not expired. */
-    private boolean m_releasedAndNotExpired;
 
     /**
      * Creates a new container page element bean.<p> 
@@ -132,6 +135,7 @@ public class CmsContainerElementBean {
         result.m_resource = source.m_resource;
         result.m_sitePath = source.m_sitePath;
         result.m_inMemoryOnly = source.m_inMemoryOnly;
+        result.m_inheritanceInfo = source.m_inheritanceInfo;
         if (result.m_inMemoryOnly) {
             String editorHash = source.m_editorHash;
             if (editorHash.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
@@ -271,6 +275,11 @@ public class CmsContainerElementBean {
         return m_individualSettings;
     }
 
+    public CmsInheritanceInfo getInheritanceInfo() {
+
+        return m_inheritanceInfo;
+    }
+
     /**
      * Returns the resource of this element.<p>
      * 
@@ -385,6 +394,14 @@ public class CmsContainerElementBean {
             m_resource).getTypeName());
     }
 
+    public boolean isInheritedContainer(CmsObject cms) throws CmsException {
+
+        if (m_resource == null) {
+            initResource(cms);
+        }
+        return OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
+    }
+
     /**
      * Returns if the represented resource is in memory only and not persisted in the VFS.<p>
      * 
@@ -403,6 +420,11 @@ public class CmsContainerElementBean {
     public boolean isReleasedAndNotExpired() {
 
         return isInMemoryOnly() || m_releasedAndNotExpired;
+    }
+
+    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+        m_inheritanceInfo = inheritanceInfo;
     }
 
     /**

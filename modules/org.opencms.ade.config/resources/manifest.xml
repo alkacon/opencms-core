@@ -107,6 +107,27 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
+			    <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritref" id="303">
+                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_ref.xsd</param>
+                </type>
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritconfig" id="304">
+                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd</param>
+                </type>
+                
+                <explorertype name="inheritref" key="fileicon.inheritref" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
+                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritref" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritref"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
+                </explorertype>
+                <explorertype name="inheritconfig" key="fileicon.inheritconfig" icon="xmlcontent.gif" bigicon="xmlcontent_big.png" reference="xmlcontent">
+                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritconfig" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritconfig"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
+                </explorertype>
+                
+			
 		</resourcetypes>
 		<explorertypes>
 

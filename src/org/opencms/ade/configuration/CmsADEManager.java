@@ -27,6 +27,8 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
@@ -171,11 +173,14 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The offline CMS context. */
     private CmsObject m_offlineCms;
 
+    private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
+
     /** The offline cache instance. */
     private CmsConfigurationCache m_onlineCache;
-
     /** The online CMS context. */
     private CmsObject m_onlineCms;
+
+    private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
 
     /**
      * Creates a new ADE manager.<p>
@@ -218,6 +223,7 @@ public class CmsADEManager implements I_CmsEventListener {
                 }
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
                 m_offlineCache.update(resource);
+                m_offlineContainerConfigurationCache.update(resource);
                 //System.out.print(" " + resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
@@ -226,6 +232,7 @@ public class CmsADEManager implements I_CmsEventListener {
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
                     m_offlineCache.update(res);
+                    m_offlineContainerConfigurationCache.update(res);
                     //System.out.print(" " + res.getRootPath());
                 }
                 break;
@@ -237,12 +244,17 @@ public class CmsADEManager implements I_CmsEventListener {
                 // source, dest, dest folder
                 m_offlineCache.remove(resources.get(0));
                 m_offlineCache.update(resources.get(resources.size() - 2));
+
+                m_offlineContainerConfigurationCache.remove(resources.get(0));
+                m_offlineContainerConfigurationCache.update(resources.get(resources.size() - 2));
+
                 break;
 
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
                     m_offlineCache.remove(res);
+                    m_offlineContainerConfigurationCache.remove(res);
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
@@ -251,10 +263,12 @@ public class CmsADEManager implements I_CmsEventListener {
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
                     m_offlineCache.update(res);
+                    m_offlineContainerConfigurationCache.update(res);
                 }
                 break;
             case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
                 m_onlineCache.initialize();
+                m_onlineContainerConfigurationCache.initialize();
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 //System.out.print(getEventName(event.getType()));
@@ -268,12 +282,15 @@ public class CmsADEManager implements I_CmsEventListener {
                             // If it is, the publish event is not coming from a normal publish process,
                             // so we re-initialize the whole cache to be on the safe side.
                             m_onlineCache.initialize();
+                            m_onlineContainerConfigurationCache.initialize();
                         } else {
                             for (CmsPublishedResource res : publishedResources) {
                                 if (res.getState().isDeleted()) {
                                     m_onlineCache.remove(res);
+                                    m_onlineContainerConfigurationCache.remove(res);
                                 } else {
                                     m_onlineCache.update(res);
+                                    m_onlineContainerConfigurationCache.update(res);
                                 }
                             }
                         }
@@ -286,10 +303,14 @@ public class CmsADEManager implements I_CmsEventListener {
                 //System.out.print(getEventName(event.getType()));
                 m_offlineCache.initialize();
                 m_onlineCache.initialize();
+
+                m_offlineContainerConfigurationCache.initialize();
+                m_onlineContainerConfigurationCache.initialize();
                 break;
             case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
                 //System.out.print(getEventName(event.getType()));
                 m_offlineCache.initialize();
+                m_offlineContainerConfigurationCache.initialize();
                 break;
             default:
                 // noop
@@ -466,6 +487,19 @@ public class CmsADEManager implements I_CmsEventListener {
         return favList;
     }
 
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
+    throws CmsException {
+
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        CmsContainerConfigurationCache cache = online
+        ? m_onlineContainerConfigurationCache
+        : m_offlineContainerConfigurationCache;
+        result.addConfigurations(cache, rootPath, name, cms.getRequestContext().getLocale());
+        return result;
+
+    }
+
     /** 
      * Gets the maximum sitemap depth.<p>
      * 
@@ -576,6 +610,9 @@ public class CmsADEManager implements I_CmsEventListener {
                 m_offlineCache = new CmsConfigurationCache(m_offlineCms, m_configType, m_moduleConfigType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
+                m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms);
+                m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_offlineCms);
+
                 OpenCms.getEventManager().addCmsEventListener(this);
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {
@@ -673,6 +710,15 @@ public class CmsADEManager implements I_CmsEventListener {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
+    }
+
+    public void saveInheritedContainer(
+        CmsObject cms,
+        String rootPath,
+        String name,
+        List<CmsContainerElementBean> elementsToSave) {
+
+        return;
     }
 
     /**

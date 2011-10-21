@@ -350,16 +350,12 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
                 List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                 // Elements
-                for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
-                    groupContainer,
-                    XmlNode.Element.name()); itElems.hasNext();) {
-                    Element element = itElems.next();
-
+                for (Element element : CmsXmlGenericWrapper.elementIterable(groupContainer, XmlNode.Element.name())) {
                     // element itself
                     int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(groupContainer));
-                    String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
-                        element.getName(),
-                        elemIndex));
+                    String elemPath = CmsXmlUtils.concatXpath(
+                        cntPath,
+                        CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
                     I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                     I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                     addBookmark(elemPath, locale, true, elemValue);
@@ -399,8 +395,10 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
                     elements,
                     types));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }

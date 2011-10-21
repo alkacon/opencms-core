@@ -238,6 +238,7 @@ public class CmsElementUtil {
         }
 
         CmsContainerElementData elementBean = new CmsContainerElementData();
+        elementBean.setInheritanceInfo(element.getInheritanceInfo());
         elementBean.setReleasedAndNotExpired(element.isReleasedAndNotExpired());
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
