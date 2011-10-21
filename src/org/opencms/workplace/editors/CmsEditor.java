@@ -170,6 +170,8 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** A cloned cms instance that prevents the broken link remotion during unmarshalling. */
     private CmsObject m_cloneCms;
 
+    /** The editor session info bean. */
+    private CmsEditorSessionInfo m_editorSessionInfo;
     /** The encoding to use (will be read from the file property). */
     private String m_fileEncoding;
     // some private members for parameter storage
@@ -181,15 +183,13 @@ public abstract class CmsEditor extends CmsEditorBase {
     private String m_paramElementlanguage;
     private String m_paramLoadDefault;
     private String m_paramModified;
+
     private String m_paramOldelementlanguage;
 
     private String m_paramTempFile;
 
     /** Helper variable to store the uri to the editors pictures. */
     private String m_picsUri;
-
-    /** The editor session info bean. */
-    private CmsEditorSessionInfo m_editorSessionInfo;
 
     /**
      * Public constructor.<p>
@@ -199,61 +199,6 @@ public abstract class CmsEditor extends CmsEditorBase {
     public CmsEditor(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    @Override
-    protected void initMessages() {
-
-        initSessionInfo();
-        super.initMessages();
-    }
-
-    /**
-     * Initializes the editor session info bean.<p>
-     */
-    protected void initSessionInfo() {
-
-        CmsResource editedResource = null;
-        try {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamResource())) {
-                editedResource = getCms().readResource(getParamResource());
-            }
-        } catch (CmsException e) {
-            // ignore
-        }
-
-        CmsEditorSessionInfo info = null;
-        if (editedResource != null) {
-            HttpSession session = getSession();
-            info = (CmsEditorSessionInfo)session.getAttribute(CmsEditorSessionInfo.getEditorSessionInfoKey(editedResource));
-            if (info == null) {
-                info = new CmsEditorSessionInfo(editedResource.getStructureId());
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramBackLink)) {
-                info.setBackLink(m_paramBackLink);
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramElementlanguage)) {
-                info.setElementLocale(new Locale(m_paramElementlanguage));
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramDirectedit)) {
-                info.setDirectEdit(Boolean.parseBoolean(m_paramDirectedit));
-            }
-            session.setAttribute(info.getEditorSessionInfoKey(), info);
-        }
-        m_editorSessionInfo = info;
-    }
-
-    /**
-     * Returns the editor session info bean.<p>
-     * 
-     * @return the editor session info bean
-     */
-    protected CmsEditorSessionInfo getEditorSessionInfo() {
-
-        return m_editorSessionInfo;
     }
 
     /**
@@ -425,9 +370,13 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         if (active) {
             // create the link for the button
-            return button("javascript:" + jsFunction, null, image, name, type, url.substring(
-                0,
-                url.lastIndexOf("/") + 1));
+            return button(
+                "javascript:" + jsFunction,
+                null,
+                image,
+                name,
+                type,
+                url.substring(0, url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
             return button(null, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
@@ -853,6 +802,10 @@ public abstract class CmsEditor extends CmsEditorBase {
             }
 
             cms.copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
+            // ensure the content handler is called 
+            CmsFile orgFile = cms.readFile(getParamResource(), CmsResourceFilter.ALL);
+            getCloneCms().writeFile(orgFile);
+
         }
         // remove the temporary file flag
         int flags = cms.readResource(getParamResource(), CmsResourceFilter.ALL).getFlags();
@@ -980,6 +933,16 @@ public abstract class CmsEditor extends CmsEditorBase {
     }
 
     /**
+     * Returns the editor session info bean.<p>
+     * 
+     * @return the editor session info bean
+     */
+    protected CmsEditorSessionInfo getEditorSessionInfo() {
+
+        return m_editorSessionInfo;
+    }
+
+    /**
      * Returns the encoding parameter.<p>
      *
      * @return the encoding parameter
@@ -1011,6 +974,51 @@ public abstract class CmsEditor extends CmsEditorBase {
      * Initializes the editor content when openening the editor for the first time.<p>
      */
     protected abstract void initContent();
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    @Override
+    protected void initMessages() {
+
+        initSessionInfo();
+        super.initMessages();
+    }
+
+    /**
+     * Initializes the editor session info bean.<p>
+     */
+    protected void initSessionInfo() {
+
+        CmsResource editedResource = null;
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamResource())) {
+                editedResource = getCms().readResource(getParamResource());
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
+
+        CmsEditorSessionInfo info = null;
+        if (editedResource != null) {
+            HttpSession session = getSession();
+            info = (CmsEditorSessionInfo)session.getAttribute(CmsEditorSessionInfo.getEditorSessionInfoKey(editedResource));
+            if (info == null) {
+                info = new CmsEditorSessionInfo(editedResource.getStructureId());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramBackLink)) {
+                info.setBackLink(m_paramBackLink);
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramElementlanguage)) {
+                info.setElementLocale(new Locale(m_paramElementlanguage));
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramDirectedit)) {
+                info.setDirectEdit(Boolean.parseBoolean(m_paramDirectedit));
+            }
+            session.setAttribute(info.getEditorSessionInfoKey(), info);
+        }
+        m_editorSessionInfo = info;
+    }
 
     /**
      * Sets the encoding parameter.<p>

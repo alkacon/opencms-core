@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.A_CmsResourceTypeLinkParseable;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
@@ -53,8 +54,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +89,12 @@ public class CmsLinkRewriter {
 
     /** The CMS object used for file operations. */
     private CmsObject m_cms;
+
+    /** If true, all XML contents will be rewritten instead of just those containing links to correct. */
+    private boolean m_rewriteAllXmlContents = true;
+
+    /** The set of structure ids of resources whose content has been rewritten. */
+    private Set<CmsUUID> m_rewrittenContent = new HashSet<CmsUUID>();
 
     /** A list of path pairs, each containing a source and a target of a copy operation. */
     private List<CmsPair<String, String>> m_sourceTargetPairs = new ArrayList<CmsPair<String, String>>();
@@ -212,6 +221,37 @@ public class CmsLinkRewriter {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+        if (!m_rewriteAllXmlContents) {
+            return;
+        }
+        for (Map.Entry<CmsUUID, CmsResource> entry : m_cachedResources.entrySet()) {
+            CmsUUID key = entry.getKey();
+            CmsResource resource = entry.getValue();
+            if (isInTargets(resource.getRootPath()) && !m_rewrittenContent.contains(key)) {
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                // rewrite content for other files so 
+                if (resType instanceof A_CmsResourceTypeLinkParseable) {
+                    try {
+                        CmsFile file = m_cms.readFile(resource);
+                        m_cms.writeFile(file);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * Sets the 'rewriteAllContents' flag, which controls whether all XML contents will be rewritten
+     * or just those whose links need to be corrected.<p>
+     * 
+     * @param rewriteAllContents if true, all contents will be rewritten 
+     */
+    public void setRewriteAllContents(boolean rewriteAllContents) {
+
+        m_rewriteAllXmlContents = rewriteAllContents;
     }
 
     /**
@@ -591,6 +631,7 @@ public class CmsLinkRewriter {
             if (resourceType instanceof I_CmsLinkParseable) {
                 CmsFile file = m_cms.readFile(resource);
                 rewriteContent(file, relations);
+                m_rewrittenContent.add(file.getStructureId());
             }
         }
         if (hasOtherLinks) {
