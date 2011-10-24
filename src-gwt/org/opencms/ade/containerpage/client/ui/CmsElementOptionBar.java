@@ -39,6 +39,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -60,8 +61,17 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
         @Override
         protected void onHoverIn(MouseOverEvent event) {
 
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            getContainerElement().highlightElement();
+            if (activeBar != null) {
+
+                try {
+                    activeBar.removeHighlighting();
+
+                } catch (Throwable t) {
+                    // ignore
+                }
+                activeBar = null;
+            }
+            addHighlighting();
         }
 
         /**
@@ -70,11 +80,25 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
         @Override
         protected void onHoverOut(MouseOutEvent event) {
 
-            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            getContainerElement().removeHighlighting();
-        }
+            timer = new Timer() {
 
+                @Override
+                public void run() {
+
+                    if (timer == this) {
+                        removeHighlighting();
+                    }
+                }
+            };
+            timer.schedule(750);
+        }
     }
+
+    /** The currently active option bar. */
+    /*default */static CmsElementOptionBar activeBar;
+
+    /** The timer used for hiding the option bar. */
+    /*default */static Timer timer;
 
     /** The CSS class to be assigned to each option-bar. */
     private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
@@ -183,6 +207,18 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
         return m_calculatedWidth;
     }
 
+    /** 
+     * Adds the highlighting and option bar.<p>
+     */
+    protected void addHighlighting() {
+
+        timer = null;
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        getContainerElement().highlightElement();
+        activeBar = this;
+
+    }
+
     /**
      * Returns the parent container element.<p>
      * 
@@ -191,5 +227,18 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     protected CmsContainerPageElement getContainerElement() {
 
         return m_containerElement;
+    }
+
+    /**
+     * Removes the highlighting and option bar.<p>
+     */
+    protected void removeHighlighting() {
+
+        timer = null;
+        if (activeBar == this) {
+            activeBar = null;
+        }
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        getContainerElement().removeHighlighting();
     }
 }

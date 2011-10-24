@@ -43,6 +43,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -56,7 +57,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     /**
      * Button handler for this class.<p>
      */
-    private class MouseHandler implements MouseOverHandler, MouseOutHandler, ClickHandler {
+    private class MouseHandler extends A_CmsHoverHandler implements ClickHandler {
 
         /**
          * Constructor.<p>
@@ -84,41 +85,64 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+         * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverIn(com.google.gwt.event.dom.client.MouseOverEvent)
          */
-        public void onMouseOut(MouseOutEvent event) {
+        @Override
+        public void onHoverIn(MouseOverEvent event) {
 
-            getElement().removeClassName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            removeHighlighting();
+            if (activeBar != null) {
+                try {
+                    activeBar.removeHighlightingAndBar();
+                } catch (Throwable t) {
+                    // ignore 
+                }
+            }
+            activeBar = null;
+            addHighlightingAndBar();
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+         * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverOut(com.google.gwt.event.dom.client.MouseOutEvent)
          */
-        public void onMouseOver(MouseOverEvent event) {
+        @Override
+        public void onHoverOut(MouseOutEvent event) {
 
-            getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-            highlightElement();
+            timer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    if (timer == this) {
+                        removeHighlightingAndBar();
+                    }
+                }
+            };
+            timer.schedule(750);
         }
 
     }
 
+    /** The currently active option bar. */
+    /*default */static A_CmsDirectEditButtons activeBar;
+
+    /** The timer used for hiding the option bar. */
+    /*default */static Timer timer;
+
     /** The delete button. */
     protected CmsPushButton m_delete;
+
     /** The edit button. */
     protected CmsPushButton m_edit;
+    /** The editable data. */
+    protected CmsEditableDataJSO m_editableData;
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
-    /** The new button. */
-    protected CmsPushButton m_new;
-
-    /** The editable data. */
-    protected CmsEditableDataJSO m_editableData;
-
     /** The editable marker tag. */
     protected Element m_markerTag;
+
+    /** The new button. */
+    protected CmsPushButton m_new;
 
     /** The parent element id. */
     protected String m_parentResourceId;
@@ -216,16 +240,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     }
 
     /**
-     * Returns if this edit button is still valid.<p>
-     * 
-     * @return <code>true</code> if this edit button is valid
-     */
-    public boolean isValid() {
-
-        return RootPanel.getBodyElement().isOrHasChild(m_markerTag);
-    }
-
-    /**
      * Puts a highlighting border around the element.<p>
      */
     public void highlightElement() {
@@ -236,6 +250,16 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         } else {
             m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
         }
+    }
+
+    /**
+     * Returns if this edit button is still valid.<p>
+     * 
+     * @return <code>true</code> if this edit button is valid
+     */
+    public boolean isValid() {
+
+        return RootPanel.getBodyElement().isOrHasChild(m_markerTag);
     }
 
     /**
@@ -271,14 +295,26 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         Element parent = CmsDomUtil.getPositioningParent(getElement());
 
         Style style = getElement().getStyle();
-        style.setRight(parent.getOffsetWidth()
-            - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
+        style.setRight(
+            parent.getOffsetWidth() - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()),
+            Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25
             top = 25;
         }
         style.setTop(top, Unit.PX);
+    }
+
+    /**
+     * Adds the highlighting and option bar.<p>
+     */
+    protected void addHighlightingAndBar() {
+
+        timer = null;
+        highlightElement();
+        getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        activeBar = this;
     }
 
     /**
@@ -295,5 +331,18 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
      * This method should be executed when the "new" direct edit button is clicked.<p>
      */
     protected abstract void onClickNew();
+
+    /**
+     * Removes the highlighting and option bar.<p>
+     */
+    protected void removeHighlightingAndBar() {
+
+        timer = null;
+        if (activeBar == this) {
+            activeBar = null;
+        }
+        removeHighlighting();
+        getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+    }
 
 }
