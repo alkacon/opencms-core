@@ -515,6 +515,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        int zIndexMenu();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         int zIndexPopup();
     }
 
