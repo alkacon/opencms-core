@@ -27,8 +27,8 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
-import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupcontainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -204,7 +204,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param elementWidget the container element widget for which the properties should be edited 
      */
-    public void editElementSettings(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget) {
+    public void editElementSettings(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget) {
 
         final String id = elementWidget.getId();
 
@@ -491,7 +491,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param element the element to edit
      */
-    public void openEditorForElement(CmsContainerPageElement element) {
+    public void openEditorForElement(CmsContainerPageElementPanel element) {
 
         if (element.isNew()) {
             //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished 
@@ -519,7 +519,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
 
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
-            openGroupcontainerEditor((CmsGroupContainerElement)element);
+            openGroupcontainerEditor((CmsGroupContainerElementPanel)element);
         } else {
             m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
         }
@@ -531,7 +531,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * @param element the element widget
      * @param modelResources the available resource models
      */
-    public void openModelResourceSelect(final CmsContainerPageElement element, List<CmsModelResourceInfo> modelResources) {
+    public void openModelResourceSelect(final CmsContainerPageElementPanel element, List<CmsModelResourceInfo> modelResources) {
 
         I_CmsModelSelectHandler handler = new I_CmsModelSelectHandler() {
 
@@ -595,7 +595,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param element the element
      */
-    public void removeElement(CmsContainerPageElement element) {
+    public void removeElement(CmsContainerPageElementPanel element) {
 
         m_controller.removeElement(element);
     }
@@ -850,7 +850,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param groupContainer the group-container element
      */
-    private void openGroupcontainerEditor(CmsGroupContainerElement groupContainer) {
+    private void openGroupcontainerEditor(CmsGroupContainerElementPanel groupContainer) {
 
         CmsGroupcontainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
     }

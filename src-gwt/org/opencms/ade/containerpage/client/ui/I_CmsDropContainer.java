@@ -51,7 +51,7 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * 
      * @param containerElement the element to adopt
      */
-    void adoptElement(CmsContainerPageElement containerElement);
+    void adoptElement(CmsContainerPageElementPanel containerElement);
 
     /**
      * Checks the maximum number of allowed elements and hides overflowing elements.<p> 

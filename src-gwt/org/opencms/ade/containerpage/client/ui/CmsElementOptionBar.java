@@ -107,7 +107,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     private int m_calculatedWidth;
 
     /** The parent container element. */
-    private CmsContainerPageElement m_containerElement;
+    private CmsContainerPageElementPanel m_containerElement;
 
     /** The panel. */
     private FlowPanel m_panel;
@@ -117,7 +117,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * 
      * @param containerElement the parent container element
      */
-    public CmsElementOptionBar(CmsContainerPageElement containerElement) {
+    public CmsElementOptionBar(CmsContainerPageElementPanel containerElement) {
 
         m_panel = new FlowPanel();
         m_containerElement = containerElement;
@@ -138,7 +138,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * @return the created option-bar
      */
     public static CmsElementOptionBar createOptionBarForElement(
-        CmsContainerPageElement element,
+        CmsContainerPageElementPanel element,
         CmsDNDHandler dndHandler,
         A_CmsToolbarOptionButton... buttons) {
 
@@ -224,7 +224,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * 
      * @return the parent container element
      */
-    protected CmsContainerPageElement getContainerElement() {
+    protected CmsContainerPageElementPanel getContainerElement() {
 
         return m_containerElement;
     }

@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsGroupContainerElement extends CmsContainerPageElement implements I_CmsDropContainer {
+public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel implements I_CmsDropContainer {
 
     /** The container type. */
     private String m_containerId;
@@ -76,7 +76,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
-    public CmsGroupContainerElement(
+    public CmsGroupContainerElementPanel(
         Element element,
         I_CmsDropContainer parent,
         String clientId,
@@ -91,9 +91,9 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
-    public void adoptElement(CmsContainerPageElement containerElement) {
+    public void adoptElement(CmsContainerPageElementPanel containerElement) {
 
         assert getElement().equals(containerElement.getElement().getParentElement());
         getChildren().add(containerElement);
@@ -162,7 +162,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElement#hideEditableListButtons()
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#hideEditableListButtons()
      */
     @Override
     public void hideEditableListButtons() {
@@ -170,8 +170,8 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget child = it.next();
-            if (child instanceof CmsContainerPageElement) {
-                ((CmsContainerPageElement)child).hideEditableListButtons();
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).hideEditableListButtons();
             }
         }
     }
@@ -240,7 +240,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElement#removeHighlighting()
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#removeHighlighting()
      */
     @Override
     public void removeHighlighting() {
@@ -332,7 +332,7 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElement#showEditableListButtons()
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#showEditableListButtons()
      */
     @Override
     public void showEditableListButtons() {
@@ -340,8 +340,8 @@ public class CmsGroupContainerElement extends CmsContainerPageElement implements
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget child = it.next();
-            if (child instanceof CmsContainerPageElement) {
-                ((CmsContainerPageElement)child).showEditableListButtons();
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).showEditableListButtons();
             }
         }
     }

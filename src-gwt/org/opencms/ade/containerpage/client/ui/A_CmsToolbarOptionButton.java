@@ -74,7 +74,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
      * 
      * @return the created button
      */
-    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElementPanel element) {
 
         if (!isOptionAvailable(element)) {
             return null;
@@ -92,7 +92,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
      * @param element a container page element
      * @return true if the option should be shown for the given element 
      */
-    public boolean isOptionAvailable(CmsContainerPageElement element) {
+    public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
         return true;
     }
@@ -103,7 +103,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
      * @param event the mouse event (stop propagation if appropriate)
      * @param element the element the option button is associated to
      */
-    public abstract void onElementClick(ClickEvent event, CmsContainerPageElement element);
+    public abstract void onElementClick(ClickEvent event, CmsContainerPageElementPanel element);
 
     /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()

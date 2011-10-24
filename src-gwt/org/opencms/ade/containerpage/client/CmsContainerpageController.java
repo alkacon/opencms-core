@@ -28,7 +28,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
-import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -226,9 +226,9 @@ public final class CmsContainerpageController {
                 return;
             }
             addElements(result);
-            Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
+            Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
             while (it.hasNext()) {
-                org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
+                org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
                 if (!m_clientIds.contains(containerElement.getId())) {
                     continue;
                 }
@@ -345,7 +345,7 @@ public final class CmsContainerpageController {
     private CmsDNDHandler m_dndHandler;
 
     /** The currently edited group-container element. */
-    private CmsGroupContainerElement m_editingGroupcontainer;
+    private CmsGroupContainerElementPanel m_editingGroupcontainer;
 
     /** The lock error message. */
     private String m_lockErrorMessage;
@@ -478,7 +478,7 @@ public final class CmsContainerpageController {
      * 
      * @param element the container element
      */
-    public void createAndEditNewElement(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element) {
+    public void createAndEditNewElement(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
 
         if (!element.isNew()) {
             return;
@@ -524,7 +524,7 @@ public final class CmsContainerpageController {
      * @param modelResourceStructureId the model resource structure id
      */
     public void createAndEditNewElement(
-        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element,
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element,
         final CmsUUID modelResourceStructureId) {
 
         CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
@@ -591,9 +591,9 @@ public final class CmsContainerpageController {
      * 
      * @return the drag elements
      */
-    public List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> getAllDragElements() {
+    public List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> getAllDragElements() {
 
-        List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> result = new ArrayList<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement>();
+        List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> result = new ArrayList<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel>();
         Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> it = m_targetContainers.values().iterator();
         while (it.hasNext()) {
             result.addAll(it.next().getAllDragElements());
@@ -602,8 +602,8 @@ public final class CmsContainerpageController {
             Iterator<Widget> itSub = m_editingGroupcontainer.iterator();
             while (itSub.hasNext()) {
                 Widget w = itSub.next();
-                if (w instanceof org.opencms.ade.containerpage.client.ui.CmsContainerPageElement) {
-                    result.add((org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)w);
+                if (w instanceof org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel) {
+                    result.add((org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)w);
                 }
             }
         }
@@ -778,7 +778,7 @@ public final class CmsContainerpageController {
      * 
      * @return the group-container
      */
-    public CmsGroupContainerElement getGroupcontainer() {
+    public CmsGroupContainerElementPanel getGroupcontainer() {
 
         return m_editingGroupcontainer;
     }
@@ -1175,7 +1175,7 @@ public final class CmsContainerpageController {
      * @param settings the new set of settings 
      */
     public void reloadElementWithSettings(
-        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget,
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget,
         String clientId,
         Map<String, String> settings) {
 
@@ -1204,7 +1204,7 @@ public final class CmsContainerpageController {
      * 
      * @param dragElement the element to remove
      */
-    public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement) {
+    public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel dragElement) {
 
         dragElement.removeFromParent();
         if (isGroupcontainerEditing()) {
@@ -1231,7 +1231,7 @@ public final class CmsContainerpageController {
      * @throws Exception if something goes wrong
      */
     public void replaceContainerElement(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement,
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement,
         CmsContainerElementData elementData) throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
@@ -1239,7 +1239,7 @@ public final class CmsContainerpageController {
 
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement replacer = getContainerpageUtil().createElement(
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel replacer = getContainerpageUtil().createElement(
                 elementData,
                 parentContainer);
             if (containerElement.isNew()) {
@@ -1389,7 +1389,7 @@ public final class CmsContainerpageController {
      */
     public void saveGroupcontainer(
         final CmsGroupContainer groupContainer,
-        final CmsGroupContainerElement groupContainerElement) {
+        final CmsGroupContainerElementPanel groupContainerElement) {
 
         if (getGroupcontainer() != null) {
             CmsRpcAction<Map<String, CmsContainerElementData>> action = new CmsRpcAction<Map<String, CmsContainerElementData>>() {
@@ -1482,7 +1482,7 @@ public final class CmsContainerpageController {
      * 
      * @return <code>true</code> if group-container resource was locked and can be edited
      */
-    public boolean startEditingGroupcontainer(CmsGroupContainerElement groupContainer) {
+    public boolean startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer) {
 
         if (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId())) {
             m_editingGroupcontainer = groupContainer;
@@ -1582,7 +1582,7 @@ public final class CmsContainerpageController {
             Iterator<Widget> elIt = entry.getValue().iterator();
             while (elIt.hasNext()) {
                 try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
                     CmsContainerElement element = new CmsContainerElement();
                     element.setClientId(elementWidget.getId());
                     element.setResourceType(elementWidget.getNewType());
@@ -1628,7 +1628,7 @@ public final class CmsContainerpageController {
      * @param newElementData the new element data
      */
     protected void openEditorForNewElement(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element,
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element,
         CmsContainerElement newElementData) {
 
         element.setNewType(null);
@@ -1687,9 +1687,9 @@ public final class CmsContainerpageController {
      */
     protected void removeContainerElements(String resourceId) {
 
-        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
         while (it.hasNext()) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
             if (resourceId.startsWith(containerElement.getId())) {
                 containerElement.removeFromParent();
                 setPageChanged();
@@ -1865,9 +1865,9 @@ public final class CmsContainerpageController {
             }
         }
 
-        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> itEl = getAllDragElements().iterator();
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> itEl = getAllDragElements().iterator();
         while (itEl.hasNext()) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element = itEl.next();
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element = itEl.next();
             if (element.getId().startsWith(serverId)) {
                 result.add(element.getId());
             }

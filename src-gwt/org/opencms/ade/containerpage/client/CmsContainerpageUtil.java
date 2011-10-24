@@ -29,9 +29,9 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
-import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -87,7 +87,7 @@ public class CmsContainerpageUtil {
      * 
      * @param element the element
      */
-    public void addOptionBar(CmsContainerPageElement element) {
+    public void addOptionBar(CmsContainerPageElementPanel element) {
 
         // the view permission is required for any actions regarding this element
         if (element.hasViewPermission()) {
@@ -100,7 +100,7 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Transforms all contained elements into {@link CmsContainerPageElement}.<p>
+     * Transforms all contained elements into {@link CmsContainerPageElementPanel}.<p>
      * 
      * @param container the container
      */
@@ -170,7 +170,7 @@ public class CmsContainerpageUtil {
                             child = endMarker;
                         }
                         CmsDomUtil.removeScriptTags(elementRoot);
-                        CmsContainerPageElement containerElement = createElement(
+                        CmsContainerPageElementPanel containerElement = createElement(
                             elementRoot,
                             container,
                             clientId,
@@ -190,7 +190,7 @@ public class CmsContainerpageUtil {
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     CmsDomUtil.removeScriptTags(child);
-                    CmsGroupContainerElement groupContainer = createGroupcontainer(
+                    CmsGroupContainerElementPanel groupContainer = createGroupcontainer(
                         child,
                         container,
                         clientId,
@@ -220,7 +220,7 @@ public class CmsContainerpageUtil {
 
     /**
      * The method will create {@link CmsContainerPageContainer} object for all given containers
-     * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsContainerPageElement}.<p>
+     * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsContainerPageElementPanel}.<p>
      * 
      * @param containers the container data
      * 
@@ -250,7 +250,7 @@ public class CmsContainerpageUtil {
      * 
      * @throws Exception if something goes wrong
      */
-    public CmsContainerPageElement createElement(CmsContainerElementData containerElement, I_CmsDropContainer container)
+    public CmsContainerPageElementPanel createElement(CmsContainerElementData containerElement, I_CmsDropContainer container)
     throws Exception {
 
         if (containerElement.isGroupContainer()) {
@@ -290,7 +290,7 @@ public class CmsContainerpageUtil {
      * 
      * @throws Exception if something goes wrong
      */
-    public CmsContainerPageElement createGroupcontainerElement(
+    public CmsContainerPageElementPanel createGroupcontainerElement(
         CmsContainerElementData containerElement,
         List<CmsContainerElementData> subElements,
         I_CmsDropContainer container) throws Exception {
@@ -299,7 +299,7 @@ public class CmsContainerpageUtil {
         element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
         boolean hasProps = !containerElement.getSettingConfig().isEmpty();
 
-        CmsGroupContainerElement groupContainer = createGroupcontainer(
+        CmsGroupContainerElementPanel groupContainer = createGroupcontainer(
             element,
             container,
             containerElement.getClientId(),
@@ -314,7 +314,7 @@ public class CmsContainerpageUtil {
         while (it.hasNext()) {
             CmsContainerElementData subElement = it.next();
             if (subElement.getContents().containsKey(container.getContainerId())) {
-                CmsContainerPageElement subDragElement = createElement(subElement, groupContainer);
+                CmsContainerPageElementPanel subDragElement = createElement(subElement, groupContainer);
                 groupContainer.add(subDragElement);
             }
         }
@@ -352,7 +352,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the draggable element
      */
-    private CmsContainerPageElement createElement(
+    private CmsContainerPageElementPanel createElement(
         com.google.gwt.user.client.Element element,
         I_CmsDropContainer dragParent,
         String clientId,
@@ -362,7 +362,7 @@ public class CmsContainerpageUtil {
         boolean hasViewPermission,
         boolean releasedAndNotExpired) {
 
-        CmsContainerPageElement dragElement = new CmsContainerPageElement(
+        CmsContainerPageElementPanel dragElement = new CmsContainerPageElementPanel(
             element,
             dragParent,
             clientId,
@@ -389,7 +389,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the draggable element
      */
-    private CmsGroupContainerElement createGroupcontainer(
+    private CmsGroupContainerElementPanel createGroupcontainer(
         com.google.gwt.user.client.Element element,
         I_CmsDropContainer dragParent,
         String clientId,
@@ -399,7 +399,7 @@ public class CmsContainerpageUtil {
         boolean hasViewPermission,
         boolean releasedAndNotExpired) {
 
-        CmsGroupContainerElement groupContainer = new CmsGroupContainerElement(
+        CmsGroupContainerElementPanel groupContainer = new CmsGroupContainerElementPanel(
             element,
             dragParent,
             clientId,

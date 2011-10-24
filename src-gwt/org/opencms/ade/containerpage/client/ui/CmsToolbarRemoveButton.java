@@ -51,20 +51,20 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public boolean isOptionAvailable(CmsContainerPageElement element) {
+    public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
         return !element.getParentTarget().isDetailView() && !disableButtons;
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
+    public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         getHandler().removeElement(element);
     }

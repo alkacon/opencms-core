@@ -28,7 +28,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
@@ -414,8 +414,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void reinitializeButtons() {
 
-        List<CmsContainerPageElement> elemWidgets = getAllContainerPageElements();
-        for (CmsContainerPageElement elemWidget : elemWidgets) {
+        List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
+        for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
             CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
         }
     }
@@ -435,8 +435,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void updateAllElements() {
 
-        List<CmsContainerPageElement> pageElements = getAllContainerPageElements();
-        for (CmsContainerPageElement pageElement : pageElements) {
+        List<CmsContainerPageElementPanel> pageElements = getAllContainerPageElements();
+        for (CmsContainerPageElementPanel pageElement : pageElements) {
             pageElement.update();
         }
     }
@@ -446,14 +446,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * 
      * @return the list of current container page elements 
      */
-    protected List<CmsContainerPageElement> getAllContainerPageElements() {
+    protected List<CmsContainerPageElementPanel> getAllContainerPageElements() {
 
-        List<CmsContainerPageElement> elemWidgets = new ArrayList<CmsContainerPageElement>();
+        List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
             Iterator<Widget> elIt = entry.getValue().iterator();
             while (elIt.hasNext()) {
                 try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
                     elemWidgets.add(elementWidget);
                 } catch (ClassCastException e) {
                     // no proper container element, skip it (this should never happen!)

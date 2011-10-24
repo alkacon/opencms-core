@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDraggable {
+public class CmsContainerPageElementPanel extends AbsolutePanel implements I_CmsDraggable {
 
     /** The height necessary for a container page element. */
     public static int NECESSARY_HEIGHT = 24;
@@ -121,7 +121,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
-    public CmsContainerPageElement(
+    public CmsContainerPageElementPanel(
         Element element,
         I_CmsDropContainer parent,
         String clientId,
@@ -628,13 +628,13 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
 
     private native void resetNodeInsertedHandler()/*-{
       var $this = this;
-      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::getElement()();
-      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::m_nodeInsertHandler;
+      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
       if (handler == null) {
          handler = function(event) {
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::checkForEditableChanges()();
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
          };
-         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElement::m_nodeInsertHandler = handler;
+         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
       } else {
          if (element.removeEventLister) {
             element.removeEventListener("DOMNodeInserted", handler);

@@ -116,7 +116,7 @@ public final class CmsGroupcontainerEditor extends Composite {
     protected DivElement m_overlayDiv;
 
     /** List of elements when editing started, use to restore on cancel. */
-    private List<CmsContainerPageElement> m_backUpElements;
+    private List<CmsContainerPageElementPanel> m_backUpElements;
 
     /** The dialog break up group container button. */
     private CmsPushButton m_breakUpButton;
@@ -143,7 +143,7 @@ public final class CmsGroupcontainerEditor extends Composite {
     private CmsContainerElementData m_elementData;
 
     /** The group-container. */
-    private CmsGroupContainerElement m_groupContainer;
+    private CmsGroupContainerElementPanel m_groupContainer;
 
     /** The group container bean. */
     private CmsGroupContainer m_groupContainerBean;
@@ -168,7 +168,7 @@ public final class CmsGroupcontainerEditor extends Composite {
      * @param handler the container-page handler
      */
     private CmsGroupcontainerEditor(
-        CmsGroupContainerElement groupContainer,
+        CmsGroupContainerElementPanel groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
@@ -181,12 +181,12 @@ public final class CmsGroupcontainerEditor extends Composite {
         m_editorId = HTMLPanel.createUniqueId();
         m_editorWidget.getElement().setId(m_editorId);
         m_groupContainer = groupContainer;
-        m_backUpElements = new ArrayList<CmsContainerPageElement>();
+        m_backUpElements = new ArrayList<CmsContainerPageElementPanel>();
         Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w instanceof CmsContainerPageElement) {
-                m_backUpElements.add((CmsContainerPageElement)w);
+            if (w instanceof CmsContainerPageElementPanel) {
+                m_backUpElements.add((CmsContainerPageElementPanel)w);
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
@@ -232,7 +232,7 @@ public final class CmsGroupcontainerEditor extends Composite {
      * @param handler the container-page handler
      */
     public static void openGroupcontainerEditor(
-        CmsGroupContainerElement groupContainer,
+        CmsGroupContainerElementPanel groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
@@ -286,7 +286,7 @@ public final class CmsGroupcontainerEditor extends Composite {
         int index = m_indexPosition;
         for (CmsContainerElement element : elements) {
             try {
-                CmsContainerPageElement containerElement = m_controller.getContainerpageUtil().createElement(
+                CmsContainerPageElementPanel containerElement = m_controller.getContainerpageUtil().createElement(
                     elementsData.get(element.getClientId()),
                     m_parentContainer);
                 m_parentContainer.insert(containerElement, index);
@@ -308,11 +308,11 @@ public final class CmsGroupcontainerEditor extends Composite {
         Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w instanceof CmsContainerPageElement) {
+            if (w instanceof CmsContainerPageElementPanel) {
                 w.removeFromParent();
             }
         }
-        for (CmsContainerPageElement element : m_backUpElements) {
+        for (CmsContainerPageElementPanel element : m_backUpElements) {
             m_groupContainer.add(element);
         }
         if (m_backUpElements.size() == 0) {
@@ -423,8 +423,8 @@ public final class CmsGroupcontainerEditor extends Composite {
         Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w instanceof CmsContainerPageElement) {
-                subItems.add(((CmsContainerPageElement)w).getId());
+            if (w instanceof CmsContainerPageElementPanel) {
+                subItems.add(((CmsContainerPageElementPanel)w).getId());
             }
         }
         subItems.add(m_groupContainer.getId());
@@ -442,8 +442,8 @@ public final class CmsGroupcontainerEditor extends Composite {
         Iterator<Widget> it = m_groupContainer.iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w instanceof CmsContainerPageElement) {
-                CmsContainerPageElement elementWidget = (CmsContainerPageElement)w;
+            if (w instanceof CmsContainerPageElementPanel) {
+                CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)w;
                 CmsContainerElement element = new CmsContainerElement();
                 element.setClientId(elementWidget.getId());
                 element.setResourceType(elementWidget.getNewType());

@@ -50,10 +50,10 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElementPanel element) {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
         if (element.isNew()) {
@@ -63,10 +63,10 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
+    public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         getHandler().addToFavorites(element.getId());
     }

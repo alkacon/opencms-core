@@ -28,8 +28,8 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
-import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElement;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -285,7 +285,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 I_CmsDropContainer container = (I_CmsDropContainer)target;
                 try {
 
-                    CmsContainerPageElement containerElement = null;
+                    CmsContainerPageElementPanel containerElement = null;
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         containerElement = m_controller.getContainerpageUtil().createElement(
@@ -307,8 +307,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         // changes are only relevant to the container page if not group-container editing
                         m_controller.setPageChanged();
                     }
-                    if (draggable instanceof CmsContainerPageElement) {
-                        ((CmsContainerPageElement)draggable).removeFromParent();
+                    if (draggable instanceof CmsContainerPageElementPanel) {
+                        ((CmsContainerPageElementPanel)draggable).removeFromParent();
                     }
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
@@ -321,16 +321,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 m_controller.addToFavoriteList(draggable.getId());
             }
         } else if ((target instanceof I_CmsDropContainer)
-            && (draggable instanceof CmsContainerPageElement)
+            && (draggable instanceof CmsContainerPageElementPanel)
             && isChangedPosition(target)) {
 
             I_CmsDropContainer container = (I_CmsDropContainer)target;
             int count = container.getWidgetCount();
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
             if (container.getPlaceholderIndex() >= count) {
-                container.add((CmsContainerPageElement)draggable);
+                container.add((CmsContainerPageElementPanel)draggable);
             } else {
-                container.insert((CmsContainerPageElement)draggable, container.getPlaceholderIndex());
+                container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
             }
             m_controller.addToRecentList(draggable.getId());
             if (!m_controller.isGroupcontainerEditing()) {
@@ -414,7 +414,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return;
         }
 
-        if (!(handler.getDraggable() instanceof CmsContainerPageElement)) {
+        if (!(handler.getDraggable() instanceof CmsContainerPageElementPanel)) {
             // inserting element from menu
             if ((elementData.getCssResources() != null) && !elementData.getCssResources().isEmpty()) {
                 // the element requires certain CSS resources, check if present and include if necessary
@@ -425,7 +425,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
 
         if (m_controller.isGroupcontainerEditing()) {
-            CmsGroupContainerElement groupContainer = m_controller.getGroupcontainer();
+            CmsGroupContainerElementPanel groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)
                 && elementData.getContents().containsKey(groupContainer.getContainerId())) {
                 Element helper = null;
@@ -735,8 +735,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 m_controller.resetEditableListButtons();
             }
         });
-        if (handler.getDraggable() instanceof CmsContainerPageElement) {
-            ((CmsContainerPageElement)(handler.getDraggable())).removeHighlighting();
+        if (handler.getDraggable() instanceof CmsContainerPageElementPanel) {
+            ((CmsContainerPageElementPanel)(handler.getDraggable())).removeHighlighting();
         }
     }
 

@@ -40,7 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHandle {
 
     /** The associated container element. */
-    private CmsContainerPageElement m_dragElement;
+    private CmsContainerPageElementPanel m_dragElement;
 
     /** The associated tool-bar button. */
     private A_CmsToolbarOptionButton m_toolbarButton;
@@ -51,7 +51,7 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
      * @param toolbarButton the tool-bar button associated with this button, providing all necessary information
      * @param element the element to create this button for
      */
-    public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsContainerPageElement element) {
+    public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsContainerPageElementPanel element) {
 
         super();
         setImageClass(toolbarButton.getIconClass());
@@ -67,7 +67,7 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
      *
      * @return the dragElement
      */
-    public CmsContainerPageElement getContainerElement() {
+    public CmsContainerPageElementPanel getContainerElement() {
 
         return m_dragElement;
     }

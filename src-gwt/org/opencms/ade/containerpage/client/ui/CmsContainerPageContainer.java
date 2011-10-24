@@ -108,9 +108,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
-    public void adoptElement(CmsContainerPageElement containerElement) {
+    public void adoptElement(CmsContainerPageElementPanel containerElement) {
 
         assert getElement().equals(containerElement.getElement().getParentElement());
         getChildren().add(containerElement);
@@ -160,14 +160,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      * 
      * @return the drag elements
      */
-    public List<CmsContainerPageElement> getAllDragElements() {
+    public List<CmsContainerPageElementPanel> getAllDragElements() {
 
-        List<CmsContainerPageElement> elements = new ArrayList<CmsContainerPageElement>();
+        List<CmsContainerPageElementPanel> elements = new ArrayList<CmsContainerPageElementPanel>();
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w instanceof CmsContainerPageElement) {
-                elements.add((CmsContainerPageElement)w);
+            if (w instanceof CmsContainerPageElementPanel) {
+                elements.add((CmsContainerPageElementPanel)w);
             } else {
                 if (CmsDomUtil.hasClass(
                     org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerPlaceholder(),
@@ -218,8 +218,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget child = it.next();
-            if (child instanceof CmsContainerPageElement) {
-                ((CmsContainerPageElement)child).hideEditableListButtons();
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).hideEditableListButtons();
             }
         }
     }
@@ -381,8 +381,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget child = it.next();
-            if (child instanceof CmsContainerPageElement) {
-                ((CmsContainerPageElement)child).showEditableListButtons();
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).showEditableListButtons();
             }
         }
     }

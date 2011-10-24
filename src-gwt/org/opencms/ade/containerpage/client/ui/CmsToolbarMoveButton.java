@@ -57,10 +57,10 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#createOptionForElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElementPanel element) {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
         if (button != null) {
@@ -70,20 +70,20 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public boolean isOptionAvailable(CmsContainerPageElement element) {
+    public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
         return !element.getParentTarget().isDetailView() && !disableButtons;
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
-    public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
+    public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         // do nothing
 
