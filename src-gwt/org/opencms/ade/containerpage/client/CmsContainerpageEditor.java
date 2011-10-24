@@ -68,6 +68,8 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -84,11 +86,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
-    /** The Z index manager. */
-    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
-
     /** Margin-top added to the document body element when the tool-bar is shown. */
     //    private int m_bodyMarginTop;
+
+    /** The Z index manager. */
+    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
     /** Style to toggle toolbar visibility. */
     protected CmsStyleVariable m_toolbarVisibility;
@@ -146,6 +148,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public static I_CmsContainerZIndexManager getZIndexManager() {
 
         return Z_INDEX_MANAGER;
+    }
+
+    private static void openMessageDialog(String title, String displayHtmlContent) {
+
+        HTMLPanel content = new HTMLPanel(displayHtmlContent);
+        content.getElement().getStyle().setOverflow(Overflow.AUTO);
+        content.getElement().getStyle().setPosition(Position.RELATIVE);
+        CmsPopup dialog = new CmsPopup(title, content);
+        content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
+        dialog.setWidth(-1);
+        dialog.addDialogClose(null);
+        dialog.centerHorizontally(100);
     }
 
     /**
@@ -385,6 +399,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         // export open stack trace dialog function
         exportStacktraceDialogMethod();
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                updateAllElements();
+                return true;
+            }
+        }, 1000);
     }
 
     /**
@@ -392,19 +414,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void reinitializeButtons() {
 
-        List<CmsContainerPageElement> elemWidgets = new ArrayList<CmsContainerPageElement>();
-        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
-            Iterator<Widget> elIt = entry.getValue().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
-                    elemWidgets.add(elementWidget);
-                } catch (ClassCastException e) {
-                    // no proper container element, skip it (this should never happen!)
-                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
-                }
-            }
-        }
+        List<CmsContainerPageElement> elemWidgets = getAllContainerPageElements();
         for (CmsContainerPageElement elemWidget : elemWidgets) {
             CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
         }
@@ -420,31 +430,53 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
     }
 
-    private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+    /**
+     * Perform layout corrections for the current container elements.<p>
+     */
+    public void updateAllElements() {
+
+        List<CmsContainerPageElement> pageElements = getAllContainerPageElements();
+        for (CmsContainerPageElement pageElement : pageElements) {
+            pageElement.update();
+        }
+    }
+
+    /**
+     * Helper method to get all current container page elements.<p>
+     * 
+     * @return the list of current container page elements 
+     */
+    protected List<CmsContainerPageElement> getAllContainerPageElements() {
+
+        List<CmsContainerPageElement> elemWidgets = new ArrayList<CmsContainerPageElement>();
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
+            Iterator<Widget> elIt = entry.getValue().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
+                    elemWidgets.add(elementWidget);
+                } catch (ClassCastException e) {
+                    // no proper container element, skip it (this should never happen!)
+                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
                 }
             }
         }
-    }-*/;
-
-    private static void openMessageDialog(String title, String displayHtmlContent) {
-
-        HTMLPanel content = new HTMLPanel(displayHtmlContent);
-        content.getElement().getStyle().setOverflow(Overflow.AUTO);
-        content.getElement().getStyle().setPosition(Position.RELATIVE);
-        CmsPopup dialog = new CmsPopup(title, content);
-        content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
-        dialog.setWidth(-1);
-        dialog.addDialogClose(null);
-        dialog.centerHorizontally(100);
+        return elemWidgets;
     }
+
+    private native void exportStacktraceDialogMethod() /*-{
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+            }
+         }
+      }
+    }-*/;
 
 }
