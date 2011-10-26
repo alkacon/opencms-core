@@ -1020,45 +1020,68 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     protected void processCopyResources(CmsObject cms, String resourcename, CmsMacroResolver resolver) {
 
-        Iterator<CmsConfigurationCopyResource> i = m_copyResources.iterator();
         Map<String, String> copiedResources = new HashMap<String, String>();
-        while (i.hasNext()) {
-            CmsConfigurationCopyResource copyResource = i.next();
+        for (CmsConfigurationCopyResource oriCopyResource : m_copyResources) {
 
-            String oriTarget = copyResource.getTarget();
+            // store original copy target
+            String oriTarget = oriCopyResource.getTarget();
             String target = oriTarget;
-            if (copyResource.isTargetWasNull()
-                || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)
-                || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
-                // target is just the resource folder, must add source file name to target
-                target = target.concat(CmsResource.getName(copyResource.getSource()));
-            }
-            // now resolve the macros in the target name
-            target = resolver.resolveMacros(target);
-            // now resolve possible relative paths in the target
-            target = CmsFileUtil.normalizePath(CmsLinkManager.getAbsoluteUri(target, resourcename), '/');
 
+            List<CmsConfigurationCopyResource> copyResources = new ArrayList<CmsConfigurationCopyResource>();
             try {
-                // copy the resource
-                cms.copyResource(copyResource.getSource(), target, copyResource.getType());
-                copiedResources.put(copyResource.getSource(), target);
-                if (CmsMacroResolver.isMacro(oriTarget, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
-                    // copied resources should be touched in order to be able to do additional stuff
-                    CmsResource res = cms.readResource(target);
-                    if (res.isFile()) {
-                        // single file, just rewrite it
-                        CmsFile file = cms.readFile(res);
-                        cms.writeFile(file);
-                    } else {
-                        // folder, get all sub resources that are files
-                        Iterator<CmsResource> it = cms.readResources(target, CmsResourceFilter.DEFAULT_FILES, true).iterator();
-                        while (it.hasNext()) {
-                            // rewrite the sub resource
-                            CmsResource subRes = it.next();
-                            CmsFile file = cms.readFile(subRes);
+                // determine if source definition has a wild card character at the end
+                if (oriCopyResource.getSource().endsWith("*")) {
+                    // add all sub resources of the specified source folder to the set of resources to copy 
+                    String source = oriCopyResource.getSource().substring(0, oriCopyResource.getSource().length() - 1);
+                    List<CmsResource> sources = cms.readResources(source, CmsResourceFilter.IGNORE_EXPIRATION, false);
+                    for (CmsResource sourceRes : sources) {
+                        copyResources.add(new CmsConfigurationCopyResource(
+                            cms.getSitePath(sourceRes),
+                            oriCopyResource.getTarget(),
+                            oriCopyResource.getTypeString()));
+                    }
+                } else {
+                    // just add the single specified source
+                    copyResources.add(oriCopyResource);
+                }
+
+                // loop the calculated resources to copy
+                for (CmsConfigurationCopyResource copyResource : copyResources) {
+
+                    target = copyResource.getTarget();
+                    if (copyResource.isTargetWasNull()
+                        || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)
+                        || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
+                        // target is just the resource folder, must add source file name to target
+                        target = target.concat(CmsResource.getName(copyResource.getSource()));
+                    }
+                    // now resolve the macros in the target name
+                    target = resolver.resolveMacros(target);
+                    // now resolve possible relative paths in the target
+                    target = CmsFileUtil.normalizePath(CmsLinkManager.getAbsoluteUri(target, resourcename), '/');
+
+                    // copy the resource
+                    cms.copyResource(copyResource.getSource(), target, copyResource.getType());
+                    copiedResources.put(copyResource.getSource(), target);
+                    if (CmsMacroResolver.isMacro(oriTarget, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
+                        // copied resources should be touched in order to be able to do additional stuff
+                        CmsResource res = cms.readResource(target);
+                        if (res.isFile()) {
+                            // single file, just rewrite it
+                            CmsFile file = cms.readFile(res);
                             cms.writeFile(file);
+                        } else {
+                            // folder, get all sub resources that are files
+                            Iterator<CmsResource> it = cms.readResources(target, CmsResourceFilter.DEFAULT_FILES, true).iterator();
+                            while (it.hasNext()) {
+                                // rewrite the sub resource
+                                CmsResource subRes = it.next();
+                                CmsFile file = cms.readFile(subRes);
+                                cms.writeFile(file);
+                            }
                         }
                     }
+
                 }
             } catch (Exception e) {
                 // CmsIllegalArgumentException as well as CmsException
@@ -1069,14 +1092,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                         Messages.get().getBundle().key(
                             Messages.LOG_PROCESS_COPY_RESOURCES_3,
                             resourcename,
-                            copyResource,
+                            oriCopyResource,
                             target),
                         e);
                 } else {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,
                         resourcename,
-                        copyResource,
+                        oriCopyResource,
                         target));
                 }
             }
