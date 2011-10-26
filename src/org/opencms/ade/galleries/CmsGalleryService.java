@@ -262,10 +262,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
-        //  data.setReferenceSitePath(referenceSitePath)
-        List<CmsResourceTypeBean> types = getResourceTypeBeans();
+        List<CmsResourceTypeBean> types = null;
         switch (m_galleryMode) {
-
             case editor:
             case view:
             case widget:
@@ -277,6 +275,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
                 }
                 data.setReferenceSitePath(referencePath);
+                types = getResourceTypeBeans(data.getReferenceSitePath());
                 data.setTypes(types);
                 data.setGalleries(buildGalleriesList(readGalleryInfosByTypeBeans(types)));
                 data.setStartTab(GalleryTabId.cms_tab_results);
@@ -291,6 +290,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());
+                types = getResourceTypeBeans(data.getReferenceSitePath());
                 data.setTypes(types);
                 data.setStartTab(GalleryTabId.cms_tab_types);
                 break;
@@ -847,11 +847,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the resource types configured to be used within the given gallery mode.<p>
      * 
+     * @param referenceSitePath the reference site-path to check permissions for
+     * 
      * @return the resource types
      * 
      * @throws CmsRpcException if something goes wrong reading the configuration
      */
-    private List<CmsResourceTypeBean> getResourceTypeBeans() throws CmsRpcException {
+    private List<CmsResourceTypeBean> getResourceTypeBeans(String referenceSitePath) throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
         List<String> creatableTypes = null;
@@ -870,7 +872,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
                     for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                        if (typeConfig.checkViewable(getCmsObject())) {
+                        if (typeConfig.checkViewable(getCmsObject(), referenceSitePath)) {
                             String typeName = typeConfig.getTypeName();
                             resourceTypes.add(getResourceManager().getResourceType(typeName));
                         }

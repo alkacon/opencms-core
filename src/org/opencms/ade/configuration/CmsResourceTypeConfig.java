@@ -207,14 +207,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * If not, this resource type should not be available at all within the ADE 'add-wizard'.<p>
      * 
      * @param cms the current CMS context 
+     * @param referenceUri the resource URI to check permissions for
      * 
      * @return <code>true</code> if the resource type is viewable 
      */
-    public boolean checkViewable(CmsObject cms) {
+    public boolean checkViewable(CmsObject cms, String referenceUri) {
 
         try {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
-            CmsResource siteRoot = cms.readResource("/");
+            CmsResource siteRoot = cms.readResource(referenceUri);
             return settings.getAccess().getPermissions(cms, siteRoot).requiresViewPermission();
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
