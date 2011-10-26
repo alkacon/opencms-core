@@ -31,18 +31,91 @@
 
 package org.opencms.ade.containerpage.inherited;
 
-import org.opencms.main.CmsException;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_KEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NEWELEMENT;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 public class CmsContainerConfigurationWriter {
 
-    public byte[] serialize(Map<Locale, Map<String, CmsContainerConfiguration>> data, String encoding)
-    throws CmsException {
+	private Map<String, CmsXmlContentProperty> m_propertyConfig = new HashMap<String, CmsXmlContentProperty>();
 
-        throw new NotImplementedException();
-    }
+	public byte[] serialize(
+			Map<Locale, Map<String, CmsContainerConfiguration>> data,
+			String encoding) throws CmsException {
+
+		throw new NotImplementedException();
+	}
+
+	public Element serializeSingleConfiguration(CmsObject cms, String name,
+			CmsContainerConfiguration config) throws DocumentException {
+		String emptyRoot = "<Configuration></Configuration>";
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(new StringReader(emptyRoot));
+		Element root = document.getRootElement();
+		List<String> ordering = config.getOrdering();
+		for (String orderKey : ordering) {
+			root.addElement(N_ORDERKEY).addCDATA(orderKey);
+		}
+		List<String> visibles = new ArrayList<String>();
+		List<String> invisibles = new ArrayList<String>();
+		for (String key : config.getVisibility().keySet()) {
+			Boolean value = config.getVisibility().get(key);
+			if (value.booleanValue()) {
+				visibles.add(key);
+			} else {
+				invisibles.add(key);
+			}
+		}
+		for (String visible : visibles) {
+			root.addElement(N_VISIBLE).addCDATA(visible);
+		}
+		for (String invisible : invisibles) {
+			root.addElement(N_HIDDEN).addCDATA(invisible);
+		}
+		for (Map.Entry<String, CmsContainerElementBean> entry : config
+				.getNewElements().entrySet()) {
+			String key = entry.getKey();
+			CmsContainerElementBean elementBean = entry.getValue();
+			CmsUUID structureId = elementBean.getId();
+			Map<String, String> settings = elementBean.getIndividualSettings();
+			Element newElementElement = root.addElement(N_NEWELEMENT);
+			newElementElement.addElement(N_KEY).addCDATA(key);
+			Element elementElement = newElementElement.addElement("Element");
+			Element linkElement = elementElement.addElement("Uri").addElement(
+					"link");
+			linkElement.addAttribute("type", "STRONG");
+			linkElement.addElement("uuid").addText(structureId.toString());
+			// TODO: use correct property definition for resource type
+			CmsXmlContentPropertyHelper.saveProperties(cms, elementElement,
+					settings, m_propertyConfig);
+		}
+		return root;
+	}
+
+	public void setPropertyConfiguration(
+			Map<String, CmsXmlContentProperty> propertyConfig) {
+		m_propertyConfig = propertyConfig;
+	}
+
 }

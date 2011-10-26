@@ -40,6 +40,16 @@ import java.util.Map;
 
 public class CmsContainerConfiguration {
 
+	public static final String N_CONFIGURATION = "Configuration";
+	public static final String N_VISIBLE = "Visible";
+	public static final String N_HIDDEN = "Hidden";
+	public static final String N_ORDERKEY = "OrderKey";
+	public static final String N_NAME = "Name";
+	public static final String N_NEWELEMENT = "NewElement";
+	public static final String N_KEY = "Key";
+	public static final String N_ELEMENT = "Element";
+	
+
     private Map<String, CmsContainerElementBean> m_newElements;
 
     private List<String> m_ordering;

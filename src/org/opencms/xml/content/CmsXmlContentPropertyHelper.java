@@ -558,14 +558,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the current CMS context
      * @param parentElement the parent xml element
      * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
-     * @param resource the resource to get the property configuration from
      * @param propertiesConf the configuration of the properties 
      */
     public static void saveProperties(
         CmsObject cms,
         Element parentElement,
         Map<String, String> properties,
-        CmsResource resource,
         Map<String, CmsXmlContentProperty> propertiesConf) {
 
         // remove old entries
