@@ -159,9 +159,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         // b, d, a
         checkSpecForPoint(level3, "alpha", false, "key=a", "key=b", "key=d");
 
+        deleteConfiguration(2);
+
+        //b, -, a
+        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b");
+
     }
 
-    public void testCacheCorrectnessOnine() throws Exception {
+    public void testCacheCorrectnessOnline() throws Exception {
 
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
@@ -171,19 +176,19 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
         List<CmsContainerElementBean> elementBeans = state.getElements(true);
         // a, b, c
-        checkSpecForPoint(level3, "alpha", "key=c", "key=a", "key=b");
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=b");
 
         writeConfiguration(2, "d");
         // a, d, c
-        checkSpecForPoint(level3, "alpha", "key=c", "key=a", "key=d");
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=d");
 
         writeConfiguration(1, "b");
         // b, d, c
-        checkSpecForPoint(level3, "alpha", "key=c", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=b", "key=d");
 
         writeConfiguration(3, "a");
         // b, d, a
-        checkSpecForPoint(level3, "alpha", "key=a", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b", "key=d");
 
     }
 
@@ -508,6 +513,18 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             name);
         List<CmsContainerElementBean> elementBeans = state.getElements(true);
         checkSpec(elementBeans, specs);
+    }
+
+    protected void deleteConfiguration(int level) throws CmsException {
+
+        String dirPath = getLevelPath(level);
+        String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(configPath)) {
+            lock(configPath);
+            cms.deleteResource(configPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+
     }
 
     /**
