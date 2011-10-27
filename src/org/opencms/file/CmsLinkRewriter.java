@@ -41,6 +41,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -524,9 +525,7 @@ public class CmsLinkRewriter {
      */
     protected List<CmsResource> readTree(String rootPath) throws CmsException {
 
-        if (!rootPath.equals("/") && rootPath.endsWith("/")) {
-            rootPath = rootPath.substring(rootPath.length() - 1);
-        }
+        rootPath = CmsFileUtil.removeTrailingSeparator(rootPath);
         CmsResource base = m_cms.readResource(rootPath);
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(base);
