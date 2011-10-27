@@ -74,7 +74,6 @@ public class TestMoveRename extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestMoveRename.class.getName());
 
-        suite.addTest(new TestMoveRename("testMoveToDeletedFolder"));
         suite.addTest(new TestMoveRename("testPublishDeletedFolderWithMovedResource"));
         suite.addTest(new TestMoveRename("testPermaLink"));
         suite.addTest(new TestMoveRename("testMoveSingleResource"));
@@ -297,7 +296,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2, this should not be a problem when moving
@@ -342,7 +341,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2
@@ -416,37 +415,6 @@ public class TestMoveRename extends OpenCmsTestCase {
         } catch (CmsPermissionViolationException e) {
             // ok
         }
-    }
-
-    /**
-     * Tests to move a file into an as deleted marked folder.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testMoveToDeletedFolder() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing to move a file into an as deleted marked folder");
-
-        String deletedFolder = "/folder1/subfolder11/";
-        String file = "index.html";
-
-        cms.lockResource(deletedFolder);
-        cms.deleteResource(deletedFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        cms.lockResource(file);
-        try {
-            // moving a file to a deleted folder must cause an exception
-            cms.moveResource(file, deletedFolder + "abc.html");
-            fail("moving a file to a deleted folder must cause an exception");
-        } catch (CmsVfsResourceNotFoundException e) {
-            // ok
-        }
-
-        // restore the starting state
-        cms.undoChanges(deletedFolder, CmsResource.UNDO_CONTENT_RECURSIVE);
-        cms.unlockResource(deletedFolder);
-        cms.unlockResource(file);
     }
 
     /**
