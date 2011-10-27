@@ -33,12 +33,16 @@ package org.opencms.ade.containerpage.inherited;
 
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -46,9 +50,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 public class CmsContainerConfigurationCache implements I_CmsContainerConfigurationCache {
 
+    /** The standard file name for inherited container configurations. */
     public static final String FILE_NAME = ".container-config";
+
+    public static final Log LOG = CmsLog.getLog(CmsContainerConfigurationCache.class);
 
     protected boolean m_initialized;
 
@@ -66,7 +75,24 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
 
     public CmsContainerConfiguration getContainerConfiguration(String rootPath, String name, Locale locale) {
 
-        return null;
+        try {
+            CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(m_cms);
+            String configFilePath = CmsStringUtil.joinPaths(rootPath, ".container-config");
+            try {
+                CmsResource configResource = m_cms.readResource(configFilePath);
+                CmsFile file = m_cms.readFile(configResource);
+                parser.parse(file);
+                return parser.getParsedResults().get(new Locale("en")).get(name);
+            } catch (CmsVfsResourceNotFoundException e) {
+                return null;
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        } catch (NullPointerException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     public void initialize() {

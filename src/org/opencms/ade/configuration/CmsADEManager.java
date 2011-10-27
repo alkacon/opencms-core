@@ -487,9 +487,14 @@ public class CmsADEManager implements I_CmsEventListener {
         return favList;
     }
 
-    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name)
     throws CmsException {
 
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        String rootPath = resource.getRootPath();
+        if (!resType.isFolder()) {
+            rootPath = CmsResource.getParentFolder(rootPath);
+        }
         CmsInheritedContainerState result = new CmsInheritedContainerState();
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
         CmsContainerConfigurationCache cache = online
@@ -498,6 +503,19 @@ public class CmsADEManager implements I_CmsEventListener {
         result.addConfigurations(cache, rootPath, name, cms.getRequestContext().getLocale());
         return result;
 
+    }
+
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
+    throws CmsException {
+
+        String oldSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(rootPath);
+            return getInheritedContainerState(cms, resource, name);
+        } finally {
+            cms.getRequestContext().setSiteRoot(oldSiteRoot);
+        }
     }
 
     /** 

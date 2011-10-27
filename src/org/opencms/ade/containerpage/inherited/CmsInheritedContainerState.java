@@ -46,14 +46,29 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 
+/**
+ * The state of an inherited container at a given point in the VFS tree.<p>
+ */
 public class CmsInheritedContainerState {
 
+    /** The list of configuration beans for each tree level, from top to bottom. */
     private List<CmsContainerConfiguration> m_parentConfigurations = new ArrayList<CmsContainerConfiguration>();
 
+    /**
+     * Default constructor.<p>
+     */
     public CmsInheritedContainerState() {
 
     }
 
+    /**
+     * Reads the configurations for a root path and its parents from a cache instance and adds them to this state.<p>
+     * 
+     * @param cache the cache instance 
+     * @param rootPath the root path 
+     * @param name the name of the container configuration 
+     * @param locale the locale 
+     */
     public void addConfigurations(I_CmsContainerConfigurationCache cache, String rootPath, String name, Locale locale) {
 
         String currentPath = rootPath;
@@ -77,6 +92,15 @@ public class CmsInheritedContainerState {
         }
     }
 
+    /**
+     * Gets a list of container element beans which represent the state of the inherited container.<p>
+     * 
+     * The container element beans returned will have additional information available via the getInheritanceInfo method.<p>
+     * 
+     * @param includeHidden if true, hidden elements will be included in the result list
+     * 
+     * @return the elements for this container state   
+     */
     public List<CmsContainerElementBean> getElements(boolean includeHidden) {
 
         if (m_parentConfigurations.isEmpty()) {
@@ -91,6 +115,11 @@ public class CmsInheritedContainerState {
         List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>();
 
         CmsContainerConfiguration lastElement = m_parentConfigurations.get(m_parentConfigurations.size() - 1);
+        Set<String> newKeys = new HashSet<String>();
+        for (Map.Entry<String, CmsContainerElementBean> entry : lastElement.getNewElements().entrySet()) {
+            String key = entry.getKey();
+            newKeys.add(key);
+        }
         Set<String> keysUsed = new HashSet<String>();
 
         // STEP 1: Get first defined ordering
@@ -134,13 +163,15 @@ public class CmsInheritedContainerState {
                 }
             }
         }
-        // STEP 4: Determine visibility
+        // STEP 4: Determine visibility and new-ness
         for (CmsContainerElementBean resultElement : result) {
             CmsInheritanceInfo info = resultElement.getInheritanceInfo();
             String key = info.getKey();
             List<Boolean> visibilities = getVisibilities(key);
             computeVisibility(visibilities, info);
+            info.setIsNew(newKeys.contains(info.getKey()));
         }
+
         List<CmsContainerElementBean> resultWithoutHidden = new ArrayList<CmsContainerElementBean>();
         List<CmsContainerElementBean> hiddenElements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElementBean resultElement : result) {
@@ -158,12 +189,41 @@ public class CmsInheritedContainerState {
         return result;
     }
 
+    /**
+     * Checks whether an element with the given key is actually defined in this inherited container state.<p>
+     * 
+     * @param key the key for which the check should be performed 
+     * 
+     * @return true if an element with the key has been defined in this state 
+     */
+    public boolean hasElementWithKey(String key) {
+
+        for (CmsContainerConfiguration configuration : m_parentConfigurations) {
+            if (configuration.getNewElements().containsKey(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a configuration bean for a new tree level.<p>
+     * 
+     * @param configuration the configuration bean 
+     */
     protected void addConfiguration(CmsContainerConfiguration configuration) {
 
         m_parentConfigurations.add(configuration);
 
     }
 
+    /**
+     * Gets the list of visibilities for a given key in all the tree levels.<p>
+     * 
+     * @param key the key for which the visibilities should be returned 
+     * 
+     * @return the list of visibilities, from top to bottom 
+     */
     protected List<Boolean> getVisibilities(String key) {
 
         List<Boolean> result = new ArrayList<Boolean>();

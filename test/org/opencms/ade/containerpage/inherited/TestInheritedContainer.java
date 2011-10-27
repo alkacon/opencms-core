@@ -35,7 +35,6 @@ import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
 
-import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.test.OpenCmsTestCase;
@@ -90,17 +89,28 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("d e|||d e"));
         result.addConfiguration(buildConfiguration("a c|||"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        assertEquals(5, elementBeans.size());
-        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-        assertEquals("a", info1.getKey());
-        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-        assertEquals("c", info2.getKey());
-        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-        assertEquals("b", info3.getKey());
-        CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
-        assertEquals("d", info4.getKey());
-        CmsInheritanceInfo info5 = elementBeans.get(4).getInheritanceInfo();
-        assertEquals("e", info5.getKey());
+        checkSpec(
+            elementBeans,
+            "key=a new=false visible=true",
+            "key=c new=false visible=true",
+            "key=b new=false visible=true",
+            "key=d new=false visible=true",
+            "key=e new=false visible=true");
+
+        result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b c d f e|||f e c d b a"));
+        result.addConfiguration(buildConfiguration("g|||g"));
+        result.addConfiguration(buildConfiguration("|||"));
+        elementBeans = result.getElements(true);
+        checkSpec(
+            elementBeans,
+            "key=a new=false",
+            "key=b new=false",
+            "key=c new=false",
+            "key=d new=false",
+            "key=f new=false",
+            "key=e new=false",
+            "key=g new=false");
     }
 
     /**
@@ -109,19 +119,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * 
      * @throws Exception
      */
-    public void testChangeOrder1() throws Exception {
+    public void testChangeOrder() throws Exception {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
         result.addConfiguration(buildConfiguration("a b c|||a b c"));
         result.addConfiguration(buildConfiguration("b c a|||"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        assertEquals(3, elementBeans.size());
-        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-        assertEquals("b", info1.getKey());
-        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-        assertEquals("c", info2.getKey());
-        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-        assertEquals("a", info3.getKey());
+        checkSpec(
+            elementBeans,
+            "key=b new=false visible=true",
+            "key=c new=false visible=true",
+            "key=a new=false visible=true");
     }
 
     /**
@@ -130,28 +138,35 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * 
      * @throws Exception
      */
-    public void testHideElements1() throws Exception {
+    public void testHideElements() throws Exception {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
         result.addConfiguration(buildConfiguration("a b c d|||a b c d"));
         result.addConfiguration(buildConfiguration("||b d|"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        assertEquals(4, elementBeans.size());
-        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-        assertEquals("a", info1.getKey());
-        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-        assertEquals("c", info2.getKey());
-        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-        assertEquals("b", info3.getKey());
-        CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
-        assertEquals("d", info4.getKey());
+        checkSpec(
+            elementBeans,
+            "key=a visible=true",
+            "key=c visible=true",
+            "key=b visible=false",
+            "key=d visible=false");
 
         elementBeans = result.getElements(false);
-        assertEquals(2, elementBeans.size());
-        info1 = elementBeans.get(0).getInheritanceInfo();
-        assertEquals("a", info1.getKey());
-        info2 = elementBeans.get(1).getInheritanceInfo();
-        assertEquals("c", info2.getKey());
+        checkSpec(elementBeans, "key=a visible=true", "key=c visible=true");
+    }
+
+    /**
+     * Tests that the 'new' states of inherited container elements are correct.<p>
+     * 
+     * @throws Exception
+     */
+    public void testNewElements() throws Exception {
+
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b|||a b"));
+        checkSpec(result.getElements(true), "key=a new=true", "key=b new=true");
+        result.addConfiguration(buildConfiguration("c b a d|||c d"));
+        checkSpec(result.getElements(true), "key=c new=true", "key=b new=false", "key=a new=false", "key=d new=true");
     }
 
     /**
@@ -349,6 +364,49 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         Node childNode = element.node(0);
         assertEquals("cdata", childNode.getNodeTypeName().toLowerCase());
         assertEquals(expectedValue, childNode.getText());
+    }
+
+    /**
+     * Checks whether a container element bean with inheritance information fulfills a given specification string.<p>
+     * 
+     * The string has the form 'key1=value1 key2=value2....'.<p>
+     * 
+     * Each key-value pair corresponds to a check to perform on the given container element bean: 
+     * The key 'key' performs a test whether the key of the inheritance info has a given value.<p>
+     * The key 'new' performs a test whether the element bean was inherited from a parent configuration or is new.<p>
+     * The key 'visible' performs a test whether the element bean is marked as visible 
+     * @param element
+     * @param spec
+     */
+    protected void checkSpec(CmsContainerElementBean element, String spec) {
+
+        Map<String, String> specMap = CmsStringUtil.splitAsMap(spec, " ", "=");
+        for (Map.Entry<String, String> entry : specMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if ("visible".equals(key)) {
+                boolean expectVisible = Boolean.parseBoolean(value);
+                assertEquals(expectVisible, element.getInheritanceInfo().getVisibility().booleanValue());
+            } else if ("key".equals(key)) {
+                String expectedKey = value;
+                assertEquals(expectedKey, element.getInheritanceInfo().getKey());
+            } else if ("new".equals(key)) {
+                boolean expectNew = Boolean.parseBoolean(value);
+                assertEquals(expectNew, element.getInheritanceInfo().isNew());
+            } else {
+                throw new IllegalArgumentException("Invalid specification string: " + spec);
+            }
+        }
+    }
+
+    protected void checkSpec(List<CmsContainerElementBean> elements, String... specs) {
+
+        assertEquals(specs.length, elements.size());
+        for (int i = 0; i < elements.size(); i++) {
+            CmsContainerElementBean elementBean = elements.get(i);
+            String spec = specs[i];
+            checkSpec(elementBean, spec);
+        }
     }
 
     /**
