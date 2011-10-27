@@ -35,6 +35,17 @@ import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
 
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsFile;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContentProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,16 +58,6 @@ import junit.framework.Test;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
-import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
-import org.opencms.db.CmsResourceState;
-import org.opencms.file.CmsFile;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 /**
  * Test case for inherited containers.
@@ -65,304 +66,314 @@ import org.opencms.xml.content.CmsXmlContentProperty;
  */
 public class TestInheritedContainer extends OpenCmsTestCase {
 
-	/**
-	 * Returns the test suite.
-	 * <p>
-	 * 
-	 * @return the test suite
-	 */
-	public static Test suite() {
+    public TestInheritedContainer(String name) {
 
-		OpenCmsTestProperties
-				.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-		return generateSetupTestWrapper(TestInheritedContainer.class,
-				"inheritcontainer", "/");
-	}
+        super(name);
+    }
 
-	public TestInheritedContainer(String name) {
+    /**
+     * Returns the test suite.
+     * <p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
 
-		super(name);
-	}
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return generateSetupTestWrapper(TestInheritedContainer.class, "inheritcontainer", "/");
+    }
 
-	protected CmsContainerConfiguration buildConfiguration(String spec) {
+    public void testAppendNew() throws Exception {
 
-		Map<String, Boolean> visibility = new HashMap<String, Boolean>();
-		Map<String, CmsContainerElementBean> newElements = new HashMap<String, CmsContainerElementBean>();
-		List<String> ordering = new ArrayList<String>();
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b c|||a b c"));
+        result.addConfiguration(buildConfiguration("d e|||d e"));
+        result.addConfiguration(buildConfiguration("a c|||"));
+        List<CmsContainerElementBean> elementBeans = result.getElements(true);
+        assertEquals(5, elementBeans.size());
+        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
+        assertEquals("a", info1.getKey());
+        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
+        assertEquals("c", info2.getKey());
+        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
+        assertEquals("b", info3.getKey());
+        CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
+        assertEquals("d", info4.getKey());
+        CmsInheritanceInfo info5 = elementBeans.get(4).getInheritanceInfo();
+        assertEquals("e", info5.getKey());
+    }
 
-		String[] tokens = spec.split("\\|", 4);
-		String orderingStr = tokens[0];
-		String visibleStr = tokens[1];
-		String hiddenStr = tokens[2];
-		String newElemStr = tokens[3];
+    /**
+     * Tests rearrangement of inherited elements.
+     * <p>
+     * 
+     * @throws Exception
+     */
+    public void testChangeOrder1() throws Exception {
 
-		if (orderingStr.length() == 0) {
-			ordering = null;
-		} else {
-			ordering = CmsStringUtil.splitAsList(orderingStr, " ");
-		}
-		for (String visible : visibleStr.split("\\s+")) {
-			if (CmsStringUtil.isEmptyOrWhitespaceOnly(visible)) {
-				continue;
-			}
-			visibility.put(visible, Boolean.TRUE);
-		}
-		for (String hidden : hiddenStr.split("\\s+")) {
-			if (CmsStringUtil.isEmptyOrWhitespaceOnly(hidden)) {
-				continue;
-			}
-			visibility.put(hidden, Boolean.FALSE);
-		}
-		for (String newElem : newElemStr.split("\\s+")) {
-			if (CmsStringUtil.isEmptyOrWhitespaceOnly(newElem)) {
-				continue;
-			}
-			newElements.put(newElem, generateDummyElement(newElem));
-		}
-		return new CmsContainerConfiguration(ordering, visibility, newElements);
-	}
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b c|||a b c"));
+        result.addConfiguration(buildConfiguration("b c a|||"));
+        List<CmsContainerElementBean> elementBeans = result.getElements(true);
+        assertEquals(3, elementBeans.size());
+        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
+        assertEquals("b", info1.getKey());
+        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
+        assertEquals("c", info2.getKey());
+        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
+        assertEquals("a", info3.getKey());
+    }
 
-	protected void checkCDATA(Element element, String expectedValue) {
-		Node childNode = element.node(0);
-		assertEquals("cdata", childNode.getNodeTypeName().toLowerCase());
-		assertEquals(expectedValue, childNode.getText());
-	}
+    /**
+     * Test for hiding of inherited elements.
+     * <p>
+     * 
+     * @throws Exception
+     */
+    public void testHideElements1() throws Exception {
 
-	/**
-	 * Helper method for generating a dummy container element.
-	 * <p>
-	 * 
-	 * @param key
-	 *            the key to use
-	 * @return the dummy container element
-	 */
-	protected CmsContainerElementBean generateDummyElement(String key) {
-		Map<String, String> settings = new HashMap<String, String>();
-		settings.put("setting_" + key, "value_" + key);
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b c d|||a b c d"));
+        result.addConfiguration(buildConfiguration("||b d|"));
+        List<CmsContainerElementBean> elementBeans = result.getElements(true);
+        assertEquals(4, elementBeans.size());
+        CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
+        assertEquals("a", info1.getKey());
+        CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
+        assertEquals("c", info2.getKey());
+        CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
+        assertEquals("b", info3.getKey());
+        CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
+        assertEquals("d", info4.getKey());
 
-		CmsContainerElementBean elementBean = new CmsContainerElementBean(
-				CmsUUID.getConstantUUID(key), CmsUUID.getNullUUID(), settings,
-				false);
-		return elementBean;
-	}
+        elementBeans = result.getElements(false);
+        assertEquals(2, elementBeans.size());
+        info1 = elementBeans.get(0).getInheritanceInfo();
+        assertEquals("a", info1.getKey());
+        info2 = elementBeans.get(1).getInheritanceInfo();
+        assertEquals("c", info2.getKey());
+    }
 
-	protected String getCDATA(Element element) {
-		return element.node(0).getText();
-	}
+    /**
+     * Tests parsing of container configuration files.
+     * 
+     * @throws Exception
+     */
+    public void testParseContainerConfiguration() throws Exception {
 
-	public void testAppendNew() throws Exception {
+        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+            + "\r\n"
+            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
+            + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
+            + "    <Title><![CDATA[blah]]></Title>\r\n"
+            + "    <Configuration>\r\n"
+            + "      <Name><![CDATA[blubb]]></Name>\r\n"
+            + "      <OrderKey><![CDATA[this/is/the/key]]></OrderKey>\r\n"
+            + "      <Visible><![CDATA[foo]]></Visible>\r\n"
+            + "      <Hidden><![CDATA[bar]]></Hidden>\r\n"
+            + "      <NewElement>\r\n"
+            + "        <Key><![CDATA[this/is/another/key]]></Key>\r\n"
+            + "        <Element>\r\n"
+            + "          <Uri>\r\n"
+            + "            <link type=\"STRONG\">\r\n"
+            + "              <target><![CDATA[/system/test.txt]]></target>\r\n"
+            + "              <uuid>00000001-0000-0000-0000-000000000000</uuid>\r\n"
+            + "            </link>\r\n"
+            + "          </Uri>\r\n"
+            + "          <Properties>\r\n"
+            + "            <Name><![CDATA[testsetting]]></Name>\r\n"
+            + "            <Value>\r\n"
+            + "              <String><![CDATA[testvalue]]></String>\r\n"
+            + "            </Value>\r\n"
+            + "          </Properties>\r\n"
+            + "          <Properties>\r\n"
+            + "            <Name><![CDATA[testsetting2]]></Name>\r\n"
+            + "            <Value>\r\n"
+            + "              <FileList>\r\n"
+            + "                <Uri>\r\n"
+            + "                  <link type=\"WEAK\">\r\n"
+            + "                    <target><![CDATA[/system/test.txt]]></target>\r\n"
+            + "                    <uuid>00000001-0000-0000-0000-000000000000</uuid>\r\n"
+            + "                  </link>\r\n"
+            + "                </Uri>\r\n"
+            + "              </FileList>\r\n"
+            + "            </Value>\r\n"
+            + "          </Properties>\r\n"
+            + "        </Element>\r\n"
+            + "      </NewElement>\r\n"
+            + "    </Configuration>\r\n"
+            + "  </AlkaconInheritConfigGroup>\r\n"
+            + "</AlkaconInheritConfigGroups>\r\n";
+        byte[] xmlData = xmlText.getBytes("UTF-8");
+        CmsFile file = new CmsFile(
+            new CmsUUID()/* structureid */,
+            new CmsUUID()/* resourceid */,
+            "/test"/* rootpath */,
+            303/* typeid */,
+            0/* flags */,
+            new CmsUUID()/* projectlastmodified */,
+            CmsResourceState.STATE_NEW/* state */,
+            0/* datecreated */,
+            new CmsUUID()/* usercreated */,
+            0/* datemodified */,
+            new CmsUUID()/* usermodified */,
+            0/* datereleased */,
+            0/* dateexpired */,
+            0/* siblingcount */,
+            xmlData.length/* length */,
+            0/* datacontent */,
+            0/* version */,
+            xmlData/* content */);
+        CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(getCmsObject());
+        parser.parse(file);
+        Map<Locale, Map<String, CmsContainerConfiguration>> results = parser.getParsedResults();
+        Map<String, CmsContainerConfiguration> configurationGroup = results.get(new Locale("en"));
+        assertNotNull(configurationGroup);
+        CmsContainerConfiguration config = configurationGroup.get("blubb");
+        assertNotNull(config);
+        Map<String, CmsContainerElementBean> newElements = config.getNewElements();
+        assertNotNull(newElements);
+        CmsContainerElementBean elementBean = newElements.get("this/is/another/key");
+        assertEquals(new CmsUUID("00000001-0000-0000-0000-000000000000"), elementBean.getId());
+        Map<String, String> settings = elementBean.getIndividualSettings();
+        assertNotNull(settings);
+        assertEquals("testvalue", settings.get("testsetting"));
+        assertEquals("00000001-0000-0000-0000-000000000000", settings.get("testsetting2"));
+    }
 
-		CmsInheritedContainerState result = new CmsInheritedContainerState();
-		result.addConfiguration(buildConfiguration("a b c|||a b c"));
-		result.addConfiguration(buildConfiguration("d e|||d e"));
-		result.addConfiguration(buildConfiguration("a c|||"));
-		List<CmsContainerElementBean> elementBeans = result.getElements(true);
-		assertEquals(5, elementBeans.size());
-		CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-		assertEquals("a", info1.getKey());
-		CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-		assertEquals("c", info2.getKey());
-		CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-		assertEquals("b", info3.getKey());
-		CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
-		assertEquals("d", info4.getKey());
-		CmsInheritanceInfo info5 = elementBeans.get(4).getInheritanceInfo();
-		assertEquals("e", info5.getKey());
-	}
+    public void testSerialization1() throws Exception {
 
-	/**
-	 * Tests rearrangement of inherited elements.
-	 * <p>
-	 * 
-	 * @throws Exception
-	 */
-	public void testChangeOrder1() throws Exception {
+        CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
+        CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
+            "setting_a",
+            "string",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+        Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
+        settingDefs.put("setting_a", setting1def);
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        writer.setPropertyConfiguration(settingDefs);
+        Element element = writer.serializeSingleConfiguration(getCmsObject(), "configname", config);
+        assertNotNull(element);
+        assertEquals("Configuration", element.getName());
+        List<Node> nodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_ORDERKEY));
+        assertEquals(3, nodes.size());
+        Element element0 = (Element)nodes.get(0);
+        checkCDATA(element0, "a");
+        checkCDATA((Element)nodes.get(1), "b");
+        checkCDATA((Element)nodes.get(2), "c");
 
-		CmsInheritedContainerState result = new CmsInheritedContainerState();
-		result.addConfiguration(buildConfiguration("a b c|||a b c"));
-		result.addConfiguration(buildConfiguration("b c a|||"));
-		List<CmsContainerElementBean> elementBeans = result.getElements(true);
-		assertEquals(3, elementBeans.size());
-		CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-		assertEquals("b", info1.getKey());
-		CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-		assertEquals("c", info2.getKey());
-		CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-		assertEquals("a", info3.getKey());
-	}
+        List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_VISIBLE));
+        assertEquals(1, visibleNodes.size());
+        checkCDATA((Element)visibleNodes.get(0), "d");
 
-	/**
-	 * Test for hiding of inherited elements.
-	 * <p>
-	 * 
-	 * @throws Exception
-	 */
-	public void testHideElements1() throws Exception {
+        List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_HIDDEN));
+        assertEquals(2, invisibleNodes.size());
+        Set<String> actualInvisible = new HashSet<String>();
+        Set<String> expectedInvisible = new HashSet<String>();
+        expectedInvisible.add("e");
+        expectedInvisible.add("f");
+        for (Node node : invisibleNodes) {
+            actualInvisible.add(getCDATA((Element)node));
+        }
+        assertEquals(expectedInvisible, actualInvisible);
+        {
+            Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
+            String uuidString = getCDATA((Element)targetIdNode);
+            assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
+        }
+        {
+            Node targetIdNode = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
+            String uuidString = getCDATA((Element)targetIdNode);
+            assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString));
+        }
+        {
+            Node targetIdNode = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
+            String uuidString = getCDATA((Element)targetIdNode);
+            assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString));
+        }
+        assertEquals(3, element.selectNodes("NewElement").size());
+        assertEquals(
+            "value_a",
+            getCDATA((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
 
-		CmsInheritedContainerState result = new CmsInheritedContainerState();
-		result.addConfiguration(buildConfiguration("a b c d|||a b c d"));
-		result.addConfiguration(buildConfiguration("||b d|"));
-		List<CmsContainerElementBean> elementBeans = result.getElements(true);
-		assertEquals(4, elementBeans.size());
-		CmsInheritanceInfo info1 = elementBeans.get(0).getInheritanceInfo();
-		assertEquals("a", info1.getKey());
-		CmsInheritanceInfo info2 = elementBeans.get(1).getInheritanceInfo();
-		assertEquals("c", info2.getKey());
-		CmsInheritanceInfo info3 = elementBeans.get(2).getInheritanceInfo();
-		assertEquals("b", info3.getKey());
-		CmsInheritanceInfo info4 = elementBeans.get(3).getInheritanceInfo();
-		assertEquals("d", info4.getKey());
+    }
 
-		elementBeans = result.getElements(false);
-		assertEquals(2, elementBeans.size());
-		info1 = elementBeans.get(0).getInheritanceInfo();
-		assertEquals("a", info1.getKey());
-		info2 = elementBeans.get(1).getInheritanceInfo();
-		assertEquals("c", info2.getKey());
-	}
+    protected CmsContainerConfiguration buildConfiguration(String spec) {
 
-	/**
-	 * Tests parsing of container configuration files.
-	 * 
-	 * @throws Exception
-	 */
-	public void testParseContainerConfiguration() throws Exception {
+        Map<String, Boolean> visibility = new HashMap<String, Boolean>();
+        Map<String, CmsContainerElementBean> newElements = new HashMap<String, CmsContainerElementBean>();
+        List<String> ordering = new ArrayList<String>();
 
-		String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-				+ "\r\n"
-				+ "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
-				+ "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
-				+ "    <Title><![CDATA[blah]]></Title>\r\n"
-				+ "    <Configuration>\r\n"
-				+ "      <Name><![CDATA[blubb]]></Name>\r\n"
-				+ "      <OrderKey><![CDATA[this/is/the/key]]></OrderKey>\r\n"
-				+ "      <Visible><![CDATA[foo]]></Visible>\r\n"
-				+ "      <Hidden><![CDATA[bar]]></Hidden>\r\n"
-				+ "      <NewElement>\r\n"
-				+ "        <Key><![CDATA[this/is/another/key]]></Key>\r\n"
-				+ "        <Element>\r\n"
-				+ "          <Uri>\r\n"
-				+ "            <link type=\"STRONG\">\r\n"
-				+ "              <target><![CDATA[/system/test.txt]]></target>\r\n"
-				+ "              <uuid>00000001-0000-0000-0000-000000000000</uuid>\r\n"
-				+ "            </link>\r\n"
-				+ "          </Uri>\r\n"
-				+ "          <Properties>\r\n"
-				+ "            <Name><![CDATA[testsetting]]></Name>\r\n"
-				+ "            <Value>\r\n"
-				+ "              <String><![CDATA[testvalue]]></String>\r\n"
-				+ "            </Value>\r\n"
-				+ "          </Properties>\r\n"
-				+ "          <Properties>\r\n"
-				+ "            <Name><![CDATA[testsetting2]]></Name>\r\n"
-				+ "            <Value>\r\n"
-				+ "              <FileList>\r\n"
-				+ "                <Uri>\r\n"
-				+ "                  <link type=\"WEAK\">\r\n"
-				+ "                    <target><![CDATA[/system/test.txt]]></target>\r\n"
-				+ "                    <uuid>00000001-0000-0000-0000-000000000000</uuid>\r\n"
-				+ "                  </link>\r\n"
-				+ "                </Uri>\r\n"
-				+ "              </FileList>\r\n" + "            </Value>\r\n"
-				+ "          </Properties>\r\n" + "        </Element>\r\n"
-				+ "      </NewElement>\r\n" + "    </Configuration>\r\n"
-				+ "  </AlkaconInheritConfigGroup>\r\n"
-				+ "</AlkaconInheritConfigGroups>\r\n";
-		byte[] xmlData = xmlText.getBytes("UTF-8");
-		CmsFile file = new CmsFile(new CmsUUID()/* structureid */,
-				new CmsUUID()/* resourceid */, "/test"/* rootpath */,
-				303/* typeid */, 0/* flags */,
-				new CmsUUID()/* projectlastmodified */,
-				CmsResourceState.STATE_NEW/* state */, 0/* datecreated */,
-				new CmsUUID()/* usercreated */, 0/* datemodified */,
-				new CmsUUID()/* usermodified */, 0/* datereleased */,
-				0/* dateexpired */, 0/* siblingcount */,
-				xmlData.length/* length */, 0/* datacontent */, 0/* version */,
-				xmlData/* content */);
-		CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(
-				getCmsObject());
-		parser.parse(file);
-		Map<Locale, Map<String, CmsContainerConfiguration>> results = parser
-				.getParsedResults();
-		Map<String, CmsContainerConfiguration> configurationGroup = results
-				.get(new Locale("en"));
-		assertNotNull(configurationGroup);
-		CmsContainerConfiguration config = configurationGroup.get("blubb");
-		assertNotNull(config);
-		Map<String, CmsContainerElementBean> newElements = config
-				.getNewElements();
-		assertNotNull(newElements);
-		CmsContainerElementBean elementBean = newElements
-				.get("this/is/another/key");
-		assertEquals(new CmsUUID("00000001-0000-0000-0000-000000000000"),
-				elementBean.getId());
-		Map<String, String> settings = elementBean.getIndividualSettings();
-		assertNotNull(settings);
-		assertEquals("testvalue", settings.get("testsetting"));
-		assertEquals("00000001-0000-0000-0000-000000000000",
-				settings.get("testsetting2"));
-	}
+        String[] tokens = spec.split("\\|", 4);
+        String orderingStr = tokens[0];
+        String visibleStr = tokens[1];
+        String hiddenStr = tokens[2];
+        String newElemStr = tokens[3];
 
-	public void testSerialization1() throws Exception {
-		CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
-		CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
-				"setting_a", "string", null, null, null, null, null, null,
-				null, null, null);
-		Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
-		settingDefs.put("setting_a", setting1def);
-		CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-		writer.setPropertyConfiguration(settingDefs);
-		Element element = writer.serializeSingleConfiguration(getCmsObject(),
-				"configname", config);
-		assertNotNull(element);
-		assertEquals("Configuration", element.getName());
-		List<Node> nodes = CmsCollectionsGenericWrapper.list(element
-				.selectNodes(N_ORDERKEY));
-		assertEquals(3, nodes.size());
-		Element element0 = (Element) nodes.get(0);
-		checkCDATA(element0, "a");
-		checkCDATA((Element) nodes.get(1), "b");
-		checkCDATA((Element) nodes.get(2), "c");
+        if (orderingStr.length() == 0) {
+            ordering = null;
+        } else {
+            ordering = CmsStringUtil.splitAsList(orderingStr, " ");
+        }
+        for (String visible : visibleStr.split("\\s+")) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(visible)) {
+                continue;
+            }
+            visibility.put(visible, Boolean.TRUE);
+        }
+        for (String hidden : hiddenStr.split("\\s+")) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(hidden)) {
+                continue;
+            }
+            visibility.put(hidden, Boolean.FALSE);
+        }
+        for (String newElem : newElemStr.split("\\s+")) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(newElem)) {
+                continue;
+            }
+            newElements.put(newElem, generateDummyElement(newElem));
+        }
+        return new CmsContainerConfiguration(ordering, visibility, newElements);
+    }
 
-		List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element
-				.selectNodes(N_VISIBLE));
-		assertEquals(1, visibleNodes.size());
-		checkCDATA((Element) visibleNodes.get(0), "d");
+    protected void checkCDATA(Element element, String expectedValue) {
 
-		List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element
-				.selectNodes(N_HIDDEN));
-		assertEquals(2, invisibleNodes.size());
-		Set<String> actualInvisible = new HashSet<String>();
-		Set<String> expectedInvisible = new HashSet<String>();
-		expectedInvisible.add("e");
-		expectedInvisible.add("f");
-		for (Node node : invisibleNodes) {
-			actualInvisible.add(getCDATA((Element) node));
-		}
-		assertEquals(expectedInvisible, actualInvisible);
-		{
-			Node targetIdNode = element
-					.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
-			String uuidString = getCDATA((Element) targetIdNode);
-			assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
-		}
-		{
-			Node targetIdNode = element
-					.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
-			String uuidString = getCDATA((Element) targetIdNode);
-			assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString));
-		}
-		{
-			Node targetIdNode = element
-					.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
-			String uuidString = getCDATA((Element) targetIdNode);
-			assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString));
-		}
-		assertEquals(3, element.selectNodes("NewElement").size());
-		assertEquals(
-				"value_a",
-				getCDATA((Element) element
-						.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
+        Node childNode = element.node(0);
+        assertEquals("cdata", childNode.getNodeTypeName().toLowerCase());
+        assertEquals(expectedValue, childNode.getText());
+    }
 
-	}
+    /**
+     * Helper method for generating a dummy container element.
+     * <p>
+     * 
+     * @param key
+     *            the key to use
+     * @return the dummy container element
+     */
+    protected CmsContainerElementBean generateDummyElement(String key) {
+
+        Map<String, String> settings = new HashMap<String, String>();
+        settings.put("setting_" + key, "value_" + key);
+
+        CmsContainerElementBean elementBean = new CmsContainerElementBean(
+            CmsUUID.getConstantUUID(key),
+            CmsUUID.getNullUUID(),
+            settings,
+            false);
+        return elementBean;
+    }
+
+    protected String getCDATA(Element element) {
+
+        return element.node(0).getText();
+    }
 }

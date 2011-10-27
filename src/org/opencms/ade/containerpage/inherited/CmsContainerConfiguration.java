@@ -17,7 +17,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
@@ -40,15 +40,14 @@ import java.util.Map;
 
 public class CmsContainerConfiguration {
 
-	public static final String N_CONFIGURATION = "Configuration";
-	public static final String N_VISIBLE = "Visible";
-	public static final String N_HIDDEN = "Hidden";
-	public static final String N_ORDERKEY = "OrderKey";
-	public static final String N_NAME = "Name";
-	public static final String N_NEWELEMENT = "NewElement";
-	public static final String N_KEY = "Key";
-	public static final String N_ELEMENT = "Element";
-	
+    public static final String N_CONFIGURATION = "Configuration";
+    public static final String N_ELEMENT = "Element";
+    public static final String N_HIDDEN = "Hidden";
+    public static final String N_KEY = "Key";
+    public static final String N_NAME = "Name";
+    public static final String N_NEWELEMENT = "NewElement";
+    public static final String N_ORDERKEY = "OrderKey";
+    public static final String N_VISIBLE = "Visible";
 
     private Map<String, CmsContainerElementBean> m_newElements;
 
