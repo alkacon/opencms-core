@@ -150,7 +150,7 @@ public class CmsInheritedContainerState {
         // STEP 3: Add 'new' elements from parents
         for (int i = 0; i < (m_parentConfigurations.size()); i++) {
             CmsContainerConfiguration currentConfig = m_parentConfigurations.get(i);
-            for (Map.Entry<String, CmsContainerElementBean> entry : currentConfig.getNewElements().entrySet()) {
+            for (Map.Entry<String, CmsContainerElementBean> entry : currentConfig.getNewElementsInOrder().entrySet()) {
                 String key = entry.getKey();
                 if (!keysUsed.contains(key)) {
                     CmsContainerElementBean elementToAdd = CmsContainerElementBean.cloneWithSettings(

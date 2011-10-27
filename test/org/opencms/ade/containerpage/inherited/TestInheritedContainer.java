@@ -37,6 +37,13 @@ import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -45,6 +52,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,13 +112,79 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         elementBeans = result.getElements(true);
         checkSpec(
             elementBeans,
+            "key=g new=false",
             "key=a new=false",
             "key=b new=false",
             "key=c new=false",
             "key=d new=false",
             "key=f new=false",
-            "key=e new=false",
-            "key=g new=false");
+            "key=e new=false");
+
+        result = new CmsInheritedContainerState();
+        result.addConfiguration(buildConfiguration("a b|||b a"));
+        result.addConfiguration(buildConfiguration("d c|||c d"));
+        result.addConfiguration(buildConfiguration("e f|||e f"));
+        elementBeans = result.getElements(true);
+        checkSpec(
+            elementBeans,
+            "key=e new=true",
+            "key=f new=true",
+            "key=a new=false",
+            "key=b new=false",
+            "key=d new=false",
+            "key=c new=false");
+    }
+
+    public void testCacheCorrectnessOffline() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        CmsObject cms = getCmsObject();
+        String level3 = "/system/level1/level2/level3";
+        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
+        List<CmsContainerElementBean> elementBeans = state.getElements(true);
+        // a, b, c
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=b");
+
+        writeConfiguration(2, "d");
+        // a, d, c
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=d");
+
+        writeConfiguration(1, "b");
+        // b, d, c
+        checkSpecForPoint(level3, "alpha", false, "key=c", "key=b", "key=d");
+
+        writeConfiguration(3, "a");
+        // b, d, a
+        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b", "key=d");
+
+    }
+
+    public void testCacheCorrectnessOnine() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        String level3 = "/system/level1/level2/level3";
+        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
+        List<CmsContainerElementBean> elementBeans = state.getElements(true);
+        // a, b, c
+        checkSpecForPoint(level3, "alpha", "key=c", "key=a", "key=b");
+
+        writeConfiguration(2, "d");
+        // a, d, c
+        checkSpecForPoint(level3, "alpha", "key=c", "key=a", "key=d");
+
+        writeConfiguration(1, "b");
+        // b, d, c
+        checkSpecForPoint(level3, "alpha", "key=c", "key=b", "key=d");
+
+        writeConfiguration(3, "a");
+        // b, d, a
+        checkSpecForPoint(level3, "alpha", "key=a", "key=b", "key=d");
+
     }
 
     /**
@@ -296,31 +370,43 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         expectedInvisible.add("e");
         expectedInvisible.add("f");
         for (Node node : invisibleNodes) {
-            actualInvisible.add(getCDATA((Element)node));
+            actualInvisible.add(getNestedText((Element)node));
         }
         assertEquals(expectedInvisible, actualInvisible);
         {
             Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
-            String uuidString = getCDATA((Element)targetIdNode);
+            String uuidString = getNestedText((Element)targetIdNode);
             assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
         }
         {
             Node targetIdNode = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
-            String uuidString = getCDATA((Element)targetIdNode);
+            String uuidString = getNestedText((Element)targetIdNode);
             assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString));
         }
         {
             Node targetIdNode = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
-            String uuidString = getCDATA((Element)targetIdNode);
+            String uuidString = getNestedText((Element)targetIdNode);
             assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString));
         }
         assertEquals(3, element.selectNodes("NewElement").size());
         assertEquals(
             "value_a",
-            getCDATA((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
+            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
 
     }
 
+    /**
+     * Helper method to create a dummy configuration from a specification string.<p>
+     * 
+     * The specification string consists of 4 fields separated by the pipe symbol, which correspond to different 
+     * parts of the configuration bean. The first field describes the ordering keys of the container configuration;
+     * the second field describes the keys which have been made visible by the configuration; the third field describes
+     * which keys have been hidden by the configuration, and the last field describes which new elements are contained in 
+     * the configuration.<p>
+     * 
+     * @param spec
+     * @return
+     */
     protected CmsContainerConfiguration buildConfiguration(String spec) {
 
         Map<String, Boolean> visibility = new HashMap<String, Boolean>();
@@ -409,6 +495,21 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    protected void checkSpecForPoint(String rootPath, String name, boolean online, String... specs) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (online) {
+            cms = OpenCms.initCmsObject(cms);
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        }
+        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(
+            getCmsObject(),
+            rootPath,
+            name);
+        List<CmsContainerElementBean> elementBeans = state.getElements(true);
+        checkSpec(elementBeans, specs);
+    }
+
     /**
      * Helper method for generating a dummy container element.
      * <p>
@@ -430,8 +531,109 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return elementBean;
     }
 
-    protected String getCDATA(Element element) {
+    protected byte[] generateTestConfig(String newName) throws CmsException, UnsupportedEncodingException {
+
+        CmsResource resource = getCmsObject().readResource("/system/content/" + newName + ".txt");
+        CmsUUID structureId = resource.getStructureId();
+        String rootPath = resource.getRootPath();
+
+        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+            + "\r\n"
+            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
+            + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
+            + "    <Title><![CDATA[blah]]></Title>\r\n"
+            + "    <Configuration>\r\n"
+            + "      <Name><![CDATA[alpha]]></Name>\r\n"
+            + "      <OrderKey><![CDATA["
+            + newName
+            + "]]></OrderKey>\r\n"
+            + "      <NewElement>\r\n"
+            + "        <Key><![CDATA["
+            + newName
+            + "]]></Key>\r\n"
+            + "        <Element>\r\n"
+            + "          <Uri>\r\n"
+            + "            <link type=\"STRONG\">\r\n"
+            + "              <target><![CDATA["
+            + rootPath
+            + "]]></target>\r\n"
+            + "              <uuid>"
+            + structureId.toString()
+            + "</uuid>\r\n"
+            + "            </link>\r\n"
+            + "          </Uri>\r\n"
+            + "        </Element>\r\n"
+            + "      </NewElement>\r\n"
+            + "    </Configuration>\r\n"
+            + "  </AlkaconInheritConfigGroup>\r\n"
+            + "</AlkaconInheritConfigGroups>\r\n";
+        byte[] xmlData = xmlText.getBytes("UTF-8");
+        return xmlData;
+
+    }
+
+    protected String getLevelPath(int level) {
+
+        switch (level) {
+            case 1:
+                return "/system/level1";
+            case 2:
+                return "/system/level1/level2";
+            case 3:
+                return "/system/level1/level2/level3";
+            default:
+                throw new IllegalArgumentException("Invalid level id!");
+        }
+    }
+
+    protected String getNestedText(Element element) {
 
         return element.node(0).getText();
+    }
+
+    protected void lock(String path) {
+
+        try {
+            getCmsObject().lockResource(path);
+        } catch (CmsException e) {
+            // no other users, this means we already have the lock 
+        }
+    }
+
+    protected void publish() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsPublishManager publishManager = OpenCms.getPublishManager();
+        publishManager.publishProject(cms);
+        publishManager.waitWhileRunning();
+    }
+
+    protected String read(String path) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource resource = cms.readResource(path);
+        CmsFile file = cms.readFile(resource);
+        return new String(file.getContents(), "UTF-8");
+    }
+
+    protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
+
+        String dirPath = getLevelPath(level);
+        String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(configPath)) {
+            lock(configPath);
+            CmsFile file = cms.readFile(configPath);
+            byte[] newContent = generateTestConfig(name);
+            file.setContents(newContent);
+            cms.writeFile(file);
+        } else {
+            byte[] newContent = generateTestConfig(name);
+            cms.createResource(
+                configPath,
+                OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId(),
+                newContent,
+                new ArrayList<CmsProperty>());
+        }
     }
 }

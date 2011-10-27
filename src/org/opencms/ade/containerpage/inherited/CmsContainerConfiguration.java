@@ -35,18 +35,34 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CmsContainerConfiguration {
 
+    /** Node name. **/
     public static final String N_CONFIGURATION = "Configuration";
+
+    /** Node name. **/
     public static final String N_ELEMENT = "Element";
+
+    /** Node name. **/
     public static final String N_HIDDEN = "Hidden";
+
+    /** Node name. **/
     public static final String N_KEY = "Key";
+
+    /** Node name. **/
     public static final String N_NAME = "Name";
+
+    /** Node name. **/
     public static final String N_NEWELEMENT = "NewElement";
+
+    /** Node name. **/
     public static final String N_ORDERKEY = "OrderKey";
+
+    /** Node name. **/
     public static final String N_VISIBLE = "Visible";
 
     private Map<String, CmsContainerElementBean> m_newElements;
@@ -79,6 +95,21 @@ public class CmsContainerConfiguration {
     public Map<String, CmsContainerElementBean> getNewElements() {
 
         return m_newElements;
+    }
+
+    public LinkedHashMap<String, CmsContainerElementBean> getNewElementsInOrder() {
+
+        LinkedHashMap<String, CmsContainerElementBean> result = new LinkedHashMap<String, CmsContainerElementBean>();
+        if (m_ordering != null) {
+            for (String orderKey : m_ordering) {
+                CmsContainerElementBean element = m_newElements.get(orderKey);
+                if (element != null) {
+                    result.put(orderKey, element);
+                }
+            }
+            return result;
+        }
+        return new LinkedHashMap<String, CmsContainerElementBean>();
     }
 
     public List<String> getOrdering() {
