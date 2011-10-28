@@ -45,7 +45,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
      * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
      */
     @Override
-    protected List getNotLocalizedBundles(Locale locale) {
+    protected List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale) {
 
         return Collections.emptyList();
     }
@@ -57,6 +57,10 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     protected I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception {
 
         return new I_CmsClientMessageBundle[] {
+            org.opencms.ade.containerpage.ClientMessages.get(),
+            org.opencms.ade.galleries.ClientMessages.get(),
+            org.opencms.ade.publish.ClientMessages.get(),
+            org.opencms.ade.upload.ClientMessages.get(),
             org.opencms.ade.sitemap.ClientMessages.get(),
             org.opencms.gwt.ClientMessages.get()};
     }
@@ -74,6 +78,9 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
             org.opencms.workplace.tools.content.check.Messages.get(),
+            org.opencms.workplace.tools.content.convertxml.Messages.get(),
+            org.opencms.workplace.tools.content.languagecopy.Messages.get(),
+            org.opencms.workplace.tools.content.updatexml.Messages.get(),
             org.opencms.workplace.tools.content.propertyviewer.Messages.get(),
             org.opencms.workplace.tools.database.Messages.get(),
             org.opencms.workplace.tools.galleryoverview.Messages.get(),
