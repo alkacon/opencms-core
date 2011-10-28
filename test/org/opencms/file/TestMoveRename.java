@@ -297,7 +297,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2, this should not be a problem when moving
@@ -342,7 +342,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2
