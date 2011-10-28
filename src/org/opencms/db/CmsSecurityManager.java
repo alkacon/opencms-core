@@ -3399,8 +3399,11 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
+            // checking if the destination folder exists and is not marked as deleted
+            readResource(context, CmsResource.getParentFolder(destination), CmsResourceFilter.IGNORE_EXPIRATION);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+
             checkSystemLocks(dbc, source);
 
             // check write permissions for subresources in case of moving a folder
