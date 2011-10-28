@@ -31,18 +31,19 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import org.opencms.ade.configuration.I_CmsGlobalConfigurationCache;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -52,97 +53,149 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-public class CmsContainerConfigurationCache implements I_CmsContainerConfigurationCache {
+/**
+ * A cache class for storing inherited container configurations.<p>
+ */
+public class CmsContainerConfigurationCache implements I_CmsContainerConfigurationCache, I_CmsGlobalConfigurationCache {
 
     /** The standard file name for inherited container configurations. */
     public static final String FILE_NAME = ".container-config";
 
+    /** The logger instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsContainerConfigurationCache.class);
 
+    /** A flag which indicates whether this cache is initialized. */
     protected boolean m_initialized;
 
+    /** The CMS context used for this cache's VFS operations. */
     private CmsObject m_cms;
 
+    /** The map of cached configurations, with the base paths as keys. */
+    private Map<String, CmsContainerConfigurationGroup> m_configurationsByPath = new HashMap<String, CmsContainerConfigurationGroup>();
+
+    /** The name of this cache, used for testing/debugging purposes. */
+    private String m_name;
+
+    /** A map which contains paths and structure ids of configuration files which need to be read to bring the cache to an up-to-date state. */
     private Map<String, CmsUUID> m_needToUpdate = new HashMap<String, CmsUUID>();
 
-    private Map<String, CmsContainerConfigurationGroup> m_pathCache = new HashMap<String, CmsContainerConfigurationGroup>();
-
-    public CmsContainerConfigurationCache(CmsObject cms)
+    /**
+     * Creates a new cache instance for inherited containers.<p>
+     * 
+     * @param cms the CMS context to use for VFS operations.
+     * @param name the name of the cache, for debugging/testing purposes 
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsContainerConfigurationCache(CmsObject cms, String name)
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
+        m_name = name;
     }
 
-    public CmsContainerConfiguration getContainerConfiguration(String rootPath, String name, Locale locale) {
+    public void clear() {
 
-        try {
-            CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(m_cms);
-            String configFilePath = CmsStringUtil.joinPaths(rootPath, ".container-config");
-            try {
-                CmsResource configResource = m_cms.readResource(configFilePath);
-                CmsFile file = m_cms.readFile(configResource);
-                parser.parse(file);
-                return parser.getParsedResults().get(new Locale("en")).get(name);
-            } catch (CmsVfsResourceNotFoundException e) {
-                return null;
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
-        } catch (NullPointerException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
+        m_initialized = false;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.inherited.I_CmsContainerConfigurationCache#getContainerConfiguration(java.lang.String, java.lang.String, java.util.Locale)
+     */
+    public synchronized CmsContainerConfiguration getContainerConfiguration(String rootPath, String name, Locale locale) {
+
+        readRemainingConfigurations();
+        String key = getCacheKey(rootPath);
+        if (m_configurationsByPath.containsKey(key)) {
+            CmsContainerConfigurationGroup group = m_configurationsByPath.get(key);
+            return group.getConfiguration(name, m_cms.getRequestContext().getLocale());
         }
+        return null;
     }
 
-    public void initialize() {
+    /** 
+     * Initializes the cache.<p>
+     */
+    public synchronized void initialize() {
 
-        try {
-            List<CmsResource> configurationResources = m_cms.readResources(
-                "/",
-                CmsResourceFilter.DEFAULT.addRequireType(safeGetType()),
-                true);
-            for (CmsResource configResource : configurationResources) {
-                update(configResource);
-            }
-        } catch (CmsException e) {
-
-        }
+        m_initialized = false;
     }
 
-    public void remove(CmsPublishedResource resource) {
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#remove(org.opencms.db.CmsPublishedResource)
+     */
+    public synchronized void remove(CmsPublishedResource resource) {
 
         remove(resource.getStructureId(), resource.getRootPath(), resource.getType());
     }
 
-    public void remove(CmsResource resource) {
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#remove(org.opencms.file.CmsResource)
+     */
+    public synchronized void remove(CmsResource resource) {
 
         remove(resource.getStructureId(), resource.getRootPath(), resource.getTypeId());
     }
 
-    public void update(CmsPublishedResource resource) {
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#update(org.opencms.db.CmsPublishedResource)
+     */
+    public synchronized void update(CmsPublishedResource resource) {
 
         update(resource.getStructureId(), resource.getRootPath(), resource.getType(), resource.getState());
     }
 
-    public void update(CmsResource resource) {
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#update(org.opencms.file.CmsResource)
+     */
+    public synchronized void update(CmsResource resource) {
 
         update(resource.getStructureId(), resource.getRootPath(), resource.getTypeId(), resource.getState());
     }
 
+    /**
+     * Returns the base path for a given configuration file.
+     * 
+     * E.g. the result for the input '/sites/default/.container-config' will be '/sites/default'.<p>
+     *  
+     * @param rootPath the root path of the configuration file 
+     * 
+     * @return the base path for the configuration file 
+     */
     protected String getBasePath(String rootPath) {
 
-        if (rootPath.endsWith("/" + FILE_NAME)) {
-            return rootPath.replaceAll("/" + FILE_NAME + "$", "/");
-        } else {
-            throw new IllegalArgumentException();
+        if (rootPath.endsWith(FILE_NAME)) {
+            return rootPath.substring(0, rootPath.length() - FILE_NAME.length());
         }
+        return rootPath;
     }
 
+    /**
+     * Gets the cache key for a given base path.<p>
+     * 
+     * @param basePath the base path 
+     * 
+     * @return the cache key for the base path 
+     */
+    protected String getCacheKey(String basePath) {
+
+        assert !basePath.endsWith(FILE_NAME);
+        return CmsFileUtil.addTrailingSeparator(basePath);
+    }
+
+    /**
+     * Checks whethet a given combination of path and resource type belongs to an inherited container configuration file.<p>
+     * 
+     * @param rootPath the root path of the resource 
+     * @param type the type id of the resource
+     * 
+     * @return true if the given root path / type combination matches an inherited container configuration file 
+     */
     protected boolean isContainerConfiguration(String rootPath, int type) {
 
         try {
-            int expectedId = OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId();
+            int expectedId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
             return !CmsResource.isTemporaryFileName(rootPath)
                 && rootPath.endsWith("/" + FILE_NAME)
                 && (type == expectedId);
@@ -151,32 +204,114 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
         }
     }
 
+    /**
+     * Loads a single configuration file into the cache.<p>
+     * 
+     * @param configResource the configuration resource 
+     */
+    protected void load(CmsResource configResource) {
+
+        String basePath = getBasePath(configResource.getRootPath());
+        try {
+            CmsFile file = m_cms.readFile(configResource);
+            CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(m_cms);
+            // This log message is needed for the test cases. 
+            LOG.trace("inherited-container-cache " + m_name + " load");
+            parser.parse(file);
+            CmsContainerConfigurationGroup group = new CmsContainerConfigurationGroup(parser.getParsedResults());
+            m_configurationsByPath.put(getCacheKey(basePath), group);
+            m_needToUpdate.remove(configResource.getRootPath());
+        } catch (CmsException e) {
+            m_configurationsByPath.remove(getCacheKey(basePath));
+            LOG.error(e.getLocalizedMessage(), e);
+        } catch (RuntimeException e) {
+            m_configurationsByPath.remove(getCacheKey(basePath));
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Reads the configurations needed to make the cache up-to-date.<p>
+     */
+    protected void readRemainingConfigurations() {
+
+        if (!m_initialized) {
+            LOG.trace("inherited-container-cache " + m_name + " initialize");
+            m_configurationsByPath.clear();
+            try {
+                List<CmsResource> configurationResources = m_cms.readResources(
+                    "/",
+                    CmsResourceFilter.DEFAULT.addRequireType(safeGetType()),
+                    true);
+                for (CmsResource configResource : configurationResources) {
+                    load(configResource);
+                }
+                m_initialized = true;
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        } else {
+            Map<String, CmsUUID> needToUpdate = new HashMap<String, CmsUUID>(m_needToUpdate);
+            for (Map.Entry<String, CmsUUID> entry : needToUpdate.entrySet()) {
+                String rootPath = entry.getKey();
+                CmsUUID structureId = entry.getValue();
+                try {
+                    CmsResource resource = m_cms.readResource(structureId);
+                    load(resource);
+                } catch (CmsException e) {
+                    String cacheKey = getCacheKey(getBasePath(rootPath));
+                    m_configurationsByPath.remove(cacheKey);
+                } catch (RuntimeException e) {
+                    String cacheKey = getCacheKey(getBasePath(rootPath));
+                    m_configurationsByPath.remove(cacheKey);
+                }
+            }
+
+        }
+    }
+
+    /** 
+     * Removes a resource from the cache.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @param rootPath the root path of the resource 
+     * 
+     * @param type the resource type 
+     */
     protected synchronized void remove(CmsUUID structureId, String rootPath, int type) {
 
         if (!isContainerConfiguration(rootPath, type)) {
             return;
         }
         String basePath = getBasePath(rootPath);
-        m_pathCache.remove(basePath);
+        m_configurationsByPath.remove(basePath);
     }
 
     protected int safeGetType() {
 
         try {
-            return OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId();
+            return OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
         } catch (CmsLoaderException e) {
             return -1;
         }
     }
 
+    /**
+     * Updates a resource in the cache.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @param rootPath the root path of the resource 
+     * @param type the resource type 
+     * @param state the resource state 
+     */
     protected synchronized void update(CmsUUID structureId, String rootPath, int type, CmsResourceState state) {
 
         if (!isContainerConfiguration(rootPath, type)) {
             return;
         }
         String basePath = getBasePath(rootPath);
-        m_pathCache.remove(basePath);
+        m_configurationsByPath.remove(basePath);
         m_needToUpdate.put(rootPath, structureId);
     }
-
 }

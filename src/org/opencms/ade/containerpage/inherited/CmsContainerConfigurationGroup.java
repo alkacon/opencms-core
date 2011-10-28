@@ -42,4 +42,13 @@ public class CmsContainerConfigurationGroup {
 
         m_configurations = configurations;
     }
+
+    public CmsContainerConfiguration getConfiguration(String name, Locale locale) {
+
+        Map<String, CmsContainerConfiguration> configurationsForLocale = m_configurations.get(locale);
+        if (configurationsForLocale == null) {
+            return null;
+        }
+        return configurationsForLocale.get(name);
+    }
 }

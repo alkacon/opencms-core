@@ -74,6 +74,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 
+    public static final String INHERIT_CONTAINER_CONFIG_TYPE_NAME = "inheritconfig";
+
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritref";
 

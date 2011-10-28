@@ -44,7 +44,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishManager;
+import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
@@ -63,6 +65,9 @@ import java.util.Set;
 
 import junit.framework.Test;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.spi.LoggingEvent;
+
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -73,6 +78,75 @@ import org.dom4j.Node;
  */
 public class TestInheritedContainer extends OpenCmsTestCase {
 
+    /**
+     * A special log handler which intercepts log messages from the inherited container configuration
+     * cache to count how often new configuration files are loaded into the cache.
+     */
+    public static class CacheLoadLogHandler implements I_CmsLogHandler {
+
+        /** The number of offline loads. */
+        private int m_offlineLoads;
+
+        /** The number of online loads. */
+        private int m_onlineLoads;
+
+        /** 
+         * Resets the offline/online load counters to 0.<p>
+         */
+        public void clear() {
+
+            m_offlineLoads = 0;
+            m_onlineLoads = 0;
+        }
+
+        /**
+         * Gets the number of offline loads since the last call to clear().<p>
+         * 
+         * @return the number of offline loads 
+         */
+        public int getOfflineLoads() {
+
+            return m_offlineLoads;
+        }
+
+        /**
+         * Gets the number of online loads since the last call to clear().<p>
+         * 
+         * @return the number of online loads 
+         */
+        public int getOnlineLoads() {
+
+            return m_onlineLoads;
+        }
+
+        /**
+         * @see org.opencms.test.I_CmsLogHandler#handleLogEvent(org.apache.log4j.spi.LoggingEvent)
+         */
+        public void handleLogEvent(LoggingEvent event) {
+
+            String message = event.getMessage().toString();
+            if (event.getLevel().equals(Level.TRACE)) {
+                if (message.startsWith("inherited-container-cache offline load")) {
+                    m_offlineLoads += 1;
+                }
+                if (message.startsWith("inherited-container-cache online load")) {
+                    m_onlineLoads += 1;
+                }
+            }
+        }
+    }
+
+    /** Constant which represents the offline project. */
+    public static final boolean OFFLINE = false;
+
+    /** Constant which represents the online project. */
+    public static final boolean ONLINE = true;
+
+    /**
+     * The test case constructor.<p>
+     * 
+     * @param name the name of the test case 
+     */
     public TestInheritedContainer(String name) {
 
         super(name);
@@ -90,6 +164,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return generateSetupTestWrapper(TestInheritedContainer.class, "inheritcontainer", "/");
     }
 
+    /**
+     * Tests that new elements in parent configurations which are not explicitly referenced by
+     * a child configuration's ordering are inserted at the end of the element list.<p>
+     * 
+     * @throws Exception
+     */
     public void testAppendNew() throws Exception {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -135,6 +215,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             "key=c new=false");
     }
 
+    /**
+     * Tests the correctness of the offline cache results.<p>
+     * 
+     * @throws Exception
+     */
     public void testCacheCorrectnessOffline() throws Exception {
 
         writeConfiguration(1, "a");
@@ -166,30 +251,135 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     }
 
+    /**
+     * Tests the correctness of the online cache results.<p>
+     * 
+     * @throws Exception
+     */
     public void testCacheCorrectnessOnline() throws Exception {
 
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
+        publish();
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
         String level3 = "/system/level1/level2/level3";
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
-        List<CmsContainerElementBean> elementBeans = state.getElements(true);
-        // a, b, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=b");
+
+        // OFFLINE: a, b, c       ONLINE: a, b, c 
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
         writeConfiguration(2, "d");
-        // a, d, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=d");
+        // OFFLINE: a, d, c       ONLINE: a, b, c
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+
+        publish();
+        // OFFLINE: a, d, c       ONLINE: a, d, c
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
 
         writeConfiguration(1, "b");
-        // b, d, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=b", "key=d");
+        // OFFLINE: b, d, c       ONLINE: a, d, c
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+
+        publish();
+        // OFFLINE: b, d, c       ONLINE: b,d,c
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
         writeConfiguration(3, "a");
-        // b, d, a
-        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b", "key=d");
+        // OFFLINE: b, d, a       ONLINE: b,d,c
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
+        publish();
+        // OFFLINE: b, d, a       ONLINE: b,d,a
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
+
+        deleteConfiguration(2);
+        // OFFLINE: b, -, a      ONLINE: b,d,a
+        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b");
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
+
+        publish();
+        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b");
+
+    }
+
+    /**
+     * Tests whether the cache only loads configuration files when necessary.<p>
+     * 
+     * @throws Exception
+     */
+    public void testCacheLoadCounts() throws Exception {
+
+        try {
+            CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
+            OpenCmsTestLogAppender.setHandler(logHandler);
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            publish();
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            String level3 = "/system/level1/level2/level3";
+            // OFFLINE: a, b, c       ONLINE: a, b, c 
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            assertEquals(0, logHandler.getOnlineLoads());
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            assertEquals(3, logHandler.getOnlineLoads());
+
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            assertEquals(3, logHandler.getOnlineLoads());
+
+            logHandler.clear();
+            writeConfiguration(2, "d");
+            // OFFLINE: a, d, c       ONLINE: a, b, c
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+            assertEquals(0, logHandler.getOnlineLoads());
+            assertEquals(1, logHandler.getOfflineLoads());
+
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            assertEquals(0, logHandler.getOnlineLoads());
+            assertEquals(1, logHandler.getOfflineLoads());
+            publish();
+
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            assertEquals(1, logHandler.getOnlineLoads());
+            assertEquals(1, logHandler.getOfflineLoads());
+            // OFFLINE: a, d, c       ONLINE: a, d, c
+
+            deleteConfiguration(3);
+            writeConfiguration(1, "b");
+            // OFFLINE: b, d, -      ONLINE: a,d,c
+            logHandler.clear();
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
+            assertEquals(2, logHandler.getOfflineLoads());
+            assertEquals(0, logHandler.getOnlineLoads());
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
+            assertEquals(2, logHandler.getOfflineLoads());
+            assertEquals(0, logHandler.getOnlineLoads());
+
+            publish();
+            logHandler.clear();
+            // OFFLINE: b, d, -    ONLINE: b, d, -
+            checkSpecForPoint(level3, "alpha", ONLINE, "key=d", "key=b");
+            assertEquals(0, logHandler.getOfflineLoads());
+            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
+            assertEquals(0, logHandler.getOfflineLoads());
+            assertEquals(2, logHandler.getOnlineLoads());
+        } finally {
+            OpenCmsTestLogAppender.setHandler(null);
+        }
     }
 
     /**
@@ -335,6 +525,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         assertEquals("00000001-0000-0000-0000-000000000000", settings.get("testsetting2"));
     }
 
+    /**
+     * Tests serialization of a single configuration node.<p>
+     * 
+     * @throws Exception
+     */
     public void testSerialization1() throws Exception {
 
         CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
@@ -410,7 +605,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * the configuration.<p>
      * 
      * @param spec
-     * @return
+     * @return the test configuration 
      */
     protected CmsContainerConfiguration buildConfiguration(String spec) {
 
@@ -450,6 +645,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return new CmsContainerConfiguration(ordering, visibility, newElements);
     }
 
+    /**
+     * Checks whether a given element contains a nested CDATA node with a given text.<p>
+     * 
+     * @param element the parent element 
+     * @param expectedValue the text which should be contained in the CDATA node 
+     */
     protected void checkCDATA(Element element, String expectedValue) {
 
         Node childNode = element.node(0);
@@ -490,6 +691,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Checks whether the container element beans contained in a list satisfy a list of constraints.<p>
+     * 
+     * @param elements the elements for which the checks should be performed  
+     * 
+     * @param specs the constraints for the element beans, in the same order as the container element beans 
+     */
     protected void checkSpec(List<CmsContainerElementBean> elements, String... specs) {
 
         assertEquals(specs.length, elements.size());
@@ -500,6 +708,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Checks whether the inherited container configuration given by the ADE manager for a specific
+     * root path satisfies a list of constraints.<p>
+     * 
+     * @param rootPath the root path for which the inherited container configuration should be tested
+     * @param name the name of the configuration to test 
+     * @param online if true, checks in the online project, else in the offline project 
+     * @param specs the list of constraints
+     *  
+     * @throws CmsException if something goes wrong 
+     */
     protected void checkSpecForPoint(String rootPath, String name, boolean online, String... specs) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -507,14 +726,18 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             cms = OpenCms.initCmsObject(cms);
             cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         }
-        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(
-            getCmsObject(),
-            rootPath,
-            name);
+        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, rootPath, name);
         List<CmsContainerElementBean> elementBeans = state.getElements(true);
         checkSpec(elementBeans, specs);
     }
 
+    /**
+     * Deletes a configuration at the given level of the /level1/level2/level3 tree branch.<p>
+     * 
+     * @param level the level id (1-3)
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected void deleteConfiguration(int level) throws CmsException {
 
         String dirPath = getLevelPath(level);
@@ -548,6 +771,15 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return elementBean;
     }
 
+    /**
+     * Helper method for generating a test configuration which contains a single configured container elements.<p>
+     *  
+     * @param newName the key of the container element which should be put in the container element 
+     * @return the contents of the generated container element
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws UnsupportedEncodingException
+     */
     protected byte[] generateTestConfig(String newName) throws CmsException, UnsupportedEncodingException {
 
         CmsResource resource = getCmsObject().readResource("/system/content/" + newName + ".txt");
@@ -589,6 +821,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     }
 
+    /**
+     * Helper method for getting a path for the given level in the level1/level2/level3 tree branch.<p>
+     * 
+     * @param level the level index (1-3)
+     * 
+     * @return the level path 
+     */
     protected String getLevelPath(int level) {
 
         switch (level) {
@@ -608,6 +847,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return element.node(0).getText();
     }
 
+    /**
+     * Helper method to lock a resource.<p>
+     * 
+     * @param path the resource path 
+     */
     protected void lock(String path) {
 
         try {
@@ -617,6 +861,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Helper method which publishes the offline project.<p>
+     * 
+     * @throws Exception
+     */
     protected void publish() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -625,6 +874,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         publishManager.waitWhileRunning();
     }
 
+    /**
+     * Helper method for reading the contents of the path into a file.<p>
+     * 
+     * @param path the path of the resource which should be read 
+     * @return the content of the resource
+     * 
+     * @throws Exception if something goes wrong 
+     */
     protected String read(String path) throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -633,6 +890,15 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return new String(file.getContents(), "UTF-8");
     }
 
+    /**
+     * Writes a dummy configuration file at a given level in the level1/level2/level3 tree branch.<p>
+     * 
+     * @param level the level at which to write the configuration file 
+     * @param name the name for the element defined in the configuration file
+     *  
+     * @throws CmsException if something goes wrong 
+     * @throws UnsupportedEncodingException
+     */
     protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
 
         String dirPath = getLevelPath(level);
