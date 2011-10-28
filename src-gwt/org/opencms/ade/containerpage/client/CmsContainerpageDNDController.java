@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -337,6 +338,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 // changes are only relevant to the container page if not group-container editing
                 m_controller.setPageChanged();
             }
+        } else if (draggable instanceof CmsContainerPageElementPanel) {
+            // to reset mouse over state remove and attach the option bar 
+            CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
+            CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
+            optionBar.removeFromParent();
+            containerElement.setElementOptionBar(optionBar);
         }
         stopDrag(handler);
     }
