@@ -27,9 +27,9 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;

@@ -630,7 +630,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             } catch (Exception e) {
                 if (type != null) {
                     log(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.ERROR_BUILD_TYPE_LIST_1,
+                        Messages.ERR_BUILD_TYPE_LIST_1,
                         type.getTypeName()), e);
                 }
             }
@@ -822,7 +822,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             } catch (Exception e) {
                 logError(new CmsException(Messages.get().container(
-                    Messages.ERROR_INSTANCING_PREVIEW_PROVIDER_2,
+                    Messages.ERR_INSTANCING_PREVIEW_PROVIDER_2,
                     providerClass,
                     type.getTypeName()), e));
             }

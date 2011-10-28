@@ -201,7 +201,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     public static final String PARAM_COPYRESOURCES = "copyresources";
 
     /** The widget mapped data container. */
-    private CmsLanguageCopyFolderAndLanguageSelectDialogSettings m_dialogObject = new CmsLanguageCopyFolderAndLanguageSelectDialogSettings();
+    private CmsLanguageCopyFolderAndLanguageSelectDialogSettings m_dialogSettings = new CmsLanguageCopyFolderAndLanguageSelectDialogSettings();
 
     /**
      * Public constructor with JSP action element.
@@ -243,9 +243,9 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         // create absolute RFS path and store it in dialog object
 
         Map<String, String> params = new HashMap<String, String>();
-        List<String> paths = m_dialogObject.getPaths();
-        String sourceLanguage = m_dialogObject.getSourcelanguage();
-        String targetLanguage = m_dialogObject.getTargetlanguage();
+        List<String> paths = m_dialogSettings.getPaths();
+        String sourceLanguage = m_dialogSettings.getSourcelanguage();
+        String targetLanguage = m_dialogSettings.getTargetlanguage();
         params.put(CmsLanguageCopySelectionList.PARAM_PATHS, CmsStringUtil.collectionAsString(paths, ","));
         params.put(CmsLanguageCopySelectionList.PARAM_SOURCE_LANGUAGE, sourceLanguage);
         params.put(CmsLanguageCopySelectionList.PARAM_TARGET_LANGUAGE, targetLanguage);
@@ -277,7 +277,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(key(Messages.GUI_LANGUAGECOPY_ADMIN_TOOL_BLOCK_0)));
+        result.append(createWidgetBlockStart(null));
         result.append(createDialogRowsHtml(0, 1));
         result.append(createWidgetBlockEnd());
 
@@ -307,18 +307,18 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         List<CmsSelectWidgetOption> options = getLanguageSelections();
 
         addWidget(new CmsWidgetDialogParameter(
-            m_dialogObject,
+            m_dialogSettings,
             "message",
             key(Messages.GUI_LANGUAGECOPY_SELECTLANGUAGE_DIALOG_MESSAGE_0),
             PAGES[0],
             new CmsDisplayWidget(),
             1,
             1));
-        addWidget(new CmsWidgetDialogParameter(m_dialogObject, "paths", "/", PAGES[0], new CmsVfsFileWidget(
+        addWidget(new CmsWidgetDialogParameter(m_dialogSettings, "paths", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
         addWidget(new CmsWidgetDialogParameter(
-            m_dialogObject,
+            m_dialogSettings,
             "sourcelanguage",
             "/",
             PAGES[0],
@@ -326,7 +326,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
             1,
             1));
         addWidget(new CmsWidgetDialogParameter(
-            m_dialogObject,
+            m_dialogSettings,
             "targetlanguage",
             "/",
             PAGES[0],
@@ -374,7 +374,6 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
      * 
      * @return a list with the possible <code>{@link Locale}</code> selections based on the OpenCms configuration.
      */
-    @SuppressWarnings("unchecked")
     private List<CmsSelectWidgetOption> getLanguageSelections() {
 
         List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
@@ -397,10 +396,10 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
 
         Object o = getDialogObject();
         if (o != null) {
-            m_dialogObject = (CmsLanguageCopyFolderAndLanguageSelectDialogSettings)o;
+            m_dialogSettings = (CmsLanguageCopyFolderAndLanguageSelectDialogSettings)o;
         } else {
-            m_dialogObject = new CmsLanguageCopyFolderAndLanguageSelectDialogSettings();
-            setDialogObject(m_dialogObject);
+            m_dialogSettings = new CmsLanguageCopyFolderAndLanguageSelectDialogSettings();
+            setDialogObject(m_dialogSettings);
         }
     }
 }

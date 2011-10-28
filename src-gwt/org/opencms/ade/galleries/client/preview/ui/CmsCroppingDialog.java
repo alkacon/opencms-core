@@ -27,8 +27,8 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.gwt.client.ui.CmsAreaSelectPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsPositionBean;

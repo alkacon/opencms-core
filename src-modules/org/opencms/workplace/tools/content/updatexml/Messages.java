@@ -48,9 +48,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_UPDATETXML_INITIALIZE_CMS_ERROR_0 = "RPT_UPDATETXML_INITIALIZE_CMS_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_UPDATETXML_NO_FILES_FOUND_0 = "RPT_UPDATETXML_NO_FILES_FOUND_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATETXML_UPDATE_ERROR_0 = "RPT_UPDATETXML_UPDATE_ERROR_0";
 
     /** Message constant for key in the resource bundle. */

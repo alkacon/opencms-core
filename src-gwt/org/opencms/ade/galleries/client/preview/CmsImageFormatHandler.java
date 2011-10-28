@@ -27,9 +27,9 @@
 
 package org.opencms.ade.galleries.client.preview;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.ui.CmsCroppingDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImageFormatsForm;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.util.CmsStringUtil;

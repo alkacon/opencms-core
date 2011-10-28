@@ -42,12 +42,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_REPORT_LANGUAGEC0PY_0 = "ERR_REPORT_LANGUAGEC0PY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAPROCESS_ADMIN_TOOL_LANGUAGECOPY_NAME_0 = "GUI_DATAPROCESS_ADMIN_TOOL_LANGUAGECOPY_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LANGUAGECOPY_ADMIN_TOOL_BLOCK_0 = "GUI_LANGUAGECOPY_ADMIN_TOOL_BLOCK_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LANGUAGECOPY_SELECTLANGUAGE_DIALOG_MESSAGE_0 = "GUI_LANGUAGECOPY_SELECTLANGUAGE_DIALOG_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -117,9 +111,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_REPORT_LANGUAGECOPY_NAME_0 = "GUI_REPORT_LANGUAGECOPY_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOCALIZATION_BYPASS_1 = "LOCALIZATION_BYPASS_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_LANGUAGECOPY_DETERMINE_LANGUAGE_NODE_1 = "LOG_ERR_LANGUAGECOPY_DETERMINE_LANGUAGE_NODE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -127,6 +118,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WARN_LANGUAGECOPY_READPROP_1 = "LOG_WARN_LANGUAGECOPY_READPROP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LOCALIZATION_BYPASS_1 = "RPT_LOCALIZATION_BYPASS_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.languagecopy.messages";

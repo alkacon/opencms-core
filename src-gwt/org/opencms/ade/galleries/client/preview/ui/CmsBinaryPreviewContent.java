@@ -27,11 +27,11 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsBinaryPreviewHandler;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.client.ui.CmsResultsTab;
 import org.opencms.ade.galleries.client.ui.CmsResultsTab.DeleteHandler;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.ui;
+package org.opencms.ade.galleries.client;
 
 import org.opencms.gwt.client.util.CmsMessages;
 
@@ -142,7 +142,7 @@ public final class Messages {
     public static final String GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0 = "GUI_IMAGE_ORIGINAL_FORMAT_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_IMAGE_RESET_COPYRIGHT = "GUI_IMAGE_RESET_COPYRIGHT";
+    public static final String GUI_IMAGE_RESET_COPYRIGHT_0 = "GUI_IMAGE_RESET_COPYRIGHT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_RESET_TITLE_0 = "GUI_IMAGE_RESET_TITLE_0";

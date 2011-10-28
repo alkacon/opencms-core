@@ -88,11 +88,11 @@ public class CmsUploadTimeoutWatcher extends Thread implements Serializable {
         try {
             Thread.sleep(WATCHER_INTERVAL);
         } catch (InterruptedException e) {
-            LOG.error(Messages.get().container(Messages.ERR_UPLOAD_INTERRUPT_WATCHER_1, m_listener.toString()), e);
+            LOG.error(Messages.get().container(Messages.ERR_UPLOAD_INTERRUPT_WATCH_DOG_1, m_listener.toString()), e);
         }
         if (m_listener != null) {
             if (((m_listener.getBytesRead() > 0) && (m_listener.getPercent() >= 100)) || m_listener.isCanceled()) {
-                LOG.debug(Messages.get().container(Messages.DEBUG_UPLOAD_FINISHED_WATCHER_1, m_listener.toString()));
+                LOG.debug(Messages.get().container(Messages.LOG_UPLOAD_FINISHED_WATCHER_1, m_listener.toString()));
                 m_listener = null;
             } else {
                 if (isFrozen()) {

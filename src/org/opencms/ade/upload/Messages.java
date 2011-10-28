@@ -38,9 +38,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String DEBUG_UPLOAD_FINISHED_WATCHER_1 = "DEBUG_UPLOAD_FINISHED_WATCH_DOG_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_CREATING_0 = "ERR_UPLOAD_CREATING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -53,7 +50,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UPLOAD_FROZEN_1 = "ERR_UPLOAD_FROZEN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_INTERRUPT_WATCHER_1 = "ERR_UPLOAD_INTERRUPT_WATCH_DOG_1";
+    public static final String ERR_UPLOAD_INTERRUPT_WATCH_DOG_1 = "ERR_UPLOAD_INTERRUPT_WATCH_DOG_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_JSON_0 = "ERR_UPLOAD_JSON_0";
@@ -77,16 +74,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_UPLOAD_TITLE_0 = "GUI_UPLOAD_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_UPLOAD_CREATE_WATCH_DOG_2 = "INFO_UPLOAD_CREATE_WATCH_DOG_2";
+    public static final String LOG_UPLOAD_CREATE_WATCH_DOG_2 = "LOG_UPLOAD_CREATE_WATCH_DOG_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_UPLOAD_FROZEN_WATCHER_1 = "INFO_UPLOAD_FROZEN_WATCH_DOG_1";
+    public static final String LOG_UPLOAD_FINISHED_WATCHER_1 = "LOG_UPLOAD_FINISHED_WATCHER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_UPLOAD_SUCCESS_0 = "INFO_UPLOAD_SUCCESS_0";
+    public static final String LOG_UPLOAD_FROZEN_WATCH_DOG_1 = "LOG_UPLOAD_FROZEN_WATCH_DOG_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_UPLOAD_USER_CANCELED_2 = "INFO_UPLOAD_USER_CANCELED_2";
+    public static final String LOG_UPLOAD_SUCCESS_0 = "LOG_UPLOAD_SUCCESS_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.upload.messages";

@@ -27,8 +27,8 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler.Attribute;
-import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -172,7 +172,7 @@ public class CmsImageEditorForm extends Composite {
         m_buttonResetTitle.setSize(Size.small);
         m_buttonResetTitle.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_TITLE_0));
         m_buttonResetCopyright.setSize(Size.small);
-        m_buttonResetCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_COPYRIGHT));
+        m_buttonResetCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_COPYRIGHT_0));
 
         m_labelAlign.setText(Messages.get().key(Messages.GUI_IMAGE_ALIGN_0));
         m_selectAlign.addOption("", Messages.get().key(Messages.GUI_IMAGE_ALIGN_NOT_SET_0));
