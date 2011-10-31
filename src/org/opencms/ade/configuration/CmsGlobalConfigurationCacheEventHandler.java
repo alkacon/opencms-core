@@ -42,40 +42,112 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
 /**
- * This event handler class is intended to be used with two instances of a class implementing the {@link I_CmsGlobalConfigurationCache} interface,
- * one for the offline project and one for the online project. It listens to OpenCms events regarding modifications of
- * resources and notifies those underlying cache instances when resources need to be updated or removed from the cache.<p>
+ * 
+ * This event handler manages cache instances which are instances of the interface {@link I_CmsGlobalConfigurationCache}. 
+ * It keeps a list of cache instance pairs, each containing one cache for the online mode and one for the offline mode,
+ * and handles events caused by changed resources by notifying the cache instances.
  * 
  * Note that *all* changed resources will get passed to the underlying cache instances, so those instances will need to check
  * whether the resource passed into the update or remove methods is actually a resource with which the cache instance is concerned.<p>
  * 
- * This class should be used if you have an indefinite number of configuration files at locations in the VFS which 
- * can only be known at runtime, like e.g. the ADE configuration and the inherited container configurations,
- * and you need to know the state of the whole set of existing configurations. In this situation, using e.g. CmsVfsMemoryObjectCache
- * is unsatisfactory because it can't distinguish between a configuration not being cached and a configuration which 
- * is known to not exist.<p>  
+ * This class should be used if you have an indefinite number of configuration files at arbitrary locations in the VFS.
+ * If you need to cache e.g. a single configuration file with a known, fixed path, using {@link org.opencms.cache.CmsVfsMemoryObjectCache} is 
+ * easier.<p> 
  */
 public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListener {
 
-    private static final Log LOG = CmsLog.getLog(CmsGlobalConfigurationCacheEventHandler.class);
-    private I_CmsGlobalConfigurationCache m_offlineCache;
+    /**
+     * A pair of cache instances, one for the offline mode and one for the online mode.<p>
+     */
+    private class CachePair {
 
-    private I_CmsGlobalConfigurationCache m_onlineCache;
+        /** A name for debugging. */
+        @SuppressWarnings("unused")
+        private String m_debugName;
+
+        /** The offline cache instance. */
+        private I_CmsGlobalConfigurationCache m_offlineCache;
+
+        /** The online cache instance. */
+        private I_CmsGlobalConfigurationCache m_onlineCache;
+
+        /**
+         * Creates a new cache pair.<p>
+         * 
+         * @param offlineCache the offline cache instance 
+         * @param onlineCache the online cache instance
+         * @param debugName the name for debugging 
+         */
+        public CachePair(
+            I_CmsGlobalConfigurationCache offlineCache,
+            I_CmsGlobalConfigurationCache onlineCache,
+            String debugName) {
+
+            m_offlineCache = offlineCache;
+            m_onlineCache = onlineCache;
+            m_debugName = debugName;
+        }
+
+        /**
+         * Gets the offline cache instance.<p>
+         * 
+         * @return the offline cache instance
+         */
+        public I_CmsGlobalConfigurationCache getOfflineCache() {
+
+            return m_offlineCache;
+        }
+
+        /**
+         * Gets the online cache instance.<p>
+         * 
+         * @return the online cache instance
+         */
+        public I_CmsGlobalConfigurationCache getOnlineCache() {
+
+            return m_onlineCache;
+        }
+
+    }
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGlobalConfigurationCacheEventHandler.class);
+
+    /** The list of cache pairs. */
+    private List<CachePair> m_caches = new ArrayList<CachePair>();
+
+    /** An online CMS object. */
     private CmsObject m_onlineCms;
 
-    public CmsGlobalConfigurationCacheEventHandler(
+    /** Creates a new cache event handler.
+     *  
+     * @param onlineCms an online CMS object  
+     **/
+    public CmsGlobalConfigurationCacheEventHandler(CmsObject onlineCms) {
+
+        m_onlineCms = onlineCms;
+    }
+
+    /**
+     * Adds a new pair of cache instances which should be managed by this event handler.<p>
+     * 
+     * @param offlineCache the offline cache instance 
+     * @param onlineCache the online cache instance 
+     * @param debugName an identifier used for debugging 
+     */
+    public void addCache(
         I_CmsGlobalConfigurationCache offlineCache,
         I_CmsGlobalConfigurationCache onlineCache,
-        CmsObject onlineCms) {
+        String debugName) {
 
-        m_offlineCache = offlineCache;
-        m_onlineCache = onlineCache;
-        m_onlineCms = onlineCms;
+        CachePair cachePair = new CachePair(offlineCache, onlineCache, debugName);
+        m_caches.add(cachePair);
     }
 
     /**
@@ -97,7 +169,7 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                     return;
                 }
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                m_offlineCache.update(resource);
+                offlineCacheUpdate(resource);
                 //System.out.print(" " + resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
@@ -105,7 +177,7 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                 //System.out.print(getEventName(event.getType()));
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
-                    m_offlineCache.update(res);
+                    offlineCacheUpdate(res);
                     //System.out.print(" " + res.getRootPath());
                 }
                 break;
@@ -115,14 +187,14 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                 // source, source folder, dest, dest folder 
                 // - OR -  
                 // source, dest, dest folder
-                m_offlineCache.remove(resources.get(0));
-                m_offlineCache.update(resources.get(resources.size() - 2));
+                offlineCacheRemove(resources.get(0));
+                offlineCacheUpdate(resources.get(resources.size() - 2));
                 break;
 
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
-                    m_offlineCache.remove(res);
+                    offlineCacheRemove(res);
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
@@ -130,11 +202,11 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                 // a list of resources has been modified
                 resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (CmsResource res : resources) {
-                    m_offlineCache.update(res);
+                    offlineCacheUpdate(res);
                 }
                 break;
             case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-                m_onlineCache.clear();
+                onlineCacheClear();
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 //System.out.print(getEventName(event.getType()));
@@ -147,13 +219,13 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                             // normally, the list of published resources should not be empty.
                             // If it is, the publish event is not coming from a normal publish process,
                             // so we re-initialize the whole cache to be on the safe side.
-                            m_onlineCache.clear();
+                            onlineCacheClear();
                         } else {
                             for (CmsPublishedResource res : publishedResources) {
                                 if (res.getState().isDeleted()) {
-                                    m_onlineCache.remove(res);
+                                    onlineCacheRemove(res);
                                 } else {
-                                    m_onlineCache.update(res);
+                                    onlineCacheUpdate(res);
                                 }
                             }
                         }
@@ -164,16 +236,176 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 //System.out.print(getEventName(event.getType()));
-                m_offlineCache.clear();
-                m_onlineCache.clear();
+                offlineCacheClear();
+                onlineCacheClear();
                 break;
             case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
                 //System.out.print(getEventName(event.getType()));
-                m_offlineCache.clear();
+                offlineCacheClear();
                 break;
             default:
                 // noop
                 break;
+        }
+    }
+
+    /**
+     * Clears the offline caches.<p>
+     */
+    protected void offlineCacheClear() {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOfflineCache().clear();
+            } catch (Throwable t) {
+                LOG.error(t.getLocalizedMessage(), t);
+            }
+        }
+    }
+
+    /**
+     * Removes a resource from the offline caches.<p>
+     * 
+     * @param resource the resource to remove
+     */
+    protected void offlineCacheRemove(CmsPublishedResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOfflineCache().remove(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+    }
+
+    /**
+     * Removes a resource from the offline caches.<p>
+     * 
+     * @param resource the resource to remove 
+     */
+    protected void offlineCacheRemove(CmsResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOfflineCache().remove(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+    }
+
+    /**
+     * Updates a resource in the offline caches.<p>
+     * 
+     * @param resource the resource to update 
+     */
+    protected void offlineCacheUpdate(CmsPublishedResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOfflineCache().update(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Updates a resource in the offline caches.<p>
+     * 
+     * @param resource the resource to update 
+     */
+    protected void offlineCacheUpdate(CmsResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOfflineCache().update(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Clears the online caches.<p>
+     */
+    protected void onlineCacheClear() {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOnlineCache().clear();
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Removes a resource from the online caches.<p>
+     * 
+     * @param resource the resource to remove 
+     */
+    protected void onlineCacheRemove(CmsPublishedResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOnlineCache().remove(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+    }
+
+    /**
+     * Removes a resource from the online caches.<p>
+     * 
+     * @param resource the resource to remove 
+     */
+    protected void onlineCacheRemove(CmsResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOnlineCache().remove(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Updates a resource in the online caches.<p>
+     * 
+     * @param resource the resource to update 
+     */
+    protected void onlineCacheUpdate(CmsPublishedResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOnlineCache().update(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Updates a resource in the online caches.<p>
+     * 
+     * @param resource the resource to update 
+     */
+    protected void onlineCacheUpdate(CmsResource resource) {
+
+        for (CachePair cachePair : m_caches) {
+            try {
+                cachePair.getOnlineCache().update(resource);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage());
+            }
         }
     }
 }

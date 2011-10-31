@@ -168,6 +168,7 @@ public class CmsADEManager {
     /** The offline CMS context. */
     private CmsObject m_offlineCms;
 
+    /** The offline inherited container configuration cache. */
     private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
 
     /** The offline cache instance. */
@@ -175,6 +176,7 @@ public class CmsADEManager {
     /** The online CMS context. */
     private CmsObject m_onlineCms;
 
+    /** The online inherited container configuration cache. */
     private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
 
     /**
@@ -370,9 +372,8 @@ public class CmsADEManager {
     public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name)
     throws CmsException {
 
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         String rootPath = resource.getRootPath();
-        if (!resType.isFolder()) {
+        if (!resource.isFolder()) {
             rootPath = CmsResource.getParentFolder(rootPath);
         }
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -510,13 +511,14 @@ public class CmsADEManager {
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
                 m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_offlineCms, "offline");
-                OpenCms.getEventManager().addCmsEventListener(
-                    new CmsGlobalConfigurationCacheEventHandler(m_offlineCache, m_onlineCache, m_onlineCms));
-                OpenCms.getEventManager().addCmsEventListener(
-                    new CmsGlobalConfigurationCacheEventHandler(
-                        m_offlineContainerConfigurationCache,
-                        m_onlineContainerConfigurationCache,
-                        m_onlineCms));
+                CmsGlobalConfigurationCacheEventHandler handler = new CmsGlobalConfigurationCacheEventHandler(
+                    m_onlineCms);
+                handler.addCache(m_offlineCache, m_onlineCache, "ADE configuration cache");
+                handler.addCache(
+                    m_offlineContainerConfigurationCache,
+                    m_onlineContainerConfigurationCache,
+                    "Inherited container cache");
+                OpenCms.getEventManager().addCmsEventListener(handler);
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {
                 m_initStatus = Status.notInitialized;

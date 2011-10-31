@@ -94,6 +94,9 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
         m_name = name;
     }
 
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#clear()
+     */
     public void clear() {
 
         m_initialized = false;
@@ -196,9 +199,9 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
         try {
             int expectedId = OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
-            return !CmsResource.isTemporaryFileName(rootPath)
-                && rootPath.endsWith("/" + FILE_NAME)
-                && (type == expectedId);
+            return (type == expectedId)
+                && !CmsResource.isTemporaryFileName(rootPath)
+                && rootPath.endsWith("/" + FILE_NAME);
         } catch (CmsLoaderException e) {
             return false;
         }
@@ -211,6 +214,9 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
      */
     protected void load(CmsResource configResource) {
 
+        if (!isContainerConfiguration(configResource.getRootPath(), configResource.getTypeId())) {
+            return;
+        }
         String basePath = getBasePath(configResource.getRootPath());
         try {
             CmsFile file = m_cms.readFile(configResource);
@@ -233,7 +239,7 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
     /**
      * Reads the configurations needed to make the cache up-to-date.<p>
      */
-    protected void readRemainingConfigurations() {
+    protected synchronized void readRemainingConfigurations() {
 
         if (!m_initialized) {
             LOG.trace("inherited-container-cache " + m_name + " initialize");
@@ -255,8 +261,10 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
             for (Map.Entry<String, CmsUUID> entry : needToUpdate.entrySet()) {
                 String rootPath = entry.getKey();
                 CmsUUID structureId = entry.getValue();
+                CmsResource resource = null;
                 try {
-                    CmsResource resource = m_cms.readResource(structureId);
+                    LOG.trace("inherited-container-cache " + m_name + " readSingleResource");
+                    resource = m_cms.readResource(structureId);
                     load(resource);
                 } catch (CmsException e) {
                     String cacheKey = getCacheKey(getBasePath(rootPath));
@@ -266,7 +274,7 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
                     m_configurationsByPath.remove(cacheKey);
                 }
             }
-
+            m_needToUpdate.clear();
         }
     }
 
@@ -285,6 +293,7 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
         }
         String basePath = getBasePath(rootPath);
         m_configurationsByPath.remove(basePath);
+        m_needToUpdate.remove(rootPath);
     }
 
     protected int safeGetType() {

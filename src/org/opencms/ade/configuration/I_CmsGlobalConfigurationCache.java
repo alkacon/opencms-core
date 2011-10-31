@@ -42,6 +42,9 @@ import org.opencms.file.CmsResource;
  */
 public interface I_CmsGlobalConfigurationCache {
 
+    /**
+     * Clears the cache.<p>
+     */
     void clear();
 
     /**
@@ -61,13 +64,19 @@ public interface I_CmsGlobalConfigurationCache {
     /**
      * Updates the cache entry for the given published resource.<p>
      * 
+     * NOTE: Cache implementations should not directly read the updated resource in this method because it might interfere with other
+     * caches. Instead, the resource should be marked as updated and read the next time the cache is queried. 
+     * 
      * @param pubRes a published resource
      */
     void update(CmsPublishedResource pubRes);
 
     /** 
      * Updates the cache entry for the given resource.<p>
-     * 
+     *
+     * NOTE: Cache implementations should not directly read the updated resource in this method because it might interfere with other
+     * caches. Instead, the resource should be marked as updated and read the next time the cache is queried.
+     *  
      * @param resource the resource for which the cache entry should be updated
      */
     void update(CmsResource resource);

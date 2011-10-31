@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.configuration;
+package org.opencms.ade.containerpage.inherited;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -37,7 +37,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * All tests for the org.opencms.ade.configuration package.<p>
+ * All tests for the {@link org.opencms.ade.containerpage.inherited} package.<p>
  */
 public final class AllTests {
 
@@ -59,8 +59,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestConfig.suite());
-        suite.addTest(TestLiveConfig.suite());
+        suite.addTest(TestInheritedContainer.suite());
         //$JUnit-END$
         return suite;
     }

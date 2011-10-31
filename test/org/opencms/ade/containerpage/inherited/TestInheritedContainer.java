@@ -42,6 +42,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.test.I_CmsLogHandler;
@@ -87,8 +88,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         /** The number of offline loads. */
         private int m_offlineLoads;
 
+        private int m_offlineReadResource;
+
         /** The number of online loads. */
         private int m_onlineLoads;
+        private int m_onlineReadResource;
 
         /** 
          * Resets the offline/online load counters to 0.<p>
@@ -97,6 +101,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
             m_offlineLoads = 0;
             m_onlineLoads = 0;
+            m_offlineReadResource = 0;
+            m_onlineReadResource = 0;
         }
 
         /**
@@ -109,6 +115,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             return m_offlineLoads;
         }
 
+        public int getOfflineReadResource() {
+
+            return m_offlineReadResource;
+        }
+
         /**
          * Gets the number of online loads since the last call to clear().<p>
          * 
@@ -117,6 +128,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         public int getOnlineLoads() {
 
             return m_onlineLoads;
+        }
+
+        public int getOnlineReadResource() {
+
+            return m_onlineReadResource;
         }
 
         /**
@@ -131,6 +147,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 }
                 if (message.startsWith("inherited-container-cache online load")) {
                     m_onlineLoads += 1;
+                }
+                if (message.startsWith("inherited-container-cache offline readSingleResource")) {
+                    m_offlineReadResource += 1;
+                }
+                if (message.startsWith("inherited-container-cache online readSingleResource")) {
+                    m_onlineReadResource += 1;
                 }
             }
         }
@@ -222,6 +244,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testCacheCorrectnessOffline() throws Exception {
 
+        OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
@@ -257,6 +281,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * @throws Exception
      */
     public void testCacheCorrectnessOnline() throws Exception {
+
+        OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
 
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
@@ -318,6 +344,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     public void testCacheLoadCounts() throws Exception {
 
         try {
+            OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
             CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
             OpenCmsTestLogAppender.setHandler(logHandler);
             writeConfiguration(1, "a");
@@ -402,6 +429,37 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     }
 
     /**
+     * Tests whether the inherited container cache is cleared correctly.<p>
+     * 
+     * @throws Exception 
+     */
+    public void testClearCaches() throws Exception {
+
+        try {
+            OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+            CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
+            OpenCmsTestLogAppender.setHandler(logHandler);
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            publish();
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            assertEquals(3, logHandler.getOnlineLoads());
+            OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
+            assertEquals(6, logHandler.getOfflineLoads());
+            assertEquals(6, logHandler.getOnlineLoads());
+
+        } finally {
+            OpenCmsTestLogAppender.setHandler(null);
+        }
+
+    }
+
+    /**
      * Test for hiding of inherited elements.
      * <p>
      * 
@@ -436,6 +494,33 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         checkSpec(result.getElements(true), "key=a new=true", "key=b new=true");
         result.addConfiguration(buildConfiguration("c b a d|||c d"));
         checkSpec(result.getElements(true), "key=c new=true", "key=b new=false", "key=a new=false", "key=d new=true");
+    }
+
+    public void testOnlyReadProperlyNamedFiles() throws Exception {
+
+        CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
+        try {
+            OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            OpenCmsTestLogAppender.setHandler(logHandler);
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            writeConfiguration("/system/dummy.config", "d");
+            publish();
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            deleteConfiguration(2);
+            writeConfiguration("/system/level1/level2/baz.config", "b");
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
+            assertEquals(3, logHandler.getOfflineLoads());
+        } finally {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            OpenCmsTestLogAppender.setHandler(null);
+            deleteConfiguration("/system/dummy.config");
+            deleteConfiguration("/system/level1/level2/baz.config");
+            publish();
+        }
     }
 
     /**
@@ -596,6 +681,37 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     }
 
     /**
+     * Tests whether a configuration file which has been first updated and then deleted is removed correctly from the cache.<p>
+     * 
+     * @throws Exception
+     */
+    public void testUpdateAndRemove() throws Exception {
+
+        CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
+        try {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            OpenCmsTestLogAppender.setHandler(logHandler);
+
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            publish();
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            assertEquals(3, logHandler.getOfflineLoads());
+            logHandler.clear();
+            writeConfiguration(2, "d");
+            deleteConfiguration(2);
+            assertEquals(0, logHandler.getOfflineReadResource());
+            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
+            assertEquals(0, logHandler.getOfflineLoads());
+            assertEquals(0, logHandler.getOfflineReadResource());
+        } finally {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            OpenCmsTestLogAppender.setHandler(null);
+        }
+    }
+
+    /**
      * Helper method to create a dummy configuration from a specification string.<p>
      * 
      * The specification string consists of 4 fields separated by the pipe symbol, which correspond to different 
@@ -742,12 +858,16 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         String dirPath = getLevelPath(level);
         String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
-        CmsObject cms = getCmsObject();
-        if (cms.existsResource(configPath)) {
-            lock(configPath);
-            cms.deleteResource(configPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        }
+        deleteConfiguration(configPath);
+    }
 
+    protected void deleteConfiguration(String path) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(path)) {
+            lock(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
     }
 
     /**
@@ -903,6 +1023,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         String dirPath = getLevelPath(level);
         String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
+        writeConfiguration(configPath, name);
+    }
+
+    protected void writeConfiguration(String path, String name) throws CmsException, UnsupportedEncodingException {
+
+        String configPath = path;
         CmsObject cms = getCmsObject();
         if (cms.existsResource(configPath)) {
             lock(configPath);
