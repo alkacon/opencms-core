@@ -57,29 +57,53 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * A parser class which reads data from inherited container configuration files.<p>
+ */
 public class CmsContainerConfigurationParser {
 
+    /** The internal CMS context used. */
     private final CmsObject m_cms;
+
+    /** The configuration group which is currently being read. */
     private Map<String, CmsContainerConfiguration> m_currentConfigurationGroup;
+
+    /** The locale which is currently being read. */
     private Locale m_currentLocale;
-    private CmsResource m_resource;
+
+    /** The parse results. */
     private final Map<Locale, Map<String, CmsContainerConfiguration>> m_results;
 
+    /**
+     * Creates a new configuration parser.<p>
+     * 
+     * @param cms the current CMS context 
+     */
     public CmsContainerConfigurationParser(CmsObject cms) {
 
         m_cms = cms;
         m_results = new HashMap<Locale, Map<String, CmsContainerConfiguration>>();
     }
 
+    /**
+     * Gets the parsed results as a map.<p>
+     * 
+     * @return the parse results 
+     */
     public Map<Locale, Map<String, CmsContainerConfiguration>> getParsedResults() {
 
         return m_results;
     }
 
+    /**
+     * Parses the contents of a file.<p>
+     * 
+     * @param file the file to parse
+     * @throws CmsException if something goes wrong 
+     */
     public void parse(CmsFile file) throws CmsException {
 
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
-        m_resource = file;
         for (Locale locale : content.getLocales()) {
             m_currentLocale = locale;
             CmsXmlContentRootLocation rootLocation = new CmsXmlContentRootLocation(content, locale);
@@ -87,9 +111,15 @@ public class CmsContainerConfigurationParser {
         }
     }
 
+    /**
+     * Parses the contents of a resource.<p>
+     * 
+     * @param resource the resource which should be parsed 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void parse(CmsResource resource) throws CmsException {
 
-        m_resource = resource;
         CmsFile file = m_cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
         for (Locale locale : content.getLocales()) {

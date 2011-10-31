@@ -39,6 +39,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A bean representing a single configuration entry for the inherited container configuration.<p>
+ * 
+ */
 public class CmsContainerConfiguration {
 
     /** Node name. **/
@@ -65,14 +69,25 @@ public class CmsContainerConfiguration {
     /** Node name. **/
     public static final String N_VISIBLE = "Visible";
 
+    /** A map containing the new elements. */
     private Map<String, CmsContainerElementBean> m_newElements;
 
+    /** A list of keys for a new ordering of elements. **/
     private List<String> m_ordering;
 
+    /** The path from which the configuration was fetched. */
     private String m_path;
 
+    /** A map from element keys to Booleans, representing hidden/shown elements. */
     private Map<String, Boolean> m_visibility;
 
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param ordering the new ordering list 
+     * @param visibility the visibility map 
+     * @param newElements the new elements 
+     */
     public CmsContainerConfiguration(
         List<String> ordering,
         Map<String, Boolean> visibility,
@@ -83,7 +98,11 @@ public class CmsContainerConfiguration {
         m_newElements = Collections.unmodifiableMap(newElements);
     }
 
-    /** Empty configuration constant. */
+    /**
+     * Generates an empty configuration object.<p>
+     * 
+     * @return an empty configuration object 
+     */
     public static CmsContainerConfiguration emptyConfiguration() {
 
         return new CmsContainerConfiguration(
@@ -92,11 +111,21 @@ public class CmsContainerConfiguration {
             new HashMap<String, CmsContainerElementBean>());
     }
 
+    /**
+     * Gets the map of new elements.<p>
+     * 
+     * @return the map of new elements
+     */
     public Map<String, CmsContainerElementBean> getNewElements() {
 
         return m_newElements;
     }
 
+    /**
+     * Gets the new elements in the order in which they appear in the 'ordering' list.<p>
+     * 
+     * @return an ordered map containing the new elements in the correct order 
+     */
     public LinkedHashMap<String, CmsContainerElementBean> getNewElementsInOrder() {
 
         LinkedHashMap<String, CmsContainerElementBean> result = new LinkedHashMap<String, CmsContainerElementBean>();
@@ -112,21 +141,41 @@ public class CmsContainerConfiguration {
         return new LinkedHashMap<String, CmsContainerElementBean>();
     }
 
+    /**
+     * Gets the ordering list.<p>
+     * 
+     * @return the ordering list 
+     */
     public List<String> getOrdering() {
 
         return m_ordering;
     }
 
+    /**
+     * Gets the path from which this configuration was read.<p>
+     * 
+     * @return the path from which this configuration was read 
+     */
     public String getPath() {
 
         return m_path;
     }
 
+    /**
+     * Gets the visibility map for this configuration.<p>
+     * 
+     * @return the visibility map
+     */
     public Map<String, Boolean> getVisibility() {
 
         return m_visibility;
     }
 
+    /**
+     * Sets the path for this configuration.<p>
+     * 
+     * @param path the new path value 
+     */
     public void setPath(String path) {
 
         m_path = path;

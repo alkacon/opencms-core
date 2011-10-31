@@ -69,7 +69,7 @@ public class CmsInheritedContainerState {
      * @param name the name of the container configuration 
      * @param locale the locale 
      */
-    public void addConfigurations(I_CmsContainerConfigurationCache cache, String rootPath, String name, Locale locale) {
+    public void addConfigurations(CmsContainerConfigurationCache cache, String rootPath, String name, Locale locale) {
 
         String currentPath = rootPath;
         List<CmsContainerConfiguration> configurations = new ArrayList<CmsContainerConfiguration>();
@@ -233,11 +233,20 @@ public class CmsInheritedContainerState {
         return result;
     }
 
+    /**
+     * Computes the visibility for an element.<p>
+     * 
+     * @param visibilities the visibilities for the element in the sequence of parent configurations.<p>
+     * 
+     * @param info the object in which the visibility should be stored 
+     */
     void computeVisibility(List<Boolean> visibilities, CmsInheritanceInfo info) {
 
         boolean visible = true;
         boolean inherited = true;
+        boolean parentVisible = true;
         for (Boolean visibility : visibilities) {
+            parentVisible = visible;
             if (visibility == Boolean.TRUE) {
                 visible = true;
                 inherited = false;

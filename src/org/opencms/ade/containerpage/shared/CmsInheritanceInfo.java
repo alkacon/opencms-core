@@ -33,17 +33,41 @@ package org.opencms.ade.containerpage.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * A class whose instances are added to container element beans to provide information about container inheritance.<p>
+ * 
+ */
 public class CmsInheritanceInfo implements IsSerializable {
 
+    /** True if this is a new element. */
     private boolean m_isNew;
+
+    /** The key identifying the inherited container element. */
     private String m_key;
+
+    /** True if the parent is visible. */
+    private boolean m_parentVisible;
+
+    /** The element's own visibility. */
     private Boolean m_visibility;
+
+    /** True if the visibility has been inherited. */
     private boolean m_visibilityInherited;
 
+    /**
+     * Creates a new instance.<p>
+     */
     public CmsInheritanceInfo() {
 
     }
 
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param key the key identifying the container element 
+     * @param visibility the visibility of the container element 
+     * @param isNew if true, the element is new 
+     */
     public CmsInheritanceInfo(String key, Boolean visibility, boolean isNew) {
 
         m_key = key;
@@ -51,36 +75,91 @@ public class CmsInheritanceInfo implements IsSerializable {
         m_isNew = isNew;
     }
 
+    /**
+     * Returns the key identifying the container element.<p>
+     * 
+     * @return the key 
+     */
     public String getKey() {
 
         return m_key;
     }
 
+    /**
+     * Returns the parent configuration's visibility.<p>
+     * 
+     * @return the parent visibility 
+     */
+    public boolean getParentVisibility() {
+
+        return m_parentVisible;
+    }
+
+    /**
+     * Gets the container element's visibility.<p>
+     * 
+     * @return the container element's visibility 
+     */
     public Boolean getVisibility() {
 
         return m_visibility;
     }
 
+    /**
+     * Returns true if this container element is new.<p>
+     * 
+     * @return true if the container element is new 
+     */
     public boolean isNew() {
 
         return m_isNew;
     }
 
+    /**
+     * Sets the 'new' field.<p>
+     * 
+     * @param isNew the new value for the 'new' field 
+     */
     public void setIsNew(boolean isNew) {
 
         m_isNew = isNew;
     }
 
+    /**
+     * Sets the key identifying this container element.<p>
+     * 
+     * @param key the key identifying the container element 
+     */
     public void setKey(String key) {
 
         m_key = key;
     }
 
+    /**
+     * Sets the parent visibility.<p>
+     * 
+     * @param parentVisible the new value for the parent visibility 
+     */
+    public void setParentVisible(boolean parentVisible) {
+
+        m_parentVisible = parentVisible;
+    }
+
+    /**
+     * Sets the new visibility.<p>
+     * 
+     * @param visibility the new value of the visibility 
+     */
     public void setVisibility(Boolean visibility) {
 
         m_visibility = visibility;
     }
 
+    /** 
+     * Sets the 'visibilityInherited' attribute.<p>
+     * 
+     * @param visibilityInherited the new value of the 'visibilityInherited' attribute
+     */
     public void setVisibilityInherited(boolean visibilityInherited) {
 
         m_visibilityInherited = visibilityInherited;

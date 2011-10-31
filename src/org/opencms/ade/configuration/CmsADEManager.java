@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
+import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationWriter;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
@@ -619,11 +620,13 @@ public class CmsADEManager {
 
     public void saveInheritedContainer(
         CmsObject cms,
-        String rootPath,
+        String sitePath,
         String name,
-        List<CmsContainerElementBean> elementsToSave) {
+        boolean newOrder,
+        List<CmsContainerElementBean> elements) throws CmsException {
 
-        return;
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        writer.save(cms, name, newOrder, cms.readResource(sitePath), elements);
     }
 
     /**

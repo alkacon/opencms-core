@@ -31,10 +31,6 @@
 
 package org.opencms.ade.containerpage.inherited;
 
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
-
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -49,20 +45,16 @@ import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Test;
 
@@ -404,6 +396,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
             assertEquals(0, logHandler.getOfflineLoads());
             assertEquals(2, logHandler.getOnlineLoads());
+
+            //TODO: finish this test case!
         } finally {
             OpenCmsTestLogAppender.setHandler(null);
         }
@@ -496,6 +490,32 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         checkSpec(result.getElements(true), "key=c new=true", "key=b new=false", "key=a new=false", "key=d new=true");
     }
 
+    /**
+     * Tests that the configuration cache works if there are no configuration files, or there are configuration files which don't
+     * contain a configuration for a given name.<p>
+     * 
+     * @throws Exception
+     */
+    public void testNoConfigurations() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        checkSpecForPoint("/system/level1/level2/level3", "beta", OFFLINE);
+        checkSpecForPoint("/system/level1/level2/level3", "beta", ONLINE);
+        deleteConfiguration(1);
+        deleteConfiguration(2);
+        deleteConfiguration(3);
+        checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE);
+        publish();
+        checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE);
+    }
+
+    /**
+     * Tests that only correctly named inherited container configuration files are evaluated.<p>
+     * 
+     * @throws Exception
+     */
     public void testOnlyReadProperlyNamedFiles() throws Exception {
 
         CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
@@ -534,7 +554,6 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             + "\r\n"
             + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
             + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
-            + "    <Title><![CDATA[blah]]></Title>\r\n"
             + "    <Configuration>\r\n"
             + "      <Name><![CDATA[blubb]]></Name>\r\n"
             + "      <OrderKey><![CDATA[this/is/the/key]]></OrderKey>\r\n"
@@ -610,6 +629,24 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         assertEquals("00000001-0000-0000-0000-000000000000", settings.get("testsetting2"));
     }
 
+    public void testReadAndSaveBack() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        publish();
+
+        CmsObject cms = getCmsObject();
+        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(
+            cms,
+            "/system/level1/level2",
+            "alpha");
+        List<CmsContainerElementBean> elements = state.getElements(true);
+        CmsContainerConfigurationWriter configWriter = new CmsContainerConfigurationWriter();
+        configWriter.save(cms, "alpha", true, cms.readResource("/system/level1/level2"), elements);
+        checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+    }
+
     /**
      * Tests serialization of a single configuration node.<p>
      * 
@@ -617,67 +654,63 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testSerialization1() throws Exception {
 
-        CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
-        CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
-            "setting_a",
-            "string",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null);
-        Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
-        settingDefs.put("setting_a", setting1def);
-        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-        writer.setPropertyConfiguration(settingDefs);
-        Element element = writer.serializeSingleConfiguration(getCmsObject(), "configname", config);
-        assertNotNull(element);
-        assertEquals("Configuration", element.getName());
-        List<Node> nodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_ORDERKEY));
-        assertEquals(3, nodes.size());
-        Element element0 = (Element)nodes.get(0);
-        checkCDATA(element0, "a");
-        checkCDATA((Element)nodes.get(1), "b");
-        checkCDATA((Element)nodes.get(2), "c");
+        assertTrue("TODO: Improve this test case!", false);
 
-        List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_VISIBLE));
-        assertEquals(1, visibleNodes.size());
-        checkCDATA((Element)visibleNodes.get(0), "d");
-
-        List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_HIDDEN));
-        assertEquals(2, invisibleNodes.size());
-        Set<String> actualInvisible = new HashSet<String>();
-        Set<String> expectedInvisible = new HashSet<String>();
-        expectedInvisible.add("e");
-        expectedInvisible.add("f");
-        for (Node node : invisibleNodes) {
-            actualInvisible.add(getNestedText((Element)node));
-        }
-        assertEquals(expectedInvisible, actualInvisible);
-        {
-            Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
-            String uuidString = getNestedText((Element)targetIdNode);
-            assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
-        }
-        {
-            Node targetIdNode = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
-            String uuidString = getNestedText((Element)targetIdNode);
-            assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString));
-        }
-        {
-            Node targetIdNode = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
-            String uuidString = getNestedText((Element)targetIdNode);
-            assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString));
-        }
-        assertEquals(3, element.selectNodes("NewElement").size());
-        assertEquals(
-            "value_a",
-            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
-
+        //        CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
+        //        CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
+        //            "setting_a",
+        //            "string",
+        //            null,
+        //            null,
+        //            null,
+        //            null,
+        //            null,
+        //            null,
+        //            null,
+        //            null,
+        //            null);
+        //        Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
+        //        settingDefs.put("setting_a", setting1def);
+        //        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        //        writer.setPropertyConfiguration(settingDefs);
+        //        Element element = writer.serializeSingleConfiguration(getCmsObject(), "configname", config);
+        //        assertNotNull(element);
+        //        assertEquals("Configuration", element.getName());
+        //        List<Node> nodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_ORDERKEY));
+        //        assertEquals(3, nodes.size());
+        //        Element element0 = (Element)nodes.get(0);
+        //        checkCDATA(element0, "a");
+        //        checkCDATA((Element)nodes.get(1), "b");
+        //        checkCDATA((Element)nodes.get(2), "c");
+        //
+        //        List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_VISIBLE));
+        //        assertEquals(1, visibleNodes.size());
+        //        checkCDATA((Element)visibleNodes.get(0), "d");
+        //
+        //        List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_HIDDEN));
+        //        assertEquals(2, invisibleNodes.size());
+        //        Set<String> actualInvisible = new HashSet<String>();
+        //        Set<String> expectedInvisible = new HashSet<String>();
+        //        expectedInvisible.add("e");
+        //        expectedInvisible.add("f");
+        //        for (Node node : invisibleNodes) {
+        //            actualInvisible.add(getNestedText((Element)node));
+        //        }
+        //        assertEquals(expectedInvisible, actualInvisible);
+        //        Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
+        //        String uuidString = getNestedText((Element)targetIdNode);
+        //        assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
+        //        Node targetIdNode2 = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
+        //        String uuidString2 = getNestedText((Element)targetIdNode2);
+        //        assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString2));
+        //        Node targetIdNode3 = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
+        //        String uuidString3 = getNestedText((Element)targetIdNode3);
+        //        assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString3));
+        //        assertEquals(3, element.selectNodes("NewElement").size());
+        //        assertEquals(
+        //            "value_a",
+        //            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
+        //
     }
 
     /**
@@ -816,7 +849,9 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     protected void checkSpec(List<CmsContainerElementBean> elements, String... specs) {
 
-        assertEquals(specs.length, elements.size());
+        assertTrue(
+            "Number of elements does not match the number of specification strings!",
+            specs.length == elements.size());
         for (int i = 0; i < elements.size(); i++) {
             CmsContainerElementBean elementBean = elements.get(i);
             String spec = specs[i];
@@ -910,7 +945,6 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             + "\r\n"
             + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
             + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
-            + "    <Title><![CDATA[blah]]></Title>\r\n"
             + "    <Configuration>\r\n"
             + "      <Name><![CDATA[alpha]]></Name>\r\n"
             + "      <OrderKey><![CDATA["

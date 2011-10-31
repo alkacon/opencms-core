@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
 /**
  * A cache class for storing inherited container configurations.<p>
  */
-public class CmsContainerConfigurationCache implements I_CmsContainerConfigurationCache, I_CmsGlobalConfigurationCache {
+public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** The standard file name for inherited container configurations. */
     public static final String FILE_NAME = ".container-config";
@@ -97,13 +97,21 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
     /**
      * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#clear()
      */
-    public void clear() {
+    public synchronized void clear() {
 
         m_initialized = false;
+        m_needToUpdate.clear();
+        m_configurationsByPath.clear();
     }
 
     /**
-     * @see org.opencms.ade.containerpage.inherited.I_CmsContainerConfigurationCache#getContainerConfiguration(java.lang.String, java.lang.String, java.util.Locale)
+     * Gets the container configuration for a given root path, name and locale.<p>
+     * 
+     * @param rootPath the root path 
+     * @param name the configuration name 
+     * @param locale the locale to use 
+     * 
+     * @return the container configuration for the given combination of parameters 
      */
     public synchronized CmsContainerConfiguration getContainerConfiguration(String rootPath, String name, Locale locale) {
 
@@ -263,6 +271,7 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
                 CmsUUID structureId = entry.getValue();
                 CmsResource resource = null;
                 try {
+                    // This log message is needed for the unit tests 
                     LOG.trace("inherited-container-cache " + m_name + " readSingleResource");
                     resource = m_cms.readResource(structureId);
                     load(resource);
@@ -296,6 +305,11 @@ public class CmsContainerConfigurationCache implements I_CmsContainerConfigurati
         m_needToUpdate.remove(rootPath);
     }
 
+    /**
+     * Either gets the configuration type id, or returns -1 if the type hasn't been loaded yet.<p>
+     * 
+     * @return the configuration type id or -1 
+     */
     protected int safeGetType() {
 
         try {

@@ -31,90 +31,156 @@
 
 package org.opencms.ade.containerpage.inherited;
 
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_KEY;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NEWELEMENT;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
-import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
-
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsUUID;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
-import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
+import com.google.common.collect.Maps;
+
+/**
+ * A helper class for writing inherited container configuration back to a VFS file.<p>
+ */
 public class CmsContainerConfigurationWriter {
 
-    private Map<String, CmsXmlContentProperty> m_propertyConfig = new HashMap<String, CmsXmlContentProperty>();
+    /**
+     * Saves a list of container element beans to a file in the VFS.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param name the name of the configuration to save
+     * @param newOrdering true if a new ordering needs to be saved 
+     * @param pageResource a container page or folder 
+     * @param elements the elements whose data should be saved
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public void save(
+        CmsObject cms,
+        String name,
+        boolean newOrdering,
+        CmsResource pageResource,
+        List<CmsContainerElementBean> elements) throws CmsException {
 
-    public byte[] serialize(Map<Locale, Map<String, CmsContainerConfiguration>> data, String encoding)
-    throws CmsException {
+        String encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        try {
+            CmsProperty encodingProperty = cms.readPropertyObject(
+                pageResource,
+                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                true);
+            encoding = CmsEncoder.lookupEncoding(encodingProperty.getValue(), encoding);
+        } catch (CmsException e) {
+            // ignore 
+        }
+        cms = OpenCms.initCmsObject(cms);
+        cms.getRequestContext().setSiteRoot("");
+        String configPath;
+        if (pageResource.isFolder()) {
+            configPath = CmsStringUtil.joinPaths(pageResource.getRootPath(), CmsContainerConfigurationCache.FILE_NAME);
+        } else {
+            configPath = CmsStringUtil.joinPaths(
+                CmsResource.getParentFolder(pageResource.getRootPath()),
+                CmsContainerConfigurationCache.FILE_NAME);
+        }
+        CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements);
+        CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(cms);
+        CmsResource configResource = null;
+        Map<Locale, Map<String, CmsContainerConfiguration>> oldGroups = null;
+        try {
+            configResource = cms.readResource(configPath);
+            parser.parse(configResource);
+        } catch (CmsVfsResourceNotFoundException e) {
+            oldGroups = Maps.newHashMap();
 
-        throw new NotImplementedException();
+        }
+        oldGroups = parser.getParsedResults();
+        Locale locale = cms.getRequestContext().getLocale();
+        Map<String, CmsContainerConfiguration> groupForLocale = oldGroups.get(locale);
+        if (groupForLocale == null) {
+            groupForLocale = Maps.newHashMap();
+            oldGroups.put(locale, groupForLocale);
+        }
+        groupForLocale.put(name, configuration);
+        CmsContainerConfigurationGroup newGroups = new CmsContainerConfigurationGroup(oldGroups);
+        Document doc = newGroups.createXml(cms);
+        String newContentString = CmsXmlUtils.marshal(doc, encoding);
+
+        byte[] contentBytes;
+        try {
+            contentBytes = newContentString.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            contentBytes = newContentString.getBytes();
+        }
+        if (configResource == null) {
+            // file didn't exist, so create it 
+            int typeId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
+            cms.createResource(configPath, typeId, contentBytes, new ArrayList<CmsProperty>());
+        } else {
+            CmsFile file = cms.readFile(configResource);
+            file.setContents(contentBytes);
+            CmsLock lock = cms.getLock(configResource);
+            if (lock.isUnlocked() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                cms.lockResource(configResource);
+            }
+            cms.writeFile(file);
+        }
     }
 
-    public Element serializeSingleConfiguration(CmsObject cms, String name, CmsContainerConfiguration config)
-    throws DocumentException {
+    /**
+     * Converts a list of container elements into a bean which should be saved to the inherited container configuration.<p>
+     * 
+     * @param newOrdering if true, save a new ordering 
+     * @param elements the elements which should be converted 
+     * 
+     * @return the bean containing the information from the container elements which should be saved 
+     */
+    protected CmsContainerConfiguration createConfigurationBean(
+        boolean newOrdering,
+        List<CmsContainerElementBean> elements) {
 
-        String emptyRoot = "<Configuration></Configuration>";
-        SAXReader reader = new SAXReader();
-        Document document = reader.read(new StringReader(emptyRoot));
-        Element root = document.getRootElement();
-        List<String> ordering = config.getOrdering();
-        for (String orderKey : ordering) {
-            root.addElement(N_ORDERKEY).addCDATA(orderKey);
-        }
-        List<String> visibles = new ArrayList<String>();
-        List<String> invisibles = new ArrayList<String>();
-        for (String key : config.getVisibility().keySet()) {
-            Boolean value = config.getVisibility().get(key);
-            if (value.booleanValue()) {
-                visibles.add(key);
-            } else {
-                invisibles.add(key);
+        Map<String, CmsContainerElementBean> newElements = new HashMap<String, CmsContainerElementBean>();
+        List<String> ordering = new ArrayList<String>();
+        Map<String, Boolean> visibility = new HashMap<String, Boolean>();
+        if (newOrdering) {
+            for (CmsContainerElementBean elementBean : elements) {
+                CmsInheritanceInfo info = elementBean.getInheritanceInfo();
+                ordering.add(info.getKey());
             }
         }
-        for (String visible : visibles) {
-            root.addElement(N_VISIBLE).addCDATA(visible);
+        for (CmsContainerElementBean elementBean : elements) {
+            CmsInheritanceInfo info = elementBean.getInheritanceInfo();
+            if (info.getVisibility().booleanValue() != info.getParentVisibility()) {
+                visibility.put(info.getKey(), new Boolean(info.getVisibility().booleanValue()));
+            }
         }
-        for (String invisible : invisibles) {
-            root.addElement(N_HIDDEN).addCDATA(invisible);
+
+        for (CmsContainerElementBean elementBean : elements) {
+            CmsInheritanceInfo info = elementBean.getInheritanceInfo();
+            if (info.isNew()) {
+                newElements.put(info.getKey(), elementBean);
+            }
         }
-        for (Map.Entry<String, CmsContainerElementBean> entry : config.getNewElements().entrySet()) {
-            String key = entry.getKey();
-            CmsContainerElementBean elementBean = entry.getValue();
-            CmsUUID structureId = elementBean.getId();
-            Map<String, String> settings = elementBean.getIndividualSettings();
-            Element newElementElement = root.addElement(N_NEWELEMENT);
-            newElementElement.addElement(N_KEY).addCDATA(key);
-            Element elementElement = newElementElement.addElement("Element");
-            Element linkElement = elementElement.addElement("Uri").addElement("link");
-            linkElement.addAttribute("type", "STRONG");
-            linkElement.addElement("uuid").addText(structureId.toString());
-            // TODO: use correct property definition for resource type
-            CmsXmlContentPropertyHelper.saveProperties(cms, elementElement, settings, m_propertyConfig);
-        }
-        return root;
+        CmsContainerConfiguration configuration = new CmsContainerConfiguration(ordering, visibility, newElements);
+        return configuration;
     }
-
-    public void setPropertyConfiguration(Map<String, CmsXmlContentProperty> propertyConfig) {
-
-        m_propertyConfig = propertyConfig;
-    }
-
 }

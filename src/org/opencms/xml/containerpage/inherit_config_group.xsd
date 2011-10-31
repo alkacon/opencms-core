@@ -14,7 +14,6 @@
 
 	<xsd:complexType name="OpenCmsAlkaconInheritConfigGroup">
 		<xsd:sequence>
-			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Configuration" type="OpenCmsAlkaconInheritConfig" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>

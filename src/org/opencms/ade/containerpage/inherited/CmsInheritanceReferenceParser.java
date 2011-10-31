@@ -53,21 +53,42 @@ import java.util.Map;
  */
 public class CmsInheritanceReferenceParser {
 
+    /** The CMS context used for parsing the file. */
     private CmsObject m_cms;
+
+    /** The map of parsed references. */
     private Map<Locale, CmsInheritanceReference> m_references = new HashMap<Locale, CmsInheritanceReference>();
 
+    /** The resource being parsed. */
     private CmsResource m_resource;
 
+    /**
+     * Creates a new parser instance.<p>
+     * 
+     * @param cms the CMS context to use 
+     */
     public CmsInheritanceReferenceParser(CmsObject cms) {
 
         m_cms = cms;
     }
 
+    /**
+     * Gets the parsed references for different locales.<p>
+     * 
+     * @return a map containing the parsed references with the locales as keys 
+     */
     public Map<Locale, CmsInheritanceReference> getReferences() {
 
         return Collections.unmodifiableMap(m_references);
     }
 
+    /**
+     * Parses a given resource.<p>
+     * 
+     * @param resource the resource to parse 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void parse(CmsResource resource) throws CmsException {
 
         CmsFile file = m_cms.readFile(resource);
@@ -76,7 +97,12 @@ public class CmsInheritanceReferenceParser {
         parse(content);
     }
 
-    protected void parse(CmsXmlContent content) throws CmsException {
+    /**
+     * Parses the given XML content.<p>
+     * 
+     * @param content the XML content to parse 
+     */
+    protected void parse(CmsXmlContent content) {
 
         List<Locale> availableLocales = content.getLocales();
         for (Locale locale : availableLocales) {

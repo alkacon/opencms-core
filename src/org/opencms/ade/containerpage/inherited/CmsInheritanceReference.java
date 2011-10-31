@@ -35,16 +35,32 @@ import org.opencms.file.CmsResource;
 
 import java.util.Locale;
 
+/**
+ * Reference to an container inheritance configuration.<p>
+ * 
+ */
 public class CmsInheritanceReference {
 
+    /** The locale. */
     private Locale m_locale;
 
+    /** The container configuration name. */
     private String m_name;
 
+    /** The resource from which this reference has been read. */
     private CmsResource m_resource;
 
+    /** The title. */
     private String m_title;
 
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param name the container configuration name 
+     * @param title the title 
+     * @param res the resource 
+     * @param locale the locale 
+     */
     public CmsInheritanceReference(String name, String title, CmsResource res, Locale locale) {
 
         m_title = title;
@@ -53,24 +69,44 @@ public class CmsInheritanceReference {
         m_locale = locale;
     }
 
+    /**
+     * Gets the locale.<p>
+     * 
+     * @return the locale 
+     */
     public Locale getLocale() {
 
         return m_locale;
     }
 
+    /**
+     * Gets the configuration name.<p>
+     * 
+     * @return the configuration name 
+     */
     public String getName() {
 
         return m_name;
     }
 
+    /**
+     * Gets the reference resource.<p>
+     * 
+     * @return the reference resource 
+     */
     public CmsResource getResource() {
 
         return m_resource;
     }
 
+    /**
+     * Gets the title.<p>
+     * 
+     * @return the title 
+     */
     public String getTitle() {
 
         return m_title;
-    };
+    }
 
 }
