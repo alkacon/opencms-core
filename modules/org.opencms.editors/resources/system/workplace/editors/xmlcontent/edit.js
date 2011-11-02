@@ -52,7 +52,7 @@ function findFrame(startFrame, frameName){
 }
 // the editors top frame target, may be !='_top' if in advanced direct edit!
 var editorTopFrameTarget= '_top';
-if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
+if (top.frames['cmsAdvancedDirectEditor']!=null){
     editorTopFrameTarget='cmsAdvancedDirectEditor';
 }
 // edit frame object
