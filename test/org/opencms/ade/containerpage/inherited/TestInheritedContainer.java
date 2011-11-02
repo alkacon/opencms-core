@@ -31,6 +31,11 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
+
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -45,24 +50,33 @@ import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Test;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+
+import com.google.common.collect.Maps;
 
 /**
  * Test case for inherited containers.
@@ -80,10 +94,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         /** The number of offline loads. */
         private int m_offlineLoads;
 
+        /** The number of offline readResource calls. */
         private int m_offlineReadResource;
 
         /** The number of online loads. */
         private int m_onlineLoads;
+
+        /** The number of online readResource calls. */
         private int m_onlineReadResource;
 
         /** 
@@ -107,6 +124,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             return m_offlineLoads;
         }
 
+        /**
+         * Gets the number of single readResource calls for offline mode.<p>
+         * 
+         * @return the number of readResource calls
+         */
         public int getOfflineReadResource() {
 
             return m_offlineReadResource;
@@ -122,6 +144,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             return m_onlineLoads;
         }
 
+        /**
+         * Gets the number of online readResource calls.<p>
+         * 
+         * @return the number of online readResource calls 
+         */
         public int getOnlineReadResource() {
 
             return m_onlineReadResource;
@@ -191,7 +218,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("d e|||d e"));
         result.addConfiguration(buildConfiguration("a c|||"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        checkSpec(
+        checkConfiguration(
             elementBeans,
             "key=a new=false visible=true",
             "key=c new=false visible=true",
@@ -204,7 +231,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("g|||g"));
         result.addConfiguration(buildConfiguration("|||"));
         elementBeans = result.getElements(true);
-        checkSpec(
+        checkConfiguration(
             elementBeans,
             "key=g new=false",
             "key=a new=false",
@@ -219,7 +246,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("d c|||c d"));
         result.addConfiguration(buildConfiguration("e f|||e f"));
         elementBeans = result.getElements(true);
-        checkSpec(
+        checkConfiguration(
             elementBeans,
             "key=e new=true",
             "key=f new=true",
@@ -246,24 +273,24 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
         List<CmsContainerElementBean> elementBeans = state.getElements(true);
         // a, b, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=b");
 
         writeConfiguration(2, "d");
         // a, d, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=a", "key=d");
+        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=d");
 
         writeConfiguration(1, "b");
         // b, d, c
-        checkSpecForPoint(level3, "alpha", false, "key=c", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=b", "key=d");
 
         writeConfiguration(3, "a");
         // b, d, a
-        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b", "key=d");
 
         deleteConfiguration(2);
 
         //b, -, a
-        checkSpecForPoint(level3, "alpha", false, "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b");
 
     }
 
@@ -285,46 +312,46 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
 
         // OFFLINE: a, b, c       ONLINE: a, b, c 
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
         writeConfiguration(2, "d");
         // OFFLINE: a, d, c       ONLINE: a, b, c
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
         publish();
         // OFFLINE: a, d, c       ONLINE: a, d, c
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
 
         writeConfiguration(1, "b");
         // OFFLINE: b, d, c       ONLINE: a, d, c
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
 
         publish();
         // OFFLINE: b, d, c       ONLINE: b,d,c
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
         writeConfiguration(3, "a");
         // OFFLINE: b, d, a       ONLINE: b,d,c
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
         publish();
         // OFFLINE: b, d, a       ONLINE: b,d,a
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
 
         deleteConfiguration(2);
         // OFFLINE: b, -, a      ONLINE: b,d,a
-        checkSpecForPoint(level3, "alpha", OFFLINE, "key=a", "key=b");
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
+        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
 
         publish();
-        checkSpecForPoint(level3, "alpha", ONLINE, "key=a", "key=b");
+        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b");
 
     }
 
@@ -343,34 +370,33 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             publish();
-            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             String level3 = "/system/level1/level2/level3";
             // OFFLINE: a, b, c       ONLINE: a, b, c 
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOnlineLoads());
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             assertEquals(3, logHandler.getOnlineLoads());
 
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             assertEquals(3, logHandler.getOnlineLoads());
 
             logHandler.clear();
             writeConfiguration(2, "d");
             // OFFLINE: a, d, c       ONLINE: a, b, c
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
             assertEquals(0, logHandler.getOnlineLoads());
             assertEquals(1, logHandler.getOfflineLoads());
 
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
             assertEquals(0, logHandler.getOnlineLoads());
             assertEquals(1, logHandler.getOfflineLoads());
             publish();
 
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
             assertEquals(1, logHandler.getOnlineLoads());
             assertEquals(1, logHandler.getOfflineLoads());
             // OFFLINE: a, d, c       ONLINE: a, d, c
@@ -379,25 +405,24 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(1, "b");
             // OFFLINE: b, d, -      ONLINE: a,d,c
             logHandler.clear();
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
             assertEquals(2, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOnlineLoads());
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
             assertEquals(2, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOnlineLoads());
 
             publish();
             logHandler.clear();
             // OFFLINE: b, d, -    ONLINE: b, d, -
-            checkSpecForPoint(level3, "alpha", ONLINE, "key=d", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=d", "key=b");
             assertEquals(0, logHandler.getOfflineLoads());
-            checkSpecForPoint(level3, "alpha", OFFLINE, "key=d", "key=b");
-            assertEquals(0, logHandler.getOfflineLoads());
-            assertEquals(2, logHandler.getOnlineLoads());
-
-            //TODO: finish this test case!
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
+            // publishing throws a resource_and_properties_modified event for some reason, so this still loads the resource offline  
+            assertEquals(1, logHandler.getOfflineLoads());
+            assertEquals(1, logHandler.getOnlineLoads());
         } finally {
             OpenCmsTestLogAppender.setHandler(null);
         }
@@ -415,7 +440,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("a b c|||a b c"));
         result.addConfiguration(buildConfiguration("b c a|||"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        checkSpec(
+        checkConfiguration(
             elementBeans,
             "key=b new=false visible=true",
             "key=c new=false visible=true",
@@ -437,13 +462,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             publish();
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             assertEquals(3, logHandler.getOnlineLoads());
             OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
             assertEquals(6, logHandler.getOfflineLoads());
             assertEquals(6, logHandler.getOnlineLoads());
 
@@ -465,7 +490,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         result.addConfiguration(buildConfiguration("a b c d|||a b c d"));
         result.addConfiguration(buildConfiguration("||b d|"));
         List<CmsContainerElementBean> elementBeans = result.getElements(true);
-        checkSpec(
+        checkConfiguration(
             elementBeans,
             "key=a visible=true",
             "key=c visible=true",
@@ -473,7 +498,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             "key=d visible=false");
 
         elementBeans = result.getElements(false);
-        checkSpec(elementBeans, "key=a visible=true", "key=c visible=true");
+        checkConfiguration(elementBeans, "key=a visible=true", "key=c visible=true");
     }
 
     /**
@@ -485,9 +510,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
         result.addConfiguration(buildConfiguration("a b|||a b"));
-        checkSpec(result.getElements(true), "key=a new=true", "key=b new=true");
+        checkConfiguration(result.getElements(true), "key=a new=true", "key=b new=true");
         result.addConfiguration(buildConfiguration("c b a d|||c d"));
-        checkSpec(result.getElements(true), "key=c new=true", "key=b new=false", "key=a new=false", "key=d new=true");
+        checkConfiguration(
+            result.getElements(true),
+            "key=c new=true",
+            "key=b new=false",
+            "key=a new=false",
+            "key=d new=true");
     }
 
     /**
@@ -501,14 +531,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
-        checkSpecForPoint("/system/level1/level2/level3", "beta", OFFLINE);
-        checkSpecForPoint("/system/level1/level2/level3", "beta", ONLINE);
+        checkConfigurationForPath("/system/level1/level2/level3", "beta", OFFLINE);
+        checkConfigurationForPath("/system/level1/level2/level3", "beta", ONLINE);
         deleteConfiguration(1);
         deleteConfiguration(2);
         deleteConfiguration(3);
-        checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE);
+        checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE);
         publish();
-        checkSpecForPoint("/system/level1/level2/level3", "alpha", ONLINE);
+        checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE);
     }
 
     /**
@@ -528,11 +558,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(3, "c");
             writeConfiguration("/system/dummy.config", "d");
             publish();
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             deleteConfiguration(2);
             writeConfiguration("/system/level1/level2/baz.config", "b");
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
             assertEquals(3, logHandler.getOfflineLoads());
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(false);
@@ -629,6 +659,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         assertEquals("00000001-0000-0000-0000-000000000000", settings.get("testsetting2"));
     }
 
+    /**
+     * Test case for saving the configuration.<p>
+     * 
+     * @throws Exception
+     */
     public void testReadAndSaveBack() throws Exception {
 
         writeConfiguration(1, "a");
@@ -644,7 +679,152 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         List<CmsContainerElementBean> elements = state.getElements(true);
         CmsContainerConfigurationWriter configWriter = new CmsContainerConfigurationWriter();
         configWriter.save(cms, "alpha", true, cms.readResource("/system/level1/level2"), elements);
-        checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+        checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+    }
+
+    /**
+     * Tests saving an inherited container element list with a new element added.<p>
+     * @throws Exception
+     */
+    public void testSaveChangeVisibility() throws Exception {
+
+        try {
+
+            CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
+            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            CmsObject cms = getCmsObject();
+            CmsResource x2 = cms.readResource("/system/x1/x2");
+            List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
+                cms,
+                x2,
+                "alpha").getElements(true);
+            elements.get(1).getInheritanceInfo().setVisibility(new Boolean(false));
+            elements.get(2).getInheritanceInfo().setVisibility(new Boolean(false));
+            OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", false, elements);
+            checkConfigurationForPath(
+                "/system/x1/x2",
+                "alpha",
+                OFFLINE,
+                "key=a new=false visible=true",
+                "key=b new=false visible=false",
+                "key=c new=false visible=false");
+
+        } finally {
+            deleteConfiguration("/system/x1/.container-config");
+            deleteConfiguration("/system/x1/x2/.container-config");
+        }
+
+    }
+
+    /**
+     * Tests saving an inherited container element list with a new element added.<p>
+     * @throws Exception
+     */
+    public void testSaveNewElements() throws Exception {
+
+        try {
+
+            CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
+            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            CmsObject cms = getCmsObject();
+            CmsResource x2 = cms.readResource("/system/x1/x2");
+            List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
+                cms,
+                x2,
+                "alpha").getElements(true);
+
+            CmsContainerElementBean newElement = generateDummyElement("d");
+            CmsInheritanceInfo info = new CmsInheritanceInfo("d", new Boolean(true), true);
+            newElement.setInheritanceInfo(info);
+            elements.add(newElement);
+            OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", true, elements);
+            checkConfigurationForPath(
+                "/system/x1/x2",
+                "alpha",
+                OFFLINE,
+                "key=a new=false",
+                "key=b new=false",
+                "key=c new=false",
+                "key=d new=true");
+        } finally {
+            deleteConfiguration("/system/x1/.container-config");
+            deleteConfiguration("/system/x1/x2/.container-config");
+        }
+
+    }
+
+    public void testSaveRemoveDanglingKeys() throws Exception {
+
+        try {
+
+            CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
+            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            CmsObject cms = getCmsObject();
+            CmsResource x2 = cms.readResource("/system/x1/x2");
+            List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
+                cms,
+                x2,
+                "alpha").getElements(true);
+            config = buildConfiguration("a b|||a b");
+            saveConfiguration("/system/x1/.container-config", config, "alpha");
+
+            CmsContainerElementBean elementBean = elements.get(0);
+            elements.remove(0);
+            elements.add(elementBean);
+            OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", true, elements);
+            checkConfigurationForPath(
+                "/system/x1/x2",
+                "alpha",
+                OFFLINE,
+                "key=b new=false visible=true",
+                "key=a new=false visible=true");
+
+            CmsResource configResource = cms.readResource("/system/x1/x2/.container-config");
+            CmsFile file = cms.readFile(configResource);
+            String content = new String(file.getContents());
+            assertTrue(content.contains("<![CDATA[a]]>"));
+
+            // should have been removed when saving 
+            assertFalse(content.contains("<![CDATA[c]]>"));
+        } finally {
+            deleteConfiguration("/system/x1/x2/.container-config");
+            deleteConfiguration("/system/x1/.container-config");
+        }
+    }
+
+    /**
+     * Tests saving a reordered list of inherited container elements.<p>
+     * 
+     * @throws Exception
+     */
+    public void testSaveReorder() throws Exception {
+
+        try {
+
+            CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
+            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            CmsObject cms = getCmsObject();
+            CmsResource x2 = cms.readResource("/system/x1/x2");
+            List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
+                cms,
+                x2,
+                "alpha").getElements(true);
+            CmsContainerElementBean firstElement = elements.get(0);
+            elements.remove(0);
+            elements.add(firstElement);
+            OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", true, elements);
+            checkConfigurationForPath(
+                "/system/x1/x2",
+                "alpha",
+                OFFLINE,
+                "key=b new=false",
+                "key=c new=false",
+                "key=a new=false");
+        } finally {
+            deleteConfiguration("/system/x1/.container-config");
+            deleteConfiguration("/system/x1/x2/.container-config");
+        }
+
     }
 
     /**
@@ -654,63 +834,74 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testSerialization1() throws Exception {
 
-        assertTrue("TODO: Improve this test case!", false);
+        Document document = createDocument("<dummy></dummy>");
+        CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
+        CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
+            "setting_a",
+            "string",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+        final Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
+        settingDefs.put("setting_a", setting1def);
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter() {
 
-        //        CmsContainerConfiguration config = buildConfiguration("a b c|d|e f|a b c");
-        //        CmsXmlContentProperty setting1def = new CmsXmlContentProperty(
-        //            "setting_a",
-        //            "string",
-        //            null,
-        //            null,
-        //            null,
-        //            null,
-        //            null,
-        //            null,
-        //            null,
-        //            null,
-        //            null);
-        //        Map<String, CmsXmlContentProperty> settingDefs = new HashMap<String, CmsXmlContentProperty>();
-        //        settingDefs.put("setting_a", setting1def);
-        //        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-        //        writer.setPropertyConfiguration(settingDefs);
-        //        Element element = writer.serializeSingleConfiguration(getCmsObject(), "configname", config);
-        //        assertNotNull(element);
-        //        assertEquals("Configuration", element.getName());
-        //        List<Node> nodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_ORDERKEY));
-        //        assertEquals(3, nodes.size());
-        //        Element element0 = (Element)nodes.get(0);
-        //        checkCDATA(element0, "a");
-        //        checkCDATA((Element)nodes.get(1), "b");
-        //        checkCDATA((Element)nodes.get(2), "c");
-        //
-        //        List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_VISIBLE));
-        //        assertEquals(1, visibleNodes.size());
-        //        checkCDATA((Element)visibleNodes.get(0), "d");
-        //
-        //        List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_HIDDEN));
-        //        assertEquals(2, invisibleNodes.size());
-        //        Set<String> actualInvisible = new HashSet<String>();
-        //        Set<String> expectedInvisible = new HashSet<String>();
-        //        expectedInvisible.add("e");
-        //        expectedInvisible.add("f");
-        //        for (Node node : invisibleNodes) {
-        //            actualInvisible.add(getNestedText((Element)node));
-        //        }
-        //        assertEquals(expectedInvisible, actualInvisible);
-        //        Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
-        //        String uuidString = getNestedText((Element)targetIdNode);
-        //        assertEquals(CmsUUID.getConstantUUID("a"), new CmsUUID(uuidString));
-        //        Node targetIdNode2 = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
-        //        String uuidString2 = getNestedText((Element)targetIdNode2);
-        //        assertEquals(CmsUUID.getConstantUUID("b"), new CmsUUID(uuidString2));
-        //        Node targetIdNode3 = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
-        //        String uuidString3 = getNestedText((Element)targetIdNode3);
-        //        assertEquals(CmsUUID.getConstantUUID("c"), new CmsUUID(uuidString3));
-        //        assertEquals(3, element.selectNodes("NewElement").size());
-        //        assertEquals(
-        //            "value_a",
-        //            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
-        //
+            @Override
+            protected java.util.Map<String, CmsXmlContentProperty> getSettingConfiguration(
+                CmsObject cms,
+                CmsResource resource) {
+
+                return settingDefs;
+            };
+        };
+        Element element = writer.serializeSingleConfiguration(
+            getCmsObject(),
+            "configname",
+            config,
+            document.getRootElement());
+        assertNotNull(element);
+        assertEquals("Configuration", element.getName());
+        List<Node> nodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_ORDERKEY));
+        assertEquals(3, nodes.size());
+        Element element0 = (Element)nodes.get(0);
+        checkCDATA(element0, "a");
+        checkCDATA((Element)nodes.get(1), "b");
+        checkCDATA((Element)nodes.get(2), "c");
+
+        List<Node> visibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_VISIBLE));
+        assertEquals(1, visibleNodes.size());
+        checkCDATA((Element)visibleNodes.get(0), "d");
+
+        List<Node> invisibleNodes = CmsCollectionsGenericWrapper.list(element.selectNodes(N_HIDDEN));
+        assertEquals(2, invisibleNodes.size());
+        Set<String> actualInvisible = new HashSet<String>();
+        Set<String> expectedInvisible = new HashSet<String>();
+        expectedInvisible.add("e");
+        expectedInvisible.add("f");
+        for (Node node : invisibleNodes) {
+            actualInvisible.add(getNestedText((Element)node));
+        }
+        assertEquals(expectedInvisible, actualInvisible);
+        Node targetIdNode = element.selectSingleNode("NewElement[Key='a']/Element/Uri/link/uuid");
+        String uuidString = getNestedText((Element)targetIdNode);
+        assertEquals(makeStructureId("a"), new CmsUUID(uuidString));
+        Node targetIdNode2 = element.selectSingleNode("NewElement[Key='b']/Element/Uri/link/uuid");
+        String uuidString2 = getNestedText((Element)targetIdNode2);
+        assertEquals(makeStructureId("b"), new CmsUUID(uuidString2));
+        Node targetIdNode3 = element.selectSingleNode("NewElement[Key='c']/Element/Uri/link/uuid");
+        String uuidString3 = getNestedText((Element)targetIdNode3);
+        assertEquals(makeStructureId("c"), new CmsUUID(uuidString3));
+        assertEquals(3, element.selectNodes("NewElement").size());
+        assertEquals(
+            "value_a",
+            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
+
     }
 
     /**
@@ -729,13 +920,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             publish();
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             logHandler.clear();
             writeConfiguration(2, "d");
             deleteConfiguration(2);
             assertEquals(0, logHandler.getOfflineReadResource());
-            checkSpecForPoint("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
             assertEquals(0, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOfflineReadResource());
         } finally {
@@ -819,7 +1010,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * @param element
      * @param spec
      */
-    protected void checkSpec(CmsContainerElementBean element, String spec) {
+    protected void checkConfiguration(CmsContainerElementBean element, String spec) {
 
         Map<String, String> specMap = CmsStringUtil.splitAsMap(spec, " ", "=");
         for (Map.Entry<String, String> entry : specMap.entrySet()) {
@@ -847,7 +1038,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * 
      * @param specs the constraints for the element beans, in the same order as the container element beans 
      */
-    protected void checkSpec(List<CmsContainerElementBean> elements, String... specs) {
+    protected void checkConfiguration(List<CmsContainerElementBean> elements, String... specs) {
 
         assertTrue(
             "Number of elements does not match the number of specification strings!",
@@ -855,7 +1046,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         for (int i = 0; i < elements.size(); i++) {
             CmsContainerElementBean elementBean = elements.get(i);
             String spec = specs[i];
-            checkSpec(elementBean, spec);
+            checkConfiguration(elementBean, spec);
         }
     }
 
@@ -870,7 +1061,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *  
      * @throws CmsException if something goes wrong 
      */
-    protected void checkSpecForPoint(String rootPath, String name, boolean online, String... specs) throws CmsException {
+    protected void checkConfigurationForPath(String rootPath, String name, boolean online, String... specs)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         if (online) {
@@ -879,7 +1071,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, rootPath, name);
         List<CmsContainerElementBean> elementBeans = state.getElements(true);
-        checkSpec(elementBeans, specs);
+        checkConfiguration(elementBeans, specs);
+    }
+
+    protected Document createDocument(String rootElement) throws Exception {
+
+        SAXReader reader = new SAXReader();
+        return reader.read(new StringReader(rootElement));
+
     }
 
     /**
@@ -896,6 +1095,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         deleteConfiguration(configPath);
     }
 
+    /**
+     * Deletes the configuration for a given path.<p>
+     * 
+     * @param path the path of the configuration 
+     * @throws CmsException if something goes wrong 
+     */
     protected void deleteConfiguration(String path) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -917,12 +1122,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         Map<String, String> settings = new HashMap<String, String>();
         settings.put("setting_" + key, "value_" + key);
-
-        CmsContainerElementBean elementBean = new CmsContainerElementBean(
-            CmsUUID.getConstantUUID(key),
-            CmsUUID.getNullUUID(),
-            settings,
-            false);
+        CmsUUID id = CmsUUID.getConstantUUID(key);
+        if (key.equals("a")) {
+            id = new CmsUUID("00000002-0000-0000-0000-000000000000");
+        } else if (key.equals("b")) {
+            id = new CmsUUID("00000003-0000-0000-0000-000000000000");
+        } else if (key.equals("c")) {
+            id = new CmsUUID("00000004-0000-0000-0000-000000000000");
+        } else if (key.equals("d")) {
+            id = new CmsUUID("00000005-0000-0000-0000-000000000000");
+        }
+        CmsContainerElementBean elementBean = new CmsContainerElementBean(id, CmsUUID.getNullUUID(), settings, false);
         return elementBean;
     }
 
@@ -996,6 +1206,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Gets the nested text of an element.<p>
+     * 
+     * @param element the element from which the text should be extracted
+     *  
+     * @return the text nested inside the element 
+     */
     protected String getNestedText(Element element) {
 
         return element.node(0).getText();
@@ -1013,6 +1230,21 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } catch (CmsException e) {
             // no other users, this means we already have the lock 
         }
+    }
+
+    protected CmsUUID makeStructureId(String name) {
+
+        CmsUUID id = CmsUUID.getConstantUUID(name);
+        if (name.equals("a")) {
+            id = new CmsUUID("00000002-0000-0000-0000-000000000000");
+        } else if (name.equals("b")) {
+            id = new CmsUUID("00000003-0000-0000-0000-000000000000");
+        } else if (name.equals("c")) {
+            id = new CmsUUID("00000004-0000-0000-0000-000000000000");
+        } else if (name.equals("d")) {
+            id = new CmsUUID("00000005-0000-0000-0000-000000000000");
+        }
+        return id;
     }
 
     /**
@@ -1044,6 +1276,19 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return new String(file.getContents(), "UTF-8");
     }
 
+    protected void saveConfiguration(String path, CmsContainerConfiguration config, String name) throws Exception {
+
+        Map<Locale, Map<String, CmsContainerConfiguration>> map = Maps.newHashMap();
+        Map<String, CmsContainerConfiguration> configMap = Maps.newHashMap();
+        map.put(new Locale("en"), configMap);
+        configMap.put(name, config);
+        CmsContainerConfigurationGroup group = new CmsContainerConfigurationGroup(map);
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        String xml = writer.createXmlString(group, getCmsObject(), "UTF-8");
+        byte[] data = xml.getBytes("UTF-8");
+        writeConfiguration(path, data);
+    }
+
     /**
      * Writes a dummy configuration file at a given level in the level1/level2/level3 tree branch.<p>
      * 
@@ -1060,6 +1305,44 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         writeConfiguration(configPath, name);
     }
 
+    /**
+     * Writes a dummy configuration file to a given path.<p>
+     * 
+     * @param path the path where the configuration file should be written
+     * @param name the name contained in the configuration file 
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws UnsupportedEncodingException 
+     */
+    protected void writeConfiguration(String path, byte[] data) throws CmsException, UnsupportedEncodingException {
+
+        String configPath = path;
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(configPath)) {
+            lock(configPath);
+            CmsFile file = cms.readFile(configPath);
+            byte[] newContent = data;
+            file.setContents(newContent);
+            cms.writeFile(file);
+        } else {
+            byte[] newContent = data;
+            cms.createResource(
+                configPath,
+                OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId(),
+                newContent,
+                new ArrayList<CmsProperty>());
+        }
+    }
+
+    /**
+     * Writes a dummy configuration file to a given path.<p>
+     * 
+     * @param path the path where the configuration file should be written
+     * @param name the name contained in the configuration file 
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws UnsupportedEncodingException 
+     */
     protected void writeConfiguration(String path, String name) throws CmsException, UnsupportedEncodingException {
 
         String configPath = path;
@@ -1079,4 +1362,5 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 new ArrayList<CmsProperty>());
         }
     }
+
 }

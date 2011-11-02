@@ -190,6 +190,20 @@ public class CmsInheritedContainerState {
     }
 
     /**
+     * Gets the keys of new elements.<p>
+     * 
+     * @return a set containing the keys of the new elements 
+     */
+    public Set<String> getNewElementKeys() {
+
+        Set<String> result = new HashSet<String>();
+        for (CmsContainerConfiguration configuration : m_parentConfigurations) {
+            result.addAll(configuration.getNewElements().keySet());
+        }
+        return result;
+    }
+
+    /**
      * Checks whether an element with the given key is actually defined in this inherited container state.<p>
      * 
      * @param key the key for which the check should be performed 
@@ -259,5 +273,6 @@ public class CmsInheritedContainerState {
         }
         info.setVisibility(visible ? Boolean.TRUE : Boolean.FALSE);
         info.setVisibilityInherited(inherited);
+        info.setParentVisible(parentVisible);
     }
 }
