@@ -5358,10 +5358,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // new user is not Administrator, check if login is currently allowed
             OpenCms.getLoginManager().checkLoginAllowed();
         }
-
+        m_monitor.clearUserCache(newUser);
         // set the last login time to the current time
         newUser.setLastlogin(System.currentTimeMillis());
-
+        dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
         // write the changed user object back to the user driver
         getUserDriver(dbc).writeUser(dbc, newUser);
 
@@ -5377,6 +5377,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsMemoryMonitor.CacheType.USER_LIST,
             CmsMemoryMonitor.CacheType.PERMISSION,
             CmsMemoryMonitor.CacheType.RESOURCE_LIST);
+
+        // fire user modified event
+        Map<String, Object> eventData = new HashMap<String, Object>();
+        eventData.put(I_CmsEventListener.KEY_USER_ID, newUser.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_NAME, newUser.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
 
         // return the user object read from the driver
         return newUser;
