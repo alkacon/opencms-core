@@ -141,7 +141,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
          */
         public void finish() {
 
-            String length = formatBytes(new Long(getContentLength()).intValue());
+            String length = formatBytes(getContentLength());
             int fileCount = m_orderedFilenamesToUpload.size();
             m_bar.setValue(100);
             m_fileinfo.removeAllRows();
@@ -178,9 +178,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             }
 
             String currFilename = m_orderedFilenamesToUpload.get(currFileIndex);
-            String contentLength = formatBytes(new Long(getContentLength()).intValue());
+            String contentLength = formatBytes(getContentLength());
             int fileCount = m_orderedFilenamesToUpload.size();
-            String readBytes = formatBytes(new Long(getBytesRead(info.getPercent())).intValue());
+            String readBytes = formatBytes(getBytesRead(info.getPercent()));
 
             m_bar.setValue(info.getPercent());
 
@@ -633,10 +633,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      * 
      * @return the formated file size in KB
      */
-    protected String formatBytes(int filesize) {
+    protected String formatBytes(long filesize) {
 
-        int roundedKB = new Double(Math.ceil(filesize / KILOBYTE)).intValue();
-        String formated = NumberFormat.getDecimalFormat().format(new Double(roundedKB));
+        double kByte = Math.ceil(filesize / KILOBYTE);
+        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
         return formated + " KB";
     }
 
@@ -822,11 +822,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
         if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
             JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
-
             boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
-            String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
-            String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
-
             // If the upload is done so fast that we did not receive any progress information, then
             // the content length is unknown. For that reason take the request size to show how 
             // much bytes were uploaded.
@@ -835,12 +831,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             if (m_contentLength == 0) {
                 m_contentLength = requestSize;
             }
-
             if (success) {
                 displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
                 m_progressInfo.finish();
                 closeOnSuccess();
             } else {
+                String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
+                String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
                 showErrorReport(message, stacktrace);
             }
         }
