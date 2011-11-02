@@ -379,6 +379,24 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                             }
                         }
                     }
+                } else {
+                    // check if the file is the default file of the folder
+                    try {
+                        CmsResource defaultFile = cms.readDefaultFile(CmsResource.getFolderPath(vfsName));
+                        String defaultfilePath = cms.getRequestContext().removeSiteRoot(defaultFile.getRootPath());
+                        if (vfsName.equals(defaultfilePath)) {
+                            // this is the default file, remove it additionally if present
+                            String rfsNameDefault = CmsResource.getFolderPath(rfsName)
+                                + CmsStaticExportManager.EXPORT_DEFAULT_FILE;
+                            String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                                vfsName)
+                                + rfsNameDefault.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
+
+                            purgeFile(rfsExportFileName, vfsName);
+                        }
+                    } catch (CmsException e) {
+                        // failed to determine default file
+                    }
                 }
 
                 // add index_export.html or the index.html to the folder name
@@ -467,9 +485,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 res.getType());
             for (String urlName : urlNames) {
                 for (String detailPage : detailpages) {
-                    String rfsName = CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getRfsName(
-                        cms,
-                        detailPage), urlName, CmsStaticExportManager.DEFAULT_FILE);
+                    String rfsName = CmsStringUtil.joinPaths(
+                        OpenCms.getStaticExportManager().getRfsName(cms, detailPage),
+                        urlName,
+                        CmsStaticExportManager.DEFAULT_FILE);
                     String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
                         vfsName)
                         + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
