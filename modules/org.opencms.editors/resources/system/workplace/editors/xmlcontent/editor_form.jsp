@@ -63,7 +63,7 @@ case CmsXmlContentEditor.ACTION_CONFIRMCORRECTION:
 	</script>
 	</head>
 	<body class="buttons-head" unselectable="on" onload="confirmCorrection();">
-	<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+	<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>" onsubmit="return false">
 	<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="">
 	<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>"/>
 	<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>"/>
@@ -93,7 +93,7 @@ case CmsEditor.ACTION_SAVEEXIT:
 		</script>
 		</head>
 		<body class="buttons-head" unselectable="on">
-		<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+		<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>" onsubmit="return false">
 		<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="">
 		<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>"/>
 		<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>"/>
@@ -310,7 +310,7 @@ function httpStateDummy() {
 </head>
 <body class="buttons-head" unselectable="on" onload="init();" onunload="exitEditor();">
 
-<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>" onsubmit="return false">
 <input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= wp.getParamAction() %>"/>
 <input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>"/>
 <input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>"/>
