@@ -120,7 +120,7 @@
                         <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                     </accesscontrol>
                 </explorertype>
-                <explorertype name="inheritconfig" key="fileicon.inheritconfig" icon="xmlcontent.gif" bigicon="xmlcontent_big.png" reference="xmlcontent">
+                <explorertype name="inheritconfig" key="fileicon.inheritconfig" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
                     <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritconfig" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritconfig"/>
                     <accesscontrol>
                         <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
