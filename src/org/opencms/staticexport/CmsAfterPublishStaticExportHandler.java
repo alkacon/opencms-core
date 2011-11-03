@@ -326,10 +326,12 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     exportData.getRfsName()));
             }
 
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(count++),
-                new Integer(size)), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Integer(count++),
+                    new Integer(size)),
+                I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -621,27 +623,30 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             CmsStaticExportData data = null;
             try {
                 data = manager.getVfsNameInternal(cms, rfsName);
-                if (data == null) {
-                    String rfsBaseName = rfsName;
-                    int pos = rfsName.lastIndexOf('_');
-                    if (pos >= 0) {
-                        rfsBaseName = rfsName.substring(0, pos);
-                    }
-                    data = manager.getVfsNameInternal(cms, rfsBaseName);
-                }
             } catch (CmsVfsResourceNotFoundException e) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1,
-                        new String[] {rfsName}));
+                String rfsBaseName = rfsName;
+                int pos = rfsName.lastIndexOf('_');
+                if (pos >= 0) {
+                    rfsBaseName = rfsName.substring(0, pos);
+                }
+                try {
+                    data = manager.getVfsNameInternal(cms, rfsBaseName);
+                } catch (CmsVfsResourceNotFoundException e2) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(Messages.get().getBundle().key(
+                            Messages.LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1,
+                            new String[] {rfsName}));
+                    }
                 }
             }
             if (data != null) {
                 data.setRfsName(rfsName);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(count++),
-                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        new Integer(count++),
+                        new Integer(size)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -677,15 +682,19 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                         I_CmsReport.FORMAT_OK);
                 } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                        I_CmsReport.FORMAT_NOTE);
                 } else if (status == HttpServletResponse.SC_SEE_OTHER) {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        new Integer(status)), I_CmsReport.FORMAT_OK);
+                    report.println(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            new Integer(status)),
+                        I_CmsReport.FORMAT_OK);
                 }
             } catch (IOException e) {
                 report.println(e);
