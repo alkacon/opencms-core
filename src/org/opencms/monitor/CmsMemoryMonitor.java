@@ -1549,13 +1549,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getCachedPublishJob(String key) {
 
-        for (Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
-            CmsPublishJobInfoBean publishJob = i.next();
-            if (publishJob.getPublishHistoryId().toString().equals(key)) {
-                return publishJob;
+        synchronized (m_publishQueue) {
+            for (Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
+                CmsPublishJobInfoBean publishJob = i.next();
+                if (publishJob.getPublishHistoryId().toString().equals(key)) {
+                    return publishJob;
+                }
             }
         }
-
         return null;
     }
 
@@ -1715,10 +1716,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getFirstCachedPublishJob() {
 
-        if (!m_publishQueue.isEmpty()) {
-            return (CmsPublishJobInfoBean)m_publishQueue.get();
-        } else {
-            return null;
+        synchronized (m_publishQueue) {
+            if (!m_publishQueue.isEmpty()) {
+                return (CmsPublishJobInfoBean)m_publishQueue.get();
+            } else {
+                return null;
+            }
         }
     }
 
@@ -2551,7 +2554,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 + form.sprintf(Long.toString(size))
                 + "\n";
         }
-        content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
+        content += "\nTotal size of cache memory monitored: " + totalSize + " (" + (totalSize / 1048576) + ")\n\n";
 
         String from = m_configuration.getEmailSender();
         List<InternetAddress> receivers = new ArrayList<InternetAddress>();
