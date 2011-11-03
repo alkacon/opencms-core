@@ -129,7 +129,7 @@ import com.google.common.collect.Ordering;
 public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
     /** Helper class for representing information about a  lock. */
-    private class LockInfo {
+    protected class LockInfo {
 
         /** The lock state. */
         private CmsLock m_lock;

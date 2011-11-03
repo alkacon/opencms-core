@@ -38,11 +38,11 @@ import java.io.Serializable;
  */
 public class CmsDetailPageInfo implements Serializable {
 
-    /** ID for serialization. */
-    private static final long serialVersionUID = 7714334294682534900L;
-
     /** The prefix for dynamic function detail page types. */
     public static final String FUNCTION_PREFIX = "function@";
+
+    /** ID for serialization. */
+    private static final long serialVersionUID = 7714334294682534900L;
 
     /** The id of the detail page. */
     private CmsUUID m_id;
@@ -97,6 +97,11 @@ public class CmsDetailPageInfo implements Serializable {
         return m_type != null ? removeFunctionPrefix(m_type) : "";
     }
 
+    /**
+     * Returns the resource type name for the icon to display.<p>
+     * 
+     * @return the icon resource type
+     */
     public String getIconType() {
 
         if (m_type.startsWith(FUNCTION_PREFIX)) {
