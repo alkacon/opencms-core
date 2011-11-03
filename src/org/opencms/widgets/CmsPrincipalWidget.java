@@ -77,6 +77,7 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         StringBuffer result = new StringBuffer(8);
@@ -96,6 +97,7 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
@@ -155,7 +157,7 @@ public class CmsPrincipalWidget extends A_CmsWidget {
         buttonJs.append("javascript:openPrincipalWin('");
         buttonJs.append(OpenCms.getSystemInfo().getOpenCmsContext());
         buttonJs.append("/system/workplace/commons/principal_selection.jsp");
-        buttonJs.append("','"+form+"',  '");
+        buttonJs.append("','" + form + "',  '");
         buttonJs.append(id);
         buttonJs.append("', document, '");
         if (m_flags != null) {
@@ -189,6 +191,7 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         m_flags = null;

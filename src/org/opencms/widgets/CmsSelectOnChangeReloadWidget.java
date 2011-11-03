@@ -70,7 +70,7 @@ public class CmsSelectOnChangeReloadWidget extends CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsSelectOnChangeReloadWidget(List configuration) {
+    public CmsSelectOnChangeReloadWidget(List<CmsSelectWidgetOption> configuration) {
 
         super(configuration);
     }
@@ -88,6 +88,7 @@ public class CmsSelectOnChangeReloadWidget extends CmsSelectWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
@@ -110,11 +111,11 @@ public class CmsSelectOnChangeReloadWidget extends CmsSelectWidget {
         result.append(">");
 
         // get select box options from default value String
-        List options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
-        Iterator i = options.iterator();
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
             // create the option
             result.append("<option value=\"");
             result.append(option.getValue());

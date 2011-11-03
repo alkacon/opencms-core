@@ -100,13 +100,14 @@ public class CmsCheckboxWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
 
             // first get the current boolean value for the element
@@ -123,7 +124,7 @@ public class CmsCheckboxWidget extends A_CmsWidget {
 
         } else {
             String value;
-            values = (String[])formParameters.get(param.getId() + HIDDEN_SUFFIX);
+            values = formParameters.get(param.getId() + HIDDEN_SUFFIX);
             if ((values != null) && (values.length > 0)) {
                 // found hidden value, so checkbox was not checked
                 value = Boolean.FALSE.toString();

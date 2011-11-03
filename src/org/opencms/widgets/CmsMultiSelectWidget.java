@@ -71,7 +71,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsMultiSelectWidget(List configuration) {
+    public CmsMultiSelectWidget(List<CmsSelectWidgetOption> configuration) {
 
         this(configuration, false);
     }
@@ -86,7 +86,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsMultiSelectWidget(List configuration, boolean asCheckboxes) {
+    public CmsMultiSelectWidget(List<CmsSelectWidgetOption> configuration, boolean asCheckboxes) {
 
         super(configuration);
         m_asCheckBoxes = asCheckboxes;
@@ -105,13 +105,14 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             StringBuffer value = new StringBuffer(128);
             for (int i = 0; i < values.length; i++) {
@@ -136,7 +137,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        List options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         result.append("<td class=\"xmlTd\">");
         if (!m_asCheckBoxes) {
             result.append("<select multiple size='");
@@ -153,10 +154,10 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         }
 
         // get select box options from default value String
-        List selected = getSelectedValues(cms, param);
-        Iterator i = options.iterator();
+        List<String> selected = getSelectedValues(cms, param);
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
             // create the option
             if (!m_asCheckBoxes) {
                 result.append("<option value=\"");

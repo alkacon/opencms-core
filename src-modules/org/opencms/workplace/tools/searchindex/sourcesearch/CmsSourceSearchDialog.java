@@ -109,7 +109,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
     public void actionCommit() throws IOException, ServletException {
 
         setDialogObject(m_dialogObject);
-        List<String> errors = new ArrayList<String>();
+        List<Throwable> errors = new ArrayList<Throwable>();
         // create absolute RFS path and store it in dialog object
 
         Map<String, String> params = new HashMap<String, String>();

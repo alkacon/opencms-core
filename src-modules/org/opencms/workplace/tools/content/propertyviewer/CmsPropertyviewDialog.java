@@ -206,7 +206,7 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
     public void actionCommit() throws IOException, ServletException {
 
         initDialogObject();
-        List<String> errors = new ArrayList<String>();
+        List<Throwable> errors = new ArrayList<Throwable>();
         Map<String, String> params = new HashMap<String, String>();
         List<String> paths = m_settings.getPaths();
         params.put(CmsPropertyviewList.PARAM_RESOURCES, CmsStringUtil.collectionAsString(paths, ","));

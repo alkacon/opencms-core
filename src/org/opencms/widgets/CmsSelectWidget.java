@@ -68,7 +68,7 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsSelectWidget(List configuration) {
+    public CmsSelectWidget(List<CmsSelectWidgetOption> configuration) {
 
         super(configuration);
     }
@@ -102,11 +102,11 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
         result.append("\">");
 
         // get select box options from default value String
-        List options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
-        Iterator i = options.iterator();
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
             // create the option
             result.append("<option value=\"");
             result.append(option.getValue());
@@ -128,6 +128,7 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String result = super.getWidgetStringValue(cms, widgetDialog, param);
@@ -135,9 +136,9 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
         if (configuration == null) {
             configuration = param.getDefault(cms);
         }
-        List options = CmsSelectWidgetOption.parseOptions(configuration);
+        List<CmsSelectWidgetOption> options = CmsSelectWidgetOption.parseOptions(configuration);
         for (int m = 0; m < options.size(); m++) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)options.get(m);
+            CmsSelectWidgetOption option = options.get(m);
             if (result.equals(option.getValue())) {
                 result = option.getOption();
                 break;

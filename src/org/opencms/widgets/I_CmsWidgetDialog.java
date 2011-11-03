@@ -127,7 +127,7 @@ public interface I_CmsWidgetDialog {
      * 
      * @return a set of help messages ids that are already included on the widget dialog
      */
-    Set getHelpMessageIds();
+    Set<String> getHelpMessageIds();
 
     /**
      * Returns the current users locale setting.<p>

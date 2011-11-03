@@ -102,6 +102,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         StringBuffer result = new StringBuffer(8);
@@ -139,6 +140,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
@@ -149,6 +151,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
     }
 
     /**
+    >>>>>>> THEIRS
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
@@ -163,7 +166,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
         }
 
         StringBuffer result = new StringBuffer(16);
-        List levels = new ArrayList();
+        List<List<CmsSelectWidgetOption>> levels = new ArrayList<List<CmsSelectWidgetOption>>();
         try {
             // write arrays of categories
             result.append("<script language='javascript'>\n");
@@ -174,7 +177,11 @@ public class CmsCategoryWidget extends A_CmsWidget {
                 // ignore, this can happen if a new resource is edited using direct edit
             }
             String startingCat = getStartingCategory(cms, referencePath);
-            List cats = CmsCategoryService.getInstance().readCategories(cms, startingCat, true, referencePath);
+            List<CmsCategory> cats = CmsCategoryService.getInstance().readCategories(
+                cms,
+                startingCat,
+                true,
+                referencePath);
             int baseLevel;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(startingCat)) {
                 baseLevel = 0;
@@ -185,16 +192,16 @@ public class CmsCategoryWidget extends A_CmsWidget {
                 }
             }
             int level;
-            Set done = new HashSet();
-            List options = new ArrayList();
+            Set<String> done = new HashSet<String>();
+            List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
             String jsId = CmsStringUtil.substitute(param.getId(), ".", "");
             for (level = baseLevel + 1; !cats.isEmpty(); level++) {
                 if (level != (baseLevel + 1)) {
                     result.append("var cat" + (level - baseLevel) + jsId + " = new Array(\n");
                 }
-                Iterator itSubs = cats.iterator();
+                Iterator<CmsCategory> itSubs = cats.iterator();
                 while (itSubs.hasNext()) {
-                    CmsCategory cat = (CmsCategory)itSubs.next();
+                    CmsCategory cat = itSubs.next();
                     String title = cat.getTitle();
                     String titleJs = StringEscapeUtils.escapeJavaScript(title);
                     String titleHtml = StringEscapeUtils.escapeHtml(title);
@@ -219,7 +226,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
                             || ((selected != null) && selected.getPath().startsWith(
                                 CmsResource.getParentFolder(cat.getPath())))) {
                             if (levels.size() < (level - baseLevel)) {
-                                options = new ArrayList();
+                                options = new ArrayList<CmsSelectWidgetOption>();
                                 levels.add(options);
                                 options.add(new CmsSelectWidgetOption("", true, Messages.get().getBundle(
                                     widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
@@ -249,26 +256,22 @@ public class CmsCategoryWidget extends A_CmsWidget {
             for (int i = 1; i < (level - baseLevel); i++) {
                 result.append("<span id='" + param.getId() + "cat" + i + "IdDisplay'");
                 if (levels.size() >= i) {
-                    options = (List)levels.get(i - 1);
+                    options = levels.get(i - 1);
                 } else {
                     result.append(" style='display:none'");
-                    options = new ArrayList();
+                    options = new ArrayList<CmsSelectWidgetOption>();
                     options.add(new CmsSelectWidgetOption(
                         "",
                         true,
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(
-                    param.getId(),
-                    i,
-                    options,
-                    (selected != null ? CmsCategoryService.getInstance().readCategory(
-                        cms,
-                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                        referencePath).getId().toString() : ""),
-                    param.hasError(),
-                    (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(param.getId(), i, options, (selected != null
+                ? CmsCategoryService.getInstance().readCategory(
+                    cms,
+                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                    referencePath).getId().toString()
+                : ""), param.hasError(), (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -299,6 +302,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         // we have to validate later, since we do not have any cms object here
@@ -341,9 +345,10 @@ public class CmsCategoryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
@@ -386,7 +391,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
     protected String buildSelectBox(
         String baseId,
         int level,
-        List options,
+        List<CmsSelectWidgetOption> options,
         String selected,
         boolean hasError,
         boolean last) {
@@ -411,9 +416,9 @@ public class CmsCategoryWidget extends A_CmsWidget {
         }
         result.append("\">");
 
-        Iterator i = options.iterator();
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
             // create the option
             result.append("<option value=\"");
             result.append(option.getValue());
@@ -441,9 +446,9 @@ public class CmsCategoryWidget extends A_CmsWidget {
 
         Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
         if (locale == null) {
-            List locales = OpenCms.getLocaleManager().getAvailableLocales();
+            List<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales();
             if (locales.size() > 0) {
-                locale = (Locale)locales.get(0);
+                locale = locales.get(0);
             } else {
                 locale = Locale.ENGLISH;
             }
@@ -471,9 +476,9 @@ public class CmsCategoryWidget extends A_CmsWidget {
             resourceName = result.toString();
         }
         try {
-            List listsib = cms.readSiblings(resourceName, CmsResourceFilter.ALL);
+            List<CmsResource> listsib = cms.readSiblings(resourceName, CmsResourceFilter.ALL);
             for (int i = 0; i < listsib.size(); i++) {
-                CmsResource resource = (CmsResource)listsib.get(i);
+                CmsResource resource = listsib.get(i);
                 // get the default locale of the resource
                 Locale locale = getDefaultLocale(cms, cms.getSitePath(resource));
                 if (locale.equals(value.getLocale())) {

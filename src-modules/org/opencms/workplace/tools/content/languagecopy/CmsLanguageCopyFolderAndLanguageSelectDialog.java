@@ -239,7 +239,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     public void actionCommit() throws IOException, ServletException {
 
         initDialogObject();
-        List<String> errors = new ArrayList<String>();
+        List<Throwable> errors = new ArrayList<Throwable>();
         // create absolute RFS path and store it in dialog object
 
         Map<String, String> params = new HashMap<String, String>();

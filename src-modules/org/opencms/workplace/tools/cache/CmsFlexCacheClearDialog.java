@@ -149,7 +149,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                 Collections.<String, Object> singletonMap("action", new Integer(action))));
         } catch (Exception e) {
-            setCommitErrors(Collections.singletonList(e));
+            setCommitErrors(Collections.singletonList((Throwable)e));
         }
     }
 

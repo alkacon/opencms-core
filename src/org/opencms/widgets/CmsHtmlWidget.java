@@ -84,6 +84,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogIncludes(cms, widgetDialog);
@@ -92,6 +93,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogInitCall(cms, widgetDialog);
@@ -100,6 +102,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogInitMethod(cms, widgetDialog);
@@ -124,13 +127,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             String val = CmsEncoder.decode(values[0], CmsEncoder.ENCODING_UTF_8);
             param.setStringValue(cms, val);
@@ -160,13 +164,13 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
             try {
                 if (foundWidget) {
                     // get widget instance and set the widget configuration
-                    Class widgetClass = Class.forName(widgetClassName);
+                    Class<?> widgetClass = Class.forName(widgetClassName);
                     A_CmsHtmlWidget editorWidget = (A_CmsHtmlWidget)widgetClass.newInstance();
                     editorWidget.setHtmlWidgetOption(getHtmlWidgetOption());
                     m_editorWidget = editorWidget;
                 } else {
                     // set the text area to display 15 rows for editing
-                    Class widgetClass = Class.forName(widgetClassName);
+                    Class<?> widgetClass = Class.forName(widgetClassName);
                     I_CmsWidget editorWidget = (I_CmsWidget)widgetClass.newInstance();
                     editorWidget.setConfiguration("15");
                     m_editorWidget = editorWidget;

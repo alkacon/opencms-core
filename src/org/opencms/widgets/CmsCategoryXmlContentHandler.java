@@ -36,6 +36,7 @@ import org.opencms.xml.content.CmsDefaultXmlContentHandler;
  * 
  * @deprecated no longer needed since logic was moved to the default handler
  */
+@Deprecated
 public class CmsCategoryXmlContentHandler extends CmsDefaultXmlContentHandler {
 
     /**

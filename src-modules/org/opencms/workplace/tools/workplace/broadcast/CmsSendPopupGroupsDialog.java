@@ -111,7 +111,7 @@ public class CmsSendPopupGroupsDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         if (getUsers().isEmpty()) {
-            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return;
         }

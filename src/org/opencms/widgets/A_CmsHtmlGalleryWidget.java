@@ -60,6 +60,7 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
@@ -143,6 +144,7 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
      */
+    @Override
     public boolean showPreview(String value) {
 
         // not required for HTML display galleries

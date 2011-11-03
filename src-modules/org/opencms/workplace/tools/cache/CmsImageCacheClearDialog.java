@@ -92,7 +92,7 @@ public class CmsImageCacheClearDialog extends CmsWidgetDialog {
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 Collections.<String, Object> singletonMap(CmsImageLoader.PARAM_CLEAR_IMAGES_CACHE, "" + age)));
         } catch (Exception e) {
-            setCommitErrors(Collections.singletonList(e));
+            setCommitErrors(Collections.singletonList((Throwable)e));
         }
     }
 
@@ -166,7 +166,7 @@ public class CmsImageCacheClearDialog extends CmsWidgetDialog {
         setKeyPrefix(KEY_PREFIX);
 
         // default value is 30 minutes ago
-        setTime("" + (System.currentTimeMillis() - 30 * 60 * 1000L));
+        setTime("" + (System.currentTimeMillis() - (30 * 60 * 1000L)));
         // widgets to display
         addWidget(new CmsWidgetDialogParameter(this, "time", PAGES[0], new CmsCalendarWidget()));
     }

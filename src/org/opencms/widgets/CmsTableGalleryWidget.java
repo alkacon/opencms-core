@@ -56,6 +56,7 @@ public class CmsTableGalleryWidget extends A_CmsHtmlGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameLower()
      */
+    @Override
     public String getNameLower() {
 
         return "table";
@@ -64,6 +65,7 @@ public class CmsTableGalleryWidget extends A_CmsHtmlGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameUpper()
      */
+    @Override
     public String getNameUpper() {
 
         return "Table";

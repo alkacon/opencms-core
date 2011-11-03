@@ -78,6 +78,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         if (super.getConfiguration() != null) {
@@ -99,6 +100,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         super.setConfiguration(configuration);
@@ -108,13 +110,14 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             String val = CmsEncoder.decode(values[0], CmsEncoder.ENCODING_UTF_8);
             param.setStringValue(cms, val);
