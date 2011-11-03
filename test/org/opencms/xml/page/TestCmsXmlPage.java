@@ -45,9 +45,7 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests for the XML page that doesn't require a running OpenCms system.<p>
@@ -78,39 +76,7 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
     public static Test suite() {
 
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlPage.class.getName());
-
-        suite.addTest(new TestCmsXmlPage("testUpdateXmlPageLink"));
-        suite.addTest(new TestCmsXmlPage("testValidateXmlPageWithSchema"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageAsXmlContentDefinition"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageCreateMinimal"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageElementNames"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageLocaleAccess"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageLocaleCopyMoveRemove"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageReadFinalVersion"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageReadOldVersion"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageRenameElement"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageWriteFinalVersion"));
-        suite.addTest(new TestCmsXmlPage("testXmlPageWriteOldVersion"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return generateSetupTestWrapper(TestCmsXmlPage.class, "simpletest", "/");
     }
 
     /**
