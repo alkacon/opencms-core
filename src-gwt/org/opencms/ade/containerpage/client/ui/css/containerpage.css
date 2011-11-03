@@ -72,6 +72,12 @@ div.optionBar{
 	display: block;
 }
 
+/** Force scroll-bar as long as direct edit buttons are visible to avoid any flickering when elements highlighted. */
+body.toolbarSelection{
+	overflow-y: scroll;
+}
+
+
 div.expired{
 	display: none;
 }
