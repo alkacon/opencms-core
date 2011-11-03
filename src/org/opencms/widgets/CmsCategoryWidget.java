@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -148,39 +149,6 @@ public class CmsCategoryWidget extends A_CmsWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public void setEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        super.setEditorValue(cms, formParameters, widgetDialog, param);
-        String id = param.getStringValue(cms);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
-            return;
-        }
-        try {
-            CmsCategory cat = CmsCategoryService.getInstance().getCategory(cms, cms.readResource(new CmsUUID(id)));
-            String referencePath = null;
-            try {
-                referencePath = cms.getSitePath(getResource(cms, param));
-            } catch (Exception e) {
-                // ignore, this can happen if a new resource is edited using direct edit
-            }
-            if (cat.getPath().startsWith(getStartingCategory(cms, referencePath))) {
-                param.setStringValue(cms, cat.getRootPath());
-            } else {
-                param.setStringValue(cms, "");
-            }
-        } catch (CmsException e) {
-            // invalid value
-            param.setStringValue(cms, "");
-        }
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
@@ -227,7 +195,10 @@ public class CmsCategoryWidget extends A_CmsWidget {
                 Iterator itSubs = cats.iterator();
                 while (itSubs.hasNext()) {
                     CmsCategory cat = (CmsCategory)itSubs.next();
-                    if (CmsResource.getPathLevel(cat.getPath()) + 1 == level) {
+                    String title = cat.getTitle();
+                    String titleJs = StringEscapeUtils.escapeJavaScript(title);
+                    String titleHtml = StringEscapeUtils.escapeHtml(title);
+                    if ((CmsResource.getPathLevel(cat.getPath()) + 1) == level) {
                         itSubs.remove();
                         if (done.contains(cat.getPath())) {
                             continue;
@@ -241,7 +212,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
                                     CmsResource.getParentFolder(cat.getPath()),
                                     referencePath).getId()
                                 + "', '"
-                                + cat.getTitle()
+                                + titleJs
                                 + "'),\n");
                         }
                         if ((level == (baseLevel + 1))
@@ -253,7 +224,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
                                 options.add(new CmsSelectWidgetOption("", true, Messages.get().getBundle(
                                     widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                             }
-                            options.add(new CmsSelectWidgetOption(cat.getId().toString(), false, cat.getTitle()));
+                            options.add(new CmsSelectWidgetOption(cat.getId().toString(), false, titleHtml));
                         }
                         done.add(cat.getPath());
                     }
@@ -275,7 +246,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
                 + (selected != null ? selected.getId().toString() : "")
                 + "'>\n");
 
-            for (int i = 1; i < level - baseLevel; i++) {
+            for (int i = 1; i < (level - baseLevel); i++) {
                 result.append("<span id='" + param.getId() + "cat" + i + "IdDisplay'");
                 if (levels.size() >= i) {
                     options = (List)levels.get(i - 1);
@@ -288,12 +259,16 @@ public class CmsCategoryWidget extends A_CmsWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(param.getId(), i, options, (selected != null
-                ? CmsCategoryService.getInstance().readCategory(
-                    cms,
-                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                    referencePath).getId().toString()
-                : ""), param.hasError(), (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(
+                    param.getId(),
+                    i,
+                    options,
+                    (selected != null ? CmsCategoryService.getInstance().readCategory(
+                        cms,
+                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                        referencePath).getId().toString() : ""),
+                    param.hasError(),
+                    (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -361,6 +336,39 @@ public class CmsCategoryWidget extends A_CmsWidget {
             }
         }
         super.setConfiguration(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public void setEditorValue(
+        CmsObject cms,
+        Map formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        super.setEditorValue(cms, formParameters, widgetDialog, param);
+        String id = param.getStringValue(cms);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+            return;
+        }
+        try {
+            CmsCategory cat = CmsCategoryService.getInstance().getCategory(cms, cms.readResource(new CmsUUID(id)));
+            String referencePath = null;
+            try {
+                referencePath = cms.getSitePath(getResource(cms, param));
+            } catch (Exception e) {
+                // ignore, this can happen if a new resource is edited using direct edit
+            }
+            if (cat.getPath().startsWith(getStartingCategory(cms, referencePath))) {
+                param.setStringValue(cms, cat.getRootPath());
+            } else {
+                param.setStringValue(cms, "");
+            }
+        } catch (CmsException e) {
+            // invalid value
+            param.setStringValue(cms, "");
+        }
     }
 
     /**
