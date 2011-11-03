@@ -37,7 +37,7 @@ package org.opencms.module;
  * 
  * @since 6.0.0 
  */
-public class CmsModuleDependency implements Comparable {
+public class CmsModuleDependency implements Comparable<Object> {
 
     /** The hash code of the module dependency. */
     private int m_hashCode;
@@ -118,6 +118,7 @@ public class CmsModuleDependency implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -153,6 +154,7 @@ public class CmsModuleDependency implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_hashCode;
@@ -179,6 +181,7 @@ public class CmsModuleDependency implements Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return "[" + getClass().getName() + ", name: " + m_name + ", version: " + m_version + "]";

@@ -123,13 +123,13 @@ public class CmsModuleXmlHandler {
     private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);
 
     /** The list of dependencies for a module. */
-    private List m_dependencies;
+    private List<CmsModuleDependency> m_dependencies;
 
     /** The explorer type settings. */
-    private List m_explorerTypeSettings;
+    private List<CmsExplorerTypeSettings> m_explorerTypeSettings;
 
     /** The list of export points for a module. */
-    private List m_exportPoints;
+    private List<CmsExportPoint> m_exportPoints;
 
     /** The generated module. */
     private CmsModule m_module;
@@ -138,25 +138,25 @@ public class CmsModuleXmlHandler {
     private boolean m_oldModule;
 
     /** The module parameters. */
-    private Map m_parameters;
+    private Map<String, String> m_parameters;
 
     /** The list of resources for a module. */
-    private List m_resources;
+    private List<String> m_resources;
 
     /** The list of additional resource types. */
-    private List m_resourceTypes;
+    private List<I_CmsResourceType> m_resourceTypes;
 
     /**
      * Public constructor, will be called by digester during import.<p> 
      */
     public CmsModuleXmlHandler() {
 
-        m_exportPoints = new ArrayList();
-        m_dependencies = new ArrayList();
-        m_resources = new ArrayList();
-        m_parameters = new HashMap();
-        m_resourceTypes = new ArrayList();
-        m_explorerTypeSettings = new ArrayList();
+        m_exportPoints = new ArrayList<CmsExportPoint>();
+        m_dependencies = new ArrayList<CmsModuleDependency>();
+        m_resources = new ArrayList<String>();
+        m_parameters = new HashMap<String, String>();
+        m_resourceTypes = new ArrayList<I_CmsResourceType>();
+        m_explorerTypeSettings = new ArrayList<CmsExplorerTypeSettings>();
     }
 
     /**
@@ -332,13 +332,11 @@ public class CmsModuleXmlHandler {
                 resource);
         }
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
-        SortedMap parameters = module.getParameters();
+        SortedMap<String, String> parameters = module.getParameters();
         if (parameters != null) {
-            List parameterList = new ArrayList(parameters.keySet());
-            Collections.sort(parameterList);
-            Iterator it = parameterList.iterator();
-            while (it.hasNext()) {
-                String name = (String)it.next();
+            List<String> names = new ArrayList<String>(parameters.keySet());
+            Collections.sort(names);
+            for (String name : names) {
                 String value = parameters.get(name).toString();
                 Element paramNode = parametersElement.addElement(I_CmsXmlConfiguration.N_PARAM);
                 paramNode.addAttribute(I_CmsXmlConfiguration.A_NAME, name);
@@ -347,13 +345,13 @@ public class CmsModuleXmlHandler {
         }
 
         // add resource types       
-        List resourceTypes = module.getResourceTypes();
+        List<I_CmsResourceType> resourceTypes = module.getResourceTypes();
         if (resourceTypes.size() > 0) {
             Element resourcetypesElement = moduleElement.addElement(CmsVfsConfiguration.N_RESOURCETYPES);
             CmsVfsConfiguration.generateResourceTypeXml(resourcetypesElement, resourceTypes, true);
         }
 
-        List explorerTypes = module.getExplorerTypes();
+        List<CmsExplorerTypeSettings> explorerTypes = module.getExplorerTypes();
         if (explorerTypes.size() > 0) {
             Element explorerTypesElement = moduleElement.addElement(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
             CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes, true);

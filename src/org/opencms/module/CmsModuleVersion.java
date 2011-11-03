@@ -52,7 +52,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @since 6.0.0 
  */
-public class CmsModuleVersion implements Comparable {
+public class CmsModuleVersion implements Comparable<Object> {
 
     /** Default version for new modules. */
     public static final String DEFAULT_VERSION = "0.1";
@@ -103,6 +103,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -131,6 +132,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_version == null) {
@@ -173,7 +175,7 @@ public class CmsModuleVersion implements Comparable {
                         Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
                         new Integer(number)));
                 }
-                m_number = (long)Math.pow(1000.0, i) * number + m_number;
+                m_number = ((long)Math.pow(1000.0, i) * number) + m_number;
             } catch (NumberFormatException e) {
                 // no valid version provided
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_NUMBER_0));
@@ -186,6 +188,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return getVersion();
