@@ -29,6 +29,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -91,7 +92,10 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_LINK_RELATION_LIST_NAME_0));
         m_isSource = isSource;
-
+        I_CmsResourceCollector collector = getCollector();
+        if ((collector != null) && (collector instanceof CmsListResourceLinkRelationCollector)) {
+            ((CmsListResourceLinkRelationCollector)collector).setSource(isSource);
+        }
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
@@ -233,6 +237,23 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
+     */
+    protected boolean isColumnVisible(int colFlag) {
+
+        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
+        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_TYPE);
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_SIZE);
+        isVisible = isVisible
+            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
+        return isVisible;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
@@ -278,23 +299,6 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             LIST_COLUMN_RELATION_TYPE);
         relationTypeCol.setName(Messages.get().container(Messages.GUI_RELATION_LIST_TYPE_NAME_0));
         metadata.addColumn(relationTypeCol, 4);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
-     */
-    protected boolean isColumnVisible(int colFlag) {
-
-        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
-        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
-        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_TYPE);
-        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_SIZE);
-        isVisible = isVisible
-            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
-        return isVisible;
     }
 
     /**
