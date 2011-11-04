@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -314,7 +315,7 @@ public final class CmsContentEditorDialog {
             formValues.put("editortitle", m_editableData.getNewTitle());
         }
         FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
-            CmsCoreProvider.get().getContentEditorUrl()), "post", EDITOR_IFRAME_NAME, formValues);
+            CmsCoreProvider.get().getContentEditorUrl()), Method.post, EDITOR_IFRAME_NAME, formValues);
         return formElement;
     }
 
