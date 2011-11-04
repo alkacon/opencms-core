@@ -1040,6 +1040,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                             oriCopyResource.getTarget(),
                             oriCopyResource.getTypeString()));
                     }
+                    copiedResources.put(source, resolver.resolveMacros(target));
                 } else {
                     // just add the single specified source
                     copyResources.add(oriCopyResource);
