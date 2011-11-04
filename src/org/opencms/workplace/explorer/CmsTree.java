@@ -206,7 +206,10 @@ public class CmsTree extends CmsWorkplace {
 
         retValue.append("}\n\n");
         retValue.append("initTreeResources();\n");
-
+        String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
+        if (sharedFolder != null) {
+            retValue.append("sharedFolderName = '" + sharedFolder + "';");
+        }
         return retValue.toString();
     }
 
