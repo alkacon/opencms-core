@@ -482,7 +482,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         List<String>[] params = new List[] {m_types, m_galleries, m_categories, new ArrayList<String>(m_folders)};
         for (List<String> paramList : params) {
-            if ((paramList == null) || paramList.isEmpty()) {
+            if ((paramList != null) && !paramList.isEmpty()) {
                 return false;
             }
         }
