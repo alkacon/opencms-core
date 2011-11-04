@@ -100,21 +100,14 @@ public class CmsSitemapData implements IsSerializable {
     /** The resource type information. */
     private List<CmsNewResourceInfo> m_resourceTypeInfos;
 
+    /** The return page code. */
+    private String m_returnCode;
+
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
     /** The sitemap info. */
     private CmsSitemapInfo m_sitemapInfo;
-
-    /**
-     * Returns the sitemap info.<p>
-     *
-     * @return the sitemap info
-     */
-    public CmsSitemapInfo getSitemapInfo() {
-
-        return m_sitemapInfo;
-    }
 
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
@@ -149,6 +142,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param maxDepth the maximum sitemap depth
      * @param detailPageTable the detail page table 
      * @param resourceTypeInfos the resource type information for the detail pages  
+     * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
      */
     public CmsSitemapData(
@@ -171,6 +165,7 @@ public class CmsSitemapData implements IsSerializable {
         int maxDepth,
         CmsDetailPageTable detailPageTable,
         List<CmsNewResourceInfo> resourceTypeInfos,
+        String returnCode,
         boolean canEditDetailPages) {
 
         m_templates = templates;
@@ -191,7 +186,7 @@ public class CmsSitemapData implements IsSerializable {
         m_resourceTypeInfos = resourceTypeInfos;
         m_canEditDetailPages = canEditDetailPages;
         m_allPropertyNames = allPropNames;
-
+        m_returnCode = returnCode;
         m_newElementInfos = newElementInfos;
         m_newRedirectElementInfo = newRedirectElementInfo;
     }
@@ -357,6 +352,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns the return page code.<p>
+     *
+     * @return the return page code
+     */
+    public String getReturnCode() {
+
+        return m_returnCode;
+    }
+
+    /**
      * Returns the sitemap root.<p>
      *
      * @return the sitemap root
@@ -364,6 +369,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsClientSitemapEntry getRoot() {
 
         return m_root;
+    }
+
+    /**
+     * Returns the sitemap info.<p>
+     *
+     * @return the sitemap info
+     */
+    public CmsSitemapInfo getSitemapInfo() {
+
+        return m_sitemapInfo;
     }
 
     /**
@@ -394,5 +409,15 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isSecure() {
 
         return m_isSecure;
+    }
+
+    /**
+     * Sets the return page code.<p>
+     *
+     * @param returnCode the return page code to set
+     */
+    public void setReturnCode(String returnCode) {
+
+        m_returnCode = returnCode;
     }
 }

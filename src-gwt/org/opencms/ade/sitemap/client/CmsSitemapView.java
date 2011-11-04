@@ -165,7 +165,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             public void onClick(ClickEvent event) {
 
                 if (entry.isSubSitemapType()) {
-                    getController().openSubSiteMap(entry.getSitePath());
+                    getController().openSiteMap(entry.getSitePath());
                 } else {
                     getController().leaveEditor(entry.getSitePath());
                 }

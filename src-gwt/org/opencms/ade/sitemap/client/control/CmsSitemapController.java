@@ -60,6 +60,10 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Method;
+import org.opencms.gwt.client.util.CmsDomUtil.Target;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
@@ -78,11 +82,13 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap editor controller.<p>
@@ -895,12 +901,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void gotoParentSitemap() {
 
-        String sitemapLocation = CmsCoreProvider.get().getUri() + "?path=" + getData().getParentSitemap();
-        String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
-        if ((returnCode != null) && (returnCode.length() != 0)) {
-            sitemapLocation += "&returncode=" + returnCode;
-        }
-        leaveEditor(sitemapLocation);
+        openSiteMap(getData().getParentSitemap());
     }
 
     /**
@@ -1030,21 +1031,22 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Opens the sub-sitemap specified.<p>
+     * Opens the site-map specified.<p>
      * 
-     * @param sitePath the site path to the sub-sitemap folder
+     * @param sitePath the site path to the site-map folder
      */
-    public void openSubSiteMap(String sitePath) {
+    public void openSiteMap(String sitePath) {
 
-        if (!sitePath.endsWith("/")) {
-            sitePath += "/";
-        }
-        String uri = CmsCoreProvider.get().getUri() + "?path=" + sitePath;
-        String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(returnCode)) {
-            uri += "&returncode=" + returnCode;
-        }
-        leaveEditor(uri);
+        Map<String, String> parameter = new HashMap<String, String>();
+        parameter.put(CmsCoreData.PARAM_PATH, sitePath);
+        parameter.put(CmsCoreData.PARAM_RETURNCODE, getData().getReturnCode());
+        FormElement form = CmsDomUtil.generateHiddenForm(
+            CmsCoreProvider.get().getUri(),
+            Method.post,
+            Target.SELF,
+            parameter);
+        RootPanel.getBodyElement().appendChild(form);
+        form.submit();
     }
 
     /**

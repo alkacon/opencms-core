@@ -32,6 +32,8 @@ import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Method;
+import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.HashMap;
@@ -86,10 +88,8 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
         Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth()
-                - ((buttonsPosition.getLeft() + buttonsPosition.getWidth()) - parent.getAbsoluteLeft()),
-            Unit.PX);
+        style.setRight(parent.getOffsetWidth()
+            - ((buttonsPosition.getLeft() + buttonsPosition.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
         int top = buttonsPosition.getTop() - parent.getAbsoluteTop();
         if (top < 0) {
             top = 0;
@@ -167,11 +167,8 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
             formVaules.put("newlink", m_editableData.getNewLink());
             formVaules.put("editortitle", m_editableData.getNewTitle());
         }
-        FormElement formElement = CmsDomUtil.generateHiddenForm(
-            CmsCoreProvider.get().link(CmsCoreProvider.get().getContentEditorUrl()),
-            "post",
-            "_top",
-            formVaules);
+        FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
+            CmsCoreProvider.get().getContentEditorUrl()), Method.post, Target.TOP, formVaules);
         getMarkerTag().appendChild(formElement);
         formElement.submit();
     }

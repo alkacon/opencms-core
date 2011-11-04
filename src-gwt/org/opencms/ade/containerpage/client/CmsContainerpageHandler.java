@@ -59,8 +59,11 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Method;
+import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
@@ -70,16 +73,19 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -204,7 +210,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param elementWidget the container element widget for which the properties should be edited 
      */
-    public void editElementSettings(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget) {
+    public void editElementSettings(final CmsContainerPageElementPanel elementWidget) {
 
         final String id = elementWidget.getId();
 
@@ -314,22 +320,29 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Leaves the current page and opens the sitemap.<p>
+     * Leaves the current page and opens the site-map.<p>
      */
     public void gotoSitemap() {
 
-        String sitemapUri = CmsCoreProvider.get().link(m_controller.getData().getSitemapUri());
+        final String sitemapUri = CmsCoreProvider.get().link(m_controller.getData().getSitemapUri());
         if (sitemapUri.equals("")) {
             return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
         }
-        String target = sitemapUri
-            + "?"
-            + CmsCoreProvider.PARAM_RETURNCODE
-            + "="
-            + m_controller.getReturnCode()
-            + "&path="
-            + CmsContainerpageController.getCurrentUri();
-        leavePage(target);
+        Command leaveCommand = new Command() {
+
+            public void execute() {
+
+                Map<String, String> parameter = new HashMap<String, String>();
+                parameter.put(CmsCoreData.PARAM_PATH, CmsContainerpageController.getCurrentUri());
+                parameter.put(CmsCoreData.PARAM_RETURNCODE, m_controller.getReturnCode());
+                FormElement form = CmsDomUtil.generateHiddenForm(sitemapUri, Method.post, Target.SELF, parameter);
+                RootPanel.getBodyElement().appendChild(form);
+                form.submit();
+
+            }
+
+        };
+        leavePage(leaveCommand);
     }
 
     /**
@@ -367,6 +380,49 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Call to leave the page. Will open save/leave/cancel dialog if page contains any changes.<p>
      * 
+     * @param leavingCommand the page leaving command
+     */
+    public void leavePage(final Command leavingCommand) {
+
+        if (!m_controller.hasPageChanged() || m_controller.isEditingDisabled()) {
+            leavingCommand.execute();
+            return;
+        }
+        CmsAcceptDeclineCancelDialog leavingDialog = getLeaveDialog();
+        leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onAccept()
+             */
+            public void onAccept() {
+
+                m_controller.saveAndLeave(leavingCommand);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                deactivateCurrentButton();
+                activateSelection();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onDecline()
+             */
+            public void onDecline() {
+
+                m_controller.setPageChanged(false, true);
+                leavingCommand.execute();
+            }
+        });
+        leavingDialog.center();
+    }
+
+    /**
+     * Call to leave the page. Will open save/leave/cancel dialog if page contains any changes.<p>
+     * 
      * @param target the target
      */
     public void leavePage(final String target) {
@@ -375,16 +431,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_controller.leaveUnsaved(target);
             return;
         }
-        StringBuffer message = new StringBuffer();
-        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
-        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
-
-        CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
-            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), message.toString());
-        leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
-        leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
-        leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
-
+        CmsAcceptDeclineCancelDialog leavingDialog = getLeaveDialog();
         leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
 
             /**
@@ -531,7 +578,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * @param element the element widget
      * @param modelResources the available resource models
      */
-    public void openModelResourceSelect(final CmsContainerPageElementPanel element, List<CmsModelResourceInfo> modelResources) {
+    public void openModelResourceSelect(
+        final CmsContainerPageElementPanel element,
+        List<CmsModelResourceInfo> modelResources) {
 
         I_CmsModelSelectHandler handler = new I_CmsModelSelectHandler() {
 
@@ -843,6 +892,25 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             }
         });
+    }
+
+    /** 
+     * Returns the page leaving dialog.<p>
+     * 
+     * @return the page leaving dialog
+     */
+    private CmsAcceptDeclineCancelDialog getLeaveDialog() {
+
+        StringBuffer message = new StringBuffer();
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
+        message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
+
+        CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
+            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), message.toString());
+        leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
+        leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
+        return leavingDialog;
     }
 
     /**

@@ -68,6 +68,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientLock;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.i18n.CmsLocaleManager;
@@ -356,7 +357,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
 
         try {
-            String openPath = getRequest().getParameter("path");
+            String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(openPath)) {
                 // if no path is supplied, start from root
                 openPath = "/";
@@ -414,7 +415,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 noEdit = Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_SITEMAP_NO_EDIT_ONLINE_0);
             }
             List<String> allPropNames = getPropertyNames(cms);
-
+            String returnCode = getRequest().getParameter(CmsCoreData.PARAM_RETURNCODE);
             cms.getRequestContext().getSiteRoot();
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
@@ -432,10 +433,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 getSitemapInfo(configData.getBasePath()),
                 parentSitemap,
                 getRootEntry(configData.getBasePath()),
-                getRequest().getParameter("path"),
+                getRequest().getParameter(CmsCoreData.PARAM_PATH),
                 30,
                 detailPages,
                 resourceTypeInfos,
+                returnCode,
                 canEditDetailPages);
         } catch (Throwable e) {
             error(e);

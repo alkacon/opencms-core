@@ -72,6 +72,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -1304,6 +1305,44 @@ public final class CmsContainerpageController {
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
+                }
+            };
+            action.execute();
+        }
+    }
+
+    /**
+     * Method to save and leave the page.<p>
+     * 
+     * @param leaveCommand the command to execute to leave the page
+     */
+    public void saveAndLeave(final Command leaveCommand) {
+
+        if (hasPageChanged()) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveContainerpage(
+                        CmsCoreProvider.get().getStructureId(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    setPageChanged(false, true);
+                    leaveCommand.execute();
                 }
             };
             action.execute();
