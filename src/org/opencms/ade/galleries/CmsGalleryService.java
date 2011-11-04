@@ -280,7 +280,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 data.setGalleries(buildGalleriesList(readGalleryInfosByTypeBeans(types)));
                 data.setStartTab(GalleryTabId.cms_tab_results);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
-                    data.setStartGallery(getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId()));
+                    String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());
+                    // check if the gallery is available in this site and still exists
+                    if (getCmsObject().existsResource(lastGallery)) {
+                        data.setStartGallery(lastGallery);
+                    }
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())
                     && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getCurrentElement())) {
