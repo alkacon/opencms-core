@@ -478,7 +478,8 @@ public final class CmsContainerpageController {
      * 
      * @param element the container element
      */
-    public void createAndEditNewElement(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
+    public void createAndEditNewElement(
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
 
         if (!element.isNew()) {
             return;
@@ -957,9 +958,6 @@ public final class CmsContainerpageController {
                     } else {
                         unlockContainerpage();
                     }
-                } else {
-                    // the page itself hasn't changed, but maybe the availability
-                    unlockContainerpage();
                 }
             }
         });
