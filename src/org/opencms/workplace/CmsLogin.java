@@ -102,6 +102,9 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The parameter name for the password. */
     public static final String PARAM_PASSWORD = "ocPword";
 
+    /** The parameter name for the PC type. */
+    public static final String PARAM_PCTYPE = "ocPcType";
+
     /** The parameter name for the organizational unit. */
     public static final String PARAM_PREDEF_OUFQN = "ocPredefOuFqn";
 
@@ -111,8 +114,17 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The parameter name for the workplace data. */
     public static final String PARAM_WPDATA = "ocWpData";
 
+    /** PC type constant: private PC. */
+    public static final String PCTYPE_PRIVATE = "private";
+
+    /** PC type constant: public PC. */
+    public static final String PCTYPE_PUBLIC = "public";
+
     /** The oufqn cookie name. */
     private static final String COOKIE_OUFQN = "OpenCmsOuFqn";
+
+    /** The PC type cookie name. */
+    private static final String COOKIE_PCTYPE = "OpenCmsPcType";
 
     /** The username cookie name. */
     private static final String COOKIE_USERNAME = "OpenCmsUserName";
@@ -153,6 +165,9 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The value of the password parameter. */
     private String m_password;
 
+    /** The value of the PC type parameter. */
+    private String m_pcType;
+
     /** The redirect URL after a successful login. */
     private String m_requestedResource;
 
@@ -188,9 +203,9 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
-     * Returns html code for selecting an organizational unit.<p>
+     * Returns the HTML code for selecting an organizational unit.<p>
      * 
-     * @return html code
+     * @return the HTML code for selecting an organizational unit
      */
     public String buildOrgUnitSelector() {
 
@@ -198,9 +213,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<select style='width: 100%;' size='1' ");
         appendId(html, PARAM_OUFQN);
         html.append(">\n");
-        Iterator<CmsOrganizationalUnit> itOus = getOus().iterator();
-        while (itOus.hasNext()) {
-            CmsOrganizationalUnit ou = itOus.next();
+        for (CmsOrganizationalUnit ou : getOus()) {
             String selected = "";
             if (ou.getName().equals(m_oufqn)
                 || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn) && ou.getName().equals(m_oufqn.substring(1)))) {
@@ -252,8 +265,20 @@ public class CmsLogin extends CmsJspLoginBean {
             if (m_oufqn == null) {
                 m_oufqn = getPreDefOuFqn();
             }
+            if (OpenCms.getLoginManager().isEnableSecurity()) {
+                // security option is enabled, try to get PC type from request parameter
+                m_pcType = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_PCTYPE);
+            } else {
+                // if security option is disabled, just set PC type to "private" to get common login dialog
+                m_pcType = PCTYPE_PRIVATE;
+            }
             // try to get some info from a cookie
             getCookieData();
+
+            // set PC type to "public" as default if not already set by cookie, request or if security option is disabled
+            if (m_pcType == null) {
+                m_pcType = PCTYPE_PUBLIC;
+            }
         } else {
             // user is already logged in
             m_oufqn = cms.getRequestContext().getOuFqn();
@@ -328,10 +353,12 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     } catch (CmsException e) {
                         // unable to set the startup project, bad but not critical
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
-                            m_username,
-                            settings.getStartProject()), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
+                                m_username,
+                                settings.getStartProject()),
+                            e);
                     }
                 } else {
                     // there was an error during login
@@ -422,27 +449,41 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     public void getCookieData() {
 
-        // get the user name cookie
-        Cookie userNameCookie = getCookie(COOKIE_USERNAME);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userNameCookie.getValue())) {
+        // get the PC type cookie
+        Cookie pcTypeCookie = getCookie(COOKIE_PCTYPE);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(pcTypeCookie.getValue())) {
             // only set the data is needed
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_username)) {
-                m_username = userNameCookie.getValue();
+            if (m_pcType == null) {
+                m_pcType = pcTypeCookie.getValue();
             }
         }
-        if ("null".equals(m_username)) {
-            m_username = null;
+        if ("null".equals(m_pcType)) {
+            m_pcType = null;
         }
-        // get the user name cookie
-        Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
-            // only set the data is needed
-            if (m_oufqn == null) {
-                m_oufqn = ouFqnCookie.getValue();
+        // get other cookies only on private PC types (or if security option is disabled)
+        if (PCTYPE_PRIVATE.equals(m_pcType)) {
+            // get the user name cookie
+            Cookie userNameCookie = getCookie(COOKIE_USERNAME);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userNameCookie.getValue())) {
+                // only set the data if needed
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_username)) {
+                    m_username = userNameCookie.getValue();
+                }
             }
-        }
-        if ("null".equals(m_oufqn)) {
-            m_oufqn = null;
+            if ("null".equals(m_username)) {
+                m_username = null;
+            }
+            // get the organizational unit cookie
+            Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
+                // only set the data if needed
+                if (m_oufqn == null) {
+                    m_oufqn = ouFqnCookie.getValue();
+                }
+            }
+            if ("null".equals(m_oufqn)) {
+                m_oufqn = null;
+            }
         }
     }
 
@@ -475,8 +516,7 @@ public class CmsLogin extends CmsJspLoginBean {
         List<CmsOrganizationalUnit> allOus = getOus();
         List<JSONObject> jsonOus = new ArrayList<JSONObject>(allOus.size());
         int index = 0;
-        for (Iterator<CmsOrganizationalUnit> i = allOus.iterator(); i.hasNext();) {
-            CmsOrganizationalUnit ou = i.next();
+        for (CmsOrganizationalUnit ou : allOus) {
             JSONObject jsonObj = new JSONObject();
             try {
                 // 1: OU fully qualified name
@@ -515,22 +555,31 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     public void setCookieData() {
 
-        // set the user name cookie
-        Cookie userNameCookie = getCookie(COOKIE_USERNAME);
-        userNameCookie.setValue(m_username);
-        setCookie(userNameCookie);
+        // set the PC type cookie only if security dialog is enabled
+        if (OpenCms.getLoginManager().isEnableSecurity() && CmsStringUtil.isNotEmpty(m_pcType)) {
+            Cookie pcTypeCookie = getCookie(COOKIE_PCTYPE);
+            pcTypeCookie.setValue(m_pcType);
+            setCookie(pcTypeCookie);
+        }
 
-        // set the user name cookie
-        Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
-        ouFqnCookie.setValue(m_oufqn);
-        setCookie(ouFqnCookie);
+        // only store user name and OU cookies on private PC types
+        if (PCTYPE_PRIVATE.equals(m_pcType)) {
+            // set the user name cookie
+            Cookie userNameCookie = getCookie(COOKIE_USERNAME);
+            userNameCookie.setValue(m_username);
+            setCookie(userNameCookie);
+
+            // set the organizational unit cookie
+            Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
+            ouFqnCookie.setValue(m_oufqn);
+            setCookie(ouFqnCookie);
+        }
     }
 
     /**
-     * Appends the JavaScript for the login screen
-     * to the given HTML buffer.<p>
+     * Appends the JavaScript for the login screen to the given HTML buffer.<p>
      * 
-     * @param html the html buffer to append the script to
+     * @param html the HTML buffer to append the script to
      * @param message the message to display after an unsuccessful login
      */
     protected void appendDefaultLoginScript(StringBuffer html, CmsMessageContainer message) {
@@ -1013,12 +1062,59 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("<form style=\"margin: 0px; padding: 0px;\" action=\"");
             html.append(getFormLink());
             html.append("\"");
+            if (PCTYPE_PUBLIC.equals(m_pcType)) {
+                html.append(" autocomplete=\"off\"");
+            }
             appendId(html, PARAM_FORM);
             html.append("method=\"POST\">\n");
         }
 
         html.append("<div class=\"dialogcontent\">\n");
         html.append("<table border=\"0\">\n");
+
+        // show security option box if enabled in configuration
+        if ((m_action == ACTION_DISPLAY) && OpenCms.getLoginManager().isEnableSecurity()) {
+            html.append("<tr>\n");
+            html.append("<td rowspan=\"2\">\n");
+            html.append("<img src=\"");
+            html.append(CmsWorkplace.getResourceUri("commons/login_security.png"));
+            html.append("\" height=\"48\" width=\"48\" alt=\"\">");
+            html.append("</td>\n");
+            html.append("<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
+            html.append("<div style=\"padding-bottom: 5px;\"><b>");
+            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_SECURITY_0)));
+            html.append("</b></div>\n");
+            html.append("</td>\n");
+            html.append("</tr>\n");
+            html.append("<tr>\n");
+            html.append("<td colspan=\"2\" style=\"white-space: nowrap;\">");
+            html.append("<div class=\"loginsecurity\">");
+            html.append("<input type=\"radio\" value=\"");
+            html.append(PCTYPE_PUBLIC);
+            html.append("\" name=\"");
+            html.append(PARAM_PCTYPE);
+            html.append("\"");
+            if (PCTYPE_PUBLIC.equals(m_pcType)) {
+                html.append(" checked=\"checked\"");
+            }
+            html.append(">&nbsp;");
+            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
+                Messages.GUI_LOGIN_PCTYPE_PUBLIC_0)));
+            html.append("<br/>");
+            html.append("<input type=\"radio\" value=\"");
+            html.append(PCTYPE_PRIVATE);
+            html.append("\" name=\"");
+            html.append(PARAM_PCTYPE);
+            html.append("\"");
+            if (PCTYPE_PRIVATE.equals(m_pcType)) {
+                html.append(" checked=\"checked\"");
+            }
+            html.append(">&nbsp;");
+            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
+                Messages.GUI_LOGIN_PCTYPE_PRIVATE_0)));
+            html.append("</div></td>\n");
+            html.append("</tr>\n");
+        }
 
         html.append("<tr>\n");
         html.append("<td></td>\n<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
@@ -1051,9 +1147,14 @@ public class CmsLogin extends CmsJspLoginBean {
         if (m_action == ACTION_DISPLAY) {
             // append input for user name
             html.append("<input style=\"width: 300px;\" type=\"text\"");
+            if (PCTYPE_PUBLIC.equals(m_pcType)) {
+                html.append(" autocomplete=\"off\"");
+            }
             appendId(html, PARAM_USERNAME);
             html.append("value=\"");
-            html.append(CmsStringUtil.isEmpty(m_username) ? "" : CmsEncoder.escapeXml(m_username));
+            html.append((CmsStringUtil.isEmpty(m_username) || PCTYPE_PUBLIC.equals(m_pcType))
+            ? ""
+            : CmsEncoder.escapeXml(m_username));
             html.append("\">");
         } else if (m_action == ACTION_LOGIN) {
             // append name of user that has been logged in
@@ -1071,6 +1172,9 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("</b>&nbsp;&nbsp;</td>\n");
             html.append("<td style=\"width: 300px; white-space: nowrap;\">");
             html.append("<input style=\"width: 300px;\" type=\"password\"");
+            if (PCTYPE_PUBLIC.equals(m_pcType)) {
+                html.append(" autocomplete=\"off\"");
+            }
             appendId(html, PARAM_PASSWORD);
             html.append(">");
             html.append("</td>\n");

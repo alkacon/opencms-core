@@ -464,6 +464,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_menuRules.add(menuRule);
     }
 
+    /**
+     * Adds an initialized condition definition class that is triggered before opening the editor.<p>
+     * 
+     * @param preEditorCondition the initialized condition definition class
+     */
     public void addPreEditorConditionDefinition(I_CmsPreEditorActionDefinition preEditorCondition) {
 
         m_preEditorConditionDefinitions.add(preEditorCondition);
@@ -476,7 +481,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Adds a condition definition class for a given resource type glass name that is triggered before opening the editor.<p>
+     * Adds a condition definition class for a given resource type name that is triggered before opening the editor.<p>
      * 
      * @param resourceTypeName the name of the resource type
      * @param preEditorConditionDefinitionClassName full class name of the condition definition class

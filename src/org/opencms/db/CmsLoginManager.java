@@ -133,6 +133,9 @@ public class CmsLoginManager {
     /** Default lock time if treshold for bad login attempts is reached. */
     public static final int DISABLE_MINUTES_DEFAULT = 15;
 
+    /** Default setting for the security option. */
+    public static final boolean ENABLE_SECURITY_DEFAULT = false;
+
     /** Default for bad login attempts. */
     public static final int MAX_BAD_ATTEMPTS_DEFAULT = 3;
 
@@ -141,6 +144,9 @@ public class CmsLoginManager {
 
     /** The minutes to disable an account if the threshold is reached. */
     protected int m_disableMinutes;
+
+    /** The flag to determine if the security option ahould be enabled on the login dialog. */
+    protected boolean m_enableSecurity;
 
     /** The number of bad login attempts allowed before an account is temporarily disabled. */
     protected int m_maxBadAttempts;
@@ -156,8 +162,9 @@ public class CmsLoginManager {
      * 
      * @param disableMinutes the minutes to disable an account if the threshold is reached
      * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
+     * @param enableSecurity flag to determine if the security option ahould be enabled on the login dialog
      */
-    public CmsLoginManager(int disableMinutes, int maxBadAttempts) {
+    public CmsLoginManager(int disableMinutes, int maxBadAttempts, boolean enableSecurity) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (m_maxBadAttempts >= 0) {
@@ -166,6 +173,7 @@ public class CmsLoginManager {
             m_disableMillis = disableMinutes * 60 * 1000;
             m_storage = new Hashtable<String, CmsUserData>();
         }
+        m_enableSecurity = enableSecurity;
     }
 
     /**
@@ -238,6 +246,16 @@ public class CmsLoginManager {
     public int getDisableMinutes() {
 
         return m_disableMinutes;
+    }
+
+    /**
+     * Returns if the security option ahould be enabled on the login dialog.<p>
+     * 
+     * @return <code>true</code> if the security option ahould be enabled on the login dialog, otherwise <code>false</code>
+     */
+    public boolean isEnableSecurity() {
+
+        return m_enableSecurity;
     }
 
     /**
