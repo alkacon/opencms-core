@@ -115,7 +115,9 @@ public class CmsReport extends CmsMultiDialog {
         result.append("<style type='text/css'>\n");
         String contents = "";
         try {
-            contents = new String(cms.readFile(CmsWorkplace.VFS_PATH_COMMONS + "style/report.css").getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+            contents = new String(
+                cms.readFile(CmsWorkplace.VFS_PATH_COMMONS + "style/report.css").getContents(),
+                OpenCms.getSystemInfo().getDefaultEncoding());
         } catch (Exception e) {
             // ignore
         }
@@ -401,6 +403,7 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String htmlStart() {
 
         return pageHtml(HTML_START, true);
@@ -567,6 +570,7 @@ public class CmsReport extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -584,6 +588,7 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         throw new CmsException(new CmsMessageContainer(null, ""));

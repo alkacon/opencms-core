@@ -156,9 +156,9 @@ public class CmsLoginHelper extends CmsWorkplace {
                 }
                 boolean hasAccess = false;
                 CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-                Iterator accessibles = OpenCms.getSiteManager().getAvailableSites(getCms(), false).iterator();
+                Iterator<CmsSite> accessibles = OpenCms.getSiteManager().getAvailableSites(getCms(), false).iterator();
                 while (accessibles.hasNext() && !hasAccess && (site != null)) {
-                    CmsSite accessible = (CmsSite)accessibles.next();
+                    CmsSite accessible = accessibles.next();
                     if (accessible.getSiteRoot().equals(site.getSiteRoot())) {
                         hasAccess = true;
                     }
@@ -216,6 +216,7 @@ public class CmsLoginHelper extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
+    @Override
     protected void checkRole() {
 
         // do not check
@@ -224,6 +225,7 @@ public class CmsLoginHelper extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // empty

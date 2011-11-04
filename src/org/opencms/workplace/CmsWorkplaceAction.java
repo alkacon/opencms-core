@@ -84,6 +84,7 @@ public class CmsWorkplaceAction extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.A_CmsModuleAction#initialize(org.opencms.file.CmsObject, org.opencms.configuration.CmsConfigurationManager, org.opencms.module.CmsModule)
      */
+    @Override
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         super.initialize(adminCms, configurationManager, module);

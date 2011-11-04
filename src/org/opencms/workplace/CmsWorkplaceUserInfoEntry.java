@@ -110,8 +110,8 @@ public final class CmsWorkplaceUserInfoEntry {
             if (m_params == null) {
                 return (I_CmsWidget)Class.forName(getWidget()).newInstance();
             }
-            Class clazz = Class.forName(getWidget());
-            Constructor ctor = clazz.getConstructor(new Class[] {String.class});
+            Class<?> clazz = Class.forName(getWidget());
+            Constructor<?> ctor = clazz.getConstructor(new Class[] {String.class});
             return (I_CmsWidget)ctor.newInstance(new Object[] {m_params});
         } catch (Exception e) {
             return new CmsInputWidget();
@@ -163,7 +163,7 @@ public final class CmsWorkplaceUserInfoEntry {
      *
      * @return the class type
      */
-    public Class getClassType() {
+    public Class<?> getClassType() {
 
         if (m_type == null) {
             return String.class;

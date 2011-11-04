@@ -152,7 +152,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
         if (m_baseCollection != null) {
             if (m_baseCollection instanceof List) {
                 // base object is a list - make sure to set possible old value 
-                List baseList = (List)m_baseCollection;
+                List<?> baseList = (List<?>)m_baseCollection;
                 if (originalIndex < baseList.size()) {
                     Object o = baseList.get(originalIndex);
                     if (o != null) {
@@ -161,8 +161,9 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                 }
             } else if (m_baseCollection instanceof SortedMap) {
                 // base object is a sorted map - make sure to set possible old value 
-                SortedMap baseMap = (SortedMap)m_baseCollection;
-                List keyList = new ArrayList(baseMap.keySet());
+                SortedMap<?, ?> baseMap = (SortedMap<?, ?>)m_baseCollection;
+                @SuppressWarnings({"unchecked", "rawtypes"})
+                List<?> keyList = new ArrayList(baseMap.keySet());
                 if (originalIndex < keyList.size()) {
                     Object key = keyList.get(originalIndex);
                     Object value = baseMap.get(key);
@@ -404,6 +405,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
      * 
      * @throws CmsException in case the String value of the widget is invalid for the base Object
      */
+    @SuppressWarnings("unchecked")
     public void commitValue(CmsWidgetDialog dialog) throws CmsException {
 
         if (m_baseCollection == null) {
@@ -411,7 +413,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
             ConvertUtilsBean converter = new ConvertUtilsBean();
             Object value = null;
             try {
-                Class type = bean.getPropertyType(m_baseObject, m_baseObjectProperty);
+                Class<?> type = bean.getPropertyType(m_baseObject, m_baseObjectProperty);
                 value = converter.convert(m_value, type);
                 bean.setNestedProperty(m_baseObject, m_baseObjectProperty, value);
                 setError(null);
@@ -436,6 +438,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                 if ((pos > 0) && (pos < (m_value.length() - 1))) {
                     String key = m_value.substring(0, pos);
                     String value = m_value.substring(pos + 1);
+                    @SuppressWarnings("rawtypes")
                     SortedMap map = (SortedMap)m_baseCollection;
                     if (map.containsKey(key)) {
                         Object val = map.get(key);
@@ -458,6 +461,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
             }
         } else if (m_baseCollection instanceof List) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_value)) {
+                @SuppressWarnings("rawtypes")
                 List list = (List)m_baseCollection;
                 list.add(m_value);
             }
@@ -588,9 +592,9 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     public boolean hasValue(int index) {
 
         if (m_baseCollection instanceof List) {
-            return index < ((List)m_baseCollection).size();
+            return index < ((List<?>)m_baseCollection).size();
         } else if (m_baseCollection instanceof SortedMap) {
-            return index < ((SortedMap)m_baseCollection).size();
+            return index < ((SortedMap<?, ?>)m_baseCollection).size();
         }
         return false;
     }
@@ -615,10 +619,10 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     public void prepareCommit() {
 
         if (m_baseCollection instanceof List) {
-            List list = (List)m_baseCollection;
+            List<?> list = (List<?>)m_baseCollection;
             list.clear();
         } else if (m_baseCollection instanceof SortedMap) {
-            SortedMap map = (SortedMap)m_baseCollection;
+            SortedMap<?, ?> map = (SortedMap<?, ?>)m_baseCollection;
             map.clear();
         }
     }

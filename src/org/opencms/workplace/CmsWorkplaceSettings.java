@@ -61,17 +61,17 @@ public class CmsWorkplaceSettings {
     private int m_explorerPage;
     private String m_explorerProjectFilter;
     private CmsUUID m_explorerProjectId;
-    private Map m_explorerResource;
-    private Map m_frameUris;
+    private Map<String, String> m_explorerResource;
+    private Map<String, String> m_frameUris;
     private String m_galleryType;
-    private Map m_lastUsedGalleries;
+    private Map<String, String> m_lastUsedGalleries;
     private Object m_listObject;
     private String m_permissionDetailView;
     private CmsUUID m_project;
     private CmsPublishList m_publishList;
     private CmsToolUserData m_toolUserData;
-    private Map m_treeSite;
-    private Map m_treeType;
+    private Map<String, String> m_treeSite;
+    private Map<String, String> m_treeType;
     private CmsUser m_user;
     private boolean m_userAgreementAccepted;
     private CmsUserSettings m_userSettings;
@@ -86,11 +86,11 @@ public class CmsWorkplaceSettings {
     CmsWorkplaceSettings() {
 
         m_explorerPage = 1;
-        m_explorerResource = new HashMap();
-        m_treeType = new HashMap();
-        m_treeSite = new HashMap();
-        m_frameUris = new HashMap();
-        m_lastUsedGalleries = new HashMap();
+        m_explorerResource = new HashMap<String, String>();
+        m_treeType = new HashMap<String, String>();
+        m_treeSite = new HashMap<String, String>();
+        m_frameUris = new HashMap<String, String>();
+        m_lastUsedGalleries = new HashMap<String, String>();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }
 
@@ -204,7 +204,7 @@ public class CmsWorkplaceSettings {
             mode += "_" + getSite() + "/";
         }
         // get the resource for the given mode
-        String resource = (String)m_explorerResource.get(mode);
+        String resource = m_explorerResource.get(mode);
         if (resource == null) {
             resource = "/";
         }
@@ -216,7 +216,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the frame URIs of the currently loaded frameset
      */
-    public Map getFrameUris() {
+    public Map<String, String> getFrameUris() {
 
         return m_frameUris;
     }
@@ -231,6 +231,11 @@ public class CmsWorkplaceSettings {
         return m_galleryType;
     }
 
+    /**
+     * Returns the last gallery search scope.<p>
+     * 
+     * @return the last gallery search scope
+     */
     public CmsGallerySearchScope getLastSearchScope() {
 
         if (m_scope == null) {
@@ -247,7 +252,7 @@ public class CmsWorkplaceSettings {
      */
     public String getLastUsedGallery(int galleryTypeId) {
 
-        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
+        return m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
     }
 
     /**
@@ -325,7 +330,7 @@ public class CmsWorkplaceSettings {
      */
     public String getTreeResource(String type) {
 
-        String result = (String)m_treeType.get(type);
+        String result = m_treeType.get(type);
         if (result == null) {
             result = "/";
         }
@@ -340,7 +345,7 @@ public class CmsWorkplaceSettings {
      */
     public String getTreeSite(String type) {
 
-        String result = (String)m_treeSite.get(type);
+        String result = m_treeSite.get(type);
         return result;
     }
 
@@ -501,6 +506,7 @@ public class CmsWorkplaceSettings {
      * 
      * @deprecated use {@link #setExplorerResource(String, CmsObject)} instead
      */
+    @Deprecated
     public void setExplorerResource(String value) {
 
         setExplorerResource(value, null);
@@ -560,6 +566,11 @@ public class CmsWorkplaceSettings {
         m_galleryType = currentGallery;
     }
 
+    /**
+     * Sets the last gallery search scope.<p>
+     * 
+     * @param scope the gallery search scope
+     */
     public void setLastSearchScope(CmsGallerySearchScope scope) {
 
         m_scope = scope;
@@ -632,7 +643,7 @@ public class CmsWorkplaceSettings {
 
         if ((value != null) && !value.equals(m_currentSite)) {
             m_currentSite = value;
-            m_treeType = new HashMap();
+            m_treeType = new HashMap<String, String>();
         }
     }
 

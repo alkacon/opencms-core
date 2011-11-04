@@ -313,7 +313,7 @@ public class CmsDialog extends CmsToolDialog {
     public void actionCloseDialog() throws JspException {
 
         // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_RESOURCE, "");
         if (isPopup()) {
             try {
@@ -350,7 +350,7 @@ public class CmsDialog extends CmsToolDialog {
         } else if (getParamFramename() != null) {
             // no workplace frame mode (currently used for galleries)
             // frame name parameter found, get URI
-            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
+            String frameUri = getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
                 // URI found, include it
                 if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
@@ -927,6 +927,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the standard javascript for submitting the dialog
      */
+    @Override
     public String dialogScriptSubmit() {
 
         if (useNewStyle()) {
@@ -1395,6 +1396,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String htmlStart(String helpUrl) {
 
         return pageHtml(HTML_START, helpUrl);
@@ -1475,6 +1477,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String pageHtml(int segment, String helpUrl) {
 
         return pageHtml(segment, helpUrl, null);
@@ -1917,6 +1920,7 @@ public class CmsDialog extends CmsToolDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

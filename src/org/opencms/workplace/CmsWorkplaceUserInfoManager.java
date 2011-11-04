@@ -41,14 +41,14 @@ import java.util.List;
 public final class CmsWorkplaceUserInfoManager {
 
     /** The list of defined blocks. */
-    private List m_blocks;
+    private List<CmsWorkplaceUserInfoBlock> m_blocks;
 
     /**
      * Default constructor.<p>
      */
     public CmsWorkplaceUserInfoManager() {
 
-        m_blocks = new ArrayList();
+        m_blocks = new ArrayList<CmsWorkplaceUserInfoBlock>();
     }
 
     /**
@@ -66,7 +66,7 @@ public final class CmsWorkplaceUserInfoManager {
      * 
      * @return a list of {@link CmsWorkplaceUserInfoBlock} objects
      */
-    public List getBlocks() {
+    public List<CmsWorkplaceUserInfoBlock> getBlocks() {
 
         return m_blocks;
     }

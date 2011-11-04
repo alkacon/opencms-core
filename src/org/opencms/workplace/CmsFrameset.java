@@ -47,7 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +74,7 @@ public class CmsFrameset extends CmsWorkplace {
     private static final String[] FRAMES = {"top", "head", "body", "foot"};
 
     /** The names of the supported frames in a list. */
-    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
+    public static final List<String> FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** Path to the JSP workplace frame loader file. */
     public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
@@ -180,7 +180,7 @@ public class CmsFrameset extends CmsWorkplace {
     public String getProjectSelect(String htmlAttributes, String htmlWidth) {
 
         // get all project information
-        List allProjects;
+        List<CmsProject> allProjects;
         try {
             String ouFqn = "";
             CmsUserSettings settings = new CmsUserSettings(getCms());
@@ -196,14 +196,14 @@ public class CmsFrameset extends CmsWorkplace {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            allProjects = Collections.EMPTY_LIST;
+            allProjects = Collections.emptyList();
         }
 
         boolean singleOu = true;
         String ouFqn = null;
-        Iterator itProjects = allProjects.iterator();
+        Iterator<CmsProject> itProjects = allProjects.iterator();
         while (itProjects.hasNext()) {
-            CmsProject prj = (CmsProject)itProjects.next();
+            CmsProject prj = itProjects.next();
             if (prj.isOnlineProject()) {
                 // skip the online project
                 continue;
@@ -219,8 +219,8 @@ public class CmsFrameset extends CmsWorkplace {
             }
         }
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = -1;
         int ouDefaultProjIndex = -1;
 
@@ -233,7 +233,7 @@ public class CmsFrameset extends CmsWorkplace {
 
         // now loop through all projects and fill the result vectors
         for (int i = 0, n = allProjects.size(); i < n; i++) {
-            CmsProject project = (CmsProject)allProjects.get(i);
+            CmsProject project = allProjects.get(i);
             String projectId = project.getUuid().toString();
             String projectName = project.getSimpleName();
             if (!singleOu && !project.isOnlineProject()) {
@@ -345,16 +345,16 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String getSiteSelect(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
-        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
 
-        Iterator i = sites.iterator();
+        Iterator<CmsSite> i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
-            CmsSite site = (CmsSite)i.next();
+            CmsSite site = i.next();
             values.add(site.getSiteRoot());
             options.add(substituteSiteTitle(site.getTitle()));
             if (site.getSiteRoot().equals(getSettings().getSite())) {
@@ -385,10 +385,11 @@ public class CmsFrameset extends CmsWorkplace {
         }
         // add eventual request parameters to startup uri
         if (getJsp().getRequest().getParameterMap().size() > 0) {
-            Set params = getJsp().getRequest().getParameterMap().entrySet();
-            Iterator i = params.iterator();
+            @SuppressWarnings("unchecked")
+            Set<Entry<?, ?>> params = getJsp().getRequest().getParameterMap().entrySet();
+            Iterator<Entry<?, ?>> i = params.iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
+                Entry<?, ?> entry = i.next();
                 result = CmsRequestUtil.appendParameter(result, (String)entry.getKey(), ((String[])entry.getValue())[0]);
             }
         }
@@ -404,12 +405,12 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String getViewSelect(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
         // loop through the vectors and fill the result vectors
-        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();
+        Iterator<CmsWorkplaceView> i = OpenCms.getWorkplaceManager().getViews().iterator();
         int count = -1;
         String currentView = getSettings().getViewUri();
         if (CmsStringUtil.isNotEmpty(currentView)) {
@@ -420,7 +421,7 @@ public class CmsFrameset extends CmsWorkplace {
             }
         }
         while (i.hasNext()) {
-            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            CmsWorkplaceView view = i.next();
             if (getCms().existsResource(view.getUri(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 count++;
                 // ensure the current user has +v+r permissions on the view
@@ -495,6 +496,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
      */
+    @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
         // overriden to avoid deletion of the configured time warp: 
@@ -505,6 +507,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // check if a startup page has been set
