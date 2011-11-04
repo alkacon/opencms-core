@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -486,9 +487,14 @@ public class CmsCategoryWidget extends A_CmsWidget {
                     return resource;
                 }
             }
-        } catch (CmsException ex) {
+        } catch (CmsVfsResourceNotFoundException e) {
+            // may hapen if editing a new resource
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(ex.getLocalizedMessage(), ex);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return file;

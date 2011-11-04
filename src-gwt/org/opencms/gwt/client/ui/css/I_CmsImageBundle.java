@@ -403,7 +403,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/lockOtherImage.gif")
+    @Source("images/lockOtherImage.png")
     ImageResource lockOtherImage();
 
     /**
@@ -411,7 +411,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/lockSharedImage.gif")
+    @Source("images/lockSharedImage.png")
     ImageResource lockSharedImage();
 
     /**
@@ -419,7 +419,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/lockUserImage.gif")
+    @Source("images/lockUserImage.png")
     ImageResource lockUserImage();
 
     /**
